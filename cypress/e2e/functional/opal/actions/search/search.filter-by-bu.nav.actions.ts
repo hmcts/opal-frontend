@@ -9,7 +9,9 @@
  */
 
 import { SearchFilterByBUNavLocators } from '../../../../../shared/selectors/account-search/account.search.filter-by-bu.nav.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('SearchFilterByBUNavActions');
 
 export class SearchFilterByBUNavActions {
   /**

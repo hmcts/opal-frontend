@@ -63,6 +63,7 @@ import { FinesAccDefendantDetailsFixedPenaltyTabComponent } from './fines-acc-de
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
+import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -93,6 +94,7 @@ import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/inte
     MojAlertContentComponent,
     MojAlertTextComponent,
     MojAlertIconComponent,
+    FinesAccDefendantDetailsEnforcementTab,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -148,12 +150,25 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     return (
       !this.lastEnforcement?.extend_ttp_disallow &&
       !invalidCodes.includes(accountStatusCode) &&
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['amend-payment-terms'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
+      this.hasBusinessUnitPermission('amend-payment-terms') &&
+      this.accountData.payment_state_summary.account_balance! > 0
     );
+  }
+
+  /**
+   * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
+   * @returns A string representing the denial type: 'enforcement', 'permission' or 'account-status'
+   */
+  private getDeniedType(): string {
+    if (this.lastEnforcement?.extend_ttp_disallow) {
+      return 'enforcement';
+    } else if (!this.hasBusinessUnitPermission('amend-payment-terms')) {
+      return 'permission';
+    } else if (this.accountData.payment_state_summary.account_balance! <= 0) {
+      return 'balance';
+    } else {
+      return 'account-status';
+    }
   }
 
   /**
@@ -213,7 +228,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'enforcement':
-          this.tabEnforcement$ = this.fetchTabData(this.opalFinesService.getDefendantAccountEnforcementTabData());
+          this.tabEnforcement$ = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountEnforcementTabData(account_id),
+          );
           break;
         case 'impositions':
           this.tabImpositions$ = this.fetchTabData(this.opalFinesService.getDefendantAccountImpositionsTabData());
@@ -252,6 +269,19 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public hasPermission(permissionKey: string): boolean {
     return this.permissionsService.hasPermissionAccess(
       FINES_PERMISSIONS[permissionKey],
+      this.userState.business_unit_users,
+    );
+  }
+
+  /**
+   * Checks if the user has the specified permission within the business unit related to the account.
+   * @param permissionKey The key of the permission to check.
+   * @returns True if the user has the permission, false otherwise.
+   */
+  public hasBusinessUnitPermission(permissionKey: string): boolean {
+    return this.permissionsService.hasBusinessUnitPermissionAccess(
+      FINES_PERMISSIONS[permissionKey],
+      Number(this.accountStore.business_unit_id()!),
       this.userState.business_unit_users,
     );
   }
@@ -372,9 +402,16 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         relativeTo: this.activatedRoute,
       });
     } else {
-      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`], {
-        relativeTo: this.activatedRoute,
-      });
+      this['router'].navigate(
+        [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.getDeniedType()}`],
+        {
+          relativeTo: this.activatedRoute,
+          state: {
+            accountStatusCode: this.accountData.account_status_reference.account_status_code,
+            lastEnforcement: this.lastEnforcement?.result_id,
+          },
+        },
+      );
     }
   }
 }

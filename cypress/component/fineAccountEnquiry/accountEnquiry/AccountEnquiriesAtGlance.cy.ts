@@ -1,11 +1,11 @@
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
+import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+
 import {
-  createDefendantHeaderMockWithName,
-  DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
 
 import {
   OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
@@ -487,216 +487,214 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
+      // Verify the Change or Add Comment link not present
+      cy.get(DOM.linkText).should('not.exist');
+    },
+  );
 
-      it('AC6a: displays Payment Terms section for "Pay by date" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
-        const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-        mockDataPayByDate.payment_terms = {
-          payment_terms_type: {
-            payment_terms_type_code: 'B',
-            payment_terms_type_display_name: 'By date',
+  it('AC6a: displays Payment Terms section for "Pay by date" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
+    const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    mockDataPayByDate.payment_terms = {
+      payment_terms_type: {
+        payment_terms_type_code: 'B',
+        payment_terms_type_display_name: 'By date',
+      },
+      effective_date: '31/12/2024',
+      instalment_period: null,
+      lump_sum_amount: 250,
+      instalment_amount: null,
+    };
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+    interceptAtAGlance(77, mockDataPayByDate, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+    cy.get('h2').contains('Payment terms').should('exist');
+    cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay by date');
+    cy.get('h3').contains('By date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
+
+    // Verify that instalment-specific fields are not displayed
+    cy.get('h3').contains('Frequency').should('not.exist');
+    cy.get('h3').contains('Instalments').should('not.exist');
+    cy.get('h3').contains('Start Date').should('not.exist');
+  });
+
+  it(
+    'AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get('h3')
+        .contains('Payment terms')
+        .and('be.visible')
+        .next('p')
+        .should('have.text', 'Lump sum plus instalments');
+      cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
+      cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
+      cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 01 January 2024 ');
+
+      // Verify that "By date" field is not displayed
+      cy.get('h3').contains('By date').should('not.exist');
+    },
+  );
+
+  it('AC6c: displays Payment Terms section for "Instalments only" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
+    const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    mockDataPayByDate.payment_terms = {
+      payment_terms_type: {
+        payment_terms_type_code: 'I',
+        payment_terms_type_display_name: 'By date',
+      },
+      effective_date: '31/12/2024',
+      instalment_period: {
+        instalment_period_code: 'M',
+        instalment_period_display_name: 'Monthly',
+      },
+      lump_sum_amount: 1000,
+      instalment_amount: 100,
+    };
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+    interceptAtAGlance(77, mockDataPayByDate, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+    cy.get('h2').contains('Payment terms').should('exist');
+    cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
+    cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
+    cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
+  });
+
+  it(
+    'AC7a, AC7b, AC7c, AC7d: displays Last Enforcement Action field only when value is present',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataNoEnforcementAction = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataNoEnforcementAction.enforcement_status = {
+        last_enforcement_action: {
+          last_enforcement_action_id: 'EA-001',
+          last_enforcement_action_title: 'Warrant Issued',
+        },
+        collection_order_made: true,
+        default_days_in_jail: 45,
+        enforcement_override: {
+          enforcement_override_result: {
+            enforcement_override_result_id: 'EOR-001',
+            enforcement_override_result_title: 'Override Approved',
           },
-          effective_date: '31/12/2024',
-          instalment_period: null,
-          lump_sum_amount: null,
-          instalment_amount: null,
-        };
-
-        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-        interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-        interceptAtAGlance(77, mockDataPayByDate, '1');
-
-        setupAccountEnquiryComponent(componentProperties);
-        cy.get('h2').contains('Payment terms').should('exist');
-        cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay by date');
-        cy.get('h3').contains('By date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
-
-        // Verify that instalment-specific fields are not displayed
-        cy.get('h3').contains('Frequency').should('not.exist');
-        cy.get('h3').contains('Instalments').should('not.exist');
-        cy.get('h3').contains('Start Date').should('not.exist');
-      });
-
-      it(
-        'AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario',
-        { tags: ['PO-984', 'PO-814'] },
-        () => {
-          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-          interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-          interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
-
-          setupAccountEnquiryComponent(componentProperties);
-
-          cy.get('h3')
-            .contains('Payment terms')
-            .and('be.visible')
-            .next('p')
-            .should('have.text', 'Lump sum plus instalments');
-          cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
-          cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
-          cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 01 January 2024 ');
-
-          // Verify that "By date" field is not displayed
-          cy.get('h3').contains('By date').should('not.exist');
-        },
-      );
-
-      it('AC6c: displays Payment Terms section for "Instalments only" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
-        const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-        mockDataPayByDate.payment_terms = {
-          payment_terms_type: {
-            payment_terms_type_code: 'I',
-            payment_terms_type_display_name: 'By date',
+          enforcer: {
+            enforcer_id: 10,
+            enforcer_name: 'Court Officer',
           },
-          effective_date: '31/12/2024',
-          instalment_period: {
-            instalment_period_code: 'M',
-            instalment_period_display_name: 'Monthly',
+          lja: {
+            lja_id: 20,
+            lja_name: 'Central LJA',
           },
-          lump_sum_amount: 1000,
-          instalment_amount: 100,
-        };
-
-        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-        interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-        interceptAtAGlance(77, mockDataPayByDate, '1');
-
-        setupAccountEnquiryComponent(componentProperties);
-        cy.get('h2').contains('Payment terms').should('exist');
-        cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
-        cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
-        cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
-      });
-
-      it(
-        'AC7a, AC7b, AC7c, AC7d: displays Last Enforcement Action field only when value is present',
-        { tags: ['PO-984', 'PO-814'] },
-        () => {
-          const mockDataNoEnforcementAction = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-          mockDataNoEnforcementAction.enforcement_status = {
-            last_enforcement_action: {
-              last_enforcement_action_id: 'EA-001',
-              last_enforcement_action_title: 'Warrant Issued',
-            },
-            collection_order_made: true,
-            default_days_in_jail: 45,
-            enforcement_override: {
-              enforcement_override_result: {
-                enforcement_override_result_id: 'EOR-001',
-                enforcement_override_result_title: 'Override Approved',
-              },
-              enforcer: {
-                enforcer_id: 10,
-                enforcer_name: 'Court Officer',
-              },
-              lja: {
-                lja_id: 20,
-                lja_name: 'Central LJA',
-              },
-            },
-            last_movement_date: '01/05/2024',
-          };
-          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-          interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-          interceptAtAGlance(77, mockDataNoEnforcementAction, '1');
-
-          setupAccountEnquiryComponent(componentProperties);
-          cy.get('h3').contains('Days in default').and('be.visible').next('p').should('have.text', ' 45 days ');
-          cy.get('h3')
-            .contains('Enforcement override')
-            .and('be.visible')
-            .next('p')
-            .should('have.text', ' Override Approved EOR-001 ');
-          cy.get('h3')
-            .contains('Date of last movement')
-            .and('be.visible')
-            .next('p')
-            .should('have.text', ' 01 May 2024 ');
         },
-      );
-      it(
-        'AC8a: displays blue "collection order" label when defendant is adult and CO flag is true',
-        { tags: ['PO-984', 'PO-814'] },
-        () => {
-          const mockDataAdultWithCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-          mockDataAdultWithCO.is_youth = false;
-          mockDataAdultWithCO.enforcement_status.collection_order_made = true;
-          mockDataAdultWithCO.enforcement_status.default_days_in_jail = 30;
+        last_movement_date: '01/05/2024',
+      };
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataNoEnforcementAction, '1');
 
-          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-          interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-          interceptAtAGlance(77, mockDataAdultWithCO, '1');
+      setupAccountEnquiryComponent(componentProperties);
+      cy.get('h3').contains('Days in default').and('be.visible').next('p').should('have.text', ' 45 days ');
+      cy.get('h3')
+        .contains('Enforcement override')
+        .and('be.visible')
+        .next('p')
+        .should('have.text', ' Override Approved EOR-001 ');
+      cy.get('h3').contains('Date of last movement').and('be.visible').next('p').should('have.text', ' 01 May 2024 ');
+    },
+  );
+  it(
+    'AC8a: displays blue "collection order" label when defendant is adult and CO flag is true',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataAdultWithCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataAdultWithCO.is_youth = false;
+      mockDataAdultWithCO.enforcement_status.collection_order_made = true;
+      mockDataAdultWithCO.enforcement_status.default_days_in_jail = 30;
 
-          setupAccountEnquiryComponent(componentProperties);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataAdultWithCO, '1');
 
-          cy.get(DOM.badgeBlue)
-            .contains('Collection Order')
-            .should('be.visible')
-            .and('have.css', 'color', 'rgb(29, 112, 184)');
-        },
-      );
-      it(
-        'AC8b: displays red "no collection order" label when defendant is adult and CO flag is false',
-        { tags: ['PO-984', 'PO-814'] },
-        () => {
-          const mockDataAdultNoCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-          mockDataAdultNoCO.is_youth = false;
-          mockDataAdultNoCO.enforcement_status.collection_order_made = false;
-          mockDataAdultNoCO.enforcement_status.default_days_in_jail = 30;
+      setupAccountEnquiryComponent(componentProperties);
 
-          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-          interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-          interceptAtAGlance(77, mockDataAdultNoCO, '1');
+      cy.get(DOM.badgeBlue)
+        .contains('Collection Order')
+        .should('be.visible')
+        .and('have.css', 'color', 'rgb(29, 112, 184)');
+    },
+  );
+  it(
+    'AC8b: displays red "no collection order" label when defendant is adult and CO flag is false',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataAdultNoCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataAdultNoCO.is_youth = false;
+      mockDataAdultNoCO.enforcement_status.collection_order_made = false;
+      mockDataAdultNoCO.enforcement_status.default_days_in_jail = 30;
 
-          setupAccountEnquiryComponent(componentProperties);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataAdultNoCO, '1');
 
-          cy.get(DOM.badgeRed)
-            .contains('No collection Order')
-            .should('be.visible')
-            .and('have.css', 'color', 'rgb(212, 53, 28)');
-        },
-      );
+      setupAccountEnquiryComponent(componentProperties);
 
-      it(
-        'AC8c: displays red "no collection order" label when defendant is youth and CO flag is true',
-        { tags: ['PO-984', 'PO-814'] },
-        () => {
-          const mockDataYouthWithCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-          mockDataYouthWithCO.is_youth = true;
-          mockDataYouthWithCO.enforcement_status.collection_order_made = true;
+      cy.get(DOM.badgeRed)
+        .contains('No collection Order')
+        .should('be.visible')
+        .and('have.css', 'color', 'rgb(212, 53, 28)');
+    },
+  );
 
-          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-          interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-          interceptAtAGlance(77, mockDataYouthWithCO, '1');
+  it(
+    'AC8c: displays red "no collection order" label when defendant is youth and CO flag is true',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataYouthWithCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataYouthWithCO.is_youth = true;
+      mockDataYouthWithCO.enforcement_status.collection_order_made = true;
 
-          setupAccountEnquiryComponent(componentProperties);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataYouthWithCO, '1');
 
-          cy.get(DOM.badgeRed)
-            .contains('No collection Order')
-            .should('be.visible')
-            .and('have.css', 'color', 'rgb(212, 53, 28)');
-        },
-      );
+      setupAccountEnquiryComponent(componentProperties);
 
-      it(
-        'AC8d: displays no collection order label when defendant is youth and CO flag is false',
-        { tags: ['PO-984', 'PO-814'] },
-        () => {
-          const mockDataYouthNoCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-          mockDataYouthNoCO.is_youth = true;
-          mockDataYouthNoCO.enforcement_status.collection_order_made = false;
+      cy.get(DOM.badgeRed)
+        .contains('No collection Order')
+        .should('be.visible')
+        .and('have.css', 'color', 'rgb(212, 53, 28)');
+    },
+  );
 
-          interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-          interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-          interceptAtAGlance(77, mockDataYouthNoCO, '1');
+  it(
+    'AC8d: displays no collection order label when defendant is youth and CO flag is false',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataYouthNoCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataYouthNoCO.is_youth = true;
+      mockDataYouthNoCO.enforcement_status.collection_order_made = false;
 
-          setupAccountEnquiryComponent(componentProperties);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataYouthNoCO, '1');
 
-          cy.get('opal-lib-govuk-tag')
-            .contains(/collection order/i)
-            .should('not.exist');
-          cy.get('h2').contains('Enforcement status').should('be.visible');
-        },
-      );
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get('opal-lib-govuk-tag')
+        .contains(/collection order/i)
+        .should('not.exist');
+      cy.get('h2').contains('Enforcement status').should('be.visible');
     },
   );
 });

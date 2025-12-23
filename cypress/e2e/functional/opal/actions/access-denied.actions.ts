@@ -5,7 +5,9 @@
  */
 
 import * as L from '../../../../shared/selectors/access-denied.locators';
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
+
+const log = createScopedLogger('AccessDeniedActions');
 
 /**
  * Asserts that the Access Denied page is displayed.

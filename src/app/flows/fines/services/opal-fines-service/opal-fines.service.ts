@@ -39,7 +39,6 @@ import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draf
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from './interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import {
   IOpalFinesUpdateDefendantAccountPayload,
@@ -650,15 +649,28 @@ export class OpalFines {
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
-   * @param business_unit_id - The ID of the business unit.
-   * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountEnforcementTabData(): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
-    return (
-      this.cache.defendantAccountEnforcementCache$ ??
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK)
-    );
+  public getDefendantAccountEnforcementTabData(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
+    if (!this.cache.defendantAccountEnforcementCache$) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/enforcement-status`;
+      this.cache.defendantAccountEnforcementCache$ = this.http
+        .get<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantDetailsEnforcementTabRefData;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.cache.defendantAccountEnforcementCache$;
   }
 
   /**

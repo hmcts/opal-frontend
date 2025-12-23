@@ -4,10 +4,13 @@ import {
   createParentGuardianHeaderMockWithName,
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
+} from './mocks/defendant_details_mock';
+
+import {
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
 
 import {
   OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK,
@@ -440,7 +443,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       },
       effective_date: '31/12/2024',
       instalment_period: null,
-      lump_sum_amount: null,
+      lump_sum_amount: 100,
       instalment_amount: null,
     };
 

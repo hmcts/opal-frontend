@@ -1,6 +1,12 @@
+/**
+ * @fileoverview Actions for Manual Account Creation - Account comments and notes.
+ * Encapsulates comment/note entry, navigation, and cancel handling.
+ */
 import { ManualAccountCommentsNotesLocators as L } from '../../../../../shared/selectors/manual-account-creation/account-comments-notes.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualAccountCommentsNotesActions');
 
 type CancelChoice = 'Cancel' | 'Ok' | 'Stay' | 'Leave';
 
@@ -29,9 +35,10 @@ export class ManualAccountCommentsNotesActions {
    */
   setNote(note: string): void {
     log('type', 'Setting account note', { note });
-    cy.get(L.noteInput, this.common.getTimeoutOptions()).should('be.visible').clear({ force: true }).type(note, {
-      delay: 0,
-    });
+    const input = cy.get(L.noteInput, this.common.getTimeoutOptions()).should('be.visible').clear({ force: true });
+    if (note && note.length > 0) {
+      input.type(note, { delay: 0 });
+    }
   }
 
   /**
