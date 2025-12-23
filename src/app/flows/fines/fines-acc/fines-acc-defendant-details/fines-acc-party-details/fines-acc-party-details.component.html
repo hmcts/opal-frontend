@@ -39,9 +39,7 @@
         >
           <ng-container name>Date of birth</ng-container>
           @if (individualDetails.date_of_birth; as dob) {
-            <ng-container value>{{
-              dateService.getFromFormatToFormat(dob!, 'dd/MM/yyyy', 'dd MMMM yyyy')
-            }}</ng-container>
+            <ng-container value>{{ dob | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</ng-container>
           } @else {
             <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
           }

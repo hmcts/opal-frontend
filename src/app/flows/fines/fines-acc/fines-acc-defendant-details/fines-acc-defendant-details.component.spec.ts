@@ -1,7 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 import {
   MojSubNavigationComponent,
@@ -29,7 +28,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
   let fixture: ComponentFixture<FinesAccDefendantDetailsComponent>;
   let routerSpy: jasmine.SpyObj<Router>;
   let activatedRouteStub: Partial<ActivatedRoute>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let mockPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
 
@@ -54,9 +52,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
     mockPayloadService.transformPayload.and.callFake((...args) => {
       return args[0]; // returns the first argument = payload
     });
-
-    mockUtilsService = jasmine.createSpyObj<UtilsService>('UtilsService', ['convertToMonetaryString']);
-    mockUtilsService.convertToMonetaryString.and.callFake((value: number) => `£${value.toFixed(2)}`);
 
     mockOpalFinesService = jasmine.createSpyObj<OpalFines>('OpalFines', [
       'getDefendantAccountHeadingData',
@@ -106,7 +101,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       providers: [
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
-        { provide: UtilsService, useValue: mockUtilsService },
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesAccPayloadService, useValue: mockPayloadService },
       ],
