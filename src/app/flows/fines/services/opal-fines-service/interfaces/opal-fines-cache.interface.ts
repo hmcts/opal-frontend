@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { IOpalFinesCourtRefData } from './opal-fines-court-ref-data.interface';
+import { IOpalFinesCourtNonSnakeCase, IOpalFinesCourtRefData } from './opal-fines-court-ref-data.interface';
 import { IOpalFinesBusinessUnitRefData } from './opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from './opal-fines-local-justice-area-ref-data.interface';
 import { IOpalFinesResultsRefData } from './opal-fines-results-ref-data.interface';
@@ -18,6 +18,7 @@ import { IOpalFinesResultRefData } from './opal-fines-result-ref-data.interface'
 
 export interface IOpalFinesCache {
   courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> };
+  courtDataCache$: { [key: number]: Observable<IOpalFinesCourtNonSnakeCase> };
   businessUnitsCache$: Observable<IOpalFinesBusinessUnitRefData> | null;
   businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> };
   localJusticeAreasCache$: Observable<IOpalFinesLocalJusticeAreaRefData> | null;

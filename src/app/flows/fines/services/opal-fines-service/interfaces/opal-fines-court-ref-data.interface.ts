@@ -1,3 +1,12 @@
+export interface IOpalFinesCourtNonSnakeCase {
+  courtId: number;
+  courtCode: number;
+  name: string;
+  nameCy: string | null;
+  nationalCourtCode: string | null;
+  businessUnitId: number;
+}
+
 export interface IOpalFinesCourt {
   court_id: number;
   court_code: number;
