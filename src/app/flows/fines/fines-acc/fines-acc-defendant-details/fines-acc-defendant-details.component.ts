@@ -188,7 +188,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     const { defendant_account_party_id, parent_guardian_party_id } = this.accountData;
     const { account_id } = this.accountStore.getAccountState();
 
-    fragment$.subscribe((tab) => {
+    fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
           this.tabAtAGlance$ = this.fetchTabData(this.opalFinesService.getDefendantAccountAtAGlance(account_id));
@@ -363,6 +363,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.accountStore.setHasVersionMismatch(false);
     this.destroy$.next();
     this.destroy$.complete();
+    this.refreshFragment$.complete();
   }
 
   /**
