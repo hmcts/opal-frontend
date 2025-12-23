@@ -339,13 +339,10 @@ When('I establish a company amendment baseline with company name {string}', (upd
  *
  * @param updatedFirstName - Guardian first name to persist and audit.
  */
-When(
-  'I establish a parent or guardian amendment baseline with first name {string}',
-  (updatedFirstName: string) => {
-    log('step', 'Establish parent/guardian amendment baseline', { updatedFirstName });
-    flow().establishParentGuardianAmendmentBaseline(updatedFirstName);
-  },
-);
+When('I establish a parent or guardian amendment baseline with first name {string}', (updatedFirstName: string) => {
+  log('step', 'Establish parent/guardian amendment baseline', { updatedFirstName });
+  flow().establishParentGuardianAmendmentBaseline(updatedFirstName);
+});
 
 /**
  * @step Verifies via API that a defendant amendment exists for the provided first name.
