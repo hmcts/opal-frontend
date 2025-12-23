@@ -256,8 +256,14 @@ export class OpalFines {
    * @param itemName - The name of the configuration item.
    * @returns The value of the configuration item, or null if the item is not found.
    */
-  public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
-    return businessUnit.configuration_items.find((item) => item.item_name === itemName)?.item_value ?? null;
+  public getConfigurationItemValue(
+    businessUnit: IOpalFinesBusinessUnit | IOpalFinesBusinessUnitNonSnakeCase,
+    itemName: string,
+  ): string | null {
+    if ('configurationItems' in businessUnit === false) {
+      return businessUnit.configuration_items.find((item) => item.item_name === itemName)?.item_value ?? null;
+    }
+    return businessUnit.configurationItems.find((item) => item.itemName === itemName)?.itemValue ?? null;
   }
 
   /**

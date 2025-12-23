@@ -3,17 +3,11 @@ import { ActivatedRouteSnapshot, RedirectCommand, Router } from '@angular/router
 import { of } from 'rxjs';
 import { defendantAccountPaymentTermsLatestResolver } from './defendant-account-payment-terms-latest.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
-import {
-  MOCK_PAYMENT_TERMS_DATA,
-  MOCK_RESULT_DATA,
-  MOCK_TRANSFORMED_FORM,
-} from './mocks/defendant-account-payment-terms-latest.mocks';
+import { MOCK_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA } from './mocks/defendant-account-payment-terms-latest.mocks';
 
 describe('defendantAccountPaymentTermsLatestResolver', () => {
   let mockRouter: jasmine.SpyObj<Router>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
   let mockRoute: ActivatedRouteSnapshot;
 
   beforeEach(() => {
@@ -22,22 +16,16 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
       'getDefendantAccountPaymentTermsLatest',
       'getResult',
     ]);
-    const payloadServiceSpy = jasmine.createSpyObj('FinesAccPayloadService', [
-      'transformPaymentTermsPayload',
-      'transformPayload',
-    ]);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: Router, useValue: routerSpy },
         { provide: OpalFines, useValue: opalFinesServiceSpy },
-        { provide: FinesAccPayloadService, useValue: payloadServiceSpy },
       ],
     });
 
     mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     mockOpalFinesService = TestBed.inject(OpalFines) as jasmine.SpyObj<OpalFines>;
-    mockPayloadService = TestBed.inject(FinesAccPayloadService) as jasmine.SpyObj<FinesAccPayloadService>;
 
     mockRoute = {
       paramMap: {
@@ -46,8 +34,6 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
     } as unknown as ActivatedRouteSnapshot;
 
     mockRouter.createUrlTree.and.returnValue({} as never);
-    mockPayloadService.transformPaymentTermsPayload.and.returnValue(MOCK_TRANSFORMED_FORM);
-    mockPayloadService.transformPayload.and.returnValue(MOCK_PAYMENT_TERMS_DATA);
   });
 
   it('should return a redirect command to defendant details when accountId is not provided', () => {
@@ -61,7 +47,7 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
     });
   });
 
-  it('should fetch payment terms data and enforcement result then return transformed form data', (done) => {
+  it('should fetch payment terms data and enforcement result then return raw data', (done) => {
     (mockRoute.paramMap.get as jasmine.Spy).and.returnValue('12345');
     mockOpalFinesService.getDefendantAccountPaymentTermsLatest.and.returnValue(of(MOCK_PAYMENT_TERMS_DATA));
     mockOpalFinesService.getResult.and.returnValue(of(MOCK_RESULT_DATA));
@@ -73,12 +59,10 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
         result.subscribe((data) => {
           expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalledWith(12345);
           expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('ENF123');
-          expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
-            MOCK_PAYMENT_TERMS_DATA,
-            jasmine.any(Object),
-          );
-          expect(mockPayloadService.transformPaymentTermsPayload).toHaveBeenCalled();
-          expect(data).toEqual(MOCK_TRANSFORMED_FORM);
+          expect(data).toEqual({
+            paymentTermsData: MOCK_PAYMENT_TERMS_DATA,
+            resultData: MOCK_RESULT_DATA,
+          });
           done();
         });
       } else {
@@ -102,7 +86,6 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
         result.subscribe((data) => {
           expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalledWith(12345);
           expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
-          expect(mockPayloadService.transformPaymentTermsPayload).not.toHaveBeenCalled();
           expect(mockRouter.createUrlTree).toHaveBeenCalled();
           expect(data).toBeInstanceOf(RedirectCommand);
           done();
@@ -128,7 +111,6 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
       if (result && typeof result === 'object' && 'subscribe' in result) {
         result.subscribe((data) => {
           expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
-          expect(mockPayloadService.transformPaymentTermsPayload).not.toHaveBeenCalled();
           expect(mockRouter.createUrlTree).toHaveBeenCalled();
           expect(data).toBeInstanceOf(RedirectCommand);
           done();
@@ -154,10 +136,12 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
       const result = defendantAccountPaymentTermsLatestResolver(mockRoute, {} as never);
 
       if (result && typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe(() => {
+        result.subscribe((data) => {
           expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('   ');
-          expect(mockPayloadService.transformPayload).toHaveBeenCalled();
-          expect(mockPayloadService.transformPaymentTermsPayload).toHaveBeenCalled();
+          expect(data).toEqual({
+            paymentTermsData: paymentTermsDataWhitespaceEnforcement,
+            resultData: MOCK_RESULT_DATA,
+          });
           done();
         });
       } else {

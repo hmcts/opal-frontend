@@ -168,28 +168,42 @@
 
   <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
 
-  @if (preventPaymentCard) {
+  @if (preventPaymentCard()) {
     <ng-container
       *ngTemplateOutlet="paymentCardTemplate; context: { $implicit: 'Payment card request blocked' }"
     ></ng-container>
   } @else {
-    <div
-      opal-lib-govuk-checkboxes-item
-      labelText="Request payment card"
-      inputId="facc_payment_terms_payment_card_request"
-      inputName="facc_payment_terms_payment_card_request"
-      [control]="form.get('facc_payment_terms_payment_card_request')"
-    ></div>
+    <opal-lib-govuk-checkboxes
+      fieldSetId="ffacc_payment_terms_payment_card_request"
+      legendText="Payment card"
+      legendClasses="govuk-fieldset__legend--s"
+      [errors]="formControlErrorMessages['facc_payment_terms_payment_card_request']"
+    >
+      <div
+        opal-lib-govuk-checkboxes-item
+        labelText="Request payment card"
+        inputId="facc_payment_terms_payment_card_request"
+        inputName="facc_payment_terms_payment_card_request"
+        [control]="form.get('facc_payment_terms_payment_card_request')"
+      ></div>
+    </opal-lib-govuk-checkboxes>
   }
 
   <div class="govuk-!-margin-top-4">
-    <div
-      opal-lib-govuk-checkboxes-item
-      labelText="Generate payment terms change letter"
-      inputId="facc_payment_terms_change_letter"
-      inputName="facc_payment_terms_change_letter"
-      [control]="form.get('facc_payment_terms_change_letter')"
-    ></div>
+    <opal-lib-govuk-checkboxes
+      fieldSetId="facc_payment_terms_change_letter"
+      legendText="Change letter"
+      legendClasses="govuk-fieldset__legend--s"
+      [errors]="formControlErrorMessages['facc_payment_terms_change_letter']"
+    >
+      <div
+        opal-lib-govuk-checkboxes-item
+        labelText="Generate payment terms change letter"
+        inputId="facc_payment_terms_change_letter"
+        inputName="facc_payment_terms_change_letter"
+        [control]="form.get('facc_payment_terms_change_letter')"
+      ></div>
+    </opal-lib-govuk-checkboxes>
   </div>
 
   <hr class="{{ FINES_ACC_SECTION_BREAK }}" />

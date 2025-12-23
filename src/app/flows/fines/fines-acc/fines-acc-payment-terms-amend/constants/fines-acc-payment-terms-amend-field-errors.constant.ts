@@ -111,9 +111,15 @@ export const FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS: IFinesAccPaymentTermsAm
       priority: 3,
     },
   },
+  facc_payment_terms_payment_card_request: {
+    payInFullRestriction: {
+      message: `Cannot request a payment card when payment terms are 'Pay in full'`,
+      priority: 1,
+    },
+  },
   facc_payment_terms_change_letter: {
-    required: {
-      message: `Select whether to generate payment terms change letter`,
+    noChangesMade: {
+      message: `Cannot generate payment terms change letter as no changes made`,
       priority: 1,
     },
   },

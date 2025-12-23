@@ -23,9 +23,21 @@ export class FinesAccPaymentTermsAmendComponent extends AbstractFormParentBaseCo
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesAccountStore = inject(FinesAccountStore);
   private readonly utilsService = inject(UtilsService);
-  protected readonly prefilledFormData: IFinesAccPaymentTermsAmendForm =
-    this['activatedRoute'].snapshot.data['paymentTermsFormData'] || FINES_ACC_PAYMENT_TERMS_AMEND_FORM;
+  protected readonly prefilledFormData: IFinesAccPaymentTermsAmendForm = this.transformResolvedData();
   protected readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
+
+  /**
+   * Transforms the raw resolved data into the form structure
+   */
+  private transformResolvedData(): IFinesAccPaymentTermsAmendForm {
+    const resolvedData = this['activatedRoute'].snapshot.data['paymentTermsFormData'];
+
+    if (!resolvedData || !resolvedData.paymentTermsData || !resolvedData.resultData) {
+      return FINES_ACC_PAYMENT_TERMS_AMEND_FORM;
+    }
+
+    return this.payloadService.transformPaymentTermsPayload(resolvedData.paymentTermsData, resolvedData.resultData);
+  }
 
   /**
    * Validates that all required data is available for the payment terms amendment

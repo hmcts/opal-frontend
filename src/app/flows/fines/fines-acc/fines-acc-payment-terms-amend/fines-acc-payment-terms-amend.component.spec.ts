@@ -8,8 +8,11 @@ import { OpalFines } from '../../services/opal-fines-service/opal-fines.service'
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
+import { DateTime } from 'luxon';
 import { MOCK_FORM_DATA, MOCK_PAYLOAD } from './mocks/fines-acc-payment-terms-amend.mocks';
+import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 
 describe('FinesAccPaymentTermsAmendComponent', () => {
   let component: FinesAccPaymentTermsAmendComponent;
@@ -21,6 +24,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFinesAccountStore: any;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
@@ -30,7 +34,12 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
       queryParams: of({}),
       data: of({}),
     });
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['putDefendantAccountPaymentTerms', 'clearCache']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', [
+      'putDefendantAccountPaymentTerms',
+      'clearCache',
+      'getBusinessUnitById',
+      'getConfigurationItemValue',
+    ]);
     mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['buildPaymentTermsAmendPayload']);
     mockFinesAccountStore = {
       account_id: jasmine.createSpy('account_id').and.returnValue(123456),
@@ -38,12 +47,33 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
       base_version: jasmine.createSpy('base_version').and.returnValue('version123'),
       account_number: jasmine.createSpy('account_number').and.returnValue('TEST123456'),
       party_name: jasmine.createSpy('party_name').and.returnValue('John Doe'),
+      defendantType: jasmine.createSpy('defendantType').and.returnValue('individual'),
+      accountDetails: jasmine.createSpy('accountDetails').and.returnValue({}),
+      paymentTerms: jasmine.createSpy('paymentTerms').and.returnValue({}),
     };
     mockUtilsService = jasmine.createSpyObj('UtilsService', ['scrollToTop']);
+    mockDateService = jasmine.createSpyObj('DateService', [
+      'isValidDate',
+      'isDateInThePast',
+      'isDateInTheFuture',
+      'getDateNow',
+      'toFormat',
+      'getPreviousDate',
+    ]);
 
     // Setup default return values
     mockPayloadService.buildPaymentTermsAmendPayload.and.returnValue(MOCK_PAYLOAD);
     mockOpalFinesService.putDefendantAccountPaymentTerms.and.returnValue(of({ defendant_account_id: 123456 }));
+    mockOpalFinesService.getBusinessUnitById.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK));
+    mockOpalFinesService.getConfigurationItemValue.and.returnValue('Y');
+
+    // Setup DateService mock return values
+    mockDateService.getDateNow.and.returnValue(DateTime.fromISO('2024-01-02'));
+    mockDateService.toFormat.and.returnValue('02/01/2024');
+    mockDateService.getPreviousDate.and.returnValue('01/01/2024');
+    mockDateService.isValidDate.and.returnValue(true);
+    mockDateService.isDateInThePast.and.returnValue(false);
+    mockDateService.isDateInTheFuture.and.returnValue(false);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccPaymentTermsAmendComponent, HttpClientTestingModule],
@@ -54,6 +84,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
         { provide: FinesAccPayloadService, useValue: mockPayloadService },
         { provide: FinesAccountStore, useValue: mockFinesAccountStore },
         { provide: UtilsService, useValue: mockUtilsService },
+        { provide: DateService, useValue: mockDateService },
       ],
     }).compileComponents();
 

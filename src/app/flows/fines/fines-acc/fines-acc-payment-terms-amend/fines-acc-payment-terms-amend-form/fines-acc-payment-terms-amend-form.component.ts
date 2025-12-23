@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
   inject,
+  signal,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -15,15 +16,19 @@ import { IFinesAccPaymentTermsAmendForm } from '../interfaces/fines-acc-payment-
 import { IFinesAccPaymentTermsAmendFieldErrors } from '../interfaces/fines-acc-payment-terms-amend-field-errors.interface';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS } from '../constants/fines-acc-payment-terms-amend-field-errors.constant';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM } from '../constants/fines-acc-payment-terms-amend-form.constant';
+import { payInFullPaymentCardValidator } from '../validators/fines-acc-payment-terms-pay-in-full.validator';
+import { changeLetterWithoutChangesValidator } from '../validators/fines-acc-payment-terms-change-letter.validator';
 import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
 import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
-import { takeUntil } from 'rxjs';
+import { takeUntil, tap } from 'rxjs';
+import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FinesMacDefaultDaysComponent } from '../../../fines-mac/components/fines-mac-default-days/fines-mac-default-days.component';
+
 // GovUK Components
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -53,6 +58,7 @@ import {
   NUMERIC_PATTERN,
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 
 // regex pattern validators for the form controls
 const TWO_DECIMAL_PLACES_PATTERN_VALIDATOR = patternValidator(TWO_DECIMAL_PLACES_PATTERN, 'invalidDecimal');
@@ -61,6 +67,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'alphanumericWithHyphensSpacesApostrophesDotPattern',
 );
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-fines-acc-payment-terms-amend-form',
@@ -90,9 +97,9 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   protected readonly dateService = inject(DateService);
   protected readonly accountStore = inject(FinesAccountStore);
+  private readonly opalFinesService = inject(OpalFines);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPaymentTermsAmendForm>();
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
-
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
   public dateInFuture!: boolean;
   public dateInPast!: boolean;
@@ -101,7 +108,6 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   override fieldErrors: IFinesAccPaymentTermsAmendFieldErrors = {
     ...FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS,
   };
-
   public readonly paymentTermOptions = FINES_PAYMENT_TERMS_OPTIONS;
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
@@ -110,45 +116,100 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS).map(
     ([key, value]) => ({ key, value }),
   );
-
   public today!: string;
   public yesterday!: string;
+  private businessUnit = signal<IOpalFinesBusinessUnitNonSnakeCase | null>(null);
 
   /**
-   * Gets the prevent payment card flag from initial form data
+   * Gets the prevent payment card flag based on three conditions:
+   * 1. If there's a date on last_payment_card_requested → prevent payment card = true
+   * 2. If enforcement_result.prevent_payment_card = true → prevent payment card = true
+   * 3. If business unit config has a flag to prevent payment card → prevent payment card = true
    */
-  public get preventPaymentCard(): boolean {
-    return this.initialFormData?.formData?.facc_payment_terms_prevent_payment_card === true;
+  public preventPaymentCard(): boolean {
+    const businessUnitData = this.businessUnit();
+    console.log('Business Unit Data:', businessUnitData);
+
+    // Condition 1: Check if there's a payment card last requested date
+    const paymentCardLastRequestedDate = this.initialFormData?.formData?.facc_payment_terms_payment_card_request;
+    if (paymentCardLastRequestedDate) {
+      return true;
+    }
+
+    // Condition 2: Check enforcement result prevent payment card flag
+    const enforcementPreventPaymentCard =
+      this.initialFormData?.formData?.facc_payment_terms_prevent_payment_card === true;
+    if (enforcementPreventPaymentCard) {
+      return true;
+    }
+
+    // Condition 3: Check business unit configuration for prevent payment card flag
+    if (businessUnitData) {
+      const preventPaymentCardConfig = this.opalFinesService.getConfigurationItemValue(
+        businessUnitData,
+        'INTERFACE_PAYMENT_CARD_REQUESTS',
+      );
+      if (preventPaymentCardConfig === 'N') {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Fetches business unit configuration data
+   */
+  private fetchBusinessUnitData(): void {
+    const businessUnitId = this.accountStore.business_unit_id();
+    if (businessUnitId) {
+      this.opalFinesService
+        .getBusinessUnitById(Number(businessUnitId))
+        .pipe(
+          tap((businessUnitData) => {
+            this.businessUnit.set(businessUnitData);
+          }),
+        )
+        .subscribe();
+    }
   }
 
   /**
    * Sets up the payment terms form structure
    */
   private setupPaymentTermsForm(): void {
-    this.form = new FormGroup({
-      // Payment Terms
-      facc_payment_terms_payment_terms: new FormControl(null, [Validators.required]),
-      facc_payment_terms_pay_by_date: new FormControl(null, [optionalValidDateValidator()]),
-      facc_payment_terms_lump_sum_amount: new FormControl(null, [TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]),
-      facc_payment_terms_instalment_amount: new FormControl(null, [TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]),
-      facc_payment_terms_instalment_period: new FormControl(null),
-      facc_payment_terms_start_date: new FormControl(null, [optionalValidDateValidator()]),
+    this.form = new FormGroup(
+      {
+        // Payment Terms
+        facc_payment_terms_payment_terms: new FormControl(null, [Validators.required]),
+        facc_payment_terms_pay_by_date: new FormControl(null, [optionalValidDateValidator()]),
+        facc_payment_terms_lump_sum_amount: new FormControl(null, [TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]),
+        facc_payment_terms_instalment_amount: new FormControl(null, [TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]),
+        facc_payment_terms_instalment_period: new FormControl(null),
+        facc_payment_terms_start_date: new FormControl(null, [optionalValidDateValidator()]),
 
-      // Payment Card and Default Days
-      facc_payment_terms_payment_card_request: new FormControl(null),
-      facc_payment_terms_has_days_in_default: new FormControl(null),
-      facc_payment_terms_suspended_committal_date: new FormControl(null, [optionalValidDateValidator()]),
-      facc_payment_terms_default_days_in_jail: new FormControl(null, [
-        optionalMaxLengthValidator(5),
-        NUMERIC_PATTERN_VALIDATOR,
-      ]),
-      facc_payment_terms_reason_for_change: new FormControl(null, [
-        Validators.required,
-        optionalMaxLengthValidator(250),
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-      ]),
-      facc_payment_terms_change_letter: new FormControl(null),
-    });
+        // Payment Card and Default Days
+        facc_payment_terms_payment_card_request: new FormControl(null),
+        facc_payment_terms_has_days_in_default: new FormControl(null),
+        facc_payment_terms_suspended_committal_date: new FormControl(null, [optionalValidDateValidator()]),
+        facc_payment_terms_default_days_in_jail: new FormControl(null, [
+          optionalMaxLengthValidator(5),
+          NUMERIC_PATTERN_VALIDATOR,
+        ]),
+        facc_payment_terms_reason_for_change: new FormControl(null, [
+          Validators.required,
+          optionalMaxLengthValidator(250),
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        ]),
+        facc_payment_terms_change_letter: new FormControl(null),
+      },
+      {
+        validators: [
+          changeLetterWithoutChangesValidator(this.initialFormData),
+          payInFullPaymentCardValidator(this.preventPaymentCard()),
+        ],
+      },
+    );
   }
 
   /**
@@ -295,6 +356,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     }
 
     this.initialPaymentTermsForm();
+    this.fetchBusinessUnitData();
     super.ngOnInit();
   }
 }
