@@ -244,24 +244,6 @@ Given('I stub fixed penalty draft account listings', () => {
 });
 
 /**
- * @step Opens the Create and Manage Draft Accounts page for inputters.
- * @description Clicks the dashboard link and asserts the inputter view header.
- */
-When('I open Create and Manage Draft Accounts', () => {
-  log('navigate', 'Opening Create and Manage Draft Accounts');
-  tabs().openInputterTabs();
-});
-
-/**
- * @step Opens the Check and Validate Draft Accounts page for checkers.
- * @description Clicks the dashboard link and asserts the checker view header.
- */
-When('I open Check and Validate Draft Accounts', () => {
-  log('navigate', 'Opening Check and Validate Draft Accounts');
-  tabs().openCheckerTabs();
-});
-
-/**
  * @step Switches to the specified inputter draft tab.
  * @description Clicks the tab by name within the inputter draft accounts view.
  * @param tab - Tab name (e.g., "In review").

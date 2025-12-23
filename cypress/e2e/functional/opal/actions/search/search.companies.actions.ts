@@ -7,7 +7,7 @@
 
 import { AccountSearchCompaniesLocators as L } from '../../../../../shared/selectors/account-search/account.search.companies.locators';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
-import { ResultsActions } from '../search.results.actions';
+import { ResultsActions } from './search.results.actions';
 import { AccountSearchCommonActions } from '../search/search.common.actions';
 import { CommonActions } from '../common/common.actions';
 

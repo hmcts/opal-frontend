@@ -2,7 +2,7 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    And I clear all approved draft accounts
+    And I clear all approved accounts
 
   Scenario: Check Add Account Note Accessibility with Axe-Core for Individual Account
 
