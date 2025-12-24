@@ -23,5 +23,5 @@ description: Create low-level design (LLD) documents for Opal frontend flows usi
 - Call out open questions or risks in Further Considerations.
 
 ## Output expectations
-- Return a Markdown LLD ready for review and save it under `docs/` in the project root.
+- Return a Markdown LLD ready for review and save it under `.codex-docs/` in the project root.
 - Avoid secrets, tokens, or PII in the document.
