@@ -35,11 +35,3 @@ export interface IOpalFinesAmendPaymentTermsPayload {
   request_payment_card: boolean | null; // Flag whether a payment card has been requested for this account
   generate_payment_terms_change_letter: boolean | null;
 }
-
-/**
- * Interface for the response when amending payment terms
- */
-export interface IOpalFinesAmendPaymentTermsResponse {
-  defendant_account_id: number;
-  message?: string;
-}

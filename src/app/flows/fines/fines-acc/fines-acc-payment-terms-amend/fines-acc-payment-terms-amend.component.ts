@@ -11,6 +11,7 @@ import { IOpalFinesAmendPaymentTermsPayload } from '../../services/opal-fines-se
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
 
 @Component({
   selector: 'app-fines-acc-payment-terms-amend',
@@ -36,7 +37,10 @@ export class FinesAccPaymentTermsAmendComponent extends AbstractFormParentBaseCo
       return FINES_ACC_PAYMENT_TERMS_AMEND_FORM;
     }
 
-    return this.payloadService.transformPaymentTermsPayload(resolvedData.paymentTermsData, resolvedData.resultData);
+    return this.payloadService.transformPaymentTermsPayload(
+      this.payloadService.transformPayload(resolvedData.paymentTermsData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
+      resolvedData.resultData,
+    );
   }
 
   /**
@@ -59,7 +63,7 @@ export class FinesAccPaymentTermsAmendComponent extends AbstractFormParentBaseCo
     const ifMatch = this.finesAccountStore.base_version()!;
 
     this.opalFinesService
-      .putDefendantAccountPaymentTerms(defendantAccountId, payload, businessUnitId, ifMatch)
+      .postDefendantAccountPaymentTerms(defendantAccountId, payload, businessUnitId, ifMatch)
       .pipe(
         catchError(() => {
           this.utilsService.scrollToTop();

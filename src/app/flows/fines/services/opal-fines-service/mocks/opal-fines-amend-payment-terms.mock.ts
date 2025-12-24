@@ -1,7 +1,4 @@
-import {
-  IOpalFinesAmendPaymentTermsPayload,
-  IOpalFinesAmendPaymentTermsResponse,
-} from '../interfaces/opal-fines-amend-payment-terms.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from '../interfaces/opal-fines-amend-payment-terms.interface';
 
 /**
  * Mock payload for amending payment terms - Pay in full scenario
@@ -58,19 +55,4 @@ export const OPAL_FINES_AMEND_PAYMENT_TERMS_INSTALMENT_PAYLOAD_MOCK: IOpalFinesA
   },
   request_payment_card: true,
   generate_payment_terms_change_letter: false,
-};
-
-/**
- * Mock response for successful payment terms amendment
- */
-export const OPAL_FINES_AMEND_PAYMENT_TERMS_SUCCESS_RESPONSE_MOCK: IOpalFinesAmendPaymentTermsResponse = {
-  defendant_account_id: 123456,
-  message: 'Payment terms updated successfully',
-};
-
-/**
- * Mock response for payment terms amendment - minimal response
- */
-export const OPAL_FINES_AMEND_PAYMENT_TERMS_MINIMAL_RESPONSE_MOCK: IOpalFinesAmendPaymentTermsResponse = {
-  defendant_account_id: 123456,
 };

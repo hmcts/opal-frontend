@@ -1,22 +1,16 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { map, of, switchMap } from 'rxjs';
-import { createDefendantDetailsRedirect } from './helpers/fines-acc-resolver-redirect';
-import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
-import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
+import { map, switchMap } from 'rxjs';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 
 export const defendantAccountPaymentTermsLatestResolver: ResolveFn<
-  { paymentTermsData: any; resultData: any } | RedirectCommand
+  | { paymentTermsData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest; resultData: IOpalFinesResultRefData }
+  | RedirectCommand
 > = (route: ActivatedRouteSnapshot) => {
   const accountId = route.paramMap.get('accountId');
-  const router = inject(Router);
   const opalFinesService = inject(OpalFines);
-  const payloadService = inject(FinesAccPayloadService);
-
-  if (!accountId) {
-    return createDefendantDetailsRedirect(router);
-  }
 
   /**
    * Fetches the defendant account payment terms latest data using a chaining approach:
@@ -32,13 +26,9 @@ export const defendantAccountPaymentTermsLatestResolver: ResolveFn<
     switchMap((paymentTermsData) => {
       const resultId = paymentTermsData.last_enforcement;
 
-      if (!resultId) {
-        return of(createDefendantDetailsRedirect(router));
-      }
-
-      return opalFinesService.getResult(resultId).pipe(
+      return opalFinesService.getResult(resultId!).pipe(
         map((resultData) => ({
-          paymentTermsData: payloadService.transformPayload(paymentTermsData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
+          paymentTermsData,
           resultData,
         })),
       );

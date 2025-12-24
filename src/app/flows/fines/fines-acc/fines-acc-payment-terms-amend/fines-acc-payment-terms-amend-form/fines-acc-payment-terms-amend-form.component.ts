@@ -67,7 +67,6 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'alphanumericWithHyphensSpacesApostrophesDotPattern',
 );
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-fines-acc-payment-terms-amend-form',
@@ -95,11 +94,14 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+  private readonly opalFinesService = inject(OpalFines);
+  private businessUnit = signal<IOpalFinesBusinessUnitNonSnakeCase | null>(null);
+
   protected readonly dateService = inject(DateService);
   protected readonly accountStore = inject(FinesAccountStore);
-  private readonly opalFinesService = inject(OpalFines);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPaymentTermsAmendForm>();
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
+
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
   public dateInFuture!: boolean;
   public dateInPast!: boolean;
@@ -118,44 +120,6 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   );
   public today!: string;
   public yesterday!: string;
-  private businessUnit = signal<IOpalFinesBusinessUnitNonSnakeCase | null>(null);
-
-  /**
-   * Gets the prevent payment card flag based on three conditions:
-   * 1. If there's a date on last_payment_card_requested → prevent payment card = true
-   * 2. If enforcement_result.prevent_payment_card = true → prevent payment card = true
-   * 3. If business unit config has a flag to prevent payment card → prevent payment card = true
-   */
-  public preventPaymentCard(): boolean {
-    const businessUnitData = this.businessUnit();
-    console.log('Business Unit Data:', businessUnitData);
-
-    // Condition 1: Check if there's a payment card last requested date
-    const paymentCardLastRequestedDate = this.initialFormData?.formData?.facc_payment_terms_payment_card_request;
-    if (paymentCardLastRequestedDate) {
-      return true;
-    }
-
-    // Condition 2: Check enforcement result prevent payment card flag
-    const enforcementPreventPaymentCard =
-      this.initialFormData?.formData?.facc_payment_terms_prevent_payment_card === true;
-    if (enforcementPreventPaymentCard) {
-      return true;
-    }
-
-    // Condition 3: Check business unit configuration for prevent payment card flag
-    if (businessUnitData) {
-      const preventPaymentCardConfig = this.opalFinesService.getConfigurationItemValue(
-        businessUnitData,
-        'INTERFACE_PAYMENT_CARD_REQUESTS',
-      );
-      if (preventPaymentCardConfig === 'N') {
-        return true;
-      }
-    }
-
-    return false;
-  }
 
   /**
    * Fetches business unit configuration data
@@ -338,6 +302,43 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     this.validateInitialDateValues();
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+  }
+
+  /**
+   * Gets the prevent payment card flag based on three conditions:
+   * 1. If there's a date on last_payment_card_requested → prevent payment card = true
+   * 2. If enforcement_result.prevent_payment_card = true → prevent payment card = true
+   * 3. If business unit config has a flag to prevent payment card → prevent payment card = true
+   */
+  public preventPaymentCard(): boolean {
+    const businessUnitData = this.businessUnit();
+    console.log('Business Unit Data:', businessUnitData);
+
+    // Condition 1: Check if there's a payment card last requested date
+    const paymentCardLastRequestedDate = this.initialFormData?.formData?.facc_payment_terms_payment_card_request;
+    if (paymentCardLastRequestedDate) {
+      return true;
+    }
+
+    // Condition 2: Check enforcement result prevent payment card flag
+    const enforcementPreventPaymentCard =
+      this.initialFormData?.formData?.facc_payment_terms_prevent_payment_card === true;
+    if (enforcementPreventPaymentCard) {
+      return true;
+    }
+
+    // Condition 3: Check business unit configuration for prevent payment card flag
+    if (businessUnitData) {
+      const preventPaymentCardConfig = this.opalFinesService.getConfigurationItemValue(
+        businessUnitData,
+        'INTERFACE_PAYMENT_CARD_REQUESTS',
+      );
+      if (preventPaymentCardConfig === 'N') {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

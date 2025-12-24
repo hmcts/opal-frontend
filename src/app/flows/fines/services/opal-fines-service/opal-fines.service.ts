@@ -51,10 +51,7 @@ import {
 } from './interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
-import {
-  IOpalFinesAmendPaymentTermsPayload,
-  IOpalFinesAmendPaymentTermsResponse,
-} from './interfaces/opal-fines-amend-payment-terms.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
@@ -736,12 +733,12 @@ export class OpalFines {
    * @param ifMatch - Optional If-Match header for optimistic locking.
    * @returns An Observable of the payment terms response.
    */
-  public putDefendantAccountPaymentTerms(
+  public postDefendantAccountPaymentTerms(
     defendantAccountId: number,
     payload: IOpalFinesAmendPaymentTermsPayload,
     businessUnitId?: string,
     ifMatch?: string,
-  ): Observable<IOpalFinesAmendPaymentTermsResponse> {
+  ): Observable<IOpalFinesAmendPaymentTermsPayload> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-terms`;
 
     const headers: Record<string, string> = {};
@@ -752,7 +749,7 @@ export class OpalFines {
       headers['If-Match'] = ifMatch;
     }
 
-    return this.http.put<IOpalFinesAmendPaymentTermsResponse>(url, payload, { headers });
+    return this.http.post<IOpalFinesAmendPaymentTermsPayload>(url, payload, { headers });
   }
 
   /**

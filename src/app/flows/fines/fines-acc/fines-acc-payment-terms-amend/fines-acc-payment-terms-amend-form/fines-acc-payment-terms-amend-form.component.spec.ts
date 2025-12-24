@@ -9,6 +9,7 @@ import { DateTime } from 'luxon';
 
 import { FinesAccPaymentTermsAmendFormComponent } from './fines-acc-payment-terms-amend-form.component';
 import { IFinesAccPaymentTermsAmendForm } from '../interfaces/fines-acc-payment-terms-amend-form.interface';
+import { IFinesAccPaymentTermsAmendState } from '../interfaces/fines-acc-payment-terms-amend-state.interface';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM } from '../constants/fines-acc-payment-terms-amend-form.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
@@ -89,7 +90,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
   it('should initialize with default form data when no initial data provided', () => {
     // Explicitly ensure initialFormData is undefined to test the default assignment
-    component.initialFormData = undefined as any;
+    component.initialFormData = undefined as unknown as IFinesAccPaymentTermsAmendForm;
 
     component.ngOnInit();
 
@@ -594,7 +595,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
     it('should handle missing initial form data gracefully', () => {
       // Set initialFormData to undefined
-      component.initialFormData = undefined as any;
+      component.initialFormData = undefined as unknown as IFinesAccPaymentTermsAmendForm;
 
       // Set business unit signal to null
       component['businessUnit'].set(null);
@@ -1133,7 +1134,8 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
           formData: {
             facc_payment_terms_payment_terms: 'payInFull',
           },
-        };
+          nestedFlow: false,
+        } as IFinesAccPaymentTermsAmendForm;
         const validator = changeLetterWithoutChangesValidator(initialFormData);
 
         // Test the validator directly
@@ -1151,7 +1153,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         });
 
         // Apply validator with null initial data
-        const validator = changeLetterWithoutChangesValidator(null);
+        const validator = changeLetterWithoutChangesValidator(undefined);
         const result = validator(testForm);
 
         // Should not have error when initialFormData is null
@@ -1183,7 +1185,8 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         // Create validator with initialFormData that has null formData
         const initialFormData = {
           formData: null,
-        };
+          nestedFlow: false,
+        } as unknown as IFinesAccPaymentTermsAmendForm;
         const validator = changeLetterWithoutChangesValidator(initialFormData);
         const result = validator(testForm);
 
@@ -1200,8 +1203,10 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         });
 
         // Create initialFormData with a formData object that we can modify
-        const formDataObject = { facc_payment_terms_payment_terms: 'original_value' };
-        const initialFormData = {
+        const formDataObject = {
+          facc_payment_terms_payment_terms: 'original_value',
+        } as unknown as IFinesAccPaymentTermsAmendState;
+        const initialFormData: IFinesAccPaymentTermsAmendForm = {
           formData: formDataObject,
           nestedFlow: false,
         };
@@ -1211,7 +1216,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
         // Now modify the formData reference to null after validator creation
         // This simulates a scenario where the data becomes unavailable
-        initialFormData.formData = null as any;
+        (initialFormData as unknown as { formData: null }).formData = null;
 
         const result = validator(testForm);
 

@@ -1,4 +1,6 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { IFinesAccPaymentTermsAmendForm } from '../interfaces/fines-acc-payment-terms-amend-form.interface';
+import { IFinesAccPaymentTermsAmendState } from '../interfaces/fines-acc-payment-terms-amend-state.interface';
 
 export const FINES_ACC_PAYMENT_TERMS_AMEND_FORM_FIELDS_TO_CHECK = [
   'facc_payment_terms_payment_terms',
@@ -19,7 +21,9 @@ export const FINES_ACC_PAYMENT_TERMS_AMEND_FORM_FIELDS_TO_CHECK = [
  * @param initialFormData - The initial form data to compare against
  * @returns ValidatorFn that validates change letter restrictions
  */
-export function changeLetterWithoutChangesValidator(initialFormData: any): ValidatorFn {
+export function changeLetterWithoutChangesValidator(
+  initialFormData: IFinesAccPaymentTermsAmendForm | undefined,
+): ValidatorFn {
   return (formGroup: AbstractControl) => {
     const changeLetterControl = formGroup.get('facc_payment_terms_change_letter');
     if (!changeLetterControl) {
@@ -36,6 +40,7 @@ export function changeLetterWithoutChangesValidator(initialFormData: any): Valid
       if (hasError) {
         changeLetterControl.setErrors({ ...currentErrors, noChangesMade: true });
       } else if (currentErrors['noChangesMade']) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { noChangesMade, ...remainingErrors } = currentErrors;
         changeLetterControl.setErrors(Object.keys(remainingErrors).length > 0 ? remainingErrors : null);
       }
@@ -67,7 +72,10 @@ export function changeLetterWithoutChangesValidator(initialFormData: any): Valid
  * @param initialFormValue - Initial form values
  * @returns boolean indicating if changes have been made
  */
-function hasFormFieldsChanged(currentFormValue: any, initialFormValue: any): boolean {
+function hasFormFieldsChanged(
+  currentFormValue: IFinesAccPaymentTermsAmendState,
+  initialFormValue: IFinesAccPaymentTermsAmendState,
+): boolean {
   if (!initialFormValue) {
     return true; // If no initial form data, consider it as changes made
   }
