@@ -8,6 +8,9 @@ description: Repository structure, build/test commands, coding style, and contri
 ## Overview
 Use these rules to keep work aligned with opal-frontend structure, tooling, and contribution expectations.
 
+## ExecPlans
+- When asked to create or update an ExecPlan, read `references/plans.md` in this skill and follow it exactly.
+
 ## Project Structure
 - Keep Angular feature modules, shared services, and unit specs in `src/app`; colocate UI state with feature directories.
 - Use `src/assets` and `src/styles.scss` for static assets and global styling; add new bundled assets to `angular.json`.
