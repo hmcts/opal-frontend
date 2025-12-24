@@ -6,7 +6,9 @@
 
 import { SearchFilterByBUCommonLocators } from '../../../../../shared/selectors/account-search/account.search.filter-by-bu.common.locators';
 import { CommonActions } from '../common/common.actions';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('SearchFilterByBUCommonActions');
 
 export class SearchFilterByBUCommonActions {
   private readonly commonActions = new CommonActions();

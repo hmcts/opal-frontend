@@ -1,5 +1,5 @@
 /**
- * @file search.filter-by-bu.steps.ts
+ * @file account-search-filter-by-bu.steps.ts
  * @description
  * Cucumber step definitions for the Filter-by-Business-Unit feature set.
  *
@@ -11,9 +11,10 @@
  */
 
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { SearchFilterByBUFlow } from '../../../e2e/functional/opal/flows/account-search.filter-by-bu.flow';
-import { SearchFilterByBUCommonActions } from '../../../e2e/functional/opal/actions/search/search.filter-by-bu.common.actions';
-import { AccountSearchCommonActions } from '../../../e2e/functional/opal/actions/search/search.common.actions';
+import { SearchFilterByBUFlow } from '../../../../e2e/functional/opal/flows/account-search.filter-by-bu.flow';
+import { SearchFilterByBUCommonActions } from '../../../../e2e/functional/opal/actions/search/search.filter-by-bu.common.actions';
+import { AccountSearchCommonActions } from '../../../../e2e/functional/opal/actions/search/search.common.actions';
+import { log } from '../../../utils/log.helper';
 
 const filterByBUFlow = new SearchFilterByBUFlow();
 const commonFilter = new SearchFilterByBUCommonActions();
@@ -32,6 +33,7 @@ const searchCommonActions = new AccountSearchCommonActions();
  *
  */
 Given('I navigate to the Filter by business unit page', () => {
+  log('step', 'Navigating to Filter by business unit page');
   filterByBUFlow.navigateToFilterByBusinessUnit();
 });
 
@@ -46,6 +48,7 @@ Given('I navigate to the Filter by business unit page', () => {
  *   - SearchCommonActions.openBusinessUnitFilter()
  */
 When('I open the business unit filter from the search page', () => {
+  log('step', 'Opening business unit filter from search page');
   searchCommonActions.openBusinessUnitFilter();
 });
 
@@ -62,6 +65,7 @@ When('I open the business unit filter from the search page', () => {
  *   Then the Filter by business unit page for Fines is shown with defaults
  */
 Then('the Filter by business unit page for Fines is shown with defaults', () => {
+  log('step', 'Asserting Filter by business unit defaults for Fines tab');
   filterByBUFlow.verifyFinesPageDefaults();
 });
 
@@ -75,6 +79,7 @@ Then('the Filter by business unit page for Fines is shown with defaults', () => 
  *
  */
 When('the user switches to the Confiscation tab', () => {
+  log('step', 'Switching to Confiscation tab');
   filterByBUFlow.switchToConfiscationTab();
 });
 
@@ -91,6 +96,7 @@ When('the user switches to the Confiscation tab', () => {
  *   Then the Confiscation Filter by business unit page is shown with defaults
  */
 Then('the Confiscation Filter by business unit page is shown with defaults', () => {
+  log('step', 'Asserting Filter by business unit defaults for Confiscation tab');
   filterByBUFlow.verifyConfiscationPageDefaults();
 });
 
@@ -131,6 +137,7 @@ Then('the Confiscation Filter by business unit page is shown with defaults', () 
  * - Data table values are cleaned and validated.
  */
 When('I select the following business units:', (table: DataTable) => {
+  log('step', 'Selecting business units from table');
   const rows = table.hashes(); // Array<Record<string, string>>
 
   const fines: string[] = [];
@@ -168,33 +175,6 @@ When('I select the following business units:', (table: DataTable) => {
 });
 
 /**
- * @step Saves the currently selected business units.
- *
- * @description
- * This is an intent-based step (no UI verbs) that finalises the user’s
- * business-unit selections on the Filter-by-Business-Unit page.
- *
- * The step delegates the behaviour to:
- *   - `SearchFilterByBUFlow.saveBusinessUnitSelection()`
- *
- * That flow method:
- *   - interacts with `SearchFilterByBUCommonActions.saveSelection()`
- *   - handles logging and Cypress actions internally
- *   - performs the actual submit action required to persist the selection
- *
- * This step does not need to assert navigation; the calling scenario
- * should follow with an explicit validation step such as:
- *   - `Then I am on the "Search for an account" page`
- *   - `Then the business unit filter summary shows "<summary>"`
- *
- * @example
- *   When I save the selected business units
- */
-When('I save the selected business units', () => {
-  filterByBUFlow.saveBusinessUnitSelection();
-});
-
-/**
  * @step Clears all selected business units on the specified tab.
  *
  * @description
@@ -210,27 +190,8 @@ When('I save the selected business units', () => {
  *   And I clear all selected business units on the "Confiscation" tab
  */
 When('I clear all selected business units on the {string} tab', (tab: string) => {
+  log('step', `Clearing selected business units on tab ${tab}`);
   filterByBUFlow.clearAllBusinessUnitsOnTab(tab as 'Fines' | 'Confiscation');
-});
-
-/**
- * @step Verifies that no business units are selected on the specified tab.
- *
- * @description
- * Asserts that for the given tab (Fines or Confiscation):
- *   - the master checkbox is not checked
- *   - no individual business unit checkboxes are checked
- *   - the summary/selected count label starts with "0 of"
- *
- * Delegates to:
- *   - `SearchFilterByBUFlow.verifyNoBusinessUnitsSelectedOnTab(tab)`
- *
- * @example
- *   Then no business units are selected on the "Fines" tab
- *   And no business units are selected on the "Confiscation" tab
- */
-Then('the {string} tab shows no selected business units', (tab: string) => {
-  filterByBUFlow.verifyNoBusinessUnitsSelectedOnTab(tab as 'Fines' | 'Confiscation');
 });
 
 /**
@@ -249,6 +210,7 @@ Then('the {string} tab shows no selected business units', (tab: string) => {
  *   When I switch to the "Fines" tab
  */
 When('I switch to the {string} tab', (tab: string) => {
+  log('step', `Switching to ${tab} tab`);
   filterByBUFlow.switchToTab(tab as 'Fines' | 'Confiscation');
 });
 
@@ -281,6 +243,7 @@ When('I switch to the {string} tab', (tab: string) => {
  */
 
 Then('the business unit filter summary is {string}', (expected: string) => {
+  log('step', 'Verifying business unit filter summary', { expected });
   filterByBUFlow.verifyBusinessUnitFilterSummary(expected);
 });
 
@@ -293,6 +256,7 @@ Then('the business unit filter summary is {string}', (expected: string) => {
  *  And I save the selected business units and the filter summary is "Bedfordshire, Berwick, Bolton"
  */
 Then('I save the selected business units and the filter summary is {string}', (expectedSummary: string) => {
+  log('step', 'Saving selected business units and verifying summary', { expectedSummary });
   filterByBUFlow.saveSelectionAndVerifySummary(expectedSummary);
 });
 
@@ -310,6 +274,7 @@ Then('I save the selected business units and the filter summary is {string}', (e
  *   When I cancel the business unit selection
  */
 When('I cancel the business unit selection', () => {
+  log('step', 'Cancelling business unit selection');
   filterByBUFlow.cancelBusinessUnitSelection();
 });
 
@@ -328,6 +293,7 @@ When('I cancel the business unit selection', () => {
  *   Then the "Save selection" button displays a total of 2
  */
 Then('the "Save selection" button displays a total of {int}', (expectedTotal: number) => {
+  log('step', 'Verifying Save selection button total', { expectedTotal });
   commonFilter.verifySaveSelectionTotal(expectedTotal);
 });
 
@@ -352,6 +318,7 @@ Then('the "Save selection" button displays a total of {int}', (expectedTotal: nu
  *     | Bolton       |
  */
 Then('the business units selected on {string} are:', (tab: string, table: DataTable) => {
+  log('step', 'Verifying selected business units on tab', { tab });
   const rows = table.raw();
   const names = rows.map((r) => r[0]?.trim()).filter(Boolean);
 

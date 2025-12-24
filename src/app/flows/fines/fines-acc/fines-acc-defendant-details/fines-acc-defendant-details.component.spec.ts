@@ -39,7 +39,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       fragment: of('at-a-glance'),
       snapshot: {
         data: {
-          defendantAccountHeadingData: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
+          defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
         },
         fragment: 'at-a-glance',
         paramMap: convertToParamMap({ accountId: '123' }),
@@ -180,7 +180,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should fetch the enforcement tab data when fragment is changed to enforcement', () => {
     component['refreshFragment$'].next('enforcement');
+    // Subscribe to trigger the pipe execution
+    component.tabEnforcement$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
   it('should fetch the payment terms tab data when fragment is changed to payment-terms', fakeAsync(() => {
@@ -271,9 +274,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
     component.navigateToAmendPaymentTermsPage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`],
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/permission`],
       {
         relativeTo: component['activatedRoute'],
+        state: { accountStatusCode: 'L', lastEnforcement: undefined },
       },
     );
   });
@@ -290,5 +294,32 @@ describe('FinesAccDefendantDetailsComponent', () => {
         relativeTo: component['activatedRoute'],
       },
     );
+  });
+
+  describe('should get the relevant denied type from getDeniedType', () => {
+    it('for a balance of 0 should return "balance"', () => {
+      component.accountData.payment_state_summary.account_balance = 0;
+      const deniedType = component['getDeniedType']();
+      expect(deniedType).toBe('balance');
+    });
+
+    it('for an enforcement with extend_ttp_disallow should return "enforcement"', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.extend_ttp_disallow = true;
+      const deniedType = component['getDeniedType']();
+      expect(deniedType).toBe('enforcement');
+    });
+
+    it('for a lack of permission with a BU should return "permission"', () => {
+      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      const deniedType = component['getDeniedType']();
+      expect(deniedType).toBe('permission');
+    });
+
+    it('for an invalid account status shouldreturn "account-status"', () => {
+      component.accountData.account_status_reference.account_status_code = 'REW';
+      const deniedType = component['getDeniedType']();
+      expect(deniedType).toBe('account-status');
+    });
   });
 });

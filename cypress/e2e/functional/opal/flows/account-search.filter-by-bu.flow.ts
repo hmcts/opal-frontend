@@ -16,7 +16,7 @@ import { SearchFilterByBUNavActions } from '../actions/search/search.filter-by-b
 import { SearchFilterByBUFinesActions } from '../actions/search/search.filter-by-bu-fines.actions';
 import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { SearchFilterByBUConfiscationActions } from '../actions/search/search.filter-by-bu-confiscation.actions';
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { DashboardActions } from '../actions/dashboard.actions';
 
 const commonActions = new SearchFilterByBUCommonActions();
@@ -24,6 +24,7 @@ const navActions = new SearchFilterByBUNavActions();
 const finesActions = new SearchFilterByBUFinesActions();
 const searchCommonActions = new AccountSearchCommonActions();
 const confiscationActions = new SearchFilterByBUConfiscationActions();
+const log = createScopedLogger('SearchFilterByBUFlow');
 
 export class SearchFilterByBUFlow {
   private readonly dashboard = new DashboardActions();

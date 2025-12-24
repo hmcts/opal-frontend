@@ -5,11 +5,15 @@ import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enqu
 import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,
-  USER_STATE_MOCK_NO_PERMISSION,
-  USER_STATE_MOCK_PERMISSION_BU77,
-  USER_STATE_MOCK_PERMISSION_BU17,
   DEFENDANT_HEADER_ORG_MOCK,
 } from './mocks/defendant_details_mock';
+
+import {
+  USER_STATE_MOCK_NO_PERMISSION,
+  USER_STATE_MOCK_PERMISSION_BU17,
+  USER_STATE_MOCK_PERMISSION_BU77,
+} from '../../CommonIntercepts/CommonUserState.mocks';
+
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
