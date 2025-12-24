@@ -84,7 +84,6 @@ Feature: Manual account creation - Company Details
       | company name   | COMPANY NAME |
       | address line 1 | Addr1        |
 
-
   Scenario: (AC.14) Confirming cancel restores last saved company details [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |

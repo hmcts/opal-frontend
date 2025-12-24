@@ -244,26 +244,6 @@ Given('I stub fixed penalty draft account listings', () => {
 });
 
 /**
- * @step Switches to the specified inputter draft tab.
- * @description Clicks the tab by name within the inputter draft accounts view.
- * @param tab - Tab name (e.g., "In review").
- */
-When('I view the inputter draft tab {string}', (tab: InputterTab) => {
-  log('navigate', 'Switching inputter tab', { tab });
-  tabs().switchInputterTab(tab);
-});
-
-/**
- * @step Switches to the specified checker draft tab.
- * @description Clicks the tab by name within the checker draft accounts view.
- * @param tab - Tab name (e.g., "To review").
- */
-When('I view the checker draft tab {string}', (tab: CheckerTab) => {
-  log('navigate', 'Switching checker tab', { tab });
-  tabs().switchCheckerTab(tab);
-});
-
-/**
  * @step Asserts the account type column shows Fixed Penalty.
  * @description Checks the draft listings table for the Fixed Penalty account type text.
  */

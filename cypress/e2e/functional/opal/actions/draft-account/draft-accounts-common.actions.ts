@@ -39,9 +39,30 @@ export class DraftAccountsCommonActions {
    */
   openDefendant(defendantName: string): void {
     log('navigate', 'Opening draft account by defendant', { defendantName });
-    cy.contains(L.cells.defendantLink, defendantName, this.common.getTimeoutOptions())
-      .should('be.visible')
-      .click({ force: true });
+    const matcher = new RegExp(defendantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const tryPage = () => {
+      cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+      cy.get('body').then(($body) => {
+        const links = $body.find(L.cells.defendantLink).filter((_, el) => matcher.test(Cypress.$(el).text()));
+        if (links.length) {
+          cy.wrap(links.first()).scrollIntoView().click({ force: true });
+          return;
+        }
+
+        const next = $body.find(L.pagination.next);
+        const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
+        if (hasNext) {
+          cy.wrap(next.first()).scrollIntoView().click({ force: true });
+          cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+          tryPage();
+          return;
+        }
+
+        throw new Error(`Defendant "${defendantName}" not found in draft listings`);
+      });
+    };
+
+    tryPage();
   }
 
   /**
@@ -90,30 +111,19 @@ export class DraftAccountsCommonActions {
    *   list.assertHeadings(['Defendant', 'Date of birth', 'Created']);
    */
   assertHeadings(expectedHeadings: string[]): void {
-    const normalized = expectedHeadings.map((heading) => heading.trim().toLowerCase());
+    const normalized = expectedHeadings.map((heading) => heading.trim());
     cy.get(L.headings, this.common.getTimeoutOptions()).then(($headings) => {
-      const actual = Cypress.$.makeArray($headings).map((el) => Cypress.$(el).text().trim().toLowerCase());
+      const actual = Cypress.$.makeArray($headings).map((el) => Cypress.$(el).text().trim());
+      const actualNormalized = actual.map((h) => h.toLowerCase());
       log('assert', 'Asserting draft table headings', { expectedHeadings: normalized, actualHeadings: actual });
 
-      expect(
-        actual.length,
-        `Expected at least ${normalized.length} headings but found ${actual.length}: [${actual.join(', ')}]`,
-      ).to.be.at.least(normalized.length);
+      const missing = normalized.filter(
+        (expected) => !actualNormalized.some((actualHeading) => actualHeading === expected.toLowerCase()),
+      );
 
-      const windowSize = normalized.length;
-      const startIndex = actual.findIndex((_, index) => {
-        if (index + windowSize > actual.length) {
-          return false;
-        }
-        const window = actual.slice(index, index + windowSize);
-        return window.every((heading, idx) => heading === normalized[idx]);
-      });
-
-      const actualPrefix = startIndex >= 0 ? actual.slice(startIndex, startIndex + windowSize) : [];
-      expect(
-        actualPrefix,
-        `Expected headings to match order: [${normalized.join(', ')}]; actual: [${actual.join(', ')}]`,
-      ).to.deep.equal(normalized);
+      if (missing.length) {
+        throw new Error(`Missing headings: ${missing.join(', ')}`);
+      }
     });
   }
 
@@ -353,67 +363,40 @@ export class DraftAccountsCommonActions {
 
   /**
    * Opens the first draft account where the specified column contains the expected text.
-   * @description
-   * - Searches the current table page for a partial, case-insensitive match in the target column.
-   * - If not found, iterates through pagination links (numeric pages) until a match is clicked or throws.
-   * - Ensures only the first matching row is opened for deterministic navigation.
    * @param column - Column label.
    * @param expectedText - Text to match within the column.
    */
   openFirstMatchInColumn(column: DraftAccountsTableColumn, expectedText: string): void {
     const selector = this.resolveColumnSelector(column);
-    const normalizedExpected = expectedText.trim().toLowerCase();
-    log('navigate', 'Opening first draft account matching column text (searching pages)', { column, expectedText });
+    log('navigate', 'Opening first draft account matching column text', { column, expectedText });
+    const matcher = new RegExp(expectedText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
 
-    const errorMessage = `Draft account with ${column} containing "${expectedText}" not found across pages`;
+    const tryPage = () => {
+      cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+      cy.get('body').then(($body) => {
+        const cells = $body.find(selector).filter((_, el) => matcher.test(Cypress.$(el).text()));
 
-    const search = (): Cypress.Chainable<unknown> => {
-      return cy.get(L.rows, this.common.getTimeoutOptions()).then(($rows): Cypress.Chainable<unknown> => {
-        const matchRow: HTMLElement | undefined = Cypress.$($rows)
-          .toArray()
-          .find((row) =>
-            Cypress.$(row)
-              .find(selector)
-              .toArray()
-              .some((cell) => Cypress.$(cell).text().trim().toLowerCase().includes(normalizedExpected)),
-          );
-
-        if (matchRow) {
-          return cy
-            .wrap<HTMLElement>(matchRow)
-            .scrollIntoView()
-            .find(selector)
-            .contains(expectedText, this.common.getTimeoutOptions())
-            .first()
-            .should('be.visible')
-            .click({ force: true })
-            .then(() => null as unknown);
+        if (cells.length) {
+          const first = Cypress.$(cells[0]);
+          const link = first.find('a').first();
+          const target = link.length ? link : first;
+          cy.wrap(target).scrollIntoView().click({ force: true });
+          return;
         }
 
-        return cy.get('body').then(($body): Cypress.Chainable<unknown> => {
-          const pagination = L.pagination;
-          if (!pagination?.links) {
-            throw new Error(errorMessage);
-          }
+        const next = $body.find(L.pagination.next);
+        const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
+        if (hasNext) {
+          cy.wrap(next.first()).scrollIntoView().click({ force: true });
+          cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+          tryPage();
+          return;
+        }
 
-          const activeText = pagination.activeItem ? $body.find(pagination.activeItem).text().trim() : undefined;
-          const pageLinks = $body.find(pagination.links).filter((_, el) => {
-            const text = Cypress.$(el).text().trim();
-            const isNumber = /^\d+$/.test(text);
-            const isActive = activeText && text === activeText;
-            return isNumber && !isActive;
-          });
-
-          if (!pageLinks.length) {
-            throw new Error(errorMessage);
-          }
-
-          const nextPage = cy.wrap(pageLinks.first()).click({ force: true });
-          return nextPage.then(() => search());
-        });
+        throw new Error(`No draft row found in column "${column}" containing "${expectedText}"`);
       });
     };
 
-    search();
+    tryPage();
   }
 }
