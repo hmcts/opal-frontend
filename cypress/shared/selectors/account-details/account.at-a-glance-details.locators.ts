@@ -106,6 +106,9 @@ export const AccountAtAGlanceLocators = {
   },
 
   sections: {
+    /** Root element for the At a glance tab content. */
+    atAGlanceTabRoot: 'app-fines-acc-defendant-details-at-a-glance-tab',
+
     /** Column that contains the Comments block on At a glance. */
     commentsColumn:
       'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Comments"))',

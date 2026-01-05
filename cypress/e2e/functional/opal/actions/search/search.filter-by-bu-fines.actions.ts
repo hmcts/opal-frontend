@@ -13,21 +13,6 @@ export type BusinessUnitMap = Map<string, string>;
 const log = createScopedLogger('SearchFilterByBUFinesActions');
 
 export class SearchFilterByBUFinesActions {
-  private readonly businessUnitNameToIdMap: Map<string, string> = new Map();
-
-  /** Build a name→id map by scanning labels */
-  private ensureBusinessUnitMapLoaded(): void {
-    if (this.businessUnitNameToIdMap.size > 0) return;
-
-    cy.get(FinesFilterBusinessUnitLocators.businessUnitLabels).each(($label) => {
-      const name = $label.text().trim();
-      const id = $label.attr('for');
-      if (id) {
-        this.businessUnitNameToIdMap.set(name, id);
-      }
-    });
-  }
-
   /** Verifies the master checkbox and label are present */
   verifyMasterCheckboxPresent(): void {
     log('info', 'Verifying presence of Fines master checkbox and label');

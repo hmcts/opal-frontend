@@ -3,8 +3,6 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('CommonActions');
 
-type NullableString = string | null;
-
 export class CommonActions {
   private readonly TIMEOUT = 10_000;
   private readonly PATH_TIMEOUT = 20_000;

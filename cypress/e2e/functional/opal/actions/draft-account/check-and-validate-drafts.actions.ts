@@ -17,8 +17,6 @@ const log = createScopedLogger('CheckAndValidateDraftsActions');
  * Actions for the **Check and Validate Draft Accounts** page (checker view).
  */
 export class CheckAndValidateDraftsActions extends DraftAccountsCommonActions {
-  private readonly dashboard = new DashboardActions();
-
   /**
    * Switches to the specified checker tab.
    * @param tab - Tab name (To review | Rejected | Deleted | Failed)

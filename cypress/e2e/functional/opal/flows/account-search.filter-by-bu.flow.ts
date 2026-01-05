@@ -22,7 +22,6 @@ import { DashboardActions } from '../actions/dashboard.actions';
 const commonActions = new SearchFilterByBUCommonActions();
 const navActions = new SearchFilterByBUNavActions();
 const finesActions = new SearchFilterByBUFinesActions();
-const searchCommonActions = new AccountSearchCommonActions();
 const confiscationActions = new SearchFilterByBUConfiscationActions();
 const log = createScopedLogger('SearchFilterByBUFlow');
 

@@ -13,15 +13,10 @@
  */
 
 import merge from 'lodash/merge';
-import get from 'lodash/get';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 
 import { convertDataTableToNestedObject } from '../../../../../support/utils/table';
-import {
-  getApprovedPayloadFile,
-  getDraftPayloadFile,
-  type DraftPayloadType,
-} from '../../../../../support/utils/payloads';
+import { getDraftPayloadFile, type DraftPayloadType } from '../../../../../support/utils/payloads';
 import { readDraftIdFromBody } from '../../../../../support/draftAccounts';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 

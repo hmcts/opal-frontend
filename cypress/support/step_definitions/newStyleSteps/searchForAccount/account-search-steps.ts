@@ -6,7 +6,6 @@
  */
 
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { AccountEnquiryFlow } from '../../../../e2e/functional/opal/flows/account-enquiry.flow';
 import { AccountSearchFlow } from '../../../../e2e/functional/opal/flows/account-search.flow';
 // Actions
 import { AccountSearchIndividualsActions } from '../../../../e2e/functional/opal/actions/search/search.individuals.actions';
@@ -22,7 +21,6 @@ import { MinorCreditorType } from '../../../utils/macFieldResolvers';
 import { log } from '../../../utils/log.helper';
 
 // Factory pattern for isolated, stateless flow instances
-const flow = () => new AccountEnquiryFlow();
 const searchFlow = () => new AccountSearchFlow();
 const searchIndividualActions = () => new AccountSearchIndividualsActions();
 const searchCompanyActions = () => new AccountSearchCompanyActions();

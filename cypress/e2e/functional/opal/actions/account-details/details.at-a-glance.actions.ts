@@ -4,14 +4,6 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 const log = createScopedLogger('AccountDetailsAtAGlanceActions');
 
 export class AccountDetailsAtAGlanceActions {
-  /** ensure we’re on at a glance */
-  assertReturnedToAtAGlance(): void {
-    cy.url({ timeout: 15000 }).should((p) => {
-      expect(p, 'on details route').to.match(/\/fines\/account\/defendant\/[A-Za-z0-9-]+\/details#at-a-glance$/);
-    });
-    cy.get('main h1.govuk-heading-l, .account-details__header', { timeout: 10000 }).should('be.visible');
-  }
-
   /**
    * AssertSectionHeader.
    *
@@ -51,7 +43,7 @@ export class AccountDetailsAtAGlanceActions {
     cy.location('href').then((u) => cy.wrap(u).as('detailsUrl'));
 
     // Ensure the At a glance tab is rendered
-    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: 15000 }).should('be.visible');
+    cy.get(N.sections.atAGlanceTabRoot, { timeout: 15000 }).should('be.visible');
 
     // Find the Comments column and click its action link ("Add comments" OR "Change")
     cy.get(N.sections.commentsColumn, { timeout: 15000 })

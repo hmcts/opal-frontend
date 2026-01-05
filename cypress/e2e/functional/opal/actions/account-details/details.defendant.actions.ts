@@ -12,22 +12,17 @@ export class AccountDetailsDefendantActions {
   readonly common = new CommonActions();
 
   /**
-   * Assert page header contains expected text
-   * @param expected
-   */
-  assertHeaderContains(expected: string): void {
-    cy.get(L.header, { timeout: 15000 }).should('contain.text', expected);
-  }
-
-  /**
    * Assert section header text matches expectation
    * @param expected
    */
   assertSectionHeader(expected: string): void {
     cy.get(L.defendantTabHeader.title, { timeout: 10000 })
       .should('be.visible')
-      .invoke('text')
-      .then((t) => expect(t.trim().toLowerCase()).to.contain(expected.trim().toLowerCase()));
+      .should(($h2) => {
+        const actual = $h2.text().trim().toLowerCase();
+        const exp = expected.trim().toLowerCase();
+        expect(actual).to.contain(exp);
+      });
   }
 
   /**

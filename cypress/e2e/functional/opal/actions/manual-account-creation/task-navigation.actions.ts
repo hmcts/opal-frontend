@@ -1,4 +1,3 @@
-import { ManualAccountSharedLocators as L } from '../../../../../shared/selectors/manual-account-creation/shared.locators';
 import { CommonActions } from '../common/common.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { ManualAccountDetailsActions } from './account-details.actions';

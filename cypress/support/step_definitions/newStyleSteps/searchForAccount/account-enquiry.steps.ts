@@ -14,7 +14,7 @@
  * - Tasks (e.g., `clearApprovedDrafts`, `createAndPublishAccount`) are run via Cypress plugins.
  */
 
-import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountEnquiryFlow } from '../../../../e2e/functional/opal/flows/account-enquiry.flow';
 import { CommonFlow } from '../../../../e2e/functional/opal/flows/common-flow';
 

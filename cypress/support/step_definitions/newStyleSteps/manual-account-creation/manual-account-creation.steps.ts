@@ -23,7 +23,6 @@ import {
   ManualEmployerDetailsActions,
   ManualEmployerFieldKey,
 } from '../../../../e2e/functional/opal/actions/manual-account-creation/employer-details.actions';
-import { ManualPersonalDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/personal-details.actions';
 import { ManualPaymentTermsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/payment-terms.actions';
 import { DashboardActions } from '../../../../e2e/functional/opal/actions/dashboard.actions';
 import { log } from '../../../utils/log.helper';
@@ -39,7 +38,6 @@ import { CompanyAliasRow } from '../../../../e2e/functional/opal/flows/manual-ac
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import {
   LanguageOption,
-  LanguageSection,
   ManualLanguagePreferencesActions,
 } from '../../../../e2e/functional/opal/actions/manual-account-creation/language-preferences.actions';
 import {
@@ -51,14 +49,12 @@ import {
   resolveLanguageLabel,
   resolveLanguageSection,
 } from '../../../utils/macFieldResolvers';
-import { normalizeHash, normalizeTableRows } from '../../../utils/cucumberHelpers';
 import { accessibilityActions } from '../../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 import { AccountType, ApprovedAccountType } from '../../../utils/payloads';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const courtDetails = () => new ManualCourtDetailsActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
-const personalDetails = () => new ManualPersonalDetailsActions();
 const paymentTerms = () => new ManualPaymentTermsActions();
 const dashboard = () => new DashboardActions();
 const details = () => new ManualAccountDetailsActions();

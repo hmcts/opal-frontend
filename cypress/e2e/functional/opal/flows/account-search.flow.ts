@@ -9,7 +9,6 @@ import { AccountSearchCompanyActions } from '../actions/search/search.companies.
 import { AccountSearchMinorCreditorsActions } from '../actions/search/search.minor-creditors.actions';
 import { AccountSearchMajorCreditorsActions } from '../actions/search/search.major-creditors.actions';
 import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
-import { AccountSearchProblemActions } from '../actions/search/search.problem.actions';
 import { ResultsActions } from '../actions/search/search.results.actions';
 import { CommonActions } from '../actions/common/common.actions';
 import { MinorCreditorType } from '../../../../support/utils/macFieldResolvers';
@@ -21,7 +20,6 @@ type MinorCreditorSimpleType = 'individual' | 'company';
 
 type InputMap = Record<string, string>;
 
-const SEARCH_RESULTS_PATH_SEGMENT = '/fines/search-accounts/results';
 const log = createScopedLogger('AccountSearchFlow');
 
 /**

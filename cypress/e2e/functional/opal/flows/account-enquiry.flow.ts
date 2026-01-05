@@ -11,7 +11,6 @@ import { AccountDetailsParentGuardianActions } from '../actions/account-details/
 import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
-import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
@@ -97,17 +96,6 @@ export class AccountEnquiryFlow {
       .get('@etagUpdate', { timeout: 0 })
       .then((etag: any) => (etag ? (etag.accountNumber ?? null) : null))
       .then((n: string | null) => (n && String(n).trim() ? String(n).trim() : null));
-  }
-
-  /**
-   * Asserts that the browser has navigated to the expected defendant details route.
-   */
-  private assertNavigatedToDetails(): void {
-    cy.location('pathname', { timeout: AccountEnquiryFlow.WAIT_MS }).should((p) => {
-      expect(p, 'navigated to defendant details route').to.match(
-        /^\/fines\/account\/defendant\/[A-Za-z0-9-]+\/details$/,
-      );
-    });
   }
 
   /**
