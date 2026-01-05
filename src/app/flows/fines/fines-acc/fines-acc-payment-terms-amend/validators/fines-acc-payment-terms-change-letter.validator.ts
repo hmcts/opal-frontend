@@ -40,9 +40,8 @@ export function changeLetterWithoutChangesValidator(
       if (hasError) {
         changeLetterControl.setErrors({ ...currentErrors, noChangesMade: true });
       } else if (currentErrors['noChangesMade']) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { noChangesMade, ...remainingErrors } = currentErrors;
-        changeLetterControl.setErrors(Object.keys(remainingErrors).length > 0 ? remainingErrors : null);
+        delete currentErrors['noChangesMade'];
+        changeLetterControl.setErrors(Object.keys(currentErrors).length > 0 ? currentErrors : null);
       }
     };
 

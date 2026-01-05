@@ -1,16 +1,5 @@
-/**
- * Interface for payment terms type object
- */
-export interface IOpalFinesPaymentTermsType {
-  payment_terms_type_code: string;
-}
-
-/**
- * Interface for instalment period object
- */
-export interface IOpalFinesInstalmentPeriod {
-  instalment_period_code: string;
-}
+import { IOpalFinesInstalmentPeriod } from './opal-fines-amend-payment-terms-installment-period.interface';
+import { IOpalFinesPaymentTermsType } from './opal-fines-amend-payment-terms-payment-terms-type.interface';
 
 /**
  * Interface for payment terms object within the amend payload

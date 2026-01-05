@@ -96,12 +96,14 @@ export function buildPaymentTermsAmendPayloadUtil(
       payment_terms_type: paymentTermsTypeCode
         ? {
             payment_terms_type_code: paymentTermsTypeCode,
+            payment_terms_type_display_name: null,
           }
         : null,
       effective_date: effectiveDate,
       instalment_period: instalmentPeriodCode
         ? {
             instalment_period_code: instalmentPeriodCode,
+            instalment_period_display_name: null,
           }
         : null,
       lump_sum_amount: mapLumpSumAmount(formData),
