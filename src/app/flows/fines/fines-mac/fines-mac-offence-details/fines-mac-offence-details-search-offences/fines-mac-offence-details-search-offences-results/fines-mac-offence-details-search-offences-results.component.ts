@@ -7,10 +7,8 @@ import { FinesMacOffenceDetailsSearchOffencesStore } from '../stores/fines-mac-o
 import { FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent } from './fines-mac-offence-details-search-offences-results-table-wrapper/fines-mac-offence-details-search-offences-results-table-wrapper.component';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT } from './fines-mac-offence-details-search-offences-results-table-wrapper/constants/fines-mac-offence-details-search-offences-results-table-wrapper-sort-defaults.constant';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } from './fines-mac-offence-details-search-offences-results-table-wrapper/interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.interface';
-import {
-  IOpalFinesSearchOffences,
-  IOpalFinesSearchOffencesData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
+import { IOpalFinesSearchOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offence.interface';
+import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-results',

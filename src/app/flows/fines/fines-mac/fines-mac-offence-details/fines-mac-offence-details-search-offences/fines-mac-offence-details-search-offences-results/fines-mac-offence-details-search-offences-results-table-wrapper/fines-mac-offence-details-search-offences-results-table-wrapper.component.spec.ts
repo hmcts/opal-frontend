@@ -1,11 +1,9 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent } from './fines-mac-offence-details-search-offences-results-table-wrapper.component';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import {
-  COPIED_CODE_TO_CLIPBOARD,
-  COPY_CODE_TO_CLIPBOARD,
-  COPY_CODE_TO_CLIPBOARD_TIMEOUT,
-} from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
+import { COPY_CODE_TO_CLIPBOARD } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
+import { COPIED_CODE_TO_CLIPBOARD } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-copied-code.constant';
+import { COPY_CODE_TO_CLIPBOARD_TIMEOUT } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-timeout.constant';
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent;

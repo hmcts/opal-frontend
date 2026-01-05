@@ -11,11 +11,9 @@ import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } from './interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.interface';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableSort } from './interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-sort.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import {
-  COPY_CODE_TO_CLIPBOARD,
-  COPIED_CODE_TO_CLIPBOARD,
-  COPY_CODE_TO_CLIPBOARD_TIMEOUT,
-} from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
+import { COPY_CODE_TO_CLIPBOARD } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
+import { COPIED_CODE_TO_CLIPBOARD } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-copied-code.constant';
+import { COPY_CODE_TO_CLIPBOARD_TIMEOUT } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-timeout.constant';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 
 @Component({

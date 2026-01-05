@@ -1,0 +1,1 @@
+export const COPY_CODE_TO_CLIPBOARD_TIMEOUT = 5000;

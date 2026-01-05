@@ -1,4 +1,4 @@
-import { IOpalFinesDefendantAccountResponse } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountResponse } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
 
 export const SORTING_SEARCH_RESULTS_MOCK_COMPANIES: IOpalFinesDefendantAccountResponse = {
   count: 5,

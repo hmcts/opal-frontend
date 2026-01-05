@@ -20,7 +20,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
 import { IFinesSaSearchFilterBusinessUnitForm } from '../interfaces/fines-sa-search-filter-business-unit-form.interface';
 import { FormControl, FormGroup, FormRecord, ReactiveFormsModule } from '@angular/forms';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { CommonModule } from '@angular/common';
 import {
   MojSubNavigationComponent,

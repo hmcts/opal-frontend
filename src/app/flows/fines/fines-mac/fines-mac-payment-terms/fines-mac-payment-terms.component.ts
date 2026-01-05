@@ -5,10 +5,8 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form/fines-mac-payment-terms-form.component';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import {
-  FINES_MAC_PAYMENT_TERMS_SYSTEM_GENERATED_NOTES_COLLECTION_ORDER_MADE,
-  FINES_MAC_PAYMENT_TERMS_SYSTEM_GENERATED_NOTES_COLLECTION_ORDER_MADE_TODAY,
-} from './constants/fines-mac-payment-terms-system-generated-notes.constant';
+import { FINES_MAC_PAYMENT_TERMS_SYSTEM_GENERATED_NOTES_COLLECTION_ORDER_MADE } from './constants/fines-mac-payment-terms-system-generated-notes.constant';
+import { FINES_MAC_PAYMENT_TERMS_SYSTEM_GENERATED_NOTES_COLLECTION_ORDER_MADE_TODAY } from './constants/fines-mac-payment-terms-system-generated-notes-collection-order-made-today.constant';
 
 @Component({
   selector: 'app-fines-mac-payment-terms',

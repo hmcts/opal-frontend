@@ -6,19 +6,13 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import {
-  IOpalFinesCourt,
-  IOpalFinesCourtRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
+import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
-import {
-  IOpalFinesLocalJusticeArea,
-  IOpalFinesLocalJusticeAreaRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
-import {
-  IOpalFinesProsecutor,
-  IOpalFinesProsecutorRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { IOpalFinesProsecutor } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor.interface';
+import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 
 @Component({

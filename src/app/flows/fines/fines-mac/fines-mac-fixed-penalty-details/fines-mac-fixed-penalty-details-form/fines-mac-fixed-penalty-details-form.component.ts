@@ -51,7 +51,7 @@ import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/s
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
-import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../validators/fines-mac-fixed-penalty-details-form-validators';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { FinesMacOffenceCodeHintComponent } from '../../components/fines-mac-offence-code-hint/fines-mac-offence-code-hint.component';
 @Component({

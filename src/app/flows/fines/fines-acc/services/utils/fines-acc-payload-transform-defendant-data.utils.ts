@@ -1,15 +1,13 @@
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import {
-  IOpalFinesDefendantAccountAddress,
-  IOpalFinesDefendantAccountContactDetails,
-  IOpalFinesDefendantAccountVehicleDetails,
-  IOpalFinesDefendantAccountEmployerDetails,
-  IOpalFinesDefendantAccountLanguagePreferences,
-  IOpalFinesDefendantAccountIndividualDetails,
-  IOpalFinesDefendantAccountOrganisationDetails,
-  IOpalFinesDefendantAccountIndividualAlias,
-  IOpalFinesDefendantAccountOrganisationAlias,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountAddress } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-address.interface';
+import { IOpalFinesDefendantAccountContactDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-contact-details.interface';
+import { IOpalFinesDefendantAccountEmployerDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-employer-details.interface';
+import { IOpalFinesDefendantAccountIndividualAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-individual-alias.interface';
+import { IOpalFinesDefendantAccountIndividualDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-individual-details.interface';
+import { IOpalFinesDefendantAccountLanguagePreferences } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-language-preferences.interface';
+import { IOpalFinesDefendantAccountOrganisationAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-organisation-alias.interface';
+import { IOpalFinesDefendantAccountOrganisationDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-organisation-details.interface';
+import { IOpalFinesDefendantAccountVehicleDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-vehicle-details.interface';
 import { IFinesAccPartyAddAmendConvertState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { IFinesAccPartyAddAmendConvertIndividualAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-individual-alias-state.interface';
 import { IFinesAccPartyAddAmendConvertOrganisationAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-organisation-alias-state.interface';

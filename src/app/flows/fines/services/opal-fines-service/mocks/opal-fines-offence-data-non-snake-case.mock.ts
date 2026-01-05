@@ -1,4 +1,4 @@
-import { IOpalFinesOffencesNonSnakeCase } from '../interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesOffencesNonSnakeCase } from '../interfaces/opal-fines-offences-non-snake-case.interface';
 
 export const OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK: IOpalFinesOffencesNonSnakeCase = {
   offenceId: 314441,

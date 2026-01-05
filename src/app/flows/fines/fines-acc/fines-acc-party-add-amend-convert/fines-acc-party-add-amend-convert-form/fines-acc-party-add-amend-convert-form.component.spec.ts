@@ -6,10 +6,8 @@ import { of } from 'rxjs';
 import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
-import {
-  MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA,
-  MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES,
-} from '../mocks/fines-acc-party-add-amend-convert-form.mock';
+import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../mocks/fines-acc-party-add-amend-convert-form.mock';
+import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '../mocks/fines-acc-party-add-amend-convert-form-with-aliases.mock';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 
 // Type interface for accessing private methods in tests
