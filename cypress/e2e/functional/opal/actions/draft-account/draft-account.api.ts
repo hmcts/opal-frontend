@@ -347,16 +347,19 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
 export function assertLatestDraftUpdateHasStrongEtag(requireChange?: boolean): Cypress.Chainable<void> {
   const shouldChange = requireChange ?? Cypress.env('EXPECT_ETAG_CHANGE') === true;
 
-  return cy.get<EtagUpdate>('@etagUpdate').then(({ status, etagBefore, etagAfter }) => {
-    log('assert', 'Asserting strong ETag for last draft update', { status, shouldChange });
-    expect([200, 204], 'PATCH success status').to.include(status);
-    expect(etagAfter, 'Updated ETag').to.be.a('string').and.not.be.empty;
-    expect(etagAfter.startsWith('W/'), 'Updated ETag must be strong (no W/)').to.be.false;
+  return cy
+    .get<EtagUpdate>('@etagUpdate')
+    .then(({ status, etagBefore, etagAfter }) => {
+      log('assert', 'Asserting strong ETag for last draft update', { status, shouldChange });
+      expect([200, 204], 'PATCH success status').to.include(status);
+      expect(etagAfter, 'Updated ETag').to.be.a('string').and.not.be.empty;
+      expect(etagAfter.startsWith('W/'), 'Updated ETag must be strong (no W/)').to.be.false;
 
-    if (shouldChange) {
-      expect(etagAfter, 'ETag should change after update').not.to.eq(etagBefore);
-    }
-  });
+      if (shouldChange) {
+        expect(etagAfter, 'ETag should change after update').not.to.eq(etagBefore);
+      }
+    })
+    .then(() => Promise.resolve());
 }
 
 /**
@@ -434,7 +437,7 @@ export function simulateStaleIfMatchConflict(newStatus: string): Cypress.Chainab
           patchBody,
         };
 
-        log('action', 'Captured stale If-Match conflict result', conflict);
+        log('action', 'Captured stale If-Match conflict result', { ...conflict });
         return cy.wrap(conflict, { log: false }).as('etagConflict');
       });
   });
@@ -449,16 +452,19 @@ export function simulateStaleIfMatchConflict(newStatus: string): Cypress.Chainab
  *   assertStaleIfMatchConflict();
  */
 export function assertStaleIfMatchConflict(expectedStatus: number = 409): Cypress.Chainable<void> {
-  return cy.get<EtagConflictResult>('@etagConflict').then(({ firstStatus, conflictStatus, etagUsed, accountId }) => {
-    log('assert', 'Asserting stale If-Match conflict outcome', {
-      accountId,
-      firstStatus,
-      conflictStatus,
-      expectedStatus,
-    });
+  return cy
+    .get<EtagConflictResult>('@etagConflict')
+    .then(({ firstStatus, conflictStatus, etagUsed, accountId }) => {
+      log('assert', 'Asserting stale If-Match conflict outcome', {
+        accountId,
+        firstStatus,
+        conflictStatus,
+        expectedStatus,
+      });
 
-    expect([200, 204], 'Initial PATCH success status').to.include(firstStatus);
-    expect(conflictStatus, 'Stale If-Match should conflict').to.eq(expectedStatus);
-    expect(etagUsed, 'ETag used for If-Match').to.be.a('string').and.not.be.empty;
-  });
+      expect([200, 204], 'Initial PATCH success status').to.include(firstStatus);
+      expect(conflictStatus, 'Stale If-Match should conflict').to.eq(expectedStatus);
+      expect(etagUsed, 'ETag used for If-Match').to.be.a('string').and.not.be.empty;
+    })
+    .then(() => Promise.resolve());
 }
