@@ -16,9 +16,7 @@ describe('fines-acc-resolver-redirect', () => {
 
       const result = createDefendantDetailsRedirect(mockRouter);
 
-      expect(mockRouter.createUrlTree).toHaveBeenCalledWith([
-        FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
-      ]);
+      expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
       expect(result).toEqual(jasmine.any(Object));
       expect(result.constructor.name).toBe('RedirectCommand');
     });
