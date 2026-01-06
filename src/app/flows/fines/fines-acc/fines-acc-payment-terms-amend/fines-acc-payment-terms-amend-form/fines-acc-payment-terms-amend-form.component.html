@@ -95,7 +95,7 @@
     }
   </opal-lib-govuk-radio>
 
-  <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
+  <hr [class]="FINES_ACC_SECTION_BREAK" />
 
   <opal-lib-govuk-checkboxes
     fieldSetId="daysInDefaultCheckbox"
@@ -148,7 +148,7 @@
       </div>
     }
   </opal-lib-govuk-checkboxes>
-  <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
+  <hr [class]="FINES_ACC_SECTION_BREAK" />
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -166,7 +166,7 @@
     </div>
   </div>
 
-  <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
+  <hr [class]="FINES_ACC_SECTION_BREAK" />
 
   @if (preventPaymentCard()) {
     <ng-container
@@ -206,7 +206,7 @@
     </opal-lib-govuk-checkboxes>
   </div>
 
-  <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
+  <hr [class]="FINES_ACC_SECTION_BREAK" />
 
   <!-- Form Actions -->
 

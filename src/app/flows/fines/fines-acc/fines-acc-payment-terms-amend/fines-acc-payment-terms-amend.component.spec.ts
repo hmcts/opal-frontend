@@ -11,7 +11,8 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
 import { DateTime } from 'luxon';
-import { MOCK_FORM_DATA, MOCK_PAYLOAD } from './mocks/fines-acc-payment-terms-amend.mocks';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK } from './mocks/fines-acc-payment-terms-amend-form.mock';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK } from './mocks/fines-acc-payment-terms-amend-payload.mock';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 
 describe('FinesAccPaymentTermsAmendComponent', () => {
@@ -70,8 +71,10 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     ]);
 
     // Setup default return values
-    mockPayloadService.buildPaymentTermsAmendPayload.and.returnValue(MOCK_PAYLOAD);
-    mockOpalFinesService.postDefendantAccountPaymentTerms.and.returnValue(of(MOCK_PAYLOAD));
+    mockPayloadService.buildPaymentTermsAmendPayload.and.returnValue(FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
+    mockOpalFinesService.postDefendantAccountPaymentTerms.and.returnValue(
+      of(FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK),
+    );
     mockOpalFinesService.getBusinessUnitById.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK));
     mockOpalFinesService.getConfigurationItemValue.and.returnValue('Y');
 
@@ -107,12 +110,14 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
 
   describe('handlePaymentTermsSubmit', () => {
     it('should successfully submit payment terms amendment when validation passes', () => {
-      component.handlePaymentTermsSubmit(MOCK_FORM_DATA);
+      component.handlePaymentTermsSubmit(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
 
-      expect(mockPayloadService.buildPaymentTermsAmendPayload).toHaveBeenCalledWith(MOCK_FORM_DATA.formData);
+      expect(mockPayloadService.buildPaymentTermsAmendPayload).toHaveBeenCalledWith(
+        FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK.formData,
+      );
       expect(mockOpalFinesService.postDefendantAccountPaymentTerms).toHaveBeenCalledWith(
         123456,
-        MOCK_PAYLOAD,
+        FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK,
         'TEST_UNIT',
         'version123',
       );
@@ -121,14 +126,14 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     it('should navigate when validation fails (missing account data)', () => {
       mockFinesAccountStore.account_id.and.returnValue(null);
 
-      component.handlePaymentTermsSubmit(MOCK_FORM_DATA);
+      component.handlePaymentTermsSubmit(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
 
       // Should not call the API when validation fails
       expect(mockOpalFinesService.postDefendantAccountPaymentTerms).not.toHaveBeenCalled();
     });
 
     it('should build payload with correct form data', () => {
-      component.handlePaymentTermsSubmit(MOCK_FORM_DATA);
+      component.handlePaymentTermsSubmit(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
 
       expect(mockPayloadService.buildPaymentTermsAmendPayload).toHaveBeenCalledWith({
         facc_payment_terms_payment_terms: 'payInFull',
@@ -194,11 +199,11 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
 
   describe('submitPaymentTermsAmendment', () => {
     it('should call API with correct parameters and handle success', () => {
-      component['submitPaymentTermsAmendment'](MOCK_PAYLOAD);
+      component['submitPaymentTermsAmendment'](FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
 
       expect(mockOpalFinesService.postDefendantAccountPaymentTerms).toHaveBeenCalledWith(
         123456,
-        MOCK_PAYLOAD,
+        FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK,
         'TEST_UNIT',
         'version123',
       );
@@ -208,7 +213,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     it('should handle API errors gracefully', () => {
       mockOpalFinesService.postDefendantAccountPaymentTerms.and.returnValue(throwError(() => new Error('API Error')));
 
-      component['submitPaymentTermsAmendment'](MOCK_PAYLOAD);
+      component['submitPaymentTermsAmendment'](FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
 
       expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
       expect(component.stateUnsavedChanges).toBe(true);
@@ -216,7 +221,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     });
 
     it('should retrieve account data for API call', () => {
-      component['submitPaymentTermsAmendment'](MOCK_PAYLOAD);
+      component['submitPaymentTermsAmendment'](FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
 
       expect(mockFinesAccountStore.account_id).toHaveBeenCalled();
       expect(mockFinesAccountStore.business_unit_id).toHaveBeenCalled();

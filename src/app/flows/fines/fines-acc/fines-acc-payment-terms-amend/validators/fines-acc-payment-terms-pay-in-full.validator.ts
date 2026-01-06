@@ -1,6 +1,18 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 /**
+ * Helper function to clear pay in full validation errors from a control
+ * @param control - The form control to clear errors from
+ */
+function clearPayInFullError(control: AbstractControl): void {
+  if (control.errors?.['payInFullRestriction']) {
+    const errors = { ...control.errors };
+    delete errors['payInFullRestriction'];
+    control.setErrors(Object.keys(errors).length > 0 ? errors : null);
+  }
+}
+
+/**
  * Custom form validator that checks if payment card is requested when payment terms are 'Pay in full'
  * @param preventPaymentCard - Function that returns whether payment card should be prevented
  * @returns ValidatorFn that validates payment card restrictions for pay in full terms
@@ -15,21 +27,12 @@ export function payInFullPaymentCardValidator(preventPaymentCard?: boolean): Val
     const paymentTermsValue = formGroup.get('facc_payment_terms_payment_terms')?.value;
     const paymentCardRequestValue = paymentCardControl.value;
 
-    // Helper function to clear validation errors
-    const clearPayInFullError = (): void => {
-      if (paymentCardControl.errors?.['payInFullRestriction']) {
-        const errors = { ...paymentCardControl.errors };
-        delete errors['payInFullRestriction'];
-        paymentCardControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
-      }
-    };
-
     // If payment card is prevented, clear value and errors
     if (preventPaymentCard) {
       if (paymentCardRequestValue !== null) {
         paymentCardControl.setValue(null);
       }
-      clearPayInFullError();
+      clearPayInFullError(paymentCardControl);
       return null;
     }
 
@@ -40,7 +43,7 @@ export function payInFullPaymentCardValidator(preventPaymentCard?: boolean): Val
     }
 
     // Clear errors in all other cases
-    clearPayInFullError();
+    clearPayInFullError(paymentCardControl);
     return null;
   };
 }
