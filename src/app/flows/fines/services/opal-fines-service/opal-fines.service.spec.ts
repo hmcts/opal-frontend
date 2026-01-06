@@ -41,7 +41,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fine
 import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-payload.mock';
 import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
-import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import {
   OPAL_FINES_AMEND_PAYMENT_TERMS_PAY_IN_FULL_PAYLOAD_MOCK,
   OPAL_FINES_AMEND_PAYMENT_TERMS_LUMP_SUM_PAYLOAD_MOCK,

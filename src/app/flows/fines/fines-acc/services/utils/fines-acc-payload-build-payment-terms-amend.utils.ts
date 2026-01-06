@@ -1,5 +1,5 @@
 import { IFinesAccPaymentTermsAmendState } from '../../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
-import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IFinesPaymentTermsOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 
 /**

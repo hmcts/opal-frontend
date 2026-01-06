@@ -7,7 +7,7 @@ import { IFinesAccPaymentTermsAmendForm } from './interfaces/fines-acc-payment-t
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM } from './constants/fines-acc-payment-terms-amend-form.constant';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
-import { IOpalFinesAmendPaymentTermsPayload } from '../../services/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from '../../services/opal-fines-service/interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';

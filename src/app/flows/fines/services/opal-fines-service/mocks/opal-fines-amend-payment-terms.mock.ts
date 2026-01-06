@@ -1,4 +1,4 @@
-import { IOpalFinesAmendPaymentTermsPayload } from '../interfaces/opal-fines-amend-payment-terms.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from '../interfaces/opal-fines-amend-payment-terms-payload.interface';
 
 /**
  * Mock payload for amending payment terms - Pay in full scenario

@@ -23,7 +23,7 @@ import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/inte
 import { IFinesAccPaymentTermsAmendState } from '../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
 import { IFinesAccPaymentTermsAmendForm } from '../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-form.interface';
 import { transformPaymentTermsData } from './utils/fines-acc-payload-transform-payment-terms-data.utils';
-import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-build-payment-terms-amend.utils';
 import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
 

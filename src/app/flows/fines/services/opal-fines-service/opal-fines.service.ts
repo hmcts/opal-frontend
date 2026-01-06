@@ -50,7 +50,7 @@ import {
 } from './interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
-import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
