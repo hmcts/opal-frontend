@@ -26,6 +26,7 @@ import { EditCompanyDetailsActions } from '../../../../e2e/functional/opal/actio
 import { AccountDetailsNavActions } from '../../../../e2e/functional/opal/actions/account-details/details.nav.actions';
 import { EditParentGuardianDetailsActions } from '../../../../e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
 import { log } from '../../../utils/log.helper';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 
 // Factory functions so each step gets a fresh instance with its own Cypress chain
 const flow = () => new AccountEnquiryFlow();
@@ -54,8 +55,9 @@ When('I select the latest published account and verify the header is {string}', 
  * @step Searches for an account by last name using the AccountEnquiryFlow.
  */
 When('I search for the account by last name {string}', (surname: string) => {
-  log('step', 'Searching by surname', { surname });
-  flow().searchBySurname(surname);
+  const surnameWithUniq = applyUniqPlaceholder(surname);
+  log('step', 'Searching by surname', { surname: surnameWithUniq });
+  flow().searchBySurname(surnameWithUniq);
 });
 
 /**
@@ -66,11 +68,13 @@ When('I search for the account by last name {string}', (surname: string) => {
 When(
   'I search for the account by last name {string} and verify the page header is {string}',
   (surname: string, header: string) => {
-    log('step', 'Search by surname and verify header', { surname, expectedHeader: header });
+    const surnameWithUniq = applyUniqPlaceholder(surname);
+    const headerWithUniq = applyUniqPlaceholder(header);
+    log('step', 'Search by surname and verify header', { surname: surnameWithUniq, expectedHeader: headerWithUniq });
 
-    flow().searchBySurname(surname);
+    flow().searchBySurname(surnameWithUniq);
     flow().clickLatestPublishedFromResultsOrAcrossPages();
-    atAGlanceDetails().assertHeaderContains(header);
+    atAGlanceDetails().assertHeaderContains(headerWithUniq);
   },
 );
 
@@ -79,8 +83,9 @@ When(
  * “opens the latest result”
  */
 When('I search for the account by last name {string} and open the latest result', (surname: string) => {
-  log('step', 'Search by surname and open latest result', { surname });
-  flow().searchAndClickLatestBySurnameOpenLatestResult(surname);
+  const surnameWithUniq = applyUniqPlaceholder(surname);
+  log('step', 'Search by surname and open latest result', { surname: surnameWithUniq });
+  flow().searchAndClickLatestBySurnameOpenLatestResult(surnameWithUniq);
 });
 
 /**
@@ -96,8 +101,9 @@ When('I search for the account by last name {string} and open the latest result'
  *   Then I should see the account summary header contains "Mr John ACCDETAILSURNAME"
  */
 Then(/^I should see the (?:page|account(?: summary)?) header contains "([^"]+)"$/, (expected: string) => {
-  log('assert', 'Asserting header contains', { expected });
-  atAGlanceDetails().assertHeaderContains(expected);
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Asserting header contains', { expected: expectedWithUniq });
+  atAGlanceDetails().assertHeaderContains(expectedWithUniq);
 });
 
 /**
@@ -106,8 +112,9 @@ Then(/^I should see the (?:page|account(?: summary)?) header contains "([^"]+)"$
  * @param expected - Expected header text for the section.
  */
 When('I go to the Defendant details section and the header is {string}', (expected: string) => {
-  log('step', 'Navigate to Defendant details', { expected });
-  flow().goToDefendantDetailsAndAssert(expected);
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('step', 'Navigate to Defendant details', { expected: expectedWithUniq });
+  flow().goToDefendantDetailsAndAssert(expectedWithUniq);
 });
 
 /**
@@ -162,8 +169,9 @@ When('I edit the Parent or guardian details without making changes', () => {
  * @param value - New company name to enter.
  */
 When('I edit the Company details and change the Company name to {string}', (value: string) => {
-  log('step', 'Edit Company name', { value });
-  flow().editCompanyDetailsAndChangeName(value);
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Edit Company name', { value: valueWithUniq });
+  flow().editCompanyDetailsAndChangeName(valueWithUniq);
 });
 
 /**
@@ -248,8 +256,9 @@ When('I cancel the company edit and choose to stay', () => {
  * @param expectedHeader - Header text expected after discarding changes.
  */
 When('I discard the company edit changes and expect the header {string}', (expectedHeader: string) => {
-  log('step', 'Discard company edits', { expectedHeader });
-  flow().discardCompanyEditAndReturn(expectedHeader);
+  const headerWithUniq = applyUniqPlaceholder(expectedHeader);
+  log('step', 'Discard company edits', { expectedHeader: headerWithUniq });
+  flow().discardCompanyEditAndReturn(headerWithUniq);
 });
 
 /**
@@ -329,8 +338,9 @@ When('I establish a defendant amendment baseline with first name {string}', (upd
  * @param updatedCompanyName - Company name to persist and audit.
  */
 When('I establish a company amendment baseline with company name {string}', (updatedCompanyName: string) => {
-  log('step', 'Establish company amendment baseline', { updatedCompanyName });
-  flow().establishCompanyAmendmentBaseline(updatedCompanyName);
+  const companyWithUniq = applyUniqPlaceholder(updatedCompanyName);
+  log('step', 'Establish company amendment baseline', { updatedCompanyName: companyWithUniq });
+  flow().establishCompanyAmendmentBaseline(companyWithUniq);
 });
 
 /**
@@ -359,8 +369,9 @@ Then('I verify defendant amendments via API for first name {string}', (expectedF
  * @param expectedCompanyName - Company name expected in the amendment record.
  */
 Then('I verify Company amendments via API for company name {string}', (expectedCompanyName: string) => {
-  log('assert', 'Verify company amendments via API', { expectedCompanyName });
-  flow().verifyCompanyAmendmentsViaApi(expectedCompanyName);
+  const companyWithUniq = applyUniqPlaceholder(expectedCompanyName);
+  log('assert', 'Verify company amendments via API', { expectedCompanyName: companyWithUniq });
+  flow().verifyCompanyAmendmentsViaApi(companyWithUniq);
 });
 
 /**
@@ -403,8 +414,9 @@ Then('I verify no amendments were created via API for parent or guardian details
  * @param companyName - Company name to search by.
  */
 When('I search for the account by company name {string}', (companyName: string) => {
-  log('step', 'Search by company name', { companyName });
-  flow().searchByCompanyName(companyName);
+  const companyWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Search by company name', { companyName: companyWithUniq });
+  flow().searchByCompanyName(companyWithUniq);
 });
 
 /**
@@ -413,8 +425,9 @@ When('I search for the account by company name {string}', (companyName: string) 
  * @param companyName - The visible company name to locate and open.
  */
 When('I open the company account details for {string}', (companyName: string) => {
-  log('step', 'Open company account details', { companyName });
-  flow().openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+  const companyWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Open company account details', { companyName: companyWithUniq });
+  flow().openCompanyAccountDetailsByNameAndSelectLatest(companyWithUniq);
 });
 
 /**

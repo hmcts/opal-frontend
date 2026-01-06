@@ -47,6 +47,7 @@ import { DraftAccountsTableColumn } from '../../../../e2e/functional/opal/action
 import { DraftPayloadType } from '../../../../support/utils/payloads';
 import { log } from '../../../utils/log.helper';
 import { DraftAccountsFlow } from '../../../../e2e/functional/opal/flows/draft-accounts.flow';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 
 type AccountType = DraftPayloadType;
 const inputter = () => new CreateManageDraftsActions();
@@ -74,7 +75,8 @@ function createDraftAndPrepareForPublishing(
   table: DataTable,
   status: string = 'Publishing Pending',
 ) {
-  const details = table.hashes?.() ?? [];
+  const tableWithUniq = applyUniqToDataTable(table);
+  const details = tableWithUniq.hashes?.() ?? [];
 
   log('step', `Creating ${accountType} draft → ${status}`, {
     accountType,
@@ -83,7 +85,7 @@ function createDraftAndPrepareForPublishing(
     rowCount: details.length,
   });
 
-  return createDraftAndSetStatus(accountType, status, table);
+  return createDraftAndSetStatus(accountType, status, tableWithUniq);
 }
 
 /**
@@ -92,10 +94,33 @@ function createDraftAndPrepareForPublishing(
  * @returns The parsed status and a filtered DataTable without the status row.
  */
 function extractStatusAndTable(table: DataTable): { status: string; filteredTable: DataTable } {
-  const raw = table.raw();
-  const statusRowIndex = raw.findIndex(([key]) => key?.trim().toLowerCase() === 'account_status');
-  const status = statusRowIndex >= 0 ? (raw[statusRowIndex][1] ?? '').trim() : 'Publishing Pending';
-  const filteredRows = statusRowIndex >= 0 ? raw.filter((_, index) => index !== statusRowIndex) : raw;
+  const rawWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
+  const statusRowIndex = rawWithUniq.findIndex(([key]) => key?.trim().toLowerCase() === 'account_status');
+  const status = statusRowIndex >= 0 ? (rawWithUniq[statusRowIndex][1] ?? '').trim() : 'Publishing Pending';
+  const filteredRows = statusRowIndex >= 0 ? rawWithUniq.filter((_, index) => index !== statusRowIndex) : rawWithUniq;
+
+  const filteredTable: DataTable = buildDataTable(filteredRows);
+
+  return { status: status || 'Publishing Pending', filteredTable };
+}
+
+/**
+ * Applies `{uniq}` replacement to all values in a DataTable.
+ * @param table - Source DataTable to clone.
+ * @returns New DataTable with `{uniq}` tokens expanded.
+ */
+function applyUniqToDataTable(table: DataTable): DataTable {
+  const rowsWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
+  return buildDataTable(rowsWithUniq);
+}
+
+/**
+ * Builds a Cucumber DataTable-like object from raw rows.
+ * @param rawRows - 2D array of key/value rows.
+ * @returns New DataTable instance backed by the provided rows.
+ */
+function buildDataTable(rawRows: string[][]): DataTable {
+  const filteredRows = rawRows;
 
   const filteredTable: DataTable = {
     raw: () => filteredRows,
@@ -107,7 +132,7 @@ function extractStatusAndTable(table: DataTable): { status: string; filteredTabl
     toString: () => JSON.stringify(filteredRows),
   } as DataTable;
 
-  return { status: status || 'Publishing Pending', filteredTable };
+  return filteredTable;
 }
 
 /**

@@ -13,8 +13,8 @@ Feature: Account Enquiries – View Account Details
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
         | Account_status                          | Submitted                      |
         | account.defendant.forenames             | John                           |
-        | account.defendant.surname               | AccDetailSurname               |
-        | account.defendant.email_address_1       | John.AccDetailSurname@test.com |
+        | account.defendant.surname               | AccDetailSurname{uniq}               |
+        | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
         | account.defendant.telephone_number_home | 02078259314                    |
         | account.account_type                    | Fine                           |
         | account.prosecutor_case_reference       | PCR-AUTO-002                   |
@@ -23,8 +23,8 @@ Feature: Account Enquiries – View Account Details
         | account.payment_card_request            | false                          |
         | account.defendant.dob                   | 2002-05-15                     |
       # AC2 – Search and view account details
-      When I search for the account by last name "AccDetailSurname" and open the latest result
-      Then I should see the page header contains "Mr John ACCDETAILSURNAME"
+      When I search for the account by last name "AccDetailSurname{uniq}" and open the latest result
+      Then I should see the page header contains "Mr John ACCDETAILSURNAME{uniq}"
       # AC3 – Navigate to Defendant details
       When I go to the Defendant details section and the header is "Defendant details"
 
@@ -42,7 +42,7 @@ Feature: Account Enquiries – View Account Details
       And I edit the Defendant details and change the First name to "Test"
       And I attempt to cancel editing and choose OK on the confirmation dialog
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Mr John ACCDETAILSURNAME"
+      And I should see the account header contains "Mr John ACCDETAILSURNAME{uniq}"
 
     @PO-1593 @866 @PO-1110 @PO-1127
     Scenario: Saving defendant details updates the name and audit trail
@@ -62,21 +62,21 @@ Feature: Account Enquiries – View Account Details
       And I edit the Defendant details without making changes
       And I save the defendant details
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Mr Updated ACCDETAILSURNAME"
+      And I should see the account header contains "Mr Updated ACCDETAILSURNAME{uniq}"
       And I verify no amendments were created via API
 
   Rule: Company account baseline
     Background:
       # AC1 – Account setup
       Given I create a "company" draft account with the following details and set status "Publishing Pending":
-        | account.defendant.company_name    | Accdetail comp         |
-        | account.defendant.email_address   | Accdetailcomp@test.com |
+        | account.defendant.company_name    | Accdetail comp{uniq}         |
+        | account.defendant.email_address   | Accdetailcomp{uniq}@test.com |
         | account.defendant.post_code       | AB23 4RN               |
         | account.prosecutor_case_reference | PCR-AUTO-003           |
         | account.account_type              | Fine                   |
       # AC2 – Search and view account details
-      When I open the company account details for "Accdetail comp"
-      Then I should see the account header contains "Accdetail comp"
+      When I open the company account details for "Accdetail comp{uniq}"
+      Then I should see the account header contains "Accdetail comp{uniq}"
       # AC3 – Navigate to Company details
       When I go to the Defendant details section and the header is "Company details"
 
@@ -92,29 +92,29 @@ Feature: Account Enquiries – View Account Details
     Scenario: Company edit warning discards changes when I leave the form
       # AC4 - Route Guard (discard changes)
       And I edit the Company details and change the Company name to "Test"
-      And I discard the company edit changes and expect the header "Accdetail comp"
+      And I discard the company edit changes and expect the header "Accdetail comp{uniq}"
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Accdetail comp"
+      And I should see the account header contains "Accdetail comp{uniq}"
 
     @967 @PO-1111 @PO-1128
     Scenario: Saving company details updates the organisation name and audit trail
       # AC3 - Edit and save changes
-      And I edit the Company details and change the Company name to "Accdetail comp updated"
+      And I edit the Company details and change the Company name to "Accdetail comp updated{uniq}"
       And I save the company details
       Then I should return to the account details page Defendant tab
-      And I should see the company name contains "Accdetail comp updated"
+      And I should see the company name contains "Accdetail comp updated{uniq}"
       # AC3/4 - Verify via API
-      And I verify Company amendments via API for company name "Accdetail comp updated"
+      And I verify Company amendments via API for company name "Accdetail comp updated{uniq}"
 
     @967 @PO-1111 @PO-1128
     Scenario: Saving unchanged company details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
-      And I establish a company amendment baseline with company name "Accdetail comp updated"
+      And I establish a company amendment baseline with company name "Accdetail comp updated{uniq}"
       # AC4 – Save without making changes (no new amendments created)
       And I edit the Company details without making changes
       And I save the company details
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Accdetail comp updated"
+      And I should see the account header contains "Accdetail comp updated{uniq}"
       And I verify no amendments were created via API for company details
 
   Rule: Non-paying defendant account baseline
@@ -122,13 +122,13 @@ Feature: Account Enquiries – View Account Details
       # AC1 – Account setup
       Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
         | account.defendant.forenames           | Jane         |
-        | account.defendant.surname             | TestNonPayee |
+        | account.defendant.surname             | TestNonPayee{uniq} |
         | account.defendant.dob                 | 2012-06-15   |
         | account.defendant.parent_guardian.dob | 1980-02-15   |
         | account.prosecutor_case_reference     | PCR-AUTO-004 |
       # AC2 – Search and view account details
-      When I search for the account by last name "TestNonPayee" and open the latest result
-      Then I should see the page header contains "Miss Jane TESTNONPAYEE"
+      When I search for the account by last name "TestNonPayee{uniq}" and open the latest result
+      Then I should see the page header contains "Miss Jane TESTNONPAYEE{uniq}"
       # AC3 – Navigate to Defendant details
       When I go to the Defendant details section and the header is "Defendant details"
 
@@ -166,7 +166,7 @@ Feature: Account Enquiries – View Account Details
       And I edit the Defendant details without making changes
       And I save the defendant details
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Miss Updated TESTNONPAYEE"
+      And I should see the account header contains "Miss Updated TESTNONPAYEE{uniq}"
       And I verify no amendments were created via API
 
   Rule: Parent or guardian account baseline
@@ -175,8 +175,8 @@ Feature: Account Enquiries – View Account Details
       Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
         | Account_status                          | Submitted               |
         | account.defendant.forenames             | Alex                    |
-        | account.defendant.surname               | PgPayEdit               |
-        | account.defendant.email_address_1       | Alex.PgPayEdit@test.com |
+        | account.defendant.surname               | PgPayEdit{uniq}               |
+        | account.defendant.email_address_1       | Alex.PgPayEdit{uniq}@test.com |
         | account.defendant.telephone_number_home | 02078250011             |
         | account.account_type                    | Fine                    |
         | account.prosecutor_case_reference       | PCR-AUTO-009            |
@@ -186,8 +186,8 @@ Feature: Account Enquiries – View Account Details
         | account.defendant.dob                   | 2010-11-10              |
         | account.defendant.parent_guardian.dob   | 1980-02-15              |
       # AC2 – Search and view account details
-      When I search for the account by last name "PgPayEdit" and open the latest result
-      Then I should see the page header contains "Alex PGPAYEDIT"
+      When I search for the account by last name "PgPayEdit{uniq}" and open the latest result
+      Then I should see the page header contains "Alex PGPAYEDIT{uniq}"
       # AC3 – Navigate to Parent or guardian details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
 
@@ -209,5 +209,5 @@ Feature: Account Enquiries – View Account Details
       And I edit the Parent or guardian details without making changes
       And I save the parent or guardian details
       Then I should return to the account details page Parent or guardian tab
-      And I should see the parent or guardian name contains "Updated LNAME"
+      And I should see the parent or guardian name contains "Updated PGPAYEDIT{uniq}"
       And I verify no amendments were created via API for parent or guardian details
