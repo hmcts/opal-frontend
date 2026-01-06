@@ -16,7 +16,6 @@ import { finesMacPayloadMapAccountPaymentTerms } from './utils/fines-mac-payload
 import { finesMacPayloadMapAccountAccountNotesPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-account-notes.utils';
 import { finesMacPayloadMapAccountOffences } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-offences.utils';
 import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-defendant.utils';
-import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
@@ -166,47 +165,6 @@ export class FinesMacPayloadService {
 
     // Transform the payload, format the dates and times to the correct format
     return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
-  }
-
-  /**
-   * Checks if the given value is non-empty.
-   *
-   * This method determines if the provided value is non-empty by:
-   * - Checking if the value is an array and has any elements.
-   * - Checking if the value is not null.
-   *
-   * @param value - The value to check.
-   * @returns `true` if the value is non-empty, `false` otherwise.
-   */
-  private hasNonEmptyValue(value: unknown): boolean {
-    // If it's an array, check if it has any elements
-    // This is for the aliases
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return value !== null;
-  }
-
-  /**
-   * Determines the status of the fines MAC state form based on the provided form data.
-   *
-   * @template T - The type of the form data object.
-   * @param {T} formData - The form data object to evaluate.
-   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
-   */
-  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
-    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
-
-    // Check if any of the values are not empty
-    for (const [, value] of Object.entries(formData)) {
-      const hasValue = this.hasNonEmptyValue(value);
-      // If we have a value and the status is not provided, set it to provided
-      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
-        newStatus = FINES_MAC_STATUS.PROVIDED;
-      }
-    }
-
-    return newStatus;
   }
 
   /**
