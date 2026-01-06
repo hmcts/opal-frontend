@@ -1,41 +1,118 @@
 // eslint.config.js
 //
-// ESLint 9 (flat config) for a mixed Angular + Cypress repo.
-//
-// Design goals:
-// - Angular app code is linted by `ng lint` (Angular ESLint builder)
-// - ESLint focuses on Cypress automation only
-// - Cypress framework code is held to higher documentation standards
-// - Legacy step definitions are not disturbed
+// ESLint 9 flat-config for a mixed Angular + Cypress repo.
+// - Angular app linting (src/**) similar to previous .eslintrc.json
+// - Cypress linting (cypress/**) low-noise baseline + strict framework docs
+// - Inline Angular templates handled via processor: extract-inline-html
 //
 
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
+
+import angular from '@angular-eslint/eslint-plugin';
+import angularTemplatePlugin from '@angular-eslint/eslint-plugin-template';
+import angularTemplateParser from '@angular-eslint/template-parser';
+
 import jsdoc from 'eslint-plugin-jsdoc';
 
 export default [
   // ------------------------------------------------------------
-  // Global ignores (safe)
+  // Global ignores
   // ------------------------------------------------------------
   {
     ignores: ['projects/**/*', 'node_modules/**/*', 'dist/**/*', 'out-tsc/**/*', 'coverage/**/*'],
   },
 
   // ------------------------------------------------------------
-  // Angular SOURCE passthrough
-  // Required so `ng lint` does not fail with
-  // "All files matching patterns are ignored".
-  // Actual Angular rules are owned by the Angular ESLint builder.
+  // Do not warn on unused eslint-disable directives
   // ------------------------------------------------------------
   {
-    files: ['src/**/*.ts', 'src/**/*.html'],
-    rules: {},
+    linterOptions: {
+      reportUnusedDisableDirectives: 'off',
+    },
   },
 
   // ------------------------------------------------------------
-  // Cypress TypeScript BASELINE (LOW NOISE)
-  // Applies to ALL Cypress TS files, including legacy steps/tests.
-  // Intentionally relaxed.
+  // ANGULAR app TS (src/**/*.ts)
+  // Mirrors prior .eslintrc.json extends + rules.
+  // Also enables inline-template extraction.
+  // ------------------------------------------------------------
+  {
+    files: ['src/**/*.ts'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
+
+    // Enables linting of inline templates inside component TS files
+    // by extracting them into virtual HTML for the template rules. :contentReference[oaicite:1]{index=1}
+    processor: angularTemplatePlugin.processors['extract-inline-html'],
+
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      '@angular-eslint': angular,
+    },
+    rules: {
+      // In TS projects this rule creates noise; TS compiler covers it
+      'no-undef': 'off',
+
+      // Similar to: "plugin:@typescript-eslint/recommended"
+      ...tsPlugin.configs.recommended.rules,
+
+      // Similar to: "plugin:@angular-eslint/recommended"
+      ...angular.configs.recommended.rules,
+
+      // Your previous custom rules
+      '@angular-eslint/directive-selector': ['error', { type: 'attribute', prefix: 'app', style: 'camelCase' }],
+      '@angular-eslint/component-selector': ['error', { type: 'element', prefix: 'app', style: 'kebab-case' }],
+      '@typescript-eslint/member-ordering': [
+        'error',
+        {
+          default: [
+            'private-static-field',
+            'protected-static-field',
+            'public-static-field',
+            'private-instance-field',
+            'protected-instance-field',
+            'public-instance-field',
+            'constructor',
+            'private-static-method',
+            'protected-static-method',
+            'public-static-method',
+            'private-instance-method',
+            'protected-instance-method',
+            'public-instance-method',
+          ],
+        },
+      ],
+    },
+  },
+
+  // ------------------------------------------------------------
+  // ANGULAR templates (src/**/*.html) + extracted inline templates
+  // This block will lint:
+  // - real .html files under src/
+  // - virtual HTML extracted from inline templates
+  // ------------------------------------------------------------
+  {
+    files: ['src/**/*.html', '**/*.html'],
+    languageOptions: {
+      parser: angularTemplateParser,
+    },
+    plugins: {
+      '@angular-eslint/template': angularTemplatePlugin,
+    },
+    rules: {
+      ...angularTemplatePlugin.configs.recommended.rules,
+      ...angularTemplatePlugin.configs.accessibility.rules,
+    },
+  },
+
+  // ------------------------------------------------------------
+  // CYPRESS baseline (LOW NOISE): cypress/**/*.ts
   // ------------------------------------------------------------
   {
     files: ['cypress/**/*.ts'],
@@ -51,21 +128,15 @@ export default [
       jsdoc,
     },
     rules: {
-      // Cypress globals (cy, Cypress) are handled by TS typings
       'no-undef': 'off',
-
-      // Legacy steps often rely on unused args
       '@typescript-eslint/no-unused-vars': 'off',
-
-      // Pragmatic Cypress patterns
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'warn',
     },
   },
 
   // ------------------------------------------------------------
-  // Cypress FRAMEWORK CODE (STRICT)
-  // Enforces TS hygiene + mandatory docblocks.
+  // CYPRESS framework code (STRICT): docs + TS hygiene
   // ------------------------------------------------------------
   {
     files: [
@@ -76,10 +147,8 @@ export default [
       'cypress/shared/selectors/**/*.ts',
     ],
     rules: {
-      // TS hygiene where it actually matters
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
 
-      // Require docblocks (including private methods)
       'jsdoc/require-jsdoc': [
         'error',
         {
@@ -91,16 +160,10 @@ export default [
           publicOnly: false,
         },
       ],
-
-      // Require at least a description ("metadata")
       'jsdoc/require-description': 'error',
-
-      // Core JSDoc validation
       'jsdoc/check-tag-names': 'error',
       'jsdoc/check-param-names': 'error',
       'jsdoc/require-param': 'error',
-
-      // Returns enforcement (warn if this ever becomes noisy)
       'jsdoc/require-returns': 'error',
       'jsdoc/require-param-description': 'warn',
       'jsdoc/require-returns-description': 'warn',
@@ -108,7 +171,7 @@ export default [
   },
 
   // ------------------------------------------------------------
-  // newStyleSteps: SEMANTIC + TECHNICAL documentation
+  // newStyleSteps: allow semantic + technical tags
   // ------------------------------------------------------------
   {
     files: ['cypress/support/step_definitions/newStyleSteps/**/*.ts'],
@@ -123,8 +186,7 @@ export default [
   },
 
   // ------------------------------------------------------------
-  // Framework layers (actions / flows / selectors):
-  // TECHNICAL documentation only
+  // Actions / Flows / Selectors: allow 4 technical tags everywhere
   // ------------------------------------------------------------
   {
     files: [
@@ -133,12 +195,7 @@ export default [
       'cypress/shared/selectors/**/*.ts',
     ],
     rules: {
-      'jsdoc/check-tag-names': [
-        'error',
-        {
-          definedTags: ['remarks', 'details', 'note', 'example'],
-        },
-      ],
+      'jsdoc/check-tag-names': ['error', { definedTags: ['remarks', 'details', 'note', 'example'] }],
     },
   },
 ];
