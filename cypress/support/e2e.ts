@@ -11,13 +11,12 @@
 import './commands';
 
 // Simple marker so we can confirm in CI logs this file is actually loaded
- 
+
 console.log('*** Cypress e2e support file loaded ***');
 
 Cypress.on('uncaught:exception', (err) => {
   const message = String((err as any)?.message || err || '');
 
-   
   console.error('UNCAUGHT EXCEPTION (Cypress global handler):', message);
 
   // Known noisy sourcemap/Base64 error coming from Cucumber/source-map internals.
