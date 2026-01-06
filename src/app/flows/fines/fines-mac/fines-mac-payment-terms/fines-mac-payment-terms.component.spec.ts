@@ -123,7 +123,9 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it('should return note for new collection order made by user', () => {
     const result = component['systemGenerateNote']('01/01/2024', false);
-    expect(result).toBe(`A collection order was made today by ${component['userState'].name}`);
+    expect(result).toBe(
+      `A collection order has been made by ${component['userState'].name} using Authorised Functions`,
+    );
   });
 
   it('should add a system generated note to the finesMacStore', () => {
