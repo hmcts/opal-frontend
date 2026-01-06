@@ -254,25 +254,26 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       Given I am logged in with email "opal-test@hmcts.net"
       And I stub fixed penalty draft account listings
       When I open Create and Manage Draft Accounts
-      And I view the inputter draft tab "In review"
-      Then I see fixed penalty in the account type column
-      When I view the inputter draft tab "Rejected"
-      Then I see fixed penalty in the account type column
-      When I view the inputter draft tab "Approved"
-      Then I see fixed penalty in the account type column
-      When I view the inputter draft tab "Deleted"
-      Then I see fixed penalty in the account type column
+      And I view the "In review" tab on the Create and Manage Draft Accounts page
+      Then I see "Fixed Penalty" in the account type column on the draft table
+      When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+      Then I see "Fixed Penalty" in the account type column on the draft table
+      When I view the "Approved" tab on the Create and Manage Draft Accounts page
+      Then I see "Fixed Penalty" in the account type column on the draft table
+      When I view the "Deleted" tab on the Create and Manage Draft Accounts page
+      Then I see "Fixed Penalty" in the account type column on the draft table
+
 
     @PO-1800
     Scenario: Checker user can view Fixed Penalty accounts in Check and Validate Draft Accounts
       Given I am logged in with email "opal-test-4@hmcts.net"
       And I stub fixed penalty draft account listings
       When I open Check and Validate Draft Accounts
-      And I view the checker draft tab "To review"
-      Then I see fixed penalty in the account type column
-      When I view the checker draft tab "Rejected"
-      Then I see fixed penalty in the account type column
-      When I view the checker draft tab "Deleted"
-      Then I see fixed penalty in the account type column
-      When I view the checker draft tab "Failed"
-      Then I see fixed penalty in the account type column
+      And I view the "To review" tab on the Check and Validate page
+      Then I see "Fixed Penalty" in the account type column on the draft table
+      When I view the "Rejected" tab on the Check and Validate page
+      Then I see "Fixed Penalty" in the account type column on the draft table
+      When I view the "Deleted" tab on the Check and Validate page
+      Then I see "Fixed Penalty" in the account type column on the draft table
+      When I view the "Failed" tab on the Check and Validate page
+      Then I see "Fixed Penalty" in the account type column on the draft table

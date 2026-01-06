@@ -2,7 +2,7 @@ import { AccountSearchIndividualsActions } from '../actions/search/search.indivi
 import { AccountSearchCompanyActions } from '../actions/search/search.companies.actions';
 import { AccountSearchNavActions } from '../actions/search/search.nav.actions';
 import { AccountDetailsNotesActions } from '../actions/account-details/details.notes.actions';
-import { ResultsActions } from '../actions/search.results.actions';
+import { ResultsActions } from '../actions/search/search.results.actions';
 import { AccountDetailsDefendantActions } from '../actions/account-details/details.defendant.actions';
 import { AccountDetailsNavActions } from '../actions/account-details/details.nav.actions';
 import { AccountDetailsCommentsActions } from '../actions/account-details/details.comments.actions';
