@@ -3242,9 +3242,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.19":
-  version: 0.0.19
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.19"
+"@hmcts/opal-frontend-common-node@npm:^0.0.20":
+  version: 0.0.20
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.20"
   dependencies:
     "@azure/msal-browser": "npm:^4.11.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3267,7 +3267,7 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/516f548d26a25043c4af7308f7b449972a92977aaf2e8c6c8c8bc2fbb63f5767605ddc4892904d1daf1794286f9ba0c1f7753ce9f20c94420ed0ab958efa225b
+  checksum: 10/955f384e628bc362b043aacde5ff2eb6a891f6d148f87e2a2096d354dcdec9eb046d4c2a2d0c6ff36350cdf5605aa9c889be03f4a95c8f3098cec040f18bda1e
   languageName: node
   linkType: hard
 
@@ -13778,7 +13778,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.55"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.19"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.20"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^7.0.0"
