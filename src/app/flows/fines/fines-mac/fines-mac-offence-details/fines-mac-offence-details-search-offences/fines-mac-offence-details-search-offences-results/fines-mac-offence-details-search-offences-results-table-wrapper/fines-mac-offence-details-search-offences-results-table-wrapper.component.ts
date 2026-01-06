@@ -11,9 +11,7 @@ import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } from './interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.interface';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableSort } from './interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-sort.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { COPY_CODE_TO_CLIPBOARD } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
-import { COPIED_CODE_TO_CLIPBOARD } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-copied-code.constant';
-import { COPY_CODE_TO_CLIPBOARD_TIMEOUT } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-timeout.constant';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 
 @Component({
@@ -58,7 +56,8 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   ) {
     this.abstractExistingSortState = existingSortState;
   }
-  public readonly COPY_CODE_TO_CLIPBOARD = COPY_CODE_TO_CLIPBOARD;
+  public readonly COPY_CODE_TO_CLIPBOARD =
+    FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD;
 
   /**
    * Copies the provided value to the clipboard and provides visual and screen reader feedback.
@@ -78,9 +77,11 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
     const originalAriaLive = linkElement.getAttribute('aria-live');
 
     // Update visual label
-    linkElement.innerText = COPIED_CODE_TO_CLIPBOARD;
+    linkElement.innerText =
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD;
     // Update screen reader span
-    liveRegion.textContent = COPIED_CODE_TO_CLIPBOARD;
+    liveRegion.textContent =
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD;
     // Set ARIA live assertive for immediate SR announcement
     linkElement.setAttribute('aria-live', 'assertive');
 
@@ -93,7 +94,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
       }
       liveRegion.textContent = '';
       this.copyCodeTimeoutId = null;
-    }, COPY_CODE_TO_CLIPBOARD_TIMEOUT);
+    }, FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD_TIMEOUT);
   }
 
   /**

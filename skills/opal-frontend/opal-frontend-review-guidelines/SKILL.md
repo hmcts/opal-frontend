@@ -95,7 +95,7 @@ Apply these rules when reviewing changes in opal-frontend; focus on P0/P1 blocke
 - Prefer container vs presentational component separation when complexity grows.
 - Keep features self-contained by default; avoid barrels and prefer direct imports.
 - Provide brief inline docs when introducing patterns others should copy.
-- Keep shared definition files (`*.interface.ts`, `*.type.ts`, `*.constant.ts`, `*.mock.ts`) isolated and side-effect free; prefer one export per file, and avoid re-exports, runtime logic, or framework-specific dependencies.
+- Keep shared definition files (`*.interface.ts`, `*.type.ts`, `*.constant.ts`, `*.mock.ts`) isolated and side-effect free; prefer one export per file, and avoid re-exports, runtime logic, or framework-specific dependencies. If a small set of constants are always used together, prefer a single exported object with an explicit shape over multiple single-constant files.
 - Prefer explicit file suffixes to indicate responsibility (`.component`, `.service`, `.directive`, `.pipe`, `.interface`, `.type`, `.constant`, `.mock`, etc.); avoid unsuffixed files unless they are pure, framework-agnostic helpers.
 
 ## Ignore Unless Requested

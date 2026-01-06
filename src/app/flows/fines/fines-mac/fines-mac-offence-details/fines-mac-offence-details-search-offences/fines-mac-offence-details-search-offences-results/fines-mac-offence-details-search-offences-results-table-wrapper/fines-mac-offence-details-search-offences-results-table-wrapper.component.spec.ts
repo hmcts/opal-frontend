@@ -1,9 +1,7 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent } from './fines-mac-offence-details-search-offences-results-table-wrapper.component';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { COPY_CODE_TO_CLIPBOARD } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
-import { COPIED_CODE_TO_CLIPBOARD } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-copied-code.constant';
-import { COPY_CODE_TO_CLIPBOARD_TIMEOUT } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-timeout.constant';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent;
@@ -33,19 +31,26 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
 
     const linkElement = document.createElement('a');
     const liveRegion = document.createElement('span');
-    linkElement.innerText = COPY_CODE_TO_CLIPBOARD;
+    linkElement.innerText =
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD;
 
     component.copyCodeToClipboard(linkElement, liveRegion, '1234');
 
     expect(utilsService.copyToClipboard).toHaveBeenCalledWith('1234');
 
-    expect(linkElement.innerText).toBe(COPIED_CODE_TO_CLIPBOARD);
+    expect(linkElement.innerText).toBe(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD,
+    );
     expect(linkElement.getAttribute('aria-live')).toBe('assertive');
-    expect(liveRegion.textContent).toBe(COPIED_CODE_TO_CLIPBOARD);
+    expect(liveRegion.textContent).toBe(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD,
+    );
 
-    tick(COPY_CODE_TO_CLIPBOARD_TIMEOUT);
+    tick(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD_TIMEOUT);
 
-    expect(linkElement.innerText).toBe(COPY_CODE_TO_CLIPBOARD);
+    expect(linkElement.innerText).toBe(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD,
+    );
     expect(linkElement.hasAttribute('aria-live')).toBeFalse();
     expect(liveRegion.textContent).toBe('');
   }));
@@ -56,13 +61,14 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
 
     const linkElement = document.createElement('a');
     const liveRegion = document.createElement('span');
-    linkElement.innerText = COPY_CODE_TO_CLIPBOARD;
+    linkElement.innerText =
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD;
     linkElement.setAttribute('aria-live', 'polite');
 
     component.copyCodeToClipboard(linkElement, liveRegion, '5678');
 
     expect(linkElement.getAttribute('aria-live')).toBe('assertive');
-    tick(COPY_CODE_TO_CLIPBOARD_TIMEOUT);
+    tick(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD_TIMEOUT);
 
     expect(linkElement.getAttribute('aria-live')).toBe('polite');
   }));
