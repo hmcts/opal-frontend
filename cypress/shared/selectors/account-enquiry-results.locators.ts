@@ -150,6 +150,7 @@ export const AccountEnquiryResultsLocators = {
   /**
    * Filters for rows containing a given surname.
    * @param surname - Visible defendant surname text.
+   * @returns Selector that narrows rows to those containing the surname.
    * @example
    * ```ts
    * cy.get(AccountEnquiryResultsLocators.table.rows)
@@ -161,12 +162,14 @@ export const AccountEnquiryResultsLocators = {
   /**
    * Filters for rows containing a specific account number.
    * @param accountNo - Visible account number text.
+   * @returns Selector that narrows rows to those containing the account number.
    */
   rowWithAccount: (accountNo: string) => `:has(td#defendantAccountNumber a:contains("${accountNo}"))`,
 
   /**
    * Builds a dynamic selector for a clickable account link by its visible text.
    * @param accountNumber - Account number text displayed in the link.
+    * @returns Selector for the account link matching the provided number.
    * @example
    * ```ts
    * cy.get(AccountEnquiryResultsLocators.linkByAccountNumber('25000001E')).click();

@@ -1,5 +1,5 @@
 /**
- * @fileoverview AccountDetailsDefendantActions
+ * @file AccountDetailsDefendantActions
  * Provides reusable UI interactions and assertions for the Defendant Details page.
  * Supports both individual and company account contexts.
  *
@@ -8,12 +8,13 @@
 import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant-details.locators';
 import { CommonActions } from '../common/common.actions';
 
+/** Actions and assertions for the Defendant tab on Account Details. */
 export class AccountDetailsDefendantActions {
   readonly common = new CommonActions();
 
   /**
    * Assert section header text matches expectation
-   * @param expected
+   * @param expected - Expected heading text.
    */
   assertSectionHeader(expected: string): void {
     cy.get(L.defendantTabHeader.title, { timeout: 10000 })
@@ -31,7 +32,7 @@ export class AccountDetailsDefendantActions {
    * Ensures the tab header is visible first, scrolls the link into view,
    * then clicks it. Optionally waits for a supplied form selector to appear.
    *
-   * @param {Object} [opts]
+   * @param {Object} [opts] - Optional configuration for the click/wait.
    * @param {number} [opts.timeout=10000] - Max time to wait for elements.
    * @param {string} [opts.formSelector] - If provided, waits for this form to be visible after clicking.
    */

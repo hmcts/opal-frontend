@@ -12,6 +12,7 @@ import { log } from '../../utils/log.helper';
 /**
  * Returns a new instance of CommonActions.
  * @remarks This factory pattern ensures stateless actions across steps.
+ * @returns Fresh CommonActions instance for the current step.
  */
 const Common = (): CommonActions => new CommonActions();
 

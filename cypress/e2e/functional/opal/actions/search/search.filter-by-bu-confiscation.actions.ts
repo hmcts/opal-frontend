@@ -19,6 +19,7 @@ export type BusinessUnitMap = Map<string, string>;
 
 const log = createScopedLogger('SearchFilterByBUConfiscationActions');
 
+/** Actions for the Confiscation tab on Filter by Business Unit. */
 export class SearchFilterByBUConfiscationActions {
   // ──────────────────────────────
   // Master checkbox – "Confiscation business units"
@@ -199,6 +200,10 @@ export class SearchFilterByBUConfiscationActions {
     cy.get(SearchFilterByBUCommonLocators.selectedCountLabel).should('be.visible').and('contain.text', '0 of');
   }
 
+  /**
+   * Checks each supplied business unit checkbox by name.
+   * @param names - Business unit names to select.
+   */
   selectBusinessUnitsByNames(names: string[]): void {
     log('action', `Selecting Confiscation business units: ${names.join(', ') || '<none>'}`);
 
@@ -219,6 +224,10 @@ export class SearchFilterByBUConfiscationActions {
     }
   }
 
+  /**
+   * Asserts that each supplied business unit is selected by name.
+   * @param names - Business unit names expected to be checked.
+   */
   verifyBusinessUnitsSelectedByNames(names: string[]): void {
     log('assert', `Verifying selected Confiscation business units: ${names.join(', ') || '<none>'}`);
 

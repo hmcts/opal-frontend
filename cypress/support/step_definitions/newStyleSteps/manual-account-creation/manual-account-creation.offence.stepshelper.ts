@@ -40,6 +40,9 @@ export type ImpositionFinancialRow = {
 
 /**
  * Ensures the requested imposition panel exists, adding one if necessary.
+ * @param index Zero-based imposition index to ensure is present.
+ * @param attempts Internal retry counter to avoid infinite recursion.
+ * @returns Cypress chainable that resolves when the panel exists.
  */
 export const ensureImpositionExists = (index: number, attempts: number = 0): Cypress.Chainable => {
   if (attempts > 10) {
@@ -66,6 +69,7 @@ export const ensureImpositionExists = (index: number, attempts: number = 0): Cyp
 
 /**
  * Upserts imposition financial values, ensuring panels exist and tracking the current index.
+ * @param rows Array of imposition rows to insert/update.
  */
 export const upsertImpositionFinancialRows = (rows: ImpositionFinancialRow[]): void => {
   const sorted = [...rows].sort((a, b) => a.imposition - b.imposition);

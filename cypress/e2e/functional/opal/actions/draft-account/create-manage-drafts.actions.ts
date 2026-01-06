@@ -1,5 +1,5 @@
 /**
- * @fileoverview Actions for the Create and Manage Draft Accounts (inputter) page.
+ * @file Actions for the Create and Manage Draft Accounts (inputter) page.
  * Provides navigation, tab switching, and table assertions for draft listings.
  */
 import { DashboardActions } from '../dashboard.actions';

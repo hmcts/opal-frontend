@@ -1,5 +1,6 @@
 import { AccountParentOrGuardianDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.parent.guardian.details.locators';
 
+/** Actions for the Parent/Guardian section on Account Details. */
 export class AccountDetailsParentGuardianActions {
   /**
    * Clicks the top-right "Change" link in the Parent or guardian tab header.

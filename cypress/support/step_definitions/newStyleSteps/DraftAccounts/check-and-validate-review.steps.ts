@@ -1,6 +1,6 @@
 /**
  * @file check-and-validate-review.steps.ts
- * @fileoverview
+ * @file
  * Step definitions for Check and Validate draft account review flows (checker view).
  * Keeps steps thin by delegating to actions/intercepts with shared logging.
  *
@@ -87,6 +87,7 @@ Then('the draft review history item {int} is:', (position: number, table: DataTa
 });
 
 /**
+ * Opens the delete account flow from the review page.
  * @step Open the delete account flow from the review page.
  */
 const openDeleteFromReview = () => {

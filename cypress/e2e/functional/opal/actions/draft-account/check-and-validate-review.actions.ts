@@ -1,5 +1,5 @@
 /**
- * @fileoverview Actions for the Check and Validate draft account review pages.
+ * @file Actions for the Check and Validate draft account review pages.
  * Handles decision submission, delete confirmation, banners, and review history assertions.
  */
 import { CheckAndValidateReviewLocators as L } from '../../../../../shared/selectors/check-and-validate-review.locators';
@@ -189,6 +189,8 @@ export class CheckAndValidateReviewActions {
 
 /**
  * Normalises expectation keys to lower case for matching.
+ * @param expectations - Key/value map of expectation labels.
+ * @returns Normalised expectation object with `title`/`description` keys.
  */
 function normalizeExpectations(expectations: Record<string, string>): { title?: string; description?: string } {
   const entries = Object.entries(expectations).map(([key, value]) => [key.trim().toLowerCase(), value.trim()]);

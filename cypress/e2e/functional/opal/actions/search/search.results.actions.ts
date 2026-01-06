@@ -1,5 +1,5 @@
 /**
- * @fileoverview ResultsActions
+ * @file ResultsActions
  * Shared Cypress actions for the Account Search **results** page.
  * Centralises: waiting for results to load, opening the first/latest row,
  * and opening by a specific account number.
@@ -177,6 +177,7 @@ export class ResultsActions {
   /**
    * Opens a specific account by number, traversing pagination until found.
    * Throws if the link is not found on any page.
+   * @param accountNumber - Account number to open across pages.
    */
   public openByAccountNumberAcrossPages(accountNumber: string): void {
     log('open', 'Opening by account number across paginated results', { accountNumber });
@@ -413,6 +414,7 @@ export class ResultsActions {
    *  - Asserts link visibility
    *  - Performs a forced click for robustness
    *  - Returns the Cypress chainable for any caller chaining
+   * @returns Cypress chainable for further chaining.
    *
    * Page DOM example:
    *   <p class="govuk-body-m">

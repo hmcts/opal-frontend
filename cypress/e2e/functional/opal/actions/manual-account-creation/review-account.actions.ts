@@ -19,7 +19,7 @@ export class ManualReviewAccountActions {
   private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
-   * @description Clicks the Check account button from Account details.
+   * Clicks the Check account button from Account details.
    * @example
    *   review.clickCheckAccount();
    */
@@ -29,7 +29,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Asserts the review page header contains the expected text.
+   * Asserts the review page header contains the expected text.
    * @param expectedHeader - Header fragment to assert.
    * @example
    *   review.assertOnReviewPage('Check account details');
@@ -42,7 +42,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Asserts summary list rows by label/value for a given summary list id.
+   * Asserts summary list rows by label/value for a given summary list id.
    * @param summaryListId - The summaryListId attribute rendered on the page.
    * @param rows - Label/value expectations.
    * @example
@@ -106,7 +106,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Asserts offence/imposition rows on the review page.
+   * Asserts offence/imposition rows on the review page.
    * @param rows - Ordered offence rows; the Totals row is handled automatically.
    * @example
    *   review.assertOffenceTable([
@@ -161,7 +161,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Expands minor creditor details if the summary list is hidden.
+   * Expands minor creditor details if the summary list is hidden.
    */
   private ensureMinorCreditorDetailsVisible(): void {
     cy.get('body').then(($body) => {
@@ -179,7 +179,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Asserts the minor creditor summary list.
+   * Asserts the minor creditor summary list.
    * @param rows - Label/value expectations.
    * @example
    *   review.assertMinorCreditorDetails([{ label: 'Payment method', value: 'Pay by BACS' }]);
@@ -191,7 +191,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Clicks Submit for review on the review page.
+   * Clicks Submit for review on the review page.
    * @example
    *   review.submitForReview();
    */

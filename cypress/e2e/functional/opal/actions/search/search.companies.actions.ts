@@ -1,5 +1,5 @@
 /**
- * @fileoverview AccountSearchCompanyActions
+ * @file AccountSearchCompanyActions
  * High-level actions for the "Search for an account" ➜ Companies tab.
  * Delegates all results-page behaviours to ResultsActions to avoid duplication.
  * Uses mapping-driven assertions for clean, scalable field checks.
@@ -14,6 +14,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountSearchCompanyActions');
 
+/** Actions for the Companies tab within Account Search. */
 export class AccountSearchCompanyActions {
   private readonly accountSearchCommonActions = new AccountSearchCommonActions();
   private readonly commonActions = new CommonActions();
@@ -87,6 +88,12 @@ export class AccountSearchCompanyActions {
    * - accountSearchCommonActions.assertSharedFieldValues
    * - this.assertAddressLine1Equals
    * - this.assertPostcodeEquals
+   * @param expected Expected field values to assert.
+   * @param expected.companyName Company name value to assert.
+   * @param expected.accountNumber Account number value to assert.
+   * @param expected.referenceOrCaseNumber Reference/case number to assert.
+   * @param expected.addressLine1 Address line 1 to assert.
+   * @param expected.postcode Postcode to assert.
    */
   public assertAllFieldValues(expected: {
     companyName?: string;
@@ -118,6 +125,7 @@ export class AccountSearchCompanyActions {
    *
    * NOTE: this helper types into the company name input and clicks search.
    * Your flows may prefer to use enterCompanyName + common.submitSearch instead.
+   * @param companyName Company name to search for.
    */
   public byCompanyName(companyName: string): void {
     if (L.companyNameInput) {
@@ -135,6 +143,7 @@ export class AccountSearchCompanyActions {
   /**
    * Public helper to just enter the company name without submitting.
    * This is the method your flow calls (enterCompanyName).
+   * @param companyName Company name to type into the field.
    */
   public enterCompanyName(companyName: string): void {
     log('input', `Enter company name -> ${companyName}`);
@@ -158,6 +167,7 @@ export class AccountSearchCompanyActions {
    * Sets the Companies Address Line 1 field, if a value is supplied.
    *
    * If the value is empty or only whitespace, the method is a no-op.
+   * @param value - Address line 1 to enter (noop if blank).
    */
   public setAddressLine1(value?: string): void {
     const trimmed = (value ?? '').trim();
@@ -183,6 +193,7 @@ export class AccountSearchCompanyActions {
    * Sets the Companies Postcode field, if a value is supplied.
    *
    * If the value is empty or only whitespace, the method is a no-op.
+   * @param value - Postcode to enter (noop if blank).
    */
   public setPostcode(value?: string): void {
     const trimmed = (value ?? '').trim();
@@ -215,6 +226,7 @@ export class AccountSearchCompanyActions {
    * - GOV.UK checkboxes typically hide the input (`opacity: 0`), so we
    *   assert existence, not visibility.
    * - The method is idempotent: it only clicks when a state change is needed.
+   * @param checked - Whether the checkbox should be checked.
    */
   public setCompanyNameExactMatch(checked: boolean): void {
     log('input', `Setting "Company name exact match" to ${checked}`);
@@ -246,6 +258,7 @@ export class AccountSearchCompanyActions {
    * - Idempotent: only triggers a click when required.
    * - Interacts with the underlying input using `{ force: true }` to
    *   cope with hidden GOV.UK checkbox inputs.
+   * @param checked - Whether the checkbox should be checked.
    */
   public setIncludeAliases(checked: boolean): void {
     log('input', `Setting "Include aliases" (Companies) to ${checked}`);
@@ -426,6 +439,7 @@ export class AccountSearchCompanyActions {
   /**
    * Private helper to assert a checkbox is not present or not checked.
    * If the checkbox exists and is checked, uncheck it to enforce test isolation.
+   * @param checkboxSelector - CSS selector for the checkbox to check.
    */
   private assertCheckboxNotChecked(checkboxSelector: string): void {
     cy.get('body').then(($body) => {
@@ -452,7 +466,10 @@ export class AccountSearchCompanyActions {
     });
   }
 
-  /** Async flag used by flow branching. Use .then(active => ...) */
+  /**
+   * Async flag used by flow branching. Use `.then(active => ...)`.
+   * @returns Chainable yielding `true` when Companies tab is active.
+   */
   public isActiveSync(): Cypress.Chainable<boolean> {
     return cy.get('body', this.commonActions.getTimeoutOptions()).then(($b) => {
       const el = $b.find(L.companyNameInput || '');
@@ -466,7 +483,10 @@ export class AccountSearchCompanyActions {
   // Company field asserts
   // ──────────────────────────────
 
-  /** Asserts the Company name field equals the expected value. */
+  /**
+   * Asserts the Company name field equals the expected value.
+   * @param expected - Expected Company name value.
+   */
   public assertCompanyNameEquals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Company name equals "${expectedTrim}"`);
@@ -480,7 +500,10 @@ export class AccountSearchCompanyActions {
     }
   }
 
-  /** Asserts the Address Line 1 field equals the expected value. */
+  /**
+   * Asserts the Address Line 1 field equals the expected value.
+   * @param expected - Expected address line 1 value.
+   */
   public assertAddressLine1Equals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Company address line 1 equals "${expectedTrim}"`);
@@ -494,7 +517,10 @@ export class AccountSearchCompanyActions {
     }
   }
 
-  /** Asserts the Postcode field equals the expected value. */
+  /**
+   * Asserts the Postcode field equals the expected value.
+   * @param expected - Expected postcode value.
+   */
   public assertPostcodeEquals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Company postcode equals "${expectedTrim}"`);
@@ -511,6 +537,7 @@ export class AccountSearchCompanyActions {
   /**
    * Mapping-driven field assertions for the Companies form.
    * Add new entries here to assert more fields from the DataTable map.
+   * @returns Mapping of field names to assertion metadata.
    */
   private get fieldAssertions(): Record<
     string,

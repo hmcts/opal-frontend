@@ -12,6 +12,7 @@ export type BusinessUnitMap = Map<string, string>;
 
 const log = createScopedLogger('SearchFilterByBUFinesActions');
 
+/** Actions for the Fines tab on Filter by Business Unit. */
 export class SearchFilterByBUFinesActions {
   /** Verifies the master checkbox and label are present */
   verifyMasterCheckboxPresent(): void {
@@ -30,7 +31,10 @@ export class SearchFilterByBUFinesActions {
     cy.get(FinesFilterBusinessUnitLocators.selectAllBusinessUnitsCheckbox).should('be.checked');
   }
 
-  /** Verifies master checkbox is in expected state */
+  /**
+   * Verifies master checkbox is in expected state
+   * @param expectedChecked - Whether the master checkbox should be checked.
+   */
   verifyMasterCheckboxState(expectedChecked: boolean): void {
     log('info', `Verifying master checkbox state is: ${expectedChecked}`);
 
@@ -41,6 +45,7 @@ export class SearchFilterByBUFinesActions {
 
   /**
    * Sets the master checkbox to a required state (checked / unchecked)
+   * @param shouldBeChecked - Desired checked state for the master checkbox.
    */
   setMasterCheckboxState(shouldBeChecked: boolean): void {
     log('info', `Setting master checkbox state to: ${shouldBeChecked}`);
@@ -59,7 +64,11 @@ export class SearchFilterByBUFinesActions {
     });
   }
 
-  /** Toggles a business unit checkbox based on a map entry */
+  /**
+   * Toggles a business unit checkbox based on a map entry
+   * @param businessUnits - Map of business unit names to IDs.
+   * @param key - Business unit key to toggle.
+   */
   toggleBusinessUnitFromMap(businessUnits: BusinessUnitMap, key: string): void {
     const id = businessUnits.get(key);
 
@@ -73,7 +82,10 @@ export class SearchFilterByBUFinesActions {
     cy.get(selector).click();
   }
 
-  /** Verifies all business units in map are checked */
+  /**
+   * Verifies all business units in map are checked
+   * @param businessUnits - Map of business unit names to IDs.
+   */
   verifyBusinessUnitsChecked(businessUnits: BusinessUnitMap): void {
     log('info', `Verifying all business units in map are checked (count: ${businessUnits.size})`);
 
@@ -85,7 +97,11 @@ export class SearchFilterByBUFinesActions {
     }
   }
 
-  /** Verifies a single mapped business unit is checked */
+  /**
+   * Verifies a single mapped business unit is checked
+   * @param businessUnits - Map of business unit names to IDs.
+   * @param key - Key for the business unit expected to be checked.
+   */
   verifyBusinessUnitCheckedFromMap(businessUnits: BusinessUnitMap, key: string): void {
     const id = businessUnits.get(key);
 
@@ -102,6 +118,7 @@ export class SearchFilterByBUFinesActions {
   /**
    * Verifies the summary text contains: `X of `
    * where X = map size
+   * @param businessUnits - Map used to determine the expected count.
    */
   verifySelectionSummaryCountMatchesMap(businessUnits: BusinessUnitMap): void {
     const expectedCount = businessUnits.size;

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Company details task.
+ * @file Actions for Manual Account Creation - Company details task.
  * Handles field entry, aliases, navigation, and inline error assertions.
  */
 import { ManualCompanyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/company-details.locators';
@@ -20,6 +20,7 @@ export class ManualCompanyDetailsActions {
 
   /**
    * Asserts we are on the Company details page.
+   * @param expectedHeader Expected page header text.
    */
   assertOnCompanyDetailsPage(expectedHeader: string = 'Company details'): void {
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/company-details');
@@ -28,6 +29,7 @@ export class ManualCompanyDetailsActions {
 
   /**
    * Sets the company name.
+   * @param name Company name to enter.
    */
   setCompanyName(name: string): void {
     this.typeText(L.companyNameInput, name, 'Company name');
@@ -43,25 +45,39 @@ export class ManualCompanyDetailsActions {
 
   /**
    * Sets address lines and postcode individually.
+   * @param value Address line 1 value.
    */
   setAddressLine1(value: string): void {
     this.typeText(L.addressLine1Input, value, 'Address line 1');
   }
 
+  /**
+   * Sets address line 2.
+   * @param value Address line 2 value.
+   */
   setAddressLine2(value: string): void {
     this.typeText(L.addressLine2Input, value, 'Address line 2');
   }
 
+  /**
+   * Sets address line 3.
+   * @param value Address line 3 value.
+   */
   setAddressLine3(value: string): void {
     this.typeText(L.addressLine3Input, value, 'Address line 3');
   }
 
+  /**
+   * Sets postcode.
+   * @param value Postcode value.
+   */
   setPostcode(value: string): void {
     this.typeText(L.postcodeInput, value, 'Postcode');
   }
 
   /**
    * Toggles the "Add company aliases" checkbox.
+   * @param checked Desired checkbox state.
    */
   toggleAddAliases(checked: boolean): void {
     log('check', `Toggling add aliases → ${checked ? 'checked' : 'unchecked'}`);
@@ -75,6 +91,7 @@ export class ManualCompanyDetailsActions {
 
   /**
    * Asserts the add aliases checkbox state.
+   * @param expected Expected checked state.
    */
   assertAddAliasesChecked(expected: boolean): void {
     cy.get(L.addAliasesCheckbox, this.common.getTimeoutOptions()).should(expected ? 'be.checked' : 'not.be.checked');
@@ -90,6 +107,8 @@ export class ManualCompanyDetailsActions {
 
   /**
    * Sets a company alias name (1-based alias index).
+   * @param aliasNumber 1-based alias index.
+   * @param value Alias name to enter.
    */
   setAliasCompanyName(aliasNumber: number, value: string): void {
     const index = aliasNumber - 1;
@@ -102,6 +121,8 @@ export class ManualCompanyDetailsActions {
 
   /**
    * Asserts an alias input value (1-based alias index).
+   * @param aliasNumber 1-based alias index.
+   * @param expected Expected alias value.
    */
   assertAliasCompanyName(aliasNumber: number, expected: string): void {
     const index = aliasNumber - 1;
@@ -110,6 +131,8 @@ export class ManualCompanyDetailsActions {
 
   /**
    * Asserts an address or company field value.
+   * @param field Field key to assert.
+   * @param expected Expected value.
    */
   assertFieldValue(field: 'company' | 'address1' | 'address2' | 'address3' | 'postcode', expected: string): void {
     const selector =
@@ -128,6 +151,8 @@ export class ManualCompanyDetailsActions {
 
   /**
    * Asserts an inline error message for a given input.
+   * @param field Field key to target.
+   * @param expected Expected inline error text.
    */
   assertInlineError(field: 'company' | 'address1' | 'address2' | 'address3' | 'postcode', expected: string): void {
     const selector =

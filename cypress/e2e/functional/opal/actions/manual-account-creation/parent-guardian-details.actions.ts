@@ -1,6 +1,5 @@
 /**
  * @file parent-guardian-details.actions.ts
- * @description
  * Actions for the Manual Account Creation **Parent or guardian details** task.
  *
  * @remarks
@@ -40,7 +39,7 @@ export class ManualParentGuardianDetailsActions {
   private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
-   * @description Asserts the Parent/Guardian details page is loaded.
+   * Asserts the Parent/Guardian details page is loaded.
    * @param expectedHeader - Header text to assert.
    * @remarks Guards both URL path and visible header to avoid stale routes.
    * @example
@@ -53,7 +52,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Toggles the **Add aliases** checkbox and verifies state.
+   * Toggles the **Add aliases** checkbox and verifies state.
    * @param enable - Whether the checkbox should be selected.
    * @example
    *  actions.toggleAddAliases(true);
@@ -71,7 +70,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Adds another alias row.
+   * Adds another alias row.
    * @example
    *  actions.addAliasRow();
    */
@@ -84,7 +83,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Sets a top-level Parent/Guardian field to a value.
+   * Sets a top-level Parent/Guardian field to a value.
    * @param field - Logical field key.
    * @param value - Value to type (empty string clears).
    * @example
@@ -112,7 +111,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Sets an alias field value by index.
+   * Sets an alias field value by index.
    * @param index - Zero-based alias index.
    * @param field - Alias field key.
    * @param value - Value to type (empty string clears).
@@ -141,7 +140,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Fills multiple parent/guardian fields + aliases in one pass.
+   * Fills multiple parent/guardian fields + aliases in one pass.
    * @param payload - Field/value map with optional alias rows.
    * @remarks Skips undefined keys so callers can send partial updates.
    * @example
@@ -183,7 +182,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Asserts a top-level field value.
+   * Asserts a top-level field value.
    * @param field - Field key to check.
    * @param expected - Expected value (empty string allowed).
    * @example
@@ -197,7 +196,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Asserts an alias field value.
+   * Asserts an alias field value.
    * @param index - Zero-based alias index.
    * @param field - Alias field key.
    * @param expected - Expected value.
@@ -212,7 +211,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Asserts Add aliases checkbox state.
+   * Asserts Add aliases checkbox state.
    * @param expectedChecked - Whether checkbox should be checked.
    * @example
    *  actions.assertAddAliasesChecked(true);
@@ -228,7 +227,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Clicks **Return to account details**.
+   * Clicks **Return to account details**.
    * @example
    *  actions.returnToAccountDetails();
    */
@@ -241,7 +240,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Clicks **Add contact details** nested CTA.
+   * Clicks **Add contact details** nested CTA.
    * @example
    *  actions.addContactDetails();
    */
@@ -254,7 +253,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Clicks Cancel and chooses how to respond to the confirm dialog.
+   * Clicks Cancel and chooses how to respond to the confirm dialog.
    * @param choice - "Ok" to leave, "Cancel" to stay.
    * @example
    *  actions.cancelAndChoose('Ok');
@@ -267,11 +266,11 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Asserts the inline error message for a field.
+   * Asserts the inline error message for a field.
    * @param field - Field key to check.
    * @param expected - Expected error text.
    * @example
-   *  actions.assertInlineError('firstNames', 'Enter parent or guardian\\'s first name(s)');
+   *  actions.assertInlineError('firstNames', "Enter parent or guardian's first name(s)");
    */
   public assertInlineError(field: ManualParentGuardianFieldKey, expected: string): void {
     const selector = this.getFieldSelector(field);
@@ -285,7 +284,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Executes a callback only when a value is provided.
+   * Executes a callback only when a value is provided.
    * @param value - Potentially undefined value to check.
    * @param fn - Callback to invoke when value is not undefined.
    */
@@ -296,7 +295,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Resolves a logical parent/guardian field key to its selector.
+   * Resolves a logical parent/guardian field key to its selector.
    * @param field - Logical field key.
    * @returns CSS selector string for the input.
    */
@@ -328,7 +327,7 @@ export class ManualParentGuardianDetailsActions {
   }
 
   /**
-   * @description Resolves an alias row/field combination to its selector.
+   * Resolves an alias row/field combination to its selector.
    * @param index - Zero-based alias index.
    * @param field - Alias field key.
    * @returns CSS selector string for the alias input.

@@ -3,18 +3,33 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('CommonActions');
 
+/**
+ * Shared Cypress helpers used across multiple actions/flows.
+ */
 export class CommonActions {
   private readonly TIMEOUT = 10_000;
   private readonly PATH_TIMEOUT = 20_000;
 
+  /**
+   * Standard timeout options for most UI waits.
+   * @returns Cypress timeout options object.
+   */
   public getTimeoutOptions() {
     return { timeout: this.TIMEOUT };
   }
 
+  /**
+   * Timeout (ms) for requests that follow a navigation event.
+   * @returns Timeout in milliseconds.
+   */
   public getPathTimeout(): number {
     return this.PATH_TIMEOUT;
   }
 
+  /**
+   * Timeout options for requests that follow a navigation event.
+   * @returns Cypress timeout options object.
+   */
   public getPathTimeoutOptions() {
     return { timeout: this.PATH_TIMEOUT };
   }
@@ -22,6 +37,7 @@ export class CommonActions {
   /**
    * Asserts that the page header **contains** the expected text.
    * @param expected - Text that should appear within the page header.
+   * @param timeoutMs - Optional timeout override for the assertion.
    */
   public assertHeaderContains(expected: string, timeoutMs: number = 15_000): void {
     log('assert', `Header contains: ${expected}`);
@@ -77,6 +93,8 @@ export class CommonActions {
   /**
    * Prepares Cypress to auto-respond to the **next native confirm() dialog**
    * that appears — but does *NOT* trigger it.
+   * @param accept - Whether to accept (`true`) or cancel (`false`) the dialog.
+   * @param expected - Expected dialog text or regex matcher.
    */
   public confirmNextUnsavedChanges(accept: boolean, expected: RegExp | string = /unsaved changes/i): void {
     cy.once('window:confirm', (msg) => {
@@ -92,6 +110,8 @@ export class CommonActions {
 
   /**
    * Performs a browser back navigation and handles the resulting confirm dialog.
+   * @param choice - Whether to accept (`ok`) or cancel (`cancel`) the navigation prompt.
+   * @param waitFor - Optional URL substring or regex to assert after navigation.
    */
   public navigateBrowserBackWithChoice(choice: 'ok' | 'cancel', waitFor?: RegExp | string): void {
     const accept = choice === 'ok';

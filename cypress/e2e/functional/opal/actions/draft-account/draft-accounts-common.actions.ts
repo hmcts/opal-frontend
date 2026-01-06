@@ -1,7 +1,7 @@
 import { DraftAccountsTableLocators as L } from '../../../../../shared/selectors/draft-accounts-table.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 /**
- * @fileoverview Shared actions for draft account listings across inputter and checker views.
+ * @file Shared actions for draft account listings across inputter and checker views.
  * Provides navigation helpers and table assertions used by both Create/Manage and Check/Validate flows.
  */
 import { CommonActions } from '../common/common.actions';
@@ -144,6 +144,7 @@ export class DraftAccountsCommonActions {
 
   /**
    * Asserts the Account type column contains the expected text.
+   * @param expected - Expected account type text within the table.
    */
   assertAccountType(expected: string): void {
     cy.get(L.cells.accountType, this.common.getTimeoutOptions()).should('contain.text', expected);

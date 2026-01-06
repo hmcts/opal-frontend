@@ -1,5 +1,5 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Fixed Penalty review page.
+ * @file Actions for Manual Account Creation - Fixed Penalty review page.
  * Encapsulates summary assertions, change-link navigation, submission, and error handling.
  */
 import { ManualReviewAccountActions } from './review-account.actions';

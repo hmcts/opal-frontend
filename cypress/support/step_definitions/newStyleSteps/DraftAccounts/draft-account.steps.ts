@@ -86,6 +86,11 @@ function createDraftAndPrepareForPublishing(
   return createDraftAndSetStatus(accountType, status, table);
 }
 
+/**
+ * Extracts an `account_status` override and returns the remaining table rows.
+ * @param table Source DataTable that may include an Account_status row.
+ * @returns The parsed status and a filtered DataTable without the status row.
+ */
 function extractStatusAndTable(table: DataTable): { status: string; filteredTable: DataTable } {
   const raw = table.raw();
   const statusRowIndex = raw.findIndex(([key]) => key?.trim().toLowerCase() === 'account_status');

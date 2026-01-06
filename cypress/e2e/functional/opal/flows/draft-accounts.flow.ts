@@ -1,5 +1,5 @@
 /**
- * @fileoverview Draft accounts flows shared across checker/inputter views.
+ * @file Draft accounts flows shared across checker/inputter views.
  */
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { CheckAndValidateDraftsActions } from '../actions/draft-account/check-and-validate-drafts.actions';

@@ -4,6 +4,9 @@ import { ManualAccountDetailsActions } from './account-details.actions';
 
 const log = createScopedLogger('ManualAccountTaskNavigationActions');
 
+/**
+ * Shared navigation helpers for the Manual Account task list.
+ */
 export class ManualAccountTaskNavigationActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();

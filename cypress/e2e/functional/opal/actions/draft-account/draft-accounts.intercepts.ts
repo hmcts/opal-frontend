@@ -58,6 +58,7 @@ export class DraftAccountsInterceptActions {
   /**
    * Stubs the **Approved** tab on Create & Manage Draft Accounts using supplied summaries.
    * Falls through for other statuses so unrelated calls still hit the real backend.
+   * @param summaries - Draft account summaries to return for the Approved tab.
    */
   stubApprovedDraftListings(summaries: DraftAccountSummary[]): void {
     log('intercept', 'Stubbing approved draft listings', { count: summaries.length });

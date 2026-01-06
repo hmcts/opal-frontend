@@ -4,6 +4,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsCommentsActions');
 
+/** Actions and assertions for the account Comments page. */
 export class AccountDetailsCommentsActions {
   /** Assert we're on the Comments page **/
   public assertCommentsHeader(): void {
@@ -157,6 +158,10 @@ export class AccountDetailsCommentsActions {
   /**
    * Assert that the Comments form contains the expected prefilled values.
    * @param payload Object with expected field text values
+   * @param payload.comment - Expected comment text.
+   * @param payload.line1 - Expected first free-text line.
+   * @param payload.line2 - Expected second free-text line.
+   * @param payload.line3 - Expected third free-text line.
    */
   assertPrefilledFormValues(payload: { comment?: string; line1?: string; line2?: string; line3?: string }): void {
     log('assert', 'Assert Comments form prefilled values');

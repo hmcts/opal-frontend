@@ -1,5 +1,5 @@
 /**
- * @fileoverview account-search-nav.actions.ts
+ * @file account-search-nav.actions.ts
  * Navigation actions for the Account Search tabs:
  * - Individuals
  * - Companies
@@ -18,12 +18,18 @@ import { AccountSearchNavLocators as Nav } from '../../../../../shared/selectors
 
 const log = createScopedLogger('AccountSearchNavActions');
 
+/**
+ * Navigation helpers for the Account Search tabbed UI.
+ */
 export class AccountSearchNavActions {
   /**
    * Reliable tab activation helper.
    * - Clicking anchor/button inside tab (preferred)
    * - Asserts activation by URL hash OR by selected class
    * - Sonar-clean: no .push(), no .forEach(), uses for...of nowhere
+   * @param tabSelector - Selector for the tab list item.
+   * @param label - Human-friendly tab label for logging.
+   * @param expectedHash - Optional expected hash to assert after clicking.
    */
   private activateTab(tabSelector: string, label: string, expectedHash?: string): void {
     log('method', `activateTab(${label})`);
@@ -82,6 +88,9 @@ export class AccountSearchNavActions {
 
   /**
    * Verifies a tab is selected using CSS class or optional URL hash.
+   * @param tabSelector - Selector for the tab list item.
+   * @param label - Human-friendly tab label for logging.
+   * @param expectedHash - Optional hash expected in the URL.
    */
   private verifyTabSelected(tabSelector: string, label: string, expectedHash?: string): void {
     log('method', `verifyTabSelected(${label})`);

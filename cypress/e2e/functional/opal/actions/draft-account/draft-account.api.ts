@@ -331,7 +331,7 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
 }
 
 /**
- * @description Assert the latest draft account update produced a strong ETag (optionally requiring a change).
+ * Assert the latest draft account update produced a strong ETag (optionally requiring a change).
  *
  * @param requireChange - Whether to require the after ETag to differ from the before ETag. Defaults to
  *                        `Cypress.env('EXPECT_ETAG_CHANGE') === true`.
@@ -358,7 +358,7 @@ export function assertLatestDraftUpdateHasStrongEtag(requireChange?: boolean): C
 }
 
 /**
- * @description Perform two PATCH requests using the same If-Match header to trigger a conflict on the second request.
+ * Perform two PATCH requests using the same If-Match header to trigger a conflict on the second request.
  *
  * @param newStatus - Status to apply in the PATCH payload.
  * @returns EtagConflictResult aliased as @etagConflict for later assertions.
@@ -439,7 +439,7 @@ export function simulateStaleIfMatchConflict(newStatus: string): Cypress.Chainab
 }
 
 /**
- * @description Assert that the previously simulated stale If-Match update resulted in a conflict.
+ * Assert that the previously simulated stale If-Match update resulted in a conflict.
  *
  * @param expectedStatus - Expected HTTP status for the conflict (default: 409).
  * @returns Cypress chainable for assertions.

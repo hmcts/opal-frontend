@@ -2,6 +2,8 @@ import { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 
 /**
  * Normalises a Cucumber DataTable into a trimmed key/value map.
+ * @param table Source DataTable from a step definition.
+ * @returns Hash of keys to trimmed values.
  */
 export const normalizeHash = (table: DataTable): Record<string, string> => {
   const rawRows = table.raw().map((row) => row.map((cell) => (cell ?? '').toString().trim()));
@@ -36,6 +38,8 @@ export const normalizeHash = (table: DataTable): Record<string, string> => {
 
 /**
  * Normalises a Cucumber DataTable into trimmed rows.
+ * @param table Source DataTable from a step definition.
+ * @returns 2D array of trimmed cell values.
  */
 export const normalizeTableRows = (table: DataTable): string[][] => {
   return table.raw().map((row) => row.map((cell) => cell.trim()));

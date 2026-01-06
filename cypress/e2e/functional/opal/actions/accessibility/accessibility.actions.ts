@@ -4,6 +4,9 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccessibilityActions');
 
+/**
+ * Accessibility helpers for running axe checks within flows.
+ */
 export class AccessibilityActions {
   /**
    * Injects axe and runs an accessibility audit on the current page.
@@ -24,6 +27,9 @@ export class AccessibilityActions {
   /**
    * Runs an accessibility audit on the current page, then navigates back.
    * Optionally verifies the returned path.
+   * @param opts - Optional navigation/timeout configuration.
+   * @param opts.verifyPath - Path regex to assert after navigating back.
+   * @param opts.timeoutMs - Timeout (ms) for location assertions.
    */
   public checkAccessibilityAndNavigateBack(opts?: { verifyPath?: RegExp; timeoutMs?: number }): void {
     const timeout = opts?.timeoutMs ?? 10_000;
@@ -44,6 +50,7 @@ export class AccessibilityActions {
   /**
    * Visits each URL provided in a DataTable and performs an accessibility audit.
    * Expects a table with "url" and optional "header" columns.
+   * @param dataTable - Table containing rows with `url` and optional `header` keys.
    */
   public checkAccessibilityForUrls(dataTable: DataTable): void {
     const rows = dataTable.hashes();

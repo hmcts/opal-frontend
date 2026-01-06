@@ -1,6 +1,6 @@
 // e2e/functional/opal/actions/search/search.major-creditors.actions.ts
 /**
- * @fileoverview AccountSearchMajorCreditorsActions
+ * @file AccountSearchMajorCreditorsActions
  *
  * Actions for the **Major creditors** search panel on the Account Search page.
  *
@@ -12,6 +12,7 @@
 import { AccountSearchMajorCreditorsLocators as L } from '../../../../../shared/selectors/account-search/account.search.major-creditors.locators';
 import { CommonActions } from '../common/common.actions';
 
+/** Actions for the Major Creditors panel within Account Search. */
 export class AccountSearchMajorCreditorsActions {
   private readonly commonActions = new CommonActions();
 

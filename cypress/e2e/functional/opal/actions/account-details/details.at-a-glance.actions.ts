@@ -3,6 +3,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsAtAGlanceActions');
 
+/** Actions for the Account Details "At a Glance" panel. */
 export class AccountDetailsAtAGlanceActions {
   /**
    * AssertSectionHeader.
@@ -63,6 +64,7 @@ export class AccountDetailsAtAGlanceActions {
   /**
    * Asserts the Comments block shows the expected values.
    *
+   * @param expected - Expected comment text and optional free-text lines.
    * @param expected.comment - Expected main comment text.
    * @param expected.lines - Expected free-text lines (Line 1–3), any length 0–3.
    */

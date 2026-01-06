@@ -437,10 +437,18 @@ export class AccountEnquiryFlow {
     ).as('debugPutDefendantAccountParty');
   }
 
+  /**
+   * Default headers for Account Enquiry API requests.
+   * @returns JSON and accept headers used for API calls.
+   */
   private getApiHeaders(): Record<string, string> {
     return { 'Content-Type': 'application/json', Accept: 'application/json' };
   }
 
+  /**
+   * Extracts the defendant account ID from the current details page URL.
+   * @returns Chainable resolving to the numeric defendant account ID.
+   */
   private extractDefendantAccountIdFromUrl(): Cypress.Chainable<number> {
     return cy.location('pathname').then((pathname) => {
       const match = pathname.match(/\/fines\/account\/defendant\/(\d+)\/details/);
@@ -457,6 +465,7 @@ export class AccountEnquiryFlow {
   /**
    * Fetches the header summary for a defendant account via API.
    * @param defendantAccountId - ID of the defendant account.
+   * @returns Chainable yielding the header summary response body.
    */
   private fetchHeaderSummary(defendantAccountId: number): Cypress.Chainable<Record<string, unknown>> {
     return cy
@@ -476,6 +485,7 @@ export class AccountEnquiryFlow {
    * Fetches party details for a defendant account via API.
    * @param defendantAccountId - ID of the defendant account.
    * @param partyId - Party ID to fetch.
+   * @returns Chainable yielding the party details response body.
    */
   private fetchPartyDetails(defendantAccountId: number, partyId: string): Cypress.Chainable<Record<string, unknown>> {
     logAE('action', `Fetching party details for party ${partyId}`);
@@ -673,6 +683,7 @@ export class AccountEnquiryFlow {
 
   /**
    * Saves the provided comment lines and verifies redirect to defendant summary.
+   * @param lines - Lines to enter into the Comments form before saving.
    */
   public saveCommentsAndReturnToSummary(lines: readonly string[]): void {
     Cypress.log({
@@ -770,6 +781,7 @@ export class AccountEnquiryFlow {
    * Route-guard verification on the Comments page:
    *  open from summary → type → Cancel (dismiss) → verify stayed with text →
    *  Cancel (confirm) → verify returned to summary.
+   * @param noteText - Text to enter into the comment before cancelling.
    */
   public verifyRouteGuardBehaviourOnComments(noteText: string): void {
     Cypress.log({
@@ -800,7 +812,11 @@ export class AccountEnquiryFlow {
 
   /**
    * Open the Comments section and verify existing prefilled values.
-   * @param expected Prefilled form values to assert
+   * @param expected Prefilled form values to assert.
+   * @param expected.comment - Expected comment text.
+   * @param expected.line1 - Expected first free-text line.
+   * @param expected.line2 - Expected second free-text line.
+   * @param expected.line3 - Expected third free-text line.
    */
   verifyPrefilledComments(expected: { comment?: string; line1?: string; line2?: string; line3?: string }): void {
     cy.log('Flow: Verify prefilled Comments form');

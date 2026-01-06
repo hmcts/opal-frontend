@@ -1,5 +1,5 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Fixed Penalty details page.
+ * @file Actions for Manual Account Creation - Fixed Penalty details page.
  * Handles form filling, assertions, validation checks, and navigation.
  */
 import { FixedPenaltyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/fixed-penalty.locators';

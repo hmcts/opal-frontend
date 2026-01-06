@@ -46,6 +46,8 @@ export class AccountSearchFlow {
    * Builds a simple key/value map from a two-column Cucumber table:
    *   | column | value |
    *   | Ref    | PCR...|
+   * @param table Two-column DataTable containing column/value pairs.
+   * @returns Trimmed key/value object derived from the table.
    */
   private buildExpectationMap(table: DataTable): Record<string, string> {
     const raw = table.rowsHash();
@@ -60,6 +62,8 @@ export class AccountSearchFlow {
 
   /**
    * Normalises a header key (lowercase + trimmed).
+   * @param s Header text to normalise.
+   * @returns Lowercased, trimmed header text.
    */
   private normalize(s: string): string {
     return s.trim().toLowerCase();
@@ -162,6 +166,7 @@ export class AccountSearchFlow {
 
   /**
    * Prepare Minor creditors form with sample values by type.
+   * @param type Minor creditor type (Individual or Company).
    */
   public prepareMinorCreditorsSample(type: MinorCreditorType): void {
     log('prepare', `Minor creditors form sample values for ${type}`);
@@ -196,6 +201,8 @@ export class AccountSearchFlow {
    *   | reference or case number | REF-123  |
    *
    * Throws a descriptive Error if the table shape is not two columns.
+   * @param table Two-column DataTable of field/value pairs.
+   * @returns Normalised map of lowercased field keys to trimmed values.
    */
   private buildInputMap(table: DataTable): InputMap {
     const rows = table.raw();
@@ -253,6 +260,7 @@ export class AccountSearchFlow {
   /**
    * Enter shared fields (account number and reference/case) in a deterministic order.
    * Always types account first (if present) then reference (if present), before any tab switching.
+   * @param map Normalised field/value map from the input table.
    */
   private enterAccountAndReference(map: Record<string, string>): void {
     const accountVal = map['account number'];
@@ -297,6 +305,7 @@ export class AccountSearchFlow {
    * - "first names exact match"
    *
    * This method does NOT submit the search.
+   * @param map Normalised field/value map from the input table.
    */
   private handleMinorCreditors(map: InputMap): void {
     log('navigate', 'Switch to Minor creditors tab');
@@ -316,7 +325,8 @@ export class AccountSearchFlow {
   /**
    * Extracts and normalises the minor creditor type from the input map.
    *
-   * @returns MinorCreditorSimpleType | undefined
+   * @param map Normalised field/value map from the input table.
+   * @returns MinorCreditorSimpleType when provided, otherwise undefined.
    */
   private getMinorCreditorSimpleType(map: InputMap): MinorCreditorSimpleType | undefined {
     const rawType = map['minor creditor type'];
@@ -336,6 +346,7 @@ export class AccountSearchFlow {
 
   /**
    * Applies the Minor Creditor type selection if a valid type is provided.
+   * @param type Normalised minor creditor type.
    */
   private applyMinorCreditorType(type: MinorCreditorSimpleType | undefined): void {
     if (!type) {
@@ -349,6 +360,7 @@ export class AccountSearchFlow {
 
   /**
    * Applies company-specific Minor Creditor fields (company name only).
+   * @param map Normalised field/value map from the input table.
    */
   private applyMinorCreditorCompanyFields(map: InputMap): void {
     const companyName = map['company name'];
@@ -365,6 +377,7 @@ export class AccountSearchFlow {
    * - first names
    * - last name
    * - exact match flags
+   * @param map Normalised field/value map from the input table.
    */
   private applyMinorCreditorIndividualFields(map: InputMap): void {
     const firstNames = map['first names'];
@@ -395,6 +408,8 @@ export class AccountSearchFlow {
   /**
    * Applies shared address fields (address line 1, postcode),
    * routed to Individual or Company setters based on the minor creditor type.
+   * @param type Minor creditor type being edited.
+   * @param map Normalised field/value map from the input table.
    */
   private applyMinorCreditorAddressFields(type: MinorCreditorSimpleType | undefined, map: InputMap): void {
     const addressLine1 = map['address line 1'];
@@ -427,6 +442,8 @@ export class AccountSearchFlow {
    *
    * Accepts values like:
    * - true/false, yes/no, y/n, 1/0, checked/unchecked, on/off
+   * @param raw Raw string value to parse.
+   * @returns Parsed boolean when recognised; otherwise undefined.
    */
   private parseOptionalBooleanFlag(raw?: string): boolean | undefined {
     if (!raw) {
@@ -488,6 +505,7 @@ export class AccountSearchFlow {
    * NOTE:
    * - This method only prepares the form; it does not click Search.
    * - Submission is handled separately (e.g. submitSearchAndWaitForResults()).
+   * @param map Normalised field/value map from the input table.
    */
   private handleCompaniesAndIndividuals(map: InputMap): void {
     // ───────────────────────────────
@@ -592,6 +610,7 @@ export class AccountSearchFlow {
    *  - "last name exact match"
    *  - "first names exact match"
    *  - "include aliases"
+   * @param map Normalised field/value map from the input table.
    */
   private handleIndividualsFlags(map: InputMap): void {
     // Checkbox flags (Individuals)
@@ -618,6 +637,10 @@ export class AccountSearchFlow {
   // Individuals form (no submit)
   // ─────────────────────────────────────────────
 
+  /**
+   * Navigates to Account Search, populates the Individuals form, and skips submit.
+   * @param table Two-column DataTable of field/value pairs.
+   */
   public navigateAndEnterIndividualsFormWithoutSubmit(table: DataTable): void {
     log('navigate', 'Go to Account Search and enter Individuals form (no submit)');
     this.dashboard.goToAccountSearch();
@@ -691,7 +714,10 @@ export class AccountSearchFlow {
    *   lowercases, and canonicalises punctuation, ensuring common variants
    *   (e.g. "date of birth" vs "DOB") are handled consistently.
    */
-
+  /**
+   * Populates Individuals fields and flags without submitting the search.
+   * @param table Two-column DataTable of field/value pairs.
+   */
   public enterIndividualsFormWithoutSubmit(table: DataTable): void {
     log('prepare', 'Entering Individuals form (without submit)');
 
@@ -784,6 +810,7 @@ export class AccountSearchFlow {
    *
    * This intentionally does NOT support wide-form tables (header + single value row).
    * Throwing early on the wrong shape keeps tests explicit and prevents key/value swaps.
+   * @param table Two-column DataTable of field/value pairs.
    */
   public searchUsingInputs(table: DataTable): void {
     // Build the canonical map from table rows (throws on malformed table)
@@ -901,6 +928,7 @@ export class AccountSearchFlow {
    * Accepts values like "yes/no", "true/false", "checked/unchecked".
    * If the value is unrecognised, logs a warning and leaves the checkbox
    * as-is (default checked).
+   * @param map Normalised field/value map from the input table.
    */
   private applyActiveAccountsOnlyFlag(map: InputMap): void {
     const raw = map['active accounts only'];
@@ -979,6 +1007,8 @@ export class AccountSearchFlow {
    * - Calls the canonical minors assertion method: assertAllFieldValuesFromMap(sub).
    *
    * Throws TypeError if the canonical minors method is not present.
+   * @param expectedHeader Expected header text on the Minor creditors page.
+   * @param map Normalised map of field → expected value (lowercase keys).
    */
   public verifyPageForMinorIndividual(expectedHeader: string, map: Record<string, string>): void {
     this.common.assertHeaderContains(expectedHeader);
@@ -1028,6 +1058,8 @@ export class AccountSearchFlow {
    * - Calls the canonical minors assertion method: assertAllFieldValuesFromMap(sub).
    *
    * Throws TypeError if the canonical minors method is not present.
+   * @param expectedHeader Expected header text on the Minor creditors page.
+   * @param map Normalised map of field → expected value (lowercase keys).
    */
   public verifyPageForMinorCompany(expectedHeader: string, map: Record<string, string>): void {
     this.common.assertHeaderContains(expectedHeader);
@@ -1074,6 +1106,7 @@ export class AccountSearchFlow {
    * Intended Gherkin:
    *   Then I see the Individuals search results:
    *     | Ref | PCRAUTO008 |
+   * @param table Two-column Cucumber table of column/value pairs to assert.
    */
   public assertIndividualsResultsForReference(table: DataTable): void {
     const expectations = this.buildExpectationMap(table);
@@ -1102,6 +1135,7 @@ export class AccountSearchFlow {
    * Intended Gherkin:
    *   When I view the Companies search results:
    *     | Ref | PCRAUTO008 |
+   * @param table Two-column Cucumber table of column/value pairs to assert.
    */
   public assertCompaniesResultsWithTabSwitch(table: DataTable): void {
     const expectations = this.buildExpectationMap(table);
@@ -1127,6 +1161,7 @@ export class AccountSearchFlow {
    * - Asserts the Companies tab is already selected.
    * - Asserts at least one row matches the provided expectations.
    *
+   * @param table Two-column Cucumber table of column/value pairs to assert.
    * @example
    *   Then I see the Companies search results:
    *     | Ref | PCRAUTO010 |
@@ -1147,8 +1182,7 @@ export class AccountSearchFlow {
    *  - Verify the Companies search page header and field values via
    *    the existing verifyPageForCompanies() helper.
    *
-   * @param expectedHeader The expected Companies search page header text.
-   * @param table          A two-column Cucumber table of field → expected value.
+   * @param table A two-column Cucumber table of field → expected value.
    *
    * The DataTable must be of the form:
    *   | field                       | value        |

@@ -1,6 +1,6 @@
 // e2e/functional/opal/actions/search/search.common.actions.ts
 /**
- * @fileoverview Actions for fields shared across ALL Account Search tabs:
+ * @file Actions for fields shared across ALL Account Search tabs:
  * - Account number
  * - Reference or case number
  * - Active accounts only (checkbox)
@@ -246,6 +246,7 @@ const pickMatchingInterception = (interceptions: any[], expectedEntries: Expecte
   return interceptions.find((interception) => interceptionMatchesExpected(interception, expectedEntries, entityKey));
 };
 
+/** Shared actions and assertions for Account Search across search types. */
 export class AccountSearchCommonActions {
   private readonly minorActions = new AccountSearchMinorCreditorsActions();
   private readonly commonActions = new CommonActions();
@@ -297,6 +298,7 @@ export class AccountSearchCommonActions {
    * Verifies BOTH or EITHER shared fields (account number & reference/case) in one assertion.
    * Only asserts a field if an expected value is provided.
    *
+   * @param expected Expected values for shared fields (provide one or both).
    * @param expected.accountNumber - Expected value for Account number (optional).
    * @param expected.referenceOrCaseNumber - Expected value for Reference or case number (optional).
    */
@@ -433,6 +435,8 @@ export class AccountSearchCommonActions {
 
   /**
    * Escape a string for literal RegExp matching.
+   * @param value String to escape for use in a RegExp.
+   * @returns Escaped string safe for RegExp construction.
    */
   private escapeForRegex(value: string): string {
     const rawClass = String.raw`[.*+?^\${}()|[\]\\]`;
@@ -443,6 +447,7 @@ export class AccountSearchCommonActions {
 
   /**
    * Assert validation text appears in either the GOV.UK error summary or on the page.
+   * @param expectedText Text expected to appear in validation messaging.
    */
   public assertValidationMessageContains(expectedText: string): void {
     log('assert', `Asserting validation message contains: "${expectedText}"`);
@@ -623,10 +628,9 @@ export class AccountSearchCommonActions {
    *   - If an expected array value cannot be parsed as valid JSON.
    */
   /**
-   * Validates the parameters sent in an intercepted account search API request
-   * against the expected values provided in a Gherkin data table.
-   *
-   * See detailed behaviour description in the original JSDoc.
+   * Validates parameters sent in an intercepted account search API request.
+   * @param accountType Account type being validated ("defendant" or "minor creditor").
+   * @param table Two-column DataTable of expected param name/value pairs.
    */
   public interceptedSearchAccountAPIContains(accountType: string, table: DataTable): void {
     const expectedParams: Record<string, string> = table.rowsHash();

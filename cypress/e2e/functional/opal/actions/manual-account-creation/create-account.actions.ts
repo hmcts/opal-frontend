@@ -1,5 +1,5 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Create account page.
+ * @file Actions for Manual Account Creation - Create account page.
  * Encapsulates business unit selection, account type/defendant type selection, and navigation to task list.
  */
 import { ManualCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/create-account.locators';
@@ -16,6 +16,7 @@ export type DefendantType =
   | 'Parent or guardian'
   | 'Company';
 
+/** Actions for the Manual Account Creation landing page. */
 export class ManualCreateAccountActions {
   private readonly common = new CommonActions();
 
@@ -31,6 +32,7 @@ export class ManualCreateAccountActions {
 
   /**
    * Selects a business unit via autocomplete.
+   * @param businessUnit Business unit name to select.
    */
   selectBusinessUnit(businessUnit: string): void {
     log('type', 'Selecting business unit', { businessUnit });
@@ -56,6 +58,7 @@ export class ManualCreateAccountActions {
 
   /**
    * Chooses an account type radio option.
+   * @param type Account type to select (Fine/Fixed penalty/Conditional caution).
    */
   selectAccountType(type: AccountType): void {
     const normalized = type.toLowerCase();
@@ -72,6 +75,7 @@ export class ManualCreateAccountActions {
 
   /**
    * Chooses a defendant type radio option.
+   * @param defendantType Defendant type to select.
    */
   selectDefendantType(defendantType: DefendantType): void {
     const normalized = defendantType.toLowerCase();

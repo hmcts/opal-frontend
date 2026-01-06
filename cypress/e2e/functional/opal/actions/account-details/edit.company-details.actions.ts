@@ -1,5 +1,5 @@
 /**
- * @fileoverview edit-company-details.actions.ts
+ * @file edit-company-details.actions.ts
  * Provides Cypress actions and assertions for editing company details within the Opal application.
  */
 
@@ -9,6 +9,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('EditCompanyDetailsActions');
 
+/** Actions for editing company details within Account Details. */
 export class EditCompanyDetailsActions {
   /**
    * Ensure we are still on the edit page (form visible, not navigated away).
