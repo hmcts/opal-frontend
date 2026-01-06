@@ -31,13 +31,14 @@ export class SearchFilterByBUFlow {
   private readonly searchCommonActions = new AccountSearchCommonActions();
 
   /**
-   *  * @flow Navigates from the Dashboard to the Filter-by-BU screen.
-   * @actions
-   *   1. Dashboard → Account Search
-   *   2. Asserts Individuals form is active (default expected behaviour)
-   *   3. Opens the Business Unit filter via the “Change” link
+   * Navigates from the Dashboard to the Filter-by-BU screen.
    *
-   * @delegates
+   * Steps:
+   *   1. Dashboard → Account Search
+   *   2. Assert Individuals form is active (default expected behaviour)
+   *   3. Open the Business Unit filter via the “Change” link
+   *
+   * Delegates:
    *   - DashboardActions.goToAccountSearch()
    *   - AccountSearchIndividualsActions.assertDefaultIndividualsActive()
    *   - AccountSearchCommonActions.openBusinessUnitFilter()
@@ -327,7 +328,7 @@ export class SearchFilterByBUFlow {
    * @param tab   - The tab to check, must be "Fines" or "Confiscation".
    * @param names - The business unit display names expected to be selected.
    *
-   * @delegates
+   * Delegates:
    *   - SearchFilterByBUFinesActions.verifyBusinessUnitsSelectedByNames()
    *   - SearchFilterByBUConfiscationActions.verifyBusinessUnitsSelectedByNames()
    *
