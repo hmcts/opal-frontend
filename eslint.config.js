@@ -1,24 +1,41 @@
 // eslint.config.js
 //
-// ESLint is scoped to Cypress automation only.
-// - Angular app code is linted via `ng lint`
-// - Cypress framework code is held to higher standards
-// - Legacy step definitions remain unaffected
+// ESLint 9 (flat config) for a mixed Angular + Cypress repo.
 //
+// Design goals:
+// - Angular app code is linted by `ng lint` (Angular ESLint builder)
+// - ESLint focuses on Cypress automation only
+// - Cypress framework code is held to higher documentation standards
+// - Legacy step definitions are not disturbed
+//
+
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import jsdoc from 'eslint-plugin-jsdoc';
 
 export default [
+  // ------------------------------------------------------------
+  // Global ignores (safe)
+  // ------------------------------------------------------------
   {
-    // Keep ESLint out of build output and dependency folders
     ignores: ['projects/**/*', 'node_modules/**/*', 'dist/**/*', 'out-tsc/**/*', 'coverage/**/*'],
   },
 
   // ------------------------------------------------------------
-  // Cypress TypeScript baseline (LOW NOISE)
-  // Applies to all Cypress TS files, including legacy tests.
-  // Intentionally relaxed to avoid breaking existing code.
+  // Angular SOURCE passthrough
+  // Required so `ng lint` does not fail with
+  // "All files matching patterns are ignored".
+  // Actual Angular rules are owned by the Angular ESLint builder.
+  // ------------------------------------------------------------
+  {
+    files: ['src/**/*.ts', 'src/**/*.html'],
+    rules: {},
+  },
+
+  // ------------------------------------------------------------
+  // Cypress TypeScript BASELINE (LOW NOISE)
+  // Applies to ALL Cypress TS files, including legacy steps/tests.
+  // Intentionally relaxed.
   // ------------------------------------------------------------
   {
     files: ['cypress/**/*.ts'],
@@ -34,13 +51,13 @@ export default [
       jsdoc,
     },
     rules: {
-      // Cypress globals (e.g. `cy`) are handled by TypeScript
+      // Cypress globals (cy, Cypress) are handled by TS typings
       'no-undef': 'off',
 
-      // Do NOT enforce unused vars globally (legacy steps rely on this)
+      // Legacy steps often rely on unused args
       '@typescript-eslint/no-unused-vars': 'off',
 
-      // Allow pragmatic Cypress patterns
+      // Pragmatic Cypress patterns
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'warn',
     },
@@ -48,11 +65,7 @@ export default [
 
   // ------------------------------------------------------------
   // Cypress FRAMEWORK CODE (STRICT)
-  // Enforces TS hygiene + TSDoc metadata for:
-  // - actions / flows
-  // - support utils
-  // - new-style step definitions
-  // - shared selectors
+  // Enforces TS hygiene + mandatory docblocks.
   // ------------------------------------------------------------
   {
     files: [
@@ -66,7 +79,7 @@ export default [
       // TS hygiene where it actually matters
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
 
-      // Require docblocks on framework code (including private methods)
+      // Require docblocks (including private methods)
       'jsdoc/require-jsdoc': [
         'error',
         {
@@ -79,15 +92,15 @@ export default [
         },
       ],
 
-      // Ensure every docblock has at least a description ("metadata")
+      // Require at least a description ("metadata")
       'jsdoc/require-description': 'error',
 
-      // JSDoc correctness
+      // Core JSDoc validation
       'jsdoc/check-tag-names': 'error',
       'jsdoc/check-param-names': 'error',
       'jsdoc/require-param': 'error',
 
-      // Returns enforcement (change to "warn" if it ever gets noisy)
+      // Returns enforcement (warn if this ever becomes noisy)
       'jsdoc/require-returns': 'error',
       'jsdoc/require-param-description': 'warn',
       'jsdoc/require-returns-description': 'warn',
@@ -95,8 +108,7 @@ export default [
   },
 
   // ------------------------------------------------------------
-  // newStyleSteps: allow step-specific metadata tags
-  // Semantic Gherkin documentation lives ONLY here.
+  // newStyleSteps: SEMANTIC + TECHNICAL documentation
   // ------------------------------------------------------------
   {
     files: ['cypress/support/step_definitions/newStyleSteps/**/*.ts'],
@@ -104,15 +116,15 @@ export default [
       'jsdoc/check-tag-names': [
         'error',
         {
-          definedTags: ['step', 'precondition', 'details', 'example', 'remarks', 'table', 'note'],
+          definedTags: ['step', 'precondition', 'details', 'table', 'remarks', 'note', 'example'],
         },
       ],
     },
   },
 
   // ------------------------------------------------------------
-  // selectors: allow technical documentation tags
-  // No step semantics here – only implementation context.
+  // Framework layers (actions / flows / selectors):
+  // TECHNICAL documentation only
   // ------------------------------------------------------------
   {
     files: [
@@ -124,7 +136,7 @@ export default [
       'jsdoc/check-tag-names': [
         'error',
         {
-          definedTags: ['actions', 'delegates', 'details', 'example', 'flow', 'note', 'remarks', 'validations'],
+          definedTags: ['remarks', 'details', 'note', 'example'],
         },
       ],
     },
