@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+import { Router, UrlTree } from '@angular/router';
 import { createDefendantDetailsRedirect } from './fines-acc-resolver-redirect';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../constants/fines-acc-defendant-routing-paths.constant';
 
@@ -11,7 +11,7 @@ describe('fines-acc-resolver-redirect', () => {
 
   describe('createDefendantDetailsRedirect', () => {
     it('should create a redirect command to defendant details page', () => {
-      const mockUrlTree = {} as any;
+      const mockUrlTree = {} as UrlTree;
       mockRouter.createUrlTree.and.returnValue(mockUrlTree);
 
       const result = createDefendantDetailsRedirect(mockRouter);
@@ -22,7 +22,7 @@ describe('fines-acc-resolver-redirect', () => {
     });
 
     it('should use the correct routing path constant', () => {
-      const mockUrlTree = {} as any;
+      const mockUrlTree = {} as UrlTree;
       mockRouter.createUrlTree.and.returnValue(mockUrlTree);
 
       createDefendantDetailsRedirect(mockRouter);
@@ -32,7 +32,7 @@ describe('fines-acc-resolver-redirect', () => {
     });
 
     it('should return a RedirectCommand instance', () => {
-      const mockUrlTree = {} as any;
+      const mockUrlTree = {} as UrlTree;
       mockRouter.createUrlTree.and.returnValue(mockUrlTree);
 
       const result = createDefendantDetailsRedirect(mockRouter);
