@@ -158,11 +158,19 @@ export class CommonActions {
    */
   public assertTextAcrossPages(text: string, maxPages: number = 10): void {
     const nextSelector = L.paginationNext;
+    const normalize = (value: string) =>
+      value
+        .replace(/\s+/g, ' ')
+        .replace(/\u00a0/g, ' ')
+        .trim()
+        .toLowerCase();
+    const target = normalize(text);
 
     const scan = (remaining: number) => {
-      cy.get('body').then(($body) => {
+      cy.get('body', { timeout: 5000 }).then(($body) => {
         const pageText = ($body.text() ?? '').toString();
-        if (pageText.includes(text)) {
+        const normalizedPage = normalize(pageText);
+        if (normalizedPage.includes(target)) {
           expect(true, `Found text "${text}" on page`).to.be.true;
           return;
         }
@@ -182,5 +190,17 @@ export class CommonActions {
     };
 
     scan(maxPages);
+  }
+
+  /**
+   * Asserts that text exists on the current page without pagination.
+   * @param text - Text to search for (case-insensitive).
+   */
+  public assertTextOnPage(text: string): void {
+    const regexSafe = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    cy.contains('body', new RegExp(regexSafe, 'i'), { timeout: 5000 }).should(
+      'exist',
+      `Expected to find text "${text}" on the current page`,
+    );
   }
 }

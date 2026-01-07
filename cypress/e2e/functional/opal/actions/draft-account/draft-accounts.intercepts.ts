@@ -132,12 +132,12 @@ export class DraftAccountsInterceptActions {
       cy.intercept(
         {
           method: 'GET',
-          url: '/opal-fines-service/draft-accounts?*status=Publishing%20Failed&*',
+          // Match regardless of param order/separators to ensure the stub always responds.
+          url: /\/opal-fines-service\/draft-accounts\?.*status=Publishing%20Failed/i,
         },
         (req) => {
-          req.continue((res) => {
-            res.send(summary);
-          });
+          log('intercept', 'Intercepted failed draft summaries request', { url: req.url });
+          req.reply(summary);
         },
       ).as('getFailedDraftAccountSummaries');
     });

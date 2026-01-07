@@ -30,6 +30,11 @@ export class DraftAccountsFlow {
     log('navigate', 'Opening Check and Validate with header assertion');
     this.dashboard.goToCheckAndValidateDraftAccounts();
     this.common.assertHeaderContains('Review accounts');
+    // If the failed-drafts stub alias exists, wait for it so tab counts render before assertions.
+    const aliases = ((Cypress as any).state?.('aliases') ?? {}) as Record<string, unknown>;
+    if (aliases['getFailedDraftAccountSummaries']) {
+      cy.wait('@getFailedDraftAccountSummaries', { timeout: 10000 });
+    }
   }
 
   /**

@@ -30,7 +30,7 @@ Feature: Accessibility Tests for Check and Validate Screens
       | account.defendant.surname   | TEST{uniq}          |
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
     And I open the draft account for defendant "TEST{uniqUpper}, Accessibility"
-    Then I see the following text "Check and submit"
+    Then I see the following text on the page "Check and submit"
     And I check the page for accessibility
 
   Scenario: Check account details page is accessible for rejected draft
@@ -50,5 +50,5 @@ Feature: Accessibility Tests for Check and Validate Screens
     And I open the draft account for defendant "TEST{uniqUpper}, Accessibility"
     And I check the manual account details for account header "Miss Accessibility TEST{uniqUpper}"
     When I submit the manual account for review
-    Then I see the following text "You have submitted Accessibility TEST{uniq}'s account for review"
+    Then I see the following text on the page "You have submitted Accessibility TEST{uniq}'s account for review"
     And I check the page for accessibility

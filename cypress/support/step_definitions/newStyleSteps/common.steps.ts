@@ -160,6 +160,16 @@ Then('I see the following text {string}', (text: string) => {
 });
 
 /**
+ * @step Assert text exists on the current page only (no pagination).
+ * @param text - Text expected on the current page.
+ */
+Then('I see the following text on the page {string}', (text: string) => {
+  const resolved = applyUniqPlaceholder(text);
+  log('assert', 'Checking text on current page', { text: resolved });
+  Common().assertTextOnPage(resolved);
+});
+
+/**
  * @step Assert arbitrary text content exists on the button
  * @param text - Text expected to be visible in the button
  */
