@@ -1,4 +1,4 @@
-import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-non-snake-case.interface';
 import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-creditor-options.constant';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-result-codes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
@@ -10,11 +10,9 @@ import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-detai
 import { IFinesMacOffenceDetailsImpositionsState } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-impositions-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
-import {
-  IFinesMacPayloadAccountOffences,
-  IFinesMacPayloadAccountOffencesImposition,
-  IFinesMacPayloadAccountOffencesMinorCreditor,
-} from '../interfaces/fines-mac-payload-account-offences.interface';
+import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload-account-offences.interface';
+import { IFinesMacPayloadAccountOffencesImposition } from '../interfaces/fines-mac-payload-account-offences-imposition.interface';
+import { IFinesMacPayloadAccountOffencesMinorCreditor } from '../interfaces/fines-mac-payload-account-offences-minor-creditor.interface';
 
 /**
  * Determines the creditor type based on the provided company flag.

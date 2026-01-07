@@ -1,4 +1,4 @@
-import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { FINES_MAC_BUSINESS_UNIT_STATE } from '../../../../constants/fines-mac-business-unit-state';
 

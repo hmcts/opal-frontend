@@ -3,11 +3,9 @@ import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fi
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacOffenceDetailsImpositionsState } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-impositions-state.interface';
-import {
-  IFinesMacPayloadAccountOffences,
-  IFinesMacPayloadAccountOffencesImposition,
-  IFinesMacPayloadAccountOffencesMinorCreditor,
-} from '../interfaces/fines-mac-payload-account-offences.interface';
+import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload-account-offences.interface';
+import { IFinesMacPayloadAccountOffencesImposition } from '../interfaces/fines-mac-payload-account-offences-imposition.interface';
+import { IFinesMacPayloadAccountOffencesMinorCreditor } from '../interfaces/fines-mac-payload-account-offences-minor-creditor.interface';
 
 /**
  * Determines if the payout is on hold based on the payment method.

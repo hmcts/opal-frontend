@@ -1,11 +1,9 @@
-import {
-  IOpalFinesDefendantAccountAddress,
-  IOpalFinesDefendantAccountEnforcementStatus,
-  IOpalFinesDefendantAccountLanguagePreferences,
-  IOpalFinesDefendantAccountNotes,
-  IOpalFinesDefendantAccountPartyDetails,
-  IOpalFinesDefendantAccountPaymentTermsSummary,
-} from './opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountAddress } from './opal-fines-defendant-account-address.interface';
+import { IOpalFinesDefendantAccountEnforcementStatus } from './opal-fines-defendant-account-enforcement-status.interface';
+import { IOpalFinesDefendantAccountLanguagePreferences } from './opal-fines-defendant-account-language-preferences.interface';
+import { IOpalFinesDefendantAccountNotes } from './opal-fines-defendant-account-notes.interface';
+import { IOpalFinesDefendantAccountPartyDetails } from './opal-fines-defendant-account-party-details.interface';
+import { IOpalFinesDefendantAccountPaymentTermsSummary } from './opal-fines-defendant-account-payment-terms-summary.interface';
 
 export interface IOpalFinesAccountDefendantAtAGlance {
   version: string | null;

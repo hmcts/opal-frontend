@@ -1,4 +1,4 @@
-import { IOpalFinesDefendantAccountResponse } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountResponse } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
 
 // Mock for column sorting tests with diverse data
 export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
