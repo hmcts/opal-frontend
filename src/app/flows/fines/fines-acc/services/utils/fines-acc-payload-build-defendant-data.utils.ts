@@ -243,7 +243,7 @@ export const buildAccountPartyFromFormState = (
       party_id: partyId,
       organisation_flag: isOrganisation,
       organisation_details: isOrganisation ? buildOrganisationDetails(formState) : null,
-      individual_details: isOrganisation ? buildIndividualDetails(formState) : null,
+      individual_details: isOrganisation ? null : buildIndividualDetails(formState),
     },
     address: buildAddressDetails(formState),
     contact_details: buildContactDetails(formState),

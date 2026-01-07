@@ -1,22 +1,19 @@
 import { IFinesAccPaymentTermsAmendState } from '../../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
 import { transformPaymentTermsData } from './fines-acc-payload-transform-payment-terms-data.utils';
-
-import {
-  BASE_PAYMENT_TERMS_DATA,
-  PAYMENT_TERMS_PAY_IN_FULL_MOCK,
-  PAYMENT_TERMS_INSTALMENTS_ONLY_MOCK,
-  PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK,
-  PAYMENT_TERMS_BY_DATE_NO_LUMP_SUM_MOCK,
-  PAYMENT_TERMS_WITH_DAYS_IN_DEFAULT_MOCK,
-  PAYMENT_TERMS_WITH_ZERO_DAYS_IN_DEFAULT_MOCK,
-  PAYMENT_TERMS_WITH_PAYMENT_CARD_MOCK,
-  PAYMENT_TERMS_NULL_EFFECTIVE_DATE_MOCK,
-  PAYMENT_TERMS_NULL_INSTALMENT_DATA_MOCK,
-  PAYMENT_TERMS_COMPLETE_INSTALMENTS_MOCK,
-  PAYMENT_TERMS_COMPLETE_LUMP_SUM_PLUS_INSTALMENTS_MOCK,
-  MOCK_RESULT_DATA,
-  MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
-} from './mocks/fines-acc-payload-transform-payment-terms-data.mock';
+import { FINES_ACC_BASE_PAYMENT_TERMS_DATA } from './mocks/fines-acc-base-payment-terms-data.mock';
+import { PAYMENT_TERMS_PAY_IN_FULL_MOCK } from './mocks/fines-acc-payment-terms-pay-in-full.mock';
+import { PAYMENT_TERMS_INSTALMENTS_ONLY_MOCK } from './mocks/fines-acc-payment-terms-instalments-only.mock';
+import { PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK } from './mocks/fines-acc-payment-terms-lump-sum-plus-instalments.mock';
+import { PAYMENT_TERMS_BY_DATE_NO_LUMP_SUM_MOCK } from './mocks/fines-acc-payment-terms-by-date-no-lump-sum.mock';
+import { PAYMENT_TERMS_WITH_DAYS_IN_DEFAULT_MOCK } from './mocks/fines-acc-payment-terms-with-days-in-default.mock';
+import { PAYMENT_TERMS_WITH_ZERO_DAYS_IN_DEFAULT_MOCK } from './mocks/fines-acc-payment-terms-with-zero-days-in-default.mock';
+import { PAYMENT_TERMS_WITH_PAYMENT_CARD_MOCK } from './mocks/fines-acc-payment-terms-with-payment-card.mock';
+import { PAYMENT_TERMS_NULL_EFFECTIVE_DATE_MOCK } from './mocks/fines-acc-payment-terms-null-effective-date.mock';
+import { PAYMENT_TERMS_NULL_INSTALMENT_DATA_MOCK } from './mocks/fines-acc-payment-terms-null-instalment-data.mock';
+import { PAYMENT_TERMS_COMPLETE_INSTALMENTS_MOCK } from './mocks/fines-acc-payment-terms-complete-instalments.mock';
+import { PAYMENT_TERMS_COMPLETE_LUMP_SUM_PLUS_INSTALMENTS_MOCK } from './mocks/fines-acc-payment-terms-complete-lump-sum-plus-instalments.mock';
+import { MOCK_RESULT_DATA } from './mocks/fines-acc-result-data.mock';
+import { MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD } from './mocks/fines-acc-result-data-with-prevent-payment-card.mock';
 
 describe('transformPaymentTermsData', () => {
   it('should map type P (paid) to null', () => {
@@ -61,9 +58,9 @@ describe('transformPaymentTermsData', () => {
 
   it('should return null for missing payment_terms_type', () => {
     const mockDataWithoutPaymentType = {
-      ...BASE_PAYMENT_TERMS_DATA,
+      ...FINES_ACC_BASE_PAYMENT_TERMS_DATA,
       payment_terms: {
-        ...BASE_PAYMENT_TERMS_DATA.payment_terms,
+        ...FINES_ACC_BASE_PAYMENT_TERMS_DATA.payment_terms,
         payment_terms_type: null as never,
       },
     };
@@ -80,7 +77,7 @@ describe('transformPaymentTermsData', () => {
   });
 
   it('should not map payment card request when last requested is null', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_payment_card_request).toBeNull();
   });
@@ -101,7 +98,7 @@ describe('transformPaymentTermsData', () => {
   });
 
   it('should handle null days in default', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_has_days_in_default).toBeNull();
     expect(result.facc_payment_terms_suspended_committal_date).toBeNull();
@@ -109,43 +106,49 @@ describe('transformPaymentTermsData', () => {
   });
 
   it('should map prevent_payment_card from resultData when present', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD);
+    const result = transformPaymentTermsData(
+      FINES_ACC_BASE_PAYMENT_TERMS_DATA,
+      MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
+    );
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
   });
 
   it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
   });
 
   it('should set prevent_payment_card as null when resultData is null', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, null);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
   });
 
   it('should map prevent_payment_card from resultData when present', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD);
+    const result = transformPaymentTermsData(
+      FINES_ACC_BASE_PAYMENT_TERMS_DATA,
+      MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
+    );
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
   });
 
   it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
   });
 
   it('should set prevent_payment_card as null when resultData is null', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, null);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
   });
 
   it('should always set amendment fields to null', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_reason_for_change).toBeNull();
     expect(result.facc_payment_terms_change_letter).toBeNull();
@@ -234,19 +237,22 @@ describe('transformPaymentTermsData', () => {
   });
 
   it('should map prevent_payment_card from resultData when present', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD);
+    const result = transformPaymentTermsData(
+      FINES_ACC_BASE_PAYMENT_TERMS_DATA,
+      MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD,
+    );
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(true);
   });
 
   it('should map prevent_payment_card as false when resultData has prevent_payment_card false', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBe(false);
   });
 
   it('should set prevent_payment_card as null when resultData is null', () => {
-    const result = transformPaymentTermsData(BASE_PAYMENT_TERMS_DATA, null);
+    const result = transformPaymentTermsData(FINES_ACC_BASE_PAYMENT_TERMS_DATA, null);
 
     expect(result.facc_payment_terms_prevent_payment_card).toBeNull();
   });

@@ -1,4 +1,4 @@
-import { IFinesPaymentTermsFrequencyOptions } from '../interfaces/fines-payment-terms-options.interface';
+import { IFinesPaymentTermsFrequencyOptions } from '../interfaces/fines-payment-terms-frequency-options.interface';
 
 export const FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS: IFinesPaymentTermsFrequencyOptions = {
   W: 'Weekly',

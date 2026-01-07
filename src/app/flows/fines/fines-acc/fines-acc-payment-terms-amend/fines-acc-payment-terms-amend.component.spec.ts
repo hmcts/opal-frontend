@@ -13,6 +13,8 @@ import { DateTime } from 'luxon';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK } from './mocks/fines-acc-payment-terms-amend-form.mock';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK } from './mocks/fines-acc-payment-terms-amend-payload.mock';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-map-transform-items-config.constant';
+import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM } from './constants/fines-acc-payment-terms-amend-form.constant';
 
 describe('FinesAccPaymentTermsAmendComponent', () => {
   let component: FinesAccPaymentTermsAmendComponent;
@@ -48,7 +50,11 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
       'getBusinessUnitById',
       'getConfigurationItemValue',
     ]);
-    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['buildPaymentTermsAmendPayload']);
+    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
+      'buildPaymentTermsAmendPayload',
+      'transformPaymentTermsPayload',
+      'transformPayload',
+    ]);
     mockFinesAccountStore = {
       account_id: jasmine.createSpy('account_id').and.returnValue(123456),
       business_unit_id: jasmine.createSpy('business_unit_id').and.returnValue('TEST_UNIT'),
@@ -71,6 +77,8 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
 
     // Setup default return values
     mockPayloadService.buildPaymentTermsAmendPayload.and.returnValue(FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
+    mockPayloadService.transformPaymentTermsPayload.and.returnValue(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
+    mockPayloadService.transformPayload.and.returnValue({});
     mockOpalFinesService.postDefendantAccountPaymentTerms.and.returnValue(
       of(FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK),
     );
@@ -103,8 +111,39 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('transformResolvedData', () => {
+    it('should call transformPaymentTermsPayload when resolved data is available', () => {
+      const mockResolvedData = {
+        paymentTermsData: { test: 'data' },
+        resultData: { result: 'data' },
+      };
+
+      component['activatedRoute'].snapshot.data = {
+        paymentTermsFormData: mockResolvedData,
+      };
+
+      const result = component['transformResolvedData']();
+
+      expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+        mockResolvedData.paymentTermsData,
+        FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
+      );
+      expect(mockPayloadService.transformPaymentTermsPayload).toHaveBeenCalledWith(
+        jasmine.any(Object),
+        jasmine.any(Object),
+      );
+      expect(result).toEqual(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
+    });
+
+    it('should return default form when resolved data is missing', () => {
+      component['activatedRoute'].snapshot.data = {};
+
+      const result = component['transformResolvedData']();
+
+      expect(mockPayloadService.transformPayload).not.toHaveBeenCalled();
+      expect(mockPayloadService.transformPaymentTermsPayload).not.toHaveBeenCalled();
+      expect(result).toEqual(FINES_ACC_PAYMENT_TERMS_AMEND_FORM);
+    });
   });
 
   describe('handlePaymentTermsSubmit', () => {

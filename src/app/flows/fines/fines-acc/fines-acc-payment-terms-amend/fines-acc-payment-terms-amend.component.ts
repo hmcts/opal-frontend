@@ -11,7 +11,7 @@ import { IOpalFinesAmendPaymentTermsPayload } from '../../services/opal-fines-se
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../../fines/fines-acc/services/constants/fines-acc-map-transform-items-config.constant';
 @Component({
   selector: 'app-fines-acc-payment-terms-amend',
   imports: [CommonModule, FinesAccPaymentTermsAmendFormComponent],
