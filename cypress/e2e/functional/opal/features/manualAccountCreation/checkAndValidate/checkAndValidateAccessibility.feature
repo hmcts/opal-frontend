@@ -8,7 +8,6 @@ Feature: Accessibility Tests for Check and Validate Screens
   Scenario: Create and Manage landing page passes accessibility checks
     Then I check the page for accessibility
 
-@only
   Scenario: Rejected tab is accessible for rejected draft account
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
