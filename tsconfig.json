@@ -22,6 +22,7 @@
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
     "paths": {
+      "@app/api-client/*": ["src/app/api-client/*"],
       "@constants/*": ["./src/app/constants/*"],
       "@services/fines/*": ["./src/app/flows/fines/services/*"],
       "@routing/pages/*": ["./src/app/pages/routing/*"],
@@ -37,7 +38,13 @@
     "strictTemplates": true
   },
   "include": ["src", "node_modules/cypress", "src/app/interfaces/.ts"],
-  "exclude": ["node_modules/cypress", "**/*.mock.ts", "**/helpers/*.ts"]
+  "exclude": [
+    "node_modules/cypress",
+    "**/*.mock.ts",
+    "**/helpers/*.ts",
+    "**/interfaces/generated/**",
+    "**/types/generated/**"
+  ]
 }
 
 // include + exclude - Issue with cypress + jasmine
