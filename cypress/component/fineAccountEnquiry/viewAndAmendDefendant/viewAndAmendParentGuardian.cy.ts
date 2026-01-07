@@ -16,10 +16,8 @@ import {
   expectedErrors,
   allExpectedErrors,
 } from '../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
-import {
-  VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK,
-  VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK,
-} from './mocks/viewAndAmendDefendant-api.mock';
+import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK } from './mocks/view-and-amend-defendant-individual-full.mock';
+import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK } from './mocks/view-and-amend-defendant-individual-minimal.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 import { IOpalFinesAccountDefendantAccountParty } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 

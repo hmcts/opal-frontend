@@ -1,7 +1,4 @@
-import {
-  IOpalFinesCreditorAccountsSearchParams,
-  IOpalFinesCreditorAccountsSearchParamsCreditor,
-} from '../interfaces/opal-fines-creditor-accounts-search-params.interface';
+import { IOpalFinesCreditorAccountsSearchParams } from '../interfaces/opal-fines-creditor-accounts-search-params.interface';
 
 export const OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS: IOpalFinesCreditorAccountsSearchParams = {
   business_unit_ids: null,
@@ -9,16 +6,3 @@ export const OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS: IOpalFinesCredi
   account_number: null,
   creditor: null,
 };
-
-export const OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT: IOpalFinesCreditorAccountsSearchParamsCreditor =
-  {
-    organisation: null,
-    organisation_name: null,
-    exact_match_organisation_name: null,
-    surname: null,
-    exact_match_surname: null,
-    forenames: null,
-    exact_match_forenames: null,
-    address_line_1: null,
-    postcode: null,
-  };

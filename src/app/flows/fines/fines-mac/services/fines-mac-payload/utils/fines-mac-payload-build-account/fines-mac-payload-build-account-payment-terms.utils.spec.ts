@@ -1,12 +1,10 @@
 import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { finesMacPayloadBuildAccountPaymentTerms } from './fines-mac-payload-build-account-payment-terms.utils';
 import { IFinesMacPayloadAccountPaymentTerms } from '../interfaces/fines-mac-payload-account-payment-terms.interface';
-import {
-  FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK,
-  FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK,
-  FINES_MAC_PAYLOAD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK,
-  FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_NULL_MOCK,
-} from '../mocks/state/fines-mac-payload-payment-terms-state.mock';
+import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../mocks/state/fines-mac-payload-payment-terms-state.mock';
+import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK } from '../mocks/state/fines-mac-payload-payment-terms-instalments.mock';
+import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK } from '../mocks/state/fines-mac-payload-payment-terms-lump-sum-plus-instalments.mock';
+import { FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_NULL_MOCK } from '../mocks/state/fines-mac-payload-payment-terms-null.mock';
 
 describe('finesMacPayloadBuildAccountPaymentTerms', () => {
   let paymentTermsStateInFull: IFinesMacPaymentTermsState | null;
