@@ -1,17 +1,4 @@
-export interface IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData {
-  address: string[];
-  paymentMethod: string | null;
-  nameOnAccount: string | null;
-  sortCode: string | null;
-  accountNumber: string | null;
-  paymentReference: string | null;
-}
-
-export interface IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData {
-  totalAmountImposed: string;
-  totalAmountPaid: string;
-  totalBalanceRemaining: string;
-}
+import { IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData } from './fines-mac-offence-details-review-summary-minor-creditor-table-data.interface';
 
 export interface IFinesMacOffenceDetailsReviewSummaryImpositionTableData {
   impositionId: number;

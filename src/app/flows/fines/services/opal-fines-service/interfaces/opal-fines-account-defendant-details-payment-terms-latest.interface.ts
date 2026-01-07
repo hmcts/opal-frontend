@@ -1,4 +1,4 @@
-import { IOpalFinesDefendantAccountPaymentTermsSummary } from './opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountPaymentTermsSummary } from './opal-fines-defendant-account-payment-terms-summary.interface';
 
 export interface IOpalFinesAccountDefendantDetailsPaymentTermsLatest {
   version: string | null;

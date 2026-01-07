@@ -11,15 +11,6 @@ const BUILD_PAYLOAD_DATE_FORMAT = {
   },
 };
 
-const MAP_PAYLOAD_DATE_FORMAT = {
-  ...TRANSFORM_ITEM_DEFAULTS,
-  transformType: 'date',
-  dateConfig: {
-    inputFormat: 'yyyy-MM-dd',
-    outputFormat: 'dd/MM/yyyy',
-  },
-};
-
 // Forward transformation configuration
 export const FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'dob', ...BUILD_PAYLOAD_DATE_FORMAT },
@@ -30,16 +21,4 @@ export const FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'date_of_sentence', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'response', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'date_of_issue', ...BUILD_PAYLOAD_DATE_FORMAT },
-];
-
-// Reverse transformation configuration
-export const FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
-  { key: 'dob', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'effective_date', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'collection_order_date', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'suspended_committal_date', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'account_sentence_date', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'date_of_sentence', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'response', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'date_of_issue', ...MAP_PAYLOAD_DATE_FORMAT },
 ];

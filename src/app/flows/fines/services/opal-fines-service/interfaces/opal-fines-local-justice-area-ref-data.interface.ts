@@ -1,10 +1,4 @@
-export interface IOpalFinesLocalJusticeArea {
-  local_justice_area_id: number;
-  lja_code: string;
-  name: string;
-  address_line_1: string;
-  postcode: string;
-}
+import { IOpalFinesLocalJusticeArea } from './opal-fines-local-justice-area.interface';
 
 export interface IOpalFinesLocalJusticeAreaRefData {
   count: number;

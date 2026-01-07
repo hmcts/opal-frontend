@@ -1,5 +1,5 @@
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../../../../src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
-import { IOpalFinesDefendantAccountAlias } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountAlias } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account-alias.interface';
 
 const INDIVIDUAL_ALIASES: IOpalFinesDefendantAccountAlias[] = [
   { alias_number: 1, organisation_name: null, surname: 'Graham', forenames: 'A.' },

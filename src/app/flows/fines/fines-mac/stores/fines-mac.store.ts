@@ -23,7 +23,7 @@ import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments
 import { IFinesMacOffenceDetailsForm } from '../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacPaymentTermsForm } from '../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-form.interface';
 import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { computed, inject } from '@angular/core';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacState } from '../interfaces/fines-mac-state.interface';

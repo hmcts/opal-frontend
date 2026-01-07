@@ -2,34 +2,23 @@ import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
-import {
-  IOpalFinesBusinessUnit,
-  IOpalFinesBusinessUnitNonSnakeCase,
-  IOpalFinesBusinessUnitRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import {
-  IOpalFinesCourt,
-  IOpalFinesCourtRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import {
-  IOpalFinesProsecutor,
-  IOpalFinesProsecutorRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
-import {
-  IOpalFinesLocalJusticeArea,
-  IOpalFinesLocalJusticeAreaRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
+import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
+import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
+import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import { IOpalFinesProsecutor } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor.interface';
+import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 import { map, Observable, of, shareReplay } from 'rxjs';
-import {
-  IOpalFinesOffencesNonSnakeCase,
-  IOpalFinesOffencesRefData,
-} from './interfaces/opal-fines-offences-ref-data.interface';
-import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
-import {
-  IOpalFinesMajorCreditor,
-  IOpalFinesMajorCreditorRefData,
-} from './interfaces/opal-fines-major-creditor-ref-data.interface';
+import { IOpalFinesOffencesNonSnakeCase } from './interfaces/opal-fines-offences-non-snake-case.interface';
+import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
+import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
+import { IOpalFinesMajorCreditor } from './interfaces/opal-fines-major-creditor.interface';
+import { IOpalFinesMajorCreditorRefData } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
@@ -40,19 +29,16 @@ import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-a
 import { IOpalFinesAccountDefendantAtAGlance } from './interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
-import {
-  IOpalFinesUpdateDefendantAccountPayload,
-  IOpalFinesUpdateDefendantAccountResponse,
-} from './interfaces/opal-fines-update-defendant-account.interface';
-import {
-  IOpalFinesAccountDefendantAccountParty,
-  IOpalFinesAccountPartyDetails,
-} from './interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesUpdateDefendantAccountPayload } from './interfaces/opal-fines-update-defendant-account.interface';
+import { IOpalFinesUpdateDefendantAccountResponse } from './interfaces/opal-fines-update-defendant-account-response.interface';
+import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesAccountPartyDetails } from './interfaces/opal-fines-account-party-details.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
-import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
-import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
+import { IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note-response.interface';
+import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account-response.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';

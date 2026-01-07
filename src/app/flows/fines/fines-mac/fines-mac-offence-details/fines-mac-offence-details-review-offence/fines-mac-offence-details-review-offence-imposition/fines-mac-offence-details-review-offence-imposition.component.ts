@@ -3,11 +3,9 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IFinesMacOffenceDetailsImpositionsState } from '../../interfaces/fines-mac-offence-details-impositions-state.interface';
-import {
-  IFinesMacOffenceDetailsReviewSummaryImpositionTableData,
-  IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData,
-  IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData,
-} from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
+import { IFinesMacOffenceDetailsReviewSummaryImpositionTableData } from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
+import { IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData } from './interfaces/fines-mac-offence-details-review-summary-imposition-table-row-total-data.interface';
+import { IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData } from './interfaces/fines-mac-offence-details-review-summary-minor-creditor-table-data.interface';
 import {
   GovukTableBodyRowDataComponent,
   GovukTableBodyRowComponent,
