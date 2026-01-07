@@ -5,7 +5,7 @@ Feature: Account Enquiries – View Account Details
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    And I clear all approved draft accounts
+    And I clear all approved accounts
 
   @PO-1593 @866 @PO-1110 @PO-1127
   Scenario: View defendant account details and handle cancel flows

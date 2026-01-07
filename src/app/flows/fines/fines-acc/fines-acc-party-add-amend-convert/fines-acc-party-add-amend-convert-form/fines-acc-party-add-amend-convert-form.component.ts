@@ -14,8 +14,8 @@ import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/comp
 import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-acc-party-add-amend-convert-field-errors.interface';
 import { IFinesAccPartyAddAmendConvertForm } from '../interfaces/fines-acc-party-add-amend-convert-form.interface';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS } from '../constants/fines-acc-party-add-amend-convert-field-errors.constant';
-import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS } from '../constants/fines-acc-party-add-amend-convert-alias.constant';
-import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS } from '../constants/fines-acc-party-add-amend-convert-company-alias.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS } from '../validators/fines-acc-party-add-amend-convert-alias.validators';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS } from '../validators/fines-acc-party-add-amend-convert-company-alias.validators';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { takeUntil } from 'rxjs';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/fines-mac-title-dropdown-options.constant';
@@ -48,7 +48,7 @@ import {
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
-import { employerFieldsValidator } from '../constants/fines-acc-party-add-amend-convert-validators.constant';
+import { employerFieldsValidator } from '../validators/fines-acc-party-add-amend-convert-validators';
 import { FinesAccPartyAddAmendConvertEd } from './components/fines-acc-party-add-amend-convert-ed/fines-acc-party-add-amend-convert-ed.component';
 import { FinesAccPartyAddAmendConvertPartyDetails } from './components/fines-acc-party-add-amend-convert-party-details/fines-acc-party-add-amend-convert-party-details.component';
 import { FinesAccPartyAddAmendConvertLp } from './components/fines-acc-party-add-amend-convert-lp/fines-acc-party-add-amend-convert-lp.component';

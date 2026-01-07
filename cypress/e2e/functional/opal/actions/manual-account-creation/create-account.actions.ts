@@ -5,10 +5,10 @@
 import { ManualCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/create-account.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { AccountType } from '../../../../../support/utils/payloads';
 
 const log = createScopedLogger('ManualCreateAccountActions');
 
-export type AccountType = 'Fine' | 'Fixed penalty' | 'Fixed Penalty' | 'Conditional caution' | 'Conditional Caution';
 export type DefendantType =
   | 'Adult or youth'
   | 'Adult or youth only'

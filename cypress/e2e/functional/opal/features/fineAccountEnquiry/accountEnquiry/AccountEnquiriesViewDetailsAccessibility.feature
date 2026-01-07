@@ -2,7 +2,7 @@ Feature: Account Enquiries - View Account Details Accessibility
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    And I clear all approved draft accounts
+    And I clear all approved accounts
 
   Scenario: Check Account Details View Accessibility with Axe-Core for Individual Account
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":

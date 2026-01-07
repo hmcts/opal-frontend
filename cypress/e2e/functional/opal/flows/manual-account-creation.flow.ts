@@ -1,14 +1,14 @@
 import { DashboardActions } from '../actions/dashboard.actions';
-import {
-  AccountType,
-  DefendantType,
-  ManualCreateAccountActions,
-} from '../actions/manual-account-creation/create-account.actions';
+import { ManualCreateAccountActions, DefendantType } from '../actions/manual-account-creation/create-account.actions';
+import { AccountType } from '../../../../support/utils/payloads';
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
 import { ManualAccountTaskName } from '../../../../shared/selectors/manual-account-creation/account-details.locators';
 import { ManualAccountTaskNavigationActions } from '../actions/manual-account-creation/task-navigation.actions';
-import { ManualContactDetailsActions } from '../actions/manual-account-creation/contact-details.actions';
+import {
+  ManualContactDetailsActions,
+  ManualContactFieldKey,
+} from '../actions/manual-account-creation/contact-details.actions';
 import {
   ManualParentGuardianDetailsActions,
   ManualParentGuardianDetailsPayload,
@@ -53,6 +53,7 @@ import {
   MinorCreditorFieldKey,
   resolveEmployerFieldKey,
   resolveCourtFieldKey,
+  resolveContactFieldKey,
   resolveMinorCreditorFieldKey,
   resolvePersonalDetailsFieldKey,
   resolveSearchFieldKey,
@@ -215,6 +216,7 @@ export class ManualAccountCreationFlow {
       resultCode?: string;
       amountImposed?: string;
       amountPaid?: string;
+      creditorSearch?: string;
       creditorType?: string;
       paymentMethod?: string;
     };
@@ -230,6 +232,7 @@ export class ManualAccountCreationFlow {
       if (/amount imposed/.test(normalized)) bucket.amountImposed = value;
       if (/amount paid/.test(normalized)) bucket.amountPaid = value;
       if (/creditor type/.test(normalized)) bucket.creditorType = value;
+      if (/creditor search/.test(normalized)) bucket.creditorSearch = value;
       if (/payment method/.test(normalized)) bucket.paymentMethod = value;
       impositionMap.set(imposition, bucket);
     });
@@ -248,6 +251,7 @@ export class ManualAccountCreationFlow {
           resultCode: payload.resultCode || 'Compensation (FCOMP)',
           amountImposed: payload.amountImposed,
           amountPaid: payload.amountPaid,
+          creditorSearch: payload.creditorSearch,
           creditorType: defaultCreditor,
         };
       });
@@ -319,7 +323,7 @@ export class ManualAccountCreationFlow {
    * Payment terms, and Company details) using a single composite table. Sections without rows are skipped.
    * @param rows - Raw DataTable rows including headers.
    */
-  completeManualAccountWithDefaults(rows: string[][]): void {
+  completeManualAccountWithDefaults(rows: string[][], accountDetailsHeader?: string): void {
     const entries = this.parseCompositeEntries(rows);
     const courtRows = entries.filter(({ section }) => /court/i.test(section));
     const parentRows = entries.filter(({ section }) => /parent|guardian/i.test(section));
@@ -329,14 +333,55 @@ export class ManualAccountCreationFlow {
     const minorRows = entries.filter(({ section }) => /minor creditor/i.test(section));
     const paymentRows = entries.filter(({ section }) => /payment/i.test(section));
     const companyRows = entries.filter(({ section }) => /company/i.test(section));
+    const contactRows = entries.filter(({ section }) => /contact/i.test(section));
+    const commentRows = entries.filter(({ section }) => /account\s*comments?|comments?\s*and\s*notes/i.test(section));
+    let currentHeader = accountDetailsHeader;
 
-    this.handleCourtEntries(courtRows);
-    this.handleParentGuardianEntries(parentRows);
-    this.handleEmployerEntries(employerRows);
-    this.handlePersonalEntries(personalRows);
-    this.handleOffenceAndMinorEntries(offenceRows, minorRows);
-    this.handlePaymentEntries(paymentRows);
-    this.handleCompanyEntries(companyRows);
+    // Only compute alternate headers when an explicit Account details header is provided.
+    const companyHeader = accountDetailsHeader ? this.resolveCompanyHeader(companyRows) : undefined;
+    const personalHeader = accountDetailsHeader ? this.resolvePersonalHeader(personalRows) : undefined;
+
+    const handledSection = (section?: string): boolean => {
+      if (!section) return false;
+      const normalized = section.toLowerCase();
+      return (
+        /court/.test(normalized) ||
+        /parent|guardian/.test(normalized) ||
+        /employer/.test(normalized) ||
+        /personal|defendant/.test(normalized) ||
+        /offence/.test(normalized) ||
+        /minor creditor/.test(normalized) ||
+        /payment/.test(normalized) ||
+        /company/.test(normalized) ||
+        /contact/.test(normalized) ||
+        /account\s*comments?|comments?\s*and\s*notes/.test(normalized)
+      );
+    };
+
+    const unhandledSections = Array.from(
+      new Set(entries.map(({ section }) => section).filter((section) => !handledSection(section))),
+    ).filter(Boolean) as string[];
+
+    if (unhandledSections.length) {
+      throw new Error(`Unhandled manual account sections in composite table: ${unhandledSections.join(', ')}`);
+    }
+
+    this.handleCourtEntries(courtRows, accountDetailsHeader);
+
+    this.handleParentGuardianEntries(parentRows, accountDetailsHeader);
+    this.handleEmployerEntries(employerRows, accountDetailsHeader);
+    this.handlePersonalEntries(personalRows, currentHeader);
+    if (accountDetailsHeader && personalHeader) {
+      currentHeader = personalHeader;
+    }
+    this.handleOffenceAndMinorEntries(offenceRows, minorRows, currentHeader);
+    this.handlePaymentEntries(paymentRows, currentHeader);
+    this.handleCompanyEntries(companyRows, currentHeader);
+    if (accountDetailsHeader && companyHeader) {
+      currentHeader = companyHeader;
+    }
+    this.handleContactEntries(contactRows, currentHeader);
+    this.handleAccountCommentsEntries(commentRows, currentHeader);
   }
 
   /**
@@ -377,7 +422,7 @@ export class ManualAccountCreationFlow {
    * Populates Court details from composite entries and returns to Account details.
    * @param courtRows - Entries scoped to Court details.
    */
-  private handleCourtEntries(courtRows: CompositeEntry[]): void {
+  private handleCourtEntries(courtRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!courtRows.length) return;
 
     const shouldSelectFirstLja = !courtRows.some(({ field }) => /local justice area|sending area/i.test(field));
@@ -390,7 +435,7 @@ export class ManualAccountCreationFlow {
     }, {});
 
     log('flow', 'Completing Court details from composite table', { courtPayload });
-    this.provideCourtDetailsFromAccountDetails(courtPayload);
+    this.provideCourtDetailsFromAccountDetails(courtPayload, accountDetailsHeader);
     if (shouldSelectFirstLja) {
       this.courtDetails.selectFirstLjaOption();
     }
@@ -404,7 +449,7 @@ export class ManualAccountCreationFlow {
    * Populates Parent/Guardian details (including aliases) from composite entries.
    * @param parentRows - Entries scoped to Parent/Guardian details.
    */
-  private handleParentGuardianEntries(parentRows: CompositeEntry[]): void {
+  private handleParentGuardianEntries(parentRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!parentRows.length) return;
 
     const parentPayload: ManualParentGuardianDetailsPayload = {};
@@ -451,6 +496,10 @@ export class ManualAccountCreationFlow {
         parentPayload.nationalInsuranceNumber = value;
         return;
       }
+      if (/date of birth|dob/.test(normalized) || /dateofbirth/.test(compact)) {
+        parentPayload.dob = value;
+        return;
+      }
       if (/address line 1/.test(normalized) || /addressline1/.test(compact)) {
         parentPayload.addressLine1 = value;
         return;
@@ -477,7 +526,7 @@ export class ManualAccountCreationFlow {
     });
 
     log('flow', 'Completing Parent/Guardian details from composite table', { parentPayload });
-    this.openParentGuardianDetailsTask();
+    this.openTaskFromAccountDetails('Parent or guardian details', accountDetailsHeader);
     this.fillParentGuardianDetails(parentPayload);
     this.returnToAccountDetailsFromParentGuardian();
   }
@@ -486,7 +535,7 @@ export class ManualAccountCreationFlow {
    * Populates Employer details from composite entries and returns to Account details.
    * @param employerRows - Entries scoped to Employer details.
    */
-  private handleEmployerEntries(employerRows: CompositeEntry[]): void {
+  private handleEmployerEntries(employerRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!employerRows.length) return;
 
     const employerPayload = employerRows.reduce<Partial<Record<ManualEmployerFieldKey, string>>>((acc, row) => {
@@ -496,7 +545,7 @@ export class ManualAccountCreationFlow {
     }, {});
 
     log('flow', 'Completing Employer details from composite table', { employerPayload });
-    this.provideEmployerDetailsFromAccountDetails(employerPayload);
+    this.provideEmployerDetailsFromAccountDetails(employerPayload, accountDetailsHeader);
     this.taskNavigation.returnToAccountDetails();
   }
 
@@ -504,7 +553,7 @@ export class ManualAccountCreationFlow {
    * Populates Personal details from composite entries and returns to Account details.
    * @param personalRows - Entries scoped to Personal details.
    */
-  private handlePersonalEntries(personalRows: CompositeEntry[]): void {
+  private handlePersonalEntries(personalRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!personalRows.length) return;
 
     const personalPayload = personalRows.reduce<ManualPersonalDetailsPayload>((acc, row) => {
@@ -514,7 +563,7 @@ export class ManualAccountCreationFlow {
     }, {});
 
     log('flow', 'Completing Personal details from composite table', { personalPayload });
-    this.providePersonalDetailsFromAccountDetails(personalPayload);
+    this.providePersonalDetailsFromAccountDetails(personalPayload, accountDetailsHeader);
     this.taskNavigation.returnToAccountDetails();
   }
 
@@ -523,7 +572,11 @@ export class ManualAccountCreationFlow {
    * @param offenceRows - Entries scoped to Offence details.
    * @param minorRows - Entries scoped to Minor creditor details.
    */
-  private handleOffenceAndMinorEntries(offenceRows: CompositeEntry[], minorRows: CompositeEntry[]): void {
+  private handleOffenceAndMinorEntries(
+    offenceRows: CompositeEntry[],
+    minorRows: CompositeEntry[],
+    accountDetailsHeader?: string,
+  ): void {
     if (!offenceRows.length && !minorRows.length) return;
 
     const parseWeeksAgo = (value?: string): number | undefined => {
@@ -619,7 +672,7 @@ export class ManualAccountCreationFlow {
       weeksAgo,
       impositions,
     });
-    this.openTaskFromAccountDetails('Offence details');
+    this.openTaskFromAccountDetails('Offence details', accountDetailsHeader);
     this.addOffenceWithImpositions({ offenceCode, weeksAgo, impositions });
 
     log('flow', 'Completing Company minor creditor with BACS', { minorImposition, minorPayload });
@@ -633,7 +686,7 @@ export class ManualAccountCreationFlow {
    * Populates Payment terms from composite entries and returns to Account details.
    * @param paymentRows - Entries scoped to Payment terms.
    */
-  private handlePaymentEntries(paymentRows: CompositeEntry[]): void {
+  private handlePaymentEntries(paymentRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!paymentRows.length) return;
 
     const payload: ManualPaymentTermsInput = {};
@@ -767,15 +820,58 @@ export class ManualAccountCreationFlow {
     });
 
     log('flow', 'Completing Payment terms from composite table', { payload });
-    this.providePaymentTermsFromAccountDetails(payload);
+    this.providePaymentTermsFromAccountDetails(payload, accountDetailsHeader);
     this.taskNavigation.returnToAccountDetails();
+  }
+
+  /**
+   * Populates Contact details from composite entries and returns to Account details.
+   * @param contactRows - Entries scoped to Contact details.
+   * @param accountDetailsHeader - Header to assert on Account details (falls back to default when omitted).
+   */
+  private handleContactEntries(contactRows: CompositeEntry[], accountDetailsHeader?: string): void {
+    if (!contactRows.length) return;
+
+    const payload = contactRows.reduce<Partial<Record<ManualContactFieldKey, string>>>((acc, row) => {
+      if (!row.field) return acc;
+      const key = resolveContactFieldKey(row.field);
+      acc[key] = row.value;
+      return acc;
+    }, {});
+
+    log('flow', 'Completing Contact details from composite table', { payload, accountDetailsHeader });
+    this.openTaskFromAccountDetails('Contact details', accountDetailsHeader);
+    this.contactDetails.fillContactDetails(payload);
+    this.taskNavigation.returnToAccountDetails();
+  }
+
+  /**
+   * Resolves the Account details header after company details updates.
+   * @param companyRows - Entries scoped to Company details.
+   */
+  private resolveCompanyHeader(companyRows: CompositeEntry[]): string | undefined {
+    const companyName = companyRows.find(({ field }) => /company name/i.test(field ?? ''))?.value?.trim();
+    return companyName || undefined;
+  }
+
+  /**
+   * Resolves the Account details header after personal details updates.
+   * @param personalRows - Entries scoped to Personal/Defendant details.
+   */
+  private resolvePersonalHeader(personalRows: CompositeEntry[]): string | undefined {
+    const first = personalRows.find(({ field }) => /first name|forename/i.test(field ?? ''))?.value?.trim();
+    const last = personalRows.find(({ field }) => /last name|surname/i.test(field ?? ''))?.value?.trim();
+    if (!first && !last) return undefined;
+
+    if (first && last) return `${first} ${last}`.trim();
+    return (first || last)?.trim();
   }
 
   /**
    * Populates Company details (including aliases) from composite entries and returns to Account details.
    * @param companyRows - Entries scoped to Company details.
    */
-  private handleCompanyEntries(companyRows: CompositeEntry[]): void {
+  private handleCompanyEntries(companyRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!companyRows.length) return;
 
     const companyData: Record<string, string> = {};
@@ -810,7 +906,7 @@ export class ManualAccountCreationFlow {
     });
 
     log('flow', 'Completing Company details from composite table', { companyData, aliases });
-    this.openTaskFromAccountDetails('Company details');
+    this.openTaskFromAccountDetails('Company details', accountDetailsHeader);
     if (Object.keys(companyData).length) {
       this.fillCompanyDetailsFromTable(companyData);
     }
@@ -818,6 +914,36 @@ export class ManualAccountCreationFlow {
       this.addCompanyAliases(aliases);
     }
     this.taskNavigation.returnToAccountDetails();
+  }
+
+  /**
+   * Populates Account comments and notes from composite entries and returns to Account details.
+   * @param commentRows - Entries scoped to Account comments and notes.
+   * @param accountDetailsHeader - Header to assert on Account details (falls back to default when omitted).
+   */
+  private handleAccountCommentsEntries(commentRows: CompositeEntry[], accountDetailsHeader?: string): void {
+    if (!commentRows.length) return;
+
+    let comment = '';
+    let note = '';
+
+    commentRows.forEach(({ field, value }) => {
+      const normalizedField = (field ?? '').toLowerCase();
+      if (/comment/.test(normalizedField)) {
+        comment = value ?? '';
+        return;
+      }
+      if (/note/.test(normalizedField)) {
+        note = value ?? '';
+      }
+    });
+
+    log('flow', 'Completing Account comments and notes from composite table', {
+      comment,
+      note,
+      accountDetailsHeader,
+    });
+    this.provideAccountCommentsAndNotes(comment, note, accountDetailsHeader);
   }
 
   /**
@@ -949,52 +1075,55 @@ export class ManualAccountCreationFlow {
    * Opens a task from account details and asserts the destination page.
    * @param taskName - Task list entry to open.
    */
-  openTaskFromAccountDetails(taskName: ManualAccountTaskName): void {
-    this.accountDetails.assertOnAccountDetailsPage();
-    this.accountDetails.openTask(taskName);
+  openTaskFromAccountDetails(taskName: ManualAccountTaskName, expectedHeader?: string): void {
+    const normalizedTask = (taskName ?? '').trim() as ManualAccountTaskName;
+    this.accountDetails.assertOnAccountDetailsPage(expectedHeader);
+    this.accountDetails.openTask(normalizedTask);
 
-    if (taskName === 'Company details') {
+    if (normalizedTask === 'Company details') {
       this.companyDetails.assertOnCompanyDetailsPage();
       return;
     }
 
-    if (taskName === 'Account comments and notes') {
+    if (normalizedTask === 'Account comments and notes') {
       cy.location('pathname', { timeout: this.pathTimeout }).should('include', 'account-comments');
       this.commentsAndNotes.assertHeader();
       return;
     }
 
-    if (taskName === 'Contact details') {
+    if (normalizedTask === 'Contact details') {
       cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/contact-details');
       this.contactDetails.assertOnContactDetailsPage();
       return;
     }
 
-    if (taskName === 'Personal details') {
+    if (normalizedTask === 'Personal details') {
       this.personalDetails.assertOnPersonalDetailsPage();
       return;
     }
 
-    if (taskName === 'Parent or guardian details') {
+    if (normalizedTask === 'Parent or guardian details') {
       cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/parent-guardian-details');
       this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
       return;
     }
 
-    if (taskName === 'Employer details') {
+    if (normalizedTask === 'Employer details') {
       cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/employer-details');
       this.employerDetails.assertOnEmployerDetailsPage();
       return;
     }
 
-    if (taskName === 'Payment terms') {
+    if (normalizedTask === 'Payment terms') {
       cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/payment-terms');
       this.paymentTerms.assertOnPaymentTermsPage();
       return;
     }
 
-    if (taskName === 'Court details') {
+    if (normalizedTask === 'Court details') {
+      cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/court-details');
       this.courtDetails.assertOnCourtDetailsPage();
+      return;
     }
   }
 
@@ -1002,10 +1131,11 @@ export class ManualAccountCreationFlow {
    * Opens the Account comments and notes task, sets values, and returns to the task list.
    * @param comment - Comment text to enter.
    * @param note - Note text to enter.
+   * @param accountDetailsHeader - Optional Account details header to assert before opening the task.
    */
-  provideAccountCommentsAndNotes(comment: string, note: string): void {
-    log('flow', 'Provide account comments and notes', { comment, note });
-    this.accountDetails.openTask('Account comments and notes');
+  provideAccountCommentsAndNotes(comment: string, note: string, accountDetailsHeader?: string): void {
+    log('flow', 'Provide account comments and notes', { comment, note, accountDetailsHeader });
+    this.openTaskFromAccountDetails('Account comments and notes', accountDetailsHeader);
     this.commentsAndNotes.setComment(comment);
     this.commentsAndNotes.setNote(note);
     this.taskNavigation.returnToAccountDetails();
@@ -1151,7 +1281,6 @@ export class ManualAccountCreationFlow {
     this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
     this.parentGuardianDetails.returnToAccountDetails();
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
-    this.accountDetails.assertOnAccountDetailsPage();
   }
 
   /**
@@ -1242,9 +1371,12 @@ export class ManualAccountCreationFlow {
    * Provides court details by opening the task from Account details.
    * @param payload - Court details key/value map.
    */
-  provideCourtDetailsFromAccountDetails(payload: Partial<Record<ManualCourtFieldKey, string>>): void {
-    log('flow', 'Provide court details from Account details', { payload });
-    this.openTaskFromAccountDetails('Court details');
+  provideCourtDetailsFromAccountDetails(
+    payload: Partial<Record<ManualCourtFieldKey, string>>,
+    accountDetailsHeader?: string,
+  ): void {
+    log('flow', 'Provide court details from Account details', { payload, accountDetailsHeader });
+    this.openTaskFromAccountDetails('Court details', accountDetailsHeader);
     this.courtDetails.fillCourtDetails(payload);
   }
 
@@ -1264,9 +1396,12 @@ export class ManualAccountCreationFlow {
    * Provides employer details by opening the task from Account details.
    * @param payload - Employer details key/value map.
    */
-  provideEmployerDetailsFromAccountDetails(payload: Partial<Record<ManualEmployerFieldKey, string>>): void {
-    log('flow', 'Provide employer details from Account details', { payload });
-    this.openTaskFromAccountDetails('Employer details');
+  provideEmployerDetailsFromAccountDetails(
+    payload: Partial<Record<ManualEmployerFieldKey, string>>,
+    accountDetailsHeader?: string,
+  ): void {
+    log('flow', 'Provide employer details from Account details', { payload, accountDetailsHeader });
+    this.openTaskFromAccountDetails('Employer details', accountDetailsHeader);
     this.employerDetails.fillEmployerDetails(payload);
   }
 
@@ -1381,9 +1516,9 @@ export class ManualAccountCreationFlow {
    * Provides personal details from the Account details task list.
    * @param payload - Personal details values to populate.
    */
-  providePersonalDetailsFromAccountDetails(payload: ManualPersonalDetailsPayload): void {
-    log('flow', 'Provide personal details from Account details', payload);
-    this.accountDetails.assertOnAccountDetailsPage();
+  providePersonalDetailsFromAccountDetails(payload: ManualPersonalDetailsPayload, accountDetailsHeader?: string): void {
+    log('flow', 'Provide personal details from Account details', { payload, accountDetailsHeader });
+    this.accountDetails.assertOnAccountDetailsPage(accountDetailsHeader);
     this.accountDetails.openTask('Personal details');
     this.personalDetails.assertOnPersonalDetailsPage();
     this.personalDetails.fillPersonalDetails(payload);
@@ -1600,10 +1735,11 @@ export class ManualAccountCreationFlow {
 
   /**
    * Opens Check account details from the task list and asserts the review page.
+   * @param accountDetailsHeader - Optional Account details header to assert before navigating.
    */
-  checkManualAccountDetails(): void {
-    log('flow', 'Checking manual account details from task list');
-    this.accountDetails.assertOnAccountDetailsPage();
+  checkManualAccountDetails(accountDetailsHeader?: string): void {
+    log('flow', 'Checking manual account details from task list', { accountDetailsHeader });
+    this.accountDetails.assertOnAccountDetailsPage(accountDetailsHeader);
     this.reviewAccount.clickCheckAccount();
     this.reviewAccount.assertOnReviewPage();
   }
@@ -2098,15 +2234,15 @@ export class ManualAccountCreationFlow {
    * Provides payment terms from the Account details task list.
    * @param payload - Payment terms payload including collection order and dates.
    */
-  providePaymentTermsFromAccountDetails(payload: ManualPaymentTermsInput): void {
-    log('flow', 'Provide payment terms from Account details', { payload });
+  providePaymentTermsFromAccountDetails(payload: ManualPaymentTermsInput, accountDetailsHeader?: string): void {
+    log('flow', 'Provide payment terms from Account details', { payload, accountDetailsHeader });
     cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
       if (!pathname.includes('/account-details')) {
         this.taskNavigation.navigateToAccountDetails();
       } else {
-        this.accountDetails.assertOnAccountDetailsPage();
+        this.accountDetails.assertOnAccountDetailsPage(accountDetailsHeader);
       }
-      this.openTaskFromAccountDetails('Payment terms');
+      this.openTaskFromAccountDetails('Payment terms', accountDetailsHeader);
       this.paymentTerms.fillPaymentTerms(payload);
     });
   }
@@ -2164,11 +2300,14 @@ export class ManualAccountCreationFlow {
    * Asserts multiple task statuses after returning to Account details.
    * @param statuses - List of task/status pairs to assert.
    */
-  assertTaskStatuses(statuses: Array<{ task: ManualAccountTaskName; status: string }>): void {
-    log('flow', 'Asserting multiple task statuses', { statuses });
+  assertTaskStatuses(
+    statuses: Array<{ task: ManualAccountTaskName; status: string }>,
+    accountDetailsHeader?: string,
+  ): void {
+    log('flow', 'Asserting multiple task statuses', { statuses, accountDetailsHeader });
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
-    this.accountDetails.assertOnAccountDetailsPage();
-    statuses.forEach(({ task, status }) => this.accountDetails.assertTaskStatus(task, status));
+    this.accountDetails.assertOnAccountDetailsPage(accountDetailsHeader);
+    statuses.forEach(({ task, status }) => this.accountDetails.assertTaskStatus(task, status, accountDetailsHeader));
   }
 
   /**
