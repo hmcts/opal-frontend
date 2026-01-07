@@ -1,7 +1,7 @@
 import { transformDefendantAccountPartyPayload } from './fines-acc-payload-transform-defendant-data.utils';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IFinesAccPartyAddAmendConvertState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
-import { IOpalFinesDefendantAccountIndividualAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountIndividualAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-individual-alias.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK } from '../mocks/opal-fines-account-defendant-account-party-null-data.mock';
 

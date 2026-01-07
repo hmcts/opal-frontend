@@ -9,10 +9,3 @@ export interface IOpalFinesAddNotePayload {
     note_text: string;
   };
 }
-
-/**
- * Interface for the response after adding a note
- */
-export interface IOpalFinesAddNoteResponse {
-  note_id: number;
-}

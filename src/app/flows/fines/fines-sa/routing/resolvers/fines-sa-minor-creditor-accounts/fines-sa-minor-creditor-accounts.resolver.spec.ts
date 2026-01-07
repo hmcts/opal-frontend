@@ -7,7 +7,7 @@ import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { of, lastValueFrom, Observable } from 'rxjs';
 import { IFinesSaSearchAccountFormMinorCreditorsState } from '../../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/interfaces/fines-sa-search-account-form-minor-creditors-state.interface';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE } from '../../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-state.constant';
-import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT } from '@services/fines/opal-fines-service/constants/opal-fines-creditor-account-search-params-defaults.constant';
+import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT } from '@services/fines/opal-fines-service/constants/opal-fines-creditor-account-search-params-creditor-default.constant';
 
 describe('finesSaMinorCreditorAccountsResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

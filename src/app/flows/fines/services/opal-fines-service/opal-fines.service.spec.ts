@@ -1,15 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import {
-  IOpalFinesCourt,
-  IOpalFinesCourtNonSnakeCase,
-  IOpalFinesCourtRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import {
-  IOpalFinesLocalJusticeArea,
-  IOpalFinesLocalJusticeAreaRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
+import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from './mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './mocks/opal-fines-local-justice-area-ref-data.mock';
@@ -17,13 +12,12 @@ import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/o
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from './mocks/opal-fines-offences-ref-data.mock';
-import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
+import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
+import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from './mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from './mocks/opal-fines-result-ref-data.mock';
-import {
-  IOpalFinesMajorCreditor,
-  IOpalFinesMajorCreditorRefData,
-} from './interfaces/opal-fines-major-creditor-ref-data.interface';
+import { IOpalFinesMajorCreditor } from './interfaces/opal-fines-major-creditor.interface';
+import { IOpalFinesMajorCreditorRefData } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from './mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-draft-add-account-payload.mock';

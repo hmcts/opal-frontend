@@ -121,6 +121,7 @@ Then(
  *  When I select back and confirm
  */
 When('I select back and confirm', () => {
+  cy.pause();
   log('step', 'Select back and confirm (navigate back with confirmation)');
   Common().navigateBrowserBackWithChoice('ok');
 });
