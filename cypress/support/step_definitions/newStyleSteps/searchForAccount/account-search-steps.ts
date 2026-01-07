@@ -17,6 +17,7 @@ import { ResultsActions } from '../../../../e2e/functional/opal/actions/search/s
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import { DashboardActions } from '../../../../e2e/functional/opal/actions/dashboard.actions';
 import { MinorCreditorType } from '../../../utils/macFieldResolvers';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 
 import { log } from '../../../utils/log.helper';
 
@@ -30,6 +31,19 @@ const searchProblemActions = () => new AccountSearchProblemActions();
 const commonActions = () => new CommonActions();
 const dashboardActions = () => new DashboardActions();
 const resultsActions = () => new ResultsActions();
+const applyUniqToDataTable = (table: DataTable): DataTable => {
+  const rawWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
+  const rows = rawWithUniq;
+  const dt: DataTable = {
+    raw: () => rows,
+    rows: () => rows,
+    rowsHash: () => Object.fromEntries(rows.map(([k, v]) => [k, v ?? ''])),
+    hashes: () => rows.map(([k, v]) => ({ [k]: v ?? '' })),
+    transpose: () => dt,
+    toString: () => JSON.stringify(rows),
+  } as DataTable;
+  return dt;
+};
 
 /**
  * @step Navigates from the Dashboard to the Account Search page and verifies the Individuals form is shown by default.
@@ -316,7 +330,7 @@ Then('the Minor creditors form is cleared to defaults', () => {
  */
 When('I search using the following inputs:', function (table: DataTable) {
   log('step', 'Searching using provided inputs table');
-  searchFlow().searchUsingInputs(table);
+  searchFlow().searchUsingInputs(applyUniqToDataTable(table));
 });
 
 /**
@@ -385,7 +399,8 @@ When('I go back from the problem page', () => {
 Then(
   'I see the {string} page for individuals with the following details:',
   (expectedHeader: string, table: DataTable) => {
-    log('step', `Verify individuals page "${expectedHeader}"`);
+    const expectedHeaderWithUniq = applyUniqPlaceholder(expectedHeader);
+    log('step', `Verify individuals page "${expectedHeaderWithUniq}"`);
     const rows = table.rows();
     const map: Record<string, string> = {};
     for (const r of rows) {
@@ -393,10 +408,10 @@ Then(
         String(r[0] ?? '')
           .trim()
           .toLowerCase()
-      ] = String(r[1] ?? '').trim();
+      ] = applyUniqPlaceholder(String(r[1] ?? '').trim());
     }
 
-    searchFlow().verifyPageForIndividuals(expectedHeader, map);
+    searchFlow().verifyPageForIndividuals(expectedHeaderWithUniq, map);
   },
 );
 
@@ -419,7 +434,8 @@ Then(
 Then(
   'I see the {string} page for companies with the following details:',
   (expectedHeader: string, table: DataTable) => {
-    log('step', `Verify companies page "${expectedHeader}"`);
+    const expectedHeaderWithUniq = applyUniqPlaceholder(expectedHeader);
+    log('step', `Verify companies page "${expectedHeaderWithUniq}"`);
     const rows = table.rows();
     const map: Record<string, string> = {};
     for (const r of rows) {
@@ -427,7 +443,7 @@ Then(
         String(r[0] ?? '')
           .trim()
           .toLowerCase()
-      ] = String(r[1] ?? '').trim();
+      ] = applyUniqPlaceholder(String(r[1] ?? '').trim());
     }
 
     searchFlow().verifyPageForCompanies(map);
@@ -455,7 +471,8 @@ Then(
 Then(
   'I see the {string} page for minor creditors - individual with the following details:',
   (expectedHeader: string, table: DataTable) => {
-    log('step', `Verify minor (individual) page "${expectedHeader}"`);
+    const expectedHeaderWithUniq = applyUniqPlaceholder(expectedHeader);
+    log('step', `Verify minor (individual) page "${expectedHeaderWithUniq}"`);
     const rows = table.rows();
     const map: Record<string, string> = {};
     for (const r of rows) {
@@ -463,7 +480,7 @@ Then(
         String(r[0] ?? '')
           .trim()
           .toLowerCase()
-      ] = String(r[1] ?? '').trim();
+      ] = applyUniqPlaceholder(String(r[1] ?? '').trim());
     }
 
     searchFlow().verifyPageForMinorIndividual(expectedHeader, map);

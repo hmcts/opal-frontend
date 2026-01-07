@@ -56,6 +56,7 @@ const checkerReview = () => new CheckAndValidateReviewActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const draftsFlow = () => new DraftAccountsFlow();
 const tabs = () => new DraftTabsActions();
+const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 
 /**
  * Unified implementation used by all step aliases.
@@ -272,6 +273,7 @@ Then('the checker status heading is {string}', (heading: string) => {
  * @example When I view the "Rejected" tab on the Create and Manage Draft Accounts page
  */
 When('I view the {string} tab on the Create and Manage Draft Accounts page', (tab: CreateManageTab) => {
+  cy.reload();
   log('navigate', 'Switching Create and Manage tab', { tab });
   inputter().switchTab(tab);
 });
@@ -315,8 +317,9 @@ When('I open Check and Validate Draft Accounts', () => {
  * @example Then I see "Fixed Penalty" in the account type column on the draft table
  */
 Then('I see {string} in the account type column on the draft table', (expected: string) => {
-  log('assert', 'Checking account type column contains expected text', { expected });
-  checker().assertAccountType(expected);
+  const normalized = withUniq(expected);
+  log('assert', 'Checking account type column contains expected text', { expected: normalized });
+  checker().assertAccountType(normalized);
 });
 
 /**
@@ -344,8 +347,9 @@ When(
  * @param defendantName - Visible name in the Defendant column.
  */
 When('I open the draft account for defendant {string}', (defendantName: string) => {
-  log('navigate', 'Opening draft account by defendant', { defendantName });
-  inputter().openDefendant(defendantName);
+  const name = withUniq(defendantName);
+  log('navigate', 'Opening draft account by defendant', { defendantName: name });
+  inputter().openDefendant(name);
 });
 
 /**
@@ -354,8 +358,9 @@ When('I open the draft account for defendant {string}', (defendantName: string) 
  * @example And I view the draft account details for defendant "GREEN, Oliver"
  */
 When('I view the draft account details for defendant {string}', (defendantName: string) => {
-  log('navigate', 'Opening checker draft account by defendant', { defendantName });
-  checker().openDefendant(defendantName);
+  const name = withUniq(defendantName);
+  log('navigate', 'Opening checker draft account by defendant', { defendantName: name });
+  checker().openDefendant(name);
 });
 
 /**
@@ -391,8 +396,10 @@ When('I return to the rejected accounts tab', () => {
 Then(
   'I open the draft account for {string} and see header {string}',
   (defendantName: string, expectedHeader: string) => {
-    log('navigate', 'Opening draft and asserting header', { defendantName, expectedHeader });
-    draftsFlow().openDraftAndAssertHeader(defendantName, expectedHeader);
+    const name = withUniq(defendantName);
+    const header = withUniq(expectedHeader);
+    log('navigate', 'Opening draft and asserting header', { defendantName: name, expectedHeader: header });
+    draftsFlow().openDraftAndAssertHeader(name, header);
   },
 );
 
@@ -402,8 +409,9 @@ Then(
  * @param status - Expected status tag (e.g., "In review").
  */
 Then('I should be back on the page {string} with status {string}', (header: string, status: string) => {
-  log('assert', 'Asserting draft review header and status tag', { header, status });
-  draftsFlow().assertReviewHeaderAndStatus(header, status);
+  const normalizedHeader = withUniq(header);
+  log('assert', 'Asserting draft review header and status tag', { header: normalizedHeader, status });
+  draftsFlow().assertReviewHeaderAndStatus(normalizedHeader, status);
 });
 
 /**
@@ -414,8 +422,12 @@ Then('I should be back on the page {string} with status {string}', (header: stri
 Then(
   'I should see the checker header {string} and status heading {string}',
   (header: string, statusHeading: string) => {
-    log('assert', 'Asserting checker header and status heading', { header, statusHeading });
-    draftsFlow().assertHeaderAndStatusHeading(header, statusHeading);
+    const normalizedHeader = withUniq(header);
+    log('assert', 'Asserting checker header and status heading', {
+      header: normalizedHeader,
+      statusHeading,
+    });
+    draftsFlow().assertHeaderAndStatusHeading(normalizedHeader, statusHeading);
   },
 );
 
@@ -426,7 +438,7 @@ Then(
 Then('the manual draft table headings are:', (table: DataTable) => {
   const headings = table
     .rows()
-    .map(([heading]) => heading.trim())
+    .map(([heading]) => withUniq(heading.trim()))
     .filter(Boolean);
   log('assert', 'Draft table headings', { headingsList: headings });
   checker().assertHeadings(headings);
@@ -440,7 +452,7 @@ Then('the manual draft table headings are:', (table: DataTable) => {
 Then('the manual draft table row {int} contains:', (position: number, table: DataTable) => {
   const expectedValues = table
     .rows()
-    .map(([value]) => value.trim())
+    .map(([value]) => withUniq(value.trim()))
     .filter(Boolean);
   log('assert', 'Draft table row values', { position, expectedValues });
   inputter().assertRowValues(position, expectedValues);
@@ -455,7 +467,7 @@ Then('the manual draft table row {int} has values:', (position: number, table: D
   const expectations = Object.fromEntries(
     table
       .rows()
-      .map(([column, value]) => [column.trim(), value.trim()])
+      .map(([column, value]) => [column.trim(), withUniq(value.trim())])
       .filter(([column]) => Boolean(column)),
   );
   log('assert', 'Draft table row column values', { position, expectations });
@@ -474,11 +486,12 @@ Then(
     const expectations = Object.fromEntries(
       table
         .rows()
-        .map(([column, value]) => [column.trim(), value.trim()])
+        .map(([column, value]) => [column.trim(), withUniq(value.trim())])
         .filter(([column]) => Boolean(column)),
     );
-    log('assert', 'Draft table row values by match', { matchColumn, matchValue, expectations });
-    checker().assertRowByMatch(matchColumn, matchValue, expectations as any);
+    const normalizedMatch = withUniq(matchValue);
+    log('assert', 'Draft table row values by match', { matchColumn, matchValue: normalizedMatch, expectations });
+    checker().assertRowByMatch(matchColumn, normalizedMatch, expectations as any);
   },
 );
 
@@ -488,10 +501,11 @@ Then(
  * @param expectedText - Text to search for within the column cells.
  */
 Then('I see {string} in the manual draft column {string}', (expectedText: string, column: string) => {
-  log('assert', 'Draft table column contains text', { column, expectedText });
+  const normalized = withUniq(expectedText);
+  log('assert', 'Draft table column contains text', { column, expectedText: normalized });
   inputter().assertColumnContains(
     column as Parameters<CreateManageDraftsActions['assertColumnContains']>[0],
-    expectedText,
+    normalized,
   );
 });
 
@@ -501,8 +515,9 @@ Then('I see {string} in the manual draft column {string}', (expectedText: string
  * @param column - Column label.
  */
 Then('the draft accounts table should contain {string} in column {string}', (expectedText: string, column: string) => {
-  log('assert', 'Checker draft table column contains text', { column, expectedText });
-  checker().assertColumnContains(column as DraftAccountsTableColumn, expectedText);
+  const normalized = withUniq(expectedText);
+  log('assert', 'Checker draft table column contains text', { column, expectedText: normalized });
+  checker().assertColumnContains(column as DraftAccountsTableColumn, normalized);
 });
 
 /**
@@ -514,10 +529,14 @@ Then('the draft accounts table should contain {string} in column {string}', (exp
 When(
   'I open the draft account in row containing {string} in the manual draft column {string}',
   (expectedText: string, column: string) => {
-    log('navigate', 'Opening draft account by column match', { column, expectedText });
+    // Refresh to force a fresh API fetch and table render before matching; avoids stale/paginated views.
+    cy.reload();
+    const normalized = withUniq(expectedText);
+    log('navigate', 'Opening draft account by column match', { column, expectedText: normalized });
+    cy.log(`Matching draft row → column: ${column}, expected: ${normalized}`);
     inputter().openFirstMatchInColumn(
       column as Parameters<CreateManageDraftsActions['openFirstMatchInColumn']>[0],
-      expectedText,
+      normalized,
     );
   },
 );

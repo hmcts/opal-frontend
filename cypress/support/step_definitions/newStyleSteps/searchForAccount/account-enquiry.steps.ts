@@ -46,9 +46,9 @@ import { rowsHashSafe } from '../../../utils/table';
  * @step Selects the latest account and verifies the header.
  */
 When('I select the latest published account and verify the header is {string}', (header: string) => {
-  log('step', 'Selecting latest published account', { expectedHeader: header });
-  flow().clickLatestPublishedFromResultsOrAcrossPages();
-  atAGlanceDetails().assertHeaderContains(header);
+  const resolvedHeader = applyUniqPlaceholder(header);
+  log('step', 'Selecting latest published account', { expectedHeader: resolvedHeader });
+  flow().openLatestAndAssertHeader(resolvedHeader);
 });
 
 /**
@@ -71,10 +71,7 @@ When(
     const surnameWithUniq = applyUniqPlaceholder(surname);
     const headerWithUniq = applyUniqPlaceholder(header);
     log('step', 'Search by surname and verify header', { surname: surnameWithUniq, expectedHeader: headerWithUniq });
-
-    flow().searchBySurname(surnameWithUniq);
-    flow().clickLatestPublishedFromResultsOrAcrossPages();
-    atAGlanceDetails().assertHeaderContains(headerWithUniq);
+    flow().searchOpenLatestAndAssertHeader(surnameWithUniq, headerWithUniq);
   },
 );
 
@@ -318,8 +315,9 @@ Then('I should see the parent or guardian name contains {string}', (expected: st
  * @param expected - Text expected within the company name.
  */
 Then('I should see the company name contains {string}', (expected: string) => {
-  log('assert', 'Company name contains', { expected });
-  flow().assertCompanyNameContains(expected);
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Company name contains', { expected: expectedWithUniq });
+  flow().assertCompanyNameContains(expectedWithUniq);
 });
 
 /**
@@ -503,13 +501,12 @@ When('I start an account note with {string} and cancel', (noteText: string) => {
 When(
   'I save the following comments and verify the account header is {string}:',
   (expectedHeader: string, table: DataTable) => {
+    const headerWithUniq = applyUniqPlaceholder(expectedHeader);
     const rows = (table.hashes?.() ?? []) as CommentRow[];
     const texts = rows.map((r) => (r['text'] ?? '').trim()).filter((t) => t.length > 0);
 
-    log('step', 'Save comments and verify header', { expectedHeader });
-    flow().saveCommentsAndReturnToSummary(texts);
-
-    atAGlanceDetails().assertHeaderContains(expectedHeader);
+    log('step', 'Save comments and verify header', { expectedHeader: headerWithUniq });
+    flow().saveCommentsReturnAndAssertHeader(texts, headerWithUniq);
   },
 );
 

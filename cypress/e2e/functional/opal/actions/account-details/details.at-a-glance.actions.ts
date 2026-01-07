@@ -23,7 +23,14 @@ export class AccountDetailsAtAGlanceActions {
    * @param expected - Parameter.
    */
   assertHeaderContains(expected: string): void {
-    cy.get(N.header.title, { timeout: 15000 }).should('contain.text', expected);
+    cy.get(N.header.title, { timeout: 15000 })
+      .should('be.visible')
+      .invoke('text')
+      .then((text) => {
+        const normalizedActual = text.toLowerCase();
+        const normalizedExpected = expected.toLowerCase();
+        expect(normalizedActual).to.contain(normalizedExpected);
+      });
   }
 
   /**

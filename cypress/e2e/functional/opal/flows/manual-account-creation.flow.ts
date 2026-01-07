@@ -60,6 +60,7 @@ import {
   resolveSearchResultColumn,
 } from '../../../../support/utils/macFieldResolvers';
 import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -135,6 +136,15 @@ export class ManualAccountCreationFlow {
   private readonly languagePreferences = new ManualLanguagePreferencesActions();
   private readonly reviewAccount = new ManualReviewAccountActions();
   private readonly defaultBusinessUnitToken = 'default business unit';
+
+  /**
+   * Applies `{uniq}` placeholder replacement when provided.
+   * @param value - Raw string that may contain the `{uniq}` token.
+   * @returns Value with uniq placeholder resolved, or the original value.
+   */
+  private withUniq(value?: string): string | undefined {
+    return value ? applyUniqPlaceholder(value) : value;
+  }
 
   /**
    * Checks whether the provided business unit token represents the default option.
@@ -341,11 +351,12 @@ export class ManualAccountCreationFlow {
     const companyRows = entries.filter(({ section }) => /company/i.test(section));
     const contactRows = entries.filter(({ section }) => /contact/i.test(section));
     const commentRows = entries.filter(({ section }) => /account\s*comments?|comments?\s*and\s*notes/i.test(section));
-    let currentHeader = accountDetailsHeader;
+    const normalizedHeader = this.withUniq(accountDetailsHeader);
+    let currentHeader = normalizedHeader;
 
     // Only compute alternate headers when an explicit Account details header is provided.
-    const companyHeader = accountDetailsHeader ? this.resolveCompanyHeader(companyRows) : undefined;
-    const personalHeader = accountDetailsHeader ? this.resolvePersonalHeader(personalRows) : undefined;
+    const companyHeader = normalizedHeader ? this.resolveCompanyHeader(companyRows) : undefined;
+    const personalHeader = normalizedHeader ? this.resolvePersonalHeader(personalRows) : undefined;
 
     const handledSection = (section?: string): boolean => {
       if (!section) return false;
@@ -372,18 +383,18 @@ export class ManualAccountCreationFlow {
       throw new Error(`Unhandled manual account sections in composite table: ${unhandledSections.join(', ')}`);
     }
 
-    this.handleCourtEntries(courtRows, accountDetailsHeader);
+    this.handleCourtEntries(courtRows, normalizedHeader);
 
-    this.handleParentGuardianEntries(parentRows, accountDetailsHeader);
-    this.handleEmployerEntries(employerRows, accountDetailsHeader);
+    this.handleParentGuardianEntries(parentRows, normalizedHeader);
+    this.handleEmployerEntries(employerRows, normalizedHeader);
     this.handlePersonalEntries(personalRows, currentHeader);
-    if (accountDetailsHeader && personalHeader) {
+    if (normalizedHeader && personalHeader) {
       currentHeader = personalHeader;
     }
     this.handleOffenceAndMinorEntries(offenceRows, minorRows, currentHeader);
     this.handlePaymentEntries(paymentRows, currentHeader);
     this.handleCompanyEntries(companyRows, currentHeader);
-    if (accountDetailsHeader && companyHeader) {
+    if (normalizedHeader && companyHeader) {
       currentHeader = companyHeader;
     }
     this.handleContactEntries(contactRows, currentHeader);
@@ -416,7 +427,7 @@ export class ManualAccountCreationFlow {
         raw: row,
         section: row[sectionIdx]?.trim(),
         field: row[fieldIdx]?.trim(),
-        value: row[valueIdx]?.trim(),
+        value: this.withUniq(row[valueIdx]?.trim()) ?? '',
         imposition: impositionIdx >= 0 ? Number(row[impositionIdx] ?? 1) || 1 : 1,
       }))
       .filter(({ section, field }) => section && field) as CompositeEntry[];

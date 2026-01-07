@@ -24,10 +24,12 @@ export function getUniqSuffix(): string {
 
 /**
  * Replaces `{uniq}` tokens in a string with the shared unique suffix.
+ * Supports `{uniqUpper}` to use an upper-cased variant when expectations are upper-cased in the UI.
  * @param value - Input string that may contain `{uniq}` tokens.
  * @returns String with `{uniq}` tokens replaced.
  */
 export function applyUniqPlaceholder(value: string): string {
   if (typeof value !== 'string') return value;
-  return value.replace(/{uniq}/gi, getUniqSuffix());
+  const uniq = getUniqSuffix();
+  return value.replace(/{uniqupper}/gi, uniq.toUpperCase()).replace(/{uniq}/gi, uniq);
 }

@@ -366,21 +366,43 @@ export class DraftAccountsCommonActions {
    * Opens the first draft account where the specified column contains the expected text.
    * @param column - Column label.
    * @param expectedText - Text to match within the column.
+   * @remarks
+   * - Normalizes whitespace/dashes so we aren’t tripped up by NBSPs or typographic dashes in the UI.
+   * - Walks through pagination to find the first matching cell, logging a snapshot of each page to aid debugging.
+   * - Clicks the cell (or its link) once a match is found; throws with the last snapshot if nothing matches.
    */
   openFirstMatchInColumn(column: DraftAccountsTableColumn, expectedText: string): void {
     const selector = this.resolveColumnSelector(column);
     log('navigate', 'Opening first draft account matching column text', { column, expectedText });
-    const matcher = new RegExp(expectedText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const normalize = (text: string) =>
+      text
+        .replace(/[\u00a0]/g, ' ')
+        .replace(/[\u2013\u2014]/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const expectedNormalized = normalize(expectedText);
+    const timeout = this.common.getTimeoutOptions().timeout;
 
-    const tryPage = () => {
-      cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+    const searchPage = () => {
+      cy.get(L.rows, { timeout }).should('exist');
       cy.get('body').then(($body) => {
-        const cells = $body.find(selector).filter((_, el) => matcher.test(Cypress.$(el).text()));
+        const cells = $body.find(selector).toArray();
+        const snapshot = cells.map((cell, idx) => ({
+          idx,
+          text: normalize(Cypress.$(cell).text()),
+        }));
+        const snapshotStr = snapshot.map((s) => `${s.idx}:${s.text}`).join(' | ');
+        log('debug', 'Draft table match snapshot', { snapshot });
+        cy.log(`Draft table snapshot → ${snapshotStr}`);
 
-        if (cells.length) {
-          const first = Cypress.$(cells[0]);
-          const link = first.find('a').first();
-          const target = link.length ? link : first;
+        const idx = cells.findIndex((cell) =>
+          normalize(Cypress.$(cell).text()).toLowerCase().includes(expectedNormalized.toLowerCase()),
+        );
+
+        if (idx >= 0) {
+          const $cell = Cypress.$(cells[idx]);
+          const link = $cell.is('a') ? $cell : $cell.find('a').first();
+          const target = link.length ? link : $cell;
           cy.wrap(target).scrollIntoView().click({ force: true });
           return;
         }
@@ -389,15 +411,17 @@ export class DraftAccountsCommonActions {
         const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
         if (hasNext) {
           cy.wrap(next.first()).scrollIntoView().click({ force: true });
-          cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
-          tryPage();
+          cy.get(L.rows, { timeout }).should('exist');
+          searchPage();
           return;
         }
 
-        throw new Error(`No draft row found in column "${column}" containing "${expectedText}"`);
+        throw new Error(
+          `No draft row found in column "${column}" containing "${expectedText}". Snapshot: ${snapshotStr}`,
+        );
       });
     };
 
-    tryPage();
+    searchPage();
   }
 }

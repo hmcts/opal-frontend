@@ -150,4 +150,37 @@ export class CommonActions {
     log('action', 'Selecting HMCTS header link to return to the dashboard');
     cy.get(sel, this.getTimeoutOptions()).should('be.visible').click();
   }
+
+  /**
+   * Asserts that the given text exists somewhere on the current page, advancing pagination if needed.
+   * @param text - Text to search for (case-sensitive as per `String.includes`).
+   * @param maxPages - Maximum number of pagination advances to attempt.
+   */
+  public assertTextAcrossPages(text: string, maxPages: number = 10): void {
+    const nextSelector = L.paginationNext;
+
+    const scan = (remaining: number) => {
+      cy.get('body').then(($body) => {
+        const pageText = ($body.text() ?? '').toString();
+        if (pageText.includes(text)) {
+          expect(true, `Found text "${text}" on page`).to.be.true;
+          return;
+        }
+
+        const next = $body.find(nextSelector);
+        const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
+
+        if (hasNext && remaining > 0) {
+          cy.wrap(next.first()).scrollIntoView().click({ force: true });
+          cy.wait(500);
+          scan(remaining - 1);
+          return;
+        }
+
+        throw new Error(`Text "${text}" not found across paginated content`);
+      });
+    };
+
+    scan(maxPages);
+  }
 }

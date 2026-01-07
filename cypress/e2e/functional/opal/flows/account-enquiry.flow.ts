@@ -168,6 +168,27 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Searches by surname, opens the latest result, and asserts the header text.
+   * @param surname - Surname to search for.
+   * @param expectedHeader - Expected header text after opening.
+   */
+  public searchOpenLatestAndAssertHeader(surname: string, expectedHeader: string): void {
+    logAE('method', 'searchOpenLatestAndAssertHeader()', { surname, expectedHeader });
+    this.searchBySurname(surname);
+    this.openLatestAndAssertHeader(expectedHeader);
+  }
+
+  /**
+   * Opens the latest published account and asserts the header text.
+   * @param expectedHeader - Expected header text to match (already resolved for {uniq}).
+   */
+  public openLatestAndAssertHeader(expectedHeader: string): void {
+    logAE('method', 'openLatestAndAssertHeader()', { expectedHeader });
+    this.clickLatestPublishedFromResultsOrAcrossPages();
+    this.atAGlanceDetails.assertHeaderContains(expectedHeader);
+  }
+
+  /**
    * Opens the most recent account from the results (top row) and asserts navigation.
    */
   public openMostRecentFromResults(): void {
@@ -702,6 +723,16 @@ export class AccountEnquiryFlow {
 
     // Defensive URL check that we're back on the summary
     cy.location('pathname', { timeout: 10000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+  }
+
+  /**
+   * Saves comments, returns to summary, and asserts the header text.
+   * @param lines - Comment lines to enter.
+   * @param expectedHeader - Expected header text on the summary page.
+   */
+  public saveCommentsReturnAndAssertHeader(lines: readonly string[], expectedHeader: string): void {
+    this.saveCommentsAndReturnToSummary(lines);
+    this.atAGlanceDetails.assertHeaderContains(expectedHeader);
   }
 
   /**

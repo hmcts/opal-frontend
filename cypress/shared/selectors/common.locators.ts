@@ -19,6 +19,9 @@ export const CommonLocators = {
    * via the HMCTS link.
    */
   hmctsHomeLink: 'a.moj-header__link--organisation-name[href="/"]',
+
+  /** Pagination "Next" link used in tables/lists that paginate. */
+  paginationNext: '.moj-pagination__item--next a',
 } as const;
 
 export type CommonLocatorKey = keyof typeof CommonLocators;

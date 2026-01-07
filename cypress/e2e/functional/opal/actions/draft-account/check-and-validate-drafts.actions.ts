@@ -7,6 +7,7 @@ import { CheckAndValidateDraftsLocators as L } from '../../../../../shared/selec
 import { CheckAndValidateReviewLocators } from '../../../../../shared/selectors/check-and-validate-review.locators';
 import { DraftAccountsTableLocators } from '../../../../../shared/selectors/draft-accounts-table.locators';
 import { DraftAccountsCommonActions } from './draft-accounts-common.actions';
+import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 export type CheckAndValidateTab = 'To review' | 'Rejected' | 'Deleted' | 'Failed';
 
@@ -96,13 +97,14 @@ export class CheckAndValidateDraftsActions extends DraftAccountsCommonActions {
    * @param message - Expected banner text.
    */
   assertSuccessBannerMessage(message: string): void {
-    log('assert', 'Checking success banner message', { message });
+    const resolved = applyUniqPlaceholder(message);
+    log('assert', 'Checking success banner message', { message: resolved });
     cy.get(CheckAndValidateReviewLocators.banner.success, this.common.getTimeoutOptions())
       .should('be.visible')
       .within(() => {
         cy.get(CheckAndValidateReviewLocators.banner.content, this.common.getTimeoutOptions()).should(
           'contain.text',
-          message,
+          resolved,
         );
       });
   }

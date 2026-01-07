@@ -80,7 +80,19 @@ export class ManualCourtDetailsActions {
    * @param expected Expected value for the field.
    */
   assertFieldValue(field: ManualCourtFieldKey, expected: string): void {
-    cy.get(this.getSelector(field), this.common.getTimeoutOptions()).should('have.value', expected);
+    // Autocomplete fields may prepend extra context (e.g., full court name) — assert substring match.
+    const assertFn =
+      field === 'lja' || field === 'enforcementCourt'
+        ? ($el: JQuery) => {
+            const actual = ($el.val() ?? '').toString().toLowerCase();
+            expect(actual).to.include(expected.toLowerCase());
+          }
+        : ($el: JQuery) => {
+            const actual = ($el.val() ?? '').toString().toLowerCase();
+            expect(actual).to.equal(expected.toLowerCase());
+          };
+
+    cy.get(this.getSelector(field), this.common.getTimeoutOptions()).should(assertFn);
   }
 
   /**

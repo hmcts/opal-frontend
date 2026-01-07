@@ -4,6 +4,7 @@ import { convertDataTableToNestedObject } from '../../../../../support/utils/tab
 import { getDaysAgo } from '../../../../../support/utils/dateUtils';
 import { createScopedSyncLogger } from '../../../../../support/utils/log.helper';
 import { DraftPayloadType } from '../../../../../support/utils/payloads';
+import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 const log = createScopedSyncLogger('DraftAccountsInterceptActions');
 
@@ -91,7 +92,8 @@ export class DraftAccountsInterceptActions {
     cy.fixture(`draftAccounts/${payloadFile}`)
       .then((base) => {
         const merged = merge({}, base, overrides);
-        const processed = this.applyDynamicDates(merged);
+        // Apply `{uniq}`/`{uniqUpper}` so approved listings have unique names per run (avoids collisions when tests repeat).
+        const processed = this.applyUniqPlaceholders(this.applyDynamicDates(merged));
         const nextId =
           approvedDraftListings.length === 0
             ? (processed['draft_account_id'] ?? 1)
@@ -214,5 +216,28 @@ export class DraftAccountsInterceptActions {
     };
 
     return resolve(payload);
+  }
+
+  /**
+   * Recursively applies uniq placeholders to all string values in a payload.
+   * @remarks Keeps fixture-based stubs unique per test run, e.g. `Test Co {uniq}` → `Test Co abcde`.
+   * @param payload - Fixture payload to process.
+   * @returns Payload with `{uniq}`/`{uniqUpper}` resolved.
+   */
+  private applyUniqPlaceholders<T>(payload: T): T {
+    const walk = (value: any): any => {
+      if (typeof value === 'string') {
+        return applyUniqPlaceholder(value);
+      }
+      if (Array.isArray(value)) {
+        return value.map(walk);
+      }
+      if (value && typeof value === 'object') {
+        return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, walk(v)]));
+      }
+      return value;
+    };
+
+    return walk(payload);
   }
 }

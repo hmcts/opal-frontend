@@ -24,7 +24,7 @@ Feature: Account Enquiries – View Account Details
         | account.defendant.dob                   | 2002-05-15                     |
       # AC2 – Search and view account details
       When I search for the account by last name "AccDetailSurname{uniq}" and open the latest result
-      Then I should see the page header contains "Mr John ACCDETAILSURNAME{uniq}"
+      Then I should see the page header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
       # AC3 – Navigate to Defendant details
       When I go to the Defendant details section and the header is "Defendant details"
 
@@ -42,7 +42,7 @@ Feature: Account Enquiries – View Account Details
       And I edit the Defendant details and change the First name to "Test"
       And I attempt to cancel editing and choose OK on the confirmation dialog
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Mr John ACCDETAILSURNAME{uniq}"
+      And I should see the account header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
     @PO-1593 @866 @PO-1110 @PO-1127
     Scenario: Saving defendant details updates the name and audit trail
@@ -62,7 +62,7 @@ Feature: Account Enquiries – View Account Details
       And I edit the Defendant details without making changes
       And I save the defendant details
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Mr Updated ACCDETAILSURNAME{uniq}"
+      And I should see the account header contains "Mr Updated ACCDETAILSURNAME{uniqUpper}"
       And I verify no amendments were created via API
 
   Rule: Company account baseline
@@ -128,7 +128,7 @@ Feature: Account Enquiries – View Account Details
         | account.prosecutor_case_reference     | PCR-AUTO-004 |
       # AC2 – Search and view account details
       When I search for the account by last name "TestNonPayee{uniq}" and open the latest result
-      Then I should see the page header contains "Miss Jane TESTNONPAYEE{uniq}"
+      Then I should see the page header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
       # AC3 – Navigate to Defendant details
       When I go to the Defendant details section and the header is "Defendant details"
 
@@ -146,7 +146,7 @@ Feature: Account Enquiries – View Account Details
       And I edit the Defendant details and change the First name to "Test"
       And I attempt to cancel editing and choose OK on the confirmation dialog
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Miss Jane TESTNONPAYEE"
+      And I should see the account header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
 
     @PO-2315 @PO-1663
     Scenario: Saving defendant details updates the name and audit trail for a non-paying account
@@ -166,7 +166,7 @@ Feature: Account Enquiries – View Account Details
       And I edit the Defendant details without making changes
       And I save the defendant details
       Then I should return to the account details page Defendant tab
-      And I should see the account header contains "Miss Updated TESTNONPAYEE{uniq}"
+      And I should see the account header contains "Miss Updated TESTNONPAYEE{uniqUpper}"
       And I verify no amendments were created via API
 
   Rule: Parent or guardian account baseline
@@ -187,7 +187,7 @@ Feature: Account Enquiries – View Account Details
         | account.defendant.parent_guardian.dob   | 1980-02-15              |
       # AC2 – Search and view account details
       When I search for the account by last name "PgPayEdit{uniq}" and open the latest result
-      Then I should see the page header contains "Alex PGPAYEDIT{uniq}"
+      Then I should see the page header contains "Alex PGPAYEDIT{uniqUpper}"
       # AC3 – Navigate to Parent or guardian details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
 
@@ -209,5 +209,6 @@ Feature: Account Enquiries – View Account Details
       And I edit the Parent or guardian details without making changes
       And I save the parent or guardian details
       Then I should return to the account details page Parent or guardian tab
-      And I should see the parent or guardian name contains "Updated PGPAYEDIT{uniq}"
+      # LNAME is set in the original pgToPay account creation
+      And I should see the parent or guardian name contains "Updated LNAME"
       And I verify no amendments were created via API for parent or guardian details

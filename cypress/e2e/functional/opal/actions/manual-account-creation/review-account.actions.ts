@@ -1,6 +1,7 @@
 import { ManualReviewAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/review-account.locators';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 type SummaryRow = { label: string; value: string };
 type OffenceRow = {
@@ -49,7 +50,9 @@ export class ManualReviewAccountActions {
    *   review.assertSummaryList('courtDetails', [{ label: 'Prosecutor Case Reference (PCR)', value: 'ABCD1234A' }]);
    */
   assertSummaryList(summaryListId: string, rows: SummaryRow[]): void {
-    log('assert', 'Asserting review summary list', { summaryListId, rows });
+    // Resolve `{uniq}` placeholders on expected values to match the rendered UI.
+    const resolvedRows = rows.map((row) => ({ ...row, value: applyUniqPlaceholder(row.value) }));
+    log('assert', 'Asserting review summary list', { summaryListId, rows: resolvedRows });
     if (!rows.length) {
       return;
     }
@@ -59,7 +62,7 @@ export class ManualReviewAccountActions {
       .first() // guard against multiple summary lists with the same id on the page
       .should('be.visible')
       .within(() => {
-        rows.forEach(({ label, value }) => {
+        resolvedRows.forEach(({ label, value }) => {
           cy.contains(L.summaryKey, label, this.common.getTimeoutOptions())
             .should('be.visible')
             .parents(L.summaryRow)

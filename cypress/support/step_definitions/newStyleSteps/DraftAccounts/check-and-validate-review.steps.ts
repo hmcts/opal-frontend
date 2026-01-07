@@ -15,6 +15,7 @@ import { CheckAndValidateDraftsActions } from '../../../../e2e/functional/opal/a
 import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts.intercepts';
 import { DraftAccountsFlow } from '../../../../e2e/functional/opal/flows/draft-accounts.flow';
 import { log } from '../../../utils/log.helper';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 
 const review = () => new CheckAndValidateReviewActions();
 const checkerList = () => new CheckAndValidateDraftsActions();
@@ -71,8 +72,9 @@ When('I record the following decision on the draft account:', (table: DataTable)
  * @param message - Expected banner text.
  */
 Then('the draft success banner is {string}', (message: string) => {
-  log('assert', 'Asserting checker success banner', { message });
-  checkerList().assertSuccessBannerMessage(message);
+  const resolved = applyUniqPlaceholder(message);
+  log('assert', 'Asserting checker success banner', { message: resolved });
+  checkerList().assertSuccessBannerMessage(resolved);
 });
 
 /**

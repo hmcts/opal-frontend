@@ -12,6 +12,7 @@ import { DraftTabsActions } from '../../../../e2e/functional/opal/actions/draft-
 import { log } from '../../../utils/log.helper';
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import { installDraftAccountCleanup } from '../../../../support/draftAccounts';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 
 installDraftAccountCleanup();
 
@@ -62,7 +63,10 @@ When(
  */
 When('I complete fixed penalty details:', (table: DataTable) => {
   log('step', 'Completing fixed penalty details from table');
-  flow().completeDetailsFromTable(table.raw());
+  const rowsWithUniq = table
+    .raw()
+    .map((row) => row.map((cell, idx) => (idx === 2 ? applyUniqPlaceholder(cell) : cell)));
+  flow().completeDetailsFromTable(rowsWithUniq);
 });
 
 /**

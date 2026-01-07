@@ -8,6 +8,7 @@
 import { When, Then } from '@badeball/cypress-cucumber-preprocessor';
 import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 import { log } from '../../utils/log.helper';
+import { applyUniqPlaceholder } from '../../utils/stringUtils';
 
 /**
  * Returns a new instance of CommonActions.
@@ -70,9 +71,10 @@ Then('the URL should contain {string}', (urlPart: string) => {
  *  Then I should see the header containing text "At a glance"
  */
 Then('I should see the header containing text {string}', (expectedHeader: string) => {
-  log('assert', `Verify header contains '${expectedHeader}'`, { expectedHeader });
+  const header = applyUniqPlaceholder(expectedHeader);
+  log('assert', `Verify header contains '${header}'`, { expectedHeader: header });
 
-  Common().assertHeaderContains(expectedHeader);
+  Common().assertHeaderContains(header);
 });
 
 /**
@@ -94,12 +96,13 @@ Then('I should see the header containing text {string}', (expectedHeader: string
 Then(
   'I should see the header {string} and the URL should contain {string}',
   (expectedHeader: string, urlPart: string) => {
-    log('assert', `Verify header '${expectedHeader}' and URL includes '${urlPart}'`, {
-      expectedHeader,
+    const headerWithUniq = applyUniqPlaceholder(expectedHeader);
+    log('assert', `Verify header '${headerWithUniq}' and URL includes '${urlPart}'`, {
+      expectedHeader: headerWithUniq,
       urlPart,
     });
 
-    Common().assertHeaderContains(expectedHeader);
+    Common().assertHeaderContains(headerWithUniq);
     Common().urlContains(urlPart);
   },
 );
@@ -122,7 +125,6 @@ Then(
  *  When I select back and confirm
  */
 When('I select back and confirm', () => {
-  cy.pause();
   log('step', 'Select back and confirm (navigate back with confirmation)');
   Common().navigateBrowserBackWithChoice('ok');
 });
@@ -152,8 +154,9 @@ When('I select back and cancel', () => {
  * @param text - Text expected to be visible anywhere on the page.
  */
 Then('I see the following text {string}', (text: string) => {
-  log('assert', 'Checking text on page', { text });
-  cy.contains(text).should('exist');
+  const resolved = applyUniqPlaceholder(text);
+  log('assert', 'Checking text on page (with pagination support)', { text: resolved });
+  Common().assertTextAcrossPages(resolved);
 });
 
 /**

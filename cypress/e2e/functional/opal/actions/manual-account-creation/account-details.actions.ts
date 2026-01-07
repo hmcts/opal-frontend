@@ -8,6 +8,7 @@ import {
 } from '../../../../../shared/selectors/manual-account-creation/account-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 const log = createScopedLogger('ManualAccountDetailsActions');
 const TASK_NAMES: ManualAccountTaskName[] = [
@@ -81,8 +82,9 @@ export class ManualAccountDetailsActions {
   assertOnAccountDetailsPage(expectedHeader?: string | null): void {
     cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/account-details');
     const headerToAssert = expectedHeader === undefined ? 'Account details' : expectedHeader;
-    if (headerToAssert) {
-      this.common.assertHeaderContains(headerToAssert);
+    const normalizedHeader = headerToAssert === null ? null : applyUniqPlaceholder(headerToAssert);
+    if (normalizedHeader) {
+      this.common.assertHeaderContains(normalizedHeader);
     }
   }
 
