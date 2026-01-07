@@ -4,6 +4,12 @@ export interface IFinesPaymentTermsFrequencyOptions {
   M: string;
 }
 
+export interface IFinesPaymentTermsTypeOptions {
+  B: string;
+  I: string;
+  P: string;
+}
+
 export interface IFinesPaymentTermsOptions {
   payInFull: string;
   instalmentsOnly: string;

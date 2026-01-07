@@ -11,6 +11,11 @@ export const FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK: IOpalFinesAmendPaymentT
     instalment_period: null,
     lump_sum_amount: null,
     instalment_amount: null,
+    posted_details: {
+      posted_by: null,
+      posted_date: '2025-02-02',
+      posted_by_name: null,
+    },
   },
   request_payment_card: null,
   generate_payment_terms_change_letter: null,

@@ -7,7 +7,6 @@ import {
   OnInit,
   Output,
   inject,
-  signal,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -24,8 +23,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
-import { takeUntil, tap } from 'rxjs';
-import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { takeUntil } from 'rxjs';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FinesMacDefaultDaysComponent } from '../../../fines-mac/components/fines-mac-default-days/fines-mac-default-days.component';
 
@@ -58,7 +56,6 @@ import {
   NUMERIC_PATTERN,
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 
 // regex pattern validators for the form controls
 const TWO_DECIMAL_PLACES_PATTERN_VALIDATOR = patternValidator(TWO_DECIMAL_PLACES_PATTERN, 'invalidDecimal');
@@ -94,9 +91,6 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  private readonly opalFinesService = inject(OpalFines);
-  private businessUnit = signal<IOpalFinesBusinessUnitNonSnakeCase | null>(null);
-
   protected readonly dateService = inject(DateService);
   protected readonly accountStore = inject(FinesAccountStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPaymentTermsAmendForm>();
@@ -120,23 +114,6 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   );
   public today!: string;
   public yesterday!: string;
-
-  /**
-   * Fetches business unit configuration data
-   */
-  private fetchBusinessUnitData(): void {
-    const businessUnitId = this.accountStore.business_unit_id();
-    if (businessUnitId) {
-      this.opalFinesService
-        .getBusinessUnitById(Number(businessUnitId))
-        .pipe(
-          tap((businessUnitData) => {
-            this.businessUnit.set(businessUnitData);
-          }),
-        )
-        .subscribe();
-    }
-  }
 
   /**
    * Sets up the payment terms form structure
@@ -280,7 +257,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
 
     dateFields.forEach((fieldName) => {
       const control = this.form.get(fieldName);
-      if (control && control.value) {
+      if (control?.value) {
         this.dateChecker(control.value);
       }
     });
@@ -311,9 +288,6 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
    * 3. If business unit config has a flag to prevent payment card → prevent payment card = true
    */
   public preventPaymentCard(): boolean {
-    const businessUnitData = this.businessUnit();
-    console.log('Business Unit Data:', businessUnitData);
-
     // Condition 1: Check if there's a payment card last requested date
     const paymentCardLastRequestedDate = this.initialFormData?.formData?.facc_payment_terms_payment_card_request;
     if (paymentCardLastRequestedDate) {
@@ -325,17 +299,6 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
       this.initialFormData?.formData?.facc_payment_terms_prevent_payment_card === true;
     if (enforcementPreventPaymentCard) {
       return true;
-    }
-
-    // Condition 3: Check business unit configuration for prevent payment card flag
-    if (businessUnitData) {
-      const preventPaymentCardConfig = this.opalFinesService.getConfigurationItemValue(
-        businessUnitData,
-        'INTERFACE_PAYMENT_CARD_REQUESTS',
-      );
-      if (preventPaymentCardConfig === 'N') {
-        return true;
-      }
     }
 
     return false;
@@ -357,7 +320,6 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     }
 
     this.initialPaymentTermsForm();
-    this.fetchBusinessUnitData();
     super.ngOnInit();
   }
 }

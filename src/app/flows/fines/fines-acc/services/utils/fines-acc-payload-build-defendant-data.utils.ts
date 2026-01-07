@@ -35,7 +35,7 @@ export const buildIndividualAliases = (
   aliases.forEach((alias, index) => {
     const forenames = alias[`facc_party_add_amend_convert_alias_forenames_${index}` as keyof typeof alias] as string;
     const surname = alias[`facc_party_add_amend_convert_alias_surname_${index}` as keyof typeof alias] as string;
-    const aliasId = alias[`facc_party_add_amend_convert_alias_id_${index}` as keyof typeof alias] as string | undefined;
+    const aliasId = alias[`facc_party_add_amend_convert_alias_id_${index}` as keyof typeof alias];
 
     // Only include aliases that have actual data (not empty/undefined)
     if (forenames || surname) {
@@ -79,7 +79,7 @@ export const buildOrganisationAliases = (
     const organisationName = alias[
       `facc_party_add_amend_convert_alias_organisation_name_${index}` as keyof typeof alias
     ] as string;
-    const aliasId = alias[`facc_party_add_amend_convert_alias_id_${index}` as keyof typeof alias] as string | undefined;
+    const aliasId = alias[`facc_party_add_amend_convert_alias_id_${index}` as keyof typeof alias];
 
     // Only include aliases that have actual data (not empty/undefined)
     if (organisationName) {
@@ -245,7 +245,7 @@ export const buildAccountPartyFromFormState = (
       party_id: partyId,
       organisation_flag: isOrganisation,
       organisation_details: isOrganisation ? buildOrganisationDetails(formState) : null,
-      individual_details: !isOrganisation ? buildIndividualDetails(formState) : null,
+      individual_details: isOrganisation ? buildIndividualDetails(formState) : null,
     },
     address: buildAddressDetails(formState),
     contact_details: buildContactDetails(formState),

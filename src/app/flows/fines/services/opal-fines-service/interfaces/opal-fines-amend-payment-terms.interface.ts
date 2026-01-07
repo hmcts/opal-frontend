@@ -1,5 +1,6 @@
 import { IOpalFinesAmendPaymentTermsInstalmentPeriod } from './opal-fines-amend-payment-terms-installment-period.interface';
 import { IOpalFinesAmendPaymentTermsType } from './opal-fines-amend-payment-terms-payment-terms-type.interface';
+import { IOpalFinesAmendPaymentTermsPostedDetails } from './opal-fines-amend-payment-terms-posted-details.interface';
 
 /**
  * Interface for payment terms object within the amend payload
@@ -14,4 +15,5 @@ export interface IOpalFinesAmendPaymentTerms {
   instalment_period: IOpalFinesAmendPaymentTermsInstalmentPeriod | null; // Instalment period object
   lump_sum_amount: number | null; // MultipleOf: 0.01
   instalment_amount: number | null;
+  posted_details: IOpalFinesAmendPaymentTermsPostedDetails | null;
 }

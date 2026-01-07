@@ -52,9 +52,8 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       business_unit_id: signal('61'),
     });
 
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getBusinessUnitById', 'getConfigurationItemValue']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getBusinessUnitById']);
     mockOpalFinesService.getBusinessUnitById.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK));
-    mockOpalFinesService.getConfigurationItemValue.and.returnValue('Y');
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, HttpClientTestingModule, FinesAccPaymentTermsAmendFormComponent],
@@ -504,37 +503,6 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       expect(component.preventPaymentCard()).toBe(true);
     });
 
-    it('should return true when business unit configuration prevents payment cards (Condition 3)', () => {
-      // Set up initial form data with no other prevent conditions
-      component.initialFormData = {
-        formData: {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: null,
-          facc_payment_terms_lump_sum_amount: null,
-          facc_payment_terms_instalment_amount: null,
-          facc_payment_terms_instalment_period: null,
-          facc_payment_terms_start_date: null,
-          facc_payment_terms_payment_card_request: null, // No flag
-          facc_payment_terms_prevent_payment_card: false, // Flag is false
-          facc_payment_terms_has_days_in_default: null,
-          facc_payment_terms_suspended_committal_date: null,
-          facc_payment_terms_default_days_in_jail: null,
-          facc_payment_terms_reason_for_change: null,
-          facc_payment_terms_change_letter: false,
-        },
-        nestedFlow: false,
-      };
-
-      // Mock business unit data and getConfigurationItemValue
-      const mockBusinessUnitData = { ...OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK };
-      mockOpalFinesService.getConfigurationItemValue.and.returnValue('N');
-
-      // Set the business unit signal to return mock data
-      component['businessUnit'].set(mockBusinessUnitData);
-
-      expect(component.preventPaymentCard()).toBe(true);
-    });
-
     it('should return false when no prevent conditions are met', () => {
       // Set up initial form data with no prevent conditions
       component.initialFormData = {
@@ -556,55 +524,11 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         nestedFlow: false,
       };
 
-      // Mock business unit data and getConfigurationItemValue to return 'Y' (allow payment cards)
-      const mockBusinessUnitData = { ...OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK };
-      mockOpalFinesService.getConfigurationItemValue.and.returnValue('Y');
-
-      // Set the business unit signal to return mock data
-      component['businessUnit'].set(mockBusinessUnitData);
-
       expect(component.preventPaymentCard()).toBe(false);
     });
 
-    it('should return false when business unit data is null', () => {
-      // Set up initial form data with no other prevent conditions
-      component.initialFormData = {
-        formData: {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: null,
-          facc_payment_terms_lump_sum_amount: null,
-          facc_payment_terms_instalment_amount: null,
-          facc_payment_terms_instalment_period: null,
-          facc_payment_terms_start_date: null,
-          facc_payment_terms_payment_card_request: null, // No flag
-          facc_payment_terms_prevent_payment_card: false, // Flag is false
-          facc_payment_terms_has_days_in_default: null,
-          facc_payment_terms_suspended_committal_date: null,
-          facc_payment_terms_default_days_in_jail: null,
-          facc_payment_terms_reason_for_change: null,
-          facc_payment_terms_change_letter: false,
-        },
-        nestedFlow: false,
-      };
-
-      // Set business unit signal to null
-      component['businessUnit'].set(null);
-
-      expect(component.preventPaymentCard()).toBe(false);
-    });
-
-    it('should handle missing initial form data gracefully', () => {
-      // Set initialFormData to undefined
-      component.initialFormData = undefined as unknown as IFinesAccPaymentTermsAmendForm;
-
-      // Set business unit signal to null
-      component['businessUnit'].set(null);
-
-      expect(component.preventPaymentCard()).toBe(false);
-    });
-
-    it('should prioritize condition 1 over other conditions', () => {
-      // Set up initial form data with multiple prevent conditions
+    it('should prioritize condition 1 (payment card request) over condition 2 (enforcement result)', () => {
+      // Set up initial form data with both prevent conditions
       component.initialFormData = {
         formData: {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -624,14 +548,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         nestedFlow: false,
       };
 
-      // Mock business unit data and getConfigurationItemValue to return 'N' (Condition 3)
-      const mockBusinessUnitData = { ...OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK };
-      mockOpalFinesService.getConfigurationItemValue.and.returnValue('N');
-
-      // Set the business unit signal to return mock data
-      component['businessUnit'].set(mockBusinessUnitData);
-
-      // Should return true (all conditions met, but condition 1 is checked first)
+      // Should return true (both conditions met, but condition 1 is checked first)
       expect(component.preventPaymentCard()).toBe(true);
     });
   });

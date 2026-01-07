@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
 
 import { FinesAccPaymentTermsAmendComponent } from './fines-acc-payment-terms-amend.component';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
@@ -9,7 +9,6 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { of } from 'rxjs';
 import { DateTime } from 'luxon';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK } from './mocks/fines-acc-payment-terms-amend-form.mock';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK } from './mocks/fines-acc-payment-terms-amend-payload.mock';

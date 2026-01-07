@@ -21,11 +21,23 @@ function hasFormFieldsChanged(
     const currentValue = currentFormValue[field as keyof typeof currentFormValue];
     const initialValue = initialFormValue[field as keyof typeof initialFormValue];
 
-    // Handle null/undefined/empty string comparisons
-    const normalizedCurrent = currentValue || null;
-    const normalizedInitial = initialValue || null;
+    // Skip payment card request field as it's auto-managed by preventPaymentCard() logic
+    if (field === 'facc_payment_terms_payment_card_request') {
+      return false;
+    }
 
-    return normalizedCurrent !== normalizedInitial;
+    // Handle null/undefined/empty string comparisons more precisely
+    const normaliseValue = (value: unknown) => {
+      if (value === null || value === undefined || value === '') {
+        return null;
+      }
+      return value;
+    };
+
+    const normalisedCurrent = normaliseValue(currentValue);
+    const normalisedInitial = normaliseValue(initialValue);
+
+    return normalisedCurrent !== normalisedInitial;
   });
 }
 

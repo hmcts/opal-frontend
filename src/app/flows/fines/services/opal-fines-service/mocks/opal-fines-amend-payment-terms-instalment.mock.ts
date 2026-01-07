@@ -14,6 +14,11 @@ export const OPAL_FINES_AMEND_PAYMENT_TERMS_INSTALMENT_PAYLOAD_MOCK: IOpalFinesA
     instalment_period: { instalment_period_code: 'M', instalment_period_display_name: null },
     lump_sum_amount: null,
     instalment_amount: 50.0,
+    posted_details: {
+      posted_by: null,
+      posted_date: '2025-02-02',
+      posted_by_name: null,
+    },
   },
   request_payment_card: true,
   generate_payment_terms_change_letter: false,
