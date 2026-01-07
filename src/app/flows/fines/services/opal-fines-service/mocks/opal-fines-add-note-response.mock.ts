@@ -1,4 +1,4 @@
-import { IOpalFinesAddNoteResponse } from '../interfaces/opal-fines-add-note.interface';
+import { IOpalFinesAddNoteResponse } from '../interfaces/opal-fines-add-note-response.interface';
 
 /**
  * Mock data for OpalFines add note response

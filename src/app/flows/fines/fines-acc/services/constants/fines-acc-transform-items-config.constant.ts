@@ -11,15 +11,6 @@ const BUILD_PAYLOAD_DATE_FORMAT = {
   },
 };
 
-const MAP_PAYLOAD_DATE_FORMAT = {
-  ...TRANSFORM_ITEM_DEFAULTS,
-  transformType: 'date',
-  dateConfig: {
-    inputFormat: 'yyyy-MM-dd',
-    outputFormat: 'dd/MM/yyyy',
-  },
-};
-
 // Forward transformation configuration
 export const FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'date_of_birth', ...BUILD_PAYLOAD_DATE_FORMAT },
@@ -29,15 +20,4 @@ export const FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'posted_date', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'payment_card_last_requested', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'date_notice_issued', ...BUILD_PAYLOAD_DATE_FORMAT },
-];
-
-// Reverse transformation configuration
-export const FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
-  { key: 'date_of_birth', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'effective_date', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'last_movement_date', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'date_days_in_default_imposed', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'posted_date', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'payment_card_last_requested', ...MAP_PAYLOAD_DATE_FORMAT },
-  { key: 'date_notice_issued', ...MAP_PAYLOAD_DATE_FORMAT },
 ];

@@ -22,11 +22,9 @@ import {
   NON_PAYING_MAX_LENGTH_ERRORS,
   NON_PAYING_ALL_DATA_TYPE_ERRORS,
 } from '../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
-import {
-  VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK,
-  VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK,
-  VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK,
-} from './mocks/viewAndAmendDefendant-api.mock';
+import { VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK } from './mocks/view-and-amend-defendant-company-full.mock';
+import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK } from './mocks/view-and-amend-defendant-individual-full.mock';
+import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK } from './mocks/view-and-amend-defendant-individual-minimal.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 
 describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
