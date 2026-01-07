@@ -3,10 +3,8 @@ import { IFinesMacState } from '../../interfaces/fines-mac-state.interface';
 import { finesMacPayloadBuildAccountPaymentTerms } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-payment-terms.utils';
 import { finesMacPayloadBuildAccountAccountNotes } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-account-notes.utils';
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
-import {
-  FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-  FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG,
-} from './constants/fines-mac-transform-items-config.constant';
+import { FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-transform-items-config.constant';
+import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-map-transform-items-config.constant';
 import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
 import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
 import { finesMacPayloadBuildAccountOffences } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-offences.utils';
@@ -20,8 +18,8 @@ import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
 import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
-import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
+import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-non-snake-case.interface';
 import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';

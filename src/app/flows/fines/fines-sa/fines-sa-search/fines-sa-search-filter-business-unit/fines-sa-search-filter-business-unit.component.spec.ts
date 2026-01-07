@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 
 import { FinesSaSearchFilterBusinessUnitComponent } from './fines-sa-search-filter-business-unit.component';
 import { FinesSaStore } from '../../stores/fines-sa.store';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FinesSaStoreType } from '../../stores/types/fines-sa.type';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
