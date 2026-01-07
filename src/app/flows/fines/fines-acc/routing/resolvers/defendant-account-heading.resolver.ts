@@ -6,7 +6,7 @@ import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defenda
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { map } from 'rxjs/operators';
-import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-map-transform-items-config.constant';
 
 export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefendantDetailsHeader> = (
   route: ActivatedRouteSnapshot,

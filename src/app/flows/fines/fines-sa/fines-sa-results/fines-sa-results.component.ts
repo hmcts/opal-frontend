@@ -5,11 +5,9 @@ import { GovukTabsComponent } from '@hmcts/opal-frontend-common/components/govuk
 import { GovukTabsListItemComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tabs/govuk-tabs-list-item';
 import { GovukTabsPanelComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tabs/govuk-tabs-panel';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  IOpalFinesDefendantAccount,
-  IOpalFinesDefendantAccountAlias,
-  IOpalFinesDefendantAccountResponse,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-alias.interface';
+import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
 import { FinesSaResultsDefendantTableWrapperComponent } from './fines-sa-results-defendant-table-wrapper/fines-sa-results-defendant-table-wrapper.component';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-results-defendant-table-wrapper-table-sort-default.constant';
 import { IFinesSaResultsDefendantTableWrapperTableData } from './fines-sa-results-defendant-table-wrapper/interfaces/fines-sa-results-defendant-table-wrapper-table-data.interface';
@@ -22,11 +20,9 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-result-default-table-wrapper-table-data-empty.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
-import {
-  IOpalFinesCreditorAccountResponse,
-  IOpalFinesCreditorAccount,
-  IOpalFinesCreditorAccountDefendant,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
+import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
+import { IOpalFinesCreditorAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-account.interface';
+import { IOpalFinesCreditorAccountDefendant } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-account-defendant.interface';
 import { IFinesSaResultsMinorCreditorTableWrapperTableData } from './fines-sa-results-minor-creditor-table-wrapper/interfaces/fines-sa-results-minor-creditor-table-wrapper-table-data.interface';
 import { FinesSaResultsMinorCreditorTableWrapperComponent } from './fines-sa-results-minor-creditor-table-wrapper/fines-sa-results-minor-creditor-table-wrapper.component';
 import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-sort-default.constant';

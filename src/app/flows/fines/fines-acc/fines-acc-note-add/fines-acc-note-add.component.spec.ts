@@ -10,10 +10,8 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { IFinesAccAddNoteForm } from './interfaces/fines-acc-note-add-form.interface';
 import { FINES_ACC_ADD_NOTE_FORM_MOCK } from './mocks/fines-acc-add-note-form.mock';
-import {
-  IOpalFinesAddNotePayload,
-  IOpalFinesAddNoteResponse,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
+import { IOpalFinesAddNotePayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
+import { IOpalFinesAddNoteResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note-response.interface';
 
 describe('FinesAccNoteAddComponent', () => {
   let component: FinesAccNoteAddComponent;

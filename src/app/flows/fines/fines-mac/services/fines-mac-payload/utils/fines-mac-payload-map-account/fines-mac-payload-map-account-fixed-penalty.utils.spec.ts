@@ -4,7 +4,7 @@ import { FINES_MAC_STATE } from '../../../../constants/fines-mac-state';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from '../../mocks/fines-mac-payload-add-account-fixed-penalty.mock';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM_MOCK } from '../../../../fines-mac-fixed-penalty-details/mocks/fines-mac-fixed-penalty-details-store-form.mock';
 import { finesMacPayloadMapAccountFixedPenalty } from './fines-mac-payload-map-account-fixed-penalty.utils';
-import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-non-snake-case.interface';
 
 const cjsCodes: IOpalFinesOffencesNonSnakeCase[] = [
   { offenceId: 12345, cjsCode: 'CJS12345' },

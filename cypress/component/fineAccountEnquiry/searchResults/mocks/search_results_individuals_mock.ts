@@ -1,4 +1,4 @@
-import { IOpalFinesDefendantAccountResponse } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountResponse } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
 
 // Mock for empty search results (no results scenario)
 export const EMPTY_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
