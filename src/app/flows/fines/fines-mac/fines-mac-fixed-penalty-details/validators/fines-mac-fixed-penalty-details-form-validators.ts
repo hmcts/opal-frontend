@@ -1,5 +1,4 @@
-import { Validators } from '@angular/forms';
-import { IFinesMacFixedPenaltyDetailsFormValidators } from '../interfaces/fines-mac-fixed-penalty-details-form-validators.interface';
+import { ValidatorFn, Validators } from '@angular/forms';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
@@ -13,6 +12,11 @@ import {
   TIME_FORMAT_PATTERN,
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
+import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
+
+type IFinesMacFixedPenaltyDetailsFormValidators = {
+  [K in keyof IFinesMacFixedPenaltyDetailsState]: Array<ValidatorFn> | null;
+};
 
 // regex pattern validators for the form controls
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(

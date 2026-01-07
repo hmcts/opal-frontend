@@ -4,10 +4,8 @@ import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-se
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
 import { of } from 'rxjs';
-import {
-  OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,
-  OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-} from '@services/fines/opal-fines-service/constants/opal-fines-creditor-account-search-params-defaults.constant';
+import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-creditor-account-search-params-defaults.constant';
+import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT } from '@services/fines/opal-fines-service/constants/opal-fines-creditor-account-search-params-creditor-default.constant';
 
 /**
  * Resolves minor creditor account search results for the Fines SA flow.

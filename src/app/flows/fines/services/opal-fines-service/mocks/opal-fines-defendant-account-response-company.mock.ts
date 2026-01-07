@@ -1,4 +1,4 @@
-import { IOpalFinesDefendantAccountResponse } from '../interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountResponse } from '../interfaces/opal-fines-defendant-account-response.interface';
 
 const BASE_COMPANY_ACCOUNT = {
   organisation_flag: true,
