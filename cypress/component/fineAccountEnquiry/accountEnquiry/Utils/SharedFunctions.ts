@@ -1,4 +1,4 @@
-import { IOpalFinesDefendantAccountLanguagePreference } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountLanguagePreference } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-language-preference.interface';
 
 /**
  * Sets the language preference properties on the provided preference object.

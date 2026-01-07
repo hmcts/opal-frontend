@@ -34,10 +34,10 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fin
 import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
+import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor.interface';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MAJOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-major-creditors/constants/fines-sa-search-account-form-major-creditors-field-errors.constants';
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(

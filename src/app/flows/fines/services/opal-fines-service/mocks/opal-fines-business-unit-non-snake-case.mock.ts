@@ -1,4 +1,4 @@
-import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
 
 export const OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK: IOpalFinesBusinessUnitNonSnakeCase = {
   businessUnitId: 61,

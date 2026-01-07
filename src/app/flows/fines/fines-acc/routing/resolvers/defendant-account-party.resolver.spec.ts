@@ -7,7 +7,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
-import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-map-transform-items-config.constant';
 
 describe('defendantAccountPartyResolver', () => {
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;

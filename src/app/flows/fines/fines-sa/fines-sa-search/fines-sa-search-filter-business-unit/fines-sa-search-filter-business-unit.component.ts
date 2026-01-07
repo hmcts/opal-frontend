@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DOCUMENT, inject, OnInit } from '@angular/core';
 import { FINES_SA_ROUTING_PATHS } from '../../routing/constants/fines-sa-routing-paths.constant';
 import { FinesSaStore } from '../../stores/fines-sa.store';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { CommonModule } from '@angular/common';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesSaSearchFilterBusinessUnitForm } from './fines-sa-search-filter-business-unit-form/fines-sa-search-filter-business-unit-form.component';
