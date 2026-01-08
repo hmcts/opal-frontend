@@ -9,7 +9,6 @@ import { normalizeTableRows } from '../../../utils/cucumberHelpers';
 import { resolveImpositionFieldKey, resolveOffenceFieldKey } from '../../../utils/macFieldResolvers';
 import {
   common,
-  details,
   ensureImpositionExists,
   flow,
   getCurrentOffenceCode,

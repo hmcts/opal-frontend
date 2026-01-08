@@ -90,6 +90,9 @@ export class DraftTabsActions {
     cy.get('td#accountType', this.common.getTimeoutOptions()).contains(expected).should('exist');
   }
 
+  /**
+   * Waits for draft listings to finish loading (uses stub if available).
+   */
   private waitForListings(): void {
     const hasStub = Cypress.env('hasFixedPenaltyListingsStub') === true;
     if (hasStub) {

@@ -110,5 +110,5 @@ Feature: Accessibility Tests for Populate and Submit Screens
       | Payment terms    | Provided |
     When I check the manual account details
     And I submit the manual account for review
-    Then I see the following text "You've submitted this account for review"
+    Then I see the following text on the page "You've submitted this account for review"
     And I check the page for accessibility

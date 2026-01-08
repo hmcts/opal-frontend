@@ -1,17 +1,27 @@
+/**
+ * @file details.notes.actions.ts
+ * @description Actions for account notes add/view screens, encapsulating waits, typing, saving,
+ * and assertions to keep flows and step definitions thin.
+ */
 import { AccountDetailsNotesLocators as L } from '../../../../../shared/selectors/account-details/account.notes.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('AccountDetailsNotesActions');
 
+/**
+ * Actions for account notes add/view screens.
+ */
 export class AccountDetailsNotesActions {
   private static readonly DEFAULT_TIMEOUT = 15000;
+  private readonly common = new CommonActions();
 
   private readonly normalize = (s: string): string => s.replaceAll('  ', ' ').trim().toLowerCase();
 
   /**
    * Waits for the Add Note view and asserts the header (caption excluded).
-   * @param expected
-   * @param timeoutMs
+   * @param expected - Expected text to be contained within the header.
+   * @param timeoutMs - Timeout override for locating elements.
    */
   public assertHeaderContains(expected: string, timeoutMs: number = AccountDetailsNotesActions.DEFAULT_TIMEOUT): void {
     log('assert', `Header contains: ${expected}`);
@@ -31,6 +41,7 @@ export class AccountDetailsNotesActions {
    *
    * @param note - Text to enter into the "Add account note" textarea.
    * @param options - Optional configuration (set `{ clear: false }` to append instead of clearing).
+   * @param options.clear - Whether to clear the field before typing (default: true).
    */
   public enterAccountNote(note: string, options?: { clear?: boolean }): void {
     const shouldClear = options?.clear !== false;
@@ -56,9 +67,10 @@ export class AccountDetailsNotesActions {
   /**
    * Asserts the note textarea currently equals the provided text.
    * Keeps DOM access inside Actions (flows remain locator-free).
+   * @param text - Expected textarea value.
    */
   public assertNoteValueEquals(text: string): void {
-    cy.get(L.fields.noteTextArea, { timeout: 10000 })
+    cy.get(L.fields.noteTextArea, this.common.getTimeoutOptions())
       .should('be.visible')
       .invoke('val')
       .then((val) => {

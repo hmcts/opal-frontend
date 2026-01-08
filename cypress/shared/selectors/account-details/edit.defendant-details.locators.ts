@@ -125,6 +125,7 @@ export const DefendantDetailsLocators = {
 
 /**
  * Parameterised selectors for dynamic nodes.
+ * @returns Map of functions that build dynamic locators.
  */
 export const DebtorAddAmendLocatorFns: LocatorFns = {
   /**
@@ -137,6 +138,7 @@ export const DebtorAddAmendLocatorFns: LocatorFns = {
    *   .click();
    *
    * @param dmy - Date in `d/m/yyyy` or `dd/mm/yyyy` format matching `data-testid`.
+   * @returns Locator config for the date grid button matching the provided date.
    */
   dateGridButtonByDMY: (dmy: string) => ({
     selector: `table.moj-js-datepicker-grid button[data-testid="${dmy}"]`,

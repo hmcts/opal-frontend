@@ -1,7 +1,6 @@
 /**
  * @file account-search.filter-by-bu.flow.ts
- * @description
- * High-level flow for navigating to and validating the
+ * @description High-level flow for navigating to and validating the
  * **Filter by Business Unit** page for both *Fines* and *Confiscation*.
  *
  * This flow coordinates multiple action classes and provides a stable
@@ -22,23 +21,24 @@ import { DashboardActions } from '../actions/dashboard.actions';
 const commonActions = new SearchFilterByBUCommonActions();
 const navActions = new SearchFilterByBUNavActions();
 const finesActions = new SearchFilterByBUFinesActions();
-const searchCommonActions = new AccountSearchCommonActions();
 const confiscationActions = new SearchFilterByBUConfiscationActions();
 const log = createScopedLogger('SearchFilterByBUFlow');
 
+/** Flow wrapper around business unit filter navigation and assertions. */
 export class SearchFilterByBUFlow {
   private readonly dashboard = new DashboardActions();
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCommonActions = new AccountSearchCommonActions();
 
   /**
-   *  * @flow Navigates from the Dashboard to the Filter-by-BU screen.
-   * @steps
-   *   1. Dashboard → Account Search
-   *   2. Asserts Individuals form is active (default expected behaviour)
-   *   3. Opens the Business Unit filter via the “Change” link
+   * Navigates from the Dashboard to the Filter-by-BU screen.
    *
-   * @delegates
+   * Steps:
+   *   1. Dashboard → Account Search
+   *   2. Assert Individuals form is active (default expected behaviour)
+   *   3. Open the Business Unit filter via the “Change” link
+   *
+   * Delegates:
    *   - DashboardActions.goToAccountSearch()
    *   - AccountSearchIndividualsActions.assertDefaultIndividualsActive()
    *   - AccountSearchCommonActions.openBusinessUnitFilter()
@@ -60,24 +60,11 @@ export class SearchFilterByBUFlow {
   }
 
   /**
-   * @flow Asserts all UI defaults for the **Fines** tab.
-   * @validations
-   *   - Page header = “Filter by business unit”
-   *   - Two tabs exist (Fines, Confiscation)
-   *   - Fines tab is active
-   *   - “Save selection” button visible
-   *   - “Cancel” link visible
-   *   - Fines master checkbox:
-   *       • Label = “Fines business units”
-   *       • Is checked by default
-   *
-   * @delegates
-   *   - SearchFilterByBUCommonActions
-   *   - SearchFilterByBUNavActions
-   *   - SearchFilterByBUFinesActions
-   *
-   * @example
-   *   Then the Filter by business unit page for Fines is shown with defaults
+   * Asserts all UI defaults for the **Fines** tab on the Filter by business unit page:
+   * - Header is “Filter by business unit”
+   * - Fines/Confiscation tabs exist and Fines is active
+   * - Save selection button and Cancel link are visible
+   * - Fines master checkbox is labelled “Fines business units” and checked by default
    */
   verifyFinesPageDefaults(): void {
     // Page heading
@@ -97,15 +84,7 @@ export class SearchFilterByBUFlow {
   }
 
   /**
-   * @flow Switches from the Fines tab → Confiscation tab.
-   * @details Pure navigation intent. Asserts are not included here to keep
-   *          flows composable. Validations happen in `verifyConfiscationPageDefaults()`.
-   *
-   * @delegates
-   *   - SearchFilterByBUNavActions.goToConfiscationTab()
-   *
-   * @example
-   *   When the user switches to the Confiscation tab
+   * Switches from the Fines tab to the Confiscation tab (no assertions).
    */
   switchToConfiscationTab(): void {
     navActions.goToConfiscationTab();
@@ -119,23 +98,11 @@ export class SearchFilterByBUFlow {
   }
 
   /**
-   * @flow Asserts all UI defaults for the **Confiscation** tab.
-   * @validations
-   *   - Header correct
-   *   - Two tabs exist (Fines, Confiscation)
-   *   - Confiscation tab active
-   *   - Common controls visible
-   *   - Confiscation master checkbox:
-   *       • Label = “Confiscation business units”
-   *       • Is checked by default
-   *
-   * @delegates
-   *   - SearchFilterByBUCommonActions
-   *   - SearchFilterByBUNavActions
-   *   - SearchFilterByBUConfiscationActions
-   *
-   * @example
-   *   Then the Confiscation Filter by business unit page is shown with defaults
+   * Asserts all UI defaults for the **Confiscation** tab:
+   * - Header present with two tabs (Fines, Confiscation)
+   * - Confiscation tab active
+   * - Save/Cancel controls visible
+   * - Confiscation master checkbox labelled “Confiscation business units” and checked by default
    */
   verifyConfiscationPageDefaults(): void {
     // Page heading
@@ -337,7 +304,6 @@ export class SearchFilterByBUFlow {
    * Switches to the Confiscation tab, unselects all business units via the
    * master checkbox, and verifies that no units remain selected.
    *
-   * @description
    * Behaviour:
    *  - navigate to Confiscation tab
    *  - clear all Confiscation business units
@@ -352,9 +318,8 @@ export class SearchFilterByBUFlow {
   }
 
   /**
-   * @flow Verifies which business units are selected on the specified tab.
+   * Verifies which business units are selected on the specified tab.
    *
-   * @description
    * Switches to the correct tab ("Fines" or "Confiscation") and then asserts
    * that the expected business units are selected. This is a flow-level method
    * that orchestrates navigation and delegates the verification to the correct
@@ -363,7 +328,7 @@ export class SearchFilterByBUFlow {
    * @param tab   - The tab to check, must be "Fines" or "Confiscation".
    * @param names - The business unit display names expected to be selected.
    *
-   * @delegates
+   * Delegates:
    *   - SearchFilterByBUFinesActions.verifyBusinessUnitsSelectedByNames()
    *   - SearchFilterByBUConfiscationActions.verifyBusinessUnitsSelectedByNames()
    *

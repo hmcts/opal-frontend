@@ -60,6 +60,7 @@ import {
   resolveSearchResultColumn,
 } from '../../../../support/utils/macFieldResolvers';
 import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -136,6 +137,20 @@ export class ManualAccountCreationFlow {
   private readonly reviewAccount = new ManualReviewAccountActions();
   private readonly defaultBusinessUnitToken = 'default business unit';
 
+  /**
+   * Applies `{uniq}` placeholder replacement when provided.
+   * @param value - Raw string that may contain the `{uniq}` token.
+   * @returns Value with uniq placeholder resolved, or the original value.
+   */
+  private withUniq(value?: string): string | undefined {
+    return value ? applyUniqPlaceholder(value) : value;
+  }
+
+  /**
+   * Checks whether the provided business unit token represents the default option.
+   * @param businessUnit - Business unit label from the DataTable/step.
+   * @returns True when the business unit should be treated as the default.
+   */
   private isDefaultBusinessUnit(businessUnit: string): boolean {
     return businessUnit.trim().toLowerCase() === this.defaultBusinessUnitToken;
   }
@@ -322,6 +337,7 @@ export class ManualAccountCreationFlow {
    * Completes a full manual account setup (Court, Parent/Guardian, Employer, Personal, Offence, Minor Creditor,
    * Payment terms, and Company details) using a single composite table. Sections without rows are skipped.
    * @param rows - Raw DataTable rows including headers.
+   * @param accountDetailsHeader - Optional Account details header to assert when returning.
    */
   completeManualAccountWithDefaults(rows: string[][], accountDetailsHeader?: string): void {
     const entries = this.parseCompositeEntries(rows);
@@ -335,11 +351,12 @@ export class ManualAccountCreationFlow {
     const companyRows = entries.filter(({ section }) => /company/i.test(section));
     const contactRows = entries.filter(({ section }) => /contact/i.test(section));
     const commentRows = entries.filter(({ section }) => /account\s*comments?|comments?\s*and\s*notes/i.test(section));
-    let currentHeader = accountDetailsHeader;
+    const normalizedHeader = this.withUniq(accountDetailsHeader);
+    let currentHeader = normalizedHeader;
 
     // Only compute alternate headers when an explicit Account details header is provided.
-    const companyHeader = accountDetailsHeader ? this.resolveCompanyHeader(companyRows) : undefined;
-    const personalHeader = accountDetailsHeader ? this.resolvePersonalHeader(personalRows) : undefined;
+    const companyHeader = normalizedHeader ? this.resolveCompanyHeader(companyRows) : undefined;
+    const personalHeader = normalizedHeader ? this.resolvePersonalHeader(personalRows) : undefined;
 
     const handledSection = (section?: string): boolean => {
       if (!section) return false;
@@ -366,18 +383,18 @@ export class ManualAccountCreationFlow {
       throw new Error(`Unhandled manual account sections in composite table: ${unhandledSections.join(', ')}`);
     }
 
-    this.handleCourtEntries(courtRows, accountDetailsHeader);
+    this.handleCourtEntries(courtRows, normalizedHeader);
 
-    this.handleParentGuardianEntries(parentRows, accountDetailsHeader);
-    this.handleEmployerEntries(employerRows, accountDetailsHeader);
+    this.handleParentGuardianEntries(parentRows, normalizedHeader);
+    this.handleEmployerEntries(employerRows, normalizedHeader);
     this.handlePersonalEntries(personalRows, currentHeader);
-    if (accountDetailsHeader && personalHeader) {
+    if (normalizedHeader && personalHeader) {
       currentHeader = personalHeader;
     }
     this.handleOffenceAndMinorEntries(offenceRows, minorRows, currentHeader);
     this.handlePaymentEntries(paymentRows, currentHeader);
     this.handleCompanyEntries(companyRows, currentHeader);
-    if (accountDetailsHeader && companyHeader) {
+    if (normalizedHeader && companyHeader) {
       currentHeader = companyHeader;
     }
     this.handleContactEntries(contactRows, currentHeader);
@@ -410,7 +427,7 @@ export class ManualAccountCreationFlow {
         raw: row,
         section: row[sectionIdx]?.trim(),
         field: row[fieldIdx]?.trim(),
-        value: row[valueIdx]?.trim(),
+        value: this.withUniq(row[valueIdx]?.trim()) ?? '',
         imposition: impositionIdx >= 0 ? Number(row[impositionIdx] ?? 1) || 1 : 1,
       }))
       .filter(({ section, field }) => section && field) as CompositeEntry[];
@@ -421,6 +438,7 @@ export class ManualAccountCreationFlow {
   /**
    * Populates Court details from composite entries and returns to Account details.
    * @param courtRows - Entries scoped to Court details.
+   * @param accountDetailsHeader - Account details header to assert before/after navigation.
    */
   private handleCourtEntries(courtRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!courtRows.length) return;
@@ -448,6 +466,7 @@ export class ManualAccountCreationFlow {
   /**
    * Populates Parent/Guardian details (including aliases) from composite entries.
    * @param parentRows - Entries scoped to Parent/Guardian details.
+   * @param accountDetailsHeader - Account details header to assert before/after navigation.
    */
   private handleParentGuardianEntries(parentRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!parentRows.length) return;
@@ -534,6 +553,7 @@ export class ManualAccountCreationFlow {
   /**
    * Populates Employer details from composite entries and returns to Account details.
    * @param employerRows - Entries scoped to Employer details.
+   * @param accountDetailsHeader - Account details header to assert before/after navigation.
    */
   private handleEmployerEntries(employerRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!employerRows.length) return;
@@ -552,6 +572,7 @@ export class ManualAccountCreationFlow {
   /**
    * Populates Personal details from composite entries and returns to Account details.
    * @param personalRows - Entries scoped to Personal details.
+   * @param accountDetailsHeader - Account details header to assert before/after navigation.
    */
   private handlePersonalEntries(personalRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!personalRows.length) return;
@@ -571,6 +592,7 @@ export class ManualAccountCreationFlow {
    * Populates Offence details, impositions, and minor creditor data from composite entries.
    * @param offenceRows - Entries scoped to Offence details.
    * @param minorRows - Entries scoped to Minor creditor details.
+   * @param accountDetailsHeader - Account details header to assert before/after navigation.
    */
   private handleOffenceAndMinorEntries(
     offenceRows: CompositeEntry[],
@@ -685,6 +707,7 @@ export class ManualAccountCreationFlow {
   /**
    * Populates Payment terms from composite entries and returns to Account details.
    * @param paymentRows - Entries scoped to Payment terms.
+   * @param accountDetailsHeader - Account details header to assert before/after navigation.
    */
   private handlePaymentEntries(paymentRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!paymentRows.length) return;
@@ -848,6 +871,7 @@ export class ManualAccountCreationFlow {
   /**
    * Resolves the Account details header after company details updates.
    * @param companyRows - Entries scoped to Company details.
+   * @returns Company header string if found, otherwise undefined.
    */
   private resolveCompanyHeader(companyRows: CompositeEntry[]): string | undefined {
     const companyName = companyRows.find(({ field }) => /company name/i.test(field ?? ''))?.value?.trim();
@@ -857,6 +881,7 @@ export class ManualAccountCreationFlow {
   /**
    * Resolves the Account details header after personal details updates.
    * @param personalRows - Entries scoped to Personal/Defendant details.
+   * @returns Personal header string if name values are available, otherwise undefined.
    */
   private resolvePersonalHeader(personalRows: CompositeEntry[]): string | undefined {
     const first = personalRows.find(({ field }) => /first name|forename/i.test(field ?? ''))?.value?.trim();
@@ -870,6 +895,7 @@ export class ManualAccountCreationFlow {
   /**
    * Populates Company details (including aliases) from composite entries and returns to Account details.
    * @param companyRows - Entries scoped to Company details.
+   * @param accountDetailsHeader - Account details header to assert before/after navigation.
    */
   private handleCompanyEntries(companyRows: CompositeEntry[], accountDetailsHeader?: string): void {
     if (!companyRows.length) return;
@@ -1051,6 +1077,15 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Updates language preferences and returns to Account details in a single flow.
+   * @param payload - Language selections for documents and hearings.
+   */
+  updateLanguagePreferences(payload: Partial<Record<LanguagePreferenceLabel, LanguageOption>>): void {
+    this.setLanguagePreferences(payload);
+    this.saveLanguagePreferencesAndReturn();
+  }
+
+  /**
    * Cancels language preferences with a chosen dialog response.
    * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
    */
@@ -1074,6 +1109,7 @@ export class ManualAccountCreationFlow {
   /**
    * Opens a task from account details and asserts the destination page.
    * @param taskName - Task list entry to open.
+   * @param expectedHeader - Optional header text to assert on the Account details page.
    */
   openTaskFromAccountDetails(taskName: ManualAccountTaskName, expectedHeader?: string): void {
     const normalizedTask = (taskName ?? '').trim() as ManualAccountTaskName;
@@ -1172,7 +1208,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Opens the Parent or guardian details task and asserts the page.
+   * Opens the Parent or guardian details task and asserts the page.
    * @example
    *  flow.openParentGuardianDetailsTask();
    */
@@ -1182,7 +1218,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Fills Parent/Guardian details using the provided payload.
+   * Fills Parent/Guardian details using the provided payload.
    * @param payload - Field/value map including optional aliases.
    * @example
    *  flow.fillParentGuardianDetails({ firstNames: 'FNAME', lastName: 'LNAME' });
@@ -1194,7 +1230,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Asserts Parent/Guardian details match expectations.
+   * Asserts Parent/Guardian details match expectations.
    * @param expected - Expected field values (aliases optional).
    * @example
    *  flow.assertParentGuardianDetails({ firstNames: 'FNAME', addAliasesChecked: true });
@@ -1259,7 +1295,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Asserts an inline validation error on the Parent/Guardian form.
+   * Asserts an inline validation error on the Parent/Guardian form.
    * @param field - Field key to target.
    * @param expected - Expected error text.
    * @example
@@ -1272,7 +1308,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Returns to the Account details task list from Parent/Guardian.
+   * Returns to the Account details task list from Parent/Guardian.
    * @example
    *  flow.returnToAccountDetailsFromParentGuardian();
    */
@@ -1284,7 +1320,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Clicks Return to account details without asserting navigation (useful for validation flows).
+   * Clicks Return to account details without asserting navigation (useful for validation flows).
    * @example
    *  flow.submitParentGuardianWithoutNavigation();
    */
@@ -1295,7 +1331,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Navigates to Contact details using the nested CTA on Parent/Guardian details.
+   * Navigates to Contact details using the nested CTA on Parent/Guardian details.
    * @param expectedHeader - Expected Contact details header text.
    * @example
    *  flow.continueToContactDetailsFromParentGuardian('Parent or guardian contact details');
@@ -1309,7 +1345,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Cancels the Parent/Guardian form and chooses confirm dialog response.
+   * Cancels the Parent/Guardian form and chooses confirm dialog response.
    * @param choice - Choose "Ok" to leave or "Cancel" to stay.
    * @example
    *  flow.cancelParentGuardianDetails('Ok');
@@ -1370,6 +1406,7 @@ export class ManualAccountCreationFlow {
   /**
    * Provides court details by opening the task from Account details.
    * @param payload - Court details key/value map.
+   * @param accountDetailsHeader - Optional Account details header to assert before opening the task.
    */
   provideCourtDetailsFromAccountDetails(
     payload: Partial<Record<ManualCourtFieldKey, string>>,
@@ -1395,6 +1432,7 @@ export class ManualAccountCreationFlow {
   /**
    * Provides employer details by opening the task from Account details.
    * @param payload - Employer details key/value map.
+   * @param accountDetailsHeader - Optional Account details header to assert before opening the task.
    */
   provideEmployerDetailsFromAccountDetails(
     payload: Partial<Record<ManualEmployerFieldKey, string>>,
@@ -1515,6 +1553,7 @@ export class ManualAccountCreationFlow {
   /**
    * Provides personal details from the Account details task list.
    * @param payload - Personal details values to populate.
+   * @param accountDetailsHeader - Optional Account details header to assert before opening the task.
    */
   providePersonalDetailsFromAccountDetails(payload: ManualPersonalDetailsPayload, accountDetailsHeader?: string): void {
     log('flow', 'Provide personal details from Account details', { payload, accountDetailsHeader });
@@ -1535,7 +1574,17 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Continues from Personal details to Contact details using the nested CTA.
+   * Clears the specified Personal details fields while asserting the page.
+   * @param fields - Array of field keys to clear.
+   */
+  clearPersonalDetailsFields(fields: ManualPersonalDetailsFieldKey[]): void {
+    log('flow', 'Clearing personal details fields', { fields });
+    this.personalDetails.assertOnPersonalDetailsPage();
+    this.personalDetails.clearFields(fields);
+  }
+
+  /**
+   * Continues from Personal details to Contact details using the nested CTA.
    * @param expectedHeader - Header text expected on Contact details.
    * @example
    *  flow.continueToContactDetailsFromPersonalDetails('Defendant contact details');
@@ -1549,7 +1598,7 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * @description Asserts Personal details fields against expected values.
+   * Asserts Personal details fields against expected values.
    * @param expected - Field/value pairs to verify.
    * @example
    *  flow.assertPersonalDetailsFields({ firstNames: 'FNAME' });
@@ -1563,8 +1612,23 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Completes court details using a key/value payload.
+   * @param payload - Court detail fields and values.
+   */
+  completeCourtDetailsFromTable(payload: Partial<Record<ManualCourtFieldKey, string>>): void {
+    log('flow', 'Complete court details from table payload', { payload });
+    this.courtDetails.assertOnCourtDetailsPage();
+    this.courtDetails.fillCourtDetails(payload);
+  }
+
+  /**
    * Provides offence details from Account details and submits for review.
    * @param payload - Offence details and imposition values.
+   * @param payload.dateOfSentence - Sentence date in dd/MM/yyyy.
+   * @param payload.offenceCode - Offence code to enter.
+   * @param payload.resultCode - Result code for the offence.
+   * @param payload.amountImposed - Amount imposed value.
+   * @param payload.amountPaid - Amount paid value.
    */
   provideOffenceDetailsFromAccountDetails(payload: {
     dateOfSentence: string;
@@ -1583,6 +1647,9 @@ export class ManualAccountCreationFlow {
   /**
    * Adds impositions (financials + creditor types) for an offence and sets offence details.
    * @param payload - Offence code, relative sentence weeks, and imposition rows.
+   * @param payload.offenceCode - Offence code to enter.
+   * @param payload.weeksAgo - Weeks offset (past) for the sentence date.
+   * @param payload.impositions - Imposition inputs including amount/result rows.
    */
   addOffenceWithImpositions(payload: {
     offenceCode: string;
@@ -1653,6 +1720,11 @@ export class ManualAccountCreationFlow {
   /**
    * Completes basic offence details with a single imposition (amounts only).
    * @param payload - Weeks offset and offence/imposition values.
+   * @param payload.weeksInPast - Weeks in the past for sentence date.
+   * @param payload.offenceCode - Offence code to enter.
+   * @param payload.resultCode - Result code to apply.
+   * @param payload.amountImposed - Amount imposed value.
+   * @param payload.amountPaid - Amount paid value.
    */
   completeOffenceWithAmounts(payload: {
     weeksInPast: number;
@@ -1692,6 +1764,9 @@ export class ManualAccountCreationFlow {
   /**
    * Adds an offence with impositions then cancels back to the offence page.
    * @param payload - Offence code, weeks offset, and impositions.
+   * @param payload.offenceCode - Offence code to enter.
+   * @param payload.weeksAgo - Weeks offset (past) for sentence date.
+   * @param payload.impositions - Imposition inputs including amount/result rows.
    */
   addOffenceWithImpositionsAndCancel(payload: {
     offenceCode: string;
@@ -2233,6 +2308,7 @@ export class ManualAccountCreationFlow {
   /**
    * Provides payment terms from the Account details task list.
    * @param payload - Payment terms payload including collection order and dates.
+   * @param accountDetailsHeader - Optional Account details header to assert before opening the task.
    */
   providePaymentTermsFromAccountDetails(payload: ManualPaymentTermsInput, accountDetailsHeader?: string): void {
     log('flow', 'Provide payment terms from Account details', { payload, accountDetailsHeader });
@@ -2299,6 +2375,7 @@ export class ManualAccountCreationFlow {
   /**
    * Asserts multiple task statuses after returning to Account details.
    * @param statuses - List of task/status pairs to assert.
+   * @param accountDetailsHeader - Optional Account details header to assert before checking statuses.
    */
   assertTaskStatuses(
     statuses: Array<{ task: ManualAccountTaskName; status: string }>,
@@ -2669,11 +2746,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Ensures the Manual Account Creation start page is loaded from the dashboard.
-   *
-   * @remarks
-   * - Clicks the dashboard link to Manual Account Creation.
-   * - Asserts the create account header is visible.
-   * - Use before selecting business unit/account/defendant type.
+   * Clicks the dashboard entry for Manual Account Creation, asserts the create account
+   * header is visible, and should be called before selecting business unit/account/defendant type.
    */
   private ensureOnCreateAccountPage(): void {
     this.dashboard.goToManualAccountCreation();
@@ -2683,6 +2757,7 @@ export class ManualAccountCreationFlow {
   /**
    * Ensures the requested imposition index exists by adding rows as needed.
    * @param index - Zero-based imposition index to guarantee.
+   * @returns Chainable yielding the current imposition count.
    */
   private ensureImpositionIndex(index: number): Cypress.Chainable<number> {
     return this.offenceDetails.getImpositionCount().then((count) => {
