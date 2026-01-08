@@ -25,6 +25,8 @@ export type SearchResultColumn = 'Code' | 'Short title' | 'Act and section' | 'U
 
 /**
  * Maps a section label to its logical Language preferences section.
+ * @param section Human-friendly section label (e.g., "Court hearings" or "Documents").
+ * @returns Normalised language section name used in the UI.
  */
 export const resolveLanguageSection = (section: string): 'Documents' | 'Court hearings' => {
   const normalized = section.toLowerCase();
@@ -33,6 +35,8 @@ export const resolveLanguageSection = (section: string): 'Documents' | 'Court he
 
 /**
  * Normalises a section label to the Account details language row label.
+ * @param section Human-friendly section label (e.g., "Court hearing language").
+ * @returns Row label used in the account details table.
  */
 export const resolveLanguageLabel = (section: string): LanguagePreferenceLabel => {
   return resolveLanguageSection(section) === 'Court hearings' ? 'Hearing language' : 'Document language';
@@ -40,6 +44,8 @@ export const resolveLanguageLabel = (section: string): LanguagePreferenceLabel =
 
 /**
  * Normalises a personal details label to its logical field key.
+ * @param field Label text from the personal details section.
+ * @returns Internal personal details field key.
  */
 export const resolvePersonalDetailsFieldKey = (field: string): ManualPersonalDetailsFieldKey => {
   const normalized = field.toLowerCase();
@@ -61,6 +67,8 @@ export const resolvePersonalDetailsFieldKey = (field: string): ManualPersonalDet
 
 /**
  * Normalises a company details label to its logical field key.
+ * @param field Label text from the company details section.
+ * @returns Internal company field key.
  */
 export const resolveCompanyFieldKey = (
   field: string,
@@ -76,6 +84,8 @@ export const resolveCompanyFieldKey = (
 
 /**
  * Normalises a contact details label to its logical field key.
+ * @param field Label text from the contact details section.
+ * @returns Internal contact field key.
  */
 export const resolveContactFieldKey = (field: string): ManualContactFieldKey => {
   const normalized = field.toLowerCase();
@@ -91,6 +101,8 @@ export const resolveContactFieldKey = (field: string): ManualContactFieldKey => 
 
 /**
  * Normalises a court details label to its logical field key.
+ * @param field Label text from the court details section.
+ * @returns Internal court field key.
  */
 export const resolveCourtFieldKey = (field: string): ManualCourtFieldKey => {
   const normalized = field.toLowerCase();
@@ -105,6 +117,8 @@ export const resolveCourtFieldKey = (field: string): ManualCourtFieldKey => {
 
 /**
  * Normalises an employer details label to its logical field key.
+ * @param field Label text from the employer details section.
+ * @returns Internal employer field key.
  */
 export const resolveEmployerFieldKey = (field: string): ManualEmployerFieldKey => {
   const normalized = field.toLowerCase();
@@ -125,6 +139,8 @@ export const resolveEmployerFieldKey = (field: string): ManualEmployerFieldKey =
 
 /**
  * Resolves an offence field label to its key.
+ * @param label Label text from the offence section.
+ * @returns Offence field key used in fixtures/forms.
  */
 export const resolveOffenceFieldKey = (label: string): OffenceFieldKey => {
   const normalized = label.toLowerCase();
@@ -135,6 +151,8 @@ export const resolveOffenceFieldKey = (label: string): OffenceFieldKey => {
 
 /**
  * Resolves an imposition field label to its key.
+ * @param label Label text from the imposition section.
+ * @returns Imposition field key used in fixtures/forms.
  */
 export const resolveImpositionFieldKey = (label: string): ImpositionFieldKey => {
   const normalized = label.toLowerCase();
@@ -146,6 +164,8 @@ export const resolveImpositionFieldKey = (label: string): ImpositionFieldKey => 
 
 /**
  * Resolves a minor creditor field label to its key.
+ * @param label Label text from the minor creditor section.
+ * @returns Minor creditor field key used in forms.
  */
 export const resolveMinorCreditorFieldKey = (label: string): MinorCreditorFieldKey => {
   const normalized = label.toLowerCase();
@@ -168,6 +188,8 @@ export const resolveMinorCreditorFieldKey = (label: string): MinorCreditorFieldK
 
 /**
  * Resolves an offence search field label to its key.
+ * @param label Label text from the offence search form.
+ * @returns Search field key for the offence search form.
  */
 export const resolveSearchFieldKey = (label: string): SearchFieldKey => {
   const normalized = label.toLowerCase();
@@ -179,6 +201,8 @@ export const resolveSearchFieldKey = (label: string): SearchFieldKey => {
 
 /**
  * Resolves a results table column label to its key.
+ * @param label Column label text from the search results table.
+ * @returns Search results column key used by locators.
  */
 export const resolveSearchResultColumn = (label: string): SearchResultColumn => {
   const normalized = label.toLowerCase();

@@ -58,7 +58,7 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
 
   it('should handleFormSubmit method correctly when there is no accountId', () => {
     component.accountId = null;
-    spyOn(component.finesMacStore, 'resetFinesMacStore');
+    spyOn(component.finesMacStore, 'resetStore');
     spyOn(component, 'handleRoute');
     const submitEvent: SubmitEvent = {
       preventDefault: () => {},

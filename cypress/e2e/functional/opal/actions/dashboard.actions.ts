@@ -1,5 +1,5 @@
 /**
- * @fileoverview dashboard.actions.ts
+ * @file dashboard.actions.ts
  * Provides reusable Cypress actions and assertions for interacting with the Opal Dashboard.
  * Covers dashboard verification and navigation to common areas such as Manual Account Creation
  * and Search for an Account.
@@ -10,6 +10,7 @@ import { createScopedLogger } from '../../../../support/utils/log.helper';
 
 const log = createScopedLogger('DashboardActions');
 
+/** Actions and assertions for the Opal dashboard landing page. */
 export class DashboardActions {
   /**
    * Asserts that the user is on the Dashboard page.

@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Language preferences page.
- * Encapsulates radio selection, assertions, and cancel/save handling.
+ * @file Actions for Manual Account Creation - Language preferences page.
+ * @description Encapsulates radio selection, assertions, and cancel/save handling.
  */
 import { ManualLanguagePreferencesLocators as L } from '../../../../../shared/selectors/manual-account-creation/language-preferences.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -11,6 +11,7 @@ const log = createScopedLogger('ManualLanguagePreferencesActions');
 export type LanguageOption = 'English only' | 'Welsh and English';
 export type LanguageSection = 'Documents' | 'Court hearings';
 
+/** Actions for the Manual Account Creation language preferences page. */
 export class ManualLanguagePreferencesActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
@@ -82,6 +83,9 @@ export class ManualLanguagePreferencesActions {
 
   /**
    * Maps human-readable section/option pairs to DOM selectors.
+   * @param section Language section label (Document or Court hearings).
+   * @param option Language option label (English only / English and Welsh).
+   * @returns Selector string for the matching radio input.
    */
   private getSelector(section: LanguageSection, option: LanguageOption): string {
     const normalizedSection = section.toLowerCase();

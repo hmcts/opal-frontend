@@ -1,5 +1,5 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject, DOCUMENT } from '@angular/core';
-import { Observable, Subject, Subscription, filter, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
+import { Observable, Subject, filter, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import {
@@ -43,7 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly ngZone = inject(NgZone);
-  private timerSub!: Subscription;
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly appInsightsService = inject(AppInsightsService);
   private readonly launchDarklyService = inject(LaunchDarklyService);
@@ -94,7 +93,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   private setupTimerSub(expiry: string) {
     const expiryTime = this.dateService.getFromIso(expiry);
-    this.timerSub = timer(0, this.POLL_INTERVAL * 1000)
+    timer(0, this.POLL_INTERVAL * 1000)
       .pipe(
         map(() => this.dateService.calculateMinutesDifference(this.dateService.getDateNow(), expiryTime)),
         tap((remainingMinutes) => {

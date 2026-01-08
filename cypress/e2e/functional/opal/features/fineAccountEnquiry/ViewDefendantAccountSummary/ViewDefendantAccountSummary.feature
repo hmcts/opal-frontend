@@ -11,8 +11,8 @@ Feature: View Defendant Account Summary - Add Comments
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status                          | Submitted                      |
       | account.defendant.forenames             | John                           |
-      | account.defendant.surname               | AccDetailSurname               |
-      | account.defendant.email_address_1       | John.AccDetailSurname@test.com |
+      | account.defendant.surname               | AccDetailSurname{uniq}               |
+      | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
       | account.defendant.telephone_number_home | 02078259314                    |
       | account.account_type                    | Fine                           |
       | account.prosecutor_case_reference       | PCR-AUTO-002                   |
@@ -20,19 +20,18 @@ Feature: View Defendant Account Summary - Add Comments
       | account.collection_order_made_today     | false                          |
       | account.payment_card_request            | false                          |
       | account.defendant.dob                   | 2002-05-15                     |
-    And I search for the account by last name "AccDetailSurname" and verify the page header is "Mr John ACCDETAILSURNAME"
+    And I search for the account by last name "AccDetailSurname{uniq}" and verify the page header is "Mr John ACCDETAILSURNAME{uniqUpper}"
 
     # AC2 / AC3 – Form checks
     When I open the Comments page from the defendant summary and verify the page contents
     And I cancel with confirmation on the Comments page
-    Then I should see the account summary header contains "Mr John ACCDETAILSURNAME"
+    Then I should see the account summary header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
     # AC9a — route guard on Comments
     When I verify route guard behaviour when cancelling comments with "Comment Test"
-    Then I should see the account summary header contains "Mr John ACCDETAILSURNAME"
-
+    Then I should see the account summary header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
     # AC5 – Verify updated comments on Defendant summary
-    When I save the following comments and verify the account header is "Mr John ACCDETAILSURNAME":
+    When I save the following comments and verify the account header is "Mr John ACCDETAILSURNAME{uniqUpper}":
       | field   | text         |
       | Comment | Comment Test |
       | Line 1  | Line1 Test   |
@@ -57,23 +56,23 @@ Feature: View Defendant Account Summary - Add Comments
     # AC4 - Create & publish a company account then view header summary
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
       | Account_status                      | Submitted              |
-      | account.defendant.company_name      | Accdetail comp         |
-      | account.defendant.email_address_1   | Accdetailcomp@test.com |
+      | account.defendant.company_name      | Accdetail comp{uniq}         |
+      | account.defendant.email_address_1   | Accdetailcomp{uniq}@test.com |
       | account.defendant.post_code         | AB23 4RN               |
       | account.account_type                | Fine                   |
       | account.prosecutor_case_reference   | PCR-AUTO-003           |
       | account.collection_order_made       | false                  |
       | account.collection_order_made_today | false                  |
       | account.payment_card_request        | false                  |
-    When I open the company account details for "Accdetail comp"
+    When I open the company account details for "Accdetail comp{uniq}"
 
     # AC9a - Test route guard with unsaved changes
     # Test cancel with unsaved changes (route guard should trigger)
     When I verify route guard behaviour when cancelling comments with "Comment Test"
-    Then I should see the account header contains "Accdetail comp"
+    Then I should see the account header contains "Accdetail comp{uniq}"
 
     # AC5 – Verify updated comments on Defendant summary
-    When I save the following comments and verify the account header is "Accdetail comp":
+    When I save the following comments and verify the account header is "Accdetail comp{uniq}":
       | field   | text            |
       | Comment | Company Comment |
       | Line 1  | Company Line1   |
@@ -99,8 +98,8 @@ Feature: View Defendant Account Summary - Add Comments
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
       | Account_status                          | Submitted                       |
       | account.defendant.forenames             | Michael                         |
-      | account.defendant.surname               | ParentGuardianSurname           |
-      | account.defendant.email_address_1       | Michael.ParentGuardian@test.com |
+      | account.defendant.surname               | ParentGuardianSurname{uniq}           |
+      | account.defendant.email_address_1       | Michael.ParentGuardian{uniq}@test.com |
       | account.defendant.telephone_number_home | 02078259318                     |
       | account.account_type                    | Fine                            |
       | account.prosecutor_case_reference       | PCR-AUTO-007                    |
@@ -109,14 +108,13 @@ Feature: View Defendant Account Summary - Add Comments
       | account.payment_card_request            | false                           |
       | account.defendant.dob                   | 2010-05-15                      |
 
-    When I search for the account by last name "ParentGuardianSurname" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME"
+    When I search for the account by last name "ParentGuardianSurname{uniq}" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}"
 
     # AC9a - Test route guard with unsaved changes
     When I verify route guard behaviour when cancelling comments with "Comment Test"
-    Then I should see the account summary header contains "Miss Michael PARENTGUARDIANSURNAME"
-
+    Then I should see the account summary header contains "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}"
     # AC2 / AC3 - Navigate to Add Comments and test form functionality for pgToPay account
-    When I save the following comments and verify the account header is "Miss Michael PARENTGUARDIANSURNAME":
+    When I save the following comments and verify the account header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}":
       | field   | text                    |
       | Comment | Parent Guardian Comment |
       | Line 1  | Parent Guardian Line1   |
@@ -141,8 +139,8 @@ Feature: View Defendant Account Summary - Add Comments
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
       | Account_status                          | Submitted                |
       | account.defendant.forenames             | Catherine                |
-      | account.defendant.surname               | Green                    |
-      | account.defendant.email_address_1       | Catherine.Green@test.com |
+      | account.defendant.surname               | Green{uniq}                    |
+      | account.defendant.email_address_1       | Catherine.Green{uniq}@test.com |
       | account.defendant.telephone_number_home | 02078217943              |
       | account.account_type                    | Fine                     |
       | account.prosecutor_case_reference       | PCR-AUTO-008             |
@@ -151,18 +149,17 @@ Feature: View Defendant Account Summary - Add Comments
       | account.payment_card_request            | false                    |
       | account.defendant.dob                   | 2010-05-15               |
 
-    When I search for the account by last name "Green" and verify the page header is "Miss Catherine GREEN"
+    When I search for the account by last name "Green{uniq}" and verify the page header is "Miss Catherine GREEN{uniqUpper}"
 
     # AC4 - Route Guard
     When I verify route guard behaviour when cancelling Parent or guardian edits
-    Then I should see the account summary header contains "Miss Catherine GREEN"
-
+    Then I should see the account summary header contains "Miss Catherine GREEN{uniqUpper}"
     # AC3 - Cancel Changes
     When I edit Parent or guardian details but cancel without saving
-    Then I should see the account summary header contains "Miss Catherine GREEN"
+    Then I should see the account summary header contains "Miss Catherine GREEN{uniqUpper}"
 
     When I partially edit Parent or guardian details and choose to stay on the page
     Then I should see the unsaved value retained for Last name as "LNAMEALTERED"
 
     # When I discard Parent or guardian changes
-    Then I should see the account summary header contains "Miss Catherine GREEN"
+    Then I should see the account summary header contains "Miss Catherine GREEN{uniqUpper}"

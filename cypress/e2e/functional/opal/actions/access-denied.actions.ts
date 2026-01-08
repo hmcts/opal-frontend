@@ -1,7 +1,7 @@
 /**
- * @fileoverview access-denied.actions.ts
- * Provides reusable Cypress assertions for verifying the "Access Denied" page.
- * Includes checks for the heading, error message, and navigation back to the dashboard.
+ * @file access-denied.actions.ts
+ * @description Provides reusable Cypress assertions for verifying the "Access Denied" page,
+ * including checks for the heading, error message, and navigation back to the dashboard.
  */
 
 import * as L from '../../../../shared/selectors/access-denied.locators';
