@@ -21,7 +21,7 @@ export class FinesSaComponent implements OnDestroy {
    *
    * @returns boolean
    */
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     if (this.finesSaStore.unsavedChanges()) {
       return false;
