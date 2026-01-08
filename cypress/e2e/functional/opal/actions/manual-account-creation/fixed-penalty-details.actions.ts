@@ -1,6 +1,6 @@
 /**
  * @file Actions for Manual Account Creation - Fixed Penalty details page.
- * Handles form filling, assertions, validation checks, and navigation.
+ * @description Handles form filling, assertions, validation checks, and navigation.
  */
 import { FixedPenaltyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/fixed-penalty.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

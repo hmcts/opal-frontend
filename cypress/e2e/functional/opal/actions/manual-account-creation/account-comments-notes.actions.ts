@@ -1,6 +1,6 @@
 /**
  * @file Actions for Manual Account Creation - Account comments and notes.
- * Encapsulates comment/note entry, navigation, and cancel handling.
+ * @description Encapsulates comment/note entry, navigation, and cancel handling.
  */
 import { ManualAccountCommentsNotesLocators as L } from '../../../../../shared/selectors/manual-account-creation/account-comments-notes.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

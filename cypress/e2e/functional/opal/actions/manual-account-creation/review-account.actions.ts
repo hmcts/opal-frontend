@@ -1,3 +1,8 @@
+/**
+ * @file review-account.actions.ts
+ * @description Actions for the Manual Account Creation **Check account details** screen, including
+ * navigation from the task list, header assertions, imposition table checks, and submission flows.
+ */
 import { ManualReviewAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/review-account.locators';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';

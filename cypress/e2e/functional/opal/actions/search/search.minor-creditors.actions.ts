@@ -1,5 +1,6 @@
 /**
  * @file AccountSearchMinorCreditorsActions
+ * @description Minor Creditors search page actions.
  *
  * Minor Creditors search page actions.
  *

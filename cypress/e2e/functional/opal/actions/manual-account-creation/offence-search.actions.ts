@@ -1,6 +1,6 @@
 /**
  * @file Actions for the Manual Account Creation **Offence search** pages.
- * Covers entering search criteria, submitting, navigating back, and validating results.
+ * @description Covers entering search criteria, submitting, navigating back, and validating results.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

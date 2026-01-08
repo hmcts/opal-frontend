@@ -1077,6 +1077,15 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Updates language preferences and returns to Account details in a single flow.
+   * @param payload - Language selections for documents and hearings.
+   */
+  updateLanguagePreferences(payload: Partial<Record<LanguagePreferenceLabel, LanguageOption>>): void {
+    this.setLanguagePreferences(payload);
+    this.saveLanguagePreferencesAndReturn();
+  }
+
+  /**
    * Cancels language preferences with a chosen dialog response.
    * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
    */
@@ -1565,6 +1574,16 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Clears the specified Personal details fields while asserting the page.
+   * @param fields - Array of field keys to clear.
+   */
+  clearPersonalDetailsFields(fields: ManualPersonalDetailsFieldKey[]): void {
+    log('flow', 'Clearing personal details fields', { fields });
+    this.personalDetails.assertOnPersonalDetailsPage();
+    this.personalDetails.clearFields(fields);
+  }
+
+  /**
    * Continues from Personal details to Contact details using the nested CTA.
    * @param expectedHeader - Header text expected on Contact details.
    * @example
@@ -1590,6 +1609,16 @@ export class ManualAccountCreationFlow {
     Object.entries(expected).forEach(([field, value]) => {
       this.personalDetails.assertFieldValue(field as ManualPersonalDetailsFieldKey, value as string);
     });
+  }
+
+  /**
+   * Completes court details using a key/value payload.
+   * @param payload - Court detail fields and values.
+   */
+  completeCourtDetailsFromTable(payload: Partial<Record<ManualCourtFieldKey, string>>): void {
+    log('flow', 'Complete court details from table payload', { payload });
+    this.courtDetails.assertOnCourtDetailsPage();
+    this.courtDetails.fillCourtDetails(payload);
   }
 
   /**

@@ -1,6 +1,6 @@
 /**
  * @file Actions for the Check and Validate draft account review pages.
- * Handles decision submission, delete confirmation, banners, and review history assertions.
+ * @description Handles decision submission, delete confirmation, banners, and review history assertions.
  */
 import { CheckAndValidateReviewLocators as L } from '../../../../../shared/selectors/check-and-validate-review.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

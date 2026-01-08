@@ -1,6 +1,6 @@
 /**
  * @file Actions for the Check and Validate Draft Accounts (checker) page.
- * Handles navigation, tab switching, and table assertions for the checker view.
+ * @description Handles navigation, tab switching, and table assertions for the checker view.
  */
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CheckAndValidateDraftsLocators as L } from '../../../../../shared/selectors/check-and-validate-drafts.locators';

@@ -1,6 +1,7 @@
 /**
- * Flow helpers for the Fixed Penalty journey (Manual Account Creation).
- * Orchestrates dashboard navigation, details entry, review, and submission helpers.
+ * @file fixed-penalty.flow.ts
+ * @description Flow helpers for the Fixed Penalty journey (Manual Account Creation), orchestrating
+ * dashboard navigation, details entry, review, and submission helpers.
  */
 import { DashboardActions } from '../actions/dashboard.actions';
 import { DefendantType, ManualCreateAccountActions } from '../actions/manual-account-creation/create-account.actions';

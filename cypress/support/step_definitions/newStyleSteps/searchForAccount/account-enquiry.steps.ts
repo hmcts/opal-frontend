@@ -436,7 +436,7 @@ When('I open the company account details for {string}', (companyName: string) =>
  */
 When('I open the Add account note screen and verify the header is Add account note', () => {
   log('step', 'Open Add account note screen');
-  cy.location('pathname', { timeout: 10000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+  cy.location('pathname', common().getTimeoutOptions()).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
   flow().openAddAccountNoteAndVerifyHeader();
 });
 
@@ -542,7 +542,7 @@ When('I cancel with confirmation on the Comments page', () => {
   common().cancelEditing(true);
 
   // Optional defensive check: ensure the Comments page has closed before the summary assertion runs
-  cy.location('pathname', { timeout: 10000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+  cy.location('pathname', common().getTimeoutOptions()).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
 });
 
 /**

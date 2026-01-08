@@ -1,7 +1,6 @@
 /**
  * @file check-and-validate-review.steps.ts
- * @file
- * Step definitions for Check and Validate draft account review flows (checker view).
+ * @description Step definitions for Check and Validate draft account review flows (checker view).
  * Keeps steps thin by delegating to actions/intercepts with shared logging.
  *
  * @remarks

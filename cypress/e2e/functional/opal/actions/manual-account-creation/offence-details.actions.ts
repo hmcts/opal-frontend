@@ -1,6 +1,6 @@
 /**
  * @file Actions for Manual Account Creation - Offence details task.
- * Handles offence entry, impositions, minor creditor interactions, and navigation.
+ * @description Handles offence entry, impositions, minor creditor interactions, and navigation.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

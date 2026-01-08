@@ -1,8 +1,9 @@
-// Support/Step_definitions/newStyleSteps/account-search.steps.ts
 /**
+ * @file account-search-steps.ts
+ * @description
  * Step definitions for Account Search behaviour.
- * - Thin, intent-based steps delegating to AccountEnquiryFlow / AccountSearchFlow.
- * - Logging handled by shared `log()` utility for consistent Cypress output.
+ * Thin, intent-based steps delegating to AccountEnquiryFlow / AccountSearchFlow,
+ * with consistent logging via the shared `log()` utility.
  */
 
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';

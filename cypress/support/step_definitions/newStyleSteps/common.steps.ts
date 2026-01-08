@@ -1,9 +1,10 @@
-// common.steps.ts
-// =====================
-// These steps provide generic assertions and actions reused across multiple
-// feature files. They rely on CommonActions for navigation, header checks, and
-// safe cancellation workflows. Each step includes consistent logging via the
-// shared `log` utility and Sonar-compliant documentation.
+/**
+ * @file common.steps.ts
+ * @description
+ * Generic, reusable step definitions that delegate to `CommonActions` for
+ * navigation, header checks, cancel flows, and shared assertions. Steps remain
+ * thin, intent-based, and consistently logged via the shared `log` utility.
+ */
 
 import { When, Then } from '@badeball/cypress-cucumber-preprocessor';
 import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
@@ -174,5 +175,7 @@ Then('I see the following text on the page {string}', (text: string) => {
  * @param text - Text expected to be visible in the button
  */
 Then('I should not see the button with text {string}', (buttonText: string) => {
-  cy.contains('button', buttonText).should('not.exist');
+  const resolved = applyUniqPlaceholder(buttonText);
+  log('assert', 'Asserting button is not present', { buttonText: resolved });
+  Common().assertButtonNotVisible(resolved);
 });

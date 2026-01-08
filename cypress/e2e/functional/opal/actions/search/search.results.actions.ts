@@ -1,5 +1,6 @@
 /**
  * @file ResultsActions
+ * @description Shared Cypress actions for the Account Search **results** page.
  * Shared Cypress actions for the Account Search **results** page.
  * Centralises: waiting for results to load, opening the first/latest row,
  * and opening by a specific account number.
@@ -194,7 +195,7 @@ export class ResultsActions {
           return;
         }
 
-        const nextLink = $body.find('nav.moj-pagination .moj-pagination__item--next a.moj-pagination__link');
+        const nextLink = $body.find(R.pagination.next);
         if (!nextLink.length) {
           throw new Error(`Account ${accountNumber} not found in paginated results`);
         }

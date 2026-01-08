@@ -23,6 +23,7 @@ export const DraftAccountsTableLocators = {
   pagination: {
     container: '#fines-draft-table-pagination',
     next: '.moj-pagination__item--next a',
+    disabledItem: '.moj-pagination__item--disabled',
     pages: '.moj-pagination__item a',
   },
   cells: {

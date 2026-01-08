@@ -1,8 +1,7 @@
 // e2e/functional/opal/actions/search/search.major-creditors.actions.ts
 /**
  * @file AccountSearchMajorCreditorsActions
- *
- * Actions for the **Major creditors** search panel on the Account Search page.
+ * @description Actions for the **Major creditors** search panel on the Account Search page.
  *
  * Scope:
  * - Asserting that the major creditors panel is present and visible.

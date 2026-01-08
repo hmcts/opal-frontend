@@ -116,8 +116,7 @@ export class AccountEnquiryFlow {
    * Behaviour:
    *  - If `@etagUpdate` has an `accountNumber` and it's visible on the current page → click it.
    *  - Otherwise → open the first row via {@link ResultsActions.openLatestPublished}.
-   *
-   * No cross-page pagination (keeps control flow simple and avoids catch/overload issues).
+   *  - If the @etagUpdate account number is not on the current page, we paginate to find it.
    */
   public clickLatestPublishedFromResultsOrAcrossPages(): void {
     logAE('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
@@ -722,7 +721,10 @@ export class AccountEnquiryFlow {
     this.comments.enterAndSaveComments(lines);
 
     // Defensive URL check that we're back on the summary
-    cy.location('pathname', { timeout: 10000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+    cy.location('pathname', this.common.getTimeoutOptions()).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/details$/,
+    );
   }
 
   /**

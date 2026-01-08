@@ -2,7 +2,7 @@ import { DraftAccountsTableLocators as L } from '../../../../../shared/selectors
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 /**
  * @file Shared actions for draft account listings across inputter and checker views.
- * Provides navigation helpers and table assertions used by both Create/Manage and Check/Validate flows.
+ * @description Provides navigation helpers and table assertions used by both Create/Manage and Check/Validate flows.
  */
 import { CommonActions } from '../common/common.actions';
 
@@ -50,7 +50,7 @@ export class DraftAccountsCommonActions {
         }
 
         const next = $body.find(L.pagination.next);
-        const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
+        const hasNext = next.length > 0 && !next.closest('li').hasClass(L.pagination.disabledItem.replace('.', ''));
         if (hasNext) {
           cy.wrap(next.first()).scrollIntoView().click({ force: true });
           cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');

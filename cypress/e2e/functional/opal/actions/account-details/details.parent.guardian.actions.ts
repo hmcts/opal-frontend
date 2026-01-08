@@ -1,3 +1,8 @@
+/**
+ * @file details.parent.guardian.actions.ts
+ * @description Actions for the Parent/Guardian section on Account Details, including navigation
+ * to the change form and summary assertions.
+ */
 import { AccountParentOrGuardianDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.parent.guardian.details.locators';
 
 /** Actions for the Parent/Guardian section on Account Details. */

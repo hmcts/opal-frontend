@@ -1,3 +1,7 @@
+/**
+ * @file draft-accounts.intercepts.ts
+ * @description Network stubs for draft account API calls used in E2E specs, including status-based listings and payload mutations.
+ */
 import merge from 'lodash/merge';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { convertDataTableToNestedObject } from '../../../../../support/utils/table';

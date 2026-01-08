@@ -1,6 +1,6 @@
 /**
  * @file Actions for Manual Account Creation - Employer details task.
- * Each method performs a single responsibility (field entry, assertions, cancel handling).
+ * @description Each method performs a single responsibility (field entry, assertions, cancel handling).
  */
 import { ManualEmployerDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/employer-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

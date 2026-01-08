@@ -1,6 +1,6 @@
 /**
  * @file Actions for Manual Account Creation - Personal details task.
- * Handles entry, assertions, and cancellation for the personal details form.
+ * @description Handles entry, assertions, and cancellation for the personal details form.
  */
 import { ManualPersonalDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/personal-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

@@ -1,4 +1,7 @@
-// e2e/functional/opal/actions/account details/details.comments.actions.ts
+/**
+ * @file details.comments.actions.ts
+ * @description Actions and assertions for the Account Details comments page (add/edit).
+ */
 import { AccountCommentsAddLocators as L } from '../../../../../shared/selectors/account-details/account.comments-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 

@@ -1,6 +1,6 @@
 /**
  * @file Actions for Manual Account Creation - Company details task.
- * Handles field entry, aliases, navigation, and inline error assertions.
+ * @description Handles field entry, aliases, navigation, and inline error assertions.
  */
 import { ManualCompanyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/company-details.locators';
 import { CommonActions } from '../common/common.actions';

@@ -1,4 +1,8 @@
-// e2e/functional/opal/flows/account-search.flow.ts
+/**
+ * @file account-search.flow.ts
+ * @description Orchestrates navigation, tab selection, and search/result interactions for the
+ * Account Search journeys across Individuals, Companies, Major and Minor creditors.
+ */
 
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';

@@ -1,6 +1,6 @@
 /**
  * @file account-search.filter-by-bu.flow.ts
- * High-level flow for navigating to and validating the
+ * @description High-level flow for navigating to and validating the
  * **Filter by Business Unit** page for both *Fines* and *Confiscation*.
  *
  * This flow coordinates multiple action classes and provides a stable

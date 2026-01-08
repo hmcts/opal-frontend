@@ -1,5 +1,8 @@
 /**
- * Shared helpers and state for manual account creation offence step definitions.
+ * @file manual-account-creation.offence.stepshelper.ts
+ * @description
+ * Shared helpers/factories used by offence-related manual account creation
+ * step definitions to centralise flows, actions, and logging utilities.
  */
 import { ManualAccountCreationFlow } from '../../../../e2e/functional/opal/flows/manual-account-creation.flow';
 import { ManualOffenceDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/offence-details.actions';

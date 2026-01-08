@@ -1,6 +1,8 @@
 /**
- * Step definitions for Fixed Penalty Manual Account Creation.
- * Wires Cucumber steps to Cypress flows/actions for the Fixed Penalty journey.
+ * @file fixed-penalty.steps.ts
+ * @description
+ * Step definitions for the Fixed Penalty manual account journey, wiring
+ * Cucumber steps to Cypress flows/actions and ensuring draft cleanup between runs.
  */
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { DefendantType } from '../../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';

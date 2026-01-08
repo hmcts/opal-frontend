@@ -1,6 +1,7 @@
 // e2e/functional/opal/flows/common-flow.ts
 /**
  * @file CommonFlow
+ * @description Small, reusable flows shared across multiple Opal features.
  *
  * Small, reusable flows that are shared across multiple Opal features.
  *

@@ -1,6 +1,6 @@
 /**
  * @file Actions for Manual Account Creation - Language preferences page.
- * Encapsulates radio selection, assertions, and cancel/save handling.
+ * @description Encapsulates radio selection, assertions, and cancel/save handling.
  */
 import { ManualLanguagePreferencesLocators as L } from '../../../../../shared/selectors/manual-account-creation/language-preferences.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

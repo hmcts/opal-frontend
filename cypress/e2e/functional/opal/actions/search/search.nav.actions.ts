@@ -1,6 +1,6 @@
 /**
  * @file account-search-nav.actions.ts
- * Navigation actions for the Account Search tabs:
+ * @description Navigation actions for the Account Search tabs:
  * - Individuals
  * - Companies
  * - Major creditors

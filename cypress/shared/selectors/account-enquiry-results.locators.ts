@@ -90,6 +90,13 @@ export const AccountEnquiryResultsLocators = {
   },
 
   // ──────────────────────────────
+  // Pagination
+  // ──────────────────────────────
+  pagination: {
+    next: 'nav.moj-pagination .moj-pagination__item--next a.moj-pagination__link',
+  },
+
+  // ──────────────────────────────
   // Row-level cell selectors
   // ──────────────────────────────
 

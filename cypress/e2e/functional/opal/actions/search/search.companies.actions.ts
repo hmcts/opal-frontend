@@ -1,5 +1,6 @@
 /**
  * @file AccountSearchCompanyActions
+ * @description High-level actions for the "Search for an account" ➜ Companies tab.
  * High-level actions for the "Search for an account" ➜ Companies tab.
  * Delegates all results-page behaviours to ResultsActions to avoid duplication.
  * Uses mapping-driven assertions for clean, scalable field checks.

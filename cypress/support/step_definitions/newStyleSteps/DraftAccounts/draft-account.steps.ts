@@ -273,7 +273,6 @@ Then('the checker status heading is {string}', (heading: string) => {
  * @example When I view the "Rejected" tab on the Create and Manage Draft Accounts page
  */
 When('I view the {string} tab on the Create and Manage Draft Accounts page', (tab: CreateManageTab) => {
-  cy.reload();
   log('navigate', 'Switching Create and Manage tab', { tab });
   inputter().switchTab(tab);
 });

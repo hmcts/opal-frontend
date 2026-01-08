@@ -1,6 +1,6 @@
 /**
  * @file Actions for the Manual Account Creation **Offence review** page.
- * Provides helpers to assert offence/imposition tables, totals, and action links.
+ * @description Provides helpers to assert offence/imposition tables, totals, and action links.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';

@@ -1,6 +1,6 @@
 /**
  * @file Actions for the Create and Manage Draft Accounts (inputter) page.
- * Provides navigation, tab switching, and table assertions for draft listings.
+ * @description Provides navigation, tab switching, and table assertions for draft listings.
  */
 import { DashboardActions } from '../dashboard.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -48,7 +48,24 @@ export class CreateManageDraftsActions extends DraftAccountsCommonActions {
     })();
 
     log('navigate', 'Switching Create and Manage tab', { tab, selector });
+    // For rejected tab, ensure we wait for the listings request so new rejects appear before further steps.
+    const shouldWaitForRejected = normalized === 'rejected';
+    if (shouldWaitForRejected) {
+      cy.intercept({ method: 'GET', url: /\/opal-fines-service\/draft-accounts\?.*status=Rejected/i }).as(
+        'getRejectedDraftAccounts',
+      );
+    }
+
     cy.get(selector, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
+
+    if (shouldWaitForRejected) {
+      cy.wait('@getRejectedDraftAccounts', this.common.getTimeoutOptions()).then((result) => {
+        const count = result?.response?.body?.count;
+        log('debug', 'Rejected drafts response received', { count, url: result?.request?.url });
+      });
+      // Give the table a moment to render the new rows before assertions/search.
+      cy.get(L.rows, this.common.getTimeoutOptions()).should('have.length.at.least', 1);
+    }
   }
 
   /**

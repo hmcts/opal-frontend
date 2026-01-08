@@ -1,6 +1,6 @@
 /**
  * @file parent-guardian-details.actions.ts
- * Actions for the Manual Account Creation **Parent or guardian details** task.
+ * @description Actions for the Manual Account Creation **Parent or guardian details** task.
  *
  * @remarks
  * - All selectors are sourced from `ManualParentGuardianDetailsLocators`.

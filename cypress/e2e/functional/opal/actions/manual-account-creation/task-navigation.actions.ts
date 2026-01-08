@@ -1,3 +1,8 @@
+/**
+ * @file task-navigation.actions.ts
+ * @description Shared navigation helpers for the Manual Account Creation task list, providing
+ * safe returns to Account details and header assertions after navigation.
+ */
 import { CommonActions } from '../common/common.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { ManualAccountDetailsActions } from './account-details.actions';

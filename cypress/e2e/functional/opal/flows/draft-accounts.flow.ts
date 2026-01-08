@@ -1,5 +1,7 @@
 /**
  * @file Draft accounts flows shared across checker/inputter views.
+ * @description Coordinates navigation and assertions across Create/Manage and Check/Validate draft flows,
+ * keeping Cucumber steps thin and delegating to shared draft actions.
  */
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { CheckAndValidateDraftsActions } from '../actions/draft-account/check-and-validate-drafts.actions';
@@ -33,7 +35,7 @@ export class DraftAccountsFlow {
     // If the failed-drafts stub alias exists, wait for it so tab counts render before assertions.
     const aliases = ((Cypress as any).state?.('aliases') ?? {}) as Record<string, unknown>;
     if (aliases['getFailedDraftAccountSummaries']) {
-      cy.wait('@getFailedDraftAccountSummaries', { timeout: 10000 });
+      cy.wait('@getFailedDraftAccountSummaries', this.common.getTimeoutOptions());
     }
   }
 

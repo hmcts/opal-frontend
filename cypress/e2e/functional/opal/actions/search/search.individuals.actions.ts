@@ -1,5 +1,6 @@
 /**
  * @file search-individuals.actions.ts
+ * @description High-level actions for the “Search for an account” ➜ Individuals tab, including shared page assertions.
  * High-level actions for the “Search for an account” ➜ Individuals
  * Now includes shared search-page assertion logic.
  */

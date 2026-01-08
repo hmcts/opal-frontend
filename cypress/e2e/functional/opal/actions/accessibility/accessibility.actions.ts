@@ -1,4 +1,8 @@
-// File: cypress/e2e/functional/opal/actions/accessibility/accessibility.actions.ts
+/**
+ * @file accessibility.actions.ts
+ * @description Axe-based accessibility helpers used by steps/flows to keep
+ * accessibility checks consistent, logged, and reusable across journeys.
+ */
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 

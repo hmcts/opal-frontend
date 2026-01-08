@@ -15,10 +15,7 @@ import {
   DefendantType,
 } from '../../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { ManualAccountCommentsNotesActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
-import {
-  ManualCourtDetailsActions,
-  ManualCourtFieldKey,
-} from '../../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
+import { ManualCourtFieldKey } from '../../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import {
   ManualEmployerDetailsActions,
   ManualEmployerFieldKey,
@@ -55,7 +52,6 @@ import { normalizeHash, normalizeTableRows } from '../../../utils/cucumberHelper
 import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
-const courtDetails = () => new ManualCourtDetailsActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
 const paymentTerms = () => new ManualPaymentTermsActions();
 const dashboard = () => new DashboardActions();
@@ -454,8 +450,7 @@ When('I complete manual court details:', (table: DataTable) => {
     {},
   );
   log('step', 'Completing court details from table', { payload: { ...payload } });
-  courtDetails().assertOnCourtDetailsPage();
-  courtDetails().fillCourtDetails(payload);
+  flow().completeCourtDetailsFromTable(payload);
 });
 /**
  * @step Populates manual court details by opening the task from Account details.
@@ -703,8 +698,7 @@ When('I update manual language preferences to:', (table: DataTable) => {
     log('warn', 'Language preferences payload is empty; no selections will be made');
     return;
   }
-  flow().setLanguagePreferences(payload);
-  flow().saveLanguagePreferencesAndReturn();
+  flow().updateLanguagePreferences(payload);
 });
 /**
  * @step Asserts language selections on the Language preferences page.

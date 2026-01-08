@@ -1,9 +1,7 @@
 /**
- * @file AccountDetailsDefendantActions
- * Provides reusable UI interactions and assertions for the Defendant Details page.
+ * @file details.defendant.actions.ts
+ * @description Provides reusable UI interactions and assertions for the Defendant Details page.
  * Supports both individual and company account contexts.
- *
- * @module actions/account.details.actions
  */
 import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant-details.locators';
 import { CommonActions } from '../common/common.actions';
@@ -17,7 +15,7 @@ export class AccountDetailsDefendantActions {
    * @param expected - Expected heading text.
    */
   assertSectionHeader(expected: string): void {
-    cy.get(L.defendantTabHeader.title, { timeout: 10000 })
+    cy.get(L.defendantTabHeader.title, this.common.getTimeoutOptions())
       .should('be.visible')
       .should(($h2) => {
         const actual = $h2.text().trim().toLowerCase();
@@ -56,6 +54,6 @@ export class AccountDetailsDefendantActions {
    * @param expected text expected in the name field
    */
   assertDefendantNameContains(expected: string): void {
-    cy.get(L.defendant.fields.name, { timeout: 10000 }).should('contain.text', expected);
+    cy.get(L.defendant.fields.name, this.common.getTimeoutOptions()).should('contain.text', expected);
   }
 }

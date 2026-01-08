@@ -1,5 +1,11 @@
+/**
+ * @file details.notes.actions.ts
+ * @description Actions for account notes add/view screens, encapsulating waits, typing, saving,
+ * and assertions to keep flows and step definitions thin.
+ */
 import { AccountDetailsNotesLocators as L } from '../../../../../shared/selectors/account-details/account.notes.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('AccountDetailsNotesActions');
 
@@ -8,6 +14,7 @@ const log = createScopedLogger('AccountDetailsNotesActions');
  */
 export class AccountDetailsNotesActions {
   private static readonly DEFAULT_TIMEOUT = 15000;
+  private readonly common = new CommonActions();
 
   private readonly normalize = (s: string): string => s.replaceAll('  ', ' ').trim().toLowerCase();
 
@@ -63,7 +70,7 @@ export class AccountDetailsNotesActions {
    * @param text - Expected textarea value.
    */
   public assertNoteValueEquals(text: string): void {
-    cy.get(L.fields.noteTextArea, { timeout: 10000 })
+    cy.get(L.fields.noteTextArea, this.common.getTimeoutOptions())
       .should('be.visible')
       .invoke('val')
       .then((val) => {

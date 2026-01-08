@@ -1,6 +1,7 @@
 // e2e/functional/opal/actions/search/search.common.actions.ts
 /**
  * @file Actions for fields shared across ALL Account Search tabs:
+ * @description Keeps steps small, reusable, and intent-driven across search tabs.
  * - Account number
  * - Reference or case number
  * - Active accounts only (checkbox)

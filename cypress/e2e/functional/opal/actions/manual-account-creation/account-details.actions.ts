@@ -1,6 +1,6 @@
 /**
  * @file Actions for Manual Account Creation - Account details task list.
- * Provides helpers to open tasks, assert status, and confirm header presence.
+ * @description Provides helpers to open tasks, assert status, and confirm header presence.
  */
 import {
   ManualAccountDetailsLocators as L,

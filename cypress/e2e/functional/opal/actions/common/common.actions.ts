@@ -1,3 +1,8 @@
+/**
+ * @file common.actions.ts
+ * @description Reusable Cypress helpers for navigation, header assertions, pagination checks,
+ * text presence, dialog handling, and other cross-cutting UI utilities used by flows/actions.
+ */
 import { CommonLocators as L } from '../../../../../shared/selectors/common.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
@@ -176,7 +181,7 @@ export class CommonActions {
         }
 
         const next = $body.find(nextSelector);
-        const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
+        const hasNext = next.length > 0 && !next.closest('li').hasClass(L.paginationDisabledItem.replace('.', ''));
 
         if (hasNext && remaining > 0) {
           cy.wrap(next.first()).scrollIntoView().click({ force: true });
@@ -202,5 +207,19 @@ export class CommonActions {
       'exist',
       `Expected to find text "${text}" on the current page`,
     );
+  }
+
+  /**
+   * Asserts that **no button** contains the given text (case-insensitive).
+   * @param text - Button label that should be absent.
+   */
+  public assertButtonNotVisible(text: string): void {
+    const regex = new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    log('assert', 'Verifying button text is absent', { text });
+
+    cy.get('body', this.getTimeoutOptions())
+      .find('button')
+      .filter((_, el) => regex.test(el.innerText || el.textContent || ''))
+      .should('have.length', 0);
   }
 }

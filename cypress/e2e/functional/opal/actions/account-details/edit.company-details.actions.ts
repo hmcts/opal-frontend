@@ -1,16 +1,19 @@
 /**
  * @file edit-company-details.actions.ts
- * Provides Cypress actions and assertions for editing company details within the Opal application.
+ * @description Cypress actions and assertions for editing company details within the Opal application.
  */
 
 import { CompanyDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.company-details.locators';
 import { AccountCompanyDetailsLocators as SummaryL } from '../../../../../shared/selectors/account-details/account.company-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('EditCompanyDetailsActions');
 
 /** Actions for editing company details within Account Details. */
 export class EditCompanyDetailsActions {
+  private readonly common = new CommonActions();
+
   /**
    * Ensure we are still on the edit page (form visible, not navigated away).
    */
@@ -96,7 +99,7 @@ export class EditCompanyDetailsActions {
    */
   assertCompanyNameContains(expected: string): void {
     log('assert', `Asserting company name summary contains "${expected}"`);
-    cy.get(SummaryL.fields.name, { timeout: 10000 }).should('be.visible').and('contain.text', expected);
+    cy.get(SummaryL.fields.name, this.common.getTimeoutOptions()).should('be.visible').and('contain.text', expected);
     log('done', `Verified company name contains "${expected}"`);
   }
 }
