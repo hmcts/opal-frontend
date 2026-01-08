@@ -1,4 +1,6 @@
-// Forces any window.open() to navigate in the same tab (Cypress runner)
+/**
+ * Forces any `window.open()` calls to stay in the same Cypress runner tab.
+ */
 export function ForceSingleTabNavigation(): void {
   cy.window().then((win) => {
     cy.stub(win, 'open').callsFake((url) => {

@@ -146,14 +146,20 @@ describe('AppComponent - browser', () => {
   it('should handle no expiry case correctly', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
+
     globalStore.setTokenExpiry({ expiry: null, warningThresholdInMilliseconds: 300000 }); // 5 minutes
     dateService.convertMillisecondsToMinutes.and.returnValue(5);
+
+    const setupTimerSubSpy = spyOn(
+      component as unknown as { setupTimerSub: (expiry: string) => void },
+      'setupTimerSub',
+    ).and.callThrough();
 
     component.ngOnInit();
     component['initializeTimeoutInterval']();
 
     // No timer should be set
-    expect(component['timerSub']).toBeUndefined();
+    expect(setupTimerSubSpy).not.toHaveBeenCalled();
 
     flush();
   }));

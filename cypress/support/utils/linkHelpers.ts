@@ -4,7 +4,11 @@ declare global {
   }
 }
 
-/** Normalize visible text for robust matching.*/
+/**
+ * Normalize visible text for robust matching.
+ * @param s - Text to normalize for comparisons.
+ * @returns Normalized, trimmed text.
+ */
 function normalizeText(s: string): string {
   const RE_SPACES = /\s+/g;
   return (s ?? '').replaceAll(RE_SPACES, ' ').trim();
@@ -23,7 +27,11 @@ const SELECTORS = {
   resultsText: '.moj-pagination__results', // “Showing X to Y of Z results”
 };
 
-/** Type guard to keep TypeScript + linters happy */
+/**
+ * Type guard to keep TypeScript + linters happy
+ * @param x - Potential RegExpExecArray.
+ * @returns True when the value is a RegExpExecArray.
+ */
 function isRegExpExecArray(x: RegExpExecArray | null): x is RegExpExecArray {
   return x !== null;
 }
@@ -36,6 +44,13 @@ function isRegExpExecArray(x: RegExpExecArray | null): x is RegExpExecArray {
  * If a MOJ sub-navigation is present, try to click a tab whose visible text
  * includes the given label (e.g., "Failed", "Rejected (3)").
  * Returns true if clicked, false if subnav absent or no match after retries.
+ * @param tabText - Visible tab text to match.
+ * @param root0 - Optional configuration for selectors/retries.
+ * @param root0.containerSelector - Selector for the subnav container.
+ * @param root0.linkSelector - Selector for subnav links.
+ * @param root0.attempts - Number of retries before giving up.
+ * @param root0.delayMs - Delay between retries (ms).
+ * @returns Chainable resolving to true when a tab was clicked.
  */
 function clickSubnavTabIfPresent(
   tabText: string,
@@ -104,6 +119,12 @@ function clickSubnavTabIfPresent(
 /**
  * Try to find and click any element (link/tab/button) whose visible text
  * matches exactly or contains the target. Returns true if clicked.
+ * @param text - Text to match.
+ * @param root0 - Optional selector/behaviour overrides.
+ * @param root0.selectors - Candidate selectors to search.
+ * @param root0.exact - Whether to require exact text match.
+ * @param root0.caseSensitive - Whether matching is case-sensitive.
+ * @returns Chainable resolving to true when a click occurred.
  */
 function tryClickElementByText(
   text: string,
@@ -152,13 +173,21 @@ function tryClickElementByText(
  * Pagination parsers
  * ----------------------------------------------------------------------------------------------*/
 
-/** First pagination list found or null. */
+/**
+ * First pagination list found or null.
+ * @param doc - Document to search.
+ * @returns Pagination list element or null.
+ */
 function getPaginationList(doc: Document): Element | null {
   const all = doc.querySelectorAll(SELECTORS.list);
   return all.length ? all[0] : null; // no cast; NodeListOf<Element>
 }
 
-/** Try “Page X of Y” from the active pagination element’s aria-label. */
+/**
+ * Try “Page X of Y” from the active pagination element’s aria-label.
+ * @param el - Active pagination element.
+ * @returns Current page number or null.
+ */
 function parseActiveFromLabel(el: Element | null): number | null {
   if (!el) return null;
   const label = (el.getAttribute('aria-label') || '').trim();
@@ -168,7 +197,11 @@ function parseActiveFromLabel(el: Element | null): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-/** Fallback: parse active page number from innerText. */
+/**
+ * Fallback: parse active page number from innerText.
+ * @param el - Active pagination element.
+ * @returns Current page number or null.
+ */
 function parseActiveFromText(el: Element | null): number | null {
   if (!el) return null;
   const txt = normalizeText(el.textContent || '');
@@ -176,7 +209,11 @@ function parseActiveFromText(el: Element | null): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-/** Infer total pages from anchors (aria “Page X of Y” wins; else max numeric text). */
+/**
+ * Infer total pages from anchors (aria “Page X of Y” wins; else max numeric text).
+ * @param list - Pagination list element.
+ * @returns Total pages or null.
+ */
 function inferTotalFromAnchors(list: Element): number | null {
   const anchors = Array.from(list.querySelectorAll(SELECTORS.link));
 
@@ -194,7 +231,11 @@ function inferTotalFromAnchors(list: Element): number | null {
   return nums.length ? Math.max(...nums) : null;
 }
 
-/** Infer total pages from the “Showing X to Y of Z results” line. */
+/**
+ * Infer total pages from the “Showing X to Y of Z results” line.
+ * @param doc - Document to scan for pagination summary text.
+ * @returns Total pages or null.
+ */
 function inferTotalFromResultsLine(doc: Document): number | null {
   const el = doc.querySelector(SELECTORS.resultsText);
   if (!el) return null;
@@ -216,7 +257,9 @@ function inferTotalFromResultsLine(doc: Document): number | null {
  * Core: readPaginationInfo
  * ----------------------------------------------------------------------------------------------*/
 
-/** Read pagination; default to {1,1} if absent. */
+/** Read pagination; default to {1,1} if absent.
+ * @returns Chainable pagination info with current and total pages.
+ */
 function readPaginationInfo(): Cypress.Chainable<PaginationInfo> {
   return cy.document().then((doc) => {
     const list = getPaginationList(doc);
@@ -242,6 +285,9 @@ function readPaginationInfo(): Cypress.Chainable<PaginationInfo> {
 /**
  * Try to find and click a link with exact visible text on the current page.
  * Returns true if clicked; false if not found.
+ * @param linkText - Visible text to match exactly.
+ * @param linkSelector - Selector used to find candidate links.
+ * @returns Chainable resolving to true when clicked.
  */
 function tryClickLinkOnCurrentPage(linkText: string, linkSelector = 'a'): Cypress.Chainable<boolean> {
   const target = normalizeText(linkText);
@@ -278,6 +324,11 @@ function tryClickLinkOnCurrentPage(linkText: string, linkSelector = 'a'): Cypres
  * Always returns Chainable<undefined>.
  * - If already on that page, it does nothing.
  * - Otherwise tries aria-label first, then numeric text.
+ * @param page - Page number to navigate to.
+ * @param root0 - Optional wait configuration.
+ * @param root0.waitAfterPageMs - Delay after navigation (ms).
+ * @param root0.routeToWaitForAlias - Optional route alias to wait for.
+ * @returns Chainable resolving when navigation attempt completes.
  */
 function clickPage(
   page: number,
@@ -334,7 +385,16 @@ function clickPage(
  * Scans (multi-page and single-page)
  * ----------------------------------------------------------------------------------------------*/
 
-/** Multi-page scan: pages 1..last until link is found; returns Chainable<undefined>. */
+/**
+ * Multi-page scan: pages 1..last until link is found; returns Chainable<undefined>.
+ * @param linkText - Link text to click.
+ * @param last - Last page number to scan.
+ * @param root0 - Optional selector/wait configuration.
+ * @param root0.linkSelector - Selector for links within pages.
+ * @param root0.waitAfterPageMs - Delay after each page navigation (ms).
+ * @param root0.routeToWaitForAlias - Optional route alias to wait for.
+ * @returns Chainable resolving when the link is clicked.
+ */
 function scanPagesAndClick(
   linkText: string,
   last: number,
@@ -366,7 +426,17 @@ function scanPagesAndClick(
   return loop(1);
 }
 
-/** Single-page retry: re-checks for a link; optional refresh between attempts. */
+/**
+ * Single-page retry: re-checks for a link; optional refresh between attempts.
+ * @param linkText - Link text to look for on the current page.
+ * @param root0 - Optional selector/retry configuration.
+ * @param root0.linkSelector - Selector for links to scan.
+ * @param root0.attempts - Number of retry attempts.
+ * @param root0.delayMs - Delay between attempts (ms).
+ * @param root0.refreshSelector - Optional selector to click to refresh results.
+ * @param root0.routeToWaitForAlias - Optional route alias to wait for after refresh.
+ * @returns Chainable resolved when the link is clicked.
+ */
 function waitAndClickLinkOnSinglePage(
   linkText: string,
   {
@@ -417,7 +487,12 @@ function waitAndClickLinkOnSinglePage(
  * Public: click across pages (with retries)
  * ----------------------------------------------------------------------------------------------*/
 
-/** Retry wrapper for pagination read to allow SPA screens to finish rendering. */
+/**
+ * Retry wrapper for pagination read to allow SPA screens to finish rendering.
+ * @param retries - Number of retries when only one page detected.
+ * @param delayMs - Delay between retries (ms).
+ * @returns Pagination info after retries.
+ */
 function readPaginationInfoWithRetry(retries = 5, delayMs = 0): Cypress.Chainable<PaginationInfo> {
   const attempt = (n: number): Cypress.Chainable<PaginationInfo> =>
     readPaginationInfo().then((info) => {
@@ -434,6 +509,18 @@ function readPaginationInfoWithRetry(retries = 5, delayMs = 0): Cypress.Chainabl
 
 /**
  * Decide between single-page retry and multi-page scan based on pagination.
+ * @param linkText - Link text to find and click.
+ * @param root0 - Optional configuration for selectors/retries.
+ * @param root0.linkSelector - Selector for links to scan.
+ * @param root0.maxPages - Maximum pages to scan.
+ * @param root0.waitAfterPageMs - Delay after page navigation (ms).
+ * @param root0.routeToWaitForAlias - Optional route alias to wait for.
+ * @param root0.paginationRetries - Retry attempts for pagination detection.
+ * @param root0.paginationRetryDelayMs - Delay between pagination retries.
+ * @param root0.singlePageRetries - Attempts when only one page exists.
+ * @param root0.singlePageRetryDelayMs - Delay between single-page attempts.
+ * @param root0.singlePageRefreshSelector - Optional selector to refresh single page.
+ * @returns Chainable resolved when the link is clicked.
  */
 function clickViaPaginationOrSinglePage(
   linkText: string,
@@ -490,6 +577,18 @@ function clickViaPaginationOrSinglePage(
  *  1) Exact anchor on current page
  *  2) Flexible element scan (a|button|[role=tab]|.moj-sub-navigation__link)
  *  3) Read pagination (with retry) → single-page retry OR multi-page scan
+ * @param linkText - Link text to find and click.
+ * @param root0 - Optional selector/wait configuration.
+ * @param root0.linkSelector - Selector for links to scan.
+ * @param root0.maxPages - Maximum pages to scan via pagination.
+ * @param root0.waitAfterPageMs - Delay after page navigation (ms).
+ * @param root0.routeToWaitForAlias - Optional route alias to wait for.
+ * @param root0.paginationRetries - Retry attempts for pagination detection.
+ * @param root0.paginationRetryDelayMs - Delay between pagination retries (ms).
+ * @param root0.singlePageRetries - Retry attempts when only one page exists.
+ * @param root0.singlePageRetryDelayMs - Delay between single-page attempts (ms).
+ * @param root0.singlePageRefreshSelector - Optional selector to refresh the page.
+ * @returns Chainable resolved when the link is clicked.
  */
 function clickLinkAcrossPages(
   linkText: string,

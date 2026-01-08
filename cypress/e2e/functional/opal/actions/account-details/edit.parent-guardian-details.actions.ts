@@ -5,6 +5,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('EditParentGuardianDetailsActions');
 
+/** Actions for editing Parent/Guardian details within Account Details. */
 export class EditParentGuardianDetailsActions {
   /**
    * Ensures the user is still on the edit page (form visible, not navigated away).
@@ -23,6 +24,8 @@ export class EditParentGuardianDetailsActions {
    *
    * @param opts Optional config: specify a route to pin to one mode.
    *             e.g. { route: 'amend' } or 'add' | 'edit'
+   * @param opts.route - Optional specific route segment to assert.
+   * @param opts.timeout - Timeout override for assertions.
    */
   public assertHeader(opts?: { route?: 'add' | 'amend' | 'edit'; timeout?: number }): void {
     const timeout = opts?.timeout ?? 15_000;

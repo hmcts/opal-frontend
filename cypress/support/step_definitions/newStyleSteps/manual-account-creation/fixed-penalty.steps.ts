@@ -1,6 +1,8 @@
 /**
- * Step definitions for Fixed Penalty Manual Account Creation.
- * Wires Cucumber steps to Cypress flows/actions for the Fixed Penalty journey.
+ * @file fixed-penalty.steps.ts
+ * @description
+ * Step definitions for the Fixed Penalty manual account journey, wiring
+ * Cucumber steps to Cypress flows/actions and ensuring draft cleanup between runs.
  */
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { DefendantType } from '../../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
@@ -8,10 +10,11 @@ import { FixedPenaltyFlow } from '../../../../e2e/functional/opal/flows/fixed-pe
 import { FixedPenaltyDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/fixed-penalty-details.actions';
 import { FixedPenaltyReviewActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/fixed-penalty-review.actions';
 import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-accounts.intercepts';
-import { DraftTabsActions, InputterTab, CheckerTab } from '../../../../e2e/functional/opal/actions/draft-tabs.actions';
+import { DraftTabsActions } from '../../../../e2e/functional/opal/actions/draft-tabs.actions';
 import { log } from '../../../utils/log.helper';
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import { installDraftAccountCleanup } from '../../../../support/draftAccounts';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 
 installDraftAccountCleanup();
 
@@ -62,7 +65,10 @@ When(
  */
 When('I complete fixed penalty details:', (table: DataTable) => {
   log('step', 'Completing fixed penalty details from table');
-  flow().completeDetailsFromTable(table.raw());
+  const rowsWithUniq = table
+    .raw()
+    .map((row) => row.map((cell, idx) => (idx === 2 ? applyUniqPlaceholder(cell) : cell)));
+  flow().completeDetailsFromTable(rowsWithUniq);
 });
 
 /**
@@ -241,26 +247,6 @@ When('I navigate back from fixed penalty details choosing {string}', (choice: 'O
 Given('I stub fixed penalty draft account listings', () => {
   log('intercept', 'Stubbing fixed penalty draft listings');
   intercepts().stubFixedPenaltyListings();
-});
-
-/**
- * @step Switches to the specified inputter draft tab.
- * @description Clicks the tab by name within the inputter draft accounts view.
- * @param tab - Tab name (e.g., "In review").
- */
-When('I view the inputter draft tab {string}', (tab: InputterTab) => {
-  log('navigate', 'Switching inputter tab', { tab });
-  tabs().switchInputterTab(tab);
-});
-
-/**
- * @step Switches to the specified checker draft tab.
- * @description Clicks the tab by name within the checker draft accounts view.
- * @param tab - Tab name (e.g., "To review").
- */
-When('I view the checker draft tab {string}', (tab: CheckerTab) => {
-  log('navigate', 'Switching checker tab', { tab });
-  tabs().switchCheckerTab(tab);
 });
 
 /**

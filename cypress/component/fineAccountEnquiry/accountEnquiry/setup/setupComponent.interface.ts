@@ -1,5 +1,5 @@
 export interface IComponentProperties {
-  accountId: String | `${number}`;
+  accountId: string | `${number}`;
   fragments:
     | 'at-a-glance'
     | 'defendant'
