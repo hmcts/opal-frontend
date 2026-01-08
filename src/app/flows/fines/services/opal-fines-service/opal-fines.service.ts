@@ -128,6 +128,25 @@ export class OpalFines {
   }
 
   /**
+   * Clears reference data caches to force fresh fetches.
+   */
+  private clearReferenceDataCaches(): void {
+    const referenceCaches: (keyof IOpalFinesCache)[] = [
+      'courtRefDataCache$',
+      'businessUnitsCache$',
+      'businessUnitsPermissionCache$',
+      'localJusticeAreasCache$',
+      'resultsCache$',
+      'resultCache$',
+      'offenceCodesCache$',
+      'majorCreditorsCache$',
+      'prosecutorDataCache$',
+    ];
+
+    referenceCaches.forEach((cacheKey) => this.clearCache(cacheKey));
+  }
+
+  /**
    * Retrieves the court data for a specific business unit.
    * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    * @param business_unit - The business unit for which to retrieve the court data.
@@ -419,6 +438,40 @@ export class OpalFines {
         this.cache[cacheKey] = structuredClone(OPAL_FINES_CACHE_DEFAULTS as any)[cacheKey];
       }
     }
+  }
+
+  /**
+   * Clears all cached account detail responses.
+   */
+  public clearAccountDetailsCache(): void {
+    const accountCaches: (keyof IOpalFinesCache)[] = [
+      'defendantAccountAtAGlanceCache$',
+      'defendantAccountPartyCache$',
+      'defendantAccountparentOrGuardianAccountPartyCache$',
+      'defendantAccountEnforcementCache$',
+      'defendantAccountImpositionsCache$',
+      'defendantAccountHistoryAndNotesCache$',
+      'defendantAccountPaymentTermsLatestCache$',
+      'defendantAccountFixedPenaltyCache$',
+    ];
+
+    accountCaches.forEach((cacheKey) => this.clearCache(cacheKey));
+  }
+
+  /**
+   * Clears all cached draft account responses.
+   */
+  public clearDraftAccountsCache(): void {
+    this.clearCache('draftAccountsCache$');
+  }
+
+  /**
+   * Clears all caches maintained by this service.
+   */
+  public clearAllCaches(): void {
+    this.clearDraftAccountsCache();
+    this.clearAccountDetailsCache();
+    this.clearReferenceDataCaches();
   }
 
   /**

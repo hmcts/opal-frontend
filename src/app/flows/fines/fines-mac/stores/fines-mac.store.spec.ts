@@ -164,7 +164,7 @@ describe('FinesMacStore', () => {
     store.setFinesMacStore(FINES_MAC_STATE_MOCK);
     expect(store.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
 
-    store.resetFinesMacStore();
+    store.resetStore();
     expect(store.getFinesMacStore()).toEqual(FINES_MAC_STATE);
   });
 

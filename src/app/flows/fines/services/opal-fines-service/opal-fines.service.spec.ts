@@ -1003,6 +1003,64 @@ describe('OpalFines', () => {
     expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
   });
 
+  it('should clear all account detail caches', () => {
+    service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    service['cache']['defendantAccountPartyCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    service['cache']['defendantAccountparentOrGuardianAccountPartyCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
+    );
+    service['cache']['defendantAccountEnforcementCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK,
+    );
+    service['cache']['defendantAccountImpositionsCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK,
+    );
+    service['cache']['defendantAccountHistoryAndNotesCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+    );
+    service['cache']['defendantAccountPaymentTermsLatestCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK,
+    );
+    service['cache']['defendantAccountFixedPenaltyCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK,
+    );
+
+    service.clearAccountDetailsCache();
+
+    expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
+    expect(service['cache']['defendantAccountPartyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountparentOrGuardianAccountPartyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountEnforcementCache$']).toBeNull();
+    expect(service['cache']['defendantAccountImpositionsCache$']).toBeNull();
+    expect(service['cache']['defendantAccountHistoryAndNotesCache$']).toBeNull();
+    expect(service['cache']['defendantAccountPaymentTermsLatestCache$']).toBeNull();
+    expect(service['cache']['defendantAccountFixedPenaltyCache$']).toBeNull();
+  });
+
+  it('should clear draft accounts cache', () => {
+    service['cache']['draftAccountsCache$']['key'] = of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+
+    service.clearDraftAccountsCache();
+
+    expect(service['cache']['draftAccountsCache$']).toEqual({});
+  });
+
+  it('should clear all caches', () => {
+    service['cache']['draftAccountsCache$']['key'] = of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    service['cache']['courtRefDataCache$']['1'] = of(OPAL_FINES_COURT_REF_DATA_MOCK);
+    service['cache']['businessUnitsCache$'] = of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+    service['cache']['offenceCodesCache$']['code'] = of(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
+
+    service.clearAllCaches();
+
+    expect(service['cache']['draftAccountsCache$']).toEqual({});
+    expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
+    expect(service['cache']['courtRefDataCache$']).toEqual({});
+    expect(service['cache']['businessUnitsCache$']).toBeNull();
+    expect(service['cache']['offenceCodesCache$']).toEqual({});
+  });
+
   it('should send a POST request to search defendant accounts API with correct body', () => {
     const filters = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
     const expectedResponse = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK;
@@ -1231,4 +1289,6 @@ describe('OpalFines', () => {
 
     req.flush(expectedResponse);
   });
+
+  // Isolated matcher test suite to avoid TestBed reconfiguration errors
 });
