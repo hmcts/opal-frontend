@@ -63,7 +63,7 @@ import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fin
  * ```
  */
 export function interceptDefendantDetails(
-  accountId: String | number,
+  accountId: string | number,
   mockData: IOpalFinesAccountDefendantAccountParty,
   respHeaderEtag: string,
 ) {
@@ -106,7 +106,7 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@service
  */
 
 export const interceptDefendantHeader = (
-  accountId: String | number,
+  accountId: string | number,
   defendantHeaderMock: IOpalFinesAccountDefendantDetailsHeader,
   respHeaderEtag: string,
 ) => {
@@ -140,8 +140,8 @@ export const interceptDefendantHeader = (
  * cy.wait('@getPGDetails');
  */
 export function interceptPGDetails(
-  accountId: String,
-  pgPartyId: String | number,
+  accountId: string,
+  pgPartyId: string | number,
   mockData: IOpalFinesAccountDefendantAccountParty,
   respHeaderEtag: string,
 ) {
@@ -165,7 +165,7 @@ export function interceptPGDetails(
  * @returns A Cypress chainable object with the alias 'getFixedPenaltyDetails' for further command chaining.
  */
 export function interceptFixedPenaltyDetails(
-  accountId: String | number,
+  accountId: string | number,
   mockData: IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData,
   respHeaderEtag: string,
 ) {
@@ -181,7 +181,7 @@ export function interceptFixedPenaltyDetails(
 }
 
 export function interceptPaymentTerms(
-  accountId: String | number,
+  accountId: string | number,
   mockData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest,
   respHeaderEtag: string,
 ) {
@@ -197,7 +197,7 @@ export function interceptPaymentTerms(
 }
 
 export function interceptEnforcementStatus(
-  accountId: String | number,
+  accountId: string | number,
   mockData: IOpalFinesAccountDefendantDetailsEnforcementTabRefData,
   respHeaderEtag: string,
 ) {

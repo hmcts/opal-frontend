@@ -1,5 +1,5 @@
 /**
- * @fileoverview edit-defendant-details.actions.ts
+ * @file edit-defendant-details.actions.ts
  * Provides Cypress actions and assertions for editing defendant details within the Opal application.
  */
 
@@ -8,6 +8,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('EditDefendantDetailsActions');
 
+/** Actions for editing defendant details within Account Details. */
 export class EditDefendantDetailsActions {
   /**
    * Ensures the user is still on the edit page (form visible, not navigated away).

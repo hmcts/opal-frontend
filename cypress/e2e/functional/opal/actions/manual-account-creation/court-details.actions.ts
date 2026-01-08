@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Court details task.
- * Covers LJA/PCR/enforcement court entry, nested navigation, cancel handling, and assertions.
+ * @file Actions for Manual Account Creation - Court details task.
+ * @description Covers LJA/PCR/enforcement court entry, nested navigation, cancel handling, and assertions.
  */
 import { ManualCourtDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/court-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -21,6 +21,7 @@ export class ManualCourtDetailsActions {
 
   /**
    * Asserts we are on the Court details page before interacting.
+   * @param expectedHeader Expected page header text.
    */
   assertOnCourtDetailsPage(expectedHeader: string = 'Court details'): void {
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/court-details');
@@ -29,6 +30,7 @@ export class ManualCourtDetailsActions {
 
   /**
    * Completes the Court details form using provided field values.
+   * @param payload Field/value pairs for court details.
    */
   fillCourtDetails(payload: Partial<Record<ManualCourtFieldKey, string>>): void {
     const entries = Object.entries(payload ?? {}).filter(([, value]) => value !== undefined);
@@ -52,6 +54,8 @@ export class ManualCourtDetailsActions {
 
   /**
    * Sets a single Court details field by key.
+   * @param field Court field key to update.
+   * @param value Value to set on the field.
    */
   setFieldValue(field: ManualCourtFieldKey, value: string): void {
     log('type', 'Setting Court details field', { field, value });
@@ -72,9 +76,23 @@ export class ManualCourtDetailsActions {
 
   /**
    * Asserts the value of a Court details field.
+   * @param field Court field key to assert.
+   * @param expected Expected value for the field.
    */
   assertFieldValue(field: ManualCourtFieldKey, expected: string): void {
-    cy.get(this.getSelector(field), this.common.getTimeoutOptions()).should('have.value', expected);
+    // Autocomplete fields may prepend extra context (e.g., full court name) — assert substring match.
+    const assertFn =
+      field === 'lja' || field === 'enforcementCourt'
+        ? ($el: JQuery) => {
+            const actual = ($el.val() ?? '').toString().toLowerCase();
+            expect(actual).to.include(expected.toLowerCase());
+          }
+        : ($el: JQuery) => {
+            const actual = ($el.val() ?? '').toString().toLowerCase();
+            expect(actual).to.equal(expected.toLowerCase());
+          };
+
+    cy.get(this.getSelector(field), this.common.getTimeoutOptions()).should(assertFn);
   }
 
   /**
@@ -95,6 +113,7 @@ export class ManualCourtDetailsActions {
 
   /**
    * Clicks the nested flow CTA (e.g., Add personal details).
+   * @param expectedText Optional text expected on the nested flow button.
    */
   clickNestedFlowButton(expectedText?: string): void {
     log('navigate', 'Clicking nested flow button from Court details', { expectedText });
@@ -108,6 +127,7 @@ export class ManualCourtDetailsActions {
 
   /**
    * Handles Cancel on Court details with a specified choice.
+   * @param choice Confirmation choice (Cancel/Ok/Stay/Leave).
    */
   cancelAndChoose(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
     const accept = /ok|leave/i.test(choice);
@@ -119,6 +139,7 @@ export class ManualCourtDetailsActions {
 
   /**
    * Types into the LJA autocomplete and selects the first suggestion.
+   * @param lja Local Justice Area value to enter.
    */
   private setLja(lja: string): void {
     log('type', 'Setting LJA', { lja });
@@ -127,6 +148,7 @@ export class ManualCourtDetailsActions {
 
   /**
    * Enters the PCR text input value.
+   * @param pcr Prosecutor case reference value.
    */
   private setPcr(pcr: string): void {
     log('type', 'Setting PCR', { pcr });
@@ -135,6 +157,7 @@ export class ManualCourtDetailsActions {
 
   /**
    * Types into the enforcement court autocomplete and selects the first suggestion.
+   * @param enforcementCourt Enforcement court value to enter.
    */
   private setEnforcementCourt(enforcementCourt: string): void {
     log('type', 'Setting enforcement court', { enforcementCourt });
@@ -143,6 +166,9 @@ export class ManualCourtDetailsActions {
 
   /**
    * Clears and types into a text field, asserting the resulting value.
+   * @param selector Input selector to target.
+   * @param value Value to type (empty string clears).
+   * @param label Logical label for logging.
    */
   private typeIntoField(selector: string, value: string, label: string): void {
     const input = cy.get(selector, this.common.getTimeoutOptions()).should('exist');
@@ -157,10 +183,15 @@ export class ManualCourtDetailsActions {
       const actual = ($el.val() ?? '').toString().toLowerCase();
       expect(actual).to.equal(value.toLowerCase());
     });
+    log('type', `Field set for ${label}`, { value });
   }
 
   /**
    * Handles autocomplete inputs by typing, waiting for the listbox, and selecting the first option.
+   * @param inputSelector Selector for the autocomplete input.
+   * @param listboxSelector Selector for the listbox options.
+   * @param value Value to type into the autocomplete.
+   * @param label Logical label for logging.
    */
   private typeAutocomplete(inputSelector: string, listboxSelector: string, value: string, label: string): void {
     const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
@@ -180,6 +211,9 @@ export class ManualCourtDetailsActions {
 
   /**
    * Selects the first option in an autocomplete without relying on typed text.
+   * @param inputSelector Selector for the autocomplete input.
+   * @param listboxSelector Selector for the listbox options.
+   * @param label Logical label for logging.
    */
   private selectFirstAutocompleteOption(inputSelector: string, listboxSelector: string, label: string): void {
     const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
@@ -191,6 +225,8 @@ export class ManualCourtDetailsActions {
 
   /**
    * Resolves a logical field key to its selector.
+   * @param field Court field key to resolve.
+   * @returns Selector string for the field.
    */
   private getSelector(field: ManualCourtFieldKey): string {
     switch (field) {

@@ -1,4 +1,4 @@
-import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Then(
   'I see {string} in the Search results table in the {string} column',

@@ -25,26 +25,38 @@
 
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { createDraftAndSetStatus } from '../../../../e2e/functional/opal/actions/draft-account/draft-account.api';
+import {
+  assertLatestDraftUpdateHasStrongEtag,
+  assertStaleIfMatchConflict,
+  createDraftAndSetStatus,
+  simulateStaleIfMatchConflict,
+  updateLastCreatedDraftAccountStatus,
+} from '../../../../e2e/functional/opal/actions/draft-account/draft-account.api';
 import {
   CreateManageDraftsActions,
   CreateManageTab,
 } from '../../../../e2e/functional/opal/actions/draft-account/create-manage-drafts.actions';
+import { DraftTabsActions, InputterTab, CheckerTab } from '../../../../e2e/functional/opal/actions/draft-tabs.actions';
 import {
   CheckAndValidateDraftsActions,
   CheckAndValidateTab,
 } from '../../../../e2e/functional/opal/actions/draft-account/check-and-validate-drafts.actions';
+import { CheckAndValidateReviewActions } from '../../../../e2e/functional/opal/actions/draft-account/check-and-validate-review.actions';
 import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts.intercepts';
 import { DraftAccountsTableColumn } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts-common.actions';
 import { DraftPayloadType } from '../../../../support/utils/payloads';
 import { log } from '../../../utils/log.helper';
 import { DraftAccountsFlow } from '../../../../e2e/functional/opal/flows/draft-accounts.flow';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 
 type AccountType = DraftPayloadType;
 const inputter = () => new CreateManageDraftsActions();
 const checker = () => new CheckAndValidateDraftsActions();
+const checkerReview = () => new CheckAndValidateReviewActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const draftsFlow = () => new DraftAccountsFlow();
+const tabs = () => new DraftTabsActions();
+const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 
 /**
  * Unified implementation used by all step aliases.
@@ -64,7 +76,8 @@ function createDraftAndPrepareForPublishing(
   table: DataTable,
   status: string = 'Publishing Pending',
 ) {
-  const details = table.hashes?.() ?? [];
+  const tableWithUniq = applyUniqToDataTable(table);
+  const details = tableWithUniq.hashes?.() ?? [];
 
   log('step', `Creating ${accountType} draft → ${status}`, {
     accountType,
@@ -73,7 +86,54 @@ function createDraftAndPrepareForPublishing(
     rowCount: details.length,
   });
 
-  return createDraftAndSetStatus(accountType, status, table);
+  return createDraftAndSetStatus(accountType, status, tableWithUniq);
+}
+
+/**
+ * Extracts an `account_status` override and returns the remaining table rows.
+ * @param table Source DataTable that may include an Account_status row.
+ * @returns The parsed status and a filtered DataTable without the status row.
+ */
+function extractStatusAndTable(table: DataTable): { status: string; filteredTable: DataTable } {
+  const rawWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
+  const statusRowIndex = rawWithUniq.findIndex(([key]) => key?.trim().toLowerCase() === 'account_status');
+  const status = statusRowIndex >= 0 ? (rawWithUniq[statusRowIndex][1] ?? '').trim() : 'Publishing Pending';
+  const filteredRows = statusRowIndex >= 0 ? rawWithUniq.filter((_, index) => index !== statusRowIndex) : rawWithUniq;
+
+  const filteredTable: DataTable = buildDataTable(filteredRows);
+
+  return { status: status || 'Publishing Pending', filteredTable };
+}
+
+/**
+ * Applies `{uniq}` replacement to all values in a DataTable.
+ * @param table - Source DataTable to clone.
+ * @returns New DataTable with `{uniq}` tokens expanded.
+ */
+function applyUniqToDataTable(table: DataTable): DataTable {
+  const rowsWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
+  return buildDataTable(rowsWithUniq);
+}
+
+/**
+ * Builds a Cucumber DataTable-like object from raw rows.
+ * @param rawRows - 2D array of key/value rows.
+ * @returns New DataTable instance backed by the provided rows.
+ */
+function buildDataTable(rawRows: string[][]): DataTable {
+  const filteredRows = rawRows;
+
+  const filteredTable: DataTable = {
+    raw: () => filteredRows,
+    rows: () => filteredRows,
+    rowsHash: () =>
+      Object.fromEntries(filteredRows.filter(([key]) => Boolean(key)).map(([key, value]) => [key, value ?? ''])),
+    hashes: () => filteredRows.filter(([key]) => Boolean(key)).map(([key, value]) => ({ [key]: value ?? '' })),
+    transpose: () => filteredTable,
+    toString: () => JSON.stringify(filteredRows),
+  } as DataTable;
+
+  return filteredTable;
 }
 
 /**
@@ -102,6 +162,22 @@ Given(
     return createDraftAndPrepareForPublishing(accountType, table, status);
   },
 );
+
+/**
+ * @step Create a draft account from a table that includes Account_status.
+ * @description Extracts Account_status for the status update and applies the remaining rows as payload overrides.
+ *
+ * @example
+ *   Given a "adultOrYouthOnly" draft account exists with:
+ *     | Account_status              | Submitted |
+ *     | account.defendant.forenames | John      |
+ *     | account.defendant.surname   | Smith     |
+ */
+Given('a {string} draft account exists with:', (accountType: AccountType, table: DataTable) => {
+  const { status, filteredTable } = extractStatusAndTable(table);
+  log('step', 'Create draft with table-provided status', { accountType, status });
+  return createDraftAndPrepareForPublishing(accountType, filteredTable, status);
+});
 
 /**
  * @step Clears approved draft account listings to start from an empty state.
@@ -143,6 +219,51 @@ When('I go back to Create and Manage Draft Accounts', () => {
 When('I go back to Check and Validate Draft Accounts', () => {
   log('navigate', 'Clicking back link on Check and Validate Draft Accounts');
   checker().goBack();
+});
+
+/**
+ * @step Update the most recently created draft account status.
+ * @param status - Target status (e.g., "Deleted").
+ * @example When I set the last created draft account status to "Deleted"
+ */
+When('I set the last created draft account status to {string}', (status: string) => {
+  log('step', 'Setting last created draft status', { status });
+  return updateLastCreatedDraftAccountStatus(status);
+});
+
+Then('the last draft update should return a new strong ETag', () => {
+  log('assert', 'Asserting strong ETag for last draft update');
+  return assertLatestDraftUpdateHasStrongEtag();
+});
+
+When('I attempt a stale If-Match update on the last draft account with status {string}', (status: string) => {
+  log('step', 'Attempting stale If-Match update on last draft account', { status });
+  return simulateStaleIfMatchConflict(status);
+});
+
+Then('the stale If-Match update should return a conflict', () => {
+  log('assert', 'Asserting stale If-Match conflict');
+  return assertStaleIfMatchConflict();
+});
+
+/**
+ * @step Assert the status tag on a checker review page.
+ * @param status - Expected status text (e.g., "In review").
+ * @example Then the draft account status tag is "Rejected"
+ */
+Then('the draft account status tag is {string}', (status: string) => {
+  log('assert', 'Asserting draft status tag', { status });
+  checkerReview().assertStatusTag(status);
+});
+
+/**
+ * @step Assert the checker tab heading text.
+ * @param heading - Expected heading such as "To review" or "Deleted".
+ * @example Then the checker status heading is "Deleted"
+ */
+Then('the checker status heading is {string}', (heading: string) => {
+  log('assert', 'Asserting checker status heading', { heading });
+  checker().assertStatusHeading(heading);
 });
 
 /**
@@ -195,8 +316,9 @@ When('I open Check and Validate Draft Accounts', () => {
  * @example Then I see "Fixed Penalty" in the account type column on the draft table
  */
 Then('I see {string} in the account type column on the draft table', (expected: string) => {
-  log('assert', 'Checking account type column contains expected text', { expected });
-  checker().assertAccountType(expected);
+  const normalized = withUniq(expected);
+  log('assert', 'Checking account type column contains expected text', { expected: normalized });
+  checker().assertAccountType(normalized);
 });
 
 /**
@@ -224,8 +346,9 @@ When(
  * @param defendantName - Visible name in the Defendant column.
  */
 When('I open the draft account for defendant {string}', (defendantName: string) => {
-  log('navigate', 'Opening draft account by defendant', { defendantName });
-  inputter().openDefendant(defendantName);
+  const name = withUniq(defendantName);
+  log('navigate', 'Opening draft account by defendant', { defendantName: name });
+  inputter().openDefendant(name);
 });
 
 /**
@@ -234,8 +357,9 @@ When('I open the draft account for defendant {string}', (defendantName: string) 
  * @example And I view the draft account details for defendant "GREEN, Oliver"
  */
 When('I view the draft account details for defendant {string}', (defendantName: string) => {
-  log('navigate', 'Opening checker draft account by defendant', { defendantName });
-  checker().openDefendant(defendantName);
+  const name = withUniq(defendantName);
+  log('navigate', 'Opening checker draft account by defendant', { defendantName: name });
+  checker().openDefendant(name);
 });
 
 /**
@@ -271,8 +395,38 @@ When('I return to the rejected accounts tab', () => {
 Then(
   'I open the draft account for {string} and see header {string}',
   (defendantName: string, expectedHeader: string) => {
-    log('navigate', 'Opening draft and asserting header', { defendantName, expectedHeader });
-    draftsFlow().openDraftAndAssertHeader(defendantName, expectedHeader);
+    const name = withUniq(defendantName);
+    const header = withUniq(expectedHeader);
+    log('navigate', 'Opening draft and asserting header', { defendantName: name, expectedHeader: header });
+    draftsFlow().openDraftAndAssertHeader(name, header);
+  },
+);
+
+/**
+ * @step Assert the draft review page header and status tag after navigation.
+ * @param header - Expected page header text.
+ * @param status - Expected status tag (e.g., "In review").
+ */
+Then('I should be back on the page {string} with status {string}', (header: string, status: string) => {
+  const normalizedHeader = withUniq(header);
+  log('assert', 'Asserting draft review header and status tag', { header: normalizedHeader, status });
+  draftsFlow().assertReviewHeaderAndStatus(normalizedHeader, status);
+});
+
+/**
+ * @step Assert the checker header and status heading together.
+ * @param header - Expected page header text.
+ * @param statusHeading - Expected status heading (e.g., "To review").
+ */
+Then(
+  'I should see the checker header {string} and status heading {string}',
+  (header: string, statusHeading: string) => {
+    const normalizedHeader = withUniq(header);
+    log('assert', 'Asserting checker header and status heading', {
+      header: normalizedHeader,
+      statusHeading,
+    });
+    draftsFlow().assertHeaderAndStatusHeading(normalizedHeader, statusHeading);
   },
 );
 
@@ -283,7 +437,7 @@ Then(
 Then('the manual draft table headings are:', (table: DataTable) => {
   const headings = table
     .rows()
-    .map(([heading]) => heading.trim())
+    .map(([heading]) => withUniq(heading.trim()))
     .filter(Boolean);
   log('assert', 'Draft table headings', { headingsList: headings });
   checker().assertHeadings(headings);
@@ -297,7 +451,7 @@ Then('the manual draft table headings are:', (table: DataTable) => {
 Then('the manual draft table row {int} contains:', (position: number, table: DataTable) => {
   const expectedValues = table
     .rows()
-    .map(([value]) => value.trim())
+    .map(([value]) => withUniq(value.trim()))
     .filter(Boolean);
   log('assert', 'Draft table row values', { position, expectedValues });
   inputter().assertRowValues(position, expectedValues);
@@ -312,7 +466,7 @@ Then('the manual draft table row {int} has values:', (position: number, table: D
   const expectations = Object.fromEntries(
     table
       .rows()
-      .map(([column, value]) => [column.trim(), value.trim()])
+      .map(([column, value]) => [column.trim(), withUniq(value.trim())])
       .filter(([column]) => Boolean(column)),
   );
   log('assert', 'Draft table row column values', { position, expectations });
@@ -331,11 +485,12 @@ Then(
     const expectations = Object.fromEntries(
       table
         .rows()
-        .map(([column, value]) => [column.trim(), value.trim()])
+        .map(([column, value]) => [column.trim(), withUniq(value.trim())])
         .filter(([column]) => Boolean(column)),
     );
-    log('assert', 'Draft table row values by match', { matchColumn, matchValue, expectations });
-    checker().assertRowByMatch(matchColumn, matchValue, expectations as any);
+    const normalizedMatch = withUniq(matchValue);
+    log('assert', 'Draft table row values by match', { matchColumn, matchValue: normalizedMatch, expectations });
+    checker().assertRowByMatch(matchColumn, normalizedMatch, expectations as any);
   },
 );
 
@@ -345,10 +500,11 @@ Then(
  * @param expectedText - Text to search for within the column cells.
  */
 Then('I see {string} in the manual draft column {string}', (expectedText: string, column: string) => {
-  log('assert', 'Draft table column contains text', { column, expectedText });
+  const normalized = withUniq(expectedText);
+  log('assert', 'Draft table column contains text', { column, expectedText: normalized });
   inputter().assertColumnContains(
     column as Parameters<CreateManageDraftsActions['assertColumnContains']>[0],
-    expectedText,
+    normalized,
   );
 });
 
@@ -358,8 +514,9 @@ Then('I see {string} in the manual draft column {string}', (expectedText: string
  * @param column - Column label.
  */
 Then('the draft accounts table should contain {string} in column {string}', (expectedText: string, column: string) => {
-  log('assert', 'Checker draft table column contains text', { column, expectedText });
-  checker().assertColumnContains(column as DraftAccountsTableColumn, expectedText);
+  const normalized = withUniq(expectedText);
+  log('assert', 'Checker draft table column contains text', { column, expectedText: normalized });
+  checker().assertColumnContains(column as DraftAccountsTableColumn, normalized);
 });
 
 /**
@@ -371,10 +528,34 @@ Then('the draft accounts table should contain {string} in column {string}', (exp
 When(
   'I open the draft account in row containing {string} in the manual draft column {string}',
   (expectedText: string, column: string) => {
-    log('navigate', 'Opening draft account by column match', { column, expectedText });
+    // Refresh to force a fresh API fetch and table render before matching; avoids stale/paginated views.
+    cy.reload();
+    const normalized = withUniq(expectedText);
+    log('navigate', 'Opening draft account by column match', { column, expectedText: normalized });
+    cy.log(`Matching draft row → column: ${column}, expected: ${normalized}`);
     inputter().openFirstMatchInColumn(
       column as Parameters<CreateManageDraftsActions['openFirstMatchInColumn']>[0],
-      expectedText,
+      normalized,
     );
   },
 );
+
+/**
+ * @step Switches to the specified inputter draft tab.
+ * @description Clicks the tab by name within the inputter draft accounts view.
+ * @param tab - Tab name (e.g., "In review").
+ */
+When('I view the inputter draft tab {string}', (tab: InputterTab) => {
+  log('navigate', 'Switching inputter tab', { tab });
+  tabs().switchInputterTab(tab);
+});
+
+/**
+ * @step Switches to the specified checker draft tab.
+ * @description Clicks the tab by name within the checker draft accounts view.
+ * @param tab - Tab name (e.g., "To review").
+ */
+When('I view the checker draft tab {string}', (tab: CheckerTab) => {
+  log('navigate', 'Switching checker tab', { tab });
+  tabs().switchCheckerTab(tab);
+});

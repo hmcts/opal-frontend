@@ -1,16 +1,17 @@
+/**
+ * @file details.at-a-glance.actions.ts
+ * @description Actions for the Account Details "At a glance" panel, including header assertions
+ * and navigation to related areas such as Comments. Keeps step definitions thin and reusable.
+ */
 import { AccountAtAGlanceLocators as N } from '../../../../../shared/selectors/account-details/account.at-a-glance-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('AccountDetailsAtAGlanceActions');
 
+/** Actions for the Account Details "At a Glance" panel. */
 export class AccountDetailsAtAGlanceActions {
-  /** ensure we’re on at a glance */
-  assertReturnedToAtAGlance(): void {
-    cy.url({ timeout: 15000 }).should((p) => {
-      expect(p, 'on details route').to.match(/\/fines\/account\/defendant\/[A-Za-z0-9-]+\/details#at-a-glance$/);
-    });
-    cy.get('main h1.govuk-heading-l, .account-details__header', { timeout: 10000 }).should('be.visible');
-  }
+  private readonly common = new CommonActions();
 
   /**
    * AssertSectionHeader.
@@ -18,7 +19,7 @@ export class AccountDetailsAtAGlanceActions {
    * @param expected - Parameter.
    */
   assertSectionHeader(expected: string): void {
-    cy.get(N.headers.defendant, { timeout: 10000 })
+    cy.get(N.headers.defendant, this.common.getTimeoutOptions())
       .should('be.visible')
       .invoke('text')
       .then((t) => expect(t.trim().toLowerCase()).to.contain(expected.trim().toLowerCase()));
@@ -30,7 +31,14 @@ export class AccountDetailsAtAGlanceActions {
    * @param expected - Parameter.
    */
   assertHeaderContains(expected: string): void {
-    cy.get(N.header.title, { timeout: 15000 }).should('contain.text', expected);
+    cy.get(N.header.title, { timeout: 15000 })
+      .should('be.visible')
+      .invoke('text')
+      .then((text) => {
+        const normalizedActual = text.toLowerCase();
+        const normalizedExpected = expected.toLowerCase();
+        expect(normalizedActual).to.contain(normalizedExpected);
+      });
   }
 
   /**
@@ -51,13 +59,13 @@ export class AccountDetailsAtAGlanceActions {
     cy.location('href').then((u) => cy.wrap(u).as('detailsUrl'));
 
     // Ensure the At a glance tab is rendered
-    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: 15000 }).should('be.visible');
+    cy.get(N.sections.atAGlanceTabRoot, { timeout: 15000 }).should('be.visible');
 
     // Find the Comments column and click its action link ("Add comments" OR "Change")
     cy.get(N.sections.commentsColumn, { timeout: 15000 })
       .should('be.visible')
       .within(() => {
-        cy.contains('a.govuk-link', N.links.commentsActionText, { timeout: 10000 })
+        cy.contains('a.govuk-link', N.links.commentsActionText, this.common.getTimeoutOptions())
           .scrollIntoView()
           .should('be.visible')
           .and('not.be.disabled')
@@ -71,6 +79,7 @@ export class AccountDetailsAtAGlanceActions {
   /**
    * Asserts the Comments block shows the expected values.
    *
+   * @param expected - Expected comment text and optional free-text lines.
    * @param expected.comment - Expected main comment text.
    * @param expected.lines - Expected free-text lines (Line 1–3), any length 0–3.
    */
@@ -78,7 +87,7 @@ export class AccountDetailsAtAGlanceActions {
     cy.get(N.sections.commentsColumn, { timeout: 15000 }).should('be.visible');
 
     if (expected.comment) {
-      cy.get(N.comments.commentValue, { timeout: 10000 })
+      cy.get(N.comments.commentValue, this.common.getTimeoutOptions())
         .should('be.visible')
         .invoke('text')
         .then((t) => expect((t || '').trim()).to.contain(expected.comment!));
@@ -87,7 +96,7 @@ export class AccountDetailsAtAGlanceActions {
     const lines = (expected.lines ?? []).filter(Boolean);
     if (lines.length) {
       // The Free text notes paragraph renders <br> between lines — use text() and assert each expected line appears.
-      cy.get(N.comments.freeTextNotesValue, { timeout: 10000 })
+      cy.get(N.comments.freeTextNotesValue, this.common.getTimeoutOptions())
         .should('be.visible')
         .invoke('text')
         .then((allTxt) => {
