@@ -112,6 +112,9 @@ def setupTestSpecifications() {
         def directories = []
 
         // Add additional labels as needed
+        if (labels.contains('test_authorisation')) {
+      directories.add('authorisation')
+        }
         if (labels.contains('test_enq')) {
       directories.add('accountEnquiry')
         }
