@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Payment terms task.
- * Provides helpers to set collection order, payment schedules, enforcement actions, and navigation.
+ * @file Actions for Manual Account Creation - Payment terms task.
+ * @description Provides helpers to set collection order, payment schedules, enforcement actions, and navigation.
  */
 import { ManualPaymentTermsLocators as L } from '../../../../../shared/selectors/manual-account-creation/payment-terms.locators';
 import { calculateWeeksInFuture, calculateWeeksInPast } from '../../../../../support/utils/dateUtils';
@@ -42,6 +42,7 @@ export type ManualPaymentTermsExpectations = Omit<
   enforcementOption?: EnforcementActionOption | 'Not selected';
 };
 
+/** Actions for the Manual Account Creation payment terms task. */
 export class ManualPaymentTermsActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
@@ -200,6 +201,10 @@ export class ManualPaymentTermsActions {
 
   /**
    * Sets collection order, pay in full, and pay by date fields.
+   * @param options Payment term inputs for pay-in-full flow.
+   * @param options.collectionOrder Collection order choice (Yes/No).
+   * @param options.collectionOrderWeeksInPast Weeks offset for collection order date (past).
+   * @param options.payByWeeksInFuture Weeks offset for pay-by date (future).
    */
   completePayInFullWithCollectionOrder(options: {
     collectionOrder: 'Yes' | 'No';
@@ -416,6 +421,7 @@ export class ManualPaymentTermsActions {
   /**
    * Resolves a payment term to its selector.
    * @param option - Payment term option.
+   * @returns Selector for the corresponding payment term radio.
    */
   private resolvePaymentTermSelector(option: PaymentTermOption): string {
     switch (option) {
@@ -433,6 +439,7 @@ export class ManualPaymentTermsActions {
   /**
    * Resolves a frequency option to its selector.
    * @param option - Frequency option.
+   * @returns Selector for the corresponding frequency radio.
    */
   private resolveFrequencySelector(option: PaymentFrequencyOption): string {
     switch (option) {
@@ -450,6 +457,7 @@ export class ManualPaymentTermsActions {
   /**
    * Resolves an enforcement option to its selector.
    * @param option - Enforcement option.
+   * @returns Selector for the corresponding enforcement option.
    */
   private resolveEnforcementSelector(option: EnforcementActionOption): string {
     switch (option) {

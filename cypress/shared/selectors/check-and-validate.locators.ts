@@ -50,7 +50,11 @@ export const CheckAndValidateLocators = {
     /** "Failed" tab for publishing failed accounts. */
     failed: 'a[href*="#failed"]',
 
-    /** Generic tab selector by text content. */
+    /**
+     * Generic tab selector by text content.
+     * @param tabName Tab display text to match.
+     * @returns Selector matching a tab link containing the provided text.
+     */
     byText: (tabName: string) => `a:contains("${tabName}")`,
   },
 
@@ -103,7 +107,11 @@ export const CheckAndValidateLocators = {
     /** Column 6: Submitted by. */
     submittedBy: 'table.govuk-table tbody tr td:nth-child(6)',
 
-    /** Dynamic column selector by index (1-based). */
+    /**
+     * Dynamic column selector by index (1-based).
+     * @param columnIndex 1-based column index to select.
+     * @returns Selector for the chosen column cells.
+     */
     byIndex: (columnIndex: number) => `table.govuk-table tbody tr td:nth-child(${columnIndex})`,
   },
 
@@ -120,13 +128,21 @@ export const CheckAndValidateLocators = {
 
   /** Selectors for interacting with specific rows. */
   rowActions: {
-    /** Find row containing specific defendant name. */
+    /**
+     * Find row containing specific defendant name.
+     * @param defendantName Full defendant name text to match.
+     * @returns Selector for rows containing the defendant name.
+     */
     byDefendantName: (defendantName: string) => `table.govuk-table tbody tr:contains("${defendantName}")`,
 
     /** Defendant name link in first column (for navigation). */
     defendantLink: 'table.govuk-table tbody tr td:nth-child(1) a',
 
-    /** Generic row by text content. */
+    /**
+     * Generic row by text content.
+     * @param text Text content to match within the row.
+     * @returns Selector for rows containing the provided text.
+     */
     byText: (text: string) => `table.govuk-table tbody tr:contains("${text}")`,
   },
 
@@ -136,11 +152,20 @@ export const CheckAndValidateLocators = {
 
   /** Helper selectors for AC1ai defendant name format validation. */
   validation: {
-    /** Selector to verify defendant name format in any row. */
+    /**
+     * Selector to verify defendant name format in any row.
+     * @param lastName Last name to match in uppercase.
+     * @param forenames Forenames to match as provided.
+     * @returns Selector asserting AC1ai name format.
+     */
     defendantNameFormat: (lastName: string, forenames: string) =>
       `table.govuk-table tbody tr td:nth-child(1):contains("${lastName.toUpperCase()}, ${forenames}")`,
 
-    /** Column header by name for dynamic column index lookup. */
+    /**
+     * Column header by name for dynamic column index lookup.
+     * @param columnName Header text to match.
+     * @returns Selector for header buttons containing the given name.
+     */
     columnHeaderByName: (columnName: string) => `table.govuk-table thead th button:contains("${columnName}")`,
   },
 

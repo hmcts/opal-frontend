@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for the Manual Account Creation **Offence review** page.
- * Provides helpers to assert offence/imposition tables, totals, and action links.
+ * @file Actions for the Manual Account Creation **Offence review** page.
+ * @description Provides helpers to assert offence/imposition tables, totals, and action links.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -8,6 +8,7 @@ import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('ManualOffenceReviewActions');
 
+/** Actions for the Manual Account Creation Offence review page. */
 export class ManualOffenceReviewActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
@@ -255,6 +256,11 @@ export class ManualOffenceReviewActions {
       });
   }
 
+  /**
+   * Locates the offence component for a given offence code on the review page.
+   * @param offenceCode Offence code to match within the review component.
+   * @returns Chainable wrapper around the offence component element.
+   */
   private getOffenceComponent(offenceCode: string) {
     return cy
       .contains(L.review.offenceCaption, offenceCode, this.common.getTimeoutOptions())
@@ -264,6 +270,8 @@ export class ManualOffenceReviewActions {
 
   /**
    * Normalizes summary list rows to just the date string (removes the "Date of sentence" label).
+   * @param rowEls Summary list row elements containing date text.
+   * @returns Array of normalized date strings in order.
    */
   private extractDateRows(rowEls: JQuery<HTMLElement>): string[] {
     return Cypress.$(rowEls)

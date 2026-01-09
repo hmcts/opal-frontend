@@ -10,6 +10,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('SearchFilterByBUCommonActions');
 
+/** Shared controls for the Filter by Business Unit page. */
 export class SearchFilterByBUCommonActions {
   private readonly commonActions = new CommonActions();
 
