@@ -194,8 +194,27 @@ def checkFocusedTests() {
 }
 
 properties([
-    copyArtifactPermission('*')
+  copyArtifactPermission('*'),
+  parameters([
+    choice(
+      name: 'DEV_APP_MODE',
+      choices: ['opal', 'legacy'],
+      description: 'Dev environment mode: opal (default) or legacy (JCDE)'
+    )
+  ])
 ])
+
+
+environment {
+  DEV_DEFAULT_APP_MODE = "${params.DEV_APP_MODE ?: 'opal'}"
+  DEV_OPAL_LEGACY_GATEWAY_URL = "${params.DEV_APP_MODE == 'legacy'
+    ? 'https://opal.clouddev.online/opal'
+    : 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'}"
+}
+
+echo "DEV_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
+echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
+
 
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
