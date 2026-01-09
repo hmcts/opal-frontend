@@ -17,11 +17,13 @@ export class FinesAccPaymentTermsAmendDeniedComponent {
   private readonly router = inject(Router);
   public readonly accountStore = inject(FinesAccountStore);
   public readonly deniedType = this.route.snapshot.paramMap.get('type');
-  public readonly lastEnforcement = this.router.currentNavigation()?.extras.state?.['lastEnforcement'];
-  public defendantAccountHeadingData: IOpalFinesAccountDefendantDetailsHeader = this.route.snapshot.data['defendantAccountHeadingData'];
-  public defendantAccountPaymentTermsData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest = this.route.snapshot.data['defendantAccountPaymentTermsData'];  
-  public readonly accountStatusCode: keyof typeof FINES_ACC_PAYMENT_TERMS_AMEND_DENIED_ACCOUNT_STATUS_MAP =
-    this.defendantAccountHeadingData.account_status_reference.account_status_code as keyof typeof FINES_ACC_PAYMENT_TERMS_AMEND_DENIED_ACCOUNT_STATUS_MAP;
+  public defendantAccountHeadingData: IOpalFinesAccountDefendantDetailsHeader =
+    this.route.snapshot.data['defendantAccountHeadingData'];
+  public defendantAccountPaymentTermsData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest =
+    this.route.snapshot.data['defendantAccountPaymentTermsData'].paymentTermsData;
+  public readonly accountStatusCode: keyof typeof FINES_ACC_PAYMENT_TERMS_AMEND_DENIED_ACCOUNT_STATUS_MAP = this
+    .defendantAccountHeadingData.account_status_reference
+    .account_status_code as keyof typeof FINES_ACC_PAYMENT_TERMS_AMEND_DENIED_ACCOUNT_STATUS_MAP;
   public readonly accountStatusDescription: string =
     FINES_ACC_PAYMENT_TERMS_AMEND_DENIED_ACCOUNT_STATUS_MAP[this.accountStatusCode];
 

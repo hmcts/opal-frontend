@@ -23,7 +23,9 @@ describe('FinesAccPaymentTermsAmendDeniedComponent', () => {
       paramMap: new Map([['type', 'permission']]) as any,
       data: {
         defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
-        defendantAccountPaymentTermsData: structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK),
+        defendantAccountPaymentTermsData: structuredClone(
+          OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK,
+        ),
       },
     } as unknown as ActivatedRoute['snapshot'];
 

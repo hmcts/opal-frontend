@@ -92,7 +92,7 @@ export const routing: Routes = [
           accessDeniedPath: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/permission`,
         },
         resolve: {
-          title: TitleResolver
+          title: TitleResolver,
         },
       },
       {
@@ -109,7 +109,7 @@ export const routing: Routes = [
         resolve: {
           title: TitleResolver,
           defendantAccountHeadingData: defendantAccountHeadingResolver,
-          defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver
+          defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver,
         },
       },
       {
@@ -161,7 +161,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver
+          defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver,
         },
       },
     ],
