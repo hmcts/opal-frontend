@@ -194,24 +194,27 @@ def checkFocusedTests() {
 }
 
 properties([
-  copyArtifactPermission('*'),
-  parameters([
-    choice(
-      name: 'DEV_APP_MODE',
-      choices: ['opal', 'legacy'],
-      description: 'Dev environment mode: opal (default) or legacy (JCDE)'
-    )
-  ])
+  copyArtifactPermission('*')
 ])
 
+// --- Dev legacy toggle (PR label driven) ---
+def githubApiForMode = new GithubAPI(this)
+def legacyEnabled = githubApiForMode.checkForLabel(env.BRANCH_NAME, 'enable_legacy_mode')
+def isPR = env.CHANGE_ID?.trim()
 
-environment {
-  DEV_DEFAULT_APP_MODE = "${params.DEV_APP_MODE ?: 'opal'}"
-  DEV_OPAL_LEGACY_GATEWAY_URL = "${params.DEV_APP_MODE == 'legacy' ? 'https://opal.clouddev.online/opal' : 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'}"
+// Safe defaults (current behaviour)
+env.DEV_DEFAULT_APP_MODE = 'opal'
+env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+
+// Opt-in: Dev → JCDE (PR builds only)
+if (legacyEnabled && isPR) {
+  env.DEV_DEFAULT_APP_MODE = 'legacy'
+  env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
+} else if (legacyEnabled && !isPR) {
+  echo "Legacy mode label detected but this is not a PR build; ignoring."
 }
 
-
-echo "DEV_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
+echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
 
 
