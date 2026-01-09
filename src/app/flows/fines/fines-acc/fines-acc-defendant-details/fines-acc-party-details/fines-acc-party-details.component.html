@@ -75,7 +75,7 @@
           }
         </div>
 
-        @if (party.vehicle_details; as vehicle) {
+        @if (party.is_debtor && party.vehicle_details; as vehicle) {
           <ng-container
             *ngTemplateOutlet="vehicleDetailsTemplate; context: { vehicle: vehicle, summaryListId: summaryListId }"
           ></ng-container>
