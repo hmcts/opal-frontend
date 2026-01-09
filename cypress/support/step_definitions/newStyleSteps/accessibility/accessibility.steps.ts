@@ -12,7 +12,6 @@
  * Steps remain thin, intent-based, and UI-agnostic.
  */
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
-import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { accessibilityActions } from '../../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 import { log } from '../../../../support/utils/log.helper';
 

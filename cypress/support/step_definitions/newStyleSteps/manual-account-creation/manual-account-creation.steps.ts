@@ -15,15 +15,11 @@ import {
   DefendantType,
 } from '../../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { ManualAccountCommentsNotesActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
-import {
-  ManualCourtDetailsActions,
-  ManualCourtFieldKey,
-} from '../../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
+import { ManualCourtFieldKey } from '../../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import {
   ManualEmployerDetailsActions,
   ManualEmployerFieldKey,
 } from '../../../../e2e/functional/opal/actions/manual-account-creation/employer-details.actions';
-import { ManualPersonalDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/personal-details.actions';
 import { ManualPaymentTermsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/payment-terms.actions';
 import { DashboardActions } from '../../../../e2e/functional/opal/actions/dashboard.actions';
 import { log } from '../../../utils/log.helper';
@@ -39,7 +35,6 @@ import { CompanyAliasRow } from '../../../../e2e/functional/opal/flows/manual-ac
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import {
   LanguageOption,
-  LanguageSection,
   ManualLanguagePreferencesActions,
 } from '../../../../e2e/functional/opal/actions/manual-account-creation/language-preferences.actions';
 import {
@@ -51,14 +46,13 @@ import {
   resolveLanguageLabel,
   resolveLanguageSection,
 } from '../../../utils/macFieldResolvers';
-import { normalizeHash, normalizeTableRows } from '../../../utils/cucumberHelpers';
 import { accessibilityActions } from '../../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 import { AccountType, ApprovedAccountType } from '../../../utils/payloads';
+import { normalizeHash, normalizeTableRows } from '../../../utils/cucumberHelpers';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
-const courtDetails = () => new ManualCourtDetailsActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
-const personalDetails = () => new ManualPersonalDetailsActions();
 const paymentTerms = () => new ManualPaymentTermsActions();
 const dashboard = () => new DashboardActions();
 const details = () => new ManualAccountDetailsActions();
@@ -69,6 +63,7 @@ const common = () => new CommonActions();
 const createAccount = () => new ManualCreateAccountActions();
 const languagePreferences = () => new ManualLanguagePreferencesActions();
 const intercepts = () => new DraftAccountsInterceptActions();
+const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 /**
  * @step Confirms the user is on the dashboard.
  * @description Asserts the dashboard is visible to ensure navigation is in a known state.
@@ -270,8 +265,9 @@ When('I view the {string} task', (taskName: ManualAccountTaskName) => {
  *   When I view the "Court details" task for "TEST COMPANY LTD"
  */
 When('I view the {string} task for {string}', (taskName: ManualAccountTaskName, header: string) => {
-  log('navigate', 'Opening task with custom header', { taskName, header });
-  flow().openTaskFromAccountDetails(taskName, header);
+  const normalizedHeader = withUniq(header);
+  log('navigate', 'Opening task with custom header', { taskName, header: normalizedHeader });
+  flow().openTaskFromAccountDetails(taskName, normalizedHeader);
 });
 /**
  * @step Asserts the status text for a task list item after returning to account details.
@@ -307,8 +303,10 @@ When('I return to account details', () => {
  * @example When I provide account comments "Test comment" and notes "Test note" from account details
  */
 When('I provide account comments {string} and notes {string} from account details', (comment: string, note: string) => {
-  log('step', 'Providing account comments and notes from account details', { comment, note });
-  flow().provideAccountCommentsAndNotes(comment, note);
+  const commentValue = withUniq(comment);
+  const noteValue = withUniq(note);
+  log('step', 'Providing account comments and notes from account details', { comment: commentValue, note: noteValue });
+  flow().provideAccountCommentsAndNotes(commentValue, noteValue);
 });
 /**
  * @step Navigates to account comments and notes and provides account comments and notes.
@@ -319,8 +317,10 @@ When('I provide account comments {string} and notes {string} from account detail
  * @example When I provide account comments "Hello" and notes "World"
  */
 When('I provide account comments {string} and notes {string}', (comment: string, note: string) => {
-  log('step', 'Providing account comments and notes on task', { comment, note });
-  flow().setAccountCommentsAndNotes(comment, note);
+  const commentValue = withUniq(comment);
+  const noteValue = withUniq(note);
+  log('step', 'Providing account comments and notes on task', { comment: commentValue, note: noteValue });
+  flow().setAccountCommentsAndNotes(commentValue, noteValue);
 });
 /**
  * @step Asserts the Account comments and notes fields contain the expected text.
@@ -329,8 +329,9 @@ When('I provide account comments {string} and notes {string}', (comment: string,
  * @remarks Uses actions for selector resilience.
  */
 Then('the manual account comment field shows {string}', (expected: string) => {
-  log('assert', 'Verifying account comment value', { expected });
-  comments().assertCommentValue(expected);
+  const normalized = withUniq(expected);
+  log('assert', 'Verifying account comment value', { expected: normalized });
+  comments().assertCommentValue(normalized);
 });
 /**
  * @step Asserts the Account note field contains the expected text.
@@ -340,8 +341,9 @@ Then('the manual account comment field shows {string}', (expected: string) => {
  * @example Then the manual account note field shows "Some note"
  */
 Then('the manual account note field shows {string}', (expected: string) => {
-  log('assert', 'Verifying account note value', { expected });
-  comments().assertNoteValue(expected);
+  const normalized = withUniq(expected);
+  log('assert', 'Verifying account note value', { expected: normalized });
+  comments().assertNoteValue(normalized);
 });
 /**
  * @step Cancels out of account comments with a specific choice (stay/leave).
@@ -401,8 +403,9 @@ When('I complete manual account creation with the following fields and defaults:
 When(
   'I complete manual account creation with the following fields and defaults for account header {string}:',
   (header: string, table: DataTable) => {
-    log('flow', 'Completing manual account creation with custom header', { header });
-    flow().completeManualAccountWithDefaults(table.raw(), header);
+    const normalizedHeader = withUniq(header);
+    log('flow', 'Completing manual account creation with custom header', { header: normalizedHeader });
+    flow().completeManualAccountWithDefaults(table.raw(), normalizedHeader);
   },
 );
 
@@ -432,8 +435,7 @@ When(
  *     | Sending area or Local Justice Area (LJA) | Avon |
  */
 When('I complete manual court details:', (table: DataTable) => {
-  const hash = table.rowsHash();
-  const normalized = Object.fromEntries(Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]));
+  const normalized = normalizeHash(table);
   log('debug', 'Court details table map', { hash: normalized });
   const payload = Object.entries(normalized).reduce<Partial<Record<ManualCourtFieldKey, string>>>(
     (acc, [field, value]) => {
@@ -448,8 +450,7 @@ When('I complete manual court details:', (table: DataTable) => {
     {},
   );
   log('step', 'Completing court details from table', { payload: { ...payload } });
-  courtDetails().assertOnCourtDetailsPage();
-  courtDetails().fillCourtDetails(payload);
+  flow().completeCourtDetailsFromTable(payload);
 });
 /**
  * @step Populates manual court details by opening the task from Account details.
@@ -461,8 +462,7 @@ When('I complete manual court details:', (table: DataTable) => {
  *     | Enforcement court | West London VPFPO |
  */
 When('I have provided manual court details:', (table: DataTable) => {
-  const hash = table.rowsHash();
-  const normalized = Object.fromEntries(Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]));
+  const normalized = normalizeHash(table);
   const payload = Object.entries(normalized).reduce<Partial<Record<ManualCourtFieldKey, string>>>(
     (acc, [field, value]) => {
       const isHeaderRow = field.toLowerCase() === 'field' && value.toLowerCase() === 'value';
@@ -488,12 +488,13 @@ When('I have provided manual court details:', (table: DataTable) => {
  *     | Prosecutor Case Reference (PCR) | 1234 |
  */
 Then('the manual court details fields are:', (table: DataTable) => {
-  const expected = table.rows().reduce<Partial<Record<ManualCourtFieldKey, string>>>((acc, [field, value]) => {
+  const rows = normalizeTableRows(table);
+  const expected = rows.reduce<Partial<Record<ManualCourtFieldKey, string>>>((acc, [field, value]) => {
     if (field.toLowerCase() === 'field' && value.toLowerCase() === 'value') {
       return acc;
     }
     const key = resolveCourtFieldKey(field);
-    acc[key] = value.trim();
+    acc[key] = value;
     return acc;
   }, {});
   log('assert', 'Checking court details field values', { expected });
@@ -587,8 +588,7 @@ Then('I am viewing manual account creation start', () => {
  *     | Court hearings | Welsh and English |
  */
 Then('the manual language preferences in account details are:', (table: DataTable) => {
-  const hash = table.rowsHash();
-  const normalized = Object.fromEntries(Object.entries(hash).map(([key, value]) => [key.trim(), value.trim()]));
+  const normalized = normalizeHash(table);
   log('assert', 'Checking account language preferences summary', { preferences: normalized });
   Object.entries(normalized).forEach(([section, value]) => {
     const label = resolveLanguageLabel(section);
@@ -662,8 +662,7 @@ Then('the manual language preference options are visible:', (table: DataTable) =
  *     | Court hearings | Welsh and English |
  */
 When('I set manual language preferences:', (table: DataTable) => {
-  const hash = table.rowsHash();
-  const normalized = Object.fromEntries(Object.entries(hash).map(([section, value]) => [section.trim(), value.trim()]));
+  const normalized = normalizeHash(table);
   const payload = Object.entries(normalized).reduce<Partial<Record<LanguagePreferenceLabel, LanguageOption>>>(
     (acc, [section, value]) => {
       const label = resolveLanguageLabel(section);
@@ -685,8 +684,7 @@ When('I set manual language preferences:', (table: DataTable) => {
  * @param table - DataTable mapping section to desired option.
  */
 When('I update manual language preferences to:', (table: DataTable) => {
-  const hash = table.rowsHash();
-  const normalized = Object.fromEntries(Object.entries(hash).map(([section, value]) => [section.trim(), value.trim()]));
+  const normalized = normalizeHash(table);
   const payload = Object.entries(normalized).reduce<Partial<Record<LanguagePreferenceLabel, LanguageOption>>>(
     (acc, [section, value]) => {
       const label = resolveLanguageLabel(section);
@@ -700,8 +698,7 @@ When('I update manual language preferences to:', (table: DataTable) => {
     log('warn', 'Language preferences payload is empty; no selections will be made');
     return;
   }
-  flow().setLanguagePreferences(payload);
-  flow().saveLanguagePreferencesAndReturn();
+  flow().updateLanguagePreferences(payload);
 });
 /**
  * @step Asserts language selections on the Language preferences page.
@@ -817,8 +814,9 @@ Then('the task statuses for account header {string} are:', (header: string, tabl
     task: task as ManualAccountTaskName,
     status,
   }));
-  log('assert', 'Checking task status from table with custom header', { header, statuses });
-  flow().assertTaskStatuses(statuses, header);
+  const normalizedHeader = withUniq(header);
+  log('assert', 'Checking task status from table with custom header', { header: normalizedHeader, statuses });
+  flow().assertTaskStatuses(statuses, normalizedHeader);
 });
 /**
  * @step Asserts a single task status while on Account details.
@@ -842,8 +840,10 @@ Then('the {string} task status is {string}', (taskName: ManualAccountTaskName, e
 Then(
   'the manual account comment and note fields show {string} and {string}',
   (commentText: string, noteText: string) => {
-    log('assert', 'Verifying comment and note fields', { commentText, noteText });
-    flow().assertAccountCommentsAndNotes(commentText, noteText);
+    const commentValue = withUniq(commentText);
+    const noteValue = withUniq(noteText);
+    log('assert', 'Verifying comment and note fields', { commentText: commentValue, noteText: noteValue });
+    flow().assertAccountCommentsAndNotes(commentValue, noteValue);
   },
 );
 /**
@@ -874,7 +874,7 @@ When('I open the Account comments and notes task', () => {
  *     | address line 1 | 1 Test St  |
  */
 When('I complete manual company details:', (table: DataTable) => {
-  const data = table.rowsHash();
+  const data = normalizeHash(table);
   log('step', 'Completing company details', data);
   flow().fillCompanyDetailsFromTable(data);
 });
@@ -894,7 +894,10 @@ When('I complete manual company details:', (table: DataTable) => {
  *     | 1     | Foo  |
  */
 When('I add manual company aliases:', (table: DataTable) => {
-  const aliases = table.hashes() as CompanyAliasRow[];
+  const aliases = (table.hashes() as CompanyAliasRow[]).map((aliasRow) => ({
+    ...aliasRow,
+    name: withUniq(aliasRow.name),
+  }));
   log('step', 'Adding company aliases', { aliases });
   flow().addCompanyAliases(aliases);
 });
@@ -908,7 +911,10 @@ When('I add manual company aliases:', (table: DataTable) => {
  *     | 1     | Foo  |
  */
 Then('the manual company aliases are:', (table: DataTable) => {
-  const aliases = table.hashes() as CompanyAliasRow[];
+  const aliases = (table.hashes() as CompanyAliasRow[]).map((aliasRow) => ({
+    ...aliasRow,
+    name: withUniq(aliasRow.name),
+  }));
   log('assert', 'Asserting company aliases', { aliases });
   flow().assertCompanyAliases(aliases);
 });
@@ -929,7 +935,7 @@ Then('the manual company aliases are:', (table: DataTable) => {
  *     | company name   | Example Co |
  */
 Then('the manual company details fields are:', (table: DataTable) => {
-  const data = table.rowsHash();
+  const data = normalizeHash(table);
   log('assert', 'Asserting company details fields', data);
   flow().assertCompanyDetailsFields(data);
 });
@@ -1025,8 +1031,7 @@ Then('I am viewing company details', () => {
  *     | Primary email address | test@example.com |
  */
 When('I complete manual contact details:', (table: DataTable) => {
-  const hash = table.rowsHash();
-  const normalized = Object.fromEntries(Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]));
+  const normalized = normalizeHash(table);
   log('debug', 'Contact details table map', { hash: normalized });
   const payload = Object.entries(normalized).reduce<Partial<Record<ManualContactFieldKey, string>>>(
     (acc, [field, value]) => {
@@ -1146,8 +1151,7 @@ Then('I am viewing contact details', () => {
  *     | Employer telephone | 0123      |
  */
 When('I complete manual employer details:', (table: DataTable) => {
-  const hash = table.rowsHash();
-  const normalized = Object.fromEntries(Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]));
+  const normalized = normalizeHash(table);
   log('debug', 'Employer details table map', { hash: normalized });
   const payload = Object.entries(normalized).reduce<Partial<Record<ManualEmployerFieldKey, string>>>(
     (acc, [field, value]) => {
@@ -1174,8 +1178,7 @@ When('I complete manual employer details:', (table: DataTable) => {
  *     | Employer name | Test Corp |
  */
 When('I have provided manual employer details:', (table: DataTable) => {
-  const hash = table.rowsHash();
-  const normalized = Object.fromEntries(Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]));
+  const normalized = normalizeHash(table);
   const payload = Object.entries(normalized).reduce<Partial<Record<ManualEmployerFieldKey, string>>>(
     (acc, [field, value]) => {
       if (!field) {

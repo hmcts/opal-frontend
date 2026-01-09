@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Account details task list.
- * Provides helpers to open tasks, assert status, and confirm header presence.
+ * @file Actions for Manual Account Creation - Account details task list.
+ * @description Provides helpers to open tasks, assert status, and confirm header presence.
  */
 import {
   ManualAccountDetailsLocators as L,
@@ -8,6 +8,7 @@ import {
 } from '../../../../../shared/selectors/manual-account-creation/account-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 const log = createScopedLogger('ManualAccountDetailsActions');
 const TASK_NAMES: ManualAccountTaskName[] = [
@@ -22,11 +23,15 @@ const TASK_NAMES: ManualAccountTaskName[] = [
   'Payment terms',
 ];
 
+/**
+ * Task list helpers for Manual Account Creation Account details.
+ */
 export class ManualAccountDetailsActions {
   private readonly common = new CommonActions();
 
   /**
    * Opens a task list item by its display name.
+   * @param taskName Task display name from the account details list.
    */
   openTask(taskName: ManualAccountTaskName): void {
     const normalizedTask = (taskName ?? '').trim() as ManualAccountTaskName;
@@ -45,6 +50,9 @@ export class ManualAccountDetailsActions {
 
   /**
    * Asserts the status text for a given task list item.
+   * @param taskName Task display name to check.
+   * @param expectedStatus Expected status text (e.g., "Completed").
+   * @param expectedHeader Expected Account details header (defaults to "Account details").
    */
   assertTaskStatus(
     taskName: ManualAccountTaskName,
@@ -69,12 +77,14 @@ export class ManualAccountDetailsActions {
    * - If `expectedHeader` is provided, asserts the header contains it.
    * - If `expectedHeader` is omitted/undefined, asserts the default header "Account details".
    * - If `expectedHeader` is null, skips header assertion (path guard still applies).
+   * @param expectedHeader Optional header to assert; null skips header assertion.
    */
   assertOnAccountDetailsPage(expectedHeader?: string | null): void {
     cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/account-details');
     const headerToAssert = expectedHeader === undefined ? 'Account details' : expectedHeader;
-    if (headerToAssert) {
-      this.common.assertHeaderContains(headerToAssert);
+    const normalizedHeader = headerToAssert === null ? null : applyUniqPlaceholder(headerToAssert);
+    if (normalizedHeader) {
+      this.common.assertHeaderContains(normalizedHeader);
     }
   }
 

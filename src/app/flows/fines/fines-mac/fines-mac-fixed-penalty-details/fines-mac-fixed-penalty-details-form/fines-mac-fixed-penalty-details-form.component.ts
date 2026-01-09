@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -85,7 +84,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   extends AbstractFormAliasBaseComponent
   implements OnInit, OnDestroy
 {
-  private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   @Output() protected override formSubmit = new EventEmitter<IFinesMacFixedPenaltyDetailsForm>();
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);

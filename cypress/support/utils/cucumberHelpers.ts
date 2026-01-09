@@ -1,10 +1,15 @@
 import { DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { applyUniqPlaceholder } from './stringUtils';
+
+const normalizeCell = (cell: unknown): string => applyUniqPlaceholder((cell ?? '').toString().trim());
 
 /**
  * Normalises a Cucumber DataTable into a trimmed key/value map.
+ * @param table Source DataTable from a step definition.
+ * @returns Hash of keys to trimmed values.
  */
 export const normalizeHash = (table: DataTable): Record<string, string> => {
-  const rawRows = table.raw().map((row) => row.map((cell) => (cell ?? '').toString().trim()));
+  const rawRows = table.raw().map((row) => row.map(normalizeCell));
   const firstRow = rawRows[0] ?? [];
   const [firstCell, secondCell] = firstRow.map((cell) => cell.toLowerCase());
   const headerKeys = ['field', 'key', 'name'];
@@ -31,12 +36,14 @@ export const normalizeHash = (table: DataTable): Record<string, string> => {
   }
 
   const raw = table.rowsHash();
-  return Object.fromEntries(Object.entries(raw).map(([key, value]) => [key.trim(), (value ?? '').toString().trim()]));
+  return Object.fromEntries(Object.entries(raw).map(([key, value]) => [key.trim(), normalizeCell(value)]));
 };
 
 /**
  * Normalises a Cucumber DataTable into trimmed rows.
+ * @param table Source DataTable from a step definition.
+ * @returns 2D array of trimmed cell values.
  */
 export const normalizeTableRows = (table: DataTable): string[][] => {
-  return table.raw().map((row) => row.map((cell) => cell.trim()));
+  return table.raw().map((row) => row.map(normalizeCell));
 };

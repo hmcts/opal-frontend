@@ -10,7 +10,10 @@
       "@routing/pages/*": ["./src/app/pages/routing/*"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*"],
       "@routing/flows/*": ["./src/app/flows/routing/*"]
-    }
+    },
+
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
   "include": [
     "cypress",
@@ -22,7 +25,5 @@
     "cypress.config.ts",
     "node_modules/cypress"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

@@ -1,6 +1,7 @@
 // e2e/functional/opal/flows/common-flow.ts
 /**
- * @fileoverview CommonFlow
+ * @file CommonFlow
+ * @description Small, reusable flows shared across multiple Opal features.
  *
  * Small, reusable flows that are shared across multiple Opal features.
  *
@@ -14,6 +15,7 @@ import { CommonActions } from '../actions/common/common.actions';
 
 const log = createScopedLogger('CommonFlow');
 
+/** Small shared flows composed of common actions used across features. */
 export class CommonFlow {
   private readonly common = new CommonActions();
 

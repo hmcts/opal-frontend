@@ -1,6 +1,12 @@
+/**
+ * @file review-account.actions.ts
+ * @description Actions for the Manual Account Creation **Check account details** screen, including
+ * navigation from the task list, header assertions, imposition table checks, and submission flows.
+ */
 import { ManualReviewAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/review-account.locators';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 type SummaryRow = { label: string; value: string };
 type OffenceRow = {
@@ -19,7 +25,7 @@ export class ManualReviewAccountActions {
   private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
-   * @description Clicks the Check account button from Account details.
+   * Clicks the Check account button from Account details.
    * @example
    *   review.clickCheckAccount();
    */
@@ -29,7 +35,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Asserts the review page header contains the expected text.
+   * Asserts the review page header contains the expected text.
    * @param expectedHeader - Header fragment to assert.
    * @example
    *   review.assertOnReviewPage('Check account details');
@@ -42,14 +48,16 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Asserts summary list rows by label/value for a given summary list id.
+   * Asserts summary list rows by label/value for a given summary list id.
    * @param summaryListId - The summaryListId attribute rendered on the page.
    * @param rows - Label/value expectations.
    * @example
    *   review.assertSummaryList('courtDetails', [{ label: 'Prosecutor Case Reference (PCR)', value: 'ABCD1234A' }]);
    */
   assertSummaryList(summaryListId: string, rows: SummaryRow[]): void {
-    log('assert', 'Asserting review summary list', { summaryListId, rows });
+    // Resolve `{uniq}` placeholders on expected values to match the rendered UI.
+    const resolvedRows = rows.map((row) => ({ ...row, value: applyUniqPlaceholder(row.value) }));
+    log('assert', 'Asserting review summary list', { summaryListId, rows: resolvedRows });
     if (!rows.length) {
       return;
     }
@@ -59,7 +67,7 @@ export class ManualReviewAccountActions {
       .first() // guard against multiple summary lists with the same id on the page
       .should('be.visible')
       .within(() => {
-        rows.forEach(({ label, value }) => {
+        resolvedRows.forEach(({ label, value }) => {
           cy.contains(L.summaryKey, label, this.common.getTimeoutOptions())
             .should('be.visible')
             .parents(L.summaryRow)
@@ -106,7 +114,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Asserts offence/imposition rows on the review page.
+   * Asserts offence/imposition rows on the review page.
    * @param rows - Ordered offence rows; the Totals row is handled automatically.
    * @example
    *   review.assertOffenceTable([
@@ -161,7 +169,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Expands minor creditor details if the summary list is hidden.
+   * Expands minor creditor details if the summary list is hidden.
    */
   private ensureMinorCreditorDetailsVisible(): void {
     cy.get('body').then(($body) => {
@@ -179,7 +187,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Asserts the minor creditor summary list.
+   * Asserts the minor creditor summary list.
    * @param rows - Label/value expectations.
    * @example
    *   review.assertMinorCreditorDetails([{ label: 'Payment method', value: 'Pay by BACS' }]);
@@ -191,7 +199,7 @@ export class ManualReviewAccountActions {
   }
 
   /**
-   * @description Clicks Submit for review on the review page.
+   * Clicks Submit for review on the review page.
    * @example
    *   review.submitForReview();
    */

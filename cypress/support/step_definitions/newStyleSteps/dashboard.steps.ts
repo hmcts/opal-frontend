@@ -26,6 +26,7 @@ import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard
 /**
  * Returns a new instance of {@link DashboardActions}.
  * This factory ensures that each step runs in isolation.
+ * @returns Fresh DashboardActions instance for the invoking step.
  */
 const dashboard = () => new DashboardActions();
 

@@ -1,5 +1,6 @@
 /**
- * @fileoverview search-individuals.actions.ts
+ * @file search-individuals.actions.ts
+ * @description High-level actions for the “Search for an account” ➜ Individuals tab, including shared page assertions.
  * High-level actions for the “Search for an account” ➜ Individuals
  * Now includes shared search-page assertion logic.
  */
@@ -12,6 +13,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountSearchIndividualsActions');
 
+/** Actions for the Individuals tab within Account Search. */
 export class AccountSearchIndividualsActions {
   private readonly results = new ResultsActions();
   private readonly common = new CommonActions();
@@ -90,6 +92,7 @@ export class AccountSearchIndividualsActions {
   /**
    * Return whether the Individuals tab/panel is currently active (async check).
    * Use as: searchIndividuals.isActiveSync().then(active => { ... })
+   * @returns Chainable resolving to `true` when Individuals tab is active.
    */
   public isActiveSync(): Cypress.Chainable<boolean> {
     return cy.get('body', this.common.getTimeoutOptions()).then(($b) => {
@@ -266,6 +269,9 @@ export class AccountSearchIndividualsActions {
    * - Always clears the field first.
    * - Only calls cy.type(...) when the value is non-empty (Cypress disallows type('')).
    * - Asserts the final value.
+   * @param selector - CSS selector for the target input.
+   * @param rawValue - Raw value to type (empty clears the field).
+   * @param description - Human-readable field description for logging.
    */
   private setInputValue(selector: string, rawValue: string, description: string): void {
     const value = String(rawValue ?? '').trim();
@@ -285,12 +291,18 @@ export class AccountSearchIndividualsActions {
   // Field-level setters (text inputs)
   // ──────────────────────────────
 
-  /** Sets the Last name field (without submitting). */
+  /**
+   * Sets the Last name field (without submitting).
+   * @param lastName - Value to enter in the Last name field.
+   */
   public setLastName(lastName: string): void {
     this.setInputValue(L.lastNameInput, lastName, 'Last name');
   }
 
-  /** Sets the First names field (without submitting). */
+  /**
+   * Sets the First names field (without submitting).
+   * @param firstNames - Value to enter in the First names field.
+   */
   public setFirstNames(firstNames: string): void {
     this.setInputValue(L.firstNameInput, firstNames, 'First names');
   }
@@ -337,6 +349,9 @@ export class AccountSearchIndividualsActions {
 
   /**
    * Shared helper to set checkbox state safely.
+   * @param selector - Checkbox selector.
+   * @param enabled - Desired checked state.
+   * @param description - Human-readable checkbox label for logging.
    */
   private setCheckboxState(selector: string, enabled: boolean, description: string): void {
     log('input', `Set ${description} checkbox -> ${enabled ? 'checked' : 'unchecked'}`);
@@ -359,6 +374,7 @@ export class AccountSearchIndividualsActions {
 
   /**
    * Controls the "Last name exact match" checkbox.
+   * @param enabled - Whether the checkbox should be checked.
    */
   public setLastNameExactMatch(enabled: boolean): void {
     this.setCheckboxState(L.lastNameExactMatchCheckbox, enabled, 'Last name exact match');
@@ -366,6 +382,7 @@ export class AccountSearchIndividualsActions {
 
   /**
    * Controls the "First names exact match" checkbox.
+   * @param enabled - Whether the checkbox should be checked.
    */
   public setFirstNamesExactMatch(enabled: boolean): void {
     this.setCheckboxState(L.firstNamesExactMatchCheckbox, enabled, 'First names exact match');
@@ -373,6 +390,7 @@ export class AccountSearchIndividualsActions {
 
   /**
    * Controls the "Include aliases" checkbox.
+   * @param enabled - Whether the checkbox should be checked.
    */
   public setIncludeAliases(enabled: boolean): void {
     this.setCheckboxState(L.includeAliasesCheckbox, enabled, 'Include aliases');
@@ -380,6 +398,9 @@ export class AccountSearchIndividualsActions {
 
   /**
    * Shared helper to assert checkbox checked/unchecked state safely.
+   * @param selector - Checkbox selector.
+   * @param expected - Expected checked state.
+   * @param description - Human-readable checkbox label for logging.
    */
   private assertCheckboxState(selector: string, expected: boolean, description: string): void {
     log('assert', `Assert ${description} checkbox is ${expected ? 'checked' : 'not checked'}`);
@@ -402,6 +423,7 @@ export class AccountSearchIndividualsActions {
 
   /**
    * Asserts the "Last name exact match" checkbox checked state.
+   * @param expected - Whether the checkbox should be checked.
    */
   public assertLastNameExactMatchChecked(expected: boolean): void {
     this.assertCheckboxState(L.lastNameExactMatchCheckbox, expected, 'Last name exact match');
@@ -409,6 +431,7 @@ export class AccountSearchIndividualsActions {
 
   /**
    * Asserts the "First names exact match" checkbox checked state.
+   * @param expected - Whether the checkbox should be checked.
    */
   public assertFirstNamesExactMatchChecked(expected: boolean): void {
     this.assertCheckboxState(L.firstNamesExactMatchCheckbox, expected, 'First names exact match');
@@ -417,6 +440,7 @@ export class AccountSearchIndividualsActions {
   /**
    * Asserts the "Include aliases" checkbox checked state (if present).
    * Uses the main locator if available; otherwise falls back to historical selectors.
+   * @param expected - Whether the checkbox should be checked.
    */
   public assertIncludeAliasesChecked(expected: boolean): void {
     cy.get('body').then(($body) => {
@@ -443,6 +467,13 @@ export class AccountSearchIndividualsActions {
    * Convenience method to set multiple Individuals fields in one call.
    * Any provided property will be written using the corresponding setter.
    * Undefined properties are ignored.
+   * @param fields - Object of field values to set (undefined values are skipped).
+   * @param fields.lastName - Optional last name.
+   * @param fields.firstNames - Optional first names.
+   * @param fields.dob - Optional DOB string.
+   * @param fields.niNumber - Optional NI number.
+   * @param fields.addressLine1 - Optional address line 1.
+   * @param fields.postcode - Optional postcode.
    */
   public setIndividualFields(fields: {
     lastName?: string;
@@ -487,21 +518,30 @@ export class AccountSearchIndividualsActions {
   // Field assertions
   // ──────────────────────────────
 
-  /** Asserts the Last name field equals the expected value. */
+  /**
+   * Asserts the Last name field equals the expected value.
+   * @param expected - Expected Last name value.
+   */
   public assertLastNameEquals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Last name equals "${expectedTrim}"`);
     cy.get(L.lastNameInput, this.common.getTimeoutOptions()).should('have.value', expectedTrim);
   }
 
-  /** Asserts the First names field equals the expected value. */
+  /**
+   * Asserts the First names field equals the expected value.
+   * @param expected - Expected First names value.
+   */
   public assertFirstNamesEquals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting First names equals "${expectedTrim}"`);
     cy.get(L.firstNameInput, this.common.getTimeoutOptions()).should('have.value', expectedTrim);
   }
 
-  /** Asserts the Date of birth field equals the expected value. */
+  /**
+   * Asserts the Date of birth field equals the expected value.
+   * @param expected - Expected DOB value.
+   */
   public assertDobEquals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Date of birth equals "${expectedTrim}"`);
@@ -510,21 +550,30 @@ export class AccountSearchIndividualsActions {
       .then((val) => expect(String(val ?? '').trim()).to.eq(expectedTrim));
   }
 
-  /** Asserts the National Insurance Number field equals the expected value. */
+  /**
+   * Asserts the National Insurance Number field equals the expected value.
+   * @param expected - Expected NI number.
+   */
   public assertNiNumberEquals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting National Insurance number equals "${expectedTrim}"`);
     cy.get(L.niNumberInput, this.common.getTimeoutOptions()).should('have.value', expectedTrim);
   }
 
-  /** Asserts the Address Line 1 field equals the expected value. */
+  /**
+   * Asserts the Address Line 1 field equals the expected value.
+   * @param expected - Expected address line 1.
+   */
   public assertAddressLine1Equals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Address line 1 equals "${expectedTrim}"`);
     cy.get(L.addressLine1Input, this.common.getTimeoutOptions()).should('have.value', expectedTrim);
   }
 
-  /** Asserts the Postcode field equals the expected value. */
+  /**
+   * Asserts the Postcode field equals the expected value.
+   * @param expected - Expected postcode.
+   */
   public assertPostcodeEquals(expected: string): void {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Postcode equals "${expectedTrim}"`);
@@ -534,6 +583,13 @@ export class AccountSearchIndividualsActions {
   /**
    * Combined convenience method for asserting all field values in one call.
    * Accepts an object containing one or more expected field values.
+   * @param expected - Object of expected field values (unset properties are ignored).
+   * @param expected.lastName - Expected last name.
+   * @param expected.firstNames - Expected first names.
+   * @param expected.dob - Expected DOB.
+   * @param expected.niNumber - Expected NI number.
+   * @param expected.addressLine1 - Expected address line 1.
+   * @param expected.postcode - Expected postcode.
    */
   public assertAllFieldValues(expected: {
     lastName?: string;
@@ -574,6 +630,8 @@ export class AccountSearchIndividualsActions {
   /**
    * Parses a Yes/No style value from a DataTable into a boolean.
    * Returns undefined if the value is empty or unrecognised.
+   * @param value - Raw value from the DataTable.
+   * @returns `true`/`false` when recognised, otherwise `undefined`.
    */
   private parseBooleanFromTable(value: string): boolean | undefined {
     const normalised = String(value ?? '')
@@ -667,6 +725,10 @@ export class AccountSearchIndividualsActions {
    * keeping the step definition thin and the behaviour fully data-driven.
    */
 
+  /**
+   * Registry mapping normalised Individuals field keys to assertion handlers.
+   * @returns Mapping of field keys to labels and assertion actions.
+   */
   private get fieldAssertions(): Record<
     string,
     {
@@ -750,6 +812,8 @@ export class AccountSearchIndividualsActions {
 
   /**
    * Internal helper – assert a single key/value pair using fieldAssertions.
+   * @param key - Normalised field key.
+   * @param value - Raw value from the DataTable map.
    */
   private assertByKey(key: string, value: string): void {
     const cfg = this.fieldAssertions[key];

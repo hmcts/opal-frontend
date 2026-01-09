@@ -202,8 +202,8 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get(DOM.parentOrGuardianDetailsDob).should('be.visible');
       cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey).should('be.visible');
       cy.get(DOM.parentOrGuardianDetailsAddressKey).should('be.visible');
-      cy.get(DOM.parentOrGuardianDetailsVehicleMake).should('be.visible');
-      cy.get(DOM.parentOrGuardianDetailsVehicleReg).should('be.visible');
+      cy.get(DOM.parentOrGuardianDetailsVehicleMake).should('not.exist');
+      cy.get(DOM.parentOrGuardianDetailsVehicleReg).should('not.exist');
       cy.get(DOM.contactSummaryCardTitle).should('not.exist');
       cy.get(DOM.contactDetailsPrimaryEmailKey).should('not.exist');
       cy.get(DOM.contactDetailsSecondaryEmailKey).should('not.exist');

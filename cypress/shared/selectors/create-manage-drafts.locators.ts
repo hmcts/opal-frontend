@@ -13,4 +13,5 @@ export const CreateManageDraftsLocators = {
     deleted: '[subnavitemid="inputter-deleted-tab"] a',
     byText: (tabName: string) => `#inputter-tabs a:contains("${tabName}")`,
   },
+  rows: 'opal-lib-moj-sortable-table tbody tr',
 } as const;
