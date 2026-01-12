@@ -220,14 +220,15 @@ if (legacyEnabled && isPR) {
 echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
 
-def githubApiForTags = new GithubAPI(this)
-def runUatTechnical = githubApiForTags.checkForLabel(env.BRANCH_NAME, 'run_uat_technical')
+def githubApi = new GithubAPI(this)
+def allLabels = githubApi.getLabels(env.BRANCH_NAME)
 
-if (runUatTechnical) {
-  env.TAGS = '@UAT-Technical'
-  echo "Running only @UAT-Technical scenarios"
-} else {
-  echo "Running full functional test suite"
+// Find the first label like: run_tag:<expression>
+def tagLabel = allLabels.find { it.startsWith('run_tag:') }
+
+if (tagLabel) {
+  env.TAGS = tagLabel.substring('run_tag:'.length()).trim()
+  echo "Running only scenarios matching TAGS=${env.TAGS}"
 }
 
 withPipeline(type, product, component) {
