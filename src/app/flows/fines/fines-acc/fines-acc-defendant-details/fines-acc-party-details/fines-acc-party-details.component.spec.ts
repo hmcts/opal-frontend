@@ -65,17 +65,6 @@ describe('FinesAccPartyDetails', () => {
     expect(component.languages).toBeDefined();
   });
 
-  it('should initialize date and utils services', () => {
-    fixture.componentRef.setInput('party', mockPartyDetails);
-    fixture.componentRef.setInput('cardTitle', 'Test');
-    fixture.componentRef.setInput('summaryCardListId', 'test');
-    fixture.componentRef.setInput('summaryListId', 'test');
-    fixture.detectChanges();
-
-    expect(component.dateService).toBeDefined();
-    expect(component.utilsService).toBeDefined();
-  });
-
   it('should handle organisation party details', () => {
     const organisationParty = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party);
     organisationParty.party_details.organisation_flag = true;

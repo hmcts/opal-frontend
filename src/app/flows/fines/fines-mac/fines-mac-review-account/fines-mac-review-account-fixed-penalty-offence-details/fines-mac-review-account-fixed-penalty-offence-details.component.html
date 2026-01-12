@@ -94,7 +94,7 @@
         <ng-container name>Date notice to owner was issued</ng-container>
         <ng-container value>
           @if (offenceDetails.fm_offence_details_date_nto_issued) {
-            {{ dateFormat(offenceDetails.fm_offence_details_date_nto_issued) }}
+            {{ offenceDetails.fm_offence_details_date_nto_issued | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}
           } @else {
             <app-fines-not-provided></app-fines-not-provided>
           }
@@ -109,7 +109,7 @@
         <ng-container name>Date of offence</ng-container>
         <ng-container value>
           @if (offenceDetails.fm_offence_details_date_of_offence) {
-            {{ dateFormat(offenceDetails.fm_offence_details_date_of_offence) }}
+            {{ offenceDetails.fm_offence_details_date_of_offence | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}
           } @else {
             <app-fines-not-provided></app-fines-not-provided>
           }
@@ -169,7 +169,7 @@
         <ng-container name>Amount imposed</ng-container>
         <ng-container value>
           @if (offenceDetails.fm_offence_details_amount_imposed) {
-            {{ utilsService.convertToMonetaryString(offenceDetails.fm_offence_details_amount_imposed) }}
+            {{ offenceDetails.fm_offence_details_amount_imposed | monetary }}
           } @else {
             <app-fines-not-provided></app-fines-not-provided>
           }

@@ -29,7 +29,7 @@
             >
               <ng-container name>Lump sum</ng-container>
               @if (tabData.payment_terms.lump_sum_amount; as lump_sum_amount) {
-                <ng-container value>{{ utilsService.convertToMonetaryString(lump_sum_amount) }}</ng-container>
+                <ng-container value>{{ lump_sum_amount | monetary }}</ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
@@ -44,7 +44,7 @@
             >
               <ng-container name>Instalment</ng-container>
               @if (tabData.payment_terms.instalment_amount; as instalment_amount) {
-                <ng-container value>{{ utilsService.convertToMonetaryString(instalment_amount) }}</ng-container>
+                <ng-container value>{{ instalment_amount | monetary }}</ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
@@ -78,9 +78,7 @@
               <ng-container name>Pay by date</ng-container>
             }
             @if (tabData.payment_terms.effective_date; as effective_date) {
-              <ng-container value>{{
-                dateService.getFromFormatToFormat(effective_date!, 'dd/MM/yyyy', 'dd MMMM yyyy')
-              }}</ng-container>
+              <ng-container value>{{ effective_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</ng-container>
             } @else {
               <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
             }
@@ -107,7 +105,7 @@
             <ng-container name>Date days in default were imposed</ng-container>
             @if (tabData.payment_terms.date_days_in_default_imposed; as date_days_in_default_imposed) {
               <ng-container value>{{
-                dateService.getFromFormatToFormat(date_days_in_default_imposed!, 'dd/MM/yyyy', 'dd MMMM yyyy')
+                date_days_in_default_imposed | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy'
               }}</ng-container>
             } @else {
               <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -124,7 +122,7 @@
             <ng-container name>Payment card last requested</ng-container>
             @if (tabData.payment_card_last_requested; as payment_card_last_requested) {
               <ng-container value>{{
-                dateService.getFromFormatToFormat(payment_card_last_requested!, 'dd/MM/yyyy', 'dd MMMM yyyy')
+                payment_card_last_requested | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy'
               }}</ng-container>
             } @else {
               <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -150,9 +148,7 @@
             >
               <ng-container name>Date last amended</ng-container>
               @if (tabData.payment_terms.posted_details.posted_date; as posted_date) {
-                <ng-container value>{{
-                  dateService.getFromFormatToFormat(posted_date!, 'dd/MM/yyyy', 'dd MMMM yyyy')
-                }}</ng-container>
+                <ng-container value>{{ posted_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
