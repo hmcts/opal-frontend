@@ -3,7 +3,6 @@ import { distinctUntilChanged, EMPTY, map, merge, Observable, Subject, takeUntil
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 // Stores
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -30,6 +29,7 @@ import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/component
 // Pipes & Directives
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
+import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -95,6 +95,7 @@ import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-de
     MojAlertTextComponent,
     MojAlertIconComponent,
     FinesAccDefendantDetailsEnforcementTab,
+    MonetaryPipe,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -108,7 +109,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private readonly destroy$ = new Subject<void>();
   private readonly refreshFragment$ = new Subject<string>();
 
-  public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountDefendantDetailsTabs = FINES_ACC_DEFENDANT_DETAILS_TABS;
   public accountData!: IOpalFinesAccountDefendantDetailsHeader;
@@ -209,7 +209,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     const { defendant_account_party_id, parent_guardian_party_id } = this.accountData;
     const { account_id } = this.accountStore.getAccountState();
 
-    fragment$.subscribe((tab) => {
+    fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
           this.tabAtAGlance$ = this.fetchTabData(this.opalFinesService.getDefendantAccountAtAGlance(account_id));
@@ -384,6 +384,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.accountStore.setHasVersionMismatch(false);
     this.destroy$.next();
     this.destroy$.complete();
+    this.refreshFragment$.complete();
   }
 
   /**

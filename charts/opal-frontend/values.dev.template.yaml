@@ -40,6 +40,10 @@ opal-fines-service:
             alias: AAD_CLIENT_SECRET
           - name: OpalTestUserPassword
             alias: OPAL_TEST_USER_PASSWORD
+          - name: opalLegacyJCDEGatewayUsername
+            alias: OPAL_LEGACY_GATEWAY_USERNAME
+          - name: opalLegacyJCDEGatewayPassword
+            alias: OPAL_LEGACY_GATEWAY_PASSWORD
     environment:
       OPAL_FINES_DB_HOST: "{{ .Release.Name }}-postgresql"
       OPAL_FINES_DB_NAME: opal
@@ -50,9 +54,12 @@ opal-fines-service:
       RUN_DB_MIGRATION_ON_STARTUP: true
       OPAL_FRONTEND_URL: "https://${SERVICE_FQDN}"
       OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
-      OPAL_LEGACY_GATEWAY_URL: https://opal-legacy-db-stub.staging.platform.hmcts.net/opal
       FLYWAY_LOCATIONS: classpath:db/migration/allEnvs, classpath:db/migration/devOnly
       APPLICATIONINSIGHTS_ROLE_NAME: "opal-frontend-pr-${CHANGE_ID}-fines-service"
+      DEFAULT_APP_MODE: ${DEV_DEFAULT_APP_MODE}
+      OPAL_LEGACY_GATEWAY_URL: ${DEV_OPAL_LEGACY_GATEWAY_URL}
+      OPAL_LEGACY_GATEWAY_USERNAME: ${OPAL_LEGACY_GATEWAY_USERNAME}
+      OPAL_LEGACY_GATEWAY_PASSWORD: ${OPAL_LEGACY_GATEWAY_PASSWORD}
 postgresql:
   enabled: ${DEV_ENABLE_OPAL_FINES_SERVICE}
   image:
