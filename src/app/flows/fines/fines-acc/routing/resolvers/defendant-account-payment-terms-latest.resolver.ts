@@ -1,12 +1,15 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { map, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 
 export const defendantAccountPaymentTermsLatestResolver: ResolveFn<
-  | { paymentTermsData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest; resultData: IOpalFinesResultRefData }
+  | {
+      paymentTermsData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest;
+      resultData: IOpalFinesResultRefData | null;
+    }
   | RedirectCommand
 > = (route: ActivatedRouteSnapshot) => {
   const accountId = route.paramMap.get('accountId');
@@ -26,7 +29,11 @@ export const defendantAccountPaymentTermsLatestResolver: ResolveFn<
     switchMap((paymentTermsData) => {
       const resultId = paymentTermsData.last_enforcement;
 
-      return opalFinesService.getResult(resultId!).pipe(
+      if (!resultId) {
+        return of({ paymentTermsData, resultData: null });
+      }
+
+      return opalFinesService.getResult(resultId).pipe(
         map((resultData) => ({
           paymentTermsData,
           resultData,
