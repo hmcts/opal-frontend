@@ -151,10 +151,19 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   /**
-   * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
-   * @returns A string representing the denial type: 'enforcement', 'permission' or 'account-status'
+   *
+   * Calculates if the user can request a payment card based on account status and permissions.
+   * @returns boolean indicating if the user can request a payment card
    */
-  private getDeniedType(): string {
+  private canRequestPaymentCard(): boolean {
+    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermission('amend-payment-terms');
+  }
+
+  /**
+   * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
+   * @returns A string representing the denial type: 'enforcement', 'permission', 'balance' or 'account-status'
+   */
+  private getAmendPaymentTermsDeniedType(): string {
     if (this.lastEnforcement?.extend_ttp_disallow) {
       return 'enforcement';
     } else if (!this.hasBusinessUnitPermission('amend-payment-terms')) {
@@ -163,6 +172,18 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       return 'balance';
     } else {
       return 'account-status';
+    }
+  }
+
+  /**
+   * Determines the type of denial for requesting a payment card based on permission, account status and enforcement details.
+   * @returns A string representing the denial type: 'enforcement' or 'permission'
+   */
+  private getRequestPaymentCardDeniedType(): string {
+    if (this.lastEnforcement?.prevent_payment_card) {
+      return 'enforcement';
+    } else {
+      return 'permission';
     }
   }
 
@@ -399,7 +420,33 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       });
     } else {
       this['router'].navigate(
-        [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.getDeniedType()}`],
+        [
+          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.getAmendPaymentTermsDeniedType()}`,
+        ],
+        {
+          relativeTo: this.activatedRoute,
+          state: {
+            accountStatusCode: this.accountData.account_status_reference.account_status_code,
+            lastEnforcement: this.lastEnforcement?.result_id,
+          },
+        },
+      );
+    }
+  }
+
+  /**
+   * Navigates to the amend payment terms page or amend denied page based on user permissions and account status.
+   */
+  public navigateToRequestPaymentCardPage(): void {
+    if (this.canRequestPaymentCard()) {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(
+        [
+          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/${this.getRequestPaymentCardDeniedType()}`,
+        ],
         {
           relativeTo: this.activatedRoute,
           state: {
