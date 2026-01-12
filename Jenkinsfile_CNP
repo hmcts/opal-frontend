@@ -220,6 +220,15 @@ if (legacyEnabled && isPR) {
 echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
 
+def githubApiForTags = new GithubAPI(this)
+def runUatTechnical = githubApiForTags.checkForLabel(env.BRANCH_NAME, 'run_uat_technical')
+
+if (runUatTechnical) {
+  env.TAGS = '@UAT-Technical'
+  echo "Running only @UAT-Technical scenarios"
+} else {
+  echo "Running full functional test suite"
+}
 
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
