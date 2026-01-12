@@ -43,12 +43,12 @@
                   [errors]="formControlErrorMessages['facc_payment_terms_pay_by_date']"
                   (dateChange)="setInputValue($event, 'facc_payment_terms_pay_by_date')"
                 ></opal-lib-moj-date-picker>
-                @if (dateInPast) {
+                @if (payByDateInPast) {
                   <ng-container
                     *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Pay by date' }"
                   ></ng-container>
                 }
-                @if (dateInFuture) {
+                @if (payByDateInFuture) {
                   <ng-container
                     *ngTemplateOutlet="dateInFutureTemplate; context: { $implicit: 'Pay by date' }"
                   ></ng-container>
@@ -271,10 +271,10 @@
       [errors]="formControlErrorMessages['facc_payment_terms_start_date']"
       (dateChange)="setInputValue($event, 'facc_payment_terms_start_date')"
     ></opal-lib-moj-date-picker>
-    @if (dateInPast) {
+    @if (startDateInPast) {
       <ng-container *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Start date' }"></ng-container>
     }
-    @if (dateInFuture) {
+    @if (startDateInFuture) {
       <ng-container *ngTemplateOutlet="dateInFutureTemplate; context: { $implicit: 'Start date' }"></ng-container>
     }
   </div>

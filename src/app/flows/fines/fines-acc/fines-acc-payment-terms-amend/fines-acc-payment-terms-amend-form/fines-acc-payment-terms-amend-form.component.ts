@@ -97,8 +97,10 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
 
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
-  public dateInFuture!: boolean;
-  public dateInPast!: boolean;
+  public payByDateInFuture!: boolean;
+  public payByDateInPast!: boolean;
+  public startDateInFuture!: boolean;
+  public startDateInPast!: boolean;
   @Input({ required: false }) public initialFormData: IFinesAccPaymentTermsAmendForm =
     FINES_ACC_PAYMENT_TERMS_AMEND_FORM;
   override fieldErrors: IFinesAccPaymentTermsAmendFieldErrors = {
@@ -213,17 +215,31 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
 
   /**
    * Checks the validity of a date and sets flags indicating if the date is in the future or in the past.
-   * Note: This method sets shared flags for all date fields. If multiple dates need individual validation,
-   * this should be refactored to handle field-specific validation.
    * @param dateValue - The date value to be checked.
+   * @param fieldName - The name of the field to update flags for.
    */
-  private dateChecker(dateValue: string): void {
-    this.dateInFuture = false;
-    this.dateInPast = false;
+  private dateChecker(dateValue: string, fieldName: string): void {
+    // Reset flags for the specific field
+    if (fieldName === 'facc_payment_terms_pay_by_date') {
+      this.payByDateInFuture = false;
+      this.payByDateInPast = false;
+    } else if (fieldName === 'facc_payment_terms_start_date') {
+      this.startDateInFuture = false;
+      this.startDateInPast = false;
+    }
 
     if (this.dateService.isValidDate(dateValue)) {
-      this.dateInFuture = this.dateService.isDateInTheFuture(dateValue, 0.6);
-      this.dateInPast = this.dateService.isDateInThePast(dateValue);
+      const isInFuture = this.dateService.isDateInTheFuture(dateValue, 0.6);
+      const isInPast = this.dateService.isDateInThePast(dateValue);
+
+      // Set flags for the specific field
+      if (fieldName === 'facc_payment_terms_pay_by_date') {
+        this.payByDateInFuture = isInFuture;
+        this.payByDateInPast = isInPast;
+      } else if (fieldName === 'facc_payment_terms_start_date') {
+        this.startDateInFuture = isInFuture;
+        this.startDateInPast = isInPast;
+      }
     }
   }
 
@@ -235,7 +251,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     const control = this.form.controls[controlName];
 
     control.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((value) => {
-      this.dateChecker(value);
+      this.dateChecker(value, controlName);
     });
   }
 
@@ -258,7 +274,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     dateFields.forEach((fieldName) => {
       const control = this.form.get(fieldName);
       if (control?.value) {
-        this.dateChecker(control.value);
+        this.dateChecker(control.value, fieldName);
       }
     });
   }

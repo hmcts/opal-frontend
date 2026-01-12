@@ -340,14 +340,23 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
     });
 
     it('should initialize date validation flags', () => {
-      expect(component.dateInPast).toBe(false);
-      expect(component.dateInFuture).toBe(false);
+      expect(component.payByDateInPast).toBe(false);
+      expect(component.payByDateInFuture).toBe(false);
+      expect(component.startDateInPast).toBe(false);
+      expect(component.startDateInFuture).toBe(false);
     });
 
     it('should validate dates on initial form population', () => {
-      // Setup mock to return that date is in the past
-      mockDateService.isDateInThePast.and.returnValue(true);
-      mockDateService.isDateInTheFuture.and.returnValue(false);
+      // Reset component flags
+      component.payByDateInPast = false;
+      component.payByDateInFuture = false;
+      component.startDateInPast = false;
+      component.startDateInFuture = false;
+
+      // Setup mock to return different values based on the input date
+      mockDateService.isValidDate.and.callFake((date: string) => date === '2023-01-01');
+      mockDateService.isDateInThePast.and.callFake((date: string) => date === '2023-01-01');
+      mockDateService.isDateInTheFuture.and.callFake((date: string) => false);
 
       const testData: IFinesAccPaymentTermsAmendForm = {
         formData: {
@@ -373,14 +382,23 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
       // Verify that date validation was called and flags are set
       expect(mockDateService.isDateInThePast).toHaveBeenCalledWith('2023-01-01');
-      expect(component.dateInPast).toBe(true);
-      expect(component.dateInFuture).toBe(false);
+      expect(component.payByDateInPast).toBe(true);
+      expect(component.payByDateInFuture).toBe(false);
+      expect(component.startDateInPast).toBe(false);
+      expect(component.startDateInFuture).toBe(false);
     });
 
     it('should validate future dates on initial form population', () => {
-      // Setup mock to return that date is in the future
-      mockDateService.isDateInThePast.and.returnValue(false);
-      mockDateService.isDateInTheFuture.and.returnValue(true);
+      // Reset component flags
+      component.payByDateInPast = false;
+      component.payByDateInFuture = false;
+      component.startDateInPast = false;
+      component.startDateInFuture = false;
+
+      // Setup mock to return different values based on the input date
+      mockDateService.isValidDate.and.callFake((date: string) => date === '2025-12-31');
+      mockDateService.isDateInThePast.and.callFake((date: string) => false);
+      mockDateService.isDateInTheFuture.and.callFake((date: string) => date === '2025-12-31');
 
       const testData: IFinesAccPaymentTermsAmendForm = {
         formData: {
@@ -406,8 +424,10 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
       // Verify that date validation was called and flags are set
       expect(mockDateService.isDateInTheFuture).toHaveBeenCalledWith('2025-12-31', 0.6);
-      expect(component.dateInPast).toBe(false);
-      expect(component.dateInFuture).toBe(true);
+      expect(component.payByDateInPast).toBe(false);
+      expect(component.payByDateInFuture).toBe(false);
+      expect(component.startDateInPast).toBe(false);
+      expect(component.startDateInFuture).toBe(true);
     });
 
     it('should not validate suspended committal date for banner flags', () => {
@@ -445,8 +465,10 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
       // Verify that suspended committal date was not checked for banner validation
       expect(mockDateService.isDateInThePast).not.toHaveBeenCalledWith('2023-01-01');
-      expect(component.dateInPast).toBe(false);
-      expect(component.dateInFuture).toBe(false);
+      expect(component.payByDateInPast).toBe(false);
+      expect(component.payByDateInFuture).toBe(false);
+      expect(component.startDateInPast).toBe(false);
+      expect(component.startDateInFuture).toBe(false);
     });
   });
 
