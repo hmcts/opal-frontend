@@ -141,6 +141,8 @@ export default defineConfig({
     CYPRESS_TEST_PASSWORD: process.env.OPAL_TEST_USER_PASSWORD,
     TEST_MODE: process.env.TEST_MODE || 'OPAL',
     TAGS: process.env.TAGS || '',
+    omitFiltered: true,
+    filterSpecs: true,
   },
 
   component: {
