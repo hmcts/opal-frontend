@@ -229,6 +229,8 @@ def tagLabel = allLabels.find { it.startsWith('run_tag:') }
 if (tagLabel) {
   env.TAGS = tagLabel.substring('run_tag:'.length()).trim()
   echo "Running only scenarios matching TAGS=${env.TAGS}"
+} else {
+  echo "Running all scenarios (no run_tag label found)"
 }
 
 withPipeline(type, product, component) {
