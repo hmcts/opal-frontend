@@ -2,15 +2,10 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { map, of, switchMap } from 'rxjs';
-import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
-import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
+import { IFinesAccDefendantDetailsPaymentTermsLatestResolverResponse } from './interfaces/fines-acc-defendant-details-payment-terms-latest-resolver-response.interface';
 
 export const defendantAccountPaymentTermsLatestResolver: ResolveFn<
-  | {
-      paymentTermsData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest;
-      resultData: IOpalFinesResultRefData | null;
-    }
-  | RedirectCommand
+  IFinesAccDefendantDetailsPaymentTermsLatestResolverResponse | RedirectCommand
 > = (route: ActivatedRouteSnapshot) => {
   const accountId = route.paramMap.get('accountId');
   const opalFinesService = inject(OpalFines);
