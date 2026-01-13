@@ -94,6 +94,7 @@ export const routing: Routes = [
         resolve: {
           title: TitleResolver,
           paymentTermsFormData: defendantAccountPaymentTermsLatestResolver,
+          defendantAccountHeadingData: defendantAccountHeadingResolver,
         },
       },
       {

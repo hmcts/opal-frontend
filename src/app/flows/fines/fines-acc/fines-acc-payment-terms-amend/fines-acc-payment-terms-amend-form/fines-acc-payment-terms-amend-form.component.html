@@ -96,59 +96,61 @@
   </opal-lib-govuk-radio>
 
   <hr [class]="FINES_ACC_SECTION_BREAK" />
+  @if (!isYouth) {
+    <opal-lib-govuk-checkboxes
+      fieldSetId="daysInDefaultCheckbox"
+      legendText="Days in default"
+      legendClasses="govuk-fieldset__legend--s"
+    >
+      <div
+        opal-lib-govuk-checkboxes-item
+        labelText="There are days in default"
+        inputId="facc_payment_terms_has_days_in_default"
+        inputName="facc_payment_terms_has_days_in_default"
+        [control]="form.get('facc_payment_terms_has_days_in_default')"
+      ></div>
 
-  <opal-lib-govuk-checkboxes
-    fieldSetId="daysInDefaultCheckbox"
-    legendText="Days in default"
-    legendClasses="govuk-fieldset__legend--s"
-  >
-    <div
-      opal-lib-govuk-checkboxes-item
-      labelText="There are days in default"
-      inputId="facc_payment_terms_has_days_in_default"
-      inputName="facc_payment_terms_has_days_in_default"
-      [control]="form.get('facc_payment_terms_has_days_in_default')"
-    ></div>
+      @if (form.get('facc_payment_terms_has_days_in_default')?.value) {
+        <span id="has-days-in-default-conditional-label" class="govuk-visually-hidden">
+          Options for Has days in default
+        </span>
+        <div opal-lib-govuk-checkboxes-conditional conditionalId="facc_payment_terms_has_days_in_default">
+          <div class="govuk-form-group">
+            <opal-lib-moj-date-picker
+              labelText="Date days in default were imposed"
+              labelClasses="govuk-label--s"
+              inputId="facc_payment_terms_suspended_committal_date"
+              inputName="facc_payment_terms_suspended_committal_date"
+              inputClasses="govuk-input--width-10"
+              hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
+              [control]="form.get('facc_payment_terms_suspended_committal_date')!"
+              [errors]="formControlErrorMessages['facc_payment_terms_suspended_committal_date']"
+              (dateChange)="setInputValue($event, 'facc_payment_terms_suspended_committal_date')"
+            ></opal-lib-moj-date-picker>
+          </div>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input-prefix-suffix
+              labelText="Enter days in default"
+              labelClasses="govuk-label--s"
+              inputId="facc_payment_terms_default_days_in_jail"
+              inputName="facc_payment_terms_default_days_in_jail"
+              inputClasses="govuk-input--width-5"
+              suffixText="days"
+              [control]="form.get('facc_payment_terms_default_days_in_jail')"
+              [errors]="formControlErrorMessages['facc_payment_terms_default_days_in_jail']"
+            ></opal-lib-govuk-text-input-prefix-suffix>
+          </div>
+          <div class="govuk-form-group">
+            <app-fines-mac-default-days
+              [date]="form.get('facc_payment_terms_suspended_committal_date')?.value"
+            ></app-fines-mac-default-days>
+          </div>
+        </div>
+      }
+    </opal-lib-govuk-checkboxes>
 
-    @if (form.get('facc_payment_terms_has_days_in_default')?.value) {
-      <span id="has-days-in-default-conditional-label" class="govuk-visually-hidden">
-        Options for Has days in default
-      </span>
-      <div opal-lib-govuk-checkboxes-conditional conditionalId="facc_payment_terms_has_days_in_default">
-        <div class="govuk-form-group">
-          <opal-lib-moj-date-picker
-            labelText="Date days in default were imposed"
-            labelClasses="govuk-label--s"
-            inputId="facc_payment_terms_suspended_committal_date"
-            inputName="facc_payment_terms_suspended_committal_date"
-            inputClasses="govuk-input--width-10"
-            hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
-            [control]="form.get('facc_payment_terms_suspended_committal_date')!"
-            [errors]="formControlErrorMessages['facc_payment_terms_suspended_committal_date']"
-            (dateChange)="setInputValue($event, 'facc_payment_terms_suspended_committal_date')"
-          ></opal-lib-moj-date-picker>
-        </div>
-        <div class="govuk-form-group">
-          <opal-lib-govuk-text-input-prefix-suffix
-            labelText="Enter days in default"
-            labelClasses="govuk-label--s"
-            inputId="facc_payment_terms_default_days_in_jail"
-            inputName="facc_payment_terms_default_days_in_jail"
-            inputClasses="govuk-input--width-5"
-            suffixText="days"
-            [control]="form.get('facc_payment_terms_default_days_in_jail')"
-            [errors]="formControlErrorMessages['facc_payment_terms_default_days_in_jail']"
-          ></opal-lib-govuk-text-input-prefix-suffix>
-        </div>
-        <div class="govuk-form-group">
-          <app-fines-mac-default-days
-            [date]="form.get('facc_payment_terms_suspended_committal_date')?.value"
-          ></app-fines-mac-default-days>
-        </div>
-      </div>
-    }
-  </opal-lib-govuk-checkboxes>
-  <hr [class]="FINES_ACC_SECTION_BREAK" />
+    <hr [class]="FINES_ACC_SECTION_BREAK" />
+  }
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

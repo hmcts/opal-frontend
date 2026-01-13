@@ -1,5 +1,6 @@
 <app-fines-acc-payment-terms-amend-form
   [initialFormData]="prefilledFormData"
+  [isYouth]="isYouthFlag"
   (formSubmit)="handlePaymentTermsSubmit($event)"
   (unsavedChanges)="handleUnsavedChanges($event)"
 >

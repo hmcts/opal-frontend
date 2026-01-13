@@ -25,7 +25,8 @@ export class FinesAccPaymentTermsAmendComponent extends AbstractFormParentBaseCo
   private readonly utilsService = inject(UtilsService);
   protected readonly prefilledFormData: IFinesAccPaymentTermsAmendForm = this.transformResolvedData();
   protected readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
-
+  protected readonly finesAccHeadingData = this['activatedRoute'].snapshot.data['defendantAccountHeadingData'];
+  protected readonly isYouthFlag: boolean = this.finesAccHeadingData?.is_youth || false;
   /**
    * Transforms the raw resolved data into the form structure
    */

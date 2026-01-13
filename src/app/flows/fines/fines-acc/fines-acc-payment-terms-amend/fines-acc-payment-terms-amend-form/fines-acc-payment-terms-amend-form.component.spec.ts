@@ -356,7 +356,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       // Setup mock to return different values based on the input date
       mockDateService.isValidDate.and.callFake((date: string) => date === '2023-01-01');
       mockDateService.isDateInThePast.and.callFake((date: string) => date === '2023-01-01');
-      mockDateService.isDateInTheFuture.and.callFake((date: string) => false);
+      mockDateService.isDateInTheFuture.and.callFake(() => false);
 
       const testData: IFinesAccPaymentTermsAmendForm = {
         formData: {
@@ -397,7 +397,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
       // Setup mock to return different values based on the input date
       mockDateService.isValidDate.and.callFake((date: string) => date === '2025-12-31');
-      mockDateService.isDateInThePast.and.callFake((date: string) => false);
+      mockDateService.isDateInThePast.and.callFake(() => false);
       mockDateService.isDateInTheFuture.and.callFake((date: string) => date === '2025-12-31');
 
       const testData: IFinesAccPaymentTermsAmendForm = {

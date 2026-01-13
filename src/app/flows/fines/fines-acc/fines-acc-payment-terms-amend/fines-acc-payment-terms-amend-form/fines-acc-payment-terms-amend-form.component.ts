@@ -95,7 +95,6 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   protected readonly accountStore = inject(FinesAccountStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPaymentTermsAmendForm>();
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
-
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
   public payByDateInFuture!: boolean;
   public payByDateInPast!: boolean;
@@ -103,6 +102,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   public startDateInPast!: boolean;
   @Input({ required: false }) public initialFormData: IFinesAccPaymentTermsAmendForm =
     FINES_ACC_PAYMENT_TERMS_AMEND_FORM;
+  @Input({ required: true }) public isYouth!: boolean;
   override fieldErrors: IFinesAccPaymentTermsAmendFieldErrors = {
     ...FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS,
   };
