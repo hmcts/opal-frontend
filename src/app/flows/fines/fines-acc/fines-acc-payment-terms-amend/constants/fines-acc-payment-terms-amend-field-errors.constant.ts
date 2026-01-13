@@ -71,7 +71,7 @@ export const FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS: IFinesAccPaymentTermsAm
   },
   facc_payment_terms_suspended_committal_date: {
     required: {
-      message: `Enter suspended committal date`,
+      message: `Enter date days in default were imposed`,
       priority: 1,
     },
     invalidDateFormat: {
@@ -79,22 +79,26 @@ export const FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS: IFinesAccPaymentTermsAm
       priority: 2,
     },
     invalidDate: {
-      message: `Enter a valid date`,
+      message: `Enter a valid calendar date`,
       priority: 3,
     },
-    invalidPastDate: {
-      message: `Date cannot be in the past`,
+    invalidFutureDate: {
+      message: `Date must not be in the future`,
       priority: 4,
     },
   },
   facc_payment_terms_default_days_in_jail: {
+    required: {
+      message: `Enter days in default`,
+      priority: 1,
+    },
     maxlength: {
       message: `Default days in jail must be 5 characters or fewer`,
-      priority: 1,
+      priority: 2,
     },
     numericalTextPattern: {
       message: `Default days in jail must only contain numbers`,
-      priority: 2,
+      priority: 3,
     },
   },
   facc_payment_terms_reason_for_change: {

@@ -1212,4 +1212,181 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       });
     });
   });
+
+  describe('Days in Default Validation', () => {
+    beforeEach(() => {
+      component.ngOnInit();
+    });
+
+    describe('daysInDefaultListener', () => {
+      it('should set up initial validators when daysInDefaultListener is called', () => {
+        const updateValidatorsSpy = jasmine.createSpy('updateDaysInDefaultValidators');
+        component['updateDaysInDefaultValidators'] = updateValidatorsSpy;
+
+        // Call the private method
+        component['daysInDefaultListener']();
+
+        expect(updateValidatorsSpy).toHaveBeenCalled();
+      });
+
+      it('should call updateDaysInDefaultValidators when has_days_in_default changes', () => {
+        const hasDaysInDefaultControl = component.form.get('facc_payment_terms_has_days_in_default');
+        const updateValidatorsSpy = jasmine.createSpy('updateDaysInDefaultValidators');
+        component['updateDaysInDefaultValidators'] = updateValidatorsSpy;
+
+        // Call daysInDefaultListener to set up the subscription
+        component['daysInDefaultListener']();
+
+        // Trigger value change
+        hasDaysInDefaultControl?.setValue(true);
+
+        expect(updateValidatorsSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('updateDaysInDefaultValidators', () => {
+      beforeEach(() => {
+        component.isYouth = false; // Default to not youth
+      });
+
+      it('should add required validators when checkbox is checked and person is not youth', () => {
+        const hasDaysInDefaultControl = component.form.get('facc_payment_terms_has_days_in_default');
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+        const defaultDaysInJailControl = component.form.get('facc_payment_terms_default_days_in_jail');
+
+        hasDaysInDefaultControl?.setValue(true);
+        component['updateDaysInDefaultValidators']();
+
+        // Check that required validators are added
+        suspendedCommittalDateControl?.setValue('');
+        defaultDaysInJailControl?.setValue('');
+
+        expect(suspendedCommittalDateControl?.hasError('required')).toBeTruthy();
+        expect(defaultDaysInJailControl?.hasError('required')).toBeTruthy();
+      });
+
+      it('should not add required validators when checkbox is checked but person is youth', () => {
+        component.isYouth = true;
+        const hasDaysInDefaultControl = component.form.get('facc_payment_terms_has_days_in_default');
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+        const defaultDaysInJailControl = component.form.get('facc_payment_terms_default_days_in_jail');
+
+        hasDaysInDefaultControl?.setValue(true);
+        component['updateDaysInDefaultValidators']();
+
+        // Check that required validators are not added for youth
+        suspendedCommittalDateControl?.setValue('');
+        defaultDaysInJailControl?.setValue('');
+
+        expect(suspendedCommittalDateControl?.hasError('required')).toBeFalsy();
+        expect(defaultDaysInJailControl?.hasError('required')).toBeFalsy();
+      });
+
+      it('should not add required validators when checkbox is unchecked', () => {
+        const hasDaysInDefaultControl = component.form.get('facc_payment_terms_has_days_in_default');
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+        const defaultDaysInJailControl = component.form.get('facc_payment_terms_default_days_in_jail');
+
+        hasDaysInDefaultControl?.setValue(false);
+        component['updateDaysInDefaultValidators']();
+
+        // Check that required validators are not added
+        suspendedCommittalDateControl?.setValue('');
+        defaultDaysInJailControl?.setValue('');
+
+        expect(suspendedCommittalDateControl?.hasError('required')).toBeFalsy();
+        expect(defaultDaysInJailControl?.hasError('required')).toBeFalsy();
+      });
+
+      it('should validate future dates for suspended committal date', () => {
+        mockDateService.isDateInTheFuture.and.returnValue(true);
+
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+
+        component['updateDaysInDefaultValidators']();
+
+        suspendedCommittalDateControl?.setValue('31/12/2025');
+        suspendedCommittalDateControl?.updateValueAndValidity();
+
+        expect(suspendedCommittalDateControl?.hasError('invalidFutureDate')).toBeTruthy();
+      });
+
+      it('should not validate future dates when date is not in future', () => {
+        mockDateService.isDateInTheFuture.and.returnValue(false);
+
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+
+        component['updateDaysInDefaultValidators']();
+
+        suspendedCommittalDateControl?.setValue('01/01/2024');
+        suspendedCommittalDateControl?.updateValueAndValidity();
+
+        expect(suspendedCommittalDateControl?.hasError('invalidFutureDate')).toBeFalsy();
+      });
+
+      it('should not validate future dates when value is empty', () => {
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+
+        component['updateDaysInDefaultValidators']();
+
+        suspendedCommittalDateControl?.setValue('');
+        suspendedCommittalDateControl?.updateValueAndValidity();
+
+        expect(suspendedCommittalDateControl?.hasError('invalidFutureDate')).toBeFalsy();
+      });
+
+      it('should not validate future dates when date is invalid', () => {
+        mockDateService.isValidDate.and.returnValue(false);
+
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+
+        component['updateDaysInDefaultValidators']();
+
+        suspendedCommittalDateControl?.setValue('invalid-date');
+        suspendedCommittalDateControl?.updateValueAndValidity();
+
+        expect(suspendedCommittalDateControl?.hasError('invalidFutureDate')).toBeFalsy();
+      });
+
+      it('should maintain base validators for default days in jail', () => {
+        const defaultDaysInJailControl = component.form.get('facc_payment_terms_default_days_in_jail');
+
+        component['updateDaysInDefaultValidators']();
+
+        // Test max length validator
+        defaultDaysInJailControl?.setValue('123456'); // More than 5 characters
+        expect(defaultDaysInJailControl?.hasError('maxlength')).toBeTruthy();
+
+        // Test numeric pattern validator
+        defaultDaysInJailControl?.setValue('abc');
+        expect(defaultDaysInJailControl?.hasError('numericalTextPattern')).toBeTruthy();
+      });
+
+      it('should clear existing validators before setting new ones', () => {
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+        const defaultDaysInJailControl = component.form.get('facc_payment_terms_default_days_in_jail');
+
+        spyOn(suspendedCommittalDateControl!, 'clearValidators').and.callThrough();
+        spyOn(defaultDaysInJailControl!, 'clearValidators').and.callThrough();
+
+        component['updateDaysInDefaultValidators']();
+
+        expect(suspendedCommittalDateControl!.clearValidators).toHaveBeenCalled();
+        expect(defaultDaysInJailControl!.clearValidators).toHaveBeenCalled();
+      });
+
+      it('should update validity after setting validators', () => {
+        const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
+        const defaultDaysInJailControl = component.form.get('facc_payment_terms_default_days_in_jail');
+
+        spyOn(suspendedCommittalDateControl!, 'updateValueAndValidity').and.callThrough();
+        spyOn(defaultDaysInJailControl!, 'updateValueAndValidity').and.callThrough();
+
+        component['updateDaysInDefaultValidators']();
+
+        expect(suspendedCommittalDateControl!.updateValueAndValidity).toHaveBeenCalled();
+        expect(defaultDaysInJailControl!.updateValueAndValidity).toHaveBeenCalled();
+      });
+    });
+  });
 });

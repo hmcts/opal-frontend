@@ -100,6 +100,8 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   public payByDateInPast!: boolean;
   public startDateInFuture!: boolean;
   public startDateInPast!: boolean;
+  public suspendedCommittalDateInFuture!: boolean;
+  public suspendedCommittalDateInPast!: boolean;
   @Input({ required: false }) public initialFormData: IFinesAccPaymentTermsAmendForm =
     FINES_ACC_PAYMENT_TERMS_AMEND_FORM;
   @Input({ required: true }) public isYouth!: boolean;
@@ -226,6 +228,9 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     } else if (fieldName === 'facc_payment_terms_start_date') {
       this.startDateInFuture = false;
       this.startDateInPast = false;
+    } else if (fieldName === 'facc_payment_terms_suspended_committal_date') {
+      this.suspendedCommittalDateInFuture = false;
+      this.suspendedCommittalDateInPast = false;
     }
 
     if (this.dateService.isValidDate(dateValue)) {
@@ -239,6 +244,9 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
       } else if (fieldName === 'facc_payment_terms_start_date') {
         this.startDateInFuture = isInFuture;
         this.startDateInPast = isInPast;
+      } else if (fieldName === 'facc_payment_terms_suspended_committal_date') {
+        this.suspendedCommittalDateInFuture = isInFuture;
+        this.suspendedCommittalDateInPast = isInPast;
       }
     }
   }
@@ -257,19 +265,22 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
 
   /**
    * Sets up date listeners for date fields that affect the banner warning
-   * Note: Suspended committal date is excluded as it should not affect the banner
    */
   private setupDateListeners(): void {
     this.dateListener('facc_payment_terms_pay_by_date');
     this.dateListener('facc_payment_terms_start_date');
+    this.dateListener('facc_payment_terms_suspended_committal_date');
   }
 
   /**
    * Validates date fields that affect the banner warning with their current values to trigger initial date checks
-   * Note: Suspended committal date is excluded as it should not affect the banner
    */
   private validateInitialDateValues(): void {
-    const dateFields = ['facc_payment_terms_pay_by_date', 'facc_payment_terms_start_date'];
+    const dateFields = [
+      'facc_payment_terms_pay_by_date',
+      'facc_payment_terms_start_date',
+      'facc_payment_terms_suspended_committal_date',
+    ];
 
     dateFields.forEach((fieldName) => {
       const control = this.form.get(fieldName);
@@ -277,6 +288,62 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
         this.dateChecker(control.value, fieldName);
       }
     });
+  }
+
+  /**
+   * Listens for changes in the days in default checkbox and conditionally adds validators
+   * based on whether the checkbox is checked and if the person is not a youth
+   */
+  private daysInDefaultListener(): void {
+    const hasDaysInDefaultControl = this.form.get('facc_payment_terms_has_days_in_default')!;
+
+    // Set up initial validators based on current state
+    this.updateDaysInDefaultValidators();
+
+    hasDaysInDefaultControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+      this.updateDaysInDefaultValidators();
+    });
+  }
+
+  /**
+   * Updates validators for days in default fields based on checkbox state and youth status
+   */
+  private updateDaysInDefaultValidators(): void {
+    const hasDaysInDefaultControl = this.form.get('facc_payment_terms_has_days_in_default')!;
+    const suspendedCommittalDateControl = this.form.get('facc_payment_terms_suspended_committal_date')!;
+    const defaultDaysInJailControl = this.form.get('facc_payment_terms_default_days_in_jail')!;
+
+    // Clear existing validators
+    suspendedCommittalDateControl.clearValidators();
+    defaultDaysInJailControl.clearValidators();
+
+    // Set base validators
+    suspendedCommittalDateControl.setValidators([
+      optionalValidDateValidator(),
+      (control) => {
+        if (!control.value) {
+          return null;
+        }
+        if (!this.dateService.isValidDate(control.value)) {
+          return null; // Let other validators handle invalid dates
+        }
+        if (this.dateService.isDateInTheFuture(control.value)) {
+          return { invalidFutureDate: true };
+        }
+        return null;
+      },
+    ]);
+    defaultDaysInJailControl.setValidators([optionalMaxLengthValidator(5), NUMERIC_PATTERN_VALIDATOR]);
+
+    // Add required validators only if checkbox is checked AND person is not a youth
+    if (hasDaysInDefaultControl.value && !this.isYouth) {
+      suspendedCommittalDateControl.addValidators([Validators.required]);
+      defaultDaysInJailControl.addValidators([Validators.required]);
+    }
+
+    // Update validity
+    suspendedCommittalDateControl.updateValueAndValidity();
+    defaultDaysInJailControl.updateValueAndValidity();
   }
 
   /**
@@ -292,6 +359,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.paymentTermsListener();
+    this.daysInDefaultListener();
     this.validateInitialDateValues();
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
