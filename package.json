@@ -156,7 +156,7 @@
     "cypress-multi-reporters": "^2.0.0",
     "cypress-parallel": "^0.15.0",
     "eslint": "^9.0.0",
-    "eslint-plugin-jsdoc": "^61.5.0",
+    "eslint-plugin-jsdoc": "^62.0.0",
     "jasmine-core": "~5.13.0",
     "junit-report-merger": "^9.0.0",
     "karma": "~6.4.0",
