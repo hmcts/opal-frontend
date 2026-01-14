@@ -14,7 +14,7 @@
     <opal-lib-moj-timeline-item>
       <span title>{{ timelineItem.status }}</span>
       <span user>{{ timelineItem.username }}</span>
-      <span date>{{ dateService.getFromFormatToFormat(timelineItem.status_date, 'yyyy-MM-dd', 'dd MMMM yyyy') }}</span>
+      <span date>{{ timelineItem.status_date | dateFormat: 'yyyy-MM-dd' : 'dd MMMM yyyy' }}</span>
       @if (timelineItem.reason_text) {
         <span description>{{ timelineItem.reason_text }}</span>
       }

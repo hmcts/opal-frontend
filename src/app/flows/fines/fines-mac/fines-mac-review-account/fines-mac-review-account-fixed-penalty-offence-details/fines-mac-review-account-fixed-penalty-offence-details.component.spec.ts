@@ -42,12 +42,6 @@ describe('FinesMacReviewAccountFixedPenaltyDetailsComponent', () => {
     expect(component.emitChangeOffenceDetails.emit).toHaveBeenCalled();
   });
 
-  it('should convert date format correctly', () => {
-    const date = '01/01/2023';
-    const formattedDate = component.dateFormat(date);
-    expect(formattedDate).toBe('01 January 2023');
-  });
-
   it('should get offence details by code', () => {
     const offenceCode = '12345';
     component.getOffence(offenceCode);
