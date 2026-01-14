@@ -163,36 +163,12 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves court data by court ID from the cache or makes an HTTP request if not cached.
-   *
-   * @param court_id - The unique identifier of the court to retrieve
-   * @returns An Observable containing the court data in non-snake case format
-   *
-   * @remarks
-   * This method implements a simple caching mechanism. If the court data is already cached,
-   * it returns the cached Observable. Otherwise, it makes an HTTP GET request to fetch
-   * the court data and caches the result for subsequent calls.
-   */
-  public getCourtById(court_id: number): Observable<IOpalFinesCourtNonSnakeCase> {
-    if (!this.cache.courtDataCache$[court_id]) {
-      this.cache.courtDataCache$[court_id] = this.http
-        .get<IOpalFinesCourtNonSnakeCase>(`${OPAL_FINES_PATHS.courtRefData}/${court_id}`)
-        .pipe(shareReplay(1));
-    }
-    return this.cache.courtDataCache$[court_id];
-  }
-
-  /**
    * Returns the pretty name of a court.
    * @param court - The court object.
    * @returns The pretty name of the court.
    */
-  public getCourtPrettyName(court: IOpalFinesCourt | IOpalFinesCourtNonSnakeCase): string {
-    if ('court_code' in court) {
-      return `${court.name} (${court.court_code})`;
-    }
-
-    return `${court.name} (${court.courtCode})`;
+  public getCourtPrettyName(court: IOpalFinesCourt): string {
+    return `${court.name} (${court.court_code})`;
   }
 
   /**

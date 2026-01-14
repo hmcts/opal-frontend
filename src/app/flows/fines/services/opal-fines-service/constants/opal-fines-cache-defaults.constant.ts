@@ -2,7 +2,6 @@ import { IOpalFinesCache } from '../interfaces/opal-fines-cache.interface';
 
 export const OPAL_FINES_CACHE_DEFAULTS: IOpalFinesCache = {
   courtRefDataCache$: {},
-  courtDataCache$: {},
   businessUnitsCache$: null,
   businessUnitsPermissionCache$: {},
   localJusticeAreasCache$: null,

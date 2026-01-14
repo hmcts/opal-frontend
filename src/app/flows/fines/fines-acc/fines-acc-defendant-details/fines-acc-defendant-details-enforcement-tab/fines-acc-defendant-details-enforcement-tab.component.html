@@ -31,7 +31,11 @@
             }
           </div>
         }
-        @if (tabData.enforcement_overview.days_in_default) {
+        @if (
+          tabData.enforcement_overview.days_in_default !== null &&
+          tabData.enforcement_overview.days_in_default !== undefined &&
+          tabData.enforcement_overview.days_in_default > 0
+        ) {
           <div
             opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -45,7 +49,7 @@
             </ng-container>
           </div>
         }
-        @if (enforcementCourt) {
+        @if (tabData.enforcement_overview.enforcement_court) {
           <div
             opal-lib-govuk-summary-list-row
             [class]="
@@ -59,8 +63,13 @@
           >
             <ng-container name>Enforcement court</ng-container>
             <ng-container value>
-              @if (enforcementCourtPrettyName) {
-                {{ enforcementCourtPrettyName }}
+              @if (
+                tabData.enforcement_overview.enforcement_court.court_name &&
+                tabData.enforcement_overview.enforcement_court.court_code
+              ) {
+                {{ tabData.enforcement_overview.enforcement_court.court_name }} ({{
+                  tabData.enforcement_overview.enforcement_court.court_code
+                }})
               } @else {
                 <app-fines-not-provided></app-fines-not-provided>
               }

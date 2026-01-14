@@ -64,7 +64,6 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@servic
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
-import { IOpalFinesCourtNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -125,7 +124,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
-  public enforcementCourt: IOpalFinesCourtNonSnakeCase | null = null;
 
   /**
    * Fetches the defendant account heading data and current tab fragment from the route.
@@ -247,18 +245,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           break;
         case 'enforcement':
           this.tabEnforcement$ = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountEnforcementTabData(account_id).pipe(
-              tap((data) => {
-                if (data.enforcement_overview.enforcement_court) {
-                  this.opalFinesService
-                    .getCourtById(data.enforcement_overview.enforcement_court.court_id)
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe((court) => {
-                      this.enforcementCourt = court;
-                    });
-                }
-              }),
-            ),
+            this.opalFinesService.getDefendantAccountEnforcementTabData(account_id),
           );
           break;
         case 'impositions':

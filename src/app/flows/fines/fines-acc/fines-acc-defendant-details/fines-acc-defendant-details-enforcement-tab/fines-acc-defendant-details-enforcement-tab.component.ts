@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
@@ -8,8 +8,6 @@ import {
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
-import { IOpalFinesCourtNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
@@ -25,19 +23,8 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsEnforcementTab {
-  private readonly opalFinesService = inject(OpalFines);
-  private _enforcementCourt: IOpalFinesCourtNonSnakeCase | null = null;
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsEnforcementTabRefData;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
-  @Input() set enforcementCourt(value: IOpalFinesCourtNonSnakeCase | null) {
-    this._enforcementCourt = value;
-    this.enforcementCourtPrettyName = value ? this.opalFinesService.getCourtPrettyName(value) : null;
-  }
-  get enforcementCourt(): IOpalFinesCourtNonSnakeCase | null {
-    return this._enforcementCourt;
-  }
-
-  public enforcementCourtPrettyName!: string | null;
 }
