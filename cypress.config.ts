@@ -1,9 +1,21 @@
 // cypress.config.ts
 import { defineConfig } from 'cypress';
 import webpack from '@cypress/webpack-preprocessor';
-import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
+import {
+  addCucumberPreprocessorPlugin,
+  beforeRunHandler,
+  afterRunHandler,
+} from '@badeball/cypress-cucumber-preprocessor';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import * as path from 'node:path';
+import {
+  ensureAccountCaptureFile,
+  initializeAccountCapture,
+  registerAccountCaptureTasks,
+  clearAccountEvidence,
+  resetEvidenceForRun,
+} from './cypress/support/tasks/accountCaptureTask';
+import { registerScreenshotTasks } from './cypress/support/tasks/screenshotTask';
 
 function setupBrowserLaunch(on: Cypress.PluginEvents): void {
   on('before:browser:launch', (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
@@ -45,6 +57,12 @@ async function setupNodeEvents(
   config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
   await addCucumberPreprocessorPlugin(on, config);
+  // Start each Cypress run with a clean evidence directory.
+  await clearAccountEvidence();
+  // Register tasks so Cypress can write the per-run created-accounts artifact.
+  registerAccountCaptureTasks(on);
+  // Register tasks to relocate scenario evidence screenshots.
+  registerScreenshotTasks(on);
 
   on(
     'file:preprocessor',
@@ -102,6 +120,19 @@ async function setupNodeEvents(
 
   setupBrowserLaunch(on);
 
+  // Initialize the artifact at run start and flush it at run end.
+  on('before:run', async () => {
+    await beforeRunHandler(config);
+    await resetEvidenceForRun();
+    await initializeAccountCapture();
+  });
+
+  // Flush the artifact to disk once the entire run completes.
+  on('after:run', async (results) => {
+    await ensureAccountCaptureFile();
+    await afterRunHandler(config, results);
+  });
+
   // messagesOutput logic (unchanged)
   if (process.env.TEST_MODE === 'OPAL' && process.env.BROWSER_TO_RUN === 'chrome') {
     config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
@@ -118,6 +149,8 @@ export default defineConfig({
   viewportWidth: 2560,
   viewportHeight: 2560,
   reporter: 'junit',
+  // Route all screenshots (manual and failure) into the shared account evidence folder.
+  screenshotsFolder: 'functional-output/account_evidence/screenshots',
 
   e2e: {
     baseUrl: process.env.TEST_URL || 'http://localhost:4000/',

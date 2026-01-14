@@ -78,8 +78,8 @@ export class FixedPenaltyReviewActions {
   /**
    * Submits the Fixed Penalty account for review.
    */
-  submitForReview(): void {
-    this.review.submitForReview();
+  submitForReview(): Cypress.Chainable<void> {
+    return this.review.submitForReview();
   }
 
   /**

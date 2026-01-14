@@ -3,19 +3,49 @@ import uk.gov.hmcts.contino.GithubAPI
 
 @Library('Infrastructure')
 
-def type = 'angular'
-def product = 'opal'
-def component = 'frontend'
+// Pipeline identifiers
+String type = 'angular'
+String product = 'opal'
+String component = 'frontend'
 
-def secrets = [
-  'opal-${env}': [
+// Secret key for KeyVault lookups
+String secretKey = 'opal-' + String.valueOf(env)
+
+// Common literals to reduce duplication warnings
+String stageBuild = 'build'
+String stageTest = 'test'
+String stageFunctionalDev = 'functionalTest:dev'
+String stageFunctionalStg = 'functionalTest:stg'
+String skipLabelComponent = 'skip_opal_component'
+String weightsRoot = 'cypress/parallel/weights'
+String pipelineWeightsDir = "${weightsRoot}/pipeline"
+String smokeWeights = 'smoke-parallel-weights.json'
+String functionalWeights = 'functional-parallel-weights.json'
+String componentWeights = 'component-parallel-weights.json'
+String mkdirPipelineCmd = "mkdir -p ${pipelineWeightsDir}"
+String copySmokeToPipelineCmd = "cp -r ${weightsRoot}/${smokeWeights} ${pipelineWeightsDir}/"
+String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
+String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
+String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
+String functionalOutputDir = 'functional-output/prod/cucumber/'
+String functionalReportFile = 'functional-report.html'
+String functionalReportName = 'Cucumber Functional Test Report'
+String smokeOutputDir = 'smoke-output/prod/cucumber/'
+String smokeReportFile = 'smoke-report.html'
+String smokeReportName = 'Cucumber Smoke Test Report'
+String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
+
+// Vault secrets injected into the pipeline
+Map<String, Object> secrets = [
+  (secretKey): [
     secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
     secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
   ],
 ]
 
-static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [$class     : 'AzureKeyVaultSecret',
+// Build an Azure KeyVault secret entry
+static Map<String, Object> secret(String secretName, String envVar) {
+    return [$class     : 'AzureKeyVaultSecret',
     secretType : 'Secret',
     name       : secretName,
     version    : '',
@@ -23,45 +53,69 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+// Yarn helper for build/test commands
+uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
-def getProjectName() {
-  String projectPrefix = 'HMCTS/opal-frontend/'
-  def githubApi = new GithubAPI(this)
-  echo "Branch name: ${env.BRANCH_NAME}"
-  echo "Labels: ${githubApi.getLabels(env.BRANCH_NAME)}"
-  for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-')) {
-    String prNumber = label.substring(21, label.length())
-    return projectPrefix + 'PR-' + prNumber
-  }
-  return projectPrefix + 'master'
+void archiveArtifact(String path) {
+    archiveArtifacts artifacts: path, allowEmptyArchive: true
 }
-def getProjectLabels() {
-  def githubApi = new GithubAPI(this)
-  def testLabels = []
-  for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'test_')) {
-    testLabels.add(label)
-  }
-  for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'skip_')) {
-    testLabels.add(label)
-  }
-  return testLabels
-}
-def performArtifactOperations() {
-  sh 'mkdir -p cypress/parallel/weights/pipeline'
 
-  sh '''
+// Publish an HTML report directory with Jenkins HTML Publisher
+void publishHtmlReport(String dir, String files, String name) {
+    publishHTML target: [
+    allowMissing         : true,
+    alwaysLinkToLastBuild: true,
+    keepAll              : true,
+    reportDir            : dir,
+    reportFiles          : files,
+    reportName           : name
+  ]
+}
+
+// Resolve project/job name (PR vs master)
+String getProjectName() {
+    String projectPrefix = 'HMCTS/opal-frontend/'
+    GithubAPI githubApi = new GithubAPI(this)
+    echo "Branch name: ${env.BRANCH_NAME}"
+    echo "Labels: ${githubApi.getLabels(env.BRANCH_NAME)}"
+    for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-')) {
+        String prNumber = label.substring(21, label.length())
+        return projectPrefix + 'PR-' + prNumber
+    }
+    return projectPrefix + 'master'
+}
+// Collect test/skip labels for routing
+List<String> getProjectLabels() {
+    GithubAPI githubApi = new GithubAPI(this)
+    List<String> testLabels = []
+    for (String label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'test_')) {
+        testLabels.add(label)
+    }
+    for (String label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'skip_')) {
+        testLabels.add(label)
+    }
+    return testLabels
+}
+// Restore weight files from last successful build
+void performArtifactOperations() {
+    sh 'mkdir -p cypress/parallel/weights/pipeline'
+
+    sh '''
     echo "Listing all artifacts before copy artifacts:"
     ls -l1a cypress/parallel/weights/
     ls -l1a cypress/parallel/weights/pipeline/
     '''
 
-  script {
-        def projectName = getProjectName()
+    script {
+        String projectNameValue = projectName
         try {
-      copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
-        } catch (Exception e) {
-      echo "Error copying artifacts: ${e}"
+            copyArtifacts(
+                projectName: projectNameValue,
+                selector: lastSuccessful(),
+                filter: '**/cypress/parallel/weights/pipeline/*'
+      )
+        } catch (hudson.AbortException e) {
+            echo "Error copying artifacts: ${e}"
         }
 
         sh '''
@@ -69,95 +123,99 @@ def performArtifactOperations() {
         ls -l1a cypress/parallel/weights/
         ls -l1a cypress/parallel/weights/pipeline/
         '''
-  }
+    }
 
-  try {
-    sh '''
-        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+    try {
+        sh """
+        if [ -f ${pipelineWeightsDir}/${smokeWeights} ]; then
+            mv ${pipelineWeightsDir}/${smokeWeights} ${weightsRoot}/${smokeWeights}
             echo "Moved smoke-parallel-weights.json"
         else
             echo "smoke-parallel-weights.json not found, skipping move"
         fi
-        if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+        if [ -f ${pipelineWeightsDir}/${functionalWeights} ]; then
+            mv ${pipelineWeightsDir}/${functionalWeights} ${weightsRoot}/${functionalWeights}
             echo "Moved functional-parallel-weights.json"
         else
             echo "functional-parallel-weights.json not found, skipping move"
         fi
-        if [ -f cypress/parallel/weights/pipeline/component-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/component-parallel-weights.json cypress/parallel/weights/component-parallel-weights.json
+        if [ -f ${pipelineWeightsDir}/${componentWeights} ]; then
+            mv ${pipelineWeightsDir}/${componentWeights} ${weightsRoot}/${componentWeights}
             echo "Moved component-parallel-weights.json"
         else
             echo "component-parallel-weights.json not found, skipping move"
         fi
-        '''
-    } catch (Exception e) {
-    echo "Artifacts not found or copy failed: ${e}"
-  }
+        """
+    } catch (hudson.AbortException e) {
+        echo "Artifacts not found or copy failed: ${e}"
+    }
 
-  sh '''
+    sh '''
     echo "Listing all copied artifacts:"
     ls -l1a cypress/parallel/weights/
     ls -l1a cypress/parallel/weights/pipeline/
     '''
 }
 
-def setupTestSpecifications() {
-  script {
-        def projectName = getProjectName()
-        def labels = getProjectLabels()
+// Set TEST_SPECS based on labels or default to all
+void setupTestSpecifications() {
+    script {
+        String projectNameValue = projectName
+        List<String> labels = projectLabels
         sh "echo 'Test Labels: ${labels}'"
 
-        def directories = []
+        List<String> directories = []
 
         // Add additional labels as needed
         if (labels.contains('test_enq')) {
-      directories.add('accountEnquiry')
+            directories.add('accountEnquiry')
         }
         if (labels.contains('test_remo')) {
-      directories.add('reciprocalMaintenance')
+            directories.add('reciprocalMaintenance')
         }
         if (labels.contains('test_mac')) {
-      directories.add('manualAccountCreation')
+            directories.add('manualAccountCreation')
         }
         sh "echo 'Directories: ${directories}'"
 
-        if (directories.isEmpty() || projectName == 'HMCTS/opal-frontend/master') {
-      // No specific test labels, include all directories
-      env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
+        if (directories.empty || projectNameValue == 'HMCTS/opal-frontend/master') {
+            // No specific test labels, include all directories
+            env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
         } else {
-      // Build the glob pattern using curly braces
-      def dirList = directories.join(',')
-      env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
+            // Build the glob pattern using curly braces
+            String dirList = directories.join(',')
+            env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
         }
         sh "echo 'Test Specs: ${env.TEST_SPECS}'"
-  }
-}
-
-def determineDevEnvironmentDeployment() {
-  env.DEV_ENABLE_OPAL_FINES_SERVICE = true // Default to true for development environment as FE wont work without it
-  env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
-  env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
-
-  def githubApi = new GithubAPI(this)
-  if (githubApi.checkForLabel(env.BRANCH_NAME, 'enable_keep_helm')) {
-    for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'enable_opal_')) {
-      //Fines service
-      if (label ==~ /enable_opal_fines_service.*/) {
-        env.DEV_ENABLE_OPAL_FINES_SERVICE = true
-        env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
-        if (label ==~ /enable_opal_fines_service:pr-.*/) {
-          env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = label.replace('enable_opal_fines_service:', '')
-        }
-        echo "Deploying Opal fines service (${env.DEV_OPAL_FINES_SERVICE_URL} - ${env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX}) instance in PR environment"
-      }
     }
-  }
 }
 
-def checkFocusedTests() {
-  sh '''
+// Configure PR env deployment for dev fines service
+void determineDevEnvironmentDeployment() {
+    env.DEV_ENABLE_OPAL_FINES_SERVICE = true // Default to true for development environment as FE wont work without it
+    env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
+    env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
+
+    GithubAPI githubApi = new GithubAPI(this)
+    if (githubApi.checkForLabel(env.BRANCH_NAME, 'enable_keep_helm')) {
+        for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'enable_opal_')) {
+            //Fines service
+            if (label ==~ /enable_opal_fines_service.*/) {
+                env.DEV_ENABLE_OPAL_FINES_SERVICE = true
+                env.DEV_OPAL_FINES_SERVICE_URL =
+          "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
+                if (label ==~ /enable_opal_fines_service:pr-.*/) {
+                    env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = label.replace('enable_opal_fines_service:', '')
+                }
+                echo "Deploying Opal fines service ${env.DEV_OPAL_FINES_SERVICE_URL}"
+            }
+        }
+    }
+}
+
+// Fail the build if .only or @only are present
+void checkFocusedTests() {
+    sh '''
     echo "=== Focused test checks (component + feature) ==="
     set +e
     COMPONENT_ONLY_FILES=$(grep -R -l --include='*.cy.ts' '\\.only' cypress/component 2>/dev/null)
@@ -194,145 +252,143 @@ def checkFocusedTests() {
 }
 
 properties([
+    // Permit dependent jobs to copy artifacts from this build
     copyArtifactPermission('*')
 ])
 
+// Primary pipeline definition and lifecycle hooks
 withPipeline(type, product, component) {
-  loadVaultSecrets(secrets)
-  before('akschartsinstall') {
-    onPR {
-      determineDevEnvironmentDeployment()
-    }
-  }
-  afterSuccess('build') {
-    yarnBuilder.yarn('rebuild puppeteer')
-    yarnBuilder.yarn('build')
-  }
-  afterSuccess('checkout') {
-    performArtifactOperations()
-    setupTestSpecifications()
-    script {
-      def labels = getProjectLabels()
-      def skipLabel = 'skip_opal_component'
-      if (!labels.contains(skipLabel)) {
-        echo 'Running focused test checks (no skip label present)'
-        checkFocusedTests()
-      } else {
-        echo "Skipping focused test checks due to label: ${skipLabel}"
-      }
-    }
+    // Inject KeyVault secrets required for login/setup
+    loadVaultSecrets(secrets)
+
+    // Configure PR-only deployment knobs before helm installs run
+    before('akschartsinstall') {
+        onPR {
+            determineDevEnvironmentDeployment()
+        }
     }
 
-  afterSuccess('test') {
-    script {
-        def sourceJobName = env.JOB_NAME
-        sh' mkdir -p cypress/parallel/weights/pipeline'
-        sh '''
+    // Build frontend bundle after checkout when previous steps succeed
+    afterSuccess(stageBuild) {
+        yarnBuilder.yarn('rebuild puppeteer')
+        yarnBuilder.yarn(stageBuild)
+    }
+
+    // Restore previous parallelization weights and set test spec globs
+    afterSuccess('checkout') {
+        performArtifactOperations()
+        setupTestSpecifications()
+        script {
+            List<String> labels = projectLabels
+            if (labels.contains(skipLabelComponent)) {
+                echo "Skipping focused test checks due to label: ${skipLabelComponent}"
+            } else {
+                echo 'Running focused test checks (no skip label present)'
+                checkFocusedTests()
+            }
+        }
+    }
+
+    // Persist updated component weights after component test stage
+    afterSuccess(stageTest) {
+        script {
+            String sourceJobName = env.JOB_NAME
+            sh "${mkdirPipelineCmd}"
+            sh '''
           if [ -f cypress/parallel/weights/component-parallel-weights.json ]; then
             cp -r cypress/parallel/weights/component-parallel-weights.json cypress/parallel/weights/pipeline/
           else
             echo "component-parallel-weights.json not found, skipping copy"
           fi
           '''
-        sh"echo 'Archiving weight files in ${sourceJobName}'"
-        archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/component-parallel-weights.json', allowEmptyArchive: true
-    }
-  }
-
-  afterAlways('test') {
-    script {
-      def labels = getProjectLabels()
-      def skipLabel = 'skip_opal_component'
-
-      if (!labels.contains(skipLabel)) {
-        echo 'Running opal component tests (no skip label present)'
-        try {
-          yarnBuilder.yarn('test:opalComponent')
-        } catch (Exception e) {
-          echo "Opal component tests failed: ${e}"
-          currentBuild.result = 'FAILURE'
-        } finally {
-            archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/component-report/',
-              reportFiles          : 'index.html',
-              reportName           : 'Component Test Report'
-          ]
+            sh"echo 'Archiving weight files in ${sourceJobName}'"
+            archiveArtifacts(
+          artifacts: "${pipelineWeightsDir}/${componentWeights}",
+          allowEmptyArchive: true
+        )
         }
+    }
+
+    // Always run component suite unless explicitly skipped; publish artifacts
+    afterAlways(stageTest) {
+        script {
+            List<String> labels = projectLabels
+            if (labels.contains(skipLabelComponent)) {
+                echo "Skipping opal component tests due to label: ${skipLabelComponent}"
       } else {
-        echo "Skipping opal component tests due to label: ${skipLabel}"
-      }
+                echo 'Running opal component tests (no skip label present)'
+                try {
+                    yarnBuilder.yarn('test:opalComponent')
+        } catch (hudson.AbortException e) {
+                    echo "Opal component tests failed: ${e}"
+                    currentBuild.result = 'FAILURE'
+        } finally {
+                    archiveArtifact('functional-output/**')
+                    publishHtmlReport('functional-output/component-report/', 'index.html', 'Component Test Report')
+                }
+            }
+        }
     }
-  }
 
-  afterSuccess('functionalTest:dev') {
-    script {
-      def sourceJobName = env.JOB_NAME
-      sh' mkdir -p cypress/parallel/weights/pipeline'
-      sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
-      sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
+    // Archive smoke/functional weights and reports after dev functional run
+    afterSuccess(stageFunctionalDev) {
+        script {
+            String sourceJobName = env.JOB_NAME
+            sh "${mkdirPipelineCmd}"
+            sh "${copySmokeToPipelineCmd}"
+            sh "${copyFunctionalToPipelineCmd}"
 
-      sh"echo 'Archiving weight files in ${sourceJobName}'"
-      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
+            sh"echo 'Archiving weight files in ${sourceJobName}'"
+            archiveArtifact("${pipelineWeightsDir}/${smokeWeights}")
+            archiveArtifact("${pipelineWeightsDir}/${functionalWeights}")
+            archiveArtifact(smokeXmlReport)
+            archiveArtifact(functionalXmlReport)
+        }
     }
-  }
 
-  afterSuccess('functionalTest:stg') {
-    script {
-      def sourceJobName = env.JOB_NAME
-      sh' mkdir -p cypress/parallel/weights/pipeline'
-      sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
-      sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
+    // Archive smoke/functional weights and reports after staging functional run
+    afterSuccess(stageFunctionalStg) {
+        script {
+            String sourceJobName = env.JOB_NAME
+            sh "${mkdirPipelineCmd}"
+            sh "${copySmokeToPipelineCmd}"
+            sh "${copyFunctionalToPipelineCmd}"
 
-      sh"echo 'Archiving weight files in ${sourceJobName}'"
-      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
+            sh"echo 'Archiving weight files in ${sourceJobName}'"
+            archiveArtifact("${pipelineWeightsDir}/${smokeWeights}")
+            archiveArtifact("${pipelineWeightsDir}/${functionalWeights}")
+            archiveArtifact(smokeXmlReport)
+            archiveArtifact(functionalXmlReport)
+        }
     }
-  }
 
-      afterAlways('functionalTest:stg') {
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : 'functional-output/prod/cucumber/',
-        reportFiles          : 'functional-report.html',
-        reportName           : 'Cucumber Functional Test Report'
-    ]
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : 'smoke-output/prod/cucumber/',
-        reportFiles          : 'smoke-report.html',
-        reportName           : 'Cucumber Smoke Test Report'
-    ]
-      }
-  afterAlways('functionalTest:dev') {
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : 'functional-output/prod/cucumber/',
-        reportFiles          : 'functional-report.html',
-        reportName           : 'Cucumber Functional Test Report'
-    ]
+    // Publish HTML and JSON artifacts for staging functional runs
+    afterAlways(stageFunctionalStg) {
+        publishHtmlReport(
+        functionalOutputDir,
+        functionalReportFile,
+        functionalReportName
+      )
+        archiveArtifact(accountArtifactPath)
+        publishHtmlReport(
+        smokeOutputDir,
+        smokeReportFile,
+        smokeReportName
+      )
+    }
+    // Publish HTML and JSON artifacts for dev functional runs
+    afterAlways(stageFunctionalDev) {
+        publishHtmlReport(
+        functionalOutputDir,
+        functionalReportFile,
+        functionalReportName
+      )
+        archiveArtifact(accountArtifactPath)
 
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : 'smoke-output/prod/cucumber/',
-        reportFiles          : 'smoke-report.html',
-        reportName           : 'Cucumber Smoke Test Report'
-    ]
-  }
+        publishHtmlReport(
+        smokeOutputDir,
+        smokeReportFile,
+        smokeReportName
+      )
+    }
 }
