@@ -1,14 +1,16 @@
 /**
  * @file screenshot.ts
- * @description Browser-side helper for capturing scenario-scoped screenshots with consistent naming; delegates persistence to a plugin task and attaches the image to Cucumber reports.
+ * Browser-side helper for capturing scenario-scoped screenshots with consistent naming; delegates persistence to a
+ * plugin task and attaches the image to Cucumber reports.
  */
 import { attach } from '@badeball/cypress-cucumber-preprocessor';
 import { getCurrentScenarioTitle } from './scenarioContext';
 
 /**
- * @description Capture a screenshot with the current scenario name prefixed.
+ * Capture a screenshot with the current scenario name prefixed.
  * @param tag - Short tag describing the moment (e.g., "before-submit").
  * @param options - Optional Cypress screenshot options.
+ * @returns Cypress chainable for the screenshot capture.
  * @example captureScenarioScreenshot('before-submit');
  */
 export function captureScenarioScreenshot(

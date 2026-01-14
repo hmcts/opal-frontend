@@ -82,9 +82,10 @@ type AccountCreatedRecord = Omit<CreatedAccountInput, 'requestSummary'> & {
 const ERROR_MAX_LENGTH = 4000;
 
 /**
- * @description Truncate a string to a maximum length, appending an ellipsis when shortened.
+ * Truncate a string to a maximum length, appending an ellipsis when shortened.
  * @param value - The input string to truncate.
  * @param max - Optional maximum length (defaults to ERROR_MAX_LENGTH).
+ * @returns The truncated string.
  * @example truncate('long message', 10) // "long messa…"
  */
 function truncate(value: string, max: number = ERROR_MAX_LENGTH): string {
@@ -93,8 +94,9 @@ function truncate(value: string, max: number = ERROR_MAX_LENGTH): string {
 }
 
 /**
- * @description Type guard to check if a value is a non-null, non-array object.
+ * Type guard to check if a value is a non-null, non-array object.
  * @param value - The value to test.
+ * @returns True when the value is a plain record.
  * @example if (isRecord(payload)) {
  *   // safely access keys
  * }
@@ -104,8 +106,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /**
- * @description Attempt to parse arbitrary input into a plain object.
+ * Attempt to parse arbitrary input into a plain object.
  * @param raw - Unknown value to parse.
+ * @returns Parsed record or null when the input is not an object.
  * @example const body = parseBody(response.body);
  */
 function parseBody(raw: unknown): Record<string, unknown> | null {
@@ -122,8 +125,9 @@ function parseBody(raw: unknown): Record<string, unknown> | null {
 }
 
 /**
- * @description Normalize a URL/path to its pathname, preserving input on parse failures.
+ * Normalize a URL/path to its pathname, preserving input on parse failures.
  * @param endpoint - Raw endpoint or URL string.
+ * @returns Normalized endpoint path.
  * @example const pathOnly = normalizeEndpoint('/opal-fines-service/draft-accounts');
  */
 function normalizeEndpoint(endpoint: string): string {
@@ -149,8 +153,9 @@ const UPDATED_TIMESTAMP_KEYS = [
 ];
 
 /**
- * @description Normalize a timestamp string if parseable.
+ * Normalize a timestamp string if parseable.
  * @param value - Raw value to normalize.
+ * @returns Normalized ISO timestamp or undefined.
  * @example const createdAt = normalizeTimestamp(record.created_date);
  */
 function normalizeTimestamp(value: unknown): string | undefined {
@@ -162,9 +167,10 @@ function normalizeTimestamp(value: unknown): string | undefined {
 }
 
 /**
- * @description Read a timestamp value from a record by checking known keys.
+ * Read a timestamp value from a record by checking known keys.
  * @param record - Record to scan.
  * @param keys - Candidate keys to check.
+ * @returns First normalized timestamp found.
  * @example const createdAt = readTimestamp(record, CREATED_TIMESTAMP_KEYS);
  */
 function readTimestamp(record: Record<string, unknown>, keys: string[]): string | undefined {
@@ -176,8 +182,9 @@ function readTimestamp(record: Record<string, unknown>, keys: string[]): string 
 }
 
 /**
- * @description Safely stringify a value for de-duplication keys.
+ * Safely stringify a value for de-duplication keys.
  * @param value - Value to serialize.
+ * @returns String representation for de-duplication.
  * @example const key = safeStringify(payload);
  */
 function safeStringify(value: unknown): string {
@@ -189,11 +196,12 @@ function safeStringify(value: unknown): string {
 }
 
 /**
- * @description Normalize the request payload into a structured entry when possible.
+ * Normalize the request payload into a structured entry when possible.
  * @param source - Capture source (api/ui).
  * @param requestSummary - Optional request summary for endpoint/method.
  * @param timestamp - Timestamp to associate with this payload.
  * @param body - Request body to normalize.
+ * @returns Payload entry when the body parses to a record.
  * @example const entry = buildRequestPayloadEntry('api', summary, createdAt, request.body);
  */
 function buildRequestPayloadEntry(
@@ -220,9 +228,10 @@ function buildRequestPayloadEntry(
 }
 
 /**
- * @description Merge and de-duplicate request payload entries.
+ * Merge and de-duplicate request payload entries.
  * @param base - Existing payload entries.
  * @param incoming - New payload entry or entries.
+ * @returns Merged and ordered payload entries, or undefined when empty.
  * @example const payloads = mergeRequestPayloads(existing, newEntry);
  */
 function mergeRequestPayloads(
@@ -285,8 +294,9 @@ function mergeRequestPayloads(
 }
 
 /**
- * @description Extract a created timestamp from response bodies when available.
+ * Extract a created timestamp from response bodies when available.
  * @param body - Response body to inspect.
+ * @returns Normalized created timestamp when found.
  * @example const createdAt = extractCreatedTimestamp(response.body);
  */
 export function extractCreatedTimestamp(body: unknown): string | undefined {
@@ -311,8 +321,9 @@ export function extractCreatedTimestamp(body: unknown): string | undefined {
 }
 
 /**
- * @description Extract an updated/status timestamp from response bodies when available.
+ * Extract an updated/status timestamp from response bodies when available.
  * @param body - Response body to inspect.
+ * @returns Normalized updated timestamp when found.
  * @example const updatedAt = extractUpdatedTimestamp(response.body);
  */
 export function extractUpdatedTimestamp(body: unknown): string | undefined {
@@ -337,8 +348,9 @@ export function extractUpdatedTimestamp(body: unknown): string | undefined {
 }
 
 /**
- * @description Read a draft/account ID from a response body without throwing on missing values.
+ * Read a draft/account ID from a response body without throwing on missing values.
  * @param body - Response body that may contain draft/account id fields.
+ * @returns Parsed numeric id when found.
  * @example const id = safeReadDraftId(response.body);
  */
 export function safeReadDraftId(body: unknown): number | undefined {
@@ -351,9 +363,10 @@ export function safeReadDraftId(body: unknown): number | undefined {
 }
 
 /**
- * @description Attempt to extract an account number from response bodies or headers.
+ * Attempt to extract an account number from response bodies or headers.
  * @param body - Response body to inspect.
  * @param headers - Optional response headers to fall back to (Location, etc).
+ * @returns Account number when found.
  * @example const accountNumber = extractAccountNumber(resp.body, resp.headers);
  */
 export function extractAccountNumber(body: unknown, headers?: Record<string, unknown>): string | undefined {
@@ -374,8 +387,9 @@ export function extractAccountNumber(body: unknown, headers?: Record<string, unk
 }
 
 /**
- * @description Produce a short, human-readable error summary from any payload.
+ * Produce a short, human-readable error summary from any payload.
  * @param payload - Error body/string to summarise.
+ * @returns Normalized error summary.
  * @example const summary = summarizeErrorPayload(response.body);
  */
 export function summarizeErrorPayload(payload: unknown): string {
@@ -403,9 +417,10 @@ export function summarizeErrorPayload(payload: unknown): string {
 }
 
 /**
- * @description Build a normalized created-account record or return null when no numeric id is present.
+ * Build a normalized created-account record or return null when no numeric id is present.
  * @param input - Raw created account data.
- * @param requestBody - Optional request body to enrich derived fields.
+ * @param requestBody - Optional request body to capture payload details.
+ * @returns Normalized created record or null when the id is missing.
  * @example const record = buildCreatedRecord(input, request.body);
  */
 function buildCreatedRecord(input: CreatedAccountInput, requestBody?: unknown): AccountCreatedRecord | null {
@@ -438,8 +453,9 @@ function buildCreatedRecord(input: CreatedAccountInput, requestBody?: unknown): 
 }
 
 /**
- * @description Build a normalized failed-account record including request summary and timestamps.
+ * Build a normalized failed-account record including request summary and timestamps.
  * @param input - Raw failed attempt data.
+ * @returns Normalized failed record.
  * @example const record = buildFailedRecord(input);
  */
 function buildFailedRecord(input: FailedAccountInput): AccountFailedRecord {
@@ -464,9 +480,10 @@ function buildFailedRecord(input: FailedAccountInput): AccountFailedRecord {
 }
 
 /**
- * @description Send a created-account entry to the Node-side task for persistence.
+ * Send a created-account entry to the Node-side task for persistence.
  * @param input - Details about the created account (source, ids, status).
  * @param requestBody - Optional request body to capture a pretty request payload entry.
+ * @returns Cypress chainable for task completion.
  * @example recordCreatedAccount({ source: 'api', accountType: 'company', accountId: 1 });
  */
 export function recordCreatedAccount(input: CreatedAccountInput, requestBody?: unknown): Cypress.Chainable<void> {
@@ -481,8 +498,9 @@ export function recordCreatedAccount(input: CreatedAccountInput, requestBody?: u
 }
 
 /**
- * @description Send a failed-account entry to the Node-side task for persistence.
+ * Send a failed-account entry to the Node-side task for persistence.
  * @param input - Details about the failed attempt (source, HTTP status, request summary).
+ * @returns Cypress chainable for task completion.
  * @example recordFailedAccount({ source: 'ui', accountType: 'manualCreate', httpStatus: 400, requestSummary: { endpoint: '/path', method: 'POST' } });
  */
 export function recordFailedAccount(input: FailedAccountInput): Cypress.Chainable<void> {
@@ -493,8 +511,9 @@ export function recordFailedAccount(input: FailedAccountInput): Cypress.Chainabl
 }
 
 /**
- * @description Derive a minimal request summary (endpoint + method) from a Cypress interception request.
+ * Derive a minimal request summary (endpoint + method) from a Cypress interception request.
  * @param request - Cypress request-like object.
+ * @returns Normalized endpoint + method summary.
  * @example const summary = deriveRequestSummary(interception.request);
  */
 export function deriveRequestSummary(request: RequestLike | undefined): { endpoint: string; method: string } {

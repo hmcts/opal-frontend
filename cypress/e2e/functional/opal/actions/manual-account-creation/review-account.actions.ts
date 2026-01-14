@@ -35,7 +35,11 @@ type OffenceRow = {
 export class ManualReviewAccountActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
-  /** Take a named screenshot for evidence on the review screen. */
+
+  /**
+   * Take a named screenshot for evidence on the review screen.
+   * @param tag - Short label describing the capture moment.
+   */
   private captureReviewScreenshot(tag: string): void {
     captureScenarioScreenshot(`manual-review-${tag}`);
   }
@@ -217,6 +221,7 @@ export class ManualReviewAccountActions {
   /**
    * Submits the account and captures success/failure metadata for downstream validation.
    * @param assertSuccess - Whether to assert a successful submission.
+   * @returns Cypress chainable for the submission flow.
    */
   private submitAndCapture(assertSuccess: boolean): Cypress.Chainable<void> {
     log('navigate', 'Submitting manual account for review');
@@ -311,6 +316,7 @@ export class ManualReviewAccountActions {
    * Clicks Submit for review on the review page.
    * @example
    *   review.submitForReview();
+   * @returns Cypress chainable for the submit action.
    */
   submitForReview(): Cypress.Chainable<void> {
     return this.submitAndCapture(false);

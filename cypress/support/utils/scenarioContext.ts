@@ -1,6 +1,7 @@
 /**
  * @file scenarioContext.ts
- * @description Stores the current Cucumber scenario title for use in run-scoped logging/capture. Called from `beforeEach` in `cypress/support/e2e.ts` to set the title and by capture helpers to read it.
+ * Stores the current Cucumber scenario title for use in run-scoped logging/capture. Called from `beforeEach` in
+ * `cypress/support/e2e.ts` to set the title and by capture helpers to read it.
  */
 import { createUniqSuffix } from './stringUtils';
 
@@ -9,7 +10,8 @@ let currentScenarioStartedAt = new Date().toISOString();
 let currentScenarioFinishedAt = '';
 
 /**
- * @description Set the current scenario title and start time for downstream consumers. Typically called at the start of each test via `beforeEach` in the Cypress support file.
+ * Set the current scenario title and start time for downstream consumers. Typically called at the start of each test
+ * via `beforeEach` in the Cypress support file.
  * @param title - Scenario title (will be normalized).
  * @example setCurrentScenarioTitle(this.currentTest?.title);
  */
@@ -25,7 +27,8 @@ export function setCurrentScenarioTitle(title?: string): void {
 }
 
 /**
- * @description Retrieve the current scenario title, preferring the Cypress env value set in `setCurrentScenarioTitle`.
+ * Retrieve the current scenario title, preferring the Cypress env value set in `setCurrentScenarioTitle`.
+ * @returns Scenario title.
  * @example const scenario = getCurrentScenarioTitle();
  */
 export function getCurrentScenarioTitle(): string {
@@ -37,7 +40,8 @@ export function getCurrentScenarioTitle(): string {
 }
 
 /**
- * @description Retrieve the current scenario start time, preferring the Cypress env value set in `setCurrentScenarioTitle`.
+ * Retrieve the current scenario start time, preferring the Cypress env value set in `setCurrentScenarioTitle`.
+ * @returns Scenario start timestamp.
  * @example const startedAt = getCurrentScenarioStartedAt();
  */
 export function getCurrentScenarioStartedAt(): string {
@@ -49,7 +53,7 @@ export function getCurrentScenarioStartedAt(): string {
 }
 
 /**
- * @description Set the current scenario finish time for downstream consumers.
+ * Set the current scenario finish time for downstream consumers.
  * @param finishedAt - ISO timestamp for scenario completion (defaults to now).
  * @example setCurrentScenarioFinishedAt();
  */
@@ -60,7 +64,8 @@ export function setCurrentScenarioFinishedAt(finishedAt?: string): void {
 }
 
 /**
- * @description Retrieve the current scenario finish time, preferring the Cypress env value set in `setCurrentScenarioFinishedAt`.
+ * Retrieve the current scenario finish time, preferring the Cypress env value set in `setCurrentScenarioFinishedAt`.
+ * @returns Scenario finish timestamp.
  * @example const finishedAt = getCurrentScenarioFinishedAt();
  */
 export function getCurrentScenarioFinishedAt(): string {
