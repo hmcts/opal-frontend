@@ -11,7 +11,6 @@ import { AccountDetailsParentGuardianActions } from '../actions/account-details/
 import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
-import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
@@ -100,17 +99,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts that the browser has navigated to the expected defendant details route.
-   */
-  private assertNavigatedToDetails(): void {
-    cy.location('pathname', { timeout: AccountEnquiryFlow.WAIT_MS }).should((p) => {
-      expect(p, 'navigated to defendant details route').to.match(
-        /^\/fines\/account\/defendant\/[A-Za-z0-9-]+\/details$/,
-      );
-    });
-  }
-
-  /**
    * Performs an Individuals search by last name.
    *
    * @param surname - Surname to search for.
@@ -128,8 +116,7 @@ export class AccountEnquiryFlow {
    * Behaviour:
    *  - If `@etagUpdate` has an `accountNumber` and it's visible on the current page → click it.
    *  - Otherwise → open the first row via {@link ResultsActions.openLatestPublished}.
-   *
-   * No cross-page pagination (keeps control flow simple and avoids catch/overload issues).
+   *  - If the @etagUpdate account number is not on the current page, we paginate to find it.
    */
   public clickLatestPublishedFromResultsOrAcrossPages(): void {
     logAE('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
@@ -177,6 +164,27 @@ export class AccountEnquiryFlow {
     logAE('flow', 'Search and open latest by surname', { surname });
     this.searchBySurname(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
+  }
+
+  /**
+   * Searches by surname, opens the latest result, and asserts the header text.
+   * @param surname - Surname to search for.
+   * @param expectedHeader - Expected header text after opening.
+   */
+  public searchOpenLatestAndAssertHeader(surname: string, expectedHeader: string): void {
+    logAE('method', 'searchOpenLatestAndAssertHeader()', { surname, expectedHeader });
+    this.searchBySurname(surname);
+    this.openLatestAndAssertHeader(expectedHeader);
+  }
+
+  /**
+   * Opens the latest published account and asserts the header text.
+   * @param expectedHeader - Expected header text to match (already resolved for {uniq}).
+   */
+  public openLatestAndAssertHeader(expectedHeader: string): void {
+    logAE('method', 'openLatestAndAssertHeader()', { expectedHeader });
+    this.clickLatestPublishedFromResultsOrAcrossPages();
+    this.atAGlanceDetails.assertHeaderContains(expectedHeader);
   }
 
   /**
@@ -379,81 +387,34 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Verifies route guard behaviour for a Company defendant by editing a field,
-   * choosing to stay, then confirming the temporary value is retained until leaving.
+   * Cancels a company edit and remains on the edit form.
    *
-   * @param companyName - The original company name shown in the header.
-   * @param tempName - Temporary value entered for the company name field.
+   * @param expectedTempName - Optional temporary value that should remain populated.
    */
-  public verifyRouteGuardBehaviour(companyName: string, tempName: string): void {
-    logAE('method', 'verifyRouteGuardBehaviour()');
-    logAE('verify', 'Verifying route guard behaviour', { companyName, tempName });
+  public cancelCompanyEditAndStay(expectedTempName?: string): void {
+    logAE('method', 'cancelCompanyEditAndStay()', { expectedTempName });
+    logAE('cancel', 'Cancelling company edit and staying on the form');
 
-    // Navigate to defendant tab
-    logAE('action', 'Navigating to Defendant tab');
-    this.detailsNav.goToDefendantTab();
-
-    // Click Change Link
-    logAE('action', 'Change Link');
-    this.defendantDetails.change();
-
-    // Edit company name
-    logAE('action', 'Editing company name', { newName: tempName });
-    this.editCompanyDetailsActions.editCompanyName(tempName);
-
-    // Cancel edit (without saving)
-    logAE('action', 'Cancelling edit without saving');
     this.common.cancelEditing(false);
+    this.editCompanyDetailsActions.assertStillOnEditPage();
 
-    // Verify temp name persisted
-    logAE('verify', 'Verifying temporary company name persisted', { expected: tempName });
-    this.editCompanyDetailsActions.verifyFieldValue(tempName);
-
-    // Cancel edit (revert changes)
-    logAE('action', 'Cancelling edit with revert');
-    this.common.cancelEditing(true);
-
-    // Final verification: header restored to original
-    logAE('verify', 'Verifying header reverted to original company name', { expected: companyName });
-    this.atAGlanceDetails.assertHeaderContains(companyName);
-
-    logAE('complete', 'Route guard behaviour verification completed');
+    if (expectedTempName) {
+      this.editCompanyDetailsActions.verifyFieldValue(expectedTempName);
+    }
   }
 
   /**
-   * Verifies cancel-changes behaviour for a Company defendant by editing a field,
-   * choosing to stay, then asserting the header still reflects the original value.
+   * Cancels a company edit, confirms leaving, and asserts the summary header is restored.
    *
-   * @param companyName - The original company name shown in the header.
-   * @param tempName - Temporary value entered for the company name field.
+   * @param originalName - Company name expected on the summary after discarding changes.
    */
-  public verifyCancelChangesBehaviour(companyName: string, tempName: string): void {
-    logAE('method', 'verifyCancelChangesBehaviour()');
-    logAE('verify', 'Verifying cancel changes behaviour', { companyName, tempName });
+  public discardCompanyEditAndReturn(originalName: string): void {
+    logAE('method', 'discardCompanyEditAndReturn()', { originalName });
+    logAE('cancel', 'Cancelling company edit and returning to summary');
 
-    // Navigate to defendant tab
-    logAE('action', 'Navigating to Defendant tab');
-    this.detailsNav.goToDefendantTab();
-
-    // Click Change Link
-    logAE('action', 'Change Link');
-    this.defendantDetails.change();
-
-    // Begin editing company name
-    logAE('action', 'Starting edit of Company Name field', { newValue: tempName });
-    this.editCompanyDetailsActions.editCompanyName(tempName);
-
-    // Simulate cancel action but choose to stay
-    logAE('action', 'Initiating cancel edit (choosing to stay on page)');
-    this.common.cancelEditing(false);
-
-    // Check that header remains unchanged
-    logAE('verify', 'Verifying header still displays original company name', { expected: companyName });
-    this.atAGlanceDetails.assertHeaderContains(companyName);
-
-    // Post-verification confirmation
-    logAE('info', 'Cancel-changes behaviour verified successfully — no unintended persistence detected');
-    logAE('complete', 'verifyCancelChangesBehaviour() completed');
+    this.common.cancelEditing(true);
+    this.detailsNav.assertDefendantTabIsActive();
+    this.atAGlanceDetails.assertHeaderContains(originalName);
   }
 
   /**
@@ -496,10 +457,18 @@ export class AccountEnquiryFlow {
     ).as('debugPutDefendantAccountParty');
   }
 
+  /**
+   * Default headers for Account Enquiry API requests.
+   * @returns JSON and accept headers used for API calls.
+   */
   private getApiHeaders(): Record<string, string> {
     return { 'Content-Type': 'application/json', Accept: 'application/json' };
   }
 
+  /**
+   * Extracts the defendant account ID from the current details page URL.
+   * @returns Chainable resolving to the numeric defendant account ID.
+   */
   private extractDefendantAccountIdFromUrl(): Cypress.Chainable<number> {
     return cy.location('pathname').then((pathname) => {
       const match = pathname.match(/\/fines\/account\/defendant\/(\d+)\/details/);
@@ -516,6 +485,7 @@ export class AccountEnquiryFlow {
   /**
    * Fetches the header summary for a defendant account via API.
    * @param defendantAccountId - ID of the defendant account.
+   * @returns Chainable yielding the header summary response body.
    */
   private fetchHeaderSummary(defendantAccountId: number): Cypress.Chainable<Record<string, unknown>> {
     return cy
@@ -535,6 +505,7 @@ export class AccountEnquiryFlow {
    * Fetches party details for a defendant account via API.
    * @param defendantAccountId - ID of the defendant account.
    * @param partyId - Party ID to fetch.
+   * @returns Chainable yielding the party details response body.
    */
   private fetchPartyDetails(defendantAccountId: number, partyId: string): Cypress.Chainable<Record<string, unknown>> {
     logAE('action', `Fetching party details for party ${partyId}`);
@@ -656,16 +627,52 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Enters an account note and saves it (reusing the open+enter helper).
+   * Enters an account note and saves it (reusing the open+enter helper), ensuring
+   * we return to the defendant account details page.
    *
+   * @description Saves a note via the Add account note journey and guards the redirect back to details.
    * @param note - The note text to enter.
+   *
+   * @remarks
+   *  - Guards navigation by asserting the defendant details URL after saving.
+   *  - Delegates typing to {@link openNotesScreenAndEnterText}.
+   *
+   * @example
+   *  flow.openAccountNoteEnterNoteAndSave('Valid test account note');
    */
   public openAccountNoteEnterNoteAndSave(note: string): void {
     logAE('method', 'openAccountNoteEnterNoteAndSave()');
     logAE('input', 'Preparing to enter and save account note', { length: note?.length });
+
     this.openNotesScreenAndEnterText(note);
+
     logAE('save', 'Saving account note');
     this.notes.save();
+
+    cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+  }
+
+  /**
+   * Opens the Add account note view and cancels immediately without entering text.
+   *
+   * @description Starts the Add account note journey and discards it without entering content.
+   * @remarks
+   *  - Confirms any unsaved-changes dialog (if shown) and asserts we return to defendant details.
+   *  - Uses {@link openAddAccountNoteAndVerifyHeader} for the initial navigation guard.
+   *
+   * @example
+   *  flow.cancelAccountNoteWithoutEntering();
+   */
+  public cancelAccountNoteWithoutEntering(): void {
+    logAE('method', 'cancelAccountNoteWithoutEntering()');
+    logAE('flow', 'Open → cancel without changes');
+
+    this.openAddAccountNoteAndVerifyHeader();
+    this.notes.assertNoteValueEquals('');
+
+    this.common.cancelEditing(true);
+
+    cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
   }
 
   /**
@@ -696,6 +703,7 @@ export class AccountEnquiryFlow {
 
   /**
    * Saves the provided comment lines and verifies redirect to defendant summary.
+   * @param lines - Lines to enter into the Comments form before saving.
    */
   public saveCommentsAndReturnToSummary(lines: readonly string[]): void {
     Cypress.log({
@@ -713,7 +721,20 @@ export class AccountEnquiryFlow {
     this.comments.enterAndSaveComments(lines);
 
     // Defensive URL check that we're back on the summary
-    cy.location('pathname', { timeout: 10000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+    cy.location('pathname', this.common.getTimeoutOptions()).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/details$/,
+    );
+  }
+
+  /**
+   * Saves comments, returns to summary, and asserts the header text.
+   * @param lines - Comment lines to enter.
+   * @param expectedHeader - Expected header text on the summary page.
+   */
+  public saveCommentsReturnAndAssertHeader(lines: readonly string[], expectedHeader: string): void {
+    this.saveCommentsAndReturnToSummary(lines);
+    this.atAGlanceDetails.assertHeaderContains(expectedHeader);
   }
 
   /**
@@ -793,6 +814,7 @@ export class AccountEnquiryFlow {
    * Route-guard verification on the Comments page:
    *  open from summary → type → Cancel (dismiss) → verify stayed with text →
    *  Cancel (confirm) → verify returned to summary.
+   * @param noteText - Text to enter into the comment before cancelling.
    */
   public verifyRouteGuardBehaviourOnComments(noteText: string): void {
     Cypress.log({
@@ -823,7 +845,11 @@ export class AccountEnquiryFlow {
 
   /**
    * Open the Comments section and verify existing prefilled values.
-   * @param expected Prefilled form values to assert
+   * @param expected Prefilled form values to assert.
+   * @param expected.comment - Expected comment text.
+   * @param expected.line1 - Expected first free-text line.
+   * @param expected.line2 - Expected second free-text line.
+   * @param expected.line3 - Expected third free-text line.
    */
   verifyPrefilledComments(expected: { comment?: string; line1?: string; line2?: string; line3?: string }): void {
     cy.log('Flow: Verify prefilled Comments form');
@@ -932,6 +958,51 @@ export class AccountEnquiryFlow {
     this.common.cancelEditing(false); // user selects "Cancel" → "Stay"
 
     logAE('complete', 'Stayed on page; temporary data should be retained');
+  }
+
+  /**
+   * Updates defendant details and records the amendment baseline for later comparisons.
+   *
+   * @param updatedFirstName - First name to persist and audit.
+   * @remarks Stores `@amendmentBaseline` for subsequent no-change assertions.
+   */
+  public establishDefendantAmendmentBaseline(updatedFirstName: string): void {
+    logAE('method', 'establishDefendantAmendmentBaseline()', { updatedFirstName });
+
+    this.editDefendantAndChangeFirstName(updatedFirstName);
+    this.saveDefendantDetails();
+    this.assertDefendantNameContains(updatedFirstName);
+    this.verifyDefendantAmendmentsViaApi(updatedFirstName);
+  }
+
+  /**
+   * Updates company details and records the amendment baseline for later comparisons.
+   *
+   * @param updatedCompanyName - Company name to persist and audit.
+   * @remarks Stores `@amendmentBaseline` for subsequent no-change assertions.
+   */
+  public establishCompanyAmendmentBaseline(updatedCompanyName: string): void {
+    logAE('method', 'establishCompanyAmendmentBaseline()', { updatedCompanyName });
+
+    this.editCompanyDetailsAndChangeName(updatedCompanyName);
+    this.saveCompanyDetails();
+    this.assertCompanyNameContains(updatedCompanyName);
+    this.verifyCompanyAmendmentsViaApi(updatedCompanyName);
+  }
+
+  /**
+   * Updates parent/guardian details and records the amendment baseline for later comparisons.
+   *
+   * @param updatedFirstName - Guardian first name to persist and audit.
+   * @remarks Stores `@amendmentBaseline` for subsequent no-change assertions.
+   */
+  public establishParentGuardianAmendmentBaseline(updatedFirstName: string): void {
+    logAE('method', 'establishParentGuardianAmendmentBaseline()', { updatedFirstName });
+
+    this.editParentGuardianAndChangeFirstName(updatedFirstName);
+    this.saveParentGuardianDetails();
+    this.assertParentGuardianNameContains(updatedFirstName);
+    this.verifyParentGuardianAmendmentsViaApi(updatedFirstName);
   }
 
   /**

@@ -1,5 +1,8 @@
 /**
- * Shared helpers and state for manual account creation offence step definitions.
+ * @file manual-account-creation.offence.stepshelper.ts
+ * @description
+ * Shared helpers/factories used by offence-related manual account creation
+ * step definitions to centralise flows, actions, and logging utilities.
  */
 import { ManualAccountCreationFlow } from '../../../../e2e/functional/opal/flows/manual-account-creation.flow';
 import { ManualOffenceDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/offence-details.actions';
@@ -40,6 +43,9 @@ export type ImpositionFinancialRow = {
 
 /**
  * Ensures the requested imposition panel exists, adding one if necessary.
+ * @param index Zero-based imposition index to ensure is present.
+ * @param attempts Internal retry counter to avoid infinite recursion.
+ * @returns Cypress chainable that resolves when the panel exists.
  */
 export const ensureImpositionExists = (index: number, attempts: number = 0): Cypress.Chainable => {
   if (attempts > 10) {
@@ -66,6 +72,7 @@ export const ensureImpositionExists = (index: number, attempts: number = 0): Cyp
 
 /**
  * Upserts imposition financial values, ensuring panels exist and tracking the current index.
+ * @param rows Array of imposition rows to insert/update.
  */
 export const upsertImpositionFinancialRows = (rows: ImpositionFinancialRow[]): void => {
   const sorted = [...rows].sort((a, b) => a.imposition - b.imposition);

@@ -24,11 +24,23 @@ export const ManualParentGuardianDetailsLocators = {
     vehicleMake: '#fm_parent_guardian_details_vehicle_make',
     vehicleRegistration: '#fm_parent_guardian_details_vehicle_registration_mark',
     aliases: {
-      /** Resolves Alias → First names input by zero-based index. */
+      /**
+       * Resolves Alias → First names input by zero-based index.
+       * @param index Alias row index (zero-based).
+       * @returns Selector for the alias first names input.
+       */
       firstNames: (index: number): string => `#fm_parent_guardian_details_alias_forenames_${index}`,
-      /** Resolves Alias → Last name input by zero-based index. */
+      /**
+       * Resolves Alias → Last name input by zero-based index.
+       * @param index Alias row index (zero-based).
+       * @returns Selector for the alias last name input.
+       */
       lastName: (index: number): string => `#fm_parent_guardian_details_alias_surname_${index}`,
-      /** Remove link for a specific alias row (aria-label follows "Remove alias N"). */
+      /**
+       * Remove link for a specific alias row (aria-label follows "Remove alias N").
+       * @param index Alias row index (zero-based).
+       * @returns Selector for the remove link of the alias row.
+       */
       removeLink: (index: number): string => `[aria-label="Remove alias ${index + 1}"]`,
     },
   },

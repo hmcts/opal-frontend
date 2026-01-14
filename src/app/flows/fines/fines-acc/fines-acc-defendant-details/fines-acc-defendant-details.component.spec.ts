@@ -1,7 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 import {
   MojSubNavigationComponent,
@@ -30,7 +29,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
   let fixture: ComponentFixture<FinesAccDefendantDetailsComponent>;
   let routerSpy: jasmine.SpyObj<Router>;
   let activatedRouteStub: Partial<ActivatedRoute>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let mockPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
 
@@ -55,9 +53,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
     mockPayloadService.transformPayload.and.callFake((...args) => {
       return args[0]; // returns the first argument = payload
     });
-
-    mockUtilsService = jasmine.createSpyObj<UtilsService>('UtilsService', ['convertToMonetaryString']);
-    mockUtilsService.convertToMonetaryString.and.callFake((value: number) => `£${value.toFixed(2)}`);
 
     mockOpalFinesService = jasmine.createSpyObj<OpalFines>('OpalFines', [
       'getDefendantAccountHeadingData',
@@ -109,7 +104,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       providers: [
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
-        { provide: UtilsService, useValue: mockUtilsService },
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesAccPayloadService, useValue: mockPayloadService },
       ],
@@ -299,30 +293,102 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
-  describe('should get the relevant denied type from getDeniedType', () => {
+  it('should navigate to the request payment card access denied page if user does not have the relevant permission', () => {
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    component.navigateToRequestPaymentCardPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/permission`],
+      {
+        relativeTo: component['activatedRoute'],
+        state: { accountStatusCode: 'L', lastEnforcement: undefined },
+      },
+    );
+  });
+
+  it('should navigate to the request payment card page if user has the relevant permission', () => {
+    routerSpy.navigate.calls.reset();
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+    component.lastEnforcement = OPAL_FINES_RESULT_REF_DATA_MOCK;
+    component.navigateToRequestPaymentCardPage();
+    expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  describe('should get the relevant denied type from getRequestPaymentCardDeniedType', () => {
+    it('for an enforcement with prevent_payment_card should return "enforcement"', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.prevent_payment_card = true;
+      const deniedType = component['getRequestPaymentCardDeniedType']();
+      expect(deniedType).toBe('enforcement');
+    });
+
+    it('for a lack of permission with a BU should return "permission"', () => {
+      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      const deniedType = component['getRequestPaymentCardDeniedType']();
+      expect(deniedType).toBe('permission');
+    });
+  });
+
+  describe('should get the relevant denied type from getAmendPaymentTermsDeniedType', () => {
     it('for a balance of 0 should return "balance"', () => {
       component.accountData.payment_state_summary.account_balance = 0;
-      const deniedType = component['getDeniedType']();
+      const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('balance');
     });
 
     it('for an enforcement with extend_ttp_disallow should return "enforcement"', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.extend_ttp_disallow = true;
-      const deniedType = component['getDeniedType']();
+      const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('enforcement');
     });
 
     it('for a lack of permission with a BU should return "permission"', () => {
       spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
-      const deniedType = component['getDeniedType']();
+      const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('permission');
     });
 
     it('for an invalid account status shouldreturn "account-status"', () => {
       component.accountData.account_status_reference.account_status_code = 'REW';
-      const deniedType = component['getDeniedType']();
+      const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('account-status');
+    });
+  });
+
+  describe('should get the correct response from canRequestPaymentCard', () => {
+    it('when the user has amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.prevent_payment_card = false;
+      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+      const canRequest = component['canRequestPaymentCard']();
+      expect(canRequest).toBeTrue();
+    });
+    it('when the user has amend-payment-terms permisson and the prevent_payment_card flag is set to true', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.prevent_payment_card = true;
+      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+      const canRequest = component['canRequestPaymentCard']();
+      expect(canRequest).toBeFalse();
+    });
+    it('when the user does not have amend-payment-terms permisson and the prevent_payment_card flag is set to true', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.prevent_payment_card = true;
+      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      const canRequest = component['canRequestPaymentCard']();
+      expect(canRequest).toBeFalse();
+    });
+    it('when the user does not have amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.prevent_payment_card = false;
+      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      const canRequest = component['canRequestPaymentCard']();
+      expect(canRequest).toBeFalse();
     });
   });
 });

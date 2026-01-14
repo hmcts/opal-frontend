@@ -33,7 +33,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
   @Input({ required: false }) public headingLevel: HeadingLevel = 5;
   @Output() public actionClicked = new EventEmitter<{ action: string; index: number }>();
   public name!: string;
-  public address!: string;
+  public addressLines: string[] = [];
   public paymentMethod!: string;
   public accountName!: string;
   public sortCode!: string;
@@ -83,14 +83,16 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
   }
 
   /**
-   * Formats the address lines into a single string with line breaks.
+   * Formats the address lines into an array for template rendering.
    *
    * @param addressLines - An array of address lines.
-   * @returns The formatted address string with line breaks.
+   * @returns The formatted address lines, or a default not provided entry.
    */
-  private formatAddress(addressLines: (string | null)[]): string {
-    const formattedAddress = addressLines.filter(Boolean).join('<br>');
-    return formattedAddress.length > 0 ? formattedAddress : FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided;
+  private formatAddress(addressLines: (string | null)[]): string[] {
+    const formattedAddressLines = addressLines.filter((line) => !!line?.trim()) as string[];
+    return formattedAddressLines.length > 0
+      ? formattedAddressLines
+      : [FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided];
   }
 
   /**
@@ -104,7 +106,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
       fm_offence_details_minor_creditor_post_code: postCode,
     } = this.minorCreditor;
 
-    this.address = this.formatAddress([addressLine1, addressLine2, addressLine3, postCode]);
+    this.addressLines = this.formatAddress([addressLine1, addressLine2, addressLine3, postCode]);
   }
 
   /**

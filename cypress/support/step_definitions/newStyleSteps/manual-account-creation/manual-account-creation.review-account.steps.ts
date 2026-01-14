@@ -7,6 +7,7 @@ import { ManualReviewAccountActions } from '../../../../e2e/functional/opal/acti
 import { ManualAccountCreationFlow } from '../../../../e2e/functional/opal/flows/manual-account-creation.flow';
 import { normalizeTableRows } from '../../../utils/cucumberHelpers';
 import { log } from '../../../utils/log.helper';
+import { applyUniqPlaceholder } from '../../../utils/stringUtils';
 
 type SummaryRow = { label: string; value: string };
 
@@ -43,8 +44,9 @@ When('I check the manual account details', () => {
 });
 
 When('I check the manual account details for account header {string}', (header: string) => {
-  log('step', 'Checking account details from task list with custom header', { header });
-  macFlow().checkManualAccountDetails(header);
+  const normalizedHeader = applyUniqPlaceholder(header);
+  log('step', 'Checking account details from task list with custom header', { header: normalizedHeader });
+  macFlow().checkManualAccountDetails(normalizedHeader);
 });
 
 /**

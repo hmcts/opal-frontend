@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Account comments and notes.
- * Encapsulates comment/note entry, navigation, and cancel handling.
+ * @file Actions for Manual Account Creation - Account comments and notes.
+ * @description Encapsulates comment/note entry, navigation, and cancel handling.
  */
 import { ManualAccountCommentsNotesLocators as L } from '../../../../../shared/selectors/manual-account-creation/account-comments-notes.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -10,11 +10,15 @@ const log = createScopedLogger('ManualAccountCommentsNotesActions');
 
 type CancelChoice = 'Cancel' | 'Ok' | 'Stay' | 'Leave';
 
+/**
+ * Actions for Account comments and notes in Manual Account Creation.
+ */
 export class ManualAccountCommentsNotesActions {
   private readonly common = new CommonActions();
 
   /**
    * Asserts the page header contains the expected text.
+   * @param expected Expected header text fragment.
    */
   assertHeader(expected: string = 'Account comments and notes'): void {
     this.common.assertHeaderContains(expected);
@@ -22,6 +26,7 @@ export class ManualAccountCommentsNotesActions {
 
   /**
    * Sets the comment textarea value.
+   * @param comment Comment text to enter.
    */
   setComment(comment: string): void {
     log('type', 'Setting account comment', { comment });
@@ -32,6 +37,7 @@ export class ManualAccountCommentsNotesActions {
 
   /**
    * Sets the notes textarea value.
+   * @param note Note text to enter.
    */
   setNote(note: string): void {
     log('type', 'Setting account note', { note });
@@ -43,6 +49,7 @@ export class ManualAccountCommentsNotesActions {
 
   /**
    * Asserts the comment textarea matches the expected value.
+   * @param expected Expected comment text.
    */
   assertCommentValue(expected: string): void {
     log('assert', 'Asserting account comment value', { expected });
@@ -51,6 +58,7 @@ export class ManualAccountCommentsNotesActions {
 
   /**
    * Asserts the notes textarea matches the expected value.
+   * @param expected Expected note text.
    */
   assertNoteValue(expected: string): void {
     log('assert', 'Asserting account note value', { expected });
@@ -67,6 +75,7 @@ export class ManualAccountCommentsNotesActions {
 
   /**
    * Handles Cancel click and resolves the unsaved changes dialog.
+   * @param choice Confirmation choice (Cancel/Ok/Stay/Leave).
    */
   cancelAndChoose(choice: CancelChoice): void {
     const accept = /ok|leave/i.test(choice);

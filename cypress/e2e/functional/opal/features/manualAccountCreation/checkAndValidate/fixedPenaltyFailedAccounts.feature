@@ -12,7 +12,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status              | failed |
       | account.defendant.forenames | Oliver |
-      | account.defendant.surname   | GREEN  |
+      | account.defendant.surname   | GREEN{uniq}  |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     And I view the "Failed" tab on the Check and Validate page
@@ -24,8 +24,8 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
       | Business unit |
       | Submitted by  |
     And I sort the draft accounts table by column "Date failed" in "descending" order
-    Then the manual draft table row containing "GREEN, Oliver" in column "Defendant" has values:
-      | Defendant     | GREEN, Oliver    |
+    Then the manual draft table row containing "GREEN{uniq}, Oliver" in column "Defendant" has values:
+      | Defendant     | GREEN{uniq}, Oliver    |
       | Date of birth | 01 Nov 2004      |
       | Date failed   | Today            |
       | Account type  | Fixed Penalty    |
@@ -37,20 +37,21 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status              | failed |
       | account.defendant.forenames | Oliver |
-      | account.defendant.surname   | GREEN  |
+      | account.defendant.surname   | GREEN{uniq}  |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     And I view the "Failed" tab on the Check and Validate page
-    And I view the draft account details for defendant "GREEN, Oliver"
+    And I view the draft account details for defendant "GREEN{uniq}, Oliver"
     When I go back to Check and Validate Draft Accounts
     Then the "Failed" tab on Check and Validate is active
-    And the draft accounts table should contain "GREEN, Oliver" in column "Defendant"
+    And I sort the draft accounts table by column "Date failed" in "descending" order
+    And the draft accounts table should contain "GREEN{uniq}, Oliver" in column "Defendant"
 
   @PO-1816
   Scenario: AC2 - Failed company fixed penalty draft appears in Failed tab with expected details
     Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending":
       | Account_status                 | Submitted                     |
-      | account.defendant.company_name | Argent Oak Solutions Ltd comp |
+      | account.defendant.company_name | Argent Oak Solutions Ltd comp {uniq} |
       | account.account_type           | Fixed Penalty                 |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
@@ -63,8 +64,8 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
       | Business unit |
       | Submitted by  |
     And I sort the draft accounts table by column "Date failed" in "descending" order
-    Then the manual draft table row containing "Argent Oak Solutions Ltd comp" in column "Defendant" has values:
-      | Defendant     | Argent Oak Solutions Ltd comp |
+    Then the manual draft table row containing "Argent Oak Solutions Ltd comp {uniq}" in column "Defendant" has values:
+      | Defendant     | Argent Oak Solutions Ltd comp {uniq} |
       | Date of birth | —                             |
       | Date failed   | Today                         |
       | Account type  | Fixed Penalty                 |
@@ -76,13 +77,13 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
   Scenario: AC2a - Failed company fixed penalty draft returns to Failed tab after viewing details
     Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending":
       | Account_status                 | Submitted                     |
-      | account.defendant.company_name | Argent Oak Solutions Ltd comp |
+      | account.defendant.company_name | Argent Oak Solutions Ltd comp {uniq} |
       | account.account_type           | Fixed Penalty                 |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     And I view the "Failed" tab on the Check and Validate page
-    And I view the draft account details for defendant "Argent Oak Solutions Ltd comp"
+    And I view the draft account details for defendant "Argent Oak Solutions Ltd comp {uniq}"
     When I go back to Check and Validate Draft Accounts
     Then the "Failed" tab on Check and Validate is active
-    And the draft accounts table should contain "Argent Oak Solutions Ltd comp" in column "Defendant"
-
+    And I sort the draft accounts table by column "Date failed" in "descending" order
+    And the draft accounts table should contain "Argent Oak Solutions Ltd comp {uniq}" in column "Defendant"

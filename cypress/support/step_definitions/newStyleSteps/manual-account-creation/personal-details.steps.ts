@@ -117,8 +117,6 @@ When('I clear the following personal details fields:', (table: DataTable) => {
   }
 
   const fields = labels.map((label) => resolvePersonalDetailsFieldKey(label));
-
-  log('clear', 'Clearing personal details fields', { labels, fields });
-  actions().assertOnPersonalDetailsPage();
-  actions().clearFields(fields);
+  log('clear', 'Clearing personal details fields via flow', { labels, fields });
+  flow().clearPersonalDetailsFields(fields);
 });

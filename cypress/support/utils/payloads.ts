@@ -14,7 +14,11 @@ export type DefendantTypes = 'company' | 'adultOrYouthOnly' | 'pgToPay';
 export type AccountType = 'Fine' | 'Fixed penalty' | 'Fixed Penalty' | 'Conditional caution' | 'Conditional Caution';
 export type ApprovedAccountType = DefendantTypes | 'fixedPenalty' | 'fixedPenaltyCompany';
 
-/** Resolve draft fixture file name for POST /draft-accounts. Adjust names if yours differ. */
+/**
+ * Resolve draft fixture file name for POST /draft-accounts. Adjust names if yours differ.
+ * @param type Draft account payload type.
+ * @returns Fixture filename for the requested draft type.
+ */
 export function getDraftPayloadFile(type: DraftPayloadType): string {
   const map: Record<DraftPayloadType, string> = {
     company: 'companyPayload.json',
@@ -28,7 +32,11 @@ export function getDraftPayloadFile(type: DraftPayloadType): string {
   return map[type];
 }
 
-/** Resolve approved fixture file name for stubbed Approved listings. */
+/**
+ * Resolve approved fixture file name for stubbed Approved listings.
+ * @param type Draft account payload type.
+ * @returns Fixture filename for the approved listing stub.
+ */
 export function getApprovedPayloadFile(type: DraftPayloadType): string {
   switch (type) {
     case 'company':
