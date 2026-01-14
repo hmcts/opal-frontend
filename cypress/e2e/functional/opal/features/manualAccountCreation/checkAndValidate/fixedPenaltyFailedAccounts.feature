@@ -44,6 +44,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     And I view the draft account details for defendant "GREEN{uniq}, Oliver"
     When I go back to Check and Validate Draft Accounts
     Then the "Failed" tab on Check and Validate is active
+    And I sort the draft accounts table by column "Date failed" in "descending" order
     And the draft accounts table should contain "GREEN{uniq}, Oliver" in column "Defendant"
 
   @PO-1816
@@ -84,4 +85,5 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     And I view the draft account details for defendant "Argent Oak Solutions Ltd comp {uniq}"
     When I go back to Check and Validate Draft Accounts
     Then the "Failed" tab on Check and Validate is active
+    And I sort the draft accounts table by column "Date failed" in "descending" order
     And the draft accounts table should contain "Argent Oak Solutions Ltd comp {uniq}" in column "Defendant"

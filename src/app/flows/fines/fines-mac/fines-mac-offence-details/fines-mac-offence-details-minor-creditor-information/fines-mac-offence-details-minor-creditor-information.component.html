@@ -39,7 +39,16 @@
         summaryListRowId="minorCreditor"
       >
         <ng-container name>Address</ng-container>
-        <ng-container value> <p class="govuk-!-margin-top-0" [innerHTML]="address"></p> </ng-container>
+        <ng-container value>
+          <p class="govuk-!-margin-top-0">
+            @for (line of addressLines; track $index; let last = $last) {
+              {{ line }}
+              @if (!last) {
+                <br />
+              }
+            }
+          </p>
+        </ng-container>
       </div>
 
       <div
