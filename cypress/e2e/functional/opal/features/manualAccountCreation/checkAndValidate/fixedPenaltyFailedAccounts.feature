@@ -32,7 +32,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
       | Business unit | Camberwell Green |
       | Submitted by  | opal-test        |
 
-  @PO-1816 @only
+  @PO-1816
   Scenario: AC1a - Failed individual fixed penalty draft returns to Failed tab after viewing details
     Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status              | failed |
@@ -73,7 +73,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
       | Submitted by  | opal-test                     |
 
 
-  @PO-1816 @only
+  @PO-1816
   Scenario: AC2a - Failed company fixed penalty draft returns to Failed tab after viewing details
     Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending":
       | Account_status                 | Submitted                     |
