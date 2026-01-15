@@ -75,7 +75,8 @@
     "audit:save": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues",
     "postinstall": "patch-package",
     "check:steps": "cypress run --env cucumberOnlyMissingSteps=true",
-    "test:functional:tags": "CYPRESS_TAGS=$TAGS CYPRESS_filterSpecs=true CYPRESS_filterSpecsMixedMode=hide yarn test:functionalOpalParallel || CODE=$?; yarn test:functional:cucumber:combineParallelReport; exit ${CODE:-0}"
+    "test:functional:tags": "CYPRESS_TAGS=$TAGS CYPRESS_filterSpecs=true CYPRESS_filterSpecsMixedMode=hide yarn test:functionalOpalParallel || CODE=$?; yarn test:functional:cucumber:combineParallelReport; exit ${CODE:-0}",
+    "find:duplicate:scenarios": "FEATURE_GLOB=\"cypress/e2e/functional/opal/features\" node scripts/find-duplicate-scenarios.js"
   },
   "private": true,
   "dependencies": {

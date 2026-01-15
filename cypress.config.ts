@@ -1,4 +1,7 @@
-// cypress.config.ts
+/**
+ * @file cypress.config.ts
+ * @description Cypress configuration, plugin wiring, and reporting setup for Opal.
+ */
 import { defineConfig } from 'cypress';
 import webpack from '@cypress/webpack-preprocessor';
 import {
@@ -12,11 +15,16 @@ import {
   ensureAccountCaptureFile,
   initializeAccountCapture,
   registerAccountCaptureTasks,
-  clearAccountEvidence,
   resetEvidenceForRun,
+  releaseEvidenceResetLock,
 } from './cypress/support/tasks/accountCaptureTask';
-import { registerScreenshotTasks } from './cypress/support/tasks/screenshotTask';
+import { cleanupEmptyScreenshotDirs, registerScreenshotTasks } from './cypress/support/tasks/screenshotTask';
 
+/**
+ * Register browser launch hooks to standardize window size in headless runs.
+ * @param on - Cypress plugin event emitter.
+ * @returns void
+ */
 function setupBrowserLaunch(on: Cypress.PluginEvents): void {
   on('before:browser:launch', (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
     // eslint-disable-next-line no-console
@@ -52,17 +60,22 @@ function setupBrowserLaunch(on: Cypress.PluginEvents): void {
   });
 }
 
+/**
+ * Configure Cypress node event handlers, plugins, and per-run evidence tasks.
+ * @param on - Cypress plugin event emitter.
+ * @param config - Cypress plugin configuration.
+ * @returns Cypress plugin configuration after setup.
+ */
 async function setupNodeEvents(
   on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
   await addCucumberPreprocessorPlugin(on, config);
-  // Start each Cypress run with a clean evidence directory.
-  await clearAccountEvidence();
+  // Evidence reset is handled in before:run with a per-run lock.
   // Register tasks so Cypress can write the per-run created-accounts artifact.
   registerAccountCaptureTasks(on);
   // Register tasks to relocate scenario evidence screenshots.
-  registerScreenshotTasks(on);
+  registerScreenshotTasks(on, config);
 
   on(
     'file:preprocessor',
@@ -131,6 +144,8 @@ async function setupNodeEvents(
   on('after:run', async (results) => {
     await ensureAccountCaptureFile();
     await afterRunHandler(config, results);
+    await releaseEvidenceResetLock();
+    await cleanupEmptyScreenshotDirs(config.screenshotsFolder as string | undefined);
   });
 
   // messagesOutput logic (unchanged)
@@ -149,8 +164,8 @@ export default defineConfig({
   viewportWidth: 2560,
   viewportHeight: 2560,
   reporter: 'junit',
-  // Route all screenshots (manual and failure) into the shared account evidence folder.
-  screenshotsFolder: 'functional-output/account_evidence/screenshots',
+  // Keep failure screenshots in the default functional output location.
+  screenshotsFolder: 'functional-output/screenshots/opal',
 
   e2e: {
     baseUrl: process.env.TEST_URL || 'http://localhost:4000/',
@@ -211,6 +226,12 @@ export default defineConfig({
         json: true,
       },
     },
+    /**
+     * Configure component testing plugins and reporters.
+     * @param on - Cypress plugin event emitter.
+     * @param config - Cypress plugin configuration.
+     * @returns Cypress plugin configuration after setup.
+     */
     setupNodeEvents(on, config) {
       setupBrowserLaunch(on);
       // eslint-disable-next-line @typescript-eslint/no-var-requires

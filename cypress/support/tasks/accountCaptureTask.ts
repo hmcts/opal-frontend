@@ -75,6 +75,7 @@ type AccountArtifact = {
 const evidenceDir = path.join(process.cwd(), 'functional-output', 'account_evidence');
 const artifactPath = path.join(evidenceDir, 'created-accounts.json');
 const lockPath = path.join(evidenceDir, 'created-accounts.lock');
+const resetLockPath = path.join(process.cwd(), 'functional-output', 'account_evidence.reset.lock');
 let cachedRunMeta: RunMeta | null = null;
 
 const readEnv = (key: string): string | undefined => process.env[key];
@@ -181,13 +182,44 @@ export async function clearAccountEvidence(): Promise<void> {
 }
 
 /**
+ * @description Acquire the per-run reset lock so only one worker clears evidence.
+ * @returns File handle when the lock is acquired, or null when another worker owns it.
+ */
+async function acquireResetLock(): Promise<fs.FileHandle | null> {
+  try {
+    return await fs.open(resetLockPath, 'wx');
+  } catch (err: any) {
+    if (err && err.code === 'EEXIST') {
+      return null;
+    }
+    throw err;
+  }
+}
+
+/**
+ * @description Remove the per-run evidence reset lock (used between Cypress runs).
+ */
+export async function releaseEvidenceResetLock(): Promise<void> {
+  await fs.rm(resetLockPath, { force: true });
+}
+
+/**
  * @description Fully reset evidence for a new Cypress run: clear folder and seed a fresh artifact.
  */
 export async function resetEvidenceForRun(): Promise<void> {
-  await clearAccountEvidence();
-  cachedRunMeta = null;
-  const fresh = emptyArtifact();
-  await writeArtifact(fresh);
+  const lockHandle = await acquireResetLock();
+  if (!lockHandle) {
+    return;
+  }
+
+  try {
+    await clearAccountEvidence();
+    cachedRunMeta = null;
+    const fresh = emptyArtifact();
+    await writeArtifact(fresh);
+  } finally {
+    await lockHandle.close();
+  }
 }
 
 /**
@@ -352,11 +384,20 @@ async function writeArtifact(artifact: AccountArtifact): Promise<AccountArtifact
  */
 async function initArtifactIfNeeded(): Promise<AccountArtifact> {
   return withLock(async () => {
-    const existing = normalizeArtifact(await readArtifact());
+    const raw = await readArtifact();
+    const existing = normalizeArtifact(raw);
+    const hasArtifact = raw !== null;
+    const isParallelThread = Boolean(process.env['CYPRESS_THREAD']);
+
+    if (hasArtifact && isParallelThread) {
+      cachedRunMeta = existing.runMeta;
+      return existing;
+    }
+
     const currentMeta = cachedRunMeta ?? buildRunMeta();
 
     const shouldReset =
-      !existing.runMeta ||
+      !hasArtifact ||
       existing.runMeta.buildId !== currentMeta.buildId ||
       existing.runMeta.environment !== currentMeta.environment;
 
@@ -560,7 +601,3 @@ export async function ensureAccountCaptureFile(): Promise<void> {
 export function getAccountArtifactPath(): string {
   return artifactPath;
 }
-/**
- * @file accountCapture.ts
- * @description Node-side helpers and Cypress tasks for persisting per-run account creation/failure metadata.
- */

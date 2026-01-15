@@ -29,20 +29,13 @@ export function captureScenarioScreenshot(
 
   return cy
     .screenshot(filename, { capture: 'fullPage', ...options })
-    .then((details) => {
-      const screenshotPath = (details as Cypress.ScreenshotDetails | undefined)?.path;
-      if (!screenshotPath) {
-        return undefined;
-      }
-      return cy
-        .task('screenshot:saveEvidence', { from: screenshotPath, filename: targetFileName }, { log: false })
-        .then((savedPath) => savedPath || screenshotPath)
-        .then((finalPath) =>
-          cy.readFile(finalPath as string, 'base64').then((base64) => {
-            const buffer = Cypress.Buffer.from(base64, 'base64');
-            attach(buffer.buffer as ArrayBuffer, { mediaType: 'image/png', fileName: targetFileName });
-          }),
-        );
-    })
+    .then(() =>
+      cy.task('screenshot:saveEvidence', { filename: targetFileName }, { log: false }).then((savedPath) => {
+        if (!savedPath) return undefined;
+        return cy.readFile(savedPath as string, 'base64').then((base64) => {
+          attach(base64, { mediaType: 'base64:image/png', fileName: targetFileName });
+        });
+      }),
+    )
     .then(() => undefined) as Cypress.Chainable<void>;
 }

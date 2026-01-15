@@ -156,7 +156,7 @@ Feature: Account Search and Matches
 
   @PO-715
   #-AC9a
-  Scenario Outline: Minor creditors - company type error validation and data persistence
+  Scenario Outline: Minor creditors - company type error validation with examples
     And I view the Minor Creditors search form
     When I search using the following inputs:
       | minor creditor type      | Company         |
@@ -179,7 +179,7 @@ Feature: Account Search and Matches
       |               | REF-123   | CompanyOne      |
 
 
-  Scenario: Minor creditors - company type error validation and data persistence
+  Scenario: Minor creditors - company type displays validation message when name, address and postcode are missing
     #-AC9a
     And I view the Minor Creditors search form
     When I search using the following inputs:
