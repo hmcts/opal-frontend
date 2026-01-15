@@ -306,7 +306,11 @@ export class AccountEnquiryFlow {
   /**
    * Asserts payment terms summary values for instalments-only payments.
    */
-  public assertPaymentTermsInstalmentsSummary(expected: { amount: string; frequency: string; startDate: string }): void {
+  public assertPaymentTermsInstalmentsSummary(expected: {
+    amount: string;
+    frequency: string;
+    startDate: string;
+  }): void {
     logAE('method', 'assertPaymentTermsInstalmentsSummary()', expected);
     this.paymentTerms.assertInstalmentSummary(expected);
   }
