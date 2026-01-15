@@ -8,6 +8,7 @@ import { AccountDetailsNavActions } from '../actions/account-details/details.nav
 import { AccountDetailsCommentsActions } from '../actions/account-details/details.comments.actions';
 import { AccountDetailsAtAGlanceActions } from '../actions/account-details/details.at-a-glance.actions';
 import { AccountDetailsParentGuardianActions } from '../actions/account-details/details.parent.guardian.actions';
+import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
@@ -69,6 +70,7 @@ export class AccountEnquiryFlow {
   private readonly editDefendantDetailsActions = new EditDefendantDetailsActions();
   private readonly editCompanyDetailsActions = new EditCompanyDetailsActions();
   private readonly editParentGuardianActions = new EditParentGuardianDetailsActions();
+  private readonly paymentTerms = new AccountDetailsPaymentTermsActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -221,6 +223,138 @@ export class AccountEnquiryFlow {
     logAE('navigate', 'Navigating to Parent/Guardian tab and asserting section header', { headerText });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertSectionHeader(headerText);
+  }
+
+  /**
+   * Navigates to the Payment terms tab and asserts it is active.
+   */
+  public goToPaymentTermsTab(): void {
+    logAE('method', 'goToPaymentTermsTab()');
+    logAE('navigate', 'Navigating to Payment terms tab');
+    this.detailsNav.goToPaymentTermsTab();
+    this.detailsNav.assertPaymentTermsTabIsActive();
+  }
+
+  /**
+   * Asserts the Payment terms tab is active.
+   */
+  public assertPaymentTermsTabIsActive(): void {
+    logAE('method', 'assertPaymentTermsTabIsActive()');
+    this.detailsNav.assertPaymentTermsTabIsActive();
+  }
+
+  /**
+   * Opens the amend payment terms form from the Payment terms tab.
+   */
+  public openPaymentTermsAmendForm(): void {
+    logAE('method', 'openPaymentTermsAmendForm()');
+    this.paymentTerms.openChangeLink();
+    this.paymentTerms.assertAmendFormVisible();
+  }
+
+  /**
+   * Submits instalments-only payment terms with a payment card request.
+   * Stores the POST request body for later assertions.
+   */
+  public submitInstalmentsOnlyPaymentTermsWithCardRequest(): void {
+    logAE('method', 'submitInstalmentsOnlyPaymentTermsWithCardRequest()');
+
+    this.interceptPaymentTermsSave();
+
+    this.paymentTerms.fillInstalmentsOnlyPaymentTerms({
+      instalmentAmount: '45',
+      frequencyCode: 'M',
+      startDate: '15/01/2026',
+      reason: 'Updated instalments',
+      requestPaymentCard: true,
+    });
+    this.paymentTerms.submitChanges();
+
+    cy.wait('@paymentTermsSave').then(({ request }) => {
+      cy.wrap(request.body, { log: false }).as('paymentTermsSaveBody');
+      expect(request.body).to.have.nested.property('payment_terms.payment_terms_type.payment_terms_type_code', 'I');
+      expect(request.body).to.have.nested.property('payment_terms.instalment_period.instalment_period_code', 'M');
+      expect(request.body).to.have.nested.property('payment_terms.effective_date', '2026-01-15');
+      expect(request.body).to.have.property('request_payment_card', true);
+      expect(Number(request.body?.payment_terms?.instalment_amount), 'instalment amount').to.equal(45);
+    });
+
+    this.detailsNav.assertPaymentTermsTabIsActive();
+  }
+
+  /**
+   * Cancels payment terms amendments and confirms no save request was sent.
+   */
+  public cancelPaymentTermsAmendment(): void {
+    logAE('method', 'cancelPaymentTermsAmendment()');
+
+    this.interceptPaymentTermsSave();
+    this.common.confirmNextUnsavedChanges(true);
+
+    this.paymentTerms.fillInstalmentsOnlyPaymentTerms({
+      instalmentAmount: '50',
+      frequencyCode: 'M',
+      startDate: '20/01/2026',
+      reason: 'Cancel changes',
+    });
+    this.paymentTerms.cancelChanges();
+
+    this.detailsNav.assertPaymentTermsTabIsActive();
+    cy.get('@paymentTermsSave.all').should('have.length', 0);
+  }
+
+  /**
+   * Asserts payment terms summary values for instalments-only payments.
+   */
+  public assertPaymentTermsInstalmentsSummary(expected: { amount: string; frequency: string; startDate: string }): void {
+    logAE('method', 'assertPaymentTermsInstalmentsSummary()', expected);
+    this.paymentTerms.assertInstalmentSummary(expected);
+  }
+
+  /**
+   * Asserts the pay by date value on the payment terms tab.
+   */
+  public assertPaymentTermsPayByDate(expected: string): void {
+    logAE('method', 'assertPaymentTermsPayByDate()', { expected });
+    this.paymentTerms.assertPayByDate(expected);
+  }
+
+  /**
+   * Asserts that instalment rows are not present on the payment terms tab.
+   */
+  public assertPaymentTermsInstalmentsAbsent(): void {
+    logAE('method', 'assertPaymentTermsInstalmentsAbsent()');
+    this.paymentTerms.assertInstalmentRowsNotPresent();
+  }
+
+  /**
+   * Asserts the payment terms save request included a payment card request.
+   */
+  public assertPaymentTermsSaveRequestedPaymentCard(): void {
+    logAE('method', 'assertPaymentTermsSaveRequestedPaymentCard()');
+
+    cy.get('@paymentTermsSaveBody').then((body) => {
+      expect(body).to.have.property('request_payment_card', true);
+    });
+  }
+
+  /**
+   * Verifies the last enforcement value is cleared after saving payment terms.
+   */
+  public verifyPaymentTermsLastEnforcementCleared(): void {
+    logAE('method', 'verifyPaymentTermsLastEnforcementCleared()');
+
+    this.extractDefendantAccountIdFromUrl().then((defendantAccountId) => {
+      cy.request({
+        method: 'GET',
+        url: `${AccountEnquiryFlow.BASE_API_PATH}/defendant-accounts/${defendantAccountId}/payment-terms/latest`,
+        headers: this.getApiHeaders(),
+        failOnStatusCode: false,
+      }).then((resp) => {
+        expect(resp.status, 'GET payment-terms/latest status').to.eq(200);
+        expect(resp.body?.last_enforcement, 'last_enforcement should be null').to.be.null;
+      });
+    });
   }
 
   /**
@@ -455,6 +589,13 @@ export class AccountEnquiryFlow {
         });
       },
     ).as('debugPutDefendantAccountParty');
+  }
+
+  /**
+   * Intercepts the payment terms save request for later assertions.
+   */
+  private interceptPaymentTermsSave(): void {
+    cy.intercept('POST', '**/defendant-accounts/*/payment-terms').as('paymentTermsSave');
   }
 
   /**
