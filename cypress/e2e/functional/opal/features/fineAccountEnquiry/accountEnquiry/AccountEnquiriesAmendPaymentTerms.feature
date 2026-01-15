@@ -40,7 +40,7 @@ Feature: Account Enquiries - Amend Payment Terms
       And the payment terms save request should include a payment card request
       And the payment terms last enforcement is cleared
 
-    @PO-1149 @only
+    @PO-1149
     Scenario: Cancel payment terms amendments returns to Payment terms tab
       When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
       And I go to the Payment terms tab
