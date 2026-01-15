@@ -305,6 +305,10 @@ export class AccountEnquiryFlow {
 
   /**
    * Asserts payment terms summary values for instalments-only payments.
+   * @param expected - Expected summary values.
+   * @param expected.amount - Instalment amount.
+   * @param expected.frequency - Instalment frequency.
+   * @param expected.startDate - Instalment start date.
    */
   public assertPaymentTermsInstalmentsSummary(expected: {
     amount: string;
@@ -317,6 +321,7 @@ export class AccountEnquiryFlow {
 
   /**
    * Asserts the pay by date value on the payment terms tab.
+   * @param expected - Expected pay by date value.
    */
   public assertPaymentTermsPayByDate(expected: string): void {
     logAE('method', 'assertPaymentTermsPayByDate()', { expected });
