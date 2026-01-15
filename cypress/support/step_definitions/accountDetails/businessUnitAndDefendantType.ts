@@ -9,11 +9,17 @@ When('I see {string} message on the business unit', (message: string) => {
 });
 
 Then('I see {string} section on the page', (sectionName: string) => {
-  cy.get('[describedby="defendantTypeHint"]').should('contain.text', sectionName);
+  cy.get('#fm_create_account_fine_defendant_type, #fm_create_account_fixed_penalty_defendant_type').should(
+    'contain.text',
+    sectionName,
+  );
 });
 
 Then('I see {string} on the defendant type header', (defendantTypeHeader: string) => {
-  cy.get('#defendantTypeHint').should('contain.text', defendantTypeHeader);
+  cy.get('#fm_create_account_fine_defendant_type-hint, #fm_create_account_fixed_penalty_defendant_type-hint').should(
+    'contain.text',
+    defendantTypeHeader,
+  );
 });
 Then('I check and verify radio buttons', () => {
   cy.get('[type="radio"]').should('have.length', '3');
