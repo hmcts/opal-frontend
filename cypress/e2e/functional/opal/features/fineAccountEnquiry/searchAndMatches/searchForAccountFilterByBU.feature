@@ -4,7 +4,7 @@ Feature: Filter by Business Unit
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     When I navigate to the Filter by business unit page
 
-  @PO-711 @AC1a
+  @PO-711 @PO-2610 @AC1a @only
   Scenario: AC1a — Page and defaults on first load (Fines)
     Then the Filter by business unit page for Fines is shown with defaults
 
