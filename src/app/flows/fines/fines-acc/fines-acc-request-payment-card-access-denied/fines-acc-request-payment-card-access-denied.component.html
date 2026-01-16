@@ -7,6 +7,7 @@
 @switch (deniedType) {
   @case ('enforcement') {
     <p class="govuk-!-margin-bottom-6">The last enforcement action prevents you from adding a payment card.</p>
+    <p class="govuk-!-margin-bottom-6">{{ paymentTermsData.last_enforcement }}</p>
   }
   @case ('permission') {
     <p class="govuk-!-margin-bottom-6">Your business unit does not allow payment card requests.</p>

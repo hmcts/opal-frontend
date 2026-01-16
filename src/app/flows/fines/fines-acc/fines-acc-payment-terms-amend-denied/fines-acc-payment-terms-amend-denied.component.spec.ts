@@ -4,6 +4,8 @@ import { FinesAccPaymentTermsAmendDeniedComponent } from './fines-acc-payment-te
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FINES_ACCOUNT_STATE } from '../constants/fines-acc-state.constant';
 import { ActivatedRoute } from '@angular/router';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 
 let mockAccountStore: jasmine.SpyObj<InstanceType<typeof FinesAccountStore>>;
 let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
@@ -19,7 +21,13 @@ describe('FinesAccPaymentTermsAmendDeniedComponent', () => {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     mockActivatedRoute.snapshot = {
       paramMap: new Map([['type', 'permission']]) as any,
-    } as ActivatedRoute['snapshot'];
+      data: {
+        defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+        defendantAccountPaymentTermsData: structuredClone(
+          OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK,
+        ),
+      },
+    } as unknown as ActivatedRoute['snapshot'];
 
     await TestBed.configureTestingModule({
       imports: [FinesAccPaymentTermsAmendDeniedComponent],
