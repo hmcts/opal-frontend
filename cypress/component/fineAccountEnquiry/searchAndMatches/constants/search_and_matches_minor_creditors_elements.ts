@@ -7,8 +7,8 @@ export const DOM_ELEMENTS = {
   companiesTab: '[id="tab-companies"]',
   minorCreditorsTab: '[id="tab-minor-creditors"]',
   majorCreditorsTab: '[id="tab-major-creditors"]',
-  minorCreditorsPanel: '[id="minor-creditors"]',
-  minorCreditorsHeading: '[id="minor-creditors"] .govuk-heading-l',
+  minorCreditorsPanel: '[id="minorCreditors"]',
+  minorCreditorsHeading: '[id="minorCreditors"] .govuk-heading-l',
   searchButton: '[buttonId="submitForm"]',
 
   // Filter by business unit section
