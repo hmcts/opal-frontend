@@ -88,6 +88,22 @@ let cachedRunMeta: RunMeta | null = null;
 const readEnv = (key: string): string | undefined => process.env[key];
 
 /**
+ * @description Determine whether evidence capture is enabled (legacy mode only).
+ * @returns True when evidence capture should run.
+ */
+function isLegacyEvidenceEnabled(): boolean {
+  const legacyEnabled = readEnv('LEGACY_ENABLED');
+  if (legacyEnabled && legacyEnabled.trim()) {
+    const normalized = legacyEnabled.trim().toLowerCase();
+    if (normalized === 'true' || normalized === 'legacy' || normalized === '1') {
+      return true;
+    }
+  }
+  const mode = (readEnv('DEV_DEFAULT_APP_MODE') || readEnv('DEFAULT_APP_MODE') || '').trim().toLowerCase();
+  return mode === 'legacy';
+}
+
+/**
  * @description Resolve a build identifier from well-known CI environment variables, falling back to "local".
  * @returns Build identifier string.
  * @example const buildId = resolveBuildId();
@@ -225,6 +241,9 @@ export async function releaseEvidenceResetLock(): Promise<void> {
  * @returns Promise that resolves once evidence is reset.
  */
 export async function resetEvidenceForRun(): Promise<void> {
+  if (!isLegacyEvidenceEnabled()) {
+    return;
+  }
   const lockHandle = await acquireResetLock();
   if (!lockHandle) {
     return;
@@ -661,6 +680,9 @@ async function appendEntry(kind: 'created' | 'failed', entry: AccountCreated | A
  * @example await recordCreated(entry);
  */
 async function recordCreated(entry: AccountCreated): Promise<null> {
+  if (!isLegacyEvidenceEnabled()) {
+    return null;
+  }
   await appendEntry('created', entry);
   return null;
 }
@@ -672,6 +694,9 @@ async function recordCreated(entry: AccountCreated): Promise<null> {
  * @example await recordFailed(entry);
  */
 async function recordFailed(entry: AccountFailed): Promise<null> {
+  if (!isLegacyEvidenceEnabled()) {
+    return null;
+  }
   await appendEntry('failed', entry);
   return null;
 }
@@ -689,6 +714,9 @@ type FinalizeScenarioInput = {
  * @example await finalizeScenario({ scenario: 'My Scenario', scenarioStartedAt, scenarioFinishedAt });
  */
 async function finalizeScenario(input: FinalizeScenarioInput): Promise<null> {
+  if (!isLegacyEvidenceEnabled()) {
+    return null;
+  }
   const scenario = (input?.scenario ?? '').trim();
   if (!scenario) return null;
   const finishedAt = (input?.scenarioFinishedAt ?? new Date().toISOString()).trim();
@@ -734,6 +762,9 @@ async function finalizeScenario(input: FinalizeScenarioInput): Promise<null> {
  * @example const finalArtifact = await flushArtifacts();
  */
 async function flushArtifacts(): Promise<AccountArtifact> {
+  if (!isLegacyEvidenceEnabled()) {
+    return emptyArtifact();
+  }
   return withLock(async () => {
     const artifact = normalizeArtifact(await readArtifact());
     const next = {
@@ -751,6 +782,9 @@ async function flushArtifacts(): Promise<AccountArtifact> {
  * @example await initializeAccountCapture();
  */
 export async function initializeAccountCapture(): Promise<void> {
+  if (!isLegacyEvidenceEnabled()) {
+    return;
+  }
   await initArtifactIfNeeded();
 }
 
@@ -783,6 +817,9 @@ export function registerAccountCaptureTasks(on: Cypress.PluginEvents): void {
  * @example await ensureAccountCaptureFile();
  */
 export async function ensureAccountCaptureFile(): Promise<void> {
+  if (!isLegacyEvidenceEnabled()) {
+    return;
+  }
   await flushArtifacts();
 }
 

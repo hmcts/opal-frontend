@@ -1,3 +1,4 @@
+@UAT-Technical
 Feature: Manual account creation - Create Draft Account
 
   Background:

@@ -4,8 +4,9 @@ import uk.gov.hmcts.contino.GithubAPI
 @Library('Infrastructure')
 
 // Pipeline identifiers
+String opalName = 'opal'
 String type = 'angular'
-String product = 'opal'
+String product = opalName
 String component = 'frontend'
 
 // Secret key for KeyVault lookups
@@ -34,6 +35,7 @@ String smokeOutputDir = 'smoke-output/prod/cucumber/'
 String smokeReportFile = 'smoke-report.html'
 String smokeReportName = 'Cucumber Smoke Test Report'
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
+String runTagPrefix = 'run_tag:'
 
 // Vault secrets injected into the pipeline
 Map<String, Object> secrets = [
@@ -168,7 +170,7 @@ void setupTestSpecifications() {
 
         // Add additional labels as needed
         if (labels.contains('test_authorisation')) {
-      directories.add('authorisation')
+            directories.add('authorisation')
         }
         if (labels.contains('test_enq')) {
             directories.add('accountEnquiry')
@@ -260,36 +262,37 @@ properties([
 ])
 
 // --- Dev legacy toggle (PR label driven) ---
-def githubApiForMode = new GithubAPI(this)
-def legacyEnabled = githubApiForMode.checkForLabel(env.BRANCH_NAME, 'enable_legacy_mode')
-def isPR = env.CHANGE_ID?.trim()
+GithubAPI githubApiForMode = new GithubAPI(this)
+boolean legacyEnabled = githubApiForMode.checkForLabel(env.BRANCH_NAME, 'enable_legacy_mode')
+String changeId = env.CHANGE_ID?.trim()
+boolean isPR = changeId != null && !changeId.empty
 
 // Safe defaults (current behaviour)
-env.DEV_DEFAULT_APP_MODE = 'opal'
+env.DEV_DEFAULT_APP_MODE = opalName
 env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
 
 // Opt-in: Dev → JCDE (PR builds only)
 if (legacyEnabled && isPR) {
-  env.DEV_DEFAULT_APP_MODE = 'legacy'
-  env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
+    env.DEV_DEFAULT_APP_MODE = 'legacy'
+    env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
 } else if (legacyEnabled && !isPR) {
-  echo "Legacy mode label detected but this is not a PR build; ignoring."
+    echo 'Legacy mode label detected but this is not a PR build; ignoring.'
 }
 
 echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
 
-def githubApi = new GithubAPI(this)
-def allLabels = githubApi.getLabels(env.BRANCH_NAME)
+GithubAPI githubApi = new GithubAPI(this)
+List<String> allLabels = githubApi.getLabels(env.BRANCH_NAME)
 
 // Find the first label like: run_tag:<expression>
-def tagLabel = allLabels.find { it.startsWith('run_tag:') }
+String tagLabel = allLabels.find { String label -> label.startsWith(runTagPrefix) }
 
 if (tagLabel) {
-  env.TAGS = tagLabel.substring('run_tag:'.length()).trim()
-  echo "Running only scenarios matching TAGS=${env.TAGS}"
+    env.TAGS = tagLabel.substring(runTagPrefix.length()).trim()
+    echo "Running only scenarios matching TAGS=${env.TAGS}"
 } else {
-  echo "Running all scenarios (no run_tag label found)"
+    echo 'Running all scenarios (no run_tag label found)'
 }
 
 // Primary pipeline definition and lifecycle hooks

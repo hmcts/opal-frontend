@@ -21,6 +21,22 @@ type SaveEvidenceByNameInput = {
 type ScreenshotMatch = { path: string; mtimeMs: number };
 
 /**
+ * Determine whether evidence capture is enabled (legacy mode only).
+ * @returns True when evidence capture should run.
+ */
+function isLegacyEvidenceEnabled(): boolean {
+  const legacyEnabled = process.env.LEGACY_ENABLED;
+  if (legacyEnabled && legacyEnabled.trim()) {
+    const normalized = legacyEnabled.trim().toLowerCase();
+    if (normalized === 'true' || normalized === 'legacy' || normalized === '1') {
+      return true;
+    }
+  }
+  const mode = (process.env.DEV_DEFAULT_APP_MODE || process.env.DEFAULT_APP_MODE || '').trim().toLowerCase();
+  return mode === 'legacy';
+}
+
+/**
  * Find screenshot files by filename (including retry variants) under the screenshots root.
  * @param filename - Relative filename or path to locate (e.g., scenario-foo.png or feature/path/scenario-foo.png).
  * @returns Matching screenshot paths with modified times, newest first.
@@ -94,6 +110,9 @@ async function resolveSources(input: SaveEvidenceInput | SaveEvidenceByNameInput
  * @returns Evidence path for attaching to reports, or null when not found.
  */
 async function saveEvidenceScreenshot(input: SaveEvidenceInput | SaveEvidenceByNameInput): Promise<string | null> {
+  if (!isLegacyEvidenceEnabled()) {
+    return null;
+  }
   const sources = await resolveSources(input);
   if (!sources.length) return null;
 

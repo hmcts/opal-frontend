@@ -14,6 +14,7 @@ import {
   getCurrentScenarioStartedAt,
   getCurrentScenarioTitle,
 } from './scenarioContext';
+import { isEvidenceCaptureEnabled } from './evidenceMode';
 
 type RequestLike = {
   url?: string;
@@ -498,6 +499,9 @@ function buildFailedRecord(input: FailedAccountInput): AccountFailedRecord {
  * @example recordCreatedAccount({ source: 'api', accountType: 'company', accountId: 1 });
  */
 export function recordCreatedAccount(input: CreatedAccountInput, requestBody?: unknown): Cypress.Chainable<void> {
+  if (!isEvidenceCaptureEnabled()) {
+    return cy.then(() => undefined as void) as Cypress.Chainable<void>;
+  }
   const record = buildCreatedRecord(input, requestBody);
   if (!record) {
     return cy.then(() => undefined as void) as Cypress.Chainable<void>;
@@ -515,6 +519,9 @@ export function recordCreatedAccount(input: CreatedAccountInput, requestBody?: u
  * @example recordFailedAccount({ source: 'ui', accountType: 'manualCreate', httpStatus: 400, requestSummary: { endpoint: '/path', method: 'POST' } });
  */
 export function recordFailedAccount(input: FailedAccountInput): Cypress.Chainable<void> {
+  if (!isEvidenceCaptureEnabled()) {
+    return cy.then(() => undefined as void) as Cypress.Chainable<void>;
+  }
   const record = buildFailedRecord(input);
   return cy
     .task('accountCapture:recordFailed', record, { log: false })

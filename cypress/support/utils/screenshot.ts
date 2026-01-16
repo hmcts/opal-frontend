@@ -5,6 +5,7 @@
  */
 import { attach } from '@badeball/cypress-cucumber-preprocessor';
 import { getCurrentScenarioFeaturePath, getCurrentScenarioTitle } from './scenarioContext';
+import { isEvidenceCaptureEnabled } from './evidenceMode';
 
 /**
  * Capture a screenshot with the current scenario name prefixed.
@@ -17,6 +18,9 @@ export function captureScenarioScreenshot(
   tag: string,
   options?: Partial<Cypress.ScreenshotOptions>,
 ): Cypress.Chainable<void> {
+  if (!isEvidenceCaptureEnabled()) {
+    return cy.then(() => undefined) as Cypress.Chainable<void>;
+  }
   const featurePath = getCurrentScenarioFeaturePath()
     .replace(/\\/g, '/')
     .split('/')
