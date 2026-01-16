@@ -62,7 +62,20 @@ export class DraftAccountsCommonActions {
       });
     };
 
-    tryPage();
+    cy.get(L.rows, this.common.getTimeoutOptions())
+      .should('exist')
+      .then(() => cy.get('body', this.common.getTimeoutOptions()))
+      .then(($body) => {
+        const headerButtons = $body.find(`${L.table} th button`);
+        const hasCreatedHeader = headerButtons.toArray().some((el) => /created/i.test(Cypress.$(el).text()));
+        if (hasCreatedHeader) {
+          // Prefer the newest entry when duplicate defendant names exist across scenarios.
+          this.sortByColumn('Created', 'descending');
+        }
+      })
+      .then(() => {
+        tryPage();
+      });
   }
 
   /**

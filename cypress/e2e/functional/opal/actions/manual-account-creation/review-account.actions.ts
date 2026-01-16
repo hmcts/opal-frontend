@@ -7,6 +7,18 @@ import { ManualReviewAccountLocators as L } from '../../../../../shared/selector
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
+import {
+  deriveRequestSummary,
+  extractAccountNumber,
+  extractCreatedTimestamp,
+  extractUpdatedTimestamp,
+  recordCreatedAccount,
+  recordFailedAccount,
+  safeReadDraftId,
+  summarizeErrorPayload,
+} from '../../../../../support/utils/accountCapture';
+import { captureScenarioScreenshot } from '../../../../../support/utils/screenshot';
+import { getCurrentScenarioTitle } from '../../../../../support/utils/scenarioContext';
 
 type SummaryRow = { label: string; value: string };
 type OffenceRow = {
@@ -23,6 +35,14 @@ type OffenceRow = {
 export class ManualReviewAccountActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
+
+  /**
+   * Take a named screenshot for evidence on the review screen.
+   * @param tag - Short label describing the capture moment.
+   */
+  private captureReviewScreenshot(tag: string): void {
+    captureScenarioScreenshot(`manual-review-${tag}`);
+  }
 
   /**
    * Clicks the Check account button from Account details.
@@ -199,12 +219,106 @@ export class ManualReviewAccountActions {
   }
 
   /**
+   * Submits the account and captures success/failure metadata for downstream validation.
+   * @param assertSuccess - Whether to assert a successful submission.
+   * @returns Cypress chainable for the submission flow.
+   */
+  private submitAndCapture(assertSuccess: boolean): Cypress.Chainable<void> {
+    log('navigate', 'Submitting manual account for review');
+    this.captureReviewScreenshot('before-submit');
+    const scenario = getCurrentScenarioTitle();
+    cy.intercept(
+      {
+        method: /POST|PUT/,
+        url: /\/opal-fines-service\/draft-accounts(?:\/.*)?/,
+      },
+      (req) => req,
+    ).as('manualAccountSubmit');
+
+    cy.get(L.submitForReviewButton, this.common.getTimeoutOptions()).should('be.visible').click();
+
+    return cy.wait('@manualAccountSubmit').then(({ request, response }) => {
+      const { endpoint, method } = deriveRequestSummary(request);
+      const requestBody = request?.body;
+      const requestAccountId = requestBody ? safeReadDraftId(requestBody as unknown) : undefined;
+      const isUpdate =
+        (method || '').toUpperCase() === 'PUT' ||
+        /\/opal-fines-service\/draft-accounts\/\d+/.test(endpoint || '') ||
+        typeof requestAccountId === 'number';
+      const status = response?.statusCode ?? 0;
+      const responseAccountId = response ? safeReadDraftId(response.body as unknown) : undefined;
+      const endpointMatch = endpoint?.match(/\/draft-accounts\/(\d+)/);
+      const endpointAccountId = endpointMatch ? Number(endpointMatch[1]) : undefined;
+      const accountId = responseAccountId ?? requestAccountId ?? endpointAccountId;
+      const accountNumber = response
+        ? extractAccountNumber(response.body as unknown, response.headers as Record<string, unknown>)
+        : undefined;
+      const createdAtFromResponse = response ? extractCreatedTimestamp(response.body as unknown) : undefined;
+      const updatedAtFromResponse = response ? extractUpdatedTimestamp(response.body as unknown) : undefined;
+
+      const isSuccessStatus = status >= 200 && status < 300;
+      const recordWithId = (resolvedAccountId?: number): Cypress.Chainable<void> => {
+        if (isSuccessStatus && typeof resolvedAccountId === 'number') {
+          const resolvedUpdatedAt = isUpdate ? (updatedAtFromResponse ?? new Date().toISOString()) : undefined;
+          return recordCreatedAccount(
+            {
+              source: 'ui',
+              accountType: isUpdate ? 'manualUpdate' : 'manualCreate',
+              status: isUpdate ? 'Updated' : 'Created',
+              accountId: resolvedAccountId,
+              accountNumber: accountNumber ?? null,
+              createdAt: createdAtFromResponse,
+              updatedAt: resolvedUpdatedAt,
+              requestSummary: {
+                endpoint: endpoint || '/opal-fines-service/draft-accounts',
+                method,
+              },
+              scenario,
+            },
+            requestBody,
+          );
+        } else {
+          return recordFailedAccount({
+            source: 'ui',
+            accountType: isUpdate ? 'manualUpdate' : 'manualCreate',
+            httpStatus: status || 0,
+            errorSummary: summarizeErrorPayload(response?.body as unknown),
+            requestSummary: {
+              endpoint: endpoint || '/opal-fines-service/draft-accounts',
+              method,
+            },
+            scenario,
+          });
+        }
+      };
+
+      const assertSuccessResponse = (resolvedAccountId?: number): void => {
+        if (assertSuccess) {
+          expect(response, 'submit response').to.exist;
+          expect(status, 'submit status').to.be.gte(200).and.lt(300);
+          expect(resolvedAccountId, 'draft account id').to.be.a('number');
+        }
+      };
+
+      if (isSuccessStatus && typeof accountId !== 'number') {
+        return cy.get<number>('@lastCreatedDraftId', { log: false }).then((fallbackId) => {
+          assertSuccessResponse(fallbackId);
+          return recordWithId(fallbackId);
+        });
+      }
+
+      assertSuccessResponse(accountId);
+      return recordWithId(accountId);
+    });
+  }
+
+  /**
    * Clicks Submit for review on the review page.
    * @example
    *   review.submitForReview();
+   * @returns Cypress chainable for the submit action.
    */
-  submitForReview(): void {
-    log('navigate', 'Submitting manual account for review');
-    cy.get(L.submitForReviewButton, this.common.getTimeoutOptions()).should('be.visible').click();
+  submitForReview(): Cypress.Chainable<void> {
+    return this.submitAndCapture(false);
   }
 }

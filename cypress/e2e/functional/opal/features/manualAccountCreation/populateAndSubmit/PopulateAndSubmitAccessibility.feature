@@ -1,3 +1,4 @@
+@UAT-Technical
 Feature: Accessibility Tests for Populate and Submit Screens
   # This feature file ensures that key populate and submit screens meet accessibility standards using Axe-Core.
 

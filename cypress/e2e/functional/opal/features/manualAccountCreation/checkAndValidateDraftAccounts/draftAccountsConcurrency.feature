@@ -1,4 +1,4 @@
-@api @concurrency @PO-2117
+@api @concurrency @PO-2117 @UAT-Technical
 Feature: Draft Accounts — ETag/If-Match Concurrency
 
   Background:
