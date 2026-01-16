@@ -31,6 +31,8 @@ describe('Account Enquiry Payment Terms', () => {
       '../debtor/parentGuardian/amend',
       '../payment-terms/amend',
       '../payment-terms/amend-denied',
+      '../payment-card/request',
+      '../payment-card/denied/enforcement',
       // Add more routes here as needed
     ],
   };
@@ -835,4 +837,205 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get(PAYMENT_TERMS_TAB.lastAmendedBy).should('exist').and('contain.text', 'opal-test-2');
     cy.get(PAYMENT_TERMS_TAB.amendmentReason).should('exist').and('contain.text', 'Payment delay reason');
   });
+
+  it('AC1: Individual with permission to amend payment terms can request a payment card', { tags: ['PO-1700'] }, () => {
+    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+    headerMock.debtor_type = 'individual';
+    let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+    paymentTermsMock.last_enforcement = 'REM';
+
+    const accountId = headerMock.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, headerMock, '123');
+    interceptPaymentTerms(accountId, paymentTermsMock, '123');
+    interceptResultByCode('REM');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
+
+    cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);
+  });
+
+  it(
+    'AC1b: Individual with permission to amend payment terms cannot request a payment card when enforcement prevents it',
+    { tags: ['PO-1700'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'DW';
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('DW');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/denied/enforcement']);
+    },
+  );
+
+  it(
+    'AC1a: Individual without amend payment terms permission does not see Request payment card',
+    { tags: ['PO-1700'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'REM';
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').should('not.exist');
+    },
+  );
+
+  it('AC1: Parent or guardian can request a payment card when enforcement allows', { tags: ['PO-1701'] }, () => {
+    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+    headerMock.debtor_type = 'Parent/Guardian';
+    headerMock.parent_guardian_party_id = '1770000001';
+    let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+    paymentTermsMock.last_enforcement = 'REM';
+
+    const accountId = headerMock.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, headerMock, '123');
+    interceptPaymentTerms(accountId, paymentTermsMock, '123');
+    interceptResultByCode('REM');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
+
+    cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);
+  });
+
+  it(
+    'AC1b: Parent or guardian cannot request a payment card when enforcement prevents it',
+    { tags: ['PO-1701'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'Parent/Guardian';
+      headerMock.parent_guardian_party_id = '1770000001';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'DW';
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('DW');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/denied/enforcement']);
+    },
+  );
+
+  it(
+    'AC1a:  Parent or guardian without amend payment terms permission does not see Request payment card',
+    { tags: ['PO-1701'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'Parent/Guardian';
+      headerMock.parent_guardian_party_id = '1770000001';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'REM';
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').should('not.exist');
+    },
+  );
+
+  it('AC1: Company can request a payment card when enforcement allows', { tags: ['PO-1702'] }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+
+    let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+    paymentTermsMock.last_enforcement = 'REM';
+
+    const accountId = header.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptPaymentTerms(accountId, paymentTermsMock, '123');
+    interceptResultByCode('REM');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
+
+    cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/request']);
+  });
+
+  it('AC1b: Company cannot request a payment card when enforcement prevents it', { tags: ['PO-1702'] }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+    let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+    paymentTermsMock.last_enforcement = 'DW';
+    const accountId = header.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptPaymentTerms(accountId, paymentTermsMock, '123');
+    interceptResultByCode('DW');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
+    cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').click();
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-card/denied/enforcement']);
+  });
+
+  it(
+    'AC1a:  Company without amend payment terms permission does not see Request payment card',
+    { tags: ['PO-1702'] },
+    () => {
+      const header = structuredClone(DEFENDANT_HEADER_MOCK);
+      header.party_details.organisation_flag = true;
+      header.party_details.organisation_details = {
+        organisation_name: 'Test Org Ltd',
+        organisation_aliases: [],
+      };
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'REM';
+
+      const accountId = header.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+      interceptDefendantHeader(accountId, header, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.contains(PAYMENT_TERMS_TAB.paymentTermsLink, 'Request payment card').should('not.exist');
+    },
+  );
 });

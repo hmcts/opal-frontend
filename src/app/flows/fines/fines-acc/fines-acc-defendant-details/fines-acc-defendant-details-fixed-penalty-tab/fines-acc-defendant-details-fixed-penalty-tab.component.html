@@ -72,11 +72,7 @@
             <ng-container name>Date notice to owner was issued</ng-container>
             @if (tabData.vehicle_fixed_penalty_details?.date_notice_issued) {
               <ng-container value>{{
-                dateService.getFromFormatToFormat(
-                  tabData.vehicle_fixed_penalty_details?.date_notice_issued!,
-                  'dd/MM/yyyy',
-                  'dd MMMM yyyy'
-                )
+                tabData.vehicle_fixed_penalty_details?.date_notice_issued | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy'
               }}</ng-container>
             } @else {
               <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>

@@ -6,13 +6,13 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MAC_FIXED_PENALTY_OFFENCE_TYPES } from '../../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-offence-types';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
+import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
+import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 
 @Component({
   selector: 'app-fines-mac-review-account-fixed-penalty-offence-details',
@@ -22,32 +22,21 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
     FinesNotProvidedComponent,
+    DateFormatPipe,
+    MonetaryPipe,
   ],
   templateUrl: './fines-mac-review-account-fixed-penalty-offence-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements OnInit {
-  private readonly dateService = new DateService();
   private readonly opalFinesService = inject(OpalFines);
   @Input({ required: true }) public offenceDetails!: IFinesMacFixedPenaltyDetailsStoreState;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeOffenceDetails = new EventEmitter<void>();
 
-  public readonly utilsService = inject(UtilsService);
   public readonly defaultValues = FINES_DEFAULT_VALUES;
   public readonly offenceTypes = FINES_MAC_FIXED_PENALTY_OFFENCE_TYPES;
   public offence!: string;
-
-  /**
-   * Formats the date from 'dd/MM/yyyy' to 'dd MMMM yyyy'.
-   * This method uses the DateService to convert the date format.
-   *
-   * @param {string} date - The date string in 'dd/MM/yyyy' format.
-   * @returns {string} - The formatted date string in 'dd MMMM yyyy' format.
-   */
-  public dateFormat(date: string): string {
-    return this.dateService.getFromFormatToFormat(date, 'dd/MM/yyyy', 'dd MMMM yyyy');
-  }
 
   /**
    * Returns the offence type based on the provided key.

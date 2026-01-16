@@ -86,7 +86,12 @@ describe('FinesMacMinorCreditorInformation', () => {
     () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
-      cy.get(DOM_ELEMENTS.address).should('contain', '1 Testing Lane' + 'Test Town' + 'Testing' + 'TE12 3ST');
+      cy.get(DOM_ELEMENTS.address).within(() => {
+        cy.contains('1 Testing Lane');
+        cy.contains('Test Town');
+        cy.contains('Testing');
+        cy.contains('TE12 3ST');
+      });
       cy.get(DOM_ELEMENTS.accountName).should('contain', 'John Doe');
       cy.get(DOM_ELEMENTS.sortCode).should('contain', '12-34-56');
       cy.get(DOM_ELEMENTS.accountNumber).should('contain', '12345678');

@@ -97,25 +97,25 @@
     <opal-lib-custom-summary-metric-bar-item>
       <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
       <p opal-lib-custom-summary-metric-bar-item-value>
-        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.imposed_amount) }}
+        {{ accountData.payment_state_summary.imposed_amount | monetary }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.arrears_amount) }}
+        {{ accountData.payment_state_summary.arrears_amount | monetary }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.paid_amount) }}
+        {{ accountData.payment_state_summary.paid_amount | monetary }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Account Balance:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-white-text-colour">
-        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.account_balance) }}
+        {{ accountData.payment_state_summary.account_balance | monetary }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
   </opal-lib-custom-summary-metric-bar>
@@ -236,6 +236,7 @@
         [hasAmendPaymentTermsPermission]="hasPermission('amend-payment-terms')"
         [style]="tabContentStyles"
         (changePaymentTerms)="navigateToAmendPaymentTermsPage()"
+        (requestPaymentCard)="navigateToRequestPaymentCardPage()"
       ></app-fines-acc-defendant-details-payment-terms-tab>
     }
   }

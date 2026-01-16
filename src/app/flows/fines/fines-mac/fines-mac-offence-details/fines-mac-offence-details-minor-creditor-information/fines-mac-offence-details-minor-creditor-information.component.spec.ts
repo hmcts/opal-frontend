@@ -88,7 +88,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     component['setAddress']();
 
     // Check that address is formatted correctly
-    expect(component.address).toBe('123 Main St<br>Apt 4B<br>District 9<br>AB12 3CD');
+    expect(component.addressLines).toEqual(['123 Main St', 'Apt 4B', 'District 9', 'AB12 3CD']);
   });
 
   it('should set address with missing address line 2 and line 3', () => {
@@ -105,7 +105,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     component['setAddress']();
 
     // Check that address is formatted correctly without missing lines
-    expect(component.address).toBe('123 Main St<br>AB12 3CD');
+    expect(component.addressLines).toEqual(['123 Main St', 'AB12 3CD']);
   });
 
   it('should set address to "Not Provided" if all address fields are missing', () => {
@@ -122,7 +122,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     component['setAddress']();
 
     // Check that address is set to "Not Provided"
-    expect(component.address).toBe(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided);
+    expect(component.addressLines).toEqual([FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided]);
   });
 
   it('should set address with only post code provided', () => {
@@ -139,7 +139,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     component['setAddress']();
 
     // Check that address is formatted with only post code
-    expect(component.address).toBe('AB12 3CD');
+    expect(component.addressLines).toEqual(['AB12 3CD']);
   });
 
   it('should set payment details when payment details are provided', () => {

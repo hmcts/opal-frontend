@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
@@ -11,6 +9,8 @@ import {
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
+import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
+import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-payment-terms-tab',
@@ -19,6 +19,8 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukSummaryCardListComponent,
+    DateFormatPipe,
+    MonetaryPipe,
   ],
   templateUrl: './fines-acc-defendant-details-payment-terms-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,8 +31,6 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Output() changePaymentTerms = new EventEmitter<void>();
   @Output() requestPaymentCard = new EventEmitter<void>();
-  public readonly dateService = new DateService();
-  public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
   /**

@@ -53,15 +53,7 @@
         @if (tabData.party_details.individual_details && tabData.party_details.individual_details.date_of_birth) {
           <h3 [class]="style.key">Date of birth</h3>
           <p [class]="style.value">
-            {{
-              tabData.party_details.individual_details.date_of_birth !== null
-                ? dateService.getFromFormatToFormat(
-                    tabData.party_details.individual_details.date_of_birth,
-                    'dd/MM/yyyy',
-                    'dd MMMM yyyy'
-                  )
-                : '&mdash;'
-            }}
+            {{ tabData.party_details.individual_details.date_of_birth | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}
           </p>
         }
       }
@@ -128,9 +120,7 @@
           @if (tabData.payment_terms.effective_date) {
             <h3 [class]="style.key">By date</h3>
             <p [class]="style.value">
-              {{
-                dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy')
-              }}
+              {{ tabData.payment_terms.effective_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}
             </p>
           }
         } @else if (tabData.payment_terms.instalment_amount) {
@@ -148,15 +138,13 @@
           @if (tabData.payment_terms.instalment_amount) {
             <h3 [class]="style.key">Instalments</h3>
             <p [class]="style.value">
-              {{ utilsService.convertToMonetaryString(tabData.payment_terms.instalment_amount) }}
+              {{ tabData.payment_terms.instalment_amount | monetary }}
             </p>
           }
           @if (tabData.payment_terms.effective_date) {
             <h3 [class]="style.key">Start date</h3>
             <p [class]="style.value">
-              {{
-                dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy')
-              }}
+              {{ tabData.payment_terms.effective_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}
             </p>
           }
         }
@@ -218,13 +206,7 @@
       @if (tabData.enforcement_status.last_movement_date) {
         <h3 [class]="style.key">Date of last movement</h3>
         <p [class]="style.value">
-          {{
-            dateService.getFromFormatToFormat(
-              tabData.enforcement_status.last_movement_date,
-              'dd/MM/yyyy',
-              'dd MMMM yyyy'
-            )
-          }}
+          {{ tabData.enforcement_status.last_movement_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}
         </p>
       }
 

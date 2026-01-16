@@ -109,7 +109,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       });
   });
 
-  it('AC1a, AC1c, AC1d. Defendant details tab layout, debtor flag false', { tags: ['PO-784'] }, () => {
+  it('AC1a, AC1c, AC1d. Defendant details tab layout, debtor flag false', { tags: ['PO-784', 'PO-2365'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -138,20 +138,10 @@ describe('Account Enquiry Defendant Details Tab', () => {
       .then((text) => {
         expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
       });
-    cy.get(DEFENDANT_DETAILS.defendantVehicle).should('exist').and('contain.text', 'Ford Focus');
-    cy.get(DEFENDANT_DETAILS.defendantVehicleReg).should('exist').and('contain.text', 'XY21 ABC');
-
-    cy.get(DEFENDANT_DETAILS.defendantPrimaryEmail).should('not.exist');
-    cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('not.exist');
-    cy.get(DEFENDANT_DETAILS.defendantMobilePhone).should('not.exist');
-    cy.get(DEFENDANT_DETAILS.defendantHomePhone).should('not.exist');
-    cy.get(DEFENDANT_DETAILS.defendantWorkPhone).should('not.exist');
-
-    cy.get(DEFENDANT_DETAILS.defendantEmployerName).should('not.exist');
-    cy.get(DEFENDANT_DETAILS.defendantEmployerReference).should('not.exist');
-    cy.get(DEFENDANT_DETAILS.defendantEmployerEmail).should('not.exist');
-    cy.get(DEFENDANT_DETAILS.defendantEmployerPhone).should('not.exist');
-    cy.get(DEFENDANT_DETAILS.defendantEmployerAddress).should('not.exist');
+    cy.get(DEFENDANT_DETAILS.defendantVehicle).should('not.exist');
+    cy.get(DEFENDANT_DETAILS.defendantVehicleReg).should('not.exist');
+    cy.get('h2').contains('Contact details').should('not.exist');
+    cy.get('h2').contains('Employer details').should('not.exist');
   });
 
   it('AC1div. Should display em-dash for blank row', { tags: ['PO-784'] }, () => {
