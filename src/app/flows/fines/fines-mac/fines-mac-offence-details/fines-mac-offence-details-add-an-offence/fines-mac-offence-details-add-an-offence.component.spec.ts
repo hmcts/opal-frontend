@@ -160,6 +160,26 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
   });
 
+  it('should preserve childFormData when draft is empty', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.removeIndexFromFormArrayData = (val: any[]) => val;
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    form.childFormData = [];
+
+    const existingForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    const existingChildFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
+    existingForm.childFormData = existingChildFormData;
+
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [existingForm];
+    finesMacStore.setFinesMacStore(finesMacState);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
+
+    component['updateOffenceDetailsIndex'](form);
+
+    expect(finesMacStore.offenceDetails()[0].childFormData).toEqual(existingChildFormData);
+  });
+
   it('should update the impositions array with their respective index positions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     component.removeIndexFromFormArrayData = (val: any[]) => val;
