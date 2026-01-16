@@ -159,7 +159,7 @@ Feature: Manual account creation - Create Draft Account
       | Payment terms  | Start date                | 2 weeks in the future               |            |
       | Payment terms  | Enforcement action option | Hold enforcement on account (NOENF) |            |
       | Payment terms  | Enforcement reason        | Reason                              |            |
-      | Company        | Company name              | COMPANY NAME                        |            |
+      | Company        | Company name              | COMPANY NAME {uniqUpper}            |            |
       | Company        | Address line 1            | Addr1                               |            |
       | Company        | Postcode                  | TE1 1ST                             |            |
       | Company        | Alias 1                   | CNAME1                              |            |
@@ -176,7 +176,7 @@ Feature: Manual account creation - Create Draft Account
     Then I see the manual review "Court details" summary:
       | Prosecutor Case Reference (PCR) | ABCD1234A |
     And I see the manual review "Company details" summary:
-      | Company name | COMPANY NAME                       |
+      | Company name | COMPANY NAME {uniqUpper}           |
       | Address      | Addr1 TE1 1ST                      |
       | Aliases      | CNAME1 CNAME2 CNAME3 CNAME4 CNAME5 |
     And the manual review offence table contains:

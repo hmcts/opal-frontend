@@ -8,6 +8,7 @@ import {
   addCucumberPreprocessorPlugin,
   beforeRunHandler,
   afterRunHandler,
+  afterScreenshotHandler,
 } from '@badeball/cypress-cucumber-preprocessor';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import * as path from 'node:path';
@@ -70,7 +71,7 @@ async function setupNodeEvents(
   on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
-  await addCucumberPreprocessorPlugin(on, config);
+  await addCucumberPreprocessorPlugin(on, config, { omitAfterScreenshotHandler: true });
   // Evidence reset is handled in before:run with a per-run lock.
   // Register tasks so Cypress can write the per-run created-accounts artifact.
   registerAccountCaptureTasks(on);
@@ -146,6 +147,14 @@ async function setupNodeEvents(
     await afterRunHandler(config, results);
     await releaseEvidenceResetLock();
     await cleanupEmptyScreenshotDirs(config.screenshotsFolder as string | undefined);
+  });
+
+  // Only attach screenshots for failed steps (evidence screenshots attach separately).
+  on('after:screenshot', async (details) => {
+    if (!details?.testFailure) {
+      return details;
+    }
+    return afterScreenshotHandler(config, details);
   });
 
   // messagesOutput logic (unchanged)
