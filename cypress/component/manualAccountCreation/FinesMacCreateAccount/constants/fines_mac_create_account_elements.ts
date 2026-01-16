@@ -19,7 +19,7 @@ export const DOM_ELEMENTS = {
 
   //fine
   defendantTypeTitle: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
-  defendantTypeHint: 'div[id = "fm_create_account_fine_defendant_typeHint"]',
+  defendantTypeHint: 'div[id = "fm_create_account_fine_defendant_type-hint"]',
   adultOrYouthInput: 'input[id = "adultOrYouthOnly"]',
   adultOrYouthLabel: 'label[for = "adultOrYouthOnly"]',
   parentOrGuardianToPayInput: 'input[id = "pgToPay"]',
@@ -28,7 +28,7 @@ export const DOM_ELEMENTS = {
   companyLabel: 'label[for = "company"]',
 
   //fixed penalty
-  FPdefendantTypeHint: 'div[id = "fm_create_account_fixed_penalty_defendant_typeHint"]',
+  FPdefendantTypeHint: 'div[id = "fm_create_account_fixed_penalty_defendant_type-hint"]',
   FPAdultOrYouthInput: 'input[id = "adultOrYouthOnly"]',
   FPAdultOrYouthLabel: 'label[for = "adultOrYouthOnly"]',
   FPCompany: 'input[id = "company"]',
