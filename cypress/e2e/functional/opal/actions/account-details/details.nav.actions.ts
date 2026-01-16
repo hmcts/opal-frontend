@@ -83,6 +83,18 @@ export class AccountDetailsNavActions {
   }
 
   /**
+   * Navigates to the "Payment terms" tab within the Account Details shell.
+   *
+   * @remarks
+   * - Relies on `subNav.paymentTermsTab` in `AccountNavDetailsLocators`.
+   */
+  goToPaymentTermsTab(): void {
+    log('navigate', 'Navigating to "Payment terms" tab');
+
+    cy.get(N.subNav.paymentTermsTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
    * Asserts that the "Parent or guardian" tab is currently active.
    *
    * @description
@@ -140,5 +152,20 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'At a glance');
+  }
+
+  /**
+   * Asserts that the "Payment terms" tab is currently active.
+   *
+   * @remarks
+   * - Validates the active tab label and `aria-current="page"`.
+   */
+  assertPaymentTermsTabIsActive(): void {
+    log('assert', 'Asserting "Payment terms" tab is active');
+
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Payment terms');
   }
 }

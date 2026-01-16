@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RedirectCommand, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
-import { lastValueFrom } from 'rxjs';
+import { of, throwError, lastValueFrom } from 'rxjs';
 import { defendantAccountPartyResolver } from './defendant-account-party.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';

@@ -1,0 +1,56 @@
+/**
+ * Locators for the amend payment terms screen in the account enquiry flow.
+ */
+export const PAYMENT_TERMS_AMEND_ELEMENTS = {
+  headingWithCaption: 'opal-lib-govuk-heading-with-caption',
+  pageHeading: 'h1.govuk-heading-l',
+  form: 'app-fines-acc-payment-terms-amend-form form',
+
+  paymentTermsFieldset: 'fieldset#facc_payment_terms_payment_terms',
+  payInFullRadio: 'input#payInFull',
+  payInFullLabel: 'label[for="payInFull"]',
+  instalmentsOnlyRadio: 'input#instalmentsOnly',
+  instalmentsOnlyLabel: 'label[for="instalmentsOnly"]',
+  lumpSumPlusInstalmentsRadio: 'input#lumpSumPlusInstalments',
+  lumpSumPlusInstalmentsLabel: 'label[for="lumpSumPlusInstalments"]',
+
+  payByDateInput: 'input#facc_payment_terms_pay_by_date',
+  payByDateLabel: 'label[for="facc_payment_terms_pay_by_date"]',
+
+  lumpSumAmountInput: 'input#facc_payment_terms_lump_sum_amount',
+  lumpSumAmountLabel: 'label[for="facc_payment_terms_lump_sum_amount"]',
+  instalmentAmountInput: 'input#facc_payment_terms_instalment_amount',
+  instalmentAmountLabel: 'label[for="facc_payment_terms_instalment_amount"]',
+
+  frequencyWeeklyRadio: 'input#W',
+  frequencyWeeklyLabel: 'label[for="W"]',
+  frequencyFortnightlyRadio: 'input#F',
+  frequencyFortnightlyLabel: 'label[for="F"]',
+  frequencyMonthlyRadio: 'input#M',
+  frequencyMonthlyLabel: 'label[for="M"]',
+
+  startDateInput: 'input#facc_payment_terms_start_date',
+  startDateLabel: 'label[for="facc_payment_terms_start_date"]',
+
+  daysInDefaultCheckbox: 'input#facc_payment_terms_has_days_in_default',
+  daysInDefaultLabel: 'label[for="facc_payment_terms_has_days_in_default"]',
+  daysInDefaultDateInput: 'input#facc_payment_terms_suspended_committal_date',
+  daysInDefaultDateLabel: 'label[for="facc_payment_terms_suspended_committal_date"]',
+  daysInDefaultCountInput: 'input#facc_payment_terms_default_days_in_jail',
+  daysInDefaultCountLabel: 'label[for="facc_payment_terms_default_days_in_jail"]',
+
+  reasonForChangeTextarea: 'textarea#facc_payment_terms_reason_for_change',
+  reasonForChangeLabel: 'label[for="facc_payment_terms_reason_for_change"]',
+  reasonForChangeCharacterCount:
+    '#facc_payment_terms_reason_for_change ~ .govuk-character-count__message.govuk-character-count__status',
+
+  errorSummary: '.govuk-error-summary',
+
+  paymentCardCheckbox: 'input#facc_payment_terms_payment_card_request',
+  paymentCardLabel: 'label[for="facc_payment_terms_payment_card_request"]',
+  changeLetterCheckbox: 'input#facc_payment_terms_change_letter',
+  changeLetterLabel: 'label[for="facc_payment_terms_change_letter"]',
+
+  submitButton: 'button#submitForm',
+  cancelLink: 'opal-lib-govuk-cancel-link a',
+} as const;
