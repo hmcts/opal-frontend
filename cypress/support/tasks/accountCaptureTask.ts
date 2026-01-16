@@ -27,6 +27,7 @@ type AccountCreated = {
   scenario: string;
   scenarioStartedAt?: string;
   scenarioFinishedAt?: string;
+  featurePath?: string;
   accountType: string;
   status?: string;
   uniq: string;
@@ -42,6 +43,7 @@ type AccountFailed = {
   scenario: string;
   scenarioStartedAt?: string;
   scenarioFinishedAt?: string;
+  featurePath?: string;
   accountType: string;
   uniq: string;
   httpStatus: number;
@@ -78,10 +80,16 @@ const lockPath = path.join(evidenceDir, 'created-accounts.lock');
 const resetLockPath = path.join(process.cwd(), 'functional-output', 'account_evidence.reset.lock');
 let cachedRunMeta: RunMeta | null = null;
 
+/**
+ * @description Read an environment variable by key.
+ * @param key - Environment variable name.
+ * @returns Value from process.env, if defined.
+ */
 const readEnv = (key: string): string | undefined => process.env[key];
 
 /**
  * @description Resolve a build identifier from well-known CI environment variables, falling back to "local".
+ * @returns Build identifier string.
  * @example const buildId = resolveBuildId();
  */
 function resolveBuildId(): string {
@@ -99,6 +107,7 @@ function resolveBuildId(): string {
 
 /**
  * @description Resolve the current test environment/stage for artifact metadata.
+ * @returns Environment name string.
  * @example const env = resolveEnvironment();
  */
 function resolveEnvironment(): string {
@@ -109,6 +118,7 @@ function resolveEnvironment(): string {
 
 /**
  * @description Resolve the current test stage (DEV/STAGING/local) from env.
+ * @returns Normalized stage label.
  */
 function resolveTestStage(): string {
   const raw = readEnv('TEST_STAGE') || readEnv('TEST_ENV');
@@ -121,6 +131,7 @@ function resolveTestStage(): string {
 
 /**
  * @description Resolve the current test mode (e.g., OPAL/LEGACY) from env.
+ * @returns Test mode string.
  */
 function resolveTestMode(): string {
   return readEnv('TEST_MODE') || 'OPAL';
@@ -128,6 +139,7 @@ function resolveTestMode(): string {
 
 /**
  * @description Resolve the current browser under test from env.
+ * @returns Browser name.
  */
 function resolveBrowser(): string {
   return readEnv('BROWSER_TO_RUN') || readEnv('BROWSER') || 'edge';
@@ -135,6 +147,7 @@ function resolveBrowser(): string {
 
 /**
  * @description Construct and cache the run metadata used across artifact writes.
+ * @returns Run metadata object.
  * @example const meta = buildRunMeta();
  */
 function buildRunMeta(): RunMeta {
@@ -153,6 +166,7 @@ function buildRunMeta(): RunMeta {
 /**
  * @description Build run metadata defaults without mutating the cached run meta.
  * @param existing - Optional prior meta to reuse timestamps/values.
+ * @returns Resolved run metadata.
  */
 function resolveRunMetaDefaults(existing?: RunMeta): RunMeta {
   return {
@@ -167,6 +181,7 @@ function resolveRunMetaDefaults(existing?: RunMeta): RunMeta {
 
 /**
  * @description Ensure the artifacts directory exists before writing files.
+ * @returns Promise that resolves once the directory exists.
  * @example await ensureArtifactsDir();
  */
 async function ensureArtifactsDir(): Promise<void> {
@@ -175,6 +190,7 @@ async function ensureArtifactsDir(): Promise<void> {
 
 /**
  * @description Remove the entire evidence directory to start a clean run.
+ * @returns Promise that resolves once evidence is cleared.
  * @example await clearAccountEvidence();
  */
 export async function clearAccountEvidence(): Promise<void> {
@@ -198,6 +214,7 @@ async function acquireResetLock(): Promise<fs.FileHandle | null> {
 
 /**
  * @description Remove the per-run evidence reset lock (used between Cypress runs).
+ * @returns Promise that resolves once the reset lock is removed.
  */
 export async function releaseEvidenceResetLock(): Promise<void> {
   await fs.rm(resetLockPath, { force: true });
@@ -205,6 +222,7 @@ export async function releaseEvidenceResetLock(): Promise<void> {
 
 /**
  * @description Fully reset evidence for a new Cypress run: clear folder and seed a fresh artifact.
+ * @returns Promise that resolves once evidence is reset.
  */
 export async function resetEvidenceForRun(): Promise<void> {
   const lockHandle = await acquireResetLock();
@@ -225,6 +243,7 @@ export async function resetEvidenceForRun(): Promise<void> {
 /**
  * @description Run an async operation under a simple file lock to avoid concurrent writes.
  * @param operation - Callback to execute while holding the lock.
+ * @returns Result from the provided operation.
  * @example await withLock(async () => writeArtifact(payload));
  */
 async function withLock<T>(operation: () => Promise<T>): Promise<T> {
@@ -253,6 +272,7 @@ async function withLock<T>(operation: () => Promise<T>): Promise<T> {
 
 /**
  * @description Read the persisted artifact from disk, returning null if missing.
+ * @returns Artifact payload or null when missing.
  * @example const artifact = await readArtifact();
  */
 async function readArtifact(): Promise<AccountArtifact | null> {
@@ -270,6 +290,7 @@ async function readArtifact(): Promise<AccountArtifact | null> {
 
 /**
  * @description Produce an empty artifact seeded with the current run metadata.
+ * @returns Empty artifact payload.
  * @example const artifact = emptyArtifact();
  */
 function emptyArtifact(): AccountArtifact {
@@ -283,6 +304,7 @@ function emptyArtifact(): AccountArtifact {
 /**
  * @description Normalise a possibly partial artifact into a safe structure with defaults.
  * @param input - Artifact read from disk (or null).
+ * @returns Normalized artifact payload.
  * @example const safe = normalizeArtifact(await readArtifact());
  */
 function normalizeArtifact(input: AccountArtifact | null): AccountArtifact {
@@ -302,6 +324,7 @@ function normalizeArtifact(input: AccountArtifact | null): AccountArtifact {
 /**
  * @description Safely stringify a value for de-duplication keys.
  * @param value - Value to serialize.
+ * @returns JSON string when possible, otherwise a string fallback.
  */
 function safeStringify(value: unknown): string {
   try {
@@ -315,6 +338,7 @@ function safeStringify(value: unknown): string {
  * @description Merge and de-duplicate request payload entries.
  * @param base - Existing payload entries.
  * @param incoming - New payload entries.
+ * @returns Merged payload list or undefined when empty.
  */
 function mergeRequestPayloads(
   base: RequestPayloadEntry[] | undefined,
@@ -367,9 +391,155 @@ function mergeRequestPayloads(
   });
 }
 
+type ScenarioArtifact = {
+  runMeta: RunMeta;
+  scenario: {
+    title: string;
+    featurePath?: string;
+    startedAt?: string;
+    finishedAt?: string;
+  };
+  accounts: AccountsPayload;
+};
+
+/**
+ * @description Normalize a feature path into safe path segments.
+ * @param value - Feature path or relative spec path.
+ * @returns Normalized segments.
+ */
+function normalizePathSegments(value?: string): string[] {
+  if (!value) return [];
+  return value
+    .replace(/\\/g, '/')
+    .split('/')
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+}
+
+/**
+ * @description Convert a scenario title into a safe filename slug.
+ * @param value - Scenario title.
+ * @returns Normalized slug string.
+ */
+function toSafeScenarioSlug(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^\w-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 180);
+}
+
+/**
+ * @description Resolve the output file path for a scenario evidence artifact.
+ * @param scenario - Scenario title.
+ * @param featurePath - Relative feature path for the scenario.
+ * @returns Absolute file path for the scenario JSON.
+ */
+function resolveScenarioFilePath(scenario: string, featurePath?: string): string {
+  const segments = normalizePathSegments(featurePath);
+  const scenarioDir = path.join(evidenceDir, ...segments);
+  const slug = toSafeScenarioSlug(scenario || 'unknown-scenario');
+  return path.join(scenarioDir, `scenario-${slug}.json`);
+}
+
+/**
+ * @description Read a scenario artifact from disk.
+ * @param filePath - Full file path to the scenario artifact.
+ * @returns Parsed scenario artifact or null if missing.
+ */
+async function readScenarioArtifact(filePath: string): Promise<ScenarioArtifact | null> {
+  try {
+    const raw = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(raw) as ScenarioArtifact;
+  } catch (err: any) {
+    if (err && err.code !== 'ENOENT') {
+      // eslint-disable-next-line no-console
+      console.error('Failed to read scenario artifact:', err);
+    }
+    return null;
+  }
+}
+
+/**
+ * @description Write a scenario artifact to disk, ensuring directories exist.
+ * @param filePath - Full file path to the scenario artifact.
+ * @param artifact - Scenario artifact payload.
+ * @returns Promise that resolves once written.
+ */
+async function writeScenarioArtifact(filePath: string, artifact: ScenarioArtifact): Promise<void> {
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, JSON.stringify(artifact, null, 2));
+}
+
+/**
+ * @description Collect all created/failed entries for a scenario (and optional start time).
+ * @param artifact - Run-level account artifact.
+ * @param scenario - Scenario title.
+ * @param scenarioStartedAt - Optional scenario start timestamp.
+ * @returns Account payloads scoped to the scenario.
+ */
+function collectScenarioEntries(
+  artifact: AccountArtifact,
+  scenario: string,
+  scenarioStartedAt?: string,
+): AccountsPayload {
+  const matchesScenario = (entry: { scenario?: string; scenarioStartedAt?: string }): boolean => {
+    if (!entry.scenario || entry.scenario !== scenario) return false;
+    if (!scenarioStartedAt) return true;
+    return entry.scenarioStartedAt === scenarioStartedAt;
+  };
+
+  return {
+    created: artifact.accounts.created.filter((entry) => matchesScenario(entry)),
+    failed: artifact.accounts.failed.filter((entry) => matchesScenario(entry)),
+  };
+}
+
+/**
+ * @description Write or update the scenario artifact derived from the current run artifact.
+ * @param artifact - Run-level account artifact.
+ * @param scenario - Scenario title.
+ * @param featurePath - Feature path for the scenario.
+ * @param scenarioStartedAt - Optional scenario start timestamp.
+ * @param scenarioFinishedAt - Optional scenario finish timestamp.
+ * @returns Promise that resolves once the scenario artifact is updated.
+ */
+async function upsertScenarioArtifact(
+  artifact: AccountArtifact,
+  scenario: string,
+  featurePath?: string,
+  scenarioStartedAt?: string,
+  scenarioFinishedAt?: string,
+): Promise<void> {
+  if (!scenario) return;
+
+  const accounts = collectScenarioEntries(artifact, scenario, scenarioStartedAt);
+  const resolvedFeaturePath = featurePath ?? accounts.created[0]?.featurePath ?? accounts.failed[0]?.featurePath;
+  const filePath = resolveScenarioFilePath(scenario, resolvedFeaturePath);
+  const existing = await readScenarioArtifact(filePath);
+  if (!accounts.created.length && !accounts.failed.length && !existing) {
+    return;
+  }
+
+  const scenarioMeta = {
+    title: scenario,
+    featurePath: resolvedFeaturePath ?? existing?.scenario.featurePath,
+    startedAt: scenarioStartedAt ?? existing?.scenario.startedAt,
+    finishedAt: scenarioFinishedAt ?? existing?.scenario.finishedAt,
+  };
+
+  await writeScenarioArtifact(filePath, {
+    runMeta: cachedRunMeta ?? artifact.runMeta ?? buildRunMeta(),
+    scenario: scenarioMeta,
+    accounts,
+  });
+}
+
 /**
  * @description Persist the artifact to disk (ensuring directories exist).
  * @param artifact - Artifact to write.
+ * @returns Persisted artifact payload.
  * @example await writeArtifact(artifact);
  */
 async function writeArtifact(artifact: AccountArtifact): Promise<AccountArtifact> {
@@ -380,6 +550,7 @@ async function writeArtifact(artifact: AccountArtifact): Promise<AccountArtifact
 
 /**
  * @description Initialise or reset the artifact when build/environment context changes.
+ * @returns Resolved artifact after initialization.
  * @example const artifact = await initArtifactIfNeeded();
  */
 async function initArtifactIfNeeded(): Promise<AccountArtifact> {
@@ -419,6 +590,7 @@ async function initArtifactIfNeeded(): Promise<AccountArtifact> {
  * @description Append a created/failed entry to the appropriate array and persist the artifact.
  * @param kind - Whether to append to "created" or "failed".
  * @param entry - Entry payload to add.
+ * @returns Promise that resolves once the entry is persisted.
  * @example await appendEntry('created', createdEntry);
  */
 async function appendEntry(kind: 'created' | 'failed', entry: AccountCreated | AccountFailed): Promise<void> {
@@ -460,6 +632,7 @@ async function appendEntry(kind: 'created' | 'failed', entry: AccountCreated | A
           scenario: existing.scenario || incoming.scenario,
           scenarioStartedAt: existing.scenarioStartedAt || incoming.scenarioStartedAt,
           scenarioFinishedAt: existing.scenarioFinishedAt || incoming.scenarioFinishedAt,
+          featurePath: existing.featurePath || incoming.featurePath,
           uniq: existing.uniq || incoming.uniq,
           requestPayloads: mergeRequestPayloads(existing.requestPayloads, incoming.requestPayloads),
         };
@@ -471,12 +644,20 @@ async function appendEntry(kind: 'created' | 'failed', entry: AccountCreated | A
     }
 
     await writeArtifact(next);
+    await upsertScenarioArtifact(
+      next,
+      entry.scenario,
+      entry.featurePath,
+      entry.scenarioStartedAt,
+      entry.scenarioFinishedAt,
+    );
   });
 }
 
 /**
  * @description Task handler for recording created accounts (returns null per Cypress task contract).
  * @param entry - Created account payload.
+ * @returns Null for Cypress task completion.
  * @example await recordCreated(entry);
  */
 async function recordCreated(entry: AccountCreated): Promise<null> {
@@ -487,6 +668,7 @@ async function recordCreated(entry: AccountCreated): Promise<null> {
 /**
  * @description Task handler for recording failed account attempts (returns null per Cypress task contract).
  * @param entry - Failed account payload.
+ * @returns Null for Cypress task completion.
  * @example await recordFailed(entry);
  */
 async function recordFailed(entry: AccountFailed): Promise<null> {
@@ -503,6 +685,7 @@ type FinalizeScenarioInput = {
 /**
  * @description Update entries for a scenario with its finish timestamp.
  * @param input - Scenario identifiers and finish time.
+ * @returns Null for Cypress task completion.
  * @example await finalizeScenario({ scenario: 'My Scenario', scenarioStartedAt, scenarioFinishedAt });
  */
 async function finalizeScenario(input: FinalizeScenarioInput): Promise<null> {
@@ -539,6 +722,7 @@ async function finalizeScenario(input: FinalizeScenarioInput): Promise<null> {
     };
 
     await writeArtifact(next);
+    await upsertScenarioArtifact(next, scenario, undefined, startedAt, finishedAt);
   });
 
   return null;
@@ -546,6 +730,7 @@ async function finalizeScenario(input: FinalizeScenarioInput): Promise<null> {
 
 /**
  * @description Flush the current in-memory artifact to disk (used after runs).
+ * @returns Artifact payload after flush.
  * @example const finalArtifact = await flushArtifacts();
  */
 async function flushArtifacts(): Promise<AccountArtifact> {
@@ -562,6 +747,7 @@ async function flushArtifacts(): Promise<AccountArtifact> {
 
 /**
  * @description Prepare the per-run artifact file and ensure metadata is set.
+ * @returns Promise that resolves once initialization completes.
  * @example await initializeAccountCapture();
  */
 export async function initializeAccountCapture(): Promise<void> {
@@ -571,6 +757,7 @@ export async function initializeAccountCapture(): Promise<void> {
 /**
  * @description Register Cypress tasks that append created/failed account entries.
  * @param on - Cypress plugin event emitter.
+ * @returns void
  * @example registerAccountCaptureTasks(on);
  */
 export function registerAccountCaptureTasks(on: Cypress.PluginEvents): void {
@@ -579,6 +766,10 @@ export function registerAccountCaptureTasks(on: Cypress.PluginEvents): void {
     'accountCapture:recordFailed': recordFailed,
     'accountCapture:finalizeScenario': finalizeScenario,
     'accountCapture:flush': flushArtifacts,
+    'accountCapture:releaseResetLock': async () => {
+      await releaseEvidenceResetLock();
+      return null;
+    },
     'accountCapture:resetEvidence': async () => {
       await resetEvidenceForRun();
       return null;
@@ -588,6 +779,7 @@ export function registerAccountCaptureTasks(on: Cypress.PluginEvents): void {
 
 /**
  * @description Force a flush of the current artifact contents to disk.
+ * @returns Promise that resolves once the artifact is flushed.
  * @example await ensureAccountCaptureFile();
  */
 export async function ensureAccountCaptureFile(): Promise<void> {
@@ -596,6 +788,7 @@ export async function ensureAccountCaptureFile(): Promise<void> {
 
 /**
  * @description Return the full path to the created accounts artifact.
+ * @returns Absolute artifact path.
  * @example const path = getAccountArtifactPath();
  */
 export function getAccountArtifactPath(): string {

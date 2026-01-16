@@ -13,6 +13,7 @@ import {
   getCurrentScenarioStartedAt,
   getCurrentScenarioTitle,
   setCurrentScenarioFinishedAt,
+  setCurrentScenarioFeaturePath,
   setCurrentScenarioTitle,
 } from './utils/scenarioContext';
 
@@ -60,6 +61,11 @@ beforeEach(function () {
   const { baseTitle, exampleIndex } = extractExampleIndex(titlePath, String(rawTitle || '').trim());
   const scenarioTitle = exampleIndex ? `${baseTitle} (${exampleIndex})` : baseTitle;
   setCurrentScenarioTitle(String(scenarioTitle || '').trim());
+
+  const specRelative = String(Cypress.spec?.relative || '').replace(/\\/g, '/');
+  let featurePath = specRelative.replace(/^cypress\/e2e\//, '');
+  featurePath = featurePath.replace(/^functional\/opal\/features\//, '');
+  setCurrentScenarioFeaturePath(featurePath || specRelative);
 });
 
 // Mark the scenario finish time and persist it for any account capture entries in this scenario.
@@ -74,6 +80,16 @@ afterEach(() => {
     { scenario, scenarioStartedAt, scenarioFinishedAt },
     { log: false },
   );
+});
+
+// In open mode, release the per-run reset lock once the spec finishes.
+after(() => {
+  if (!Cypress.config('isInteractive')) {
+    return;
+  }
+  return cy
+    .task('accountCapture:releaseResetLock', undefined, { log: false })
+    .then(() => cy.task('screenshot:cleanupEmptyDirs', undefined, { log: false }));
 });
 
 Cypress.on('uncaught:exception', (err) => {

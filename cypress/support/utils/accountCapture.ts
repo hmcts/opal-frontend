@@ -8,7 +8,12 @@
  * - Failures: go to accounts.failed with httpStatus + errorSummary; no created entry is written.
  */
 import { getUniqSuffix } from './stringUtils';
-import { getCurrentScenarioFinishedAt, getCurrentScenarioStartedAt, getCurrentScenarioTitle } from './scenarioContext';
+import {
+  getCurrentScenarioFeaturePath,
+  getCurrentScenarioFinishedAt,
+  getCurrentScenarioStartedAt,
+  getCurrentScenarioTitle,
+} from './scenarioContext';
 
 type RequestLike = {
   url?: string;
@@ -32,6 +37,7 @@ type CreatedAccountInput = {
   accountNumber?: string | null;
   uniq?: string;
   scenario?: string;
+  featurePath?: string;
   createdAt?: string;
   updatedAt?: string;
   scenarioStartedAt?: string;
@@ -54,6 +60,7 @@ type FailedAccountInput = {
   };
   uniq?: string;
   scenario?: string;
+  featurePath?: string;
   timestamp?: string;
   scenarioStartedAt?: string;
   scenarioFinishedAt?: string;
@@ -429,6 +436,7 @@ function buildCreatedRecord(input: CreatedAccountInput, requestBody?: unknown): 
   if (!Number.isFinite(accountId)) return null;
 
   const scenario = (input.scenario || getCurrentScenarioTitle()).trim() || 'Unknown scenario';
+  const featurePath = input.featurePath || getCurrentScenarioFeaturePath();
   const uniq = input.uniq || getUniqSuffix();
   const scenarioStartedAt = input.scenarioStartedAt || getCurrentScenarioStartedAt();
   const scenarioFinishedAt = input.scenarioFinishedAt || getCurrentScenarioFinishedAt() || undefined;
@@ -445,6 +453,7 @@ function buildCreatedRecord(input: CreatedAccountInput, requestBody?: unknown): 
     createdAt,
     updatedAt: input.updatedAt ?? undefined,
     scenario,
+    featurePath,
     uniq,
     scenarioStartedAt,
     scenarioFinishedAt,
@@ -460,6 +469,7 @@ function buildCreatedRecord(input: CreatedAccountInput, requestBody?: unknown): 
  */
 function buildFailedRecord(input: FailedAccountInput): AccountFailedRecord {
   const scenario = (input.scenario || getCurrentScenarioTitle()).trim() || 'Unknown scenario';
+  const featurePath = input.featurePath || getCurrentScenarioFeaturePath();
   const uniq = input.uniq || getUniqSuffix();
   const scenarioStartedAt = input.scenarioStartedAt || getCurrentScenarioStartedAt();
   const scenarioFinishedAt = input.scenarioFinishedAt || getCurrentScenarioFinishedAt() || undefined;
@@ -470,6 +480,7 @@ function buildFailedRecord(input: FailedAccountInput): AccountFailedRecord {
   return {
     ...input,
     scenario,
+    featurePath,
     uniq,
     timestamp,
     errorSummary: truncate(input.errorSummary || `HTTP ${input.httpStatus}`, ERROR_MAX_LENGTH),

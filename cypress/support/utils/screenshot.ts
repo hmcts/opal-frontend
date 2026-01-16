@@ -4,7 +4,7 @@
  * plugin task and attaches the image to Cucumber reports.
  */
 import { attach } from '@badeball/cypress-cucumber-preprocessor';
-import { getCurrentScenarioTitle } from './scenarioContext';
+import { getCurrentScenarioFeaturePath, getCurrentScenarioTitle } from './scenarioContext';
 
 /**
  * Capture a screenshot with the current scenario name prefixed.
@@ -17,18 +17,25 @@ export function captureScenarioScreenshot(
   tag: string,
   options?: Partial<Cypress.ScreenshotOptions>,
 ): Cypress.Chainable<void> {
+  const featurePath = getCurrentScenarioFeaturePath()
+    .replace(/\\/g, '/')
+    .split('/')
+    .map((segment) => segment.trim())
+    .filter((segment) => segment && segment !== '.' && segment !== '..')
+    .join('/');
   const scenario =
     getCurrentScenarioTitle()
       .replace(/[^\w-]+/g, '-')
       .toLowerCase() || 'scenario';
   const safeTag = (tag || 'capture').replace(/[^\w-]+/g, '-').toLowerCase();
   const filename = `scenario-${scenario}-${safeTag}`;
+  const relativeName = featurePath ? `${featurePath}/${filename}` : filename;
 
   // Capture a screenshot using Cypress defaults, then mirror it into the evidence folder via a task.
-  const targetFileName = `${filename}.png`;
+  const targetFileName = `${relativeName}.png`;
 
   return cy
-    .screenshot(filename, { capture: 'fullPage', ...options })
+    .screenshot(relativeName, { capture: 'fullPage', ...options })
     .then(() =>
       cy.task('screenshot:saveEvidence', { filename: targetFileName }, { log: false }).then((savedPath) => {
         if (!savedPath) return undefined;

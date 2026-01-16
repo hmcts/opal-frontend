@@ -22,13 +22,17 @@ type ScreenshotMatch = { path: string; mtimeMs: number };
 
 /**
  * Find screenshot files by filename (including retry variants) under the screenshots root.
- * @param filename - Base filename to locate (e.g., scenario-foo.png).
+ * @param filename - Relative filename or path to locate (e.g., scenario-foo.png or feature/path/scenario-foo.png).
  * @returns Matching screenshot paths with modified times, newest first.
  */
 async function findScreenshotsByName(filename: string): Promise<ScreenshotMatch[]> {
   const matches: ScreenshotMatch[] = [];
-  const baseName = path.basename(filename, path.extname(filename));
-  const extension = path.extname(filename) || '.png';
+  const normalizedTarget = filename.replace(/\\/g, '/').replace(/^\/+/, '');
+  const extension = path.extname(normalizedTarget) || '.png';
+  const baseName = path.posix.basename(normalizedTarget, extension);
+  const targetDir = path.posix.dirname(normalizedTarget);
+  const targetDirPrefix = targetDir !== '.' ? `${targetDir}/` : '';
+  const exactName = path.posix.basename(normalizedTarget);
 
   const walk = async (dir: string): Promise<void> => {
     const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -40,8 +44,11 @@ async function findScreenshotsByName(filename: string): Promise<ScreenshotMatch[
           return;
         }
         if (entry.isFile()) {
+          const relative = path.relative(screenshotsRoot, full).split(path.sep).join('/');
+          if (targetDirPrefix && !relative.startsWith(targetDirPrefix)) return;
+          const entryName = path.basename(relative);
           const matchesName =
-            entry.name === filename || (entry.name.startsWith(`${baseName} `) && entry.name.endsWith(extension));
+            entryName === exactName || (entryName.startsWith(`${baseName} `) && entryName.endsWith(extension));
           if (!matchesName) return;
           const stat = await fs.stat(full);
           matches.push({ path: full, mtimeMs: stat.mtimeMs });
@@ -96,9 +103,7 @@ async function saveEvidenceScreenshot(input: SaveEvidenceInput | SaveEvidenceByN
   const destinationName = path.basename(latest.path);
   const relative = path.relative(screenshotsRoot, latest.path);
   const destination =
-    relative && !relative.startsWith('..')
-      ? path.join(evidenceDir, 'screenshots', relative)
-      : path.join(evidenceDir, 'screenshots', destinationName);
+    relative && !relative.startsWith('..') ? path.join(evidenceDir, relative) : path.join(evidenceDir, destinationName);
 
   if (latest.path !== destination) {
     await fs.mkdir(path.dirname(destination), { recursive: true });
@@ -125,6 +130,10 @@ export function registerScreenshotTasks(on: Cypress.PluginEvents, config: Cypres
   }
   on('task', {
     'screenshot:saveEvidence': saveEvidenceScreenshot,
+    'screenshot:cleanupEmptyDirs': async () => {
+      await cleanupEmptyScreenshotDirs();
+      return null;
+    },
   });
 }
 

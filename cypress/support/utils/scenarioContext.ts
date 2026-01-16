@@ -8,6 +8,7 @@ import { createUniqSuffix } from './stringUtils';
 let currentScenarioTitle = 'Unknown scenario';
 let currentScenarioStartedAt = new Date().toISOString();
 let currentScenarioFinishedAt = '';
+let currentScenarioFeaturePath = '';
 
 /**
  * Set the current scenario title and start time for downstream consumers. Typically called at the start of each test
@@ -20,9 +21,11 @@ export function setCurrentScenarioTitle(title?: string): void {
   currentScenarioTitle = normalized || 'Unknown scenario';
   currentScenarioStartedAt = new Date().toISOString();
   currentScenarioFinishedAt = '';
+  currentScenarioFeaturePath = '';
   Cypress.env('currentScenarioTitle', currentScenarioTitle);
   Cypress.env('currentScenarioStartedAt', currentScenarioStartedAt);
   Cypress.env('currentScenarioFinishedAt', null);
+  Cypress.env('currentScenarioFeaturePath', null);
   Cypress.env('currentScenarioUniq', createUniqSuffix());
 }
 
@@ -74,4 +77,26 @@ export function getCurrentScenarioFinishedAt(): string {
     return fromEnv.trim();
   }
   return currentScenarioFinishedAt;
+}
+
+/**
+ * Set the current scenario feature path for downstream evidence files.
+ * @param featurePath - Path to the feature file relative to the suite root.
+ */
+export function setCurrentScenarioFeaturePath(featurePath?: string): void {
+  const normalized = (featurePath ?? '').toString().trim();
+  currentScenarioFeaturePath = normalized;
+  Cypress.env('currentScenarioFeaturePath', normalized);
+}
+
+/**
+ * Retrieve the current scenario feature path, preferring the Cypress env value.
+ * @returns Scenario feature path.
+ */
+export function getCurrentScenarioFeaturePath(): string {
+  const fromEnv = Cypress.env('currentScenarioFeaturePath');
+  if (typeof fromEnv === 'string' && fromEnv.trim()) {
+    return fromEnv.trim();
+  }
+  return currentScenarioFeaturePath;
 }
