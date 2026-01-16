@@ -28,6 +28,7 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
     days_in_default: number;
     enforcement_court: {
       court_id: number;
+      court_code: number;
       court_name: string;
     };
   };

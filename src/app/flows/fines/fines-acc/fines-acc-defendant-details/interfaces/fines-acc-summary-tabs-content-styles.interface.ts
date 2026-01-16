@@ -5,4 +5,5 @@ export interface IFinesAccSummaryTabsContentStyles {
   key: string;
   value: string;
   changeLink: string;
+  badgeBlue: string;
 }

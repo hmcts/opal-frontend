@@ -31,6 +31,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK:
       days_in_default: 30,
       enforcement_court: {
         court_id: 123,
+        court_code: 456,
         court_name: 'Test Court',
       },
     },
