@@ -121,17 +121,19 @@
         >
       </div>
     </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        <a
-          class="govuk-link govuk-error-colour"
-          (click)="handleDeleteAccount($event)"
-          (keyup.enter)="handleDeleteAccount($event)"
-          tabindex="0"
-          >Delete account</a
-        >
+    @if (!this.finesDraftStore.draft_account_id()) {
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <a
+            class="govuk-link govuk-error-colour"
+            (click)="handleDeleteAccount($event)"
+            (keyup.enter)="handleDeleteAccount($event)"
+            tabindex="0"
+            >Delete account</a
+          >
+        </div>
       </div>
-    </div>
+    }
   }
 
   @if (finesDraftStore.checker() && reviewAccountStatus === 'In review') {
