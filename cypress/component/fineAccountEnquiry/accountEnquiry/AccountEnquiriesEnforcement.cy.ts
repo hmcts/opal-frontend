@@ -8,10 +8,7 @@ import {
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from './constants/account_enquiry_enforcement_status_elements';
 import { interceptDefendantHeader, interceptEnforcementStatus } from './intercept/defendantAccountIntercepts';
-import {
-  interceptAuthenticatedUser,
-  interceptUserState,
-} from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 

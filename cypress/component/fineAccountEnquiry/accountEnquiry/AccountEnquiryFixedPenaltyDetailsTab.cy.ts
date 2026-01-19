@@ -1,8 +1,5 @@
 import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
-import {
-  DEFENDANT_HEADER_ORG_MOCK,
-  createDefendantHeaderMockWithName,
-} from './mocks/defendant_details_mock';
+import { DEFENDANT_HEADER_ORG_MOCK, createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
 
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 
