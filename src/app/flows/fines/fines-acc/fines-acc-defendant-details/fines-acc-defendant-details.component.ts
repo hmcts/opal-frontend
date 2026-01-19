@@ -425,10 +425,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         ],
         {
           relativeTo: this.activatedRoute,
-          state: {
-            accountStatusCode: this.accountData.account_status_reference.account_status_code,
-            lastEnforcement: this.lastEnforcement?.result_id,
-          },
         },
       );
     }
@@ -449,10 +445,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         ],
         {
           relativeTo: this.activatedRoute,
-          state: {
-            accountStatusCode: this.accountData.account_status_reference.account_status_code,
-            lastEnforcement: this.lastEnforcement?.result_id,
-          },
         },
       );
     }
