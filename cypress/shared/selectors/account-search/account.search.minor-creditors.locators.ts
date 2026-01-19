@@ -25,9 +25,9 @@ export const AccountSearchMinorCreditorsLocators = {
 
   panel: {
     /** Minor creditors panel root (useful for scoping). */
-    root: '#minor-creditors',
+    root: '#minorCreditors',
     /** Optional heading within panel, if needed. */
-    heading: '#minor-creditors h1.govuk-heading-l',
+    heading: '#minorCreditors h1.govuk-heading-l',
   },
 
   // ──────────────────────────────
