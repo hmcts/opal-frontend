@@ -74,7 +74,9 @@
     "cypress": "cypress open",
     "audit:save": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues",
     "postinstall": "patch-package",
-    "check:steps": "cypress run --env cucumberOnlyMissingSteps=true"
+    "check:steps": "cypress run --env cucumberOnlyMissingSteps=true",
+    "test:functional:tags": "CYPRESS_TAGS=$TAGS CYPRESS_filterSpecs=true CYPRESS_filterSpecsMixedMode=hide yarn test:functionalOpalParallel || CODE=$?; yarn test:functional:cucumber:combineParallelReport; exit ${CODE:-0}",
+    "find:duplicate:scenarios": "FEATURE_GLOB=\"cypress/e2e/functional/opal/features\" node scripts/find-duplicate-scenarios.js"
   },
   "private": true,
   "dependencies": {
@@ -94,7 +96,7 @@
     "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
     "@hmcts/opal-frontend-common": "^0.0.55",
-    "@hmcts/opal-frontend-common-node": "^0.0.20",
+    "@hmcts/opal-frontend-common-node": "^0.0.21",
     "@hmcts/properties-volume": "^1.1.0",
     "@microsoft/applicationinsights-web": "^3.3.5",
     "@ministryofjustice/frontend": "^7.0.0",

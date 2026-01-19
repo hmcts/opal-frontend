@@ -126,7 +126,6 @@ describe('FinesSaSearchAccountFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((component as any).handleRoute).toHaveBeenCalledWith('filter-business-units', {
       nonRelative: false,
-      fragment: 'individuals',
     });
   });
 

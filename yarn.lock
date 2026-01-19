@@ -1061,7 +1061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-browser@npm:^4.11.0, @azure/msal-browser@npm:^4.2.0":
+"@azure/msal-browser@npm:^4.2.0":
   version: 4.27.0
   resolution: "@azure/msal-browser@npm:4.27.0"
   dependencies:
@@ -1070,10 +1070,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/msal-browser@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "@azure/msal-browser@npm:5.0.2"
+  dependencies:
+    "@azure/msal-common": "npm:16.0.2"
+  checksum: 10/37fe3fe83f5ff675813ead18f4a9666b2872ab8dd4b29a363a39c75c3f15040b180076565575dc4637f998f7cd29eba513455ef5d26f5a70c9efd15d3ff27294
+  languageName: node
+  linkType: hard
+
 "@azure/msal-common@npm:15.13.3":
   version: 15.13.3
   resolution: "@azure/msal-common@npm:15.13.3"
   checksum: 10/7d438e09f0216a282efaeafad88fa683c92719771a5c21b1f16c524a5a5667fb15014e41a69426c177a598405b606065a41de3151f331393a577eac5540934dd
+  languageName: node
+  linkType: hard
+
+"@azure/msal-common@npm:16.0.2":
+  version: 16.0.2
+  resolution: "@azure/msal-common@npm:16.0.2"
+  checksum: 10/a3505f2c3e3ebbc4f0169a6f0979543a193878173932ececc97ece4a040e3090d832397eb3ff12a804eb1161f8d4021eda313bb891149a806f27a6da9e386e88
   languageName: node
   linkType: hard
 
@@ -3336,11 +3352,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.20":
-  version: 0.0.20
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.20"
+"@hmcts/opal-frontend-common-node@npm:^0.0.21":
+  version: 0.0.21
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.21"
   dependencies:
-    "@azure/msal-browser": "npm:^4.11.0"
+    "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
@@ -3361,7 +3377,7 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/955f384e628bc362b043aacde5ff2eb6a891f6d148f87e2a2096d354dcdec9eb046d4c2a2d0c6ff36350cdf5605aa9c889be03f4a95c8f3098cec040f18bda1e
+  checksum: 10/efaba94bd28d4a6f40721d9f8aa6a9f6b82bb7bc86aba39b8712ab48b309ef26f9b16946aa3ee7ff82eec15a698ac76957810246d3dcb2acb6cc395c08a8ed5a
   languageName: node
   linkType: hard
 
@@ -5555,20 +5571,20 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0":
-  version: 25.0.8
-  resolution: "@types/node@npm:25.0.8"
+  version: 25.0.9
+  resolution: "@types/node@npm:25.0.9"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10/b6efe998940678a0de0274dd84b1767a243c5d754b282e6df5da4d6985a1439b436a6d80d148925a974ecadda09fff4788d9cc0bb3a1f2554d54a3595146bd3b
+  checksum: 10/2c16f137ed3a952903b7641df5ce16663ad00911dc6a9010156602251420da127bf7dbd32d22aac9eda0cc430381164d55a36240039b7d06ab693b9aad5c3f23
   languageName: node
   linkType: hard
 
 "@types/node@npm:^24.0.0":
-  version: 24.10.8
-  resolution: "@types/node@npm:24.10.8"
+  version: 24.10.9
+  resolution: "@types/node@npm:24.10.9"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10/e6e53b868028c08555e0f832a6be68fe7ceb0f5ba140f6624b28ede6b564842b170d830e586b3ba1af8c97c73ca257e84acd877fdbda5552f805ed878a12205f
+  checksum: 10/c831395567689bdd59d0f3826332ff15c3f3f8e6acf160d7f75ce45e5476427c10ac484031c5c8d3480ae8d1729d95f3354ef4cc359364107e22da5a22e3797c
   languageName: node
   linkType: hard
 
@@ -10683,9 +10699,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^5.0.0":
-  version: 5.13.0
-  resolution: "govuk-frontend@npm:5.13.0"
-  checksum: 10/6eca01260e4eb8740c805c58a7bac034041e0190226c7ef200e49a715f630f304a5816dfea3c0c6b0cfabe30995b05b024df2824546e8dd00066059c0f8d1bdb
+  version: 5.14.0
+  resolution: "govuk-frontend@npm:5.14.0"
+  checksum: 10/be321340f49306e3dada63c67888b7947e36d60dce839c9d7f0c97932cda26a848c1fc664d48bb1d85494b7d28a3e99b2df6391dfc1bcbab905f529a2faa6788
   languageName: node
   linkType: hard
 
@@ -13953,7 +13969,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.55"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.20"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.21"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^7.0.0"
@@ -14699,11 +14715,11 @@ __metadata:
   linkType: hard
 
 "prettier@npm:^3.0.3":
-  version: 3.7.4
-  resolution: "prettier@npm:3.7.4"
+  version: 3.8.0
+  resolution: "prettier@npm:3.8.0"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/b4d00ea13baed813cb777c444506632fb10faaef52dea526cacd03085f01f6db11fc969ccebedf05bf7d93c3960900994c6adf1b150e28a31afd5cfe7089b313
+  checksum: 10/a643c62f095c2987a34cea4fceddce8dea12cc3ee024494aff690cfac22ef20be835e212b39b718c833014fd22890ae156be67b75a26e2bc9b7acde9a34d31fa
   languageName: node
   linkType: hard
 
