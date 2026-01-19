@@ -1,3 +1,4 @@
+@UAT-Technical
 Feature: Check and Validate - Checker
 
   Background:
