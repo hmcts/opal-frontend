@@ -1,7 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesMacCreateAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-create-account/fines-mac-create-account.component';
 import { of } from 'rxjs';
-import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { ActivatedRoute } from '@angular/router';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { DOM_ELEMENTS } from './constants/fines_mac_create_account_elements';

@@ -1,6 +1,5 @@
 import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
 import {
-  DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_ORG_MOCK,
   createDefendantHeaderMockWithName,
 } from './mocks/defendant_details_mock';

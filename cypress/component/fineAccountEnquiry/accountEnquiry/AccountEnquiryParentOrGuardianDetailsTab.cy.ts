@@ -292,7 +292,6 @@ describe('Account Enquiry Parent or Guardian Component', () => {
         .siblings()
         .invoke('text')
         .then((text) => {
-          const normalize = (s: string) => s.replace(/\D/g, '');
           const normalizedText = text.replace(/\s+/g, '');
           expect(normalizedText).to.equal('08000001066').to.match(phoneRegex);
         });
@@ -311,7 +310,6 @@ describe('Account Enquiry Parent or Guardian Component', () => {
         .siblings()
         .invoke('text')
         .then((text) => {
-          const normalize = (s: string) => s.replace(/\D/g, ''); // keep only digits
           const normalizedText = text.replace(/\s+/g, '');
           expect(normalizedText).to.equal('01987654321').to.match(phoneRegex);
         });
