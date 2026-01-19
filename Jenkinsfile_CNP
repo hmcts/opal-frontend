@@ -11,7 +11,7 @@ String product = opalName
 String component = 'frontend'
 
 // Secret key for KeyVault lookups
-String secretKey = 'opal-' + String.valueOf(env)
+String secretKey = 'opal-$'.concat('{env}')
 
 // Common literals to reduce duplication warnings
 String stageBuild = 'build'
@@ -101,13 +101,13 @@ List<String> getProjectLabels() {
 }
 // Restore weight files from last successful build
 void performArtifactOperations() {
-    sh 'mkdir -p cypress/parallel/weights/pipeline'
+    sh "${mkdirPipelineCmd}"
 
-    sh '''
+    sh """
     echo "Listing all artifacts before copy artifacts:"
-    ls -l1a cypress/parallel/weights/
-    ls -l1a cypress/parallel/weights/pipeline/
-    '''
+    ls -l1a ${weightsRoot}/
+    ls -l1a ${pipelineWeightsDir}/
+    """
 
     script {
         String projectNameValue = projectName
@@ -121,11 +121,11 @@ void performArtifactOperations() {
             echo "Error copying artifacts: ${e}"
         }
 
-        sh '''
+        sh """
         echo "Listing all artifacts after copy artifacts:"
-        ls -l1a cypress/parallel/weights/
-        ls -l1a cypress/parallel/weights/pipeline/
-        '''
+        ls -l1a ${weightsRoot}/
+        ls -l1a ${pipelineWeightsDir}/
+        """
     }
 
     try {
@@ -153,11 +153,11 @@ void performArtifactOperations() {
         echo "Artifacts not found or copy failed: ${e}"
     }
 
-    sh '''
+    sh """
     echo "Listing all copied artifacts:"
-    ls -l1a cypress/parallel/weights/
-    ls -l1a cypress/parallel/weights/pipeline/
-    '''
+    ls -l1a ${weightsRoot}/
+    ls -l1a ${pipelineWeightsDir}/
+    """
 }
 
 // Set TEST_SPECS based on labels or default to all
@@ -291,6 +291,7 @@ String tagLabel = allLabels.find { String label -> label.startsWith(runTagPrefix
 
 if (tagLabel) {
     env.TAGS = tagLabel.substring(runTagPrefix.length()).trim()
+    env.CYPRESS_TAGS = env.TAGS
     echo "Running only scenarios matching TAGS=${env.TAGS}"
 } else {
     echo 'Running all scenarios (no run_tag label found)'
