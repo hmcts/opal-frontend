@@ -1,4 +1,5 @@
 #!groovy
+import groovy.transform.Field
 import uk.gov.hmcts.contino.GithubAPI
 
 @Library('Infrastructure')
@@ -18,14 +19,14 @@ String stageTest = 'test'
 String stageFunctionalDev = 'functionalTest:dev'
 String stageFunctionalStg = 'functionalTest:stg'
 String skipLabelComponent = 'skip_opal_component'
-String weightsRoot = 'cypress/parallel/weights'
-String pipelineWeightsDir = "${weightsRoot}/pipeline"
-String smokeWeights = 'smoke-parallel-weights.json'
-String functionalWeights = 'functional-parallel-weights.json'
-String componentWeights = 'component-parallel-weights.json'
-String mkdirPipelineCmd = "mkdir -p ${pipelineWeightsDir}"
-String copySmokeToPipelineCmd = "cp -r ${weightsRoot}/${smokeWeights} ${pipelineWeightsDir}/"
-String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
+@Field String weightsRoot = 'cypress/parallel/weights'
+@Field String pipelineWeightsDir = "${weightsRoot}/pipeline"
+@Field String smokeWeights = 'smoke-parallel-weights.json'
+@Field String functionalWeights = 'functional-parallel-weights.json'
+@Field String componentWeights = 'component-parallel-weights.json'
+@Field String mkdirPipelineCmd = "mkdir -p ${pipelineWeightsDir}"
+@Field String copySmokeToPipelineCmd = "cp -r ${weightsRoot}/${smokeWeights} ${pipelineWeightsDir}/"
+@Field String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
 String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 String functionalOutputDir = 'functional-output/prod/cucumber/'
