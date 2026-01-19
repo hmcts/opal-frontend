@@ -1,3 +1,4 @@
+@UAT-Technical
 Feature: Navigate and edit sections from task list
 
   Background:

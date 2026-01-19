@@ -1,4 +1,4 @@
-@ManualAccountCreation @CompanyDetails @PO-345 @PO-265
+@ManualAccountCreation @CompanyDetails @PO-345 @PO-265 @UAT-Technical
 Feature: Manual account creation - Company Details
   #This feature file contains tests for the Company Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the CompanyDetailsComponent.cy.ts component tests
