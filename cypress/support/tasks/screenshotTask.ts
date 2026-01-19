@@ -25,14 +25,14 @@ type ScreenshotMatch = { path: string; mtimeMs: number };
  * @returns True when evidence capture should run.
  */
 function isLegacyEvidenceEnabled(): boolean {
-  const legacyEnabled = process.env.LEGACY_ENABLED;
+  const legacyEnabled = process.env['LEGACY_ENABLED'];
   if (legacyEnabled && legacyEnabled.trim()) {
     const normalized = legacyEnabled.trim().toLowerCase();
     if (normalized === 'true' || normalized === 'legacy' || normalized === '1') {
       return true;
     }
   }
-  const mode = (process.env.DEV_DEFAULT_APP_MODE || process.env.DEFAULT_APP_MODE || '').trim().toLowerCase();
+  const mode = (process.env['DEV_DEFAULT_APP_MODE'] || process.env['DEFAULT_APP_MODE'] || '').trim().toLowerCase();
   return mode === 'legacy';
 }
 
