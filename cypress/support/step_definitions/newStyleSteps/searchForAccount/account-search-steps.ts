@@ -709,8 +709,7 @@ Then('I see the Individuals search results:', (table: DataTable) => {
  * @step I see the Companies search results:
  * @description
  * Composite step that:
- *  - Selects the "Companies" tab.
- *  - Asserts the "Companies" tab is selected.
+ *  - Assumes the "Companies" tab is already selected.
  *  - Asserts there is at least one row in the results table whose columns
  *    match all key/value pairs from the provided table.
  *
@@ -720,7 +719,7 @@ Then('I see the Individuals search results:', (table: DataTable) => {
  *   When I see the Companies search results:
  *     | Ref | PCRAUTO008 |
  *
- * This is backed by AccountSearchFlow.assertCompaniesResultsForReference()
+ * This is backed by AccountSearchFlow.assertCompaniesResultsAlreadyOnCompanies()
  * and ResultsActions.assertResultsRowMatchesColumns().
  *
  * @example
@@ -730,6 +729,33 @@ Then('I see the Individuals search results:', (table: DataTable) => {
 When('I see the Companies search results:', (table: DataTable) => {
   log('step', 'Asserting Companies search results');
   searchFlow().assertCompaniesResultsAlreadyOnCompanies(table);
+});
+
+/**
+ * @step I see the Companies search results by tab switch:
+ * @description
+ * Composite step that:
+ *  - Selects the "Companies" tab.
+ *  - Asserts the "Companies" tab is selected.
+ *  - Asserts there is at least one row in the results table whose columns
+ *    match all key/value pairs from the provided table.
+ *
+ * The DataTable is expected to be a simple key/value table where each row
+ * represents a column header and its expected value in the matching row, e.g.:
+ *
+ *   When I see the Companies search results by tab switch:
+ *     | Ref | PCRAUTO008 |
+ *
+ * This is backed by AccountSearchFlow.assertCompaniesResultsWithTabSwitch()
+ * and ResultsActions.assertResultsRowMatchesColumns().
+ *
+ * @example
+ *   When I see the Companies search results by tab switch:
+ *     | Ref | PCRAUTO008 |
+ */
+When('I see the Companies search results by tab switch:', (table: DataTable) => {
+  log('step', 'Asserting Companies search results (after tab switch)');
+  searchFlow().assertCompaniesResultsWithTabSwitch(table);
 });
 
 /**
