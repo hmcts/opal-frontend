@@ -6,7 +6,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     And I clear all approved accounts
 
   @PO-777
-  Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality
+  Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status                          | Submitted                      |

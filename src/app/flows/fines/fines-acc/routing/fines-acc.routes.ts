@@ -110,6 +110,8 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
+          defendantAccountHeadingData: defendantAccountHeadingResolver,
+          defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver,
         },
       },
       {
@@ -161,6 +163,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
+          defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver,
         },
       },
     ],

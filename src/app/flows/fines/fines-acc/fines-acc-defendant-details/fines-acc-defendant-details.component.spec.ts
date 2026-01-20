@@ -271,7 +271,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/permission`],
       {
         relativeTo: component['activatedRoute'],
-        state: { accountStatusCode: 'L', lastEnforcement: undefined },
       },
     );
   });
@@ -297,7 +296,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/permission`],
       {
         relativeTo: component['activatedRoute'],
-        state: { accountStatusCode: 'L', lastEnforcement: undefined },
       },
     );
   });
