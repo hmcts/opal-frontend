@@ -83,7 +83,7 @@
     </ng-container>
   </opal-lib-govuk-summary-card-list>
   <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action" summaryCardListId="last-enforcement-action">
-    @if (tabData.last_enforcement_action != null) {
+    @if (tabData.last_enforcement_action !== null) {
       <ng-container content>
         <opal-lib-govuk-summary-list summaryListId="lastEnforcementActionDetails">
           <div
