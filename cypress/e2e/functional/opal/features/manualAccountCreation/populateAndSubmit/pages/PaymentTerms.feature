@@ -20,44 +20,44 @@ Feature: Manual account creation - Payment Terms
 
   Scenario: Payment terms data persists within the session [@PO-272, @PO-344, @PO-345, @PO-545, @PO-429, @PO-587, @PO-592]
     When I complete manual payment terms:
-      | collection order            | No                                 |
-      | make collection order today | Yes                                |
-      | payment term                | Lump sum plus instalments          |
-      | lump sum amount             | 150                                |
-      | instalment amount           | 300                                |
-      | payment frequency           | Monthly                            |
-      | start date                  | 2 weeks into the future            |
-      | request payment card        | Yes                                |
-      | days in default             | Yes                                |
-      | days in default imposed     | 1 weeks into the past              |
-      | default days                | 100                                |
-      | add enforcement action      | Yes                                |
+      | collection order            | No                                  |
+      | make collection order today | Yes                                 |
+      | payment term                | Lump sum plus instalments           |
+      | lump sum amount             | 150                                 |
+      | instalment amount           | 300                                 |
+      | payment frequency           | Monthly                             |
+      | start date                  | 2 weeks into the future             |
+      | request payment card        | Yes                                 |
+      | days in default             | Yes                                 |
+      | days in default imposed     | 1 weeks into the past               |
+      | default days                | 100                                 |
+      | add enforcement action      | Yes                                 |
       | enforcement action          | Hold enforcement on account (NOENF) |
-      | enforcement reason          | Reason                             |
+      | enforcement reason          | Reason                              |
     And I return to account details
     Then the "Payment terms" task status is "Provided"
     When I view the "Payment terms" task
     Then the manual payment terms fields are:
-      | collection order            | No                                 |
-      | make collection order today | Yes                                |
-      | payment term                | Lump sum plus instalments          |
-      | lump sum amount             | 150                                |
-      | instalment amount           | 300                                |
-      | payment frequency           | Monthly                            |
-      | start date                  | 2 weeks into the future            |
-      | request payment card        | Yes                                |
-      | days in default             | Yes                                |
-      | days in default imposed     | 1 weeks into the past              |
-      | default days                | 100                                |
-      | add enforcement action      | Yes                                |
+      | collection order            | No                                  |
+      | make collection order today | Yes                                 |
+      | payment term                | Lump sum plus instalments           |
+      | lump sum amount             | 150                                 |
+      | instalment amount           | 300                                 |
+      | payment frequency           | Monthly                             |
+      | start date                  | 2 weeks into the future             |
+      | request payment card        | Yes                                 |
+      | days in default             | Yes                                 |
+      | days in default imposed     | 1 weeks into the past               |
+      | default days                | 100                                 |
+      | add enforcement action      | Yes                                 |
       | enforcement action          | Hold enforcement on account (NOENF) |
-      | enforcement reason          | Reason                             |
+      | enforcement reason          | Reason                              |
 
   Scenario: Restarting manual account clears previous payment terms [@PO-272, @PO-344, @PO-345, @PO-545, @PO-429, @PO-587, @PO-592]
     When I complete manual payment terms:
-      | collection order | No                       |
-      | payment term     | Pay in full              |
-      | pay in full by   | 1 weeks into the future  |
+      | collection order | No                      |
+      | payment term     | Pay in full             |
+      | pay in full by   | 1 weeks into the future |
     And I return to account details
     Then the "Payment terms" task status is "Provided"
     When I refresh the application
