@@ -1,4 +1,7 @@
-// cypress/support/utils/table.ts
+/**
+ * @file table.ts
+ * @description Cucumber DataTable conversion helpers.
+ */
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import set from 'lodash/set';
 
