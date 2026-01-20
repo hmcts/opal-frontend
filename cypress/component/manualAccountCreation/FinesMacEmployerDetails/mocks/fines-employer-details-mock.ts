@@ -14,7 +14,6 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../../../../../src/app/flows/fi
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_MAC_PERSONAL_DETAILS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/constants/fines-mac-personal-details-state';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
-import { FINES_MAC_PAYMENT_TERMS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-payment-terms/constants/fines-mac-payment-terms-state';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from 'src/app/flows/fines/fines-mac/fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-form';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 

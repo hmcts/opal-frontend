@@ -7,8 +7,8 @@ export const DOM_ELEMENTS = {
   companiesTab: '[id="tab-companies"]',
   minorCreditorsTab: '[id="tab-minor-creditors"]',
   majorCreditorsTab: '[id="tab-major-creditors"]',
-  minorCreditorsPanel: '[id="minor-creditors"]',
-  minorCreditorsHeading: '[id="minor-creditors"] .govuk-heading-l',
+  minorCreditorsPanel: '[id="minorCreditors"]',
+  minorCreditorsHeading: '[id="minorCreditors"] .govuk-heading-l',
   searchButton: '[buttonId="submitForm"]',
 
   // Filter by business unit section
@@ -65,8 +65,8 @@ export const DOM_ELEMENTS = {
   postcodeError: '#fsa_search_account_minor_creditors_company_post_code-error-message',
 
   //Major creditors tab fields
-  majorCreditorsPanel: '[id="major-creditors"]',
-  majorCreditorsHeading: '[id="major-creditors"] .govuk-heading-l',
+  majorCreditorsPanel: '[id="majorCreditors"]',
+  majorCreditorsHeading: '[id="majorCreditors"] .govuk-heading-l',
   majorCreditorsHelpText: '[id="fsa_search_account_major_creditors_major_creditor_id-hint"]',
   majorCreditorBusinessUnitLabel: '.govuk-body',
   majorCreditorBusinessUnitLink: '.govuk-body > .govuk-link',

@@ -78,10 +78,15 @@ Then('I see the value {string} in the business unit search box', (businessUnit: 
   cy.get('#fm_create_account_business_unit_id-autocomplete').should('have.value', businessUnit);
 });
 Then('I see the defendant type heading is {string}', (businessUnitHeading: string) => {
-  cy.get('#defendantTypeHint').prev().should('contains.text', businessUnitHeading);
+  cy.get('#fm_create_account_fine_defendant_type-hint, #fm_create_account_fixed_penalty_defendant_type-hint')
+    .prev()
+    .should('contains.text', businessUnitHeading);
 });
 Then('I see the defendant type help text is {string}', (businessUnitHelpText: string) => {
-  cy.get('#defendantTypeHint').should('contains.text', businessUnitHelpText);
+  cy.get('#fm_create_account_fine_defendant_type-hint, #fm_create_account_fixed_penalty_defendant_type-hint').should(
+    'contains.text',
+    businessUnitHelpText,
+  );
 });
 
 When('I select title {string} from dropdown', (title: string) => {

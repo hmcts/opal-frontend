@@ -324,7 +324,7 @@ Feature: Account Search and Matches
     #AC5b, AC5c, AC5e, AC5f
     Then I see the Individuals search results:
       | Ref | PCRAUTO008 |
-    And I see the Companies search results:
+    And I see the Companies search results by tab switch:
       | Ref | PCRAUTO008 |
     #   #AC7: Verify Back navigation behaviour
     When I return to the Companies search page from the results it is displayed with:

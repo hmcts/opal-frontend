@@ -129,7 +129,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      for (const [key, value] of Object.entries(MAIN_PERSONAL_DETAILS)) {
+      for (const [, value] of Object.entries(MAIN_PERSONAL_DETAILS)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
     },
@@ -163,7 +163,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      for (const [key, value] of Object.entries(LENGTH_VALIDATION)) {
+      for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
     },
