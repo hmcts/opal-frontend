@@ -83,7 +83,175 @@
     </ng-container>
   </opal-lib-govuk-summary-card-list>
   <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action" summaryCardListId="last-enforcement-action">
-    <ng-container content> There is no outstanding enforcement action. </ng-container>
+    @if (tabData.last_enforcement_action != null) {
+      <ng-container content>
+        <opal-lib-govuk-summary-list summaryListId="lastEnforcementActionDetails">
+          <div
+            opal-lib-govuk-summary-list-row
+            [class]="
+              tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' && hasEnterEnforcementPermission
+                ? 'govuk-summary-list__row'
+                : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
+            "
+            summaryListId="lastEnforcementActionDetails"
+            summaryListRowId="enforcement_action"
+            [actionEnabled]="
+              tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' && hasEnterEnforcementPermission
+                ? true
+                : false
+            "
+          >
+            <ng-container name>Enforcement action</ng-container>
+            <ng-container value>
+              <opal-lib-govuk-tag
+                [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour govuk-!-margin-bottom-2'"
+                tagId="enforcement_status"
+                >{{ tabData.last_enforcement_action.enforcement_action.result_title }}({{
+                  tabData.last_enforcement_action.enforcement_action.result_id
+                }})</opal-lib-govuk-tag
+              >
+            </ng-container>
+            @if (
+              tabData.last_enforcement_action.enforcement_action.result_id === 'NOENF' && hasEnterEnforcementPermission
+            ) {
+              <ng-container action>Remove</ng-container>
+            }
+          </div>
+
+          @if (tabData.last_enforcement_action.reason) {
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="lastEnforcementActionDetails"
+              summaryListRowId="reason"
+            >
+              <ng-container name>Reason</ng-container>
+              <ng-container value>{{ tabData.last_enforcement_action.reason }}</ng-container>
+            </div>
+          }
+
+          @if (tabData.last_enforcement_action.enforcer && tabData.last_enforcement_action.enforcer.enforcer_name) {
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="lastEnforcementActionDetails"
+              summaryListRowId="enforcer"
+            >
+              <ng-container name>Enforcer</ng-container>
+              <ng-container value>{{ tabData.last_enforcement_action.enforcer.enforcer_name }}</ng-container>
+            </div>
+          }
+
+          @if (tabData.last_enforcement_action.result_responses) {
+            @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
+              @if (param.parameter_name === 'days_in_default' && param.response) {
+                <div
+                  opal-lib-govuk-summary-list-row
+                  class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+                  summaryListId="lastEnforcementActionDetails"
+                  summaryListRowId="days_in_default"
+                >
+                  <ng-container name>Days in default</ng-container>
+                  <ng-container value>
+                    @let daysValue = +param.response;
+                    @let daysText = daysValue === 1 ? 'day' : 'days';
+                    {{ daysValue }} {{ daysText }}
+                  </ng-container>
+                </div>
+              }
+            }
+          }
+
+          @if (tabData.last_enforcement_action.warrant_number) {
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="lastEnforcementActionDetails"
+              summaryListRowId="warrant_number"
+            >
+              <ng-container name>Warrant number</ng-container>
+              <ng-container value>{{ tabData.last_enforcement_action.warrant_number }} </ng-container>
+            </div>
+          }
+
+          @if (tabData.last_enforcement_action.result_responses) {
+            @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
+              @if (param.parameter_name === 'hearing_date' && param.response) {
+                <div
+                  opal-lib-govuk-summary-list-row
+                  class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+                  summaryListId="lastEnforcementActionDetails"
+                  summaryListRowId="hearing_date"
+                >
+                  <ng-container name>Hearing date</ng-container>
+                  <ng-container value>{{ param.response | date: 'dd MMMM yyyy' }}</ng-container>
+                </div>
+              }
+            }
+          }
+          @if (tabData.last_enforcement_action.result_responses) {
+            @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
+              @if (param.parameter_name === 'court' && param.response) {
+                <div
+                  opal-lib-govuk-summary-list-row
+                  class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+                  summaryListId="lastEnforcementActionDetails"
+                  summaryListRowId="court"
+                >
+                  <ng-container name>Court</ng-container>
+                  <ng-container value>{{ param.response }}</ng-container>
+                </div>
+              }
+            }
+          }
+
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="lastEnforcementActionDetails"
+            summaryListRowId="date_added"
+          >
+            <ng-container name>Date added</ng-container>
+            <ng-container value>{{ tabData.last_enforcement_action.date_added | date: 'dd MMMM yyyy' }}</ng-container>
+          </div>
+        </opal-lib-govuk-summary-list>
+        <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-3" />
+        @if (
+          tabData.last_enforcement_action.result_responses &&
+          tabData.last_enforcement_action.result_responses.length > 0
+        ) {
+          <opal-lib-govuk-details summaryText="Details">
+            <opal-lib-govuk-summary-list summaryListId="enforcementActionDetails">
+              @for (response of tabData.last_enforcement_action.result_responses; track response.parameter_name) {
+                @if (response.response) {
+                  <div
+                    opal-lib-govuk-summary-list-row
+                    class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+                    summaryListId="enforcementActionDetails"
+                    [summaryListRowId]="response.parameter_name"
+                  >
+                    <ng-container name>{{ response.parameter_name | titlecase }}</ng-container>
+                    <ng-container value>
+                      @if (response.parameter_name === 'hearing_date') {
+                        {{ response.response | date: 'dd MMMM yyyy' }}
+                      } @else if (response.parameter_name === 'days_in_default') {
+                        @let daysValue = +response.response;
+                        @let daysText = daysValue === 1 ? 'day' : 'days';
+                        {{ daysValue }} {{ daysText }}
+                      } @else {
+                        {{ response.response }}
+                      }
+                    </ng-container>
+                  </div>
+                }
+              }
+            </opal-lib-govuk-summary-list>
+          </opal-lib-govuk-details>
+        }
+      </ng-container>
+    } @else {
+      <ng-container content> There is no outstanding enforcement action. </ng-container>
+    }
   </opal-lib-govuk-summary-card-list>
 </div>
 @if (hasAccountMaintenancePermission || hasEnterEnforcementPermission) {
