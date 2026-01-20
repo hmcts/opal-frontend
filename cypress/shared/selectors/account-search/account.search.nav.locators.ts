@@ -17,16 +17,16 @@
 
 export const AccountSearchNavLocators = {
   /** Individuals tab toggle */
-  individualsTab: '#tab-individuals',
+  individualsTab: '[tabitemid="tab-individuals"]',
 
   /** Companies tab toggle */
-  companiesTab: '#tab-companies',
+  companiesTab: '[tabitemid="tab-companies"]',
 
   /** Major creditors tab toggle */
-  majorCreditorsTab: '#tab-major-creditors',
+  majorCreditorsTab: '[tabitemid="tab-major-creditors"]',
 
   /** Minor creditors tab toggle */
-  minorCreditorsTab: '#tab-minor-creditors',
+  minorCreditorsTab: '[tabitemid="tab-minor-creditors"]',
 } as const;
 
 export type AccountSearchNavLocatorKeys = keyof typeof AccountSearchNavLocators;
