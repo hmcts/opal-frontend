@@ -56,7 +56,13 @@ export class SearchFilterByBUNavActions {
     log('info', `Verifying active tab via selector: ${tabLinkSelector}`);
     cy.get(tabLinkSelector).should('have.attr', 'aria-current', SearchFilterByBUNavLocators.activeSubNavAriaCurrent);
   }
-
+  /**
+   * Verifies that the **Fines** tab is the active tab by default.
+   */
+  verifyFinesTabIsActiveByDefault(): void {
+    log('info', 'Verifying Fines tab is active by default in filter-by-business-unit navigation');
+    this.verifyActiveTab(SearchFilterByBUNavLocators.finesTabLink);
+  }
   /**
    * Verifies that the **Fines** tab is the active tab.
    */

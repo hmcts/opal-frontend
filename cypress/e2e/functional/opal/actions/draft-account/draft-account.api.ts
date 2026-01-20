@@ -18,9 +18,18 @@ import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { convertDataTableToNestedObject } from '../../../../../support/utils/table';
 import { getDraftPayloadFile, type DraftPayloadType } from '../../../../../support/utils/payloads';
 import { readDraftIdFromBody } from '../../../../../support/draftAccounts';
+import {
+  extractAccountNumber,
+  extractCreatedTimestamp,
+  extractUpdatedTimestamp,
+  recordCreatedAccount,
+  recordFailedAccount,
+  summarizeErrorPayload,
+} from '../../../../../support/utils/accountCapture';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('DraftAccountApiActions');
+const createDraftEndpoint = '/opal-fines-service/draft-accounts';
 
 /**
  * Path builder for a draft account resource.
@@ -110,6 +119,16 @@ export function createDraftAndSetStatus(
   let beforeEtag = '';
   let afterEtag = '';
   let numberForUI: string | null = null;
+  let postAccountNumber: string | undefined;
+  let createdAtFromApi: string | undefined;
+  let updatedAtFromApi: string | undefined;
+  const requestPayloads: Array<{
+    source: 'api';
+    endpoint?: string;
+    method?: string;
+    timestamp: string;
+    payload: Record<string, unknown>;
+  }> = [];
 
   return (
     cy
@@ -124,7 +143,7 @@ export function createDraftAndSetStatus(
         log('action', 'POST /draft-accounts', { requestBody });
         cy.request({
           method: 'POST',
-          url: '/opal-fines-service/draft-accounts',
+          url: createDraftEndpoint,
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: requestBody,
           failOnStatusCode: false,
@@ -137,16 +156,28 @@ export function createDraftAndSetStatus(
               requestBody,
             });
             cy.log(`POST /draft-accounts -> ${postResp.status}: ${JSON.stringify(postResp.body).slice(0, 500)}`);
+            createdAtFromApi = extractCreatedTimestamp(postResp.body as unknown) ?? createdAtFromApi;
             if (postResp.status !== 201) {
               log('assert', 'POST /draft-accounts failed', {
                 status: postResp.status,
                 body: postResp.body,
                 requestBody,
               });
+              recordFailedAccount({
+                source: 'api',
+                accountType: draftType,
+                httpStatus: postResp.status,
+                errorSummary: summarizeErrorPayload(postResp.body as unknown),
+                requestSummary: {
+                  endpoint: createDraftEndpoint,
+                  method: 'POST',
+                },
+              });
             }
             expect(postResp.status, 'POST /draft-accounts').to.eq(201);
 
             createdId = readDraftIdFromBody(postResp.body);
+            postAccountNumber = extractAccountNumber(postResp.body as unknown);
             log('done', 'Draft account created', { createdId });
             cy.wrap(createdId, { log: false }).as('lastCreatedDraftId');
           });
@@ -165,6 +196,7 @@ export function createDraftAndSetStatus(
           .then((getResp) => {
             expect(getResp.status, 'GET account').to.eq(200);
             beforeEtag = readStrongEtag(getResp.headers as Record<string, unknown>);
+            createdAtFromApi = extractCreatedTimestamp(getResp.body as unknown) ?? createdAtFromApi;
 
             const body = (getResp.body ?? {}) as Record<string, unknown>;
             const business_unit_id = Number(body['business_unit_id'] ?? body['businessUnitId']);
@@ -213,6 +245,7 @@ export function createDraftAndSetStatus(
                 expect([200, 204], 'PATCH success').to.include(patchResp.status);
 
                 afterEtag = readStrongEtag(patchResp.headers as Record<string, unknown>);
+                updatedAtFromApi = extractUpdatedTimestamp(patchResp.body as unknown) ?? updatedAtFromApi;
 
                 if (Cypress.env('EXPECT_ETAG_CHANGE') === true) {
                   expect(afterEtag, 'ETag should change after update').not.to.eq(beforeEtag);
@@ -232,6 +265,16 @@ export function createDraftAndSetStatus(
                   status: patchResp.status,
                 });
 
+                if (Object.keys(patchBody).length) {
+                  requestPayloads.push({
+                    source: 'api',
+                    endpoint: pathForAccount(createdId),
+                    method: 'PATCH',
+                    timestamp: updatedAtFromApi ?? new Date().toISOString(),
+                    payload: { ...patchBody },
+                  });
+                }
+
                 cy.wrap(
                   {
                     status: patchResp.status,
@@ -247,6 +290,24 @@ export function createDraftAndSetStatus(
       })
 
       // Keep public type: Cypress.Chainable<void>
+      .then(() =>
+        recordCreatedAccount(
+          {
+            source: 'api',
+            accountType: draftType,
+            status: canonicalStatus,
+            accountId: createdId,
+            accountNumber: numberForUI ?? postAccountNumber ?? undefined,
+            createdAt: createdAtFromApi,
+            requestSummary: {
+              endpoint: createDraftEndpoint,
+              method: 'POST',
+            },
+            requestPayloads: requestPayloads.length ? requestPayloads : undefined,
+          },
+          requestBody,
+        ),
+      )
       .then(() => undefined as void)
   );
 }

@@ -56,6 +56,7 @@ export class SearchFilterByBUFlow {
     log('assert', 'Open Business Unit Filter');
     this.searchCommonActions.openBusinessUnitFilter();
 
+    navActions.verifyFinesTabIsActiveByDefault();
     navActions.verifyFinesTabIsActive();
   }
 
