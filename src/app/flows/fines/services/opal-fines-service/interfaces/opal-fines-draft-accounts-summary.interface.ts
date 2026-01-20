@@ -3,17 +3,22 @@ export interface IOpalFinesDraftAccountsSummary {
   created_at: string;
   submitted_by: string;
   business_unit_id: number;
+  validated_at: string | null;
+  validated_by: string | null;
   account_snapshot: IOpalFinesAccountSnapshot;
   account_type: string;
   account_status: string;
-  account_status_date: string;
   account_number: string;
+  account_id: number | null;
+  account_status_date: string;
+  submitted_by_name: string;
 }
 
 interface IOpalFinesAccountSnapshot {
   account_type: string;
   created_date: string;
   submitted_by: string;
+  approved_date: string;
   defendant_name: string;
   submitted_by_name: string;
   business_unit_name: string;
