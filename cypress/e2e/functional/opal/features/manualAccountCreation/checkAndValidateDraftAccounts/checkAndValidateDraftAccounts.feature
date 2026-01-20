@@ -8,11 +8,11 @@ Feature: Check and Validate - Checker
   @PO-594
   Scenario: Back navigation returns to Review accounts from an in-review draft
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted                 |
-      | account.defendant.forenames             | Larry                     |
+      | Account_status                          | Submitted                       |
+      | account.defendant.forenames             | Larry                           |
       | account.defendant.surname               | Lincoln{uniq}                   |
       | account.defendant.email_address_1       | larry.lincoln{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219385               |
+      | account.defendant.telephone_number_home | 02078219385                     |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "LINCOLN{uniqUpper}, Larry" and see header "Mr Larry LINCOLN{uniqUpper}"
@@ -23,11 +23,14 @@ Feature: Check and Validate - Checker
   @PO-594
   Scenario: Approve an in-review draft account from the review screen
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted                 |
-      | account.defendant.forenames             | Larry                     |
-      | account.defendant.surname               | Lincoln{uniq}                   |
-      | account.defendant.email_address_1       | larry.lincoln{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219385               |
+      | Account_status                                            | Submitted                                                                                                                                                                                              |
+      | account.defendant.forenames                               | Larry                                                                                                                                                                                                  |
+      | account.defendant.surname                                 | Lincoln{uniq}                                                                                                                                                                                          |
+      | account.defendant.email_address_1                         | larry.lincoln{uniq}@outlook.com                                                                                                                                                                        |
+      | account.defendant.telephone_number_home                   | 02078219385                                                                                                                                                                                            |
+      | account.defendant.debtor_detail.vehicle_make              | _=+[{]};:'@#~,<.>/?\\\\\|¬`!"£                                                                                                                                                                         |
+      | account.defendant.debtor_detail.vehicle_registration_mark | $%^&*()-                                                                                                                                                                                               |
+      | account.account_notes                                     | [{"account_note_serial":1,"account_note_text":"It's a comment - includes a dash.","note_type":"AC"},{"account_note_serial":2,"account_note_text":"Here's a note - includes a dash.","note_type":"AA"}] |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Lincoln{uniq}, Larry" and see header "Mr Larry Lincoln{uniq}"
@@ -40,11 +43,11 @@ Feature: Check and Validate - Checker
   @PO-969 @PO-601
   Scenario: Reject an in-review draft account and review it from the Rejected tab
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted                |
-      | account.defendant.forenames             | Harry                    |
+      | Account_status                          | Submitted                      |
+      | account.defendant.forenames             | Harry                          |
       | account.defendant.surname               | Potter{uniq}                   |
       | account.defendant.email_address_1       | harry.potter{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219385              |
+      | account.defendant.telephone_number_home | 02078219385                    |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
@@ -63,11 +66,11 @@ Feature: Check and Validate - Checker
   @PO-597 @PO-616
   Scenario: Delete an in-review draft account and verify it on the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted              |
-      | account.defendant.forenames             | Peter                  |
+      | Account_status                          | Submitted                    |
+      | account.defendant.forenames             | Peter                        |
       | account.defendant.surname               | Barnes{uniq}                 |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219334            |
+      | account.defendant.telephone_number_home | 02078219334                  |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Barnes{uniq}, Peter" and see header "Mr Peter Barnes{uniq}"
@@ -89,11 +92,11 @@ Feature: Check and Validate - Checker
   @PO-597
   Scenario: Cancel draft deletion and remain on the confirmation page
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted              |
-      | account.defendant.forenames             | Peter                  |
+      | Account_status                          | Submitted                    |
+      | account.defendant.forenames             | Peter                        |
       | account.defendant.surname               | Barn{uniq}                   |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219334            |
+      | account.defendant.telephone_number_home | 02078219334                  |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "BARN{uniqUpper}, Peter" and see header "Mr Peter BARN{uniqUpper}"
@@ -104,11 +107,11 @@ Feature: Check and Validate - Checker
   @PO-597
   Scenario: Cancel draft deletion after entering a reason and return to the account
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted              |
-      | account.defendant.forenames             | Peter                  |
+      | Account_status                          | Submitted                    |
+      | account.defendant.forenames             | Peter                        |
       | account.defendant.surname               | Barn{uniq}                   |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219334            |
+      | account.defendant.telephone_number_home | 02078219334                  |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "BARN{uniqUpper}, Peter" and see header "Mr Peter BARN{uniqUpper}"
@@ -123,11 +126,11 @@ Feature: Check and Validate - Checker
   @PO-968
   Scenario: Show a global error banner when approving fails
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted              |
-      | account.defendant.forenames             | Paul                   |
+      | Account_status                          | Submitted                    |
+      | account.defendant.forenames             | Paul                         |
       | account.defendant.surname               | BLART{uniq}                  |
       | account.defendant.email_address_1       | paul.blart{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219385            |
+      | account.defendant.telephone_number_home | 02078219385                  |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     And draft account decision updates fail with status 400
     When I open Check and Validate Draft Accounts
@@ -151,11 +154,11 @@ Feature: Check and Validate - Checker
   @PO-603
   Scenario: Open an existing deleted draft account from the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted             |
-      | account.defendant.forenames             | Paul                  |
+      | Account_status                          | Submitted                   |
+      | account.defendant.forenames             | Paul                        |
       | account.defendant.surname               | Salt{uniq}                  |
       | account.defendant.email_address_1       | paul.salt{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02038219385           |
+      | account.defendant.telephone_number_home | 02038219385                 |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     And I set the last created draft account status to "Deleted"
     When I open Check and Validate Draft Accounts
@@ -169,9 +172,9 @@ Feature: Check and Validate - Checker
   @PO-1804
   Scenario: Open a fixed penalty account from the To review tab and return using Back
     Given a "fixedPenalty" draft account exists with:
-      | Account_status              | Submitted |
-      | account.defendant.forenames | FakeFixed |
-      | account.defendant.surname   | FAKELAST{uniq}  |
+      | Account_status              | Submitted      |
+      | account.defendant.forenames | FakeFixed      |
+      | account.defendant.surname   | FAKELAST{uniq} |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
@@ -181,7 +184,7 @@ Feature: Check and Validate - Checker
   @PO-1804
   Scenario: Open a fixed penalty company account from the To review tab and return using Back
     Given a "fixedPenaltyCompany" draft account exists with:
-      | Account_status                 | Submitted               |
+      | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
@@ -193,7 +196,7 @@ Feature: Check and Validate - Checker
   @PO-2463
   Scenario: Delete a fixed penalty company draft and return from the Deleted tab
     Given a "fixedPenaltyCompany" draft account exists with:
-      | Account_status                 | Submitted               |
+      | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
@@ -212,9 +215,9 @@ Feature: Check and Validate - Checker
   @PO-2463
   Scenario: Delete a fixed penalty draft and return from the Deleted tab
     Given a "fixedPenalty" draft account exists with:
-      | Account_status              | Submitted |
-      | account.defendant.forenames | FakeFixed |
-      | account.defendant.surname   | FAKELAST{uniq}  |
+      | Account_status              | Submitted      |
+      | account.defendant.forenames | FakeFixed      |
+      | account.defendant.surname   | FAKELAST{uniq} |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
@@ -231,9 +234,9 @@ Feature: Check and Validate - Checker
   @PO-2463
   Scenario: Reject a fixed penalty draft and return from the Rejected tab
     Given a "fixedPenalty" draft account exists with:
-      | Account_status              | Submitted |
-      | account.defendant.forenames | FakeFixed |
-      | account.defendant.surname   | FAKELAST{uniq}  |
+      | Account_status              | Submitted      |
+      | account.defendant.forenames | FakeFixed      |
+      | account.defendant.surname   | FAKELAST{uniq} |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
@@ -251,7 +254,7 @@ Feature: Check and Validate - Checker
   @PO-2463
   Scenario: Reject a fixed penalty company draft and return from the Rejected tab
     Given a "fixedPenaltyCompany" draft account exists with:
-      | Account_status                 | Submitted               |
+      | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
