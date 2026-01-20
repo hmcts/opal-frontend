@@ -3,9 +3,9 @@
  * @description Step definitions for global API interceptor scenarios.
  */
 import { When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { GlobalApiInterceptorFlow } from '../../../e2e/functional/opal/flows/global-api-interceptor.flow';
-import { GlobalApiInterceptorActions } from '../../../e2e/functional/opal/actions/global-api-interceptor.actions';
-import { log } from '../../utils/log.helper';
+import { GlobalApiInterceptorFlow } from '../../e2e/functional/opal/flows/global-api-interceptor.flow';
+import { GlobalApiInterceptorActions } from '../../e2e/functional/opal/actions/global-api-interceptor.actions';
+import { log } from '../utils/log.helper';
 
 const flow = () => new GlobalApiInterceptorFlow();
 const actions = () => new GlobalApiInterceptorActions();
