@@ -91,7 +91,7 @@ Feature: Manual account creation - Employer Details
 
 
   Scenario: Employer Details - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility
 
 
   Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-434]

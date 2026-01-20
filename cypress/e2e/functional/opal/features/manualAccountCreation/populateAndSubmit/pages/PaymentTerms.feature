@@ -108,7 +108,7 @@ Feature: Manual account creation - Payment Terms
     Then I should see the header containing text "Account comments and notes"
 
   Scenario: Payment terms - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility
 
 
 
