@@ -1,4 +1,3 @@
-@UAT-Technical
 Feature: Check and Validate - Checker
 
   Background:
@@ -20,7 +19,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "To review"
 
-  @PO-594
+  @PO-594 @UAT-Technical
   Scenario: Approve an in-review draft account from the review screen
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                                            | Submitted                                                                                                                                                                                              |
@@ -123,7 +122,7 @@ Feature: Check and Validate - Checker
     When I cancel draft deletion choosing "Ok"
     Then I should see the header containing text "Mr Peter BARN{uniqUpper}"
 
-  @PO-968
+  @PO-968 @UAT-Technical
   Scenario: Show a global error banner when approving fails
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |

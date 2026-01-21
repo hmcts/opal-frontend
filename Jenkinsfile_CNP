@@ -29,13 +29,17 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
 String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
-String functionalOutputDir = 'functional-output/prod/cucumber/'
-String functionalReportFile = 'functional-report.html'
-String functionalReportName = 'Cucumber Functional Test Report'
+String browserToRun = (env.BROWSER_TO_RUN ?: 'chrome').trim().toLowerCase()
+String functionalOutputDir =
+  browserToRun == 'chrome' ? 'functional-output/prod/cucumber/' : "functional-output/prod/${browserToRun}/cucumber/"
+String functionalReportFile = browserToRun == 'chrome' ? 'functional-report.html' : "${browserToRun}-report.html"
+String functionalReportName =
+  browserToRun == 'chrome' ? 'Cucumber Functional Test Report' : "Cucumber Functional Test Report (${browserToRun})"
 String smokeOutputDir = 'smoke-output/prod/cucumber/'
 String smokeReportFile = 'smoke-report.html'
 String smokeReportName = 'Cucumber Smoke Test Report'
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
+String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
 String runTagPrefix = 'run_tag:'
 
 // Vault secrets injected into the pipeline
@@ -271,17 +275,20 @@ boolean isPR = changeId != null && !changeId.empty
 // Safe defaults (current behaviour)
 env.DEV_DEFAULT_APP_MODE = opalName
 env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+env.OPAL_LOG_LEVEL = env.OPAL_LOG_LEVEL ?: 'INFO'
 
 // Opt-in: Dev → JCDE (PR builds only)
 if (legacyEnabled && isPR) {
     env.DEV_DEFAULT_APP_MODE = 'legacy'
     env.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal.clouddev.online/opal'
+    env.OPAL_LOG_LEVEL = 'DEBUG'
 } else if (legacyEnabled && !isPR) {
     echo 'Legacy mode label detected but this is not a PR build; ignoring.'
 }
 
 echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
+echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
 
 GithubAPI githubApi = new GithubAPI(this)
 List<String> allLabels = githubApi.getLabels(env.BRANCH_NAME)
@@ -411,6 +418,7 @@ withPipeline(type, product, component) {
         functionalReportName
       )
         archiveArtifact(accountArtifactPath)
+        archiveArtifact(accountEvidenceArtifacts)
         publishHtmlReport(
         smokeOutputDir,
         smokeReportFile,
@@ -425,6 +433,7 @@ withPipeline(type, product, component) {
         functionalReportName
       )
         archiveArtifact(accountArtifactPath)
+        archiveArtifact(accountEvidenceArtifacts)
 
         publishHtmlReport(
         smokeOutputDir,

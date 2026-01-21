@@ -1,4 +1,3 @@
-@UAT-Technical
 Feature: Fixed Penalty Failed Account Validation (PO-1816)
   As a checker user
   I want to view and validate failed Fixed Penalty draft accounts
@@ -8,7 +7,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     Given I am logged in with email "opal-test@HMCTS.NET"
     And I clear all approved accounts
 
-  @PO-1816
+  @PO-1816 @UAT-Technical
   Scenario: AC1 - Failed individual fixed penalty draft appears in Failed tab with expected details
     Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status              | failed      |
@@ -33,7 +32,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
       | Business unit | Camberwell Green    |
       | Submitted by  | opal-test           |
 
-  @PO-1816
+  @PO-1816 @UAT-Technical
   Scenario: AC1a - Failed individual fixed penalty draft returns to Failed tab after viewing details
     Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status              | failed      |
@@ -48,7 +47,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     And I sort the draft accounts table by column "Date failed" in "descending" order
     And the draft accounts table should contain "GREEN{uniq}, Oliver" in column "Defendant"
 
-  @PO-1816
+  @PO-1816 @UAT-Technical
   Scenario: AC2 - Failed company fixed penalty draft appears in Failed tab with expected details
     Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending":
       | Account_status                 | Submitted                            |
@@ -74,7 +73,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
       | Submitted by  | opal-test                            |
 
 
-  @PO-1816
+  @PO-1816 @UAT-Technical
   Scenario: AC2a - Failed company fixed penalty draft returns to Failed tab after viewing details
     Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending":
       | Account_status                 | Submitted                            |

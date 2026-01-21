@@ -1,4 +1,3 @@
-@UAT-Technical
 Feature: Manual fixed penalty account creation - Create Draft Account
 
   Rule: Adult or youth fixed penalty review

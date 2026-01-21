@@ -1,11 +1,11 @@
-@api @concurrency @PO-2117 @UAT-Technical
+@api @concurrency @PO-2117
 Feature: Draft Accounts — ETag/If-Match Concurrency
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
     Then I should be on the dashboard
 
-  @PO-2117
+  @PO-2117 @UAT-Technical
   Scenario: Successful update returns a new strong ETag
     Given a "adultOrYouthOnly" draft account exists with:
       | account_status              | Submitted |
@@ -14,7 +14,7 @@ Feature: Draft Accounts — ETag/If-Match Concurrency
     When I set the last created draft account status to "Publishing Pending"
     Then the last draft update should return a new strong ETag
 
-  @PO-2117
+  @PO-2117 @UAT-Technical
   Scenario: Stale If-Match results in 409 Conflict
     Given a "adultOrYouthOnly" draft account exists with:
       | account_status              | Submitted      |
