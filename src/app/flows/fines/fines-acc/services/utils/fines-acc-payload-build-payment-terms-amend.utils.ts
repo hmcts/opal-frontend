@@ -55,7 +55,7 @@ function mapInstalmentPeriod(formData: IFinesAccPaymentTermsAmendState): string 
  */
 function mapLumpSumAmount(formData: IFinesAccPaymentTermsAmendState): number | null {
   return formData.facc_payment_terms_payment_terms === 'lumpSumPlusInstalments'
-    ? formData.facc_payment_terms_lump_sum_amount
+    ? Number.parseFloat(Number(formData.facc_payment_terms_lump_sum_amount || 0).toFixed(2))
     : null;
 }
 
@@ -67,7 +67,9 @@ function mapInstalmentAmount(formData: IFinesAccPaymentTermsAmendState): number 
     formData.facc_payment_terms_payment_terms === 'instalmentsOnly' ||
     formData.facc_payment_terms_payment_terms === 'lumpSumPlusInstalments';
 
-  return hasInstalments ? formData.facc_payment_terms_instalment_amount : null;
+  return hasInstalments
+    ? Number.parseFloat(Number(formData.facc_payment_terms_instalment_amount || 0).toFixed(2))
+    : null;
 }
 
 /**
