@@ -1,4 +1,9 @@
 /**
+ * @file stringUtils.ts
+ * @description String helpers for Cypress tests, including unique suffixes.
+ */
+
+/**
  * Generate a random alphanumeric string with the requested length.
  * @param length Desired number of characters.
  * @returns Randomly generated alphanumeric string.

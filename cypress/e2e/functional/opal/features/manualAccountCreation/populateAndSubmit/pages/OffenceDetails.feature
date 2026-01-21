@@ -235,7 +235,7 @@ Feature: Manual account creation - Offence Details
 
     When I confirm removing imposition 1
     Then I should see the header containing text "Add an offence"
-    And I do not see "Compensation (FCOMP)" text on the page
+    And I do not see "Compensation (FCOMP)" in the imposition result code fields
 
   Scenario: User sees correct reindexing and cannot remove the last remaining imposition
     Given an offence exists with the following impositions:
@@ -259,7 +259,7 @@ Feature: Manual account creation - Offence Details
 
     When I confirm removing imposition 1
     Then I should see the header containing text "Add an offence"
-    And I do not see "Compensation (FCOMP)" text on the page
+    And I do not see "Compensation (FCOMP)" in the imposition result code fields
 
     # Remove Imposition 2, now reindexed as imposition 1
     When I choose to "remove imposition" imposition 1
@@ -270,7 +270,7 @@ Feature: Manual account creation - Offence Details
 
     When I confirm removing imposition 1
     Then I should see the header containing text "Add an offence"
-    And I do not see "Fine (FO)" text on the page
+    And I do not see "Fine (FO)" in the imposition result code fields
 
     # Only one imposition left – cannot remove
     And I do not see the "Remove imposition" link for imposition 1
@@ -688,7 +688,7 @@ Feature: Manual account creation - Offence Details
 
 
   Scenario: Offences screens - Axe core
-    Then I check accessibility
+    Then I check the page for accessibility
 
     When I add offence "TP11003" dated 9 weeks ago with impositions:
       | Imposition | Result code | Amount imposed | Amount paid | Creditor type | Creditor search |
@@ -705,7 +705,7 @@ Feature: Manual account creation - Offence Details
     And I perform remove imposition accessibility check for imposition 1
 
     When I review the offence and see the review page
-    Then I check accessibility
+    Then I check the page for accessibility
 
     When I perform offence removal accessibility check for offence code "TP11003"
 

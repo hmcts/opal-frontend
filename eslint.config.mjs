@@ -143,7 +143,7 @@ export default [
       'cypress/e2e/functional/opal/**/actions/**/*.ts',
       'cypress/e2e/functional/opal/**/flows/**/*.ts',
       'cypress/support/utils/**/*.ts',
-      'cypress/support/step_definitions/newStyleSteps/**/*.ts',
+      'cypress/support/step_definitions/**/*.ts',
       'cypress/shared/selectors/**/*.ts',
     ],
     rules: {
@@ -171,10 +171,10 @@ export default [
   },
 
   // ------------------------------------------------------------
-  // newStyleSteps: allow semantic + technical tags
+  // allow semantic + technical tags
   // ------------------------------------------------------------
   {
-    files: ['cypress/support/step_definitions/newStyleSteps/**/*.ts'],
+    files: ['cypress/support/step_definitions/**/*.ts'],
     rules: {
       'jsdoc/check-tag-names': [
         'error',
