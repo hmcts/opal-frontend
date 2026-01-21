@@ -67,7 +67,7 @@ Feature: Manual account creation - Court Details
       | Prosecutor Case Reference (PCR) | 4321 |
 
   Scenario: Court Details - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility
 
   Scenario: (AC.6) Grey navigation links routes correctly [@PO-272, @PO-389]
     When I complete manual court details:

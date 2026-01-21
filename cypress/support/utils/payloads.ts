@@ -1,4 +1,7 @@
-// cypress/support/utils/payloads.ts
+/**
+ * @file payloads.ts
+ * @description Fixture payload helpers for draft account stubs.
+ */
 export type DraftPayloadType =
   | 'company'
   | 'adultOrYouthOnly'

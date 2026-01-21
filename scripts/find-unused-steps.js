@@ -1,7 +1,12 @@
+/**
+ * @file find-unused-steps.js
+ * @description Scan Cypress step definitions for steps that are not referenced by any feature files.
+ * Usage: `node scripts/find-unused-steps.js`
+ */
 const fs = require('fs');
 const path = require('path');
 
-const STEP_DIR = path.resolve('cypress/support/step_definitions/newStyleSteps');
+const STEP_DIR = path.resolve('cypress/support/step_definitions');
 const FEATURE_DIR = path.resolve('cypress/e2e');
 const EXCLUDE_PART = 'manualAccountCreation';
 const STEP_GLOB_EXT = '.ts';
@@ -32,7 +37,7 @@ const featuresContent = featureFiles.map((f) => ({ f, text: fs.readFileSync(f, '
 console.log(
   'Scanning',
   stepFiles.length,
-  'newStyleSteps files and',
+  'Steps files and',
   featureFiles.length,
   'feature files (excluded manualAccountCreation).\n',
 );
@@ -75,4 +80,4 @@ for (const sf of stepFiles) {
   }
 }
 
-console.log(`\nTotal unused steps in newStyleSteps: ${totalUnused}`);
+console.log(`\nTotal unused steps in Steps: ${totalUnused}`);

@@ -1,3 +1,7 @@
+/**
+ * @file macFieldResolvers.ts
+ * @description Label-to-field key resolvers for manual account creation screens.
+ */
 import { ManualCourtFieldKey } from '../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import { ManualEmployerFieldKey } from '../../e2e/functional/opal/actions/manual-account-creation/employer-details.actions';
 import { ManualContactFieldKey } from '../../e2e/functional/opal/actions/manual-account-creation/contact-details.actions';

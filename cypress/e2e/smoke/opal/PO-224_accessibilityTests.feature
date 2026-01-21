@@ -1,6 +1,5 @@
 Feature: PO-224 Accessibility Tests
   Scenario: Dashboard - Accessibility
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    Then I am on the dashboard
-    Then I check accessibility
+    Given I am logged in with email "opal-test@HMCTS.NET"
+    Then I check the page for accessibility
 

@@ -1,5 +1,4 @@
 // cypress/support/draftAccounts.ts
-import { After } from '@badeball/cypress-cucumber-preprocessor';
 
 /** Store created draft account IDs for cleanup. */
 const createdIds: number[] = [];
