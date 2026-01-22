@@ -9,6 +9,7 @@ String opalName = 'opal'
 String type = 'angular'
 String product = opalName
 String component = 'frontend'
+String masterProjectName = 'HMCTS/opal-frontend/master'
 
 // Secret key for KeyVault lookups
 String secretKey = 'opal-$'.concat('{env}')
@@ -24,6 +25,7 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String smokeWeights = 'smoke-parallel-weights.json'
 @Field String functionalWeights = 'functional-parallel-weights.json'
 @Field String componentWeights = 'component-parallel-weights.json'
+@Field String weightsPipelineArtifactsFilter = '**/cypress/parallel/weights/pipeline/*'
 @Field String mkdirPipelineCmd = "mkdir -p ${pipelineWeightsDir}"
 @Field String copySmokeToPipelineCmd = "cp -r ${weightsRoot}/${smokeWeights} ${pipelineWeightsDir}/"
 @Field String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
@@ -102,7 +104,7 @@ String getProjectName() {
             return projectPrefix + 'PR-' + matcher.group(1)
         }
     }
-    return projectPrefix + 'master'
+    return masterProjectName
 }
 // Collect test/skip labels for routing
 List<String> getProjectLabels() {
@@ -128,13 +130,13 @@ void performArtifactOperations() {
 
     script {
         String projectNameValue = projectName
-        String fallbackProjectName = 'HMCTS/opal-frontend/master'
+        String fallbackProjectName = masterProjectName
         boolean copied = false
         try {
             copyArtifacts(
                 projectName: projectNameValue,
                 selector: lastSuccessful(),
-                filter: '**/cypress/parallel/weights/pipeline/*'
+                filter: weightsPipelineArtifactsFilter
       )
             copied = true
         } catch (hudson.AbortException e) {
@@ -145,7 +147,7 @@ void performArtifactOperations() {
                 copyArtifacts(
                     projectName: fallbackProjectName,
                     selector: lastSuccessful(),
-                    filter: '**/cypress/parallel/weights/pipeline/*'
+                    filter: weightsPipelineArtifactsFilter
           )
                 copied = true
             } catch (hudson.AbortException e) {
