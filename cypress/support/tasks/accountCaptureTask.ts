@@ -826,7 +826,7 @@ export async function ensureAccountCaptureFile(): Promise<void> {
 
 /**
  * @description Return the full path to the created accounts artifact.
- * @returns Absolute artifact path.
+ * @returns Absolute artifact path
  * @example const path = getAccountArtifactPath();
  */
 export function getAccountArtifactPath(): string {
