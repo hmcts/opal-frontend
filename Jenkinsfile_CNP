@@ -85,9 +85,14 @@ String getProjectName() {
     GithubAPI githubApi = new GithubAPI(this)
     echo "Branch name: ${env.BRANCH_NAME}"
     echo "Labels: ${githubApi.getLabels(env.BRANCH_NAME)}"
-    for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-')) {
-        String prNumber = label.substring(21, label.length())
-        return projectPrefix + 'PR-' + prNumber
+    List<String> candidateLabels = []
+    candidateLabels.addAll(githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-'))
+    candidateLabels.addAll(githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'rel:opal-frontend-pr-'))
+    for (label in candidateLabels) {
+        def matcher = (label =~ /opal-frontend-pr-(\d+)/)
+        if (matcher.find()) {
+            return projectPrefix + 'PR-' + matcher.group(1)
+        }
     }
     return projectPrefix + 'master'
 }
