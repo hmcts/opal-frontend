@@ -54,16 +54,14 @@ export function captureScenarioScreenshot(
     .screenshot(relativeName, screenshotOptions)
     .then(() =>
       cy
-        .task(
-          'screenshot:saveEvidence',
-          capturedPath ? { from: capturedPath } : { filename: targetFileName },
-          { log: false },
-        )
+        .task('screenshot:saveEvidence', capturedPath ? { from: capturedPath } : { filename: targetFileName }, {
+          log: false,
+        })
         .then((savedPath) => {
-        if (!savedPath) return undefined;
-        return cy.readFile(savedPath as string, 'base64').then((base64) => {
-          attach(base64, { mediaType: 'base64:image/png', fileName: targetFileName });
-        });
+          if (!savedPath) return undefined;
+          return cy.readFile(savedPath as string, 'base64').then((base64) => {
+            attach(base64, { mediaType: 'base64:image/png', fileName: targetFileName });
+          });
         }),
     )
     .then(() => undefined) as Cypress.Chainable<void>;
