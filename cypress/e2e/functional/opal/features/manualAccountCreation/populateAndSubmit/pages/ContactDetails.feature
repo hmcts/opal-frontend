@@ -96,4 +96,4 @@ Feature: Manual account creation - Contact Details
     And I see a manual contact inline error "Enter primary email address in the correct format, like name@example.com" for "Primary email address"
 
   Scenario: Contact Details - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility

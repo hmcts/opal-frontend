@@ -1,6 +1,15 @@
+/**
+ * @file cucumberHelpers.ts
+ * @description Helpers for normalizing Cucumber DataTable values in step definitions.
+ */
 import { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { applyUniqPlaceholder } from './stringUtils';
 
+/**
+ * Normalize a DataTable cell value to a trimmed string with uniq placeholders applied.
+ * @param cell - Cell value to normalize.
+ * @returns Normalized string value.
+ */
 const normalizeCell = (cell: unknown): string => applyUniqPlaceholder((cell ?? '').toString().trim());
 
 /**
