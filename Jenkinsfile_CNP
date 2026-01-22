@@ -128,14 +128,32 @@ void performArtifactOperations() {
 
     script {
         String projectNameValue = projectName
+        String fallbackProjectName = 'HMCTS/opal-frontend/master'
+        boolean copied = false
         try {
             copyArtifacts(
                 projectName: projectNameValue,
                 selector: lastSuccessful(),
                 filter: '**/cypress/parallel/weights/pipeline/*'
       )
+            copied = true
         } catch (hudson.AbortException e) {
-            echo "Error copying artifacts: ${e}"
+            echo "Error copying artifacts from ${projectNameValue}: ${e}"
+        }
+        if (!copied && projectNameValue != fallbackProjectName) {
+            try {
+                copyArtifacts(
+                    projectName: fallbackProjectName,
+                    selector: lastSuccessful(),
+                    filter: '**/cypress/parallel/weights/pipeline/*'
+          )
+                copied = true
+            } catch (hudson.AbortException e) {
+                echo "Error copying artifacts from ${fallbackProjectName}: ${e}"
+            }
+        }
+        if (!copied) {
+            echo 'No prior weight artifacts found; continuing without cached weights.'
         }
 
         sh """
