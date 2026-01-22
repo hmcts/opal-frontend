@@ -9,7 +9,7 @@ String opalName = 'opal'
 String type = 'angular'
 String product = opalName
 String component = 'frontend'
-String masterProjectName = 'HMCTS/opal-frontend/master'
+@Field String masterProjectName = 'HMCTS/opal-frontend/master'
 
 // Secret key for KeyVault lookups
 String secretKey = 'opal-$'.concat('{env}')
