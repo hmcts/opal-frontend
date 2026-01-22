@@ -218,6 +218,7 @@ export async function clearAccountEvidence(): Promise<void> {
  * @returns File handle when the lock is acquired, or null when another worker owns it.
  */
 async function acquireResetLock(): Promise<fs.FileHandle | null> {
+  await fs.mkdir(path.dirname(resetLockPath), { recursive: true });
   try {
     return await fs.open(resetLockPath, 'wx');
   } catch (err: any) {
