@@ -29,12 +29,20 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
 String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
-String browserToRun = (env.BROWSER_TO_RUN ?: 'chrome').trim().toLowerCase()
+String defaultBrowser = 'chrome'
+String browserToRun = (env.BROWSER_TO_RUN ?: defaultBrowser).trim().toLowerCase()
 String functionalOutputDir =
-  browserToRun == 'chrome' ? 'functional-output/prod/cucumber/' : "functional-output/prod/${browserToRun}/cucumber/"
-String functionalReportFile = browserToRun == 'chrome' ? 'functional-report.html' : "${browserToRun}-report.html"
+  browserToRun == defaultBrowser
+    ? 'functional-output/prod/cucumber/'
+    : "functional-output/prod/${browserToRun}/cucumber/"
+String functionalReportFile =
+  browserToRun == defaultBrowser
+    ? 'functional-report.html'
+    : "${browserToRun}-report.html"
 String functionalReportName =
-  browserToRun == 'chrome' ? 'Cucumber Functional Test Report' : "Cucumber Functional Test Report (${browserToRun})"
+  browserToRun == defaultBrowser
+    ? 'Cucumber Functional Test Report'
+    : "Cucumber Functional Test Report (${browserToRun})"
 String smokeOutputDir = 'smoke-output/prod/cucumber/'
 String smokeReportFile = 'smoke-report.html'
 String smokeReportName = 'Cucumber Smoke Test Report'
@@ -89,7 +97,7 @@ String getProjectName() {
     candidateLabels.addAll(githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-'))
     candidateLabels.addAll(githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'rel:opal-frontend-pr-'))
     for (label in candidateLabels) {
-        def matcher = (label =~ /opal-frontend-pr-(\d+)/)
+        java.util.regex.Matcher matcher = (label =~ /opal-frontend-pr-(\d+)/)
         if (matcher.find()) {
             return projectPrefix + 'PR-' + matcher.group(1)
         }
