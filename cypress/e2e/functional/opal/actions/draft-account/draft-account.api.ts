@@ -317,7 +317,6 @@ export function createDraftAndSetStatus(
             if (![200, 204].includes(patchResp.status)) {
               logPatchFailure('createDraftAndSetStatus', pathForAccount(createdId), patchResp, patchBody, beforeEtag);
             }
-            return patchResp;
           })
           .then((patchResp) => {
             expect([200, 204], 'PATCH success').to.include(patchResp.status);
@@ -450,7 +449,6 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
             beforeEtag,
           );
         }
-        return patchResp;
       })
       .then((patchResp) => {
         expect([200, 204], 'PATCH success').to.include(patchResp.status);
