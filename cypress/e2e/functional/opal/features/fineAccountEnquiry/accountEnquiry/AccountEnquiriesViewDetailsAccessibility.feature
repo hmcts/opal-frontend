@@ -22,7 +22,7 @@ Feature: Account Enquiries - View Account Details Accessibility
     Then I check the page for accessibility
     And I select the latest published account and verify the header is "Mr John ACCDETAILSURNAME{uniqUpper}"
     ## Check Accessibility on Account Details Page
-    Then I check accessibility
+    Then I check the page for accessibility
 
   Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
