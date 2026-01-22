@@ -318,7 +318,7 @@ Feature: Navigate and edit sections from task list
     When I go back to Create and Manage Draft Accounts
     Then I should see the header containing text "Create accounts"
 
-  @PO-607
+  @PO-607 @UAT-Technical
   Scenario: Approved tab lists recent accounts
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |
