@@ -126,9 +126,7 @@ const getDraftForPatch = (
         status: getResp.status,
         remaining: remaining - 1,
       });
-      return cy
-        .wait(delayMs, { log: false })
-        .then(() => attempt(remaining - 1)) as unknown as DraftForPatchResult;
+      return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1)) as unknown as DraftForPatchResult;
     });
 
   return attempt(attempts);
@@ -317,13 +315,7 @@ export function createDraftAndSetStatus(
           })
           .then((patchResp) => {
             if (![200, 204].includes(patchResp.status)) {
-              logPatchFailure(
-                'createDraftAndSetStatus',
-                pathForAccount(createdId),
-                patchResp,
-                patchBody,
-                beforeEtag,
-              );
+              logPatchFailure('createDraftAndSetStatus', pathForAccount(createdId), patchResp, patchBody, beforeEtag);
             }
             return patchResp;
           })
