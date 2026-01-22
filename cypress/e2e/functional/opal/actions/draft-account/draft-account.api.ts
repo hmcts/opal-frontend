@@ -88,7 +88,7 @@ const logPatchFailure = (
   patchResp: Cypress.Response<unknown>,
   patchBody: Record<string, unknown>,
   ifMatch: string,
-): Cypress.Chainable<void> => {
+): void => {
   const safeDetails = extractSafeErrorDetails(patchResp.body);
   const logDetails = {
     context,
@@ -101,33 +101,35 @@ const logPatchFailure = (
   };
 
   log('assert', 'PATCH /draft-accounts/{id} failed', logDetails);
-  return cy.task('log:message', { message: 'PATCH /draft-accounts failed', details: logDetails }, { log: false });
+  cy.task('log:message', { message: 'PATCH /draft-accounts failed', details: logDetails }, { log: false });
 };
+
+type DraftForPatchResult = { response: Cypress.Response<unknown>; etag: string };
 
 const getDraftForPatch = (
   accountId: number,
   attempts: number = DRAFT_ETAG_RETRY_ATTEMPTS,
   delayMs: number = DRAFT_ETAG_RETRY_DELAY_MS,
-): Cypress.Chainable<{ response: Cypress.Response<unknown>; etag: string }> => {
-  const attempt = (remaining: number): Cypress.Chainable<{ response: Cypress.Response<unknown>; etag: string }> =>
-    cy
-      .request({ method: 'GET', url: pathForAccount(accountId), failOnStatusCode: false })
-      .then((getResp) => {
-        const etag = getResp.status === 200 ? safeReadStrongEtag(getResp.headers as Record<string, unknown>) : '';
-        if (getResp.status === 200 && etag) {
-          return { response: getResp, etag };
-        }
-        if (remaining <= 1) {
-          expect(getResp.status, 'GET account').to.eq(200);
-          return { response: getResp, etag: readStrongEtag(getResp.headers as Record<string, unknown>) };
-        }
-        log('warn', 'GET /draft-accounts retrying before PATCH', {
-          accountId,
-          status: getResp.status,
-          remaining: remaining - 1,
-        });
-        return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1));
+): Cypress.Chainable<DraftForPatchResult> => {
+  const attempt = (remaining: number): Cypress.Chainable<DraftForPatchResult> =>
+    cy.request({ method: 'GET', url: pathForAccount(accountId), failOnStatusCode: false }).then((getResp) => {
+      const etag = getResp.status === 200 ? safeReadStrongEtag(getResp.headers as Record<string, unknown>) : '';
+      if (getResp.status === 200 && etag) {
+        return { response: getResp, etag };
+      }
+      if (remaining <= 1) {
+        expect(getResp.status, 'GET account').to.eq(200);
+        return { response: getResp, etag: readStrongEtag(getResp.headers as Record<string, unknown>) };
+      }
+      log('warn', 'GET /draft-accounts retrying before PATCH', {
+        accountId,
+        status: getResp.status,
+        remaining: remaining - 1,
       });
+      return cy
+        .wait(delayMs, { log: false })
+        .then(() => attempt(remaining - 1)) as unknown as DraftForPatchResult;
+    });
 
   return attempt(attempts);
 };
@@ -315,13 +317,13 @@ export function createDraftAndSetStatus(
           })
           .then((patchResp) => {
             if (![200, 204].includes(patchResp.status)) {
-              return logPatchFailure(
+              logPatchFailure(
                 'createDraftAndSetStatus',
                 pathForAccount(createdId),
                 patchResp,
                 patchBody,
                 beforeEtag,
-              ).then(() => patchResp);
+              );
             }
             return patchResp;
           })
@@ -448,13 +450,13 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
       .then((patchResp) => {
         const patchBodyKeys = { account_status: newStatus };
         if (![200, 204].includes(patchResp.status)) {
-          return logPatchFailure(
+          logPatchFailure(
             'updateLastCreatedDraftAccountStatus',
             pathForAccount(accountId),
             patchResp,
             patchBodyKeys,
             beforeEtag,
-          ).then(() => patchResp);
+          );
         }
         return patchResp;
       })

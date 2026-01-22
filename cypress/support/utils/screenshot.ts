@@ -57,9 +57,7 @@ export function captureScenarioScreenshot(
       cy
         .task(
           'screenshot:saveEvidence',
-          capturedPath
-            ? { from: capturedPath, evidencePath }
-            : { filename: targetFileName, evidencePath },
+          capturedPath ? { from: capturedPath, evidencePath } : { filename: targetFileName, evidencePath },
           { log: false },
         )
         .then((savedPath) => {
