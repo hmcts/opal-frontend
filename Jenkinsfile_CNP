@@ -25,6 +25,7 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String smokeWeights = 'smoke-parallel-weights.json'
 @Field String functionalWeights = 'functional-parallel-weights.json'
 @Field String componentWeights = 'component-parallel-weights.json'
+@Field String functionalArtifactsGlob = 'functional-output/**'
 @Field String weightsPipelineArtifactsFilter = '**/cypress/parallel/weights/pipeline/*'
 @Field String mkdirPipelineCmd = "mkdir -p ${pipelineWeightsDir}"
 @Field String copySmokeToPipelineCmd = "cp -r ${weightsRoot}/${smokeWeights} ${pipelineWeightsDir}/"
@@ -404,7 +405,7 @@ withPipeline(type, product, component) {
                     echo "Opal component tests failed: ${e}"
                     currentBuild.result = 'FAILURE'
         } finally {
-                    archiveArtifact('functional-output/**')
+                    archiveArtifact(functionalArtifactsGlob)
                     publishHtmlReport('functional-output/component-report/', 'index.html', 'Component Test Report')
                 }
             }
@@ -450,6 +451,7 @@ withPipeline(type, product, component) {
         functionalReportFile,
         functionalReportName
       )
+        archiveArtifact(functionalArtifactsGlob)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
         publishHtmlReport(
@@ -465,6 +467,7 @@ withPipeline(type, product, component) {
         functionalReportFile,
         functionalReportName
       )
+        archiveArtifact(functionalArtifactsGlob)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
 
