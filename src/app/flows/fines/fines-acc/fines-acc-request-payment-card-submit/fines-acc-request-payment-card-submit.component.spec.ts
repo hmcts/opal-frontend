@@ -73,7 +73,7 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
   });
 
   it('should submit a payment card request and navigate on success', () => {
-    mockOpalFines.addDefendantAccountPaymentCardRequest.and.returnValue(of({}));
+    mockOpalFines.addDefendantAccountPaymentCardRequest.and.returnValue(of({ defendant_account_id: accountId }));
 
     component.requestPaymentCard();
 

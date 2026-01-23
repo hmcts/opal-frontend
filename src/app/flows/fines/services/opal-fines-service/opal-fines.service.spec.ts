@@ -1252,7 +1252,7 @@ describe('OpalFines', () => {
     service
       .addDefendantAccountPaymentCardRequest(defendantAccountId, version, businessUnitId, businessUnitUserId)
       .subscribe((response) => {
-        expect(response).toEqual({});
+        expect(response).toEqual({ defendant_account_id: defendantAccountId });
       });
 
     const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-card-request`);
@@ -1262,7 +1262,7 @@ describe('OpalFines', () => {
     expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
     expect(req.request.headers.get('Business-Unit-User-Id')).toBe(businessUnitUserId);
 
-    req.flush({});
+    req.flush({ defendant_account_id: defendantAccountId });
   });
 
   it('should add a defendant account payment card request without optional headers', () => {
@@ -1274,7 +1274,7 @@ describe('OpalFines', () => {
     service
       .addDefendantAccountPaymentCardRequest(defendantAccountId, version, businessUnitId, businessUnitUserId)
       .subscribe((response) => {
-        expect(response).toEqual({});
+        expect(response).toEqual({ defendant_account_id: defendantAccountId });
       });
 
     const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-card-request`);
@@ -1284,7 +1284,7 @@ describe('OpalFines', () => {
     expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
     expect(req.request.headers.has('Business-Unit-User-Id')).toBe(false);
 
-    req.flush({});
+    req.flush({ defendant_account_id: defendantAccountId });
   });
 
   // Isolated matcher test suite to avoid TestBed reconfiguration errors

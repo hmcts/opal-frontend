@@ -47,6 +47,7 @@ import { OPAL_FINES_CACHE_DEFAULTS } from './constants/opal-fines-cache-defaults
 import { IOpalFinesCache } from './interfaces/opal-fines-cache.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
+import { IOpalFinesAccountRequestPaymentCardResponse } from './interfaces/opal-fines-account-request-payment-card-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -905,7 +906,7 @@ export class OpalFines {
     version: string,
     businessUnitId: string,
     businessUnitUserId: string,
-  ): Observable<unknown> {
+  ): Observable<IOpalFinesAccountRequestPaymentCardResponse> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-card-request`;
     const headers: Record<string, string> = {};
     if (version) {
@@ -917,6 +918,6 @@ export class OpalFines {
     if (businessUnitUserId !== undefined) {
       headers['Business-Unit-User-Id'] = businessUnitUserId;
     }
-    return this.http.post<unknown>(url, {}, { headers });
+    return this.http.post<IOpalFinesAccountRequestPaymentCardResponse>(url, {}, { headers });
   }
 }
