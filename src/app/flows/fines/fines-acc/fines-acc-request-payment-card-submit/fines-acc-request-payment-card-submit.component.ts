@@ -21,20 +21,27 @@ export class FinesAccRequestPaymentCardSubmitComponent {
   /**
    * Handles the submission of the payment card request.
    */
-  public requestPaymentCard(): void {
+  private requestPaymentCard(): void {
+    const base_version = this.accountStore.base_version();
+    const account_id = this.accountStore.account_id();
+    const business_unit_id = this.accountStore.business_unit_id();
+    const business_unit_user_id = this.accountStore.business_unit_user_id();
+    this.opalFinesService
+      .addDefendantAccountPaymentCardRequest(account_id!, base_version!, business_unit_id!, business_unit_user_id!)
+      .subscribe({
+        next: () => {
+          this.accountStore.setSuccessMessage('Payment card request submitted successfully');
+          this.navigateBackToAccountSummary();
+        },
+      });
+  }
+
+  /**
+   * Handles the request payment card action and triggers the request payment card function.
+   */
+  public handleRequestPaymentCard(): void {
     if (this.isStoreDataPresent()) {
-      const base_version = this.accountStore.base_version();
-      const account_id = this.accountStore.account_id();
-      const business_unit_id = this.accountStore.business_unit_id();
-      const business_unit_user_id = this.accountStore.business_unit_user_id();
-      this.opalFinesService
-        .addDefendantAccountPaymentCardRequest(account_id!, base_version!, business_unit_id!, business_unit_user_id!)
-        .subscribe({
-          next: () => {
-            this.accountStore.setSuccessMessage('Payment card request submitted successfully');
-            this.navigateBackToAccountSummary();
-          },
-        });
+      this.requestPaymentCard();
     }
   }
 

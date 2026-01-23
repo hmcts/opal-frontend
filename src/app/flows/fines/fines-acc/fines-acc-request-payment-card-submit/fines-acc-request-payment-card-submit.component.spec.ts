@@ -75,7 +75,7 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
   it('should submit a payment card request and navigate on success', () => {
     mockOpalFines.addDefendantAccountPaymentCardRequest.and.returnValue(of({ defendant_account_id: accountId }));
 
-    component.requestPaymentCard();
+    component.handleRequestPaymentCard();
 
     expect(mockOpalFines.addDefendantAccountPaymentCardRequest).toHaveBeenCalled();
     expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith('Payment card request submitted successfully');
