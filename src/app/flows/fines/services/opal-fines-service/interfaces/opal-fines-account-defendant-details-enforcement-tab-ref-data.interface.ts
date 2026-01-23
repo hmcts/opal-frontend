@@ -1,3 +1,7 @@
+interface IOpalFinesAccountDefendantDetailsEnforcementTabRefDataEnforcementOverviewCollectionOrder {
+  collection_order_date: string;
+  collection_order_flag: boolean;
+}
 export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
   version: string | null;
   account_status_reference: {
@@ -21,10 +25,7 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
     };
   };
   enforcement_overview: {
-    collection_order: {
-      collection_order_date: string;
-      collection_order_flag: boolean;
-    };
+    collection_order: IOpalFinesAccountDefendantDetailsEnforcementTabRefDataEnforcementOverviewCollectionOrder | null;
     days_in_default: number;
     enforcement_court: {
       court_id: number;
