@@ -28,6 +28,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     mockDateService = jasmine.createSpyObj(DateService, [
       'isValidDate',
       'calculateAge',
@@ -122,6 +123,23 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(
       component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required),
     ).toBeFalse();
+    expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.disabled).toBeTrue();
+    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.disabled).toBeTrue();
+  });
+
+  it('should toggle the vehicle conditional panel and controls', async () => {
+    await fixture.whenStable();
+    const conditional = fixture.nativeElement.querySelector(`#${component.vehicleOffenceConditionalId}`);
+    expect(conditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+
+    const vehicleInput = fixture.nativeElement.querySelector(
+      `input[aria-controls="${component.vehicleOffenceConditionalId}"]`,
+    );
+    vehicleInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.enabled).toBeTrue();
+    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.enabled).toBeTrue();
   });
 
   it('should listen to changes in the dob and update the dateObject', () => {

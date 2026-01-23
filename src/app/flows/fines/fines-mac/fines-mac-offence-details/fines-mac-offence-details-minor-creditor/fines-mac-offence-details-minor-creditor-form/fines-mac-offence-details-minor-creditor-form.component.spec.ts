@@ -13,6 +13,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
       providers: [
@@ -45,6 +46,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set individual validators for title, forenames and surname controls', () => {
+    component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('individual');
+    fixture.detectChanges();
+
     const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
@@ -83,6 +87,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set validators for company name control', () => {
+    component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('company');
+    fixture.detectChanges();
+
     const companyNameControl = component.form.controls['fm_offence_details_minor_creditor_company_name'];
 
     // Call the method to set validators
@@ -154,6 +161,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and clear validators for name-related controls', () => {
+    component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('individual');
+    fixture.detectChanges();
+
     const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
@@ -178,6 +188,29 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     companyNameControl.setValue(''); // Empty string to trigger required validation
     expect(companyNameControl.errors).toBeNull(); // Should not have required error after clearValidators
+  });
+
+  it('should toggle conditional panels and enable the correct controls', async () => {
+    await fixture.whenStable();
+    const individualConditional = fixture.nativeElement.querySelector(`#${component.individualConditionalId}`);
+    const companyConditional = fixture.nativeElement.querySelector(`#${component.companyConditionalId}`);
+
+    expect(individualConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+    expect(companyConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+
+    const individualInput = fixture.nativeElement.querySelector('input[value="individual"]');
+    individualInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_offence_details_minor_creditor_title')?.enabled).toBeTrue();
+    expect(component.form.get('fm_offence_details_minor_creditor_company_name')?.disabled).toBeTrue();
+
+    const companyInput = fixture.nativeElement.querySelector('input[value="company"]');
+    companyInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_offence_details_minor_creditor_company_name')?.enabled).toBeTrue();
+    expect(component.form.get('fm_offence_details_minor_creditor_title')?.disabled).toBeTrue();
   });
 
   it('should reset and clear validators for payment detail controls', () => {
@@ -313,6 +346,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     fixture.detectChanges();
 
     // Simulate value change in creditorType to 'individual'
+    creditorTypeControl.markAsDirty();
     creditorTypeControl.setValue('individual');
 
     // Check that resetNameValidators was called
@@ -352,6 +386,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     fixture.detectChanges();
 
     // Simulate value change in creditorType to 'company'
+    creditorTypeControl.markAsDirty();
     creditorTypeControl.setValue('company');
 
     // Check that resetNameValidators was called
