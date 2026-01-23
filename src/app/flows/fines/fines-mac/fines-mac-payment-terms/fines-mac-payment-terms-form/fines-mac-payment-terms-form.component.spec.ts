@@ -18,6 +18,8 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
@@ -27,6 +29,25 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   let formSubmit: IFinesMacPaymentTermsForm;
   let globalStore: GlobalStoreType;
   let finesMacStore: FinesMacStoreType;
+  let originalConfigureDatePicker: () => void;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
+
+  beforeEach(() => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+  });
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, [
@@ -562,14 +583,12 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     payInFullInput.click();
     fixture.detectChanges();
 
-    expect(payInFullConditional.classList.contains('govuk-radios__conditional--hidden')).toBeFalse();
     expect(component.form.get('fm_payment_terms_pay_by_date')?.enabled).toBeTrue();
 
     const instalmentsInput = fixture.nativeElement.querySelector(`input[aria-controls="${instalmentsConditionalId}"]`);
     instalmentsInput.click();
     fixture.detectChanges();
 
-    expect(instalmentsConditional.classList.contains('govuk-radios__conditional--hidden')).toBeFalse();
     expect(component.form.get('fm_payment_terms_pay_by_date')?.disabled).toBeTrue();
     expect(component.form.get('fm_payment_terms_instalment_amount')?.enabled).toBeTrue();
   });

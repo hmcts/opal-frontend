@@ -6,11 +6,23 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-ma
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorFormComponent>;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
     document.body.classList.add('govuk-frontend-supported', 'js-enabled');
@@ -188,6 +200,16 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     companyNameControl.setValue(''); // Empty string to trigger required validation
     expect(companyNameControl.errors).toBeNull(); // Should not have required error after clearValidators
+  });
+
+  it('should skip missing controls when toggling enabled state', () => {
+    const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
+    titleControl.disable({ emitEvent: false });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).setControlsEnabled(['missing_control', 'fm_offence_details_minor_creditor_title'], true);
+
+    expect(titleControl.enabled).toBeTrue();
   });
 
   it('should toggle conditional panels and enable the correct controls', async () => {

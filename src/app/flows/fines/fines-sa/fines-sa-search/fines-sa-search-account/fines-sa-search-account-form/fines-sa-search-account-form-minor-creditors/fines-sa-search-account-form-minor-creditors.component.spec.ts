@@ -3,10 +3,12 @@ import { FinesSaSearchAccountFormMinorCreditorsComponent } from './fines-sa-sear
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   let component: FinesSaSearchAccountFormMinorCreditorsComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormMinorCreditorsComponent>;
+  let originalInitOuterRadios: () => void;
 
   const buildForm = () =>
     new FormGroup({
@@ -53,6 +55,16 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       companyNameExact,
     };
   };
+
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
     document.body.classList.add('govuk-frontend-supported', 'js-enabled');
@@ -387,6 +399,31 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       // Call the private method directly to exercise the guard branch
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (cmp as any).handleCompanyConditionalValidation();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('early-returns in setupCompanyConditionalValidation when company controls are missing', () => {
+      const badForm = new FormGroup({
+        fsa_search_account_minor_creditors_minor_creditor_type: new FormControl<string | null>(null),
+        fsa_search_account_minor_creditors_individual: new FormGroup({
+          fsa_search_account_minor_creditors_first_names: new FormControl<string | null>(null),
+          fsa_search_account_minor_creditors_first_names_exact_match: new FormControl<boolean>(false),
+          fsa_search_account_minor_creditors_last_name: new FormControl<string | null>(null),
+          fsa_search_account_minor_creditors_last_name_exact_match: new FormControl<boolean>(false),
+        }),
+        fsa_search_account_minor_creditors_company: new FormGroup({
+          // company_name missing on purpose
+          fsa_search_account_minor_creditors_company_name_exact_match: new FormControl<boolean>(false),
+        }),
+      });
+
+      const { cmp } = createComponentWithFormNoInit(badForm);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const spy = spyOn<any>(cmp as any, 'subscribeValidation').and.callThrough();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).setupCompanyConditionalValidation();
 
       expect(spy).not.toHaveBeenCalled();
     });

@@ -10,12 +10,24 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
   let formSubmit: IFinesMacAccountDetailsForm;
   let finesMacStore: FinesMacStoreType;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
     // Prevent GOV.UK Frontend SupportError logs during Karma runs.
@@ -126,6 +138,16 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     expect(fineControl?.disabled).toBeTrue();
     expect(fixedControl?.disabled).toBeTrue();
+  });
+
+  it('should ignore missing defendant type controls', () => {
+    const fineControl = component.form.get('fm_create_account_fine_defendant_type');
+    fineControl?.disable({ emitEvent: false });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).updateDefendantTypeControl('missing_control', true);
+
+    expect(fineControl?.disabled).toBeTrue();
   });
 
   it('should set defendant type based on account type - fixed penalty', () => {
