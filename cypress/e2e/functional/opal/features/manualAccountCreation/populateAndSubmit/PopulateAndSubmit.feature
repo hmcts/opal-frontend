@@ -1,3 +1,4 @@
+@UAT-Technical
 Feature: Manual account creation - Create Draft Account
 
   Background:
@@ -159,7 +160,7 @@ Feature: Manual account creation - Create Draft Account
       | Payment terms  | Start date                | 2 weeks in the future               |            |
       | Payment terms  | Enforcement action option | Hold enforcement on account (NOENF) |            |
       | Payment terms  | Enforcement reason        | Reason                              |            |
-      | Company        | Company name              | COMPANY NAME                        |            |
+      | Company        | Company name              | COMPANY NAME {uniqUpper}            |            |
       | Company        | Address line 1            | Addr1                               |            |
       | Company        | Postcode                  | TE1 1ST                             |            |
       | Company        | Alias 1                   | CNAME1                              |            |
@@ -176,7 +177,7 @@ Feature: Manual account creation - Create Draft Account
     Then I see the manual review "Court details" summary:
       | Prosecutor Case Reference (PCR) | ABCD1234A |
     And I see the manual review "Company details" summary:
-      | Company name | COMPANY NAME                       |
+      | Company name | COMPANY NAME {uniqUpper}           |
       | Address      | Addr1 TE1 1ST                      |
       | Aliases      | CNAME1 CNAME2 CNAME3 CNAME4 CNAME5 |
     And the manual review offence table contains:
@@ -192,7 +193,7 @@ Feature: Manual account creation - Create Draft Account
       | Payment reference | REF            |
 
     When I submit the manual account for review
-    Then I see "You've submitted this account for review" text on the page
+    Then I see the following text on the page "You've submitted this account for review"
 
   @PO-1449 @PO-1638
   Scenario: Capitalisation is applied for parent or guardian, defendant and employer details
@@ -414,4 +415,4 @@ Feature: Manual account creation - Create Draft Account
       | Payment reference | REFAB       |
 
     When I submit the manual account for review
-    Then I see "You've submitted this account for review" text on the page
+    Then I see the following text on the page "You've submitted this account for review"

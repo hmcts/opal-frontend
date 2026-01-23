@@ -1,4 +1,9 @@
 /**
+ * @file dateUtils.ts
+ * @description Date calculation, parsing, and formatting helpers for Cypress tests.
+ */
+
+/**
  * Calculate a date N weeks in the future formatted as dd/MM/yyyy.
  * @param weeks Number of weeks to add to today.
  * @returns Future date string in dd/MM/yyyy format.
