@@ -26,7 +26,7 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
   };
   enforcement_overview: {
     collection_order: IOpalFinesAccountDefendantDetailsEnforcementTabRefDataEnforcementOverviewCollectionOrder | null;
-    days_in_default: number;
+    days_in_default: number | null;
     enforcement_court: {
       court_id: number;
       court_code: number;
