@@ -344,6 +344,8 @@ if (tagLabel) {
 withPipeline(type, product, component) {
     // Inject KeyVault secrets required for login/setup
     loadVaultSecrets(secrets)
+    echo "OPAL_LEGACY_GATEWAY_USERNAME set? ${env.OPAL_LEGACY_GATEWAY_USERNAME?.trim() ? 'yes' : 'no'}"
+    echo "OPAL_LEGACY_GATEWAY_PASSWORD set? ${env.OPAL_LEGACY_GATEWAY_PASSWORD?.trim() ? 'yes' : 'no'}"
 
     // Configure PR-only deployment knobs before helm installs run
     before('akschartsinstall') {
