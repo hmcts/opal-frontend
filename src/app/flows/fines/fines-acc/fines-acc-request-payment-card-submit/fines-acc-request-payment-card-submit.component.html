@@ -6,11 +6,7 @@
   />
 
   <div class="govuk-button-group">
-    <button
-      class="govuk-button govuk-!-margin-right-4"
-      (click)="handleRequestPaymentCard()"
-      [disabled]="!isStoreDataPresent()"
-    >
+    <button class="govuk-button govuk-!-margin-right-4" (click)="handleRequestPaymentCard()">
       Yes - request a payment card
     </button>
     <opal-lib-govuk-cancel-link

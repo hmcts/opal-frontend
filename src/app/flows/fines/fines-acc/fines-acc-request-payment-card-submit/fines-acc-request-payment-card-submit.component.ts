@@ -40,9 +40,7 @@ export class FinesAccRequestPaymentCardSubmitComponent {
    * Handles the request payment card action and triggers the request payment card function.
    */
   public handleRequestPaymentCard(): void {
-    if (this.isStoreDataPresent()) {
-      this.requestPaymentCard();
-    }
+    this.requestPaymentCard();
   }
 
   /**
@@ -53,18 +51,5 @@ export class FinesAccRequestPaymentCardSubmitComponent {
       relativeTo: this.activatedRoute,
       fragment: 'payment-terms',
     });
-  }
-
-  /**
-   * Determines if the store data is present. Used to conditionally enable the request button.
-   * Ensuring that the endpoint is not called with missing header data.
-   */
-  public isStoreDataPresent(): boolean {
-    return !!(
-      this.accountStore.account_id() &&
-      this.accountStore.base_version() &&
-      this.accountStore.business_unit_id() &&
-      this.accountStore.business_unit_user_id()
-    );
   }
 }

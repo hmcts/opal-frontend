@@ -84,14 +84,4 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
       fragment: 'payment-terms',
     });
   });
-
-  it('should return true when required store data is present', () => {
-    expect(component.isStoreDataPresent()).toBeTrue();
-  });
-
-  it('should return false when required store data is missing', () => {
-    mockAccountStore.account_id.and.returnValue(null);
-
-    expect(component.isStoreDataPresent()).toBeFalse();
-  });
 });
