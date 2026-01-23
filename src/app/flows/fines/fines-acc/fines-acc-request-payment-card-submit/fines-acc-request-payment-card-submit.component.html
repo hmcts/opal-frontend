@@ -1,1 +1,21 @@
-Request payment card
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-heading-with-caption
+    captionText="{{ accountStore.account_number() }} - {{ accountStore.party_name() }}"
+    headingText="Do you want to request a payment card for the defendant?"
+    headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
+  />
+
+  <div class="govuk-button-group">
+    <button
+      class="govuk-button govuk-!-margin-right-4"
+      (click)="requestPaymentCard()"
+      [disabled]="!isStoreDataPresent()"
+    >
+      Yes - request a payment card
+    </button>
+    <opal-lib-govuk-cancel-link
+      cancelLinkText="No - cancel"
+      (linkClickEvent)="navigateBackToAccountSummary()"
+    ></opal-lib-govuk-cancel-link>
+  </div>
+</div>
