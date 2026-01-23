@@ -88,7 +88,7 @@ const logPatchFailure = (
   patchResp: Cypress.Response<unknown>,
   patchBody: Record<string, unknown>,
   ifMatch: string,
-): void => {
+): Cypress.Chainable<Cypress.Response<unknown>> => {
   const safeDetails = extractSafeErrorDetails(patchResp.body);
   const logDetails = {
     context,
@@ -101,7 +101,9 @@ const logPatchFailure = (
   };
 
   log('assert', 'PATCH /draft-accounts/{id} failed', logDetails);
-  cy.task('log:message', { message: 'PATCH /draft-accounts failed', details: logDetails }, { log: false });
+  return cy
+    .task('log:message', { message: 'PATCH /draft-accounts failed', details: logDetails }, { log: false })
+    .then(() => patchResp);
 };
 
 type DraftForPatchResult = { response: Cypress.Response<unknown>; etag: string };
@@ -315,8 +317,15 @@ export function createDraftAndSetStatus(
           })
           .then((patchResp) => {
             if (![200, 204].includes(patchResp.status)) {
-              logPatchFailure('createDraftAndSetStatus', pathForAccount(createdId), patchResp, patchBody, beforeEtag);
+              return logPatchFailure(
+                'createDraftAndSetStatus',
+                pathForAccount(createdId),
+                patchResp,
+                patchBody,
+                beforeEtag,
+              );
             }
+            return cy.wrap(patchResp, { log: false });
           })
           .then((patchResp) => {
             expect([200, 204], 'PATCH success').to.include(patchResp.status);
@@ -441,7 +450,7 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
       .then((patchResp) => {
         const patchBodyKeys = { account_status: newStatus };
         if (![200, 204].includes(patchResp.status)) {
-          logPatchFailure(
+          return logPatchFailure(
             'updateLastCreatedDraftAccountStatus',
             pathForAccount(accountId),
             patchResp,
@@ -449,6 +458,7 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
             beforeEtag,
           );
         }
+        return cy.wrap(patchResp, { log: false });
       })
       .then((patchResp) => {
         expect([200, 204], 'PATCH success').to.include(patchResp.status);
