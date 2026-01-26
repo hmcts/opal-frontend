@@ -2871,13 +2871,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cucumber/messages@npm:^31.0.0":
-  version: 31.2.0
-  resolution: "@cucumber/messages@npm:31.2.0"
+"@cucumber/messages@npm:^32.0.0":
+  version: 32.0.1
+  resolution: "@cucumber/messages@npm:32.0.1"
   dependencies:
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-  checksum: 10/1ce937429df0b58bfb346d5269e8f042256968f29efd957f9745ae3dd7dc4335f9ca4531a4393d933b21f2582a993c0b3d63db3023c51e00bb1c6ad6100a4117
+  checksum: 10/697fcf221797977693ebedc24e245408082e65ccc691780b02664893166a235bd39ad4c3499a55d13d531cacaa3bd882aad9b135ff982d8a7ba66bccfdb90814
   languageName: node
   linkType: hard
 
@@ -14703,11 +14703,11 @@ __metadata:
   linkType: hard
 
 "prettier@npm:^3.0.3":
-  version: 3.8.0
-  resolution: "prettier@npm:3.8.0"
+  version: 3.8.1
+  resolution: "prettier@npm:3.8.1"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/a643c62f095c2987a34cea4fceddce8dea12cc3ee024494aff690cfac22ef20be835e212b39b718c833014fd22890ae156be67b75a26e2bc9b7acde9a34d31fa
+  checksum: 10/3da1cf8c1ef9bea828aa618553696c312e951f810bee368f6887109b203f18ee869fe88f66e65f9cf60b7cb1f2eae859892c860a300c062ff8ec69c381fc8dbd
   languageName: node
   linkType: hard
 
