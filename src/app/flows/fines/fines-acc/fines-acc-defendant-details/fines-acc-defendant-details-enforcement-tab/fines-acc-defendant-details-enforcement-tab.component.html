@@ -26,7 +26,10 @@
                 {{ 'No collection order' }}
               }
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (
+              hasAccountMaintenancePermission &&
+              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
+            ) {
               <ng-container action>Change</ng-container>
             }
           </div>

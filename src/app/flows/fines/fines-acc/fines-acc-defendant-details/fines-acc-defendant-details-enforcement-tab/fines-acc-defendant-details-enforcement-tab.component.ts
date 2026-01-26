@@ -31,6 +31,7 @@ import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/go
 export class FinesAccDefendantDetailsEnforcementTab {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsEnforcementTabRefData;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
+  @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
 }
