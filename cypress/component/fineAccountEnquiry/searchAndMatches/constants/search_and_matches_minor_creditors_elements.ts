@@ -28,8 +28,10 @@ export const DOM_ELEMENTS = {
 
   // Minor creditors tab fields
 
-  minorCreditorIndividualRadioButton: '#individual',
-  minorCreditorCompanyRadioButton: '#company',
+  minorCreditorIndividualRadioButton:
+    'input[name="fsa_search_account_minor_creditors_minor_creditor_type"][value="individual"]',
+  minorCreditorCompanyRadioButton:
+    'input[name="fsa_search_account_minor_creditors_minor_creditor_type"][value="company"]',
 
   //Individual
   lastNameLabel: '[for="fsa_search_account_minor_creditors_last_name"]',

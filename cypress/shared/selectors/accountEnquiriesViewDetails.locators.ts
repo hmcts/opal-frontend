@@ -173,16 +173,24 @@ export const DOM_ELEMENTS = {
   ageGroup: '.moj-ticket-panel p',
 
   // Language preferences - Radio buttons (not input fields)
-  documentLanguageRadioEN: 'input[id="ENDocumentRadioOption"]',
-  documentLanguageRadioCY: 'input[id="CYDocumentRadioOption"]',
-  hearingLanguageRadioEN: 'input[id="ENCourtHearingRadioOption"]',
-  hearingLanguageRadioCY: 'input[id="CYCourtHearingRadioOption"]',
+  documentLanguageRadioEN:
+    'input[name="facc_party_add_amend_convert_language_preferences_document_language"][value="EN"]',
+  documentLanguageRadioCY:
+    'input[name="facc_party_add_amend_convert_language_preferences_document_language"][value="CY"]',
+  hearingLanguageRadioEN:
+    'input[name="facc_party_add_amend_convert_language_preferences_hearing_language"][value="EN"]',
+  hearingLanguageRadioCY:
+    'input[name="facc_party_add_amend_convert_language_preferences_hearing_language"][value="CY"]',
 
   // Language preference labels
-  documentLanguageRadioLabelEN: 'label[for="ENDocumentRadioOption"]',
-  documentLanguageRadioLabelCY: 'label[for="CYDocumentRadioOption"]',
-  hearingLanguageRadioLabelEN: 'label[for="ENCourtHearingRadioOption"]',
-  hearingLanguageRadioLabelCY: 'label[for="CYCourtHearingRadioOption"]',
+  documentLanguageRadioLabelEN:
+    'label[for="facc_party_add_amend_convert_language_preferences_document_language-ENDocumentRadioOption"]',
+  documentLanguageRadioLabelCY:
+    'label[for="facc_party_add_amend_convert_language_preferences_document_language-CYDocumentRadioOption"]',
+  hearingLanguageRadioLabelEN:
+    'label[for="facc_party_add_amend_convert_language_preferences_hearing_language-ENCourtHearingRadioOption"]',
+  hearingLanguageRadioLabelCY:
+    'label[for="facc_party_add_amend_convert_language_preferences_hearing_language-CYCourtHearingRadioOption"]',
 };
 
 // Helper functions for dynamic element selection

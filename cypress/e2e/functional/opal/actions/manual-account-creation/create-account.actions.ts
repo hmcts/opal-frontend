@@ -71,6 +71,12 @@ export class ManualCreateAccountActions {
 
     log('click', 'Selecting account type', { type });
     cy.get(selector, this.common.getTimeoutOptions()).first().should('exist').scrollIntoView().check({ force: true });
+
+    if (normalized === 'fine') {
+      cy.get(L.defendantTypePanel.fine, this.common.getTimeoutOptions()).should('be.visible');
+    } else if (normalized.startsWith('fixed penalty')) {
+      cy.get(L.defendantTypePanel.fixedPenalty, this.common.getTimeoutOptions()).should('be.visible');
+    }
   }
 
   /**
@@ -88,7 +94,36 @@ export class ManualCreateAccountActions {
     }
 
     log('click', 'Selecting defendant type', { defendantType });
-    cy.get(selector, this.common.getTimeoutOptions()).first().should('exist').scrollIntoView().check({ force: true });
+    cy.get('body', this.common.getTimeoutOptions()).then(($body) => {
+      const fixedPenaltyChecked = $body.find(L.accountType.fixedPenalty).filter(':checked').length > 0;
+      const fineChecked = $body.find(L.accountType.fine).filter(':checked').length > 0;
+
+      const panelSelector = fixedPenaltyChecked
+        ? L.defendantTypePanel.fixedPenalty
+        : fineChecked
+          ? L.defendantTypePanel.fine
+          : null;
+
+      if (panelSelector) {
+        cy.get(panelSelector, this.common.getTimeoutOptions())
+          .should('be.visible')
+          .within(() => {
+            cy.get(selector, this.common.getTimeoutOptions())
+              .first()
+              .should('exist')
+              .scrollIntoView()
+              .check({ force: true });
+          });
+        return;
+      }
+
+      cy.get(selector, this.common.getTimeoutOptions())
+        .filter(':visible')
+        .first()
+        .should('exist')
+        .scrollIntoView()
+        .check({ force: true });
+    });
   }
 
   /**
