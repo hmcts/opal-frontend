@@ -7,6 +7,7 @@ import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
+import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
@@ -15,6 +16,7 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
+    MojBadgeComponent,
     FinesNotProvidedComponent,
   ],
   templateUrl: './fines-acc-defendant-details-enforcement-tab.component.html',
@@ -23,6 +25,7 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
 export class FinesAccDefendantDetailsEnforcementTab {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsEnforcementTabRefData;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
+  @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
 }
