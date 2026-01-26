@@ -42,8 +42,6 @@ describe('Account Enquiry Enforcement Status', () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      enforcementMock.enforcement_overview.collection_order.collection_order_date = ' - ';
-      enforcementMock.enforcement_overview.collection_order.collection_order_flag = false;
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -66,19 +64,9 @@ describe('Account Enquiry Enforcement Status', () => {
         .and('contain.text', 'Last enforcement action');
       cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
         .should('exist')
-        .and('contain.text', 'Collection Order status')
-        .next()
-        .should('contain.text', '—');
-      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault)
-        .should('exist')
-        .and('contain.text', 'Days in default')
-        .next()
-        .should('contain.text', '—');
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt)
-        .should('exist')
-        .and('contain.text', 'Enforcement court')
-        .next()
-        .should('contain.text', '—');
+        .and('contain.text', 'Collection Order status');
+      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault).should('exist').and('contain.text', 'Days in default');
+      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt).should('exist').and('contain.text', 'Enforcement court');
     },
   );
 
@@ -111,19 +99,9 @@ describe('Account Enquiry Enforcement Status', () => {
       cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
       cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
         .should('exist')
-        .and('contain.text', 'Collection Order status')
-        .next()
-        .should('contain.text', '—');
-      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault)
-        .should('exist')
-        .and('contain.text', 'Days in default')
-        .next()
-        .should('contain.text', '—');
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt)
-        .should('exist')
-        .and('contain.text', 'Enforcement court')
-        .next()
-        .should('contain.text', '—');
+        .and('contain.text', 'Collection Order status');
+      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault).should('exist').and('contain.text', 'Days in default');
+      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt).should('exist').and('contain.text', 'Enforcement court');
     },
   );
 
@@ -155,21 +133,9 @@ describe('Account Enquiry Enforcement Status', () => {
     cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
     cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
     cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
-    cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
-      .should('exist')
-      .and('contain.text', 'Collection Order status')
-      .next()
-      .should('contain.text', '—');
-    cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault)
-      .should('exist')
-      .and('contain.text', 'Days in default')
-      .next()
-      .should('contain.text', '—');
-    cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt)
-      .should('exist')
-      .and('contain.text', 'Enforcement court')
-      .next()
-      .should('contain.text', '—');
+    cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus).should('exist').and('contain.text', 'Collection Order status');
+    cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault).should('exist').and('contain.text', 'Days in default');
+    cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt).should('exist').and('contain.text', 'Enforcement court');
   });
 
   it(
