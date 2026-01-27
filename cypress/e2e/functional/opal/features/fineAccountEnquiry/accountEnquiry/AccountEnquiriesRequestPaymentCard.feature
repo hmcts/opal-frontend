@@ -27,16 +27,13 @@ Feature: Account Enquiries – Request Payment Card
 
     @PO-1803
     Scenario: Confirming a payment card request shows success and updates the last requested date
+      #AC1bii/AC1biii - Successfully requesting a payment card shows a success message and updates the last requested date
       When I start a payment card request
       And I confirm the payment card request
       Then I should see the payment card request success message
       And the payment card last requested date should be today date
 
-    @PO-1803
-    Scenario: Requesting a payment card when one already exists shows an error
-      When I start a payment card request
-      And I confirm the payment card request
-      Then I should see the payment card request success message
+      #AC1biiii - Requesting a payment card when one already exists shows an error
       When I start a payment card request
       And I confirm the payment card request
       Then I should see the payment card request already exists error

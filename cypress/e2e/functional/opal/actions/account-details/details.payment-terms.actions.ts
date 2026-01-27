@@ -16,6 +16,12 @@ export class AccountDetailsPaymentTermsActions {
   private static readonly DEFAULT_TIMEOUT = 15_000;
   private readonly common = new CommonActions();
 
+  /**
+   * Normalizes whitespace for consistent text comparisons.
+   *
+   * @param value - Raw text value to normalize.
+   * @returns Normalized string with collapsed whitespace.
+   */
   private normalize(value: string): string {
     return value.replace(/\s+/g, ' ').trim();
   }
