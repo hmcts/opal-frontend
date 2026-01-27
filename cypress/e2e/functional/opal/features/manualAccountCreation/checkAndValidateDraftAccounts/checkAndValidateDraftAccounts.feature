@@ -63,6 +63,38 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Rejected"
 
+  @PO-2609
+  Scenario: Inputter cannot delete a rejected account,checker-only deletion post-submission
+    Given a "adultOrYouthOnly" draft account exists with:
+      | Account_status                          | Submitted                |
+      | account.defendant.forenames             | Harry                    |
+      | account.defendant.surname               | Potter{uniq}                   |
+      | account.defendant.email_address_1       | harry.potter{uniq}@outlook.com |
+      | account.defendant.telephone_number_home | 02078219385              |
+    And I am logged in with email "opal-test-10@HMCTS.NET"
+    When I open Check and Validate Draft Accounts
+    Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
+    And I see the "Delete account" link
+    And the draft account status tag is "In review"
+    When I record the following decision on the draft account:
+      | Decision | Reject                 |
+      | Reason   | Testing review history |
+    Then I should see the checker header "Review accounts" and status heading "To review"
+    And the draft success banner is "You have rejected Harry Potter{uniq}'s account"
+    When I view the "Rejected" tab on the Check and Validate page
+    Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
+    And the draft account status tag is "Rejected"
+    When I go back to Check and Validate Draft Accounts
+    Then I should see the checker header "Review accounts" and status heading "Rejected"
+    And I am logged in with email "opal-test@HMCTS.NET"
+    When I open Create and Manage Draft Accounts
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    And I open the draft account for defendant "Potter{uniq}, Harry"
+    Then I should see the header containing text "Mr Harry Potter{uniq}"
+    Then I click the "Check account" button
+    And I do not see the "Delete account" link
+
+    
   @PO-597 @PO-616
   Scenario: Delete an in-review draft account and verify it on the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
