@@ -26,11 +26,13 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   collectionOrderStatus: '#enforcementOverviewDetailsCollection_order_statusKey',
   daysInDefault: '#enforcementOverviewDetailsDays_in_defaultKey',
   enforcementCourt: '#enforcementOverviewDetailsEnforcement_courtKey',
-  enforcementAction: '#enforcementOverviewDetailsEnforcement_actionKey',
-  reason: '#enforcementOverviewDetailsReasonKey',
+  enforcementAction: '#lastEnforcementActionDetailsEnforcement_actionKey',
+  reason: '#lastEnforcementActionDetailsReasonKey',
+  enforcer: '#lastEnforcementActionDetailsEnforcerKey',
+  warrantNumber: '#lastEnforcementActionDetailsWarrant_numberKey',
+  dateAdded: '#lastEnforcementActionDetailsDate_addedKey',
   court: '#enforcementOverviewDetailsCourtKey',
   hearingDate: '#enforcementOverviewDetailsHearing_dateKey',
-  dateAdded: '#enforcementOverviewDetailsDate_addedKey',
 
   // Actions column
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
