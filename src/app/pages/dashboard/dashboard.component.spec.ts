@@ -27,9 +27,7 @@ describe('DashboardComponent', () => {
   it('should create', () => {
     fixture.detectChanges();
     const req = httpMock.expectOne(
-      (request) =>
-        request.url === '/opal-legacy-db-stub/opal' &&
-        request.params.get('actionType') === 'searchDefendantAccounts',
+      (request) => request.url === '/opal-legacy-db-stub/opal' && request.params.get('actionType') === 'getNote',
     );
     req.flush('<response />');
     expect(component).toBeTruthy();
@@ -38,14 +36,20 @@ describe('DashboardComponent', () => {
   it('should call the legacy stub opal endpoint on init', () => {
     fixture.detectChanges();
     const req = httpMock.expectOne(
-      (request) =>
-        request.url === '/opal-legacy-db-stub/opal' &&
-        request.params.get('actionType') === 'searchDefendantAccounts',
+      (request) => request.url === '/opal-legacy-db-stub/opal' && request.params.get('actionType') === 'getNote',
     );
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ defendant: { postcode: 'AB1 2CD' } });
+    expect(req.request.body).toEqual({});
     expect(req.request.headers.get('Accept')).toBe('application/xml');
     expect(req.request.responseType).toBe('text');
     req.flush('<response><count>1</count></response>');
+  });
+
+  it('should handle errors from the legacy stub call', () => {
+    fixture.detectChanges();
+    const req = httpMock.expectOne(
+      (request) => request.url === '/opal-legacy-db-stub/opal' && request.params.get('actionType') === 'getNote',
+    );
+    req.flush({ message: 'error' }, { status: 500, statusText: 'Server Error' });
   });
 });
