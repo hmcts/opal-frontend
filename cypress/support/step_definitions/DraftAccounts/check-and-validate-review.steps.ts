@@ -15,11 +15,13 @@ import { DraftAccountsInterceptActions } from '../../../e2e/functional/opal/acti
 import { DraftAccountsFlow } from '../../../e2e/functional/opal/flows/draft-accounts.flow';
 import { log } from '../../utils/log.helper';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { ManualReviewAccountActions } from '../../../e2e/functional/opal/actions/manual-account-creation/review-account.actions';
 
 const review = () => new CheckAndValidateReviewActions();
 const checkerList = () => new CheckAndValidateDraftsActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const draftsFlow = () => new DraftAccountsFlow();
+const manualReview = () => new ManualReviewAccountActions();
 
 /**
  * Maps a Cucumber DataTable into a trimmed key/value object.
@@ -190,4 +192,29 @@ Given('failed draft accounts are stubbed with one result', () => {
 Given('draft account decision updates fail with status {int}', (statusCode: number) => {
   log('intercept', 'Stubbing PATCH draft decision failure', { statusCode });
   intercepts().stubPatchDraftAccountError(statusCode);
+});
+
+/**
+ * @step Assert that the Delete account link is present on the review page.
+ */
+Then('I see the "Delete account" link', () => {
+  log('assert', 'Asserting Delete account link is visible');
+  review().assertDeleteLinkVisible();
+});
+
+/**
+ * @step Click the "Check account" button.
+ */
+When('I click the "Check account" button', () => {
+  log('navigate', 'Clicking Check account button');
+  // Use the manual account review actions flow for the check account interaction
+  manualReview().clickCheckAccount();
+});
+
+/**
+ * @step Assert the Delete account link is not visible.
+ */
+Then('I do not see the "Delete account" link', () => {
+  log('assert', 'Asserting Delete account link is not present');
+  review().assertDeleteLinkNotVisible();
 });
