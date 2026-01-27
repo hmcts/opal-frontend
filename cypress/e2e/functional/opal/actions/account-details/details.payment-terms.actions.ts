@@ -52,7 +52,9 @@ export class AccountDetailsPaymentTermsActions {
         const text = this.normalize($el.text());
         expect(text).to.include(this.normalize(expectedHeader));
       });
-    cy.get(L.confirmation.confirmButton, { timeout: AccountDetailsPaymentTermsActions.DEFAULT_TIMEOUT }).should('exist');
+    cy.get(L.confirmation.confirmButton, { timeout: AccountDetailsPaymentTermsActions.DEFAULT_TIMEOUT }).should(
+      'exist',
+    );
     cy.get(L.confirmation.cancelLink, { timeout: AccountDetailsPaymentTermsActions.DEFAULT_TIMEOUT }).should('exist');
   }
 
