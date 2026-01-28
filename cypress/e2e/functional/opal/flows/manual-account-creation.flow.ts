@@ -2674,12 +2674,12 @@ export class ManualAccountCreationFlow {
     this.offenceDetails.openMinorCreditorDetails(index);
     this.offenceMinorCreditor.assertOnMinorCreditorPage();
     this.offenceMinorCreditor.selectCreditorType('Individual');
-    accessibilityActions().checkAccessibilityOnly();
+    accessibilityActions().checkAccessibilityWithExemptions();
 
     this.offenceMinorCreditor.selectCreditorType('Company');
     this.offenceMinorCreditor.setField('company', company);
     this.offenceMinorCreditor.togglePayByBacs(true);
-    accessibilityActions().checkAccessibilityOnly();
+    accessibilityActions().checkAccessibilityWithExemptions();
     this.offenceMinorCreditor.togglePayByBacs(false);
     this.offenceMinorCreditor.save();
     this.offenceDetails.assertOnAddOffencePage();
@@ -2693,7 +2693,7 @@ export class ManualAccountCreationFlow {
     const index = imposition - 1;
     this.offenceDetails.clickMinorCreditorAction(index, 'Remove');
     this.common.assertHeaderContains('Are you sure you want to remove this minor creditor?');
-    accessibilityActions().checkAccessibilityOnly();
+    accessibilityActions().checkAccessibilityWithExemptions();
     this.offenceDetails.cancelRemoveMinorCreditor();
     this.offenceDetails.assertOnAddOffencePage();
   }

@@ -12,44 +12,44 @@ const log = createScopedLogger('AccessibilityActions');
  * Accessibility helpers for running axe checks within flows.
  */
 export class AccessibilityActions {
-  private exemptionIds = new Set<string>();
-
   /**
-   * Defines violation exemptions to ignore during accessibility checks.
-   * @param exemptions - Axe violation ids to exclude from assertions.
+   * Runs accessibility check with predefined exemptions.
    */
-  public setViolationExemptions(exemptions: string[]): void {
-    this.exemptionIds = new Set(exemptions.filter((exemption) => exemption?.trim().length));
-    log('a11y', 'Updated accessibility violation exemptions', { exemptions: [...this.exemptionIds] });
-  }
-
-  /**
-   * Clears any defined violation exemptions.
-   */
-  public clearViolationExemptions(): void {
-    this.exemptionIds.clear();
-    log('a11y', 'Cleared accessibility violation exemptions');
+  public checkAccessibilityWithExemptions(): void {
+    /**
+     * This is a work around to allow exemption of specific violations related to
+     * https://github.com/alphagov/govuk-frontend/issues/979
+     */
+    const exemptions = ['aria-allowed-attr'];
+    this.checkAccessibilityOnly(exemptions);
   }
 
   /**
    * Injects axe and runs an accessibility audit on the current page.
    * Logs violations and fails the test if any are found.
+   * @param exemptions - Optional axe violation IDs to exempt from assertions.
    */
-  public checkAccessibilityOnly(): void {
+  public checkAccessibilityOnly(exemptions?: string[]): void {
     log('a11y', 'Running axe-core accessibility audit on current page');
+
+    const exemptionIds = new Set(exemptions?.filter((exemption) => exemption?.trim().length));
+
+    if (exemptionIds.size) {
+      log('a11y', 'Applying accessibility violation exemptions', { exemptions: [...exemptionIds] });
+    }
 
     cy.injectAxe();
     cy.checkA11y(
       undefined,
       undefined,
       (violations) => {
-        const filteredViolations = this.exemptionIds.size
-          ? violations.filter((violation) => !this.exemptionIds.has(violation.id))
+        const filteredViolations = exemptionIds.size
+          ? violations.filter((violation) => !exemptionIds.has(violation.id))
           : violations;
 
-        if (this.exemptionIds.size) {
+        if (exemptionIds.size) {
           const exemptedIds = violations
-            .filter((violation) => this.exemptionIds.has(violation.id))
+            .filter((violation) => exemptionIds.has(violation.id))
             .map((violation) => violation.id);
           if (exemptedIds.length) {
             log('a11y', 'Excluded violations from assertions', { exemptions: exemptedIds });
@@ -123,7 +123,7 @@ export class AccessibilityActions {
           log('a11y', violationMsg, { url, violations });
           assert.fail(`${violations.length} accessibility violation(s) detected on ${url}.`);
         }
-      });
+      }, true);
     }
   }
 }
