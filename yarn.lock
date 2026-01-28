@@ -12163,14 +12163,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-jasmine-html-reporter@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "karma-jasmine-html-reporter@npm:2.1.0"
+"karma-jasmine-html-reporter@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "karma-jasmine-html-reporter@npm:2.2.0"
   peerDependencies:
-    jasmine-core: ^4.0.0 || ^5.0.0
+    jasmine-core: ^4.0.0 || ^5.0.0 || ^6.0.0
     karma: ^6.0.0
     karma-jasmine: ^5.0.0
-  checksum: 10/1c3906c8ed4299342702ad6d5a8c735b5adfb1ed5c955bb381a39b9679da8705b21347f712da0eb5e8e2b0d4690927ae67b6a3c23d901e9a7d09f9f05aeb7e98
+  checksum: 10/c473a4071990f48aafd93bdc8a93ed875609a29ae2e86e7f73f2d1d85ef6e3d34a11b18e4bda17e7a47bbc477fdc8613832e0696669ef120bacbd4b21828c150
   languageName: node
   linkType: hard
 
@@ -14011,7 +14011,7 @@ __metadata:
     karma-chrome-launcher: "npm:~3.2.0"
     karma-coverage: "npm:~2.2.0"
     karma-jasmine: "npm:~5.1.0"
-    karma-jasmine-html-reporter: "npm:~2.1.0"
+    karma-jasmine-html-reporter: "npm:~2.2.0"
     launchdarkly-js-client-sdk: "npm:^3.1.4"
     luxon: "npm:^3.4.3"
     mocha: "npm:^11.0.0"
