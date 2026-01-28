@@ -7,7 +7,6 @@ import { DateTime } from 'luxon';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from './utils/mocks/state/fines-mac-payload-offence-details-minor-creditor-state.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './utils/mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
-import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
@@ -132,67 +131,6 @@ describe('FinesMacPayloadService', () => {
     finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
 
     expect(result).toEqual(finesMacState);
-  });
-
-  it('should check if an array has an array of values', () => {
-    if (!service) {
-      fail('Service is not properly initialised');
-      return;
-    }
-    const array = [1, 2, 3];
-    expect(service['hasNonEmptyValue'](array)).toBeTrue();
-  });
-
-  it('should check if an array does not have an array of values', () => {
-    if (!service) {
-      fail('Service is not properly initialised');
-      return;
-    }
-
-    expect(service['hasNonEmptyValue']([])).toBeFalse();
-  });
-
-  it('should check if we have a value ', () => {
-    if (!service) {
-      fail('Service is not properly initialised');
-      return;
-    }
-
-    expect(service['hasNonEmptyValue']('test')).toBeTrue();
-  });
-  it('should check if we have a null value ', () => {
-    if (!service) {
-      fail('Service is not properly initialised');
-      return;
-    }
-
-    expect(service['hasNonEmptyValue'](null)).toBeFalse();
-  });
-
-  it('should get the status of provided if we have values', () => {
-    if (!service || !finesMacState) {
-      fail('Required mock states are not properly initialised');
-      return;
-    }
-    expect(service['getFinesMacStateFormStatus'](finesMacState.accountDetails.formData)).toEqual(
-      FINES_MAC_STATUS.PROVIDED,
-    );
-  });
-
-  it('should get the status of not provided if we dont have values', () => {
-    if (!service || !finesMacState) {
-      fail('Required mock states are not properly initialised');
-      return;
-    }
-
-    finesMacState.accountDetails.formData = {
-      fm_create_account_account_type: null,
-      fm_create_account_business_unit_id: null,
-      fm_create_account_defendant_type: null,
-    };
-    expect(service['getFinesMacStateFormStatus'](finesMacState.accountDetails.formData)).toEqual(
-      FINES_MAC_STATUS.NOT_PROVIDED,
-    );
   });
 
   it('should get the business unit user id', () => {

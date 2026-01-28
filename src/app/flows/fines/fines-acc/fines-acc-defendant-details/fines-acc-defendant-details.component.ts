@@ -3,7 +3,6 @@ import { distinctUntilChanged, EMPTY, map, merge, Observable, Subject, takeUntil
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 // Stores
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -30,6 +29,7 @@ import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/component
 // Pipes & Directives
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
+import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -95,6 +95,7 @@ import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-de
     MojAlertTextComponent,
     MojAlertIconComponent,
     FinesAccDefendantDetailsEnforcementTab,
+    MonetaryPipe,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -108,7 +109,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private readonly destroy$ = new Subject<void>();
   private readonly refreshFragment$ = new Subject<string>();
 
-  public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountDefendantDetailsTabs = FINES_ACC_DEFENDANT_DETAILS_TABS;
   public accountData!: IOpalFinesAccountDefendantDetailsHeader;
@@ -151,10 +151,19 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   /**
-   * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
-   * @returns A string representing the denial type: 'enforcement', 'permission' or 'account-status'
+   *
+   * Calculates if the user can request a payment card based on account status and permissions.
+   * @returns boolean indicating if the user can request a payment card
    */
-  private getDeniedType(): string {
+  private canRequestPaymentCard(): boolean {
+    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermission('amend-payment-terms');
+  }
+
+  /**
+   * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
+   * @returns A string representing the denial type: 'enforcement', 'permission', 'balance' or 'account-status'
+   */
+  private getAmendPaymentTermsDeniedType(): string {
     if (this.lastEnforcement?.extend_ttp_disallow) {
       return 'enforcement';
     } else if (!this.hasBusinessUnitPermission('amend-payment-terms')) {
@@ -163,6 +172,18 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       return 'balance';
     } else {
       return 'account-status';
+    }
+  }
+
+  /**
+   * Determines the type of denial for requesting a payment card based on permission, account status and enforcement details.
+   * @returns A string representing the denial type: 'enforcement' or 'permission'
+   */
+  private getRequestPaymentCardDeniedType(): string {
+    if (this.lastEnforcement?.prevent_payment_card) {
+      return 'enforcement';
+    } else {
+      return 'permission';
     }
   }
 
@@ -188,7 +209,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     const { defendant_account_party_id, parent_guardian_party_id } = this.accountData;
     const { account_id } = this.accountStore.getAccountState();
 
-    fragment$.subscribe((tab) => {
+    fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
           this.tabAtAGlance$ = this.fetchTabData(this.opalFinesService.getDefendantAccountAtAGlance(account_id));
@@ -363,6 +384,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.accountStore.setHasVersionMismatch(false);
     this.destroy$.next();
     this.destroy$.complete();
+    this.refreshFragment$.complete();
   }
 
   /**
@@ -398,13 +420,31 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       });
     } else {
       this['router'].navigate(
-        [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.getDeniedType()}`],
+        [
+          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.getAmendPaymentTermsDeniedType()}`,
+        ],
         {
           relativeTo: this.activatedRoute,
-          state: {
-            accountStatusCode: this.accountData.account_status_reference.account_status_code,
-            lastEnforcement: this.lastEnforcement?.result_id,
-          },
+        },
+      );
+    }
+  }
+
+  /**
+   * Navigates to the amend payment terms page or amend denied page based on user permissions and account status.
+   */
+  public navigateToRequestPaymentCardPage(): void {
+    if (this.canRequestPaymentCard()) {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(
+        [
+          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/${this.getRequestPaymentCardDeniedType()}`,
+        ],
+        {
+          relativeTo: this.activatedRoute,
         },
       );
     }

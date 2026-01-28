@@ -27,8 +27,6 @@ describe('FinesMacReviewAccountComponent', () => {
   let finesDraftState = structuredClone(FINES_DRAFT_STATE);
   let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
 
-  let store: any;
-
   /**
    * Mount the Review Account component with the three stores and a minimal ActivatedRoute.
    * After mount, mirror the created GlobalStore on window.globalStore so helpers can find it.

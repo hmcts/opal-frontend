@@ -13,6 +13,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('SearchFilterByBUNavActions');
 
+/** Navigation helpers for Filter by Business Unit tabs. */
 export class SearchFilterByBUNavActions {
   /**
    * Navigates to the **Fines** tab in the filter-by-BU sub-navigation.
@@ -34,6 +35,7 @@ export class SearchFilterByBUNavActions {
    * Ensures the given tab link is marked active. If the link is not already
    * active (aria-current missing), it clicks the link to activate it before
    * running assertions.
+   * @param tabLinkSelector - Selector for the tab link to activate.
    */
   private ensureTabActive(tabLinkSelector: string): void {
     cy.get(tabLinkSelector).then(($link) => {
@@ -54,7 +56,13 @@ export class SearchFilterByBUNavActions {
     log('info', `Verifying active tab via selector: ${tabLinkSelector}`);
     cy.get(tabLinkSelector).should('have.attr', 'aria-current', SearchFilterByBUNavLocators.activeSubNavAriaCurrent);
   }
-
+  /**
+   * Verifies that the **Fines** tab is the active tab by default.
+   */
+  verifyFinesTabIsActiveByDefault(): void {
+    log('info', 'Verifying Fines tab is active by default in filter-by-business-unit navigation');
+    this.verifyActiveTab(SearchFilterByBUNavLocators.finesTabLink);
+  }
   /**
    * Verifies that the **Fines** tab is the active tab.
    */

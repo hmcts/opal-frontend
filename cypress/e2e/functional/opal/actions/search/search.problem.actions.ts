@@ -50,6 +50,7 @@ export class AccountSearchProblemActions {
    * Example expectedCSV: "account number, reference or case number, selected tab"
    *
    * This method normalises whitespace and lowercases items to make assertions robust.
+   * @param expectedCSV - Comma-separated list of expected bullet items.
    */
   public assertProblemBulletedOptions(expectedCSV: string): void {
     const expectedItems = expectedCSV

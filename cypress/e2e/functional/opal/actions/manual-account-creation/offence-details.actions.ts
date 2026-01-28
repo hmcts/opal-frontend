@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Offence details task.
- * Handles offence entry, impositions, minor creditor interactions, and navigation.
+ * @file Actions for Manual Account Creation - Offence details task.
+ * @description Handles offence entry, impositions, minor creditor interactions, and navigation.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -11,6 +11,7 @@ const log = createScopedLogger('ManualOffenceDetailsActions');
 type OffenceField = 'Offence code' | 'Date of sentence';
 type ImpositionField = 'Result code' | 'Amount imposed' | 'Amount paid';
 
+/** Actions for the Manual Account Creation Offence details task. */
 export class ManualOffenceDetailsActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
@@ -27,6 +28,12 @@ export class ManualOffenceDetailsActions {
 
   /**
    * Completes the offence form with a single imposition row.
+   * @param payload Offence details payload.
+   * @param payload.dateOfSentence Sentence date (dd/MM/yyyy).
+   * @param payload.offenceCode Offence code to enter.
+   * @param payload.resultCode Result code to set.
+   * @param payload.amountImposed Amount imposed value.
+   * @param payload.amountPaid Amount paid value.
    */
   fillOffenceDetails(payload: {
     dateOfSentence: string;
@@ -255,9 +262,28 @@ export class ManualOffenceDetailsActions {
 
   /**
    * Returns the current number of imposition panels on the page.
+   * @returns Chainable yielding the imposition count.
    */
   getImpositionCount(): Cypress.Chainable<number> {
     return cy.get(this.resultCodeInputSelector, this.common.getTimeoutOptions()).its('length');
+  }
+
+  /**
+   * Asserts a result code text is not present in any imposition result code inputs.
+   * @param text - Result code text expected to be absent.
+   */
+  assertResultCodeAbsentInImpositions(text: string): void {
+    const expected = text.trim().toLowerCase();
+    log('assert', 'Ensuring result code is absent from impositions', { text });
+
+    cy.get(this.resultCodeInputSelector, this.common.getTimeoutOptions())
+      .should('have.length.at.least', 1)
+      .each(($input) => {
+        const actual = String($input.val() ?? '')
+          .trim()
+          .toLowerCase();
+        expect(actual).not.to.contain(expected);
+      });
   }
 
   /**
@@ -302,11 +328,22 @@ export class ManualOffenceDetailsActions {
    */
   assertRemoveImpositionLink(index: number, expectedVisible: boolean = true): void {
     log('assert', 'Checking remove imposition link visibility', { index, expectedVisible });
-    const chain = this.getImpositionPanel(index)
-      .find(L.imposition.removeImpositionLink, this.common.getTimeoutOptions())
-      .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'));
+    const panel = this.getImpositionPanel(index);
 
-    expectedVisible ? chain.should('exist') : chain.should('not.exist');
+    if (expectedVisible) {
+      panel
+        .find(L.imposition.removeImpositionLink, this.common.getTimeoutOptions())
+        .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'))
+        .should('exist');
+      return;
+    }
+
+    panel.then(($panel) => {
+      const matches = $panel
+        .find(L.imposition.removeImpositionLink)
+        .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'));
+      expect(matches.length, 'Remove imposition link absent').to.equal(0);
+    });
   }
 
   /**
@@ -523,6 +560,7 @@ export class ManualOffenceDetailsActions {
   /**
    * Returns the Cypress chain for a given imposition card.
    * @param index - Zero-based imposition index.
+   * @returns Chainable wrapping the imposition container.
    */
   private getImpositionPanel(index: number) {
     return cy.get(L.imposition.resultCodeInput(index), this.common.getTimeoutOptions()).closest(L.imposition.container);
@@ -530,6 +568,9 @@ export class ManualOffenceDetailsActions {
 
   /**
    * Types a value and asserts the resulting input value contains the expected text.
+   * @param selector Input selector to target.
+   * @param value Raw value or keystrokes to type.
+   * @param label Logical label for logging.
    * @remarks Normalises keystrokes (e.g., `{downarrow}{enter}`) so we can still assert the human-readable value.
    */
   private typeAndAssert(selector: string, value: string, label: string): void {
@@ -556,6 +597,7 @@ export class ManualOffenceDetailsActions {
 
   /**
    * Splits a provided input into the raw keystrokes to type and the expected visible value.
+   * @param value Raw value or keystroke string to normalise.
    * @remarks Allows flexible inputs with Cypress key syntax while retaining assertions on visible text.
    * @returns Object containing textToType (raw input) and expectedValue (trimmed human-readable text).
    */

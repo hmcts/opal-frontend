@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Employer details task.
- * Each method performs a single responsibility (field entry, assertions, cancel handling).
+ * @file Actions for Manual Account Creation - Employer details task.
+ * @description Each method performs a single responsibility (field entry, assertions, cancel handling).
  */
 import { ManualEmployerDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/employer-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -20,12 +20,14 @@ export type ManualEmployerFieldKey =
   | 'addressLine5'
   | 'postcode';
 
+/** Actions for the Manual Account Creation employer details task. */
 export class ManualEmployerDetailsActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts we are on the Employer details page.
+   * @param expectedHeader Expected page header text.
    */
   assertOnEmployerDetailsPage(expectedHeader: string = 'Employer details'): void {
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/employer-details');
@@ -34,6 +36,7 @@ export class ManualEmployerDetailsActions {
 
   /**
    * Completes employer details fields using the provided payload.
+   * @param payload Field/value pairs for employer details.
    */
   fillEmployerDetails(payload: Partial<Record<ManualEmployerFieldKey, string>>): void {
     const entries = Object.entries(payload ?? {}).filter(([, value]) => value !== undefined);
@@ -49,6 +52,8 @@ export class ManualEmployerDetailsActions {
 
   /**
    * Sets a single employer details field by key.
+   * @param field Employer field key to update.
+   * @param value Value to enter for the field.
    */
   setFieldValue(field: ManualEmployerFieldKey, value: string): void {
     log('type', 'Setting employer field', { field, value });
@@ -57,6 +62,8 @@ export class ManualEmployerDetailsActions {
 
   /**
    * Asserts the value of an employer details field.
+   * @param field Employer field key to assert.
+   * @param expected Expected value for the field.
    */
   assertFieldValue(field: ManualEmployerFieldKey, expected: string): void {
     cy.get(this.getSelector(field), this.common.getTimeoutOptions()).should('have.value', expected);
@@ -64,6 +71,7 @@ export class ManualEmployerDetailsActions {
 
   /**
    * Clears an employer details field.
+   * @param field Employer field key to clear.
    */
   clearField(field: ManualEmployerFieldKey): void {
     log('clear', 'Clearing employer field', { field });
@@ -72,6 +80,7 @@ export class ManualEmployerDetailsActions {
 
   /**
    * Clicks the nested flow CTA (e.g., Add offence details).
+   * @param expectedText Optional text expected on the nested flow button.
    */
   clickNestedFlowButton(expectedText?: string): void {
     log('navigate', 'Clicking nested flow button from Employer details', { expectedText });
@@ -84,6 +93,7 @@ export class ManualEmployerDetailsActions {
 
   /**
    * Handles Cancel click with the provided confirm choice.
+   * @param choice Confirmation choice (Cancel/Ok/Stay/Leave).
    */
   cancelAndChoose(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
     const accept = /ok|leave/i.test(choice);
@@ -95,6 +105,8 @@ export class ManualEmployerDetailsActions {
 
   /**
    * Asserts inline error text for a given employer field.
+   * @param field Employer field key to target.
+   * @param expected Expected inline error text.
    */
   assertInlineError(field: ManualEmployerFieldKey, expected: string): void {
     cy.get(this.getSelector(field), this.common.getTimeoutOptions())
@@ -106,6 +118,9 @@ export class ManualEmployerDetailsActions {
 
   /**
    * Clears and types into an employer input, asserting the resulting value.
+   * @param selector Input selector to target.
+   * @param value Value to type (empty clears).
+   * @param label Logical label for logging.
    */
   private typeIntoField(selector: string, value: string, label: string): void {
     const input = cy.get(selector, this.common.getTimeoutOptions()).should('exist');
@@ -120,10 +135,13 @@ export class ManualEmployerDetailsActions {
       const actual = ($el.val() ?? '').toString().toLowerCase();
       expect(actual).to.equal(value.toLowerCase());
     });
+    log('type', `Field set for ${label}`, { value });
   }
 
   /**
    * Maps logical employer field keys to their DOM selectors.
+   * @param field Employer field key to resolve.
+   * @returns Selector string for the field.
    */
   private getSelector(field: ManualEmployerFieldKey): string {
     switch (field) {

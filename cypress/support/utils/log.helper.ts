@@ -42,6 +42,12 @@ export type LogScope =
   | 'wait'
   | 'warn';
 
+/**
+ * Write a Cypress log entry and runner UI message.
+ * @param scope Logical scope/category for the log (e.g., 'action', 'assert').
+ * @param message Human-readable message to display.
+ * @param details Optional structured details to surface in the runner console.
+ */
 export function log(scope: LogScope, message: string, details?: Record<string, unknown>): void {
   Cypress.log({
     name: scope,
@@ -64,6 +70,9 @@ export function log(scope: LogScope, message: string, details?: Record<string, u
  *   • Promise or event handlers
  *
  * It uses only `Cypress.log()`, which does not enqueue Cypress commands.
+ * @param scope Logical scope/category for the log (e.g., 'intercept', 'debug').
+ * @param message Human-readable message to display.
+ * @param details Optional structured details to surface in the runner console.
  */
 export function logSync(scope: LogScope, message: string, details?: Record<string, unknown>): void {
   Cypress.log({
@@ -96,6 +105,7 @@ export const createScopedLogger = (scopeName: string) => {
  * additional Cypress commands.
  *
  * @param scopeName Logical scope to include in log details (e.g., flow/action name).
+ * @returns A logger function matching `logSync` with injected scope name.
  */
 export const createScopedSyncLogger = (scopeName: string) => {
   return (scope: LogScope, message: string, details?: Record<string, unknown>): void => {

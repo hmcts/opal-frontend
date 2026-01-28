@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Personal details task.
- * Handles entry, assertions, and cancellation for the personal details form.
+ * @file Actions for Manual Account Creation - Personal details task.
+ * @description Handles entry, assertions, and cancellation for the personal details form.
  */
 import { ManualPersonalDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/personal-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -31,7 +31,7 @@ export class ManualPersonalDetailsActions {
   private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
-   * @description Asserts the Personal details page is loaded.
+   * Asserts the Personal details page is loaded.
    * @param expectedHeader - Header text to assert (partial match).
    * @example
    *  actions.assertOnPersonalDetailsPage('Personal details');
@@ -42,7 +42,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Fills provided personal detail fields.
+   * Fills provided personal detail fields.
    * @param payload - Field/value map for the personal details form.
    * @example
    *  actions.fillPersonalDetails({ title: 'Mr', firstNames: 'Jane', lastName: 'Doe' });
@@ -92,15 +92,19 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Backwards-compatible helper to fill required fields only.
+   * Backwards-compatible helper to fill required fields only.
    * @param payload - Required personal details fields.
+   * @param payload.title Title to select.
+   * @param payload.firstNames First names value.
+   * @param payload.lastName Last name value.
+   * @param payload.addressLine1 Address line 1 value.
    */
   fillBasicDetails(payload: { title: string; firstNames: string; lastName: string; addressLine1: string }): void {
     this.fillPersonalDetails(payload);
   }
 
   /**
-   * @description Clears the supplied personal detail fields.
+   * Clears the supplied personal detail fields.
    * @param fields - Field keys to clear.
    */
   clearFields(fields: ManualPersonalDetailsFieldKey[]): void {
@@ -125,7 +129,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Sets a single personal details field to the provided value.
+   * Sets a single personal details field to the provided value.
    * @param field - Logical field key to set.
    * @param value - Value to enter or select.
    */
@@ -138,7 +142,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Asserts a personal details field matches the expected value.
+   * Asserts a personal details field matches the expected value.
    * @param field - Logical field key to assert.
    * @param expected - Expected value or selected text.
    */
@@ -152,7 +156,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Handles Cancel and chooses whether to leave or stay.
+   * Handles Cancel and chooses whether to leave or stay.
    * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
    */
   cancelAndChoose(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
@@ -163,7 +167,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Continues to Contact details via the nested CTA.
+   * Continues to Contact details via the nested CTA.
    * @example
    *  actions.clickAddContactDetails();
    */
@@ -176,7 +180,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Selects a title from the dropdown.
+   * Selects a title from the dropdown.
    * @param title - Title option to choose (e.g., "Mr", "Ms").
    */
   private selectTitle(title: string): void {
@@ -188,7 +192,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Asserts the title dropdown displays the expected option.
+   * Asserts the title dropdown displays the expected option.
    * @param expected - Expected selected text; empty string checks for no selection.
    */
   private assertTitleValue(expected: string): void {
@@ -209,7 +213,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Types into a personal details input, clearing existing text first.
+   * Types into a personal details input, clearing existing text first.
    * @param field - Logical field key (excluding the title dropdown).
    * @param value - Value to type; empty string clears the field.
    */
@@ -241,7 +245,7 @@ export class ManualPersonalDetailsActions {
   }
 
   /**
-   * @description Resolves a personal details field key to its selector.
+   * Resolves a personal details field key to its selector.
    * @param field - Logical field name.
    * @returns CSS selector string for the field input.
    */

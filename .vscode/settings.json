@@ -1,5 +1,21 @@
 {
   "editor.formatOnSave": true,
+
+  // Make formatting consistent across the repo
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Ensure TS files definitely use Prettier on save
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // Ensure ESLint extension actually validates TS in this workspace
+  "eslint.validate": ["typescript"],
+
   "sonarlint.connectedMode.project": {
     "connectionId": "HMCTS SonarQube",
     "projectKey": "opal-frontend"
@@ -9,13 +25,17 @@
     "cypress/support/step_definitions/**/*.ts"
   ],
 
-  "cucumberautocomplete.syncfeatures": "cypress/e2e/**/*.feature",  // <- string, not array
+  "cucumberautocomplete.syncfeatures": "cypress/e2e/**/*.feature",
   "cucumberautocomplete.gherkinDialect": "en",
   "cucumberautocomplete.gherkinDefinitionPart": "(Given|When|Then|And|But)\\(",
   "cucumberautocomplete.strictGherkinCompletion": true,
   "cucumberautocomplete.smartSnippets": true,
   "cucumberautocomplete.exclude": [
-      "**/node_modules/**",
-      "cypress/e2e/**/_archive/**"
-    ]
+    "**/node_modules/**",
+    "cypress/e2e/**/_archive/**"
+  ],
+
+  "files.associations": {
+    "yarn-audit-known-issues": "plaintext"
+  }
 }

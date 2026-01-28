@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for the Manual Account Creation **Offence search** pages.
- * Covers entering search criteria, submitting, navigating back, and validating results.
+ * @file Actions for the Manual Account Creation **Offence search** pages.
+ * @description Covers entering search criteria, submitting, navigating back, and validating results.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -11,6 +11,7 @@ const log = createScopedLogger('ManualOffenceSearchActions');
 type SearchField = 'Offence code' | 'Short title' | 'Act and section';
 type ResultsColumn = 'Code' | 'Short title' | 'Act and section' | 'Used from' | 'Used to';
 
+/** Actions for the Manual Account Creation Offence search flow. */
 export class ManualOffenceSearchActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
@@ -154,6 +155,7 @@ export class ManualOffenceSearchActions {
   /**
    * Returns all values from a column in the current results table.
    * @param column - Column heading.
+   * @returns Chainable yielding an array of trimmed column values.
    */
   getResultColumnValues(column: ResultsColumn): Cypress.Chainable<string[]> {
     const cellId = this.resolveResultColumnId(column);
@@ -166,6 +168,7 @@ export class ManualOffenceSearchActions {
   /**
    * Resolves a logical search field label to its input selector.
    * @param field - Offence search field name.
+   * @returns CSS selector for the input field.
    * @throws Error when an unknown field is provided.
    */
   private resolveFieldSelector(field: SearchField): string {
@@ -184,6 +187,7 @@ export class ManualOffenceSearchActions {
   /**
    * Resolves a results column heading to its table cell id.
    * @param column - Column name as displayed in the results table.
+   * @returns Cell id used for the column.
    * @throws Error when an unknown column is provided.
    */
   private resolveResultColumnId(column: ResultsColumn): string {

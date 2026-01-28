@@ -20,6 +20,12 @@ export const DraftAccountsTableLocators = {
   backLink: 'a.govuk-back-link',
   /** Inline link to open the View all rejected accounts page */
   viewAllRejectedLink: 'a.govuk-link:contains("view all rejected accounts")',
+  pagination: {
+    container: '#fines-draft-table-pagination',
+    next: '.moj-pagination__item--next a',
+    disabledItem: '.moj-pagination__item--disabled',
+    pages: '.moj-pagination__item a',
+  },
   cells: {
     accountLink: 'td#account a',
     defendantLink: 'td#defendant a',
@@ -30,11 +36,5 @@ export const DraftAccountsTableLocators = {
     accountType: 'td#accountType',
     businessUnit: 'td#businessUnit',
     submittedBy: 'td#submittedBy',
-  },
-  pagination: {
-    container: 'nav.govuk-pagination',
-    next: 'a.govuk-pagination__link--next, button.govuk-pagination__link--next',
-    links: 'a.moj-pagination__link',
-    activeItem: 'li.moj-pagination__item--active',
   },
 } as const;

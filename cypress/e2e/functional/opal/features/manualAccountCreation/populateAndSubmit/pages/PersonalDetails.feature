@@ -1,4 +1,4 @@
-@ManualAccountCreation @PersonalDetails @PO-272 @PO-360 @PO-369 @PO-433 @PO-502 @PO-505
+@ManualAccountCreation @PersonalDetails @PO-272 @PO-360 @PO-369 @PO-433 @PO-502 @PO-505 @UAT-Technical
 Feature: Manual account creation - Personal Details
   #This feature file contains tests for the Personal Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the PersonalDetailsComponent.cy.ts component tests
@@ -127,7 +127,7 @@ Feature: Manual account creation - Personal Details
       | first names | FNAME EDITED |
 
   Scenario: Personal Details - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility
 
   Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-433]
     When I complete manual personal details:

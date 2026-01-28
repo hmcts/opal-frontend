@@ -13,21 +13,23 @@
  */
 
 import merge from 'lodash/merge';
-import get from 'lodash/get';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 
 import { convertDataTableToNestedObject } from '../../../../../support/utils/table';
-import {
-  getApprovedPayloadFile,
-  getDraftPayloadFile,
-  type DraftPayloadType,
-} from '../../../../../support/utils/payloads';
+import { getDraftPayloadFile, type DraftPayloadType } from '../../../../../support/utils/payloads';
 import { readDraftIdFromBody } from '../../../../../support/draftAccounts';
+import {
+  extractAccountNumber,
+  extractCreatedTimestamp,
+  extractUpdatedTimestamp,
+  recordCreatedAccount,
+  recordFailedAccount,
+  summarizeErrorPayload,
+} from '../../../../../support/utils/accountCapture';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
-import { DraftAccountsInterceptActions } from '../draft-account/draft-accounts.intercepts';
 
 const log = createScopedLogger('DraftAccountApiActions');
-const intercepts = new DraftAccountsInterceptActions();
+const createDraftEndpoint = '/opal-fines-service/draft-accounts';
 
 /**
  * Path builder for a draft account resource.
@@ -59,25 +61,54 @@ export interface EtagUpdate {
 }
 
 /**
+ * @description Captures the result of a stale If-Match update attempt.
+ */
+export interface EtagConflictResult {
+  accountId: number;
+  firstStatus: number;
+  conflictStatus: number;
+  etagUsed: string;
+  patchBody: Record<string, unknown>;
+}
+
+/**
  * Create a draft account, set its status, and expose ETag/ID metadata via @etagUpdate.
  *
  * @param draftType - Draft account type from payloads.ts (e.g., company, pgToPay, fixedPenalty).
- * @param newStatus - e.g., 'Published'
- * @param table - Cucumber DataTable of overrides
+ * @param newStatus - Target status after creation (e.g., "Submitted", "In review", "Rejected").
+ * @param table - Cucumber DataTable of overrides (values can include Account_status).
  * @returns Cypress.Chainable<void>
+ *
+ * @remarks
+ * - Fixtures default `account_status` to "Submitted"; POST alone leaves the draft in that state.
+ * - Any other status requires a PATCH after creation; we skip PATCH when the target is effectively "Submitted" (including the "In review" alias).
+ * - Status source order: explicit step argument (e.g., `set status "Rejected"`) > `Account_status` row in the table > helper defaults.
  */
 export function createDraftAndSetStatus(
   draftType: DraftPayloadType,
   newStatus: string,
   table: DataTable,
 ): Cypress.Chainable<void> {
+  const resolveTargetStatus = (status: string): { canonicalStatus: string; skipPatch: boolean } => {
+    const trimmed = status.trim();
+    const normalized = trimmed.toLowerCase();
+
+    if (normalized === 'in review') {
+      // API only understands "Submitted" for drafts awaiting review; map "In review" inputs to that state and skip PATCH.
+      return { canonicalStatus: 'Submitted', skipPatch: true };
+    }
+
+    return { canonicalStatus: trimmed, skipPatch: normalized === 'submitted' };
+  };
+
+  const { canonicalStatus, skipPatch } = resolveTargetStatus(newStatus);
   const overrides = convertDataTableToNestedObject(table);
   const draftFixture = getDraftPayloadFile(draftType);
-  const isInReview = newStatus.trim().toLowerCase() === 'in review';
 
-  log('action', `Creating ${draftType} draft and setting status to ${newStatus}`, {
+  log('action', `Creating ${draftType} draft and setting status to ${canonicalStatus}`, {
     draftType,
     newStatus,
+    canonicalStatus,
     overrides,
   });
 
@@ -88,6 +119,16 @@ export function createDraftAndSetStatus(
   let beforeEtag = '';
   let afterEtag = '';
   let numberForUI: string | null = null;
+  let postAccountNumber: string | undefined;
+  let createdAtFromApi: string | undefined;
+  let updatedAtFromApi: string | undefined;
+  const requestPayloads: Array<{
+    source: 'api';
+    endpoint?: string;
+    method?: string;
+    timestamp: string;
+    payload: Record<string, unknown>;
+  }> = [];
 
   return (
     cy
@@ -102,7 +143,7 @@ export function createDraftAndSetStatus(
         log('action', 'POST /draft-accounts', { requestBody });
         cy.request({
           method: 'POST',
-          url: '/opal-fines-service/draft-accounts',
+          url: createDraftEndpoint,
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: requestBody,
           failOnStatusCode: false,
@@ -115,26 +156,37 @@ export function createDraftAndSetStatus(
               requestBody,
             });
             cy.log(`POST /draft-accounts -> ${postResp.status}: ${JSON.stringify(postResp.body).slice(0, 500)}`);
+            createdAtFromApi = extractCreatedTimestamp(postResp.body as unknown) ?? createdAtFromApi;
             if (postResp.status !== 201) {
               log('assert', 'POST /draft-accounts failed', {
                 status: postResp.status,
                 body: postResp.body,
                 requestBody,
               });
+              recordFailedAccount({
+                source: 'api',
+                accountType: draftType,
+                httpStatus: postResp.status,
+                errorSummary: summarizeErrorPayload(postResp.body as unknown),
+                requestSummary: {
+                  endpoint: createDraftEndpoint,
+                  method: 'POST',
+                },
+              });
             }
             expect(postResp.status, 'POST /draft-accounts').to.eq(201);
 
             createdId = readDraftIdFromBody(postResp.body);
+            postAccountNumber = extractAccountNumber(postResp.body as unknown);
             log('done', 'Draft account created', { createdId });
             cy.wrap(createdId, { log: false }).as('lastCreatedDraftId');
           });
       })
 
-      // 1) POST create
       // 2) GET for strong ETag and prepare PATCH body
       .then(() => {
-        if (isInReview) {
-          log('info', 'Skipping GET/PATCH status update for in-review drafts');
+        if (skipPatch) {
+          log('info', 'Skipping GET/PATCH status update for drafts already in submitted state');
           return undefined as void;
         }
 
@@ -144,6 +196,7 @@ export function createDraftAndSetStatus(
           .then((getResp) => {
             expect(getResp.status, 'GET account').to.eq(200);
             beforeEtag = readStrongEtag(getResp.headers as Record<string, unknown>);
+            createdAtFromApi = extractCreatedTimestamp(getResp.body as unknown) ?? createdAtFromApi;
 
             const body = (getResp.body ?? {}) as Record<string, unknown>;
             const business_unit_id = Number(body['business_unit_id'] ?? body['businessUnitId']);
@@ -151,7 +204,7 @@ export function createDraftAndSetStatus(
               typeof body['validated_by'] === 'string' && body['validated_by'] ? body['validated_by'] : 'opal-test';
 
             patchBody = {
-              account_status: newStatus,
+              account_status: canonicalStatus,
               business_unit_id,
               validated_by,
             };
@@ -192,6 +245,7 @@ export function createDraftAndSetStatus(
                 expect([200, 204], 'PATCH success').to.include(patchResp.status);
 
                 afterEtag = readStrongEtag(patchResp.headers as Record<string, unknown>);
+                updatedAtFromApi = extractUpdatedTimestamp(patchResp.body as unknown) ?? updatedAtFromApi;
 
                 if (Cypress.env('EXPECT_ETAG_CHANGE') === true) {
                   expect(afterEtag, 'ETag should change after update').not.to.eq(beforeEtag);
@@ -211,6 +265,16 @@ export function createDraftAndSetStatus(
                   status: patchResp.status,
                 });
 
+                if (Object.keys(patchBody).length) {
+                  requestPayloads.push({
+                    source: 'api',
+                    endpoint: pathForAccount(createdId),
+                    method: 'PATCH',
+                    timestamp: updatedAtFromApi ?? new Date().toISOString(),
+                    payload: { ...patchBody },
+                  });
+                }
+
                 cy.wrap(
                   {
                     status: patchResp.status,
@@ -226,6 +290,237 @@ export function createDraftAndSetStatus(
       })
 
       // Keep public type: Cypress.Chainable<void>
+      .then(() =>
+        recordCreatedAccount(
+          {
+            source: 'api',
+            accountType: draftType,
+            status: canonicalStatus,
+            accountId: createdId,
+            accountNumber: numberForUI ?? postAccountNumber ?? undefined,
+            createdAt: createdAtFromApi,
+            requestSummary: {
+              endpoint: createDraftEndpoint,
+              method: 'POST',
+            },
+            requestPayloads: requestPayloads.length ? requestPayloads : undefined,
+          },
+          requestBody,
+        ),
+      )
       .then(() => undefined as void)
   );
+}
+
+/**
+ * Update the most recently created draft account to the provided status.
+ *
+ * @param newStatus - Status to apply (e.g., "Deleted", "Rejected", "In review").
+ * @returns ETag metadata for the update exposed via @etagUpdate.
+ *
+ * @remarks
+ * - Expects `@lastCreatedDraftId` to be set by a prior call to {@link createDraftAndSetStatus}.
+ * - Uses GET to capture a strong ETag, then PATCHes the status. No PATCH is skipped here.
+ */
+export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.Chainable<EtagUpdate> {
+  return cy.get<number>('@lastCreatedDraftId').then((accountId) => {
+    log('action', 'Updating last created draft account status', { accountId, newStatus });
+    let beforeEtag = '';
+
+    return cy
+      .request({ method: 'GET', url: pathForAccount(accountId), failOnStatusCode: false })
+      .then((getResp) => {
+        expect(getResp.status, 'GET account').to.eq(200);
+        beforeEtag = readStrongEtag(getResp.headers as Record<string, unknown>);
+
+        const body = (getResp.body ?? {}) as Record<string, unknown>;
+        const business_unit_id = Number(body['business_unit_id'] ?? body['businessUnitId']);
+        const validated_by =
+          typeof body['validated_by'] === 'string' && body['validated_by'] ? body['validated_by'] : 'opal-test';
+
+        const patchBody: Record<string, unknown> = {
+          account_status: newStatus,
+          business_unit_id,
+          validated_by,
+        };
+
+        if (Array.isArray(body['timeline_data'])) {
+          patchBody['timeline_data'] = body['timeline_data'];
+        }
+
+        log('debug', 'Prepared PATCH body for existing draft', { patchBody, beforeEtag });
+
+        return cy.request({
+          method: 'PATCH',
+          url: pathForAccount(accountId),
+          headers: {
+            'If-Match': beforeEtag,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: patchBody,
+          failOnStatusCode: false,
+        });
+      })
+      .then((patchResp) => {
+        if (![200, 204].includes(patchResp.status)) {
+          log('assert', 'PATCH /draft-accounts/{id} failed', {
+            status: patchResp.status,
+            responseBody: patchResp.body,
+            ifMatch: beforeEtag,
+          });
+        }
+
+        expect([200, 204], 'PATCH success').to.include(patchResp.status);
+
+        const afterEtag = readStrongEtag(patchResp.headers as Record<string, unknown>);
+        const accRaw = (patchResp.body as Record<string, unknown> | null | undefined)?.['account_number'];
+        const accountNumber = typeof accRaw === 'string' ? accRaw : null;
+
+        const etagUpdate: EtagUpdate = {
+          status: patchResp.status,
+          etagBefore: beforeEtag,
+          etagAfter: afterEtag,
+          accountId,
+          accountNumber,
+        };
+
+        log('action', `Alias @etagUpdate created (Account ${accountNumber ?? 'unknown'})`, { etagUpdate });
+        return cy.wrap(etagUpdate, { log: false }).as('etagUpdate');
+      });
+  });
+}
+
+/**
+ * Assert the latest draft account update produced a strong ETag (optionally requiring a change).
+ *
+ * @param requireChange - Whether to require the after ETag to differ from the before ETag. Defaults to
+ *                        `Cypress.env('EXPECT_ETAG_CHANGE') === true`.
+ * @returns Cypress chainable that performs the assertion.
+ * @example
+ *   assertLatestDraftUpdateHasStrongEtag();
+ */
+export function assertLatestDraftUpdateHasStrongEtag(requireChange?: boolean): Cypress.Chainable<void> {
+  const shouldChange = requireChange ?? Cypress.env('EXPECT_ETAG_CHANGE') === true;
+
+  return cy
+    .get<EtagUpdate>('@etagUpdate')
+    .then(({ status, etagBefore, etagAfter }) => {
+      log('assert', 'Asserting strong ETag for last draft update', { status, shouldChange });
+      expect([200, 204], 'PATCH success status').to.include(status);
+      expect(etagAfter, 'Updated ETag').to.be.a('string').and.not.be.empty;
+      expect(etagAfter.startsWith('W/'), 'Updated ETag must be strong (no W/)').to.be.false;
+
+      if (shouldChange) {
+        expect(etagAfter, 'ETag should change after update').not.to.eq(etagBefore);
+      }
+    })
+    .then(() => Promise.resolve());
+}
+
+/**
+ * Perform two PATCH requests using the same If-Match header to trigger a conflict on the second request.
+ *
+ * @param newStatus - Status to apply in the PATCH payload.
+ * @returns EtagConflictResult aliased as @etagConflict for later assertions.
+ * @example
+ *   simulateStaleIfMatchConflict('Publishing Pending');
+ */
+export function simulateStaleIfMatchConflict(newStatus: string): Cypress.Chainable<EtagConflictResult> {
+  return cy.get<number>('@lastCreatedDraftId').then((accountId) => {
+    log('action', 'Simulating stale If-Match conflict on draft account', { accountId, newStatus });
+
+    let etagUsed = '';
+    let firstStatus = 0;
+    let patchBody: Record<string, unknown> = {};
+
+    return cy
+      .request({ method: 'GET', url: pathForAccount(accountId), failOnStatusCode: false })
+      .then((getResp) => {
+        expect(getResp.status, 'GET account').to.eq(200);
+        etagUsed = readStrongEtag(getResp.headers as Record<string, unknown>);
+
+        const body = (getResp.body ?? {}) as Record<string, unknown>;
+        const business_unit_id = Number(body['business_unit_id'] ?? body['businessUnitId']);
+        const validated_by =
+          typeof body['validated_by'] === 'string' && body['validated_by'] ? body['validated_by'] : 'opal-test';
+
+        patchBody = {
+          account_status: newStatus,
+          business_unit_id,
+          validated_by,
+        };
+
+        if (Array.isArray(body['timeline_data'])) {
+          patchBody['timeline_data'] = body['timeline_data'];
+        }
+
+        log('debug', 'Prepared stale If-Match patch body', { patchBody, etagUsed });
+
+        return cy.request({
+          method: 'PATCH',
+          url: pathForAccount(accountId),
+          headers: {
+            'If-Match': etagUsed,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: patchBody,
+          failOnStatusCode: false,
+        });
+      })
+      .then((firstPatch) => {
+        firstStatus = firstPatch.status;
+
+        return cy.request({
+          method: 'PATCH',
+          url: pathForAccount(accountId),
+          headers: {
+            'If-Match': etagUsed,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: patchBody,
+          failOnStatusCode: false,
+        });
+      })
+      .then((secondPatch) => {
+        const conflict: EtagConflictResult = {
+          accountId,
+          firstStatus,
+          conflictStatus: secondPatch.status,
+          etagUsed,
+          patchBody,
+        };
+
+        log('action', 'Captured stale If-Match conflict result', { ...conflict });
+        return cy.wrap(conflict, { log: false }).as('etagConflict');
+      });
+  });
+}
+
+/**
+ * Assert that the previously simulated stale If-Match update resulted in a conflict.
+ *
+ * @param expectedStatus - Expected HTTP status for the conflict (default: 409).
+ * @returns Cypress chainable for assertions.
+ * @example
+ *   assertStaleIfMatchConflict();
+ */
+export function assertStaleIfMatchConflict(expectedStatus: number = 409): Cypress.Chainable<void> {
+  return cy
+    .get<EtagConflictResult>('@etagConflict')
+    .then(({ firstStatus, conflictStatus, etagUsed, accountId }) => {
+      log('assert', 'Asserting stale If-Match conflict outcome', {
+        accountId,
+        firstStatus,
+        conflictStatus,
+        expectedStatus,
+      });
+
+      expect([200, 204], 'Initial PATCH success status').to.include(firstStatus);
+      expect(conflictStatus, 'Stale If-Match should conflict').to.eq(expectedStatus);
+      expect(etagUsed, 'ETag used for If-Match').to.be.a('string').and.not.be.empty;
+    })
+    .then(() => Promise.resolve());
 }

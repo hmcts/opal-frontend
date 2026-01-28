@@ -1,10 +1,17 @@
-import { ManualAccountSharedLocators as L } from '../../../../../shared/selectors/manual-account-creation/shared.locators';
+/**
+ * @file task-navigation.actions.ts
+ * @description Shared navigation helpers for the Manual Account Creation task list, providing
+ * safe returns to Account details and header assertions after navigation.
+ */
 import { CommonActions } from '../common/common.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { ManualAccountDetailsActions } from './account-details.actions';
 
 const log = createScopedLogger('ManualAccountTaskNavigationActions');
 
+/**
+ * Shared navigation helpers for the Manual Account task list.
+ */
 export class ManualAccountTaskNavigationActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
