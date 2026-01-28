@@ -27,6 +27,10 @@ import { log } from '../../../../support/utils/log.helper';
 Then('I check the page for accessibility', () => {
   log('step', 'Check current page for accessibility only');
 
+  /**
+   * This is a work around to allow exemption of specific violations related to
+   * https://github.com/alphagov/govuk-frontend/issues/979
+   */
   accessibilityActions().setViolationExemptions(['aria-allowed-attr']);
   accessibilityActions().checkAccessibilityOnly();
   cy.then(() => accessibilityActions().clearViolationExemptions());
