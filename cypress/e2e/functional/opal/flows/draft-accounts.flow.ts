@@ -11,6 +11,7 @@ import {
 } from '../actions/draft-account/check-and-validate-review.actions';
 import { CommonActions } from '../actions/common/common.actions';
 import { DashboardActions } from '../actions/dashboard.actions';
+import { recordCreatedAccount } from '../../../../support/utils/accountCapture';
 
 const log = createScopedLogger('DraftAccountsFlow');
 
@@ -22,6 +23,114 @@ export class DraftAccountsFlow {
   private readonly checker = new CheckAndValidateDraftsActions();
   private readonly review = new CheckAndValidateReviewActions();
   private readonly common = new CommonActions();
+  /** Max attempts to poll for a publish status after approval. */
+  private readonly publishWaitAttempts = 10;
+  /** Delay between publish status polls (ms). */
+  private readonly publishWaitDelayMs = 1000;
+
+  /**
+   * Type guard for plain object records.
+   * @param value - Candidate value.
+   * @returns True when value is a non-null object (not an array).
+   */
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+
+  /**
+   * Poll draft account status until it reaches one of the expected values.
+   * @param statuses - Allowed publish statuses to wait for.
+   * @returns Cypress chainable that resolves once the status is reached.
+   */
+  private waitForPublishStatus(statuses: string[]): Cypress.Chainable<void> {
+    const expected = statuses.map((status) => status.trim().toLowerCase());
+
+    return cy.get<number>('@lastCreatedDraftId').then((accountId) => {
+      const attempt = (remaining: number): Cypress.Chainable<void> =>
+        cy
+          .request({
+            method: 'GET',
+            url: `/opal-fines-service/draft-accounts/${accountId}`,
+            failOnStatusCode: false,
+          })
+          .then((response) => {
+            const body = this.isRecord(response.body) ? response.body : {};
+            const statusValue = typeof body['account_status'] === 'string' ? body['account_status'] : '';
+            const normalized = statusValue.trim().toLowerCase();
+
+            if (response.status === 200 && expected.includes(normalized)) {
+              log('done', 'Draft account reached publish status', { accountId, status: statusValue });
+              return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
+            }
+
+            if (remaining <= 1) {
+              expect(response.status, 'GET /draft-accounts status').to.eq(200);
+              expect(normalized, 'draft account status').to.be.oneOf(expected);
+              return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
+            }
+
+            log('info', 'Waiting for publish status after approval', {
+              accountId,
+              status: statusValue || 'unknown',
+              remaining: remaining - 1,
+            });
+
+            return cy.wait(this.publishWaitDelayMs, { log: false }).then(() => attempt(remaining - 1));
+          });
+
+      return attempt(this.publishWaitAttempts);
+    });
+  }
+
+  /**
+   * Record UI approval evidence after publish status resolves.
+   * @returns Cypress chainable for the capture task.
+   */
+  private captureApprovedAccountEvidence(): Cypress.Chainable<void> {
+    return cy.get<number>('@lastCreatedDraftId').then((accountId) =>
+      cy
+        .request({
+          method: 'GET',
+          url: `/opal-fines-service/draft-accounts/${accountId}`,
+          failOnStatusCode: false,
+        })
+        .then((response) => {
+          const body = this.isRecord(response.body) ? response.body : {};
+          const statusValue = typeof body['account_status'] === 'string' ? body['account_status'] : undefined;
+          const accountType = typeof body['account_type'] === 'string' ? body['account_type'] : 'draft';
+          const accountNumber =
+            typeof body['account_number'] === 'string'
+              ? body['account_number']
+              : this.isRecord(body['account']) && typeof body['account']['account_number'] === 'string'
+                ? body['account']['account_number']
+                : undefined;
+          const updatedAt =
+            typeof body['account_status_date'] === 'string'
+              ? body['account_status_date']
+              : typeof body['status_date'] === 'string'
+                ? body['status_date']
+                : undefined;
+
+          if (response.status !== 200) {
+            log('warn', 'Approval evidence GET failed', { accountId, status: response.status });
+            return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
+          }
+
+          return recordCreatedAccount({
+            source: 'ui',
+            accountType,
+            status: statusValue,
+            accountId,
+            accountNumber,
+            updatedAt,
+            requestSummary: {
+              endpoint: `/opal-fines-service/draft-accounts/${accountId}`,
+              method: 'GET',
+            },
+          });
+        }),
+    );
+  }
 
   /**
    * Opens Check and Validate Draft Accounts and asserts the review header.
@@ -91,8 +200,9 @@ export class DraftAccountsFlow {
    * Orchestrates selecting an approve/reject decision and submitting the form.
    * @param decision - Decision to choose.
    * @param reason - Optional rejection reason (required for reject).
+   * @returns Cypress chainable for the decision flow.
    */
-  recordDecision(decision: Decision, reason?: string): void {
+  recordDecision(decision: Decision, reason?: string): Cypress.Chainable<void> {
     const normalized = decision.toLowerCase() as Decision;
     log('action', 'Recording checker decision (flow)', { decision: normalized, hasReason: Boolean(reason?.trim()) });
     this.review.selectDecision(normalized);
@@ -103,5 +213,11 @@ export class DraftAccountsFlow {
       this.review.enterRejectionReason(reason);
     }
     this.review.submitDecision();
+    if (normalized === 'approve') {
+      return this.waitForPublishStatus(['Published', 'Publishing Pending']).then(() =>
+        this.captureApprovedAccountEvidence(),
+      );
+    }
+    return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
   }
 }

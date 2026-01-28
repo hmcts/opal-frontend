@@ -57,9 +57,9 @@ String runTagPrefix = 'run_tag:'
 Map<String, Object> secrets = [
   (secretKey): [
     secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
-    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
-    secret('opalLegacyJCDEGatewayUsername', 'OPAL_LEGACY_GATEWAY_USERNAME'),
-    secret('opalLegacyJCDEGatewayPassword', 'OPAL_LEGACY_GATEWAY_PASSWORD')
+    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
+    // secret('opalLegacyJCDEGatewayUsername', 'OPAL_LEGACY_GATEWAY_USERNAME'),
+    // secret('opalLegacyJCDEGatewayPassword', 'OPAL_LEGACY_GATEWAY_PASSWORD')
   ],
 ]
 
@@ -224,7 +224,7 @@ void setupTestSpecifications() {
         }
         sh "echo 'Directories: ${directories}'"
 
-        if (directories.empty || projectNameValue == 'HMCTS/opal-frontend/master') {
+        if (directories.empty || projectNameValue == masterProjectName) {
             // No specific test labels, include all directories
             env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
         } else {

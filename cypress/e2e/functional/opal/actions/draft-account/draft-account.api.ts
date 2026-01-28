@@ -82,6 +82,73 @@ const extractSafeErrorDetails = (payload: unknown): Record<string, unknown> => {
   return details;
 };
 
+const readNumericId = (body: Record<string, unknown>): number | undefined => {
+  const raw = body['draft_account_id'] ?? body['id'] ?? body['account_id'];
+  if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+  if (typeof raw === 'string' && /^\d+$/.test(raw)) return Number(raw);
+  return undefined;
+};
+
+const buildPatchResponseSummary = (
+  patchResp: Cypress.Response<unknown>,
+  etag: string,
+  updatedAt?: string,
+): Record<string, unknown> => {
+  const body = isRecord(patchResp.body) ? patchResp.body : undefined;
+  const summary: Record<string, unknown> = {
+    status: patchResp.status,
+    etag,
+    updatedAt,
+  };
+
+  if (body) {
+    summary['responseKeys'] = Object.keys(body);
+
+    const allowedKeys = [
+      'draft_account_id',
+      'business_unit_id',
+      'created_at',
+      'submitted_by',
+      'submitted_by_name',
+      'account_type',
+      'account_status',
+      'account_status_date',
+      'account_number',
+      'timeline_data',
+    ];
+
+    allowedKeys.forEach((key) => {
+      const value = body[key];
+      if (value !== undefined) {
+        summary[key] = value;
+      }
+    });
+
+    const statusDate =
+      typeof body['account_status_date'] === 'string'
+        ? body['account_status_date']
+        : typeof body['status_date'] === 'string'
+          ? body['status_date']
+          : undefined;
+    if (statusDate && summary['account_status_date'] === undefined) {
+      summary['account_status_date'] = statusDate;
+    }
+
+    const accountId = readNumericId(body);
+    if (typeof accountId === 'number') summary['account_id'] = accountId;
+
+    if (summary['account_number'] === undefined) {
+      const account = isRecord(body['account']) ? body['account'] : null;
+      const nestedAccountNumber = account ? account['account_number'] : undefined;
+      if (typeof nestedAccountNumber === 'string' && nestedAccountNumber.trim()) {
+        summary['account_number'] = nestedAccountNumber;
+      }
+    }
+  }
+
+  return summary;
+};
+
 const logPatchFailure = (
   context: string,
   endpoint: string,
@@ -211,6 +278,7 @@ export function createDraftAndSetStatus(
     method?: string;
     timestamp: string;
     payload: Record<string, unknown>;
+    direction?: 'request' | 'response';
   }> = [];
 
   return (
@@ -358,6 +426,15 @@ export function createDraftAndSetStatus(
                 method: 'PATCH',
                 timestamp: updatedAtFromApi ?? new Date().toISOString(),
                 payload: { ...patchBody },
+                direction: 'request',
+              });
+              requestPayloads.push({
+                source: 'api',
+                endpoint: pathForAccount(createdId),
+                method: 'PATCH',
+                timestamp: updatedAtFromApi ?? new Date().toISOString(),
+                payload: buildPatchResponseSummary(patchResp, afterEtag, updatedAtFromApi),
+                direction: 'response',
               });
             }
 

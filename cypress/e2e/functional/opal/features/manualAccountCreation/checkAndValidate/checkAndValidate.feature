@@ -16,7 +16,7 @@ Feature: Navigate and edit sections from task list
     When I return to the rejected accounts tab
     Then I should see the header containing text "Create accounts"
 
-  @PO-640 @PO-618 @UAT-Technical
+  @PO-640 @PO-618
   Scenario: Rejected company account can be edited and resubmitted
     Given I create a "company" draft account with the following details and set status "Rejected":
       | account.defendant.company_name | TEST Rejected-PO-640-company-{uniq} |
@@ -86,7 +86,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @PO-640 @UAT-Technical
+  @PO-640
   Scenario: Rejected adult or youth account can be edited and resubmitted
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}                       |
@@ -186,7 +186,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @PO-640 @UAT-Technical
+  @PO-640
   Scenario: Rejected parent or guardian to pay account can be edited and resubmitted
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}              |
@@ -318,7 +318,7 @@ Feature: Navigate and edit sections from task list
     When I go back to Create and Manage Draft Accounts
     Then I should see the header containing text "Create accounts"
 
-  @PO-607 @UAT-Technical
+  @PO-607
   Scenario: Approved tab lists recent accounts
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |

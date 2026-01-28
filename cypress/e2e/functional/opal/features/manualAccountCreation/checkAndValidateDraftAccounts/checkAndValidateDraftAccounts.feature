@@ -29,7 +29,7 @@ Feature: Check and Validate - Checker
       | account.defendant.telephone_number_home                   | 02078219385                                                                                                                                                                                            |
       | account.defendant.debtor_detail.vehicle_make              | _=+[{]};:'@#~,<.>/?\\\\\|¬`!"£                                                                                                                                                                         |
       | account.defendant.debtor_detail.vehicle_registration_mark | $%^&*()-                                                                                                                                                                                               |
-      | account.account_notes                                     | [{"account_note_serial":1,"account_note_text":"It's a comment - includes a dash.","note_type":"AC"},{"account_note_serial":2,"account_note_text":"Here's a note - includes a dash.","note_type":"AA"}] |
+      | account.account_notes                                     | [{"account_note_serial":1,"account_note_text":"It's short - note.","note_type":"AC"},{"account_note_serial":2,"account_note_text":"Here's short - note.","note_type":"AA"}]                         |
     And I am logged in with email "opal-test-10@HMCTS.NET"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Lincoln{uniq}, Larry" and see header "Mr Larry Lincoln{uniq}"
@@ -122,7 +122,7 @@ Feature: Check and Validate - Checker
     When I cancel draft deletion choosing "Ok"
     Then I should see the header containing text "Mr Peter BARN{uniqUpper}"
 
-  @PO-968 @UAT-Technical
+  @PO-968
   Scenario: Show a global error banner when approving fails
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |

@@ -54,6 +54,7 @@
     "test:dev:functional:combine:reports": "jrm functional-output/dev/test-result.xml \"functional-output/dev/*.xml\"",
     "test:fullfunctional": "yarn test:opalComponent ; yarn test:functional",
     "test:functional:LOCAL-ONLY": "TAGS=@UAT-Technical yarn test:functional",
+    "test:functional:uat-legacy": "TAGS=@UAT-Technical DEV_DEFAULT_APP_MODE=legacy yarn test:functional",
     "dev:ssr": "ng run opal-frontend:serve-ssr",
     "dev:local-lib:ssr": "yarn run import:local:common-ui-lib && yarn run import:local:common-node-lib && ng run opal-frontend:serve-ssr",
     "serve:ssr": "node dist/opal-frontend/server/main.js",
