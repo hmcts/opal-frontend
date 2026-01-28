@@ -1,4 +1,9 @@
 /**
+ * @file navigation.ts
+ * @description Navigation helpers for Cypress tests.
+ */
+
+/**
  * Forces any `window.open()` calls to stay in the same Cypress runner tab.
  */
 export function ForceSingleTabNavigation(): void {

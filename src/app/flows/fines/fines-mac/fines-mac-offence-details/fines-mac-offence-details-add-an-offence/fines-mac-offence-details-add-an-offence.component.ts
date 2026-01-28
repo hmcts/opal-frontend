@@ -129,14 +129,18 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
     const offenceDetails = structuredClone(this.finesMacStore.offenceDetails());
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
-
-    if (offenceDetailsDraft.length === 1 && offenceDetailsDraft[0].childFormData) {
-      form.childFormData = offenceDetailsDraft[0].childFormData;
-    }
-
     const index = offenceDetails.findIndex(
       (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,
     );
+    const draftEntry = offenceDetailsDraft.find(
+      (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,
+    );
+
+    if (draftEntry?.childFormData !== undefined) {
+      form.childFormData = draftEntry.childFormData;
+    } else if (index >= 0 && offenceDetails[index].childFormData !== undefined) {
+      form.childFormData = offenceDetails[index].childFormData;
+    }
 
     if (index >= 0) {
       const offence = structuredClone(offenceDetails[index]);
