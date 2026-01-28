@@ -27,8 +27,8 @@ opal-fines-service:
     devcpuRequests: "250m"
     devmemoryLimits: "2Gi"
     devcpuLimits: "2500m"
-  global:
-    enableKeyVaults: true
+    global:
+      enableKeyVaults: true
     keyVaults:
       opal:
         secrets:
