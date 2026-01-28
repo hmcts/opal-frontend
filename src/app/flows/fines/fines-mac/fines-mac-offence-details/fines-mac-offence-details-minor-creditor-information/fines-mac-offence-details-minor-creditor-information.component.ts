@@ -30,7 +30,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
   @Input({ required: true }) public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorState;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: true }) public isDetailsHidden!: boolean;
-  @Input({ required: false }) public headingLevel: HeadingLevel = 5;
+  @Input({ required: false }) public headingLevel: HeadingLevel = 2;
   @Output() public actionClicked = new EventEmitter<{ action: string; index: number }>();
   public name!: string;
   public addressLines: string[] = [];
