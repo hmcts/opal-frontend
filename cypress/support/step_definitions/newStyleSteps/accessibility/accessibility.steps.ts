@@ -26,7 +26,7 @@ import { log } from '../../../../support/utils/log.helper';
  */
 Then('I check the page for accessibility', () => {
   log('step', 'Check current page for accessibility only');
-  accessibilityActions().checkAccessibilityWithExemptions();
+  accessibilityActions().checkAccessibilityOnly();
 });
 
 /**
