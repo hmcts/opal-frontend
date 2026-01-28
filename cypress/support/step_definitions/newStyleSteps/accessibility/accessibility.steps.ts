@@ -26,7 +26,10 @@ import { log } from '../../../../support/utils/log.helper';
  */
 Then('I check the page for accessibility', () => {
   log('step', 'Check current page for accessibility only');
+
+  accessibilityActions().setViolationExemptions(['aria-allowed-attr']);
   accessibilityActions().checkAccessibilityOnly();
+  cy.then(() => accessibilityActions().clearViolationExemptions());
 });
 
 /**

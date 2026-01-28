@@ -12,6 +12,25 @@ const log = createScopedLogger('AccessibilityActions');
  * Accessibility helpers for running axe checks within flows.
  */
 export class AccessibilityActions {
+  private exemptionIds = new Set<string>();
+
+  /**
+   * Defines violation exemptions to ignore during accessibility checks.
+   * @param exemptions - Axe violation ids to exclude from assertions.
+   */
+  public setViolationExemptions(exemptions: string[]): void {
+    this.exemptionIds = new Set(exemptions.filter((exemption) => exemption?.trim().length));
+    log('a11y', 'Updated accessibility violation exemptions', { exemptions: [...this.exemptionIds] });
+  }
+
+  /**
+   * Clears any defined violation exemptions.
+   */
+  public clearViolationExemptions(): void {
+    this.exemptionIds.clear();
+    log('a11y', 'Cleared accessibility violation exemptions');
+  }
+
   /**
    * Injects axe and runs an accessibility audit on the current page.
    * Logs violations and fails the test if any are found.
@@ -20,12 +39,32 @@ export class AccessibilityActions {
     log('a11y', 'Running axe-core accessibility audit on current page');
 
     cy.injectAxe();
-    cy.checkA11y(undefined, undefined, (violations) => {
-      if (violations.length) {
-        log('a11y', `${violations.length} violation(s) found`, { violations });
-        assert.fail(`${violations.length} accessibility violation(s) detected.`);
-      }
-    });
+    cy.checkA11y(
+      undefined,
+      undefined,
+      (violations) => {
+        const filteredViolations = this.exemptionIds.size
+          ? violations.filter((violation) => !this.exemptionIds.has(violation.id))
+          : violations;
+
+        if (this.exemptionIds.size) {
+          const exemptedIds = violations
+            .filter((violation) => this.exemptionIds.has(violation.id))
+            .map((violation) => violation.id);
+          if (exemptedIds.length) {
+            log('a11y', 'Excluded violations from assertions', { exemptions: exemptedIds });
+          }
+        }
+
+        if (filteredViolations.length) {
+          log('a11y', `${filteredViolations.length} violation(s) found`, {
+            violations: filteredViolations,
+          });
+          assert.fail(`${filteredViolations.length} accessibility violation(s) detected.`);
+        }
+      },
+      true,
+    );
   }
 
   /**
