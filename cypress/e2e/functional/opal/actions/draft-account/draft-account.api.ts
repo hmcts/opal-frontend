@@ -227,7 +227,7 @@ export interface EtagConflictResult {
  * @param draftType - Draft account type from payloads.ts (e.g., company, pgToPay, fixedPenalty).
  * @param newStatus - Target status after creation (e.g., "Submitted", "In review", "Rejected").
  * @param table - Cucumber DataTable of overrides (values can include Account_status).
- * @returns Cypress.Chainable<void>
+ * @returns A Cypress chainable that resolves when the draft is created and updated
  *
  * @remarks
  * - Fixtures default `account_status` to "Submitted"; POST alone leaves the draft in that state.
@@ -239,20 +239,53 @@ export function createDraftAndSetStatus(
   newStatus: string,
   table: DataTable,
 ): Cypress.Chainable<void> {
+  /**
+   * Normalizes a requested status into an API-compatible value and determines
+   * whether a PATCH call is required to update the draft after creation.
+   *
+   * @param status - Raw status string provided by the test
+   * @returns An object containing:
+   *  - canonicalStatus: the status value understood by the API
+   *  - skipPatch: whether the status PATCH request should be skipped
+   */
   const resolveTargetStatus = (status: string): { canonicalStatus: string; skipPatch: boolean } => {
+    /** Trim whitespace to prevent accidental mismatches */
     const trimmed = status.trim();
+    /** Lowercased version used strictly for comparison logic */
     const normalized = trimmed.toLowerCase();
 
+    /**
+     * The API does not recognize "In review" as a valid state.
+     * Drafts awaiting review must be created in the "Submitted" state.
+     *
+     * In this case, we:
+     * - Map "In review" to "Submitted"
+     * - Skip the PATCH call because the draft is already created
+     *   in the correct backend state
+     */
     if (normalized === 'in review') {
       // API only understands "Submitted" for drafts awaiting review; map "In review" inputs to that state and skip PATCH.
       return { canonicalStatus: 'Submitted', skipPatch: true };
     }
 
+    /**
+     * Default handling for all other statuses:
+     * - Use the trimmed status value as-is
+     * - Skip PATCH only when the target status is "Submitted",
+     *   since drafts are created in that state by default
+     */
     return { canonicalStatus: trimmed, skipPatch: normalized === 'submitted' };
   };
 
+  /** Resolve the final API-compatible status and PATCH behavior */
   const { canonicalStatus, skipPatch } = resolveTargetStatus(newStatus);
+  /**
+   * Convert the Cucumber DataTable into a nested object structure
+   * used to override fields in the draft payload
+   */
   const overrides = convertDataTableToNestedObject(table);
+
+  /** Load the base draft payload fixture for the specified draft type */
   const draftFixture = getDraftPayloadFile(draftType);
 
   log('action', `Creating ${draftType} draft and setting status to ${canonicalStatus}`, {
@@ -262,7 +295,7 @@ export function createDraftAndSetStatus(
     overrides,
   });
 
-  // Local state accumulated across steps
+  // Local state accumulated across steps (used for evidence + ETag tracking).
   let requestBody: Record<string, unknown> = {};
   let patchBody: Record<string, unknown> = {};
   let createdId = 0;
@@ -283,13 +316,13 @@ export function createDraftAndSetStatus(
 
   return (
     cy
-      // Load base fixture and merge overrides
+      // Load base fixture and merge overrides before creating the draft.
       .fixture(`draftAccounts/${draftFixture}`)
       .then((base) => {
         requestBody = merge({}, base, overrides);
       })
 
-      // 1) POST create
+      // 1) POST create the draft account.
       .then(() => {
         log('action', 'POST /draft-accounts', { requestBody });
         cy.request({
@@ -308,6 +341,7 @@ export function createDraftAndSetStatus(
             });
             cy.log(`POST /draft-accounts -> ${postResp.status}: ${JSON.stringify(postResp.body).slice(0, 500)}`);
             createdAtFromApi = extractCreatedTimestamp(postResp.body as unknown) ?? createdAtFromApi;
+            // Capture failures in evidence even before assertions.
             if (postResp.status !== 201) {
               log('assert', 'POST /draft-accounts failed', {
                 status: postResp.status,
@@ -334,7 +368,7 @@ export function createDraftAndSetStatus(
           });
       })
 
-      // 2) GET for strong ETag and prepare PATCH body
+      // 2) GET for strong ETag and prepare PATCH body (if status change needed).
       .then(() => {
         if (skipPatch) {
           log('info', 'Skipping GET/PATCH status update for drafts already in submitted state');
@@ -346,6 +380,7 @@ export function createDraftAndSetStatus(
             beforeEtag = etag;
             createdAtFromApi = extractCreatedTimestamp(getResp.body as unknown) ?? createdAtFromApi;
 
+            // Build PATCH payload from the latest draft snapshot to avoid stale fields.
             const body = (getResp.body ?? {}) as Record<string, unknown>;
             const business_unit_id = Number(body['business_unit_id'] ?? body['businessUnitId']);
             const validated_by =
@@ -357,6 +392,7 @@ export function createDraftAndSetStatus(
               validated_by,
             };
 
+            // Preserve existing timeline data when present to avoid losing history.
             if (Array.isArray(body['timeline_data'])) {
               patchBody['timeline_data'] = body['timeline_data'];
             }
@@ -401,16 +437,17 @@ export function createDraftAndSetStatus(
             afterEtag = readStrongEtag(patchResp.headers as Record<string, unknown>);
             updatedAtFromApi = extractUpdatedTimestamp(patchResp.body as unknown) ?? updatedAtFromApi;
 
+            // Optional guard when the test suite expects a new ETag after updates.
             if (Cypress.env('EXPECT_ETAG_CHANGE') === true) {
               expect(afterEtag, 'ETag should change after update').not.to.eq(beforeEtag);
             }
 
-            // 3) Extract account number from response (if present)
+            // 3) Extract account number from response (if publish succeeds).
             // Optional chaining + bracket notation for index signature access
             const accRaw = (patchResp.body as Record<string, unknown> | null | undefined)?.['account_number'];
             numberForUI = typeof accRaw === 'string' ? accRaw : null;
 
-            // 4) Alias metadata for downstream tests
+            // 4) Alias metadata for downstream tests.
             log('action', `Alias @etagUpdate created (Account ${numberForUI ?? 'unknown'})`, {
               etagBefore: beforeEtag,
               etagAfter: afterEtag,
@@ -419,6 +456,7 @@ export function createDraftAndSetStatus(
               status: patchResp.status,
             });
 
+            // Record PATCH request/response metadata for evidence output.
             if (Object.keys(patchBody).length) {
               requestPayloads.push({
                 source: 'api',
@@ -451,7 +489,7 @@ export function createDraftAndSetStatus(
           });
       })
 
-      // Keep public type: Cypress.Chainable<void>
+      // 3) Persist evidence for created drafts (JSON artifacts).
       .then(() =>
         recordCreatedAccount(
           {
