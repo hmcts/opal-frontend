@@ -376,9 +376,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       index,
     );
 
-    if (creditorControl.value === 'major' || creditorControl.value === 'minor') {
-      this.majorCreditorValidation(index, creditorControl.value === 'major', impositionsFormGroup);
-    }
+    this.majorCreditorValidation(index, creditorControl.value === 'major', impositionsFormGroup);
 
     creditorControl.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this['ngUnsubscribe']))
@@ -401,10 +399,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     );
 
     if (add) {
+      majorCreditorControl.enable({ emitEvent: false });
       this.addFormArrayFormGroupControlValidators(majorCreditorControl, [Validators.required]);
     } else {
+      majorCreditorControl.reset();
+      majorCreditorControl.disable({ emitEvent: false });
       this.removeFormArrayFormGroupControlValidators(majorCreditorControl);
     }
+    majorCreditorControl.updateValueAndValidity({ emitEvent: false });
   }
 
   /**

@@ -243,7 +243,12 @@ export class ManualOffenceDetailsActions {
     const panel = this.getImpositionPanel(index);
 
     // Ensure the minor creditor radio is selected so the link is rendered
-    panel.find('input[id^="minor_"]', this.common.getTimeoutOptions()).first().scrollIntoView().check({ force: true });
+    panel
+      .find(L.imposition.creditorRadio('minor', index), this.common.getTimeoutOptions())
+      .first()
+      .should('exist')
+      .scrollIntoView()
+      .check({ force: true });
 
     this.getImpositionPanel(index)
       .contains('a', 'Add minor creditor details', this.common.getTimeoutOptions())
@@ -534,7 +539,10 @@ export class ManualOffenceDetailsActions {
    * @returns Chainable wrapping the imposition container.
    */
   private getImpositionPanel(index: number) {
-    return cy.get(L.imposition.resultCodeInput(index), this.common.getTimeoutOptions()).closest(L.imposition.container);
+    return cy
+      .get(L.imposition.resultCodeInput(index), this.common.getTimeoutOptions())
+      .first()
+      .closest(L.imposition.container);
   }
 
   /**

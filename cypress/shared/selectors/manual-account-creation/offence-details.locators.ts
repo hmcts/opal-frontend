@@ -24,7 +24,8 @@ export const ManualOffenceDetailsLocators = {
     resultCodeList: (index: number) => `ul[id = "fm_offence_details_result_id_${index}-autocomplete__listbox"]`,
     amountImposedInput: (index: number) => `input[id = "fm_offence_details_amount_imposed_${index}"]`,
     amountPaidInput: (index: number) => `input[id = "fm_offence_details_amount_paid_${index}"]`,
-    creditorRadio: (type: 'major' | 'minor', index: number) => `#${type}_${index}`,
+    creditorRadio: (type: 'major' | 'minor', index: number) =>
+      `input[name="fm_offence_details_creditor_${index}"][value="${type}"]`,
     majorCreditorInput: (index: number) => `input[id = "fm_offence_details_major_creditor_id_${index}-autocomplete"]`,
     majorCreditorList: (index: number) =>
       `ul[id = "fm_offence_details_major_creditor_id_${index}-autocomplete__listbox"]`,
@@ -37,8 +38,8 @@ export const ManualOffenceDetailsLocators = {
   },
   minorCreditorForm: {
     pageHeader: Common.pageHeader,
-    individualRadio: '#individual',
-    companyRadio: '#company',
+    individualRadio: 'input[name="fm_offence_details_minor_creditor_creditor_type"][value="individual"]',
+    companyRadio: 'input[name="fm_offence_details_minor_creditor_creditor_type"][value="company"]',
     titleSelect: '#fm_offence_details_minor_creditor_title',
     firstNamesInput: '#fm_offence_details_minor_creditor_forenames',
     lastNameInput: '#fm_offence_details_minor_creditor_surname',

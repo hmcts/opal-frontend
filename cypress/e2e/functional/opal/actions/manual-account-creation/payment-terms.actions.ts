@@ -277,7 +277,26 @@ export class ManualPaymentTermsActions {
   private setFrequency(option: PaymentFrequencyOption): void {
     const selector = this.resolveFrequencySelector(option);
     log('select', 'Setting payment frequency', { option });
-    cy.get(selector, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
+    const checkedPaymentTerm = 'input[name="fm_payment_terms_payment_terms"]:checked';
+
+    cy.get('body', this.common.getTimeoutOptions()).then(($body) => {
+      const ariaControls = $body.find(checkedPaymentTerm).attr('aria-controls');
+
+      if (ariaControls) {
+        cy.get(`#${ariaControls}`, this.common.getTimeoutOptions())
+          .should('be.visible')
+          .within(() => {
+            cy.get(selector, this.common.getTimeoutOptions())
+              .first()
+              .should('exist')
+              .scrollIntoView()
+              .check({ force: true });
+          });
+        return;
+      }
+
+      cy.get(selector, this.common.getTimeoutOptions()).first().should('exist').scrollIntoView().check({ force: true });
+    });
   }
 
   /**

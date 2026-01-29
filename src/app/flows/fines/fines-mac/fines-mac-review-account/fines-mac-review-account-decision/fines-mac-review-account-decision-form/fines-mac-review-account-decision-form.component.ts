@@ -44,6 +44,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
   @Input({ required: true }) public accountId!: number;
   public readonly DECISION_OPTIONS = FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS;
   public readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
+  public readonly decisionRejectConditionalId = 'fm_review_account_decision_reject';
   override fieldErrors: IFinesMacReviewAccountDecisionFieldErrors = FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS;
 
   /**
@@ -61,7 +62,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
   private setupDecisionForm(): void {
     this.form = new FormGroup({
       fm_review_account_decision: new FormControl(null, [Validators.required]),
-      fm_review_account_decision_reason: new FormControl(null, [
+      fm_review_account_decision_reason: new FormControl({ value: null, disabled: true }, [
         ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
     });
@@ -94,13 +95,15 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
    */
   private handleDecisionChange(decision: string): void {
     const decisionReasonControl = this.form.get('fm_review_account_decision_reason')!;
+    decisionReasonControl.reset();
     if (decision === 'reject') {
+      decisionReasonControl.enable({ emitEvent: false });
       decisionReasonControl.addValidators([Validators.required]);
     } else {
       decisionReasonControl.removeValidators([Validators.required]);
+      decisionReasonControl.disable({ emitEvent: false });
     }
-    decisionReasonControl.reset();
-    decisionReasonControl.updateValueAndValidity();
+    decisionReasonControl.updateValueAndValidity({ emitEvent: false });
   }
 
   /**

@@ -9,6 +9,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;
@@ -16,6 +17,20 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let mockDateService: jasmine.SpyObj<DateService>;
   let formSubmit: IFinesMacParentGuardianDetailsForm;
   let finesMacStore: FinesMacStoreType;
+  let originalConfigureDatePicker: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+  });
+
+  beforeEach(() => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+  });
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, ['getPreviousDate', 'getDateFromFormat']);

@@ -15,14 +15,20 @@ export const ManualCreateAccountLocators = {
     listbox: 'ul[id="fm_create_account_business_unit_id-autocomplete__listbox"], ul[role="listbox"]',
   },
   accountType: {
-    fine: 'input[id="Fine"]',
-    fixedPenalty: 'input[id="FixedPenalty"]',
-    conditionalCaution: 'input[id="ConditionalCaution"]',
+    fine: 'input[name="fm_create_account_account_type"][value="Fine"], input[id="fm_create_account_account_type-Fine"]',
+    fixedPenalty:
+      'input[name="fm_create_account_account_type"][value="Fixed Penalty"], input[id="fm_create_account_account_type-FixedPenalty"]',
+    conditionalCaution:
+      'input[name="fm_create_account_account_type"][value="Conditional Caution"], input[id="fm_create_account_account_type-ConditionalCaution"]',
   },
   defendantType: {
-    adultOrYouth: 'input[id="adultOrYouthOnly"]',
-    parentOrGuardianToPay: 'input[id="pgToPay"]',
-    company: 'input[id="company"]',
+    adultOrYouth: 'input[name$="_defendant_type"][value="adultOrYouthOnly"], input[id$="-adultOrYouthOnly"]',
+    parentOrGuardianToPay: 'input[name$="_defendant_type"][value="pgToPay"], input[id$="-pgToPay"]',
+    company: 'input[name$="_defendant_type"][value="company"], input[id$="-company"]',
+  },
+  defendantTypePanel: {
+    fine: '#fm_create_account_fine_defendant_type_conditional',
+    fixedPenalty: '#fm_create_account_fixed_penalty_defendant_type_conditional',
   },
   continueButton: 'button[id="submitForm"]',
   cancelLink: 'a.govuk-link.button-link',

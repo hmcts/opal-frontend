@@ -12,13 +12,14 @@
         [inputId]="decisionOption.key"
         [inputName]="'fm_review_account_decision'"
         [inputValue]="decisionOption.key"
+        [ariaControls]="decisionOption.key === 'reject' ? decisionRejectConditionalId : ''"
         [control]="form.get('fm_review_account_decision')!"
       ></div>
-      @if (form.get('fm_review_account_decision')!.value === 'reject' && decisionOption.key === 'reject') {
+      @if (decisionOption.key === 'reject') {
         <span id="review-account-reject-decision-conditional-label" class="govuk-visually-hidden">
           Options for Reject decision
         </span>
-        <div opal-lib-govuk-radios-conditional conditionalId="fm_review_account_decision">
+        <opal-lib-govuk-radios-conditional [conditionalId]="decisionRejectConditionalId">
           <div class="govuk-form-group">
             <opal-lib-govuk-text-area
               labelText="Enter reason for rejection"
@@ -34,7 +35,7 @@
             >
             </opal-lib-govuk-text-area>
           </div>
-        </div>
+        </opal-lib-govuk-radios-conditional>
       }
     }
   </opal-lib-govuk-radio>
