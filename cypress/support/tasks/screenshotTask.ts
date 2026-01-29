@@ -12,10 +12,12 @@ let screenshotsRoot = path.join(process.cwd(), 'cypress', 'screenshots');
 type SaveEvidenceInput = {
   from: string;
   filename?: string;
+  evidencePath?: string;
 };
 
 type SaveEvidenceByNameInput = {
   filename: string;
+  evidencePath?: string;
 };
 
 type ScreenshotMatch = { path: string; mtimeMs: number };
@@ -103,6 +105,36 @@ async function resolveSources(input: SaveEvidenceInput | SaveEvidenceByNameInput
   return [];
 }
 
+const stripLeadingSegments = (segments: string[], prefix: string[]): string[] => {
+  if (segments.length < prefix.length) return segments;
+  const matches = prefix.every((entry, index) => segments[index] === entry);
+  return matches ? segments.slice(prefix.length) : segments;
+};
+
+const normalizeEvidenceRelativePath = (value: string): string => {
+  const normalized = value.replace(/\\/g, '/').replace(/^\/+/, '').trim();
+  if (!normalized) return '';
+
+  let segments = normalized
+    .split('/')
+    .map((segment) => segment.trim())
+    .filter((segment) => segment && segment !== '.' && segment !== '..');
+
+  segments = stripLeadingSegments(segments, ['cypress', 'e2e']);
+  segments = stripLeadingSegments(segments, ['functional', 'opal', 'features']);
+
+  const featureIndices = segments.reduce<number[]>((acc, segment, index) => {
+    if (segment.endsWith('.feature')) acc.push(index);
+    return acc;
+  }, []);
+
+  if (featureIndices.length > 1) {
+    segments = segments.slice(featureIndices[0] + 1);
+  }
+
+  return segments.join('/');
+};
+
 // Copy an existing Cypress screenshot into the shared evidence folder, then remove the original.
 /**
  * Move the latest screenshot into the evidence folder, removing older retries when requested by name.
@@ -120,9 +152,11 @@ async function saveEvidenceScreenshot(input: SaveEvidenceInput | SaveEvidenceByN
   const [latest, ...rest] = ordered;
 
   const destinationName = path.basename(latest.path);
-  const relative = path.relative(screenshotsRoot, latest.path);
-  const destination =
-    relative && !relative.startsWith('..') ? path.join(evidenceDir, relative) : path.join(evidenceDir, destinationName);
+  const requestedRelative =
+    'evidencePath' in input && input.evidencePath ? normalizeEvidenceRelativePath(input.evidencePath) : '';
+  const relative =
+    requestedRelative || normalizeEvidenceRelativePath(path.relative(screenshotsRoot, latest.path) || '');
+  const destination = relative ? path.join(evidenceDir, relative) : path.join(evidenceDir, destinationName);
 
   if (latest.path !== destination) {
     await fs.mkdir(path.dirname(destination), { recursive: true });

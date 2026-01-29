@@ -81,6 +81,33 @@ async function setupNodeEvents(
   registerAccountCaptureTasks(on);
   // Register tasks to relocate scenario evidence screenshots.
   registerScreenshotTasks(on, config);
+  // Relay selected logs to the terminal for CI troubleshooting.
+  on('task', {
+    'log:message': (payload: unknown) => {
+      if (typeof payload === 'string') {
+        // eslint-disable-next-line no-console
+        console.log(payload);
+        return null;
+      }
+      if (payload && typeof payload === 'object') {
+        const record = payload as { message?: unknown; details?: unknown };
+        if (typeof record.message === 'string') {
+          // eslint-disable-next-line no-console
+          console.log(record.message);
+        }
+        if (typeof record.details !== 'undefined') {
+          try {
+            // eslint-disable-next-line no-console
+            console.log(typeof record.details === 'string' ? record.details : JSON.stringify(record.details));
+          } catch {
+            // eslint-disable-next-line no-console
+            console.log(record.details);
+          }
+        }
+      }
+      return null;
+    },
+  });
 
   on(
     'file:preprocessor',

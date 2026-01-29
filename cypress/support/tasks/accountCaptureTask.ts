@@ -20,6 +20,7 @@ type RequestPayloadEntry = {
   method?: string;
   timestamp: string;
   payload: Record<string, unknown>;
+  direction?: 'request' | 'response';
 };
 
 type AccountCreated = {
@@ -218,6 +219,7 @@ export async function clearAccountEvidence(): Promise<void> {
  * @returns File handle when the lock is acquired, or null when another worker owns it.
  */
 async function acquireResetLock(): Promise<fs.FileHandle | null> {
+  await fs.mkdir(path.dirname(resetLockPath), { recursive: true });
   try {
     return await fs.open(resetLockPath, 'wx');
   } catch (err: any) {
@@ -371,6 +373,7 @@ function mergeRequestPayloads(
   for (const entry of merged) {
     const key = [
       entry.source,
+      entry.direction ?? '',
       entry.method ?? '',
       entry.endpoint ?? '',
       entry.timestamp,
@@ -825,7 +828,7 @@ export async function ensureAccountCaptureFile(): Promise<void> {
 
 /**
  * @description Return the full path to the created accounts artifact.
- * @returns Absolute artifact path.
+ * @returns Absolute artifact path
  * @example const path = getAccountArtifactPath();
  */
 export function getAccountArtifactPath(): string {

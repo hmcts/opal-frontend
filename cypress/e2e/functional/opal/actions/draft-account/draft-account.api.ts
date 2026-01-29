@@ -30,6 +30,9 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('DraftAccountApiActions');
 const createDraftEndpoint = '/opal-fines-service/draft-accounts';
+const DRAFT_ETAG_RETRY_ATTEMPTS = 3;
+const DRAFT_ETAG_RETRY_DELAY_MS = 750;
+const DRAFT_PREPATCH_WAIT_MS = 500;
 
 /**
  * Path builder for a draft account resource.
@@ -50,6 +53,153 @@ function readStrongEtag(headers: Record<string, unknown>): string {
   expect(etag.startsWith('W/'), 'ETag must be strong (no W/)').to.be.false;
   return etag;
 }
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const safeReadStrongEtag = (headers: Record<string, unknown>): string => {
+  try {
+    return readStrongEtag(headers);
+  } catch {
+    return '';
+  }
+};
+
+const extractSafeErrorDetails = (payload: unknown): Record<string, unknown> => {
+  if (!isRecord(payload)) return {};
+  const allowedKeys = ['status', 'code', 'errorCode', 'traceId', 'correlationId', 'path'];
+  const details: Record<string, unknown> = {};
+  allowedKeys.forEach((key) => {
+    const value = payload[key];
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      details[key] = value;
+      return;
+    }
+    if ((key === 'traceId' || key === 'correlationId' || key === 'path') && typeof value === 'string') {
+      details[key] = payload[key];
+    }
+  });
+  return details;
+};
+
+const readNumericId = (body: Record<string, unknown>): number | undefined => {
+  const raw = body['draft_account_id'] ?? body['id'] ?? body['account_id'];
+  if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+  if (typeof raw === 'string' && /^\d+$/.test(raw)) return Number(raw);
+  return undefined;
+};
+
+const buildPatchResponseSummary = (
+  patchResp: Cypress.Response<unknown>,
+  etag: string,
+  updatedAt?: string,
+): Record<string, unknown> => {
+  const body = isRecord(patchResp.body) ? patchResp.body : undefined;
+  const summary: Record<string, unknown> = {
+    status: patchResp.status,
+    etag,
+    updatedAt,
+  };
+
+  if (body) {
+    summary['responseKeys'] = Object.keys(body);
+
+    const allowedKeys = [
+      'draft_account_id',
+      'business_unit_id',
+      'created_at',
+      'submitted_by',
+      'submitted_by_name',
+      'account_type',
+      'account_status',
+      'account_status_date',
+      'account_number',
+      'timeline_data',
+    ];
+
+    allowedKeys.forEach((key) => {
+      const value = body[key];
+      if (value !== undefined) {
+        summary[key] = value;
+      }
+    });
+
+    const statusDate =
+      typeof body['account_status_date'] === 'string'
+        ? body['account_status_date']
+        : typeof body['status_date'] === 'string'
+          ? body['status_date']
+          : undefined;
+    if (statusDate && summary['account_status_date'] === undefined) {
+      summary['account_status_date'] = statusDate;
+    }
+
+    const accountId = readNumericId(body);
+    if (typeof accountId === 'number') summary['account_id'] = accountId;
+
+    if (summary['account_number'] === undefined) {
+      const account = isRecord(body['account']) ? body['account'] : null;
+      const nestedAccountNumber = account ? account['account_number'] : undefined;
+      if (typeof nestedAccountNumber === 'string' && nestedAccountNumber.trim()) {
+        summary['account_number'] = nestedAccountNumber;
+      }
+    }
+  }
+
+  return summary;
+};
+
+const logPatchFailure = (
+  context: string,
+  endpoint: string,
+  patchResp: Cypress.Response<unknown>,
+  patchBody: Record<string, unknown>,
+  ifMatch: string,
+): Cypress.Chainable<Cypress.Response<unknown>> => {
+  const safeDetails = extractSafeErrorDetails(patchResp.body);
+  const logDetails = {
+    context,
+    endpoint,
+    status: patchResp.status,
+    responseKeys: isRecord(patchResp.body) ? Object.keys(patchResp.body) : undefined,
+    responseDetails: safeDetails,
+    patchBodyKeys: Object.keys(patchBody),
+    ifMatchPresent: Boolean(ifMatch),
+  };
+
+  log('assert', 'PATCH /draft-accounts/{id} failed', logDetails);
+  return cy
+    .task('log:message', { message: 'PATCH /draft-accounts failed', details: logDetails }, { log: false })
+    .then(() => patchResp);
+};
+
+type DraftForPatchResult = { response: Cypress.Response<unknown>; etag: string };
+
+const getDraftForPatch = (
+  accountId: number,
+  attempts: number = DRAFT_ETAG_RETRY_ATTEMPTS,
+  delayMs: number = DRAFT_ETAG_RETRY_DELAY_MS,
+): Cypress.Chainable<DraftForPatchResult> => {
+  const attempt = (remaining: number): Cypress.Chainable<DraftForPatchResult> =>
+    cy.request({ method: 'GET', url: pathForAccount(accountId), failOnStatusCode: false }).then((getResp) => {
+      const etag = getResp.status === 200 ? safeReadStrongEtag(getResp.headers as Record<string, unknown>) : '';
+      if (getResp.status === 200 && etag) {
+        return { response: getResp, etag };
+      }
+      if (remaining <= 1) {
+        expect(getResp.status, 'GET account').to.eq(200);
+        return { response: getResp, etag: readStrongEtag(getResp.headers as Record<string, unknown>) };
+      }
+      log('warn', 'GET /draft-accounts retrying before PATCH', {
+        accountId,
+        status: getResp.status,
+        remaining: remaining - 1,
+      });
+      return cy.wait(delayMs, { log: false }).then(() => attempt(remaining - 1)) as unknown as DraftForPatchResult;
+    });
+
+  return attempt(attempts);
+};
 
 /** Alias payload structure exposed as @etagUpdate */
 export interface EtagUpdate {
@@ -128,6 +278,7 @@ export function createDraftAndSetStatus(
     method?: string;
     timestamp: string;
     payload: Record<string, unknown>;
+    direction?: 'request' | 'response';
   }> = [];
 
   return (
@@ -190,12 +341,9 @@ export function createDraftAndSetStatus(
           return undefined as void;
         }
 
-        return cy
-          .request({ method: 'GET', url: pathForAccount(createdId), failOnStatusCode: false })
-          .as('getDraftAccount')
-          .then((getResp) => {
-            expect(getResp.status, 'GET account').to.eq(200);
-            beforeEtag = readStrongEtag(getResp.headers as Record<string, unknown>);
+        return getDraftForPatch(createdId)
+          .then(({ response: getResp, etag }) => {
+            beforeEtag = etag;
             createdAtFromApi = extractCreatedTimestamp(getResp.body as unknown) ?? createdAtFromApi;
 
             const body = (getResp.body ?? {}) as Record<string, unknown>;
@@ -219,73 +367,87 @@ export function createDraftAndSetStatus(
               validated_by,
             });
 
-            return cy
-              .request({
+            return cy.wait(DRAFT_PREPATCH_WAIT_MS, { log: false }).then(() =>
+              cy
+                .request({
+                  method: 'PATCH',
+                  url: pathForAccount(createdId),
+                  headers: {
+                    'If-Match': beforeEtag,
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                  },
+                  body: patchBody,
+                  failOnStatusCode: false,
+                })
+                .as('patchDraftAccount'),
+            );
+          })
+          .then((patchResp) => {
+            if (![200, 204].includes(patchResp.status)) {
+              return logPatchFailure(
+                'createDraftAndSetStatus',
+                pathForAccount(createdId),
+                patchResp,
+                patchBody,
+                beforeEtag,
+              );
+            }
+            return cy.wrap(patchResp, { log: false });
+          })
+          .then((patchResp) => {
+            expect([200, 204], 'PATCH success').to.include(patchResp.status);
+
+            afterEtag = readStrongEtag(patchResp.headers as Record<string, unknown>);
+            updatedAtFromApi = extractUpdatedTimestamp(patchResp.body as unknown) ?? updatedAtFromApi;
+
+            if (Cypress.env('EXPECT_ETAG_CHANGE') === true) {
+              expect(afterEtag, 'ETag should change after update').not.to.eq(beforeEtag);
+            }
+
+            // 3) Extract account number from response (if present)
+            // Optional chaining + bracket notation for index signature access
+            const accRaw = (patchResp.body as Record<string, unknown> | null | undefined)?.['account_number'];
+            numberForUI = typeof accRaw === 'string' ? accRaw : null;
+
+            // 4) Alias metadata for downstream tests
+            log('action', `Alias @etagUpdate created (Account ${numberForUI ?? 'unknown'})`, {
+              etagBefore: beforeEtag,
+              etagAfter: afterEtag,
+              accountId: createdId,
+              accountNumber: numberForUI,
+              status: patchResp.status,
+            });
+
+            if (Object.keys(patchBody).length) {
+              requestPayloads.push({
+                source: 'api',
+                endpoint: pathForAccount(createdId),
                 method: 'PATCH',
-                url: pathForAccount(createdId),
-                headers: {
-                  'If-Match': beforeEtag,
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
-                body: patchBody,
-                failOnStatusCode: false,
-              })
-              .as('patchDraftAccount')
-              .then((patchResp) => {
-                if (![200, 204].includes(patchResp.status)) {
-                  log('assert', 'PATCH /draft-accounts/{id} failed', {
-                    status: patchResp.status,
-                    responseBody: patchResp.body,
-                    sentBody: patchBody,
-                    ifMatch: beforeEtag,
-                  });
-                }
-
-                expect([200, 204], 'PATCH success').to.include(patchResp.status);
-
-                afterEtag = readStrongEtag(patchResp.headers as Record<string, unknown>);
-                updatedAtFromApi = extractUpdatedTimestamp(patchResp.body as unknown) ?? updatedAtFromApi;
-
-                if (Cypress.env('EXPECT_ETAG_CHANGE') === true) {
-                  expect(afterEtag, 'ETag should change after update').not.to.eq(beforeEtag);
-                }
-
-                // 3) Extract account number from response (if present)
-                // Optional chaining + bracket notation for index signature access
-                const accRaw = (patchResp.body as Record<string, unknown> | null | undefined)?.['account_number'];
-                numberForUI = typeof accRaw === 'string' ? accRaw : null;
-
-                // 4) Alias metadata for downstream tests
-                log('action', `Alias @etagUpdate created (Account ${numberForUI ?? 'unknown'})`, {
-                  etagBefore: beforeEtag,
-                  etagAfter: afterEtag,
-                  accountId: createdId,
-                  accountNumber: numberForUI,
-                  status: patchResp.status,
-                });
-
-                if (Object.keys(patchBody).length) {
-                  requestPayloads.push({
-                    source: 'api',
-                    endpoint: pathForAccount(createdId),
-                    method: 'PATCH',
-                    timestamp: updatedAtFromApi ?? new Date().toISOString(),
-                    payload: { ...patchBody },
-                  });
-                }
-
-                cy.wrap(
-                  {
-                    status: patchResp.status,
-                    etagBefore: beforeEtag,
-                    etagAfter: afterEtag,
-                    accountId: createdId,
-                    accountNumber: numberForUI,
-                  } as EtagUpdate,
-                  { log: false },
-                ).as('etagUpdate');
+                timestamp: updatedAtFromApi ?? new Date().toISOString(),
+                payload: { ...patchBody },
+                direction: 'request',
               });
+              requestPayloads.push({
+                source: 'api',
+                endpoint: pathForAccount(createdId),
+                method: 'PATCH',
+                timestamp: updatedAtFromApi ?? new Date().toISOString(),
+                payload: buildPatchResponseSummary(patchResp, afterEtag, updatedAtFromApi),
+                direction: 'response',
+              });
+            }
+
+            cy.wrap(
+              {
+                status: patchResp.status,
+                etagBefore: beforeEtag,
+                etagAfter: afterEtag,
+                accountId: createdId,
+                accountNumber: numberForUI,
+              } as EtagUpdate,
+              { log: false },
+            ).as('etagUpdate');
           });
       })
 
@@ -327,11 +489,9 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
     log('action', 'Updating last created draft account status', { accountId, newStatus });
     let beforeEtag = '';
 
-    return cy
-      .request({ method: 'GET', url: pathForAccount(accountId), failOnStatusCode: false })
-      .then((getResp) => {
-        expect(getResp.status, 'GET account').to.eq(200);
-        beforeEtag = readStrongEtag(getResp.headers as Record<string, unknown>);
+    return getDraftForPatch(accountId)
+      .then(({ response: getResp, etag }) => {
+        beforeEtag = etag;
 
         const body = (getResp.body ?? {}) as Record<string, unknown>;
         const business_unit_id = Number(body['business_unit_id'] ?? body['businessUnitId']);
@@ -350,27 +510,34 @@ export function updateLastCreatedDraftAccountStatus(newStatus: string): Cypress.
 
         log('debug', 'Prepared PATCH body for existing draft', { patchBody, beforeEtag });
 
-        return cy.request({
-          method: 'PATCH',
-          url: pathForAccount(accountId),
-          headers: {
-            'If-Match': beforeEtag,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: patchBody,
-          failOnStatusCode: false,
-        });
+        return cy.wait(DRAFT_PREPATCH_WAIT_MS, { log: false }).then(() =>
+          cy.request({
+            method: 'PATCH',
+            url: pathForAccount(accountId),
+            headers: {
+              'If-Match': beforeEtag,
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: patchBody,
+            failOnStatusCode: false,
+          }),
+        );
       })
       .then((patchResp) => {
+        const patchBodyKeys = { account_status: newStatus };
         if (![200, 204].includes(patchResp.status)) {
-          log('assert', 'PATCH /draft-accounts/{id} failed', {
-            status: patchResp.status,
-            responseBody: patchResp.body,
-            ifMatch: beforeEtag,
-          });
+          return logPatchFailure(
+            'updateLastCreatedDraftAccountStatus',
+            pathForAccount(accountId),
+            patchResp,
+            patchBodyKeys,
+            beforeEtag,
+          );
         }
-
+        return cy.wrap(patchResp, { log: false });
+      })
+      .then((patchResp) => {
         expect([200, 204], 'PATCH success').to.include(patchResp.status);
 
         const afterEtag = readStrongEtag(patchResp.headers as Record<string, unknown>);
