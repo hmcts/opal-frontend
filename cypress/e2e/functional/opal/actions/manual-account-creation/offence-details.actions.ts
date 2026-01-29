@@ -274,6 +274,24 @@ export class ManualOffenceDetailsActions {
   }
 
   /**
+   * Asserts a result code text is not present in any imposition result code inputs.
+   * @param text - Result code text expected to be absent.
+   */
+  assertResultCodeAbsentInImpositions(text: string): void {
+    const expected = text.trim().toLowerCase();
+    log('assert', 'Ensuring result code is absent from impositions', { text });
+
+    cy.get(this.resultCodeInputSelector, this.common.getTimeoutOptions())
+      .should('have.length.at.least', 1)
+      .each(($input) => {
+        const actual = String($input.val() ?? '')
+          .trim()
+          .toLowerCase();
+        expect(actual).not.to.contain(expected);
+      });
+  }
+
+  /**
    * Clicks the Review offence submit button.
    */
   clickReviewOffence(): void {
@@ -315,11 +333,22 @@ export class ManualOffenceDetailsActions {
    */
   assertRemoveImpositionLink(index: number, expectedVisible: boolean = true): void {
     log('assert', 'Checking remove imposition link visibility', { index, expectedVisible });
-    const chain = this.getImpositionPanel(index)
-      .find(L.imposition.removeImpositionLink, this.common.getTimeoutOptions())
-      .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'));
+    const panel = this.getImpositionPanel(index);
 
-    expectedVisible ? chain.should('exist') : chain.should('not.exist');
+    if (expectedVisible) {
+      panel
+        .find(L.imposition.removeImpositionLink, this.common.getTimeoutOptions())
+        .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'))
+        .should('exist');
+      return;
+    }
+
+    panel.then(($panel) => {
+      const matches = $panel
+        .find(L.imposition.removeImpositionLink)
+        .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'));
+      expect(matches.length, 'Remove imposition link absent').to.equal(0);
+    });
   }
 
   /**

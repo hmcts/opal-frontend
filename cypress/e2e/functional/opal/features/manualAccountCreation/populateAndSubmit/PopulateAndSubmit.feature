@@ -193,7 +193,7 @@ Feature: Manual account creation - Create Draft Account
       | Payment reference | REF            |
 
     When I submit the manual account for review
-    Then I see "You've submitted this account for review" text on the page
+    Then I see the following text on the page "You've submitted this account for review"
 
   @PO-1449 @PO-1638
   Scenario: Capitalisation is applied for parent or guardian, defendant and employer details
@@ -415,4 +415,4 @@ Feature: Manual account creation - Create Draft Account
       | Payment reference | REFAB       |
 
     When I submit the manual account for review
-    Then I see "You've submitted this account for review" text on the page
+    Then I see the following text on the page "You've submitted this account for review"

@@ -185,6 +185,32 @@ export class CheckAndValidateReviewActions {
         cy.get(other).should('have.prop', 'checked', false);
       });
   }
+
+  /**
+   * Asserts the Delete account link is visible on the review page and contains the expected text.
+   */
+  assertDeleteLinkVisible(): void {
+    log('assert', 'Checking delete account link visibility');
+    cy.get(L.decision.deleteLink, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .and('contain.text', 'Delete account');
+  }
+
+  /**
+   * Asserts the Delete account link is not visible/present on the review page.
+   */
+  assertDeleteLinkNotVisible(): void {
+    log('assert', 'Checking delete account link is not visible');
+    cy.get('body').then(($body) => {
+      const found = $body.find(L.decision.deleteLink);
+      if (found.length === 0) {
+        // Not present - expected
+        return;
+      }
+      // Present in DOM - assert it's not visible
+      cy.get(L.decision.deleteLink, this.common.getTimeoutOptions()).should('not.be.visible');
+    });
+  }
 }
 
 /**
