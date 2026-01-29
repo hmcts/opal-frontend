@@ -33,5 +33,9 @@
   "cucumberautocomplete.exclude": [
     "**/node_modules/**",
     "cypress/e2e/**/_archive/**"
-  ]
+  ],
+
+  "files.associations": {
+    "yarn-audit-known-issues": "plaintext"
+  }
 }

@@ -56,6 +56,22 @@ export class CommonActions {
   }
 
   /**
+   * Asserts that the service name in the global header contains the expected text.
+   * @param expected - Text that should appear within the service name link.
+   * @param timeoutMs - Optional timeout override for the assertion.
+   */
+  public assertServiceHeaderContains(expected: string, timeoutMs: number = 15_000): void {
+    log('assert', `Service header contains: ${expected}`);
+
+    cy.get(L.serviceNameLink, { timeout: timeoutMs })
+      .should('be.visible')
+      .should(($el) => {
+        const text = $el.text().toLowerCase();
+        expect(text).to.include(expected.toLowerCase());
+      });
+  }
+
+  /**
    * Asserts that the page header **equals** the expected text (exact match).
    * @param expected - The exact header text expected.
    */
