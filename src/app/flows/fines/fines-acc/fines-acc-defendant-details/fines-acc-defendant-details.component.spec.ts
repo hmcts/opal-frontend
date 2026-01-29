@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
-import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { Router, ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 import {
   MojSubNavigationComponent,
@@ -40,6 +40,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
           defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
         },
         fragment: 'at-a-glance',
+        paramMap: convertToParamMap({ accountId: '123' }),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any as ActivatedRouteSnapshot, // Using 'as any' to avoid type issues
     };

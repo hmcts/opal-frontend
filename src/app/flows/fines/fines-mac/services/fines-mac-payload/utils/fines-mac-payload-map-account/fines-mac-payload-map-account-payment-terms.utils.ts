@@ -1,4 +1,4 @@
-import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
+import { FINES_PAYMENT_TERMS_OPTIONS } from 'src/app/flows/fines/constants/fines-payment-terms-options.constant';
 import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
@@ -110,7 +110,7 @@ const buildPaymentTermsFormData = (
   collectionOrderMade: boolean | null,
   collectionOrderMadeToday: boolean | null,
 ): IFinesMacPaymentTermsState => {
-  const paymentTermOptions = Object.keys(FINES_MAC_PAYMENT_TERMS_OPTIONS);
+  const paymentTermOptions = Object.keys(FINES_PAYMENT_TERMS_OPTIONS);
   const paymentTermsType = getPaymentTermsType(
     paymentTerms.payment_terms_type_code,
     paymentTerms.lump_sum_amount,
@@ -150,7 +150,7 @@ const getPaymentTermsType = (
   lumpSumAmount: number | null,
   instalmentAmount: number | null,
 ): string | null => {
-  const paymentTermOptions = Object.keys(FINES_MAC_PAYMENT_TERMS_OPTIONS);
+  const paymentTermOptions = Object.keys(FINES_PAYMENT_TERMS_OPTIONS);
   if (paymentTermsTypeCode === 'B') {
     return paymentTermOptions[0];
   }

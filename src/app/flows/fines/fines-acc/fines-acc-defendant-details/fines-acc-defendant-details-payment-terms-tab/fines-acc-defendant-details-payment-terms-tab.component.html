@@ -150,7 +150,7 @@
             >
               <ng-container name>Date last amended</ng-container>
               @if (tabData.payment_terms.posted_details.posted_date; as posted_date) {
-                <ng-container value>{{ posted_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</ng-container>
+                <ng-container value>{{ posted_date | date: 'dd MMMM yyyy' }}</ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
