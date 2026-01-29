@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
-import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
+import {
+  GovukSummaryCardListComponent,
+  GovukSummaryCardActionComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import {
   GovukSummaryListComponent,
@@ -18,6 +21,7 @@ import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/go
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
+    GovukSummaryCardActionComponent,
     MojBadgeComponent,
     FinesNotProvidedComponent,
     DatePipe,
