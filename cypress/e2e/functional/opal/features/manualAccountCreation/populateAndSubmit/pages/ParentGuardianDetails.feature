@@ -148,5 +148,5 @@ Feature: Manual account creation - Parent Guardian Details
 
 
   Scenario: Parent guardian details - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility
 

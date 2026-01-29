@@ -245,7 +245,7 @@ Feature: Account Search and Matches
       | individual last name | Graham     |
     Then I see the Search results page
     # AC10 Check Back Link Works Correctly
-    When I click on the "Back" link
+    When I go back from the results page
     Then I see the "Search for an account" page for minor creditors - individual with the following details:
       | minor creditor type  | Individual |
       | individual last name | Graham     |
@@ -608,7 +608,7 @@ Feature: Account Search and Matches
       | address line 1            | 123 Test Street |
       | postcode                  | SW1A 1AA        |
     And I return to the dashboard using the HMCTS link
-    When I navigate to Search For An Account
+    When I open Search for an Account
     Then I see the "Search for an account" page for individuals with the following details:
       | account number            |  |
       | reference or case number  |  |
