@@ -1,23 +1,55 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule } from '@angular/router';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DashboardComponent, RouterModule.forRoot([])],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
+    const req = httpMock.expectOne(
+      (request) => request.url === '/opal-legacy-db-stub/opal' && request.params.get('actionType') === 'getNote',
+    );
+    req.flush('<response />');
     expect(component).toBeTruthy();
+  });
+
+  it('should call the legacy stub opal endpoint on init', () => {
+    fixture.detectChanges();
+    const req = httpMock.expectOne(
+      (request) => request.url === '/opal-legacy-db-stub/opal' && request.params.get('actionType') === 'getNote',
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({});
+    expect(req.request.headers.get('Accept')).toBe('application/xml');
+    expect(req.request.responseType).toBe('text');
+    req.flush('<response><count>1</count></response>');
+  });
+
+  it('should handle errors from the legacy stub call', () => {
+    fixture.detectChanges();
+    const req = httpMock.expectOne(
+      (request) => request.url === '/opal-legacy-db-stub/opal' && request.params.get('actionType') === 'getNote',
+    );
+    req.flush({ message: 'error' }, { status: 500, statusText: 'Server Error' });
   });
 });
