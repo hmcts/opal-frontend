@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { DOM_ELEMENTS } from '../../manualAccountCreation/FinesMacAccountCommentsAndNotes/constants/fines-mac-account-notes-and-comments-elements';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccNoteAddComponent } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/fines-acc-note-add.component';
-import { FinesAccNoteAddFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/fines-acc-note-add-form/fines-acc-note-add-form.component';
 import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { of } from 'rxjs';
@@ -14,6 +13,7 @@ describe('FinesAccNoteAddFormComponent', () => {
   let mockFinesAccountStore: IFinesAccountState = {
     party_type: 'PERSON',
     party_id: '67890',
+    pg_party_id: '12345',
     account_number: '123456789A',
     party_name: 'Mr John, Peter DOE',
     base_version: '1',

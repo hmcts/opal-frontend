@@ -18,8 +18,8 @@ export const AccountSearchMajorCreditorsLocators = {
 
   panel: {
     /** major creditors panel root (useful for scoping). */
-    root: '#major-creditors',
+    root: '#majorCreditors',
     /** Optional heading within panel, if needed. */
-    heading: '#major-creditors h1.govuk-heading-l',
+    heading: '#majorCreditors h1.govuk-heading-l',
   },
 };

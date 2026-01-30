@@ -16,8 +16,6 @@ import { OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK } from './mocks/fines-draft-delet
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesDraftCreateAndManageDeletedComponent', () => {
-  const dateService = new DateService();
-
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCreateAndManageTabsComponent, {
@@ -87,12 +85,8 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
       cy.wrap($row)
         .find(DOM_ELEMENTS.deleted)
         .invoke('text')
-        .then((relativeDateText) => {
-          const text = relativeDateText.trim().toLowerCase();
+        .then(() => {
           let daysAgo = null;
-
-          // if (daysAgo !== null) {
-          //   expect(daysAgo).to.be.lessThan(8, `Account was deleted ${daysAgo} days ago`);
           if (daysAgo !== null && daysAgo >= 8) {
             throw new Error(`Account deleted ${daysAgo} days ago is still visible in the table.`);
           }

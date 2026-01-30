@@ -10,7 +10,6 @@ import {
   INDIVIDUAL_SEARCH_RESULTS_MOCK,
   COMPANY_SEARCH_RESULTS_MOCK,
   LARGE_SEARCH_RESULTS_MOCK,
-  ORDERING_TEST_MOCK,
   SORTING_MINOR_CREDITORS_MOCK,
 } from './mocks/search_results_minor_creditors_mock';
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_matches_minor_creditors_mock';

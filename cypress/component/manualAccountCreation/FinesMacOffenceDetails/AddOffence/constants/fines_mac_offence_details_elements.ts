@@ -13,7 +13,7 @@ export const DOM_ELEMENTS = {
 
   //labels
   dateOfSentenceLabel: 'label[for = "fm_offence_details_date_of_sentence"]',
-  dateHint: 'div[id = "date-hint"]',
+  dateHint: 'div[id = "fm_offence_details_date_of_sentence-hint"]',
   offenceCodeLabel: 'label[for = "fm_offence_details_offence_cjs_code"]',
   offenceCodeHint: 'div[id = "fm_offence_details_offence_cjs_code-hint"]',
 

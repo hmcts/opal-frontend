@@ -12,7 +12,6 @@ import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM } from '../../../../../../src/ap
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../../../../../../src/app/flows/fines/fines-mac/fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../../../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/constants/fines-mac-personal-details-form';
 import { IFinesMacState } from '../../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
-import { FINES_MAC_PERSONAL_DETAILS_STATE } from '../../../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/constants/fines-mac-personal-details-state';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../../../src/app/flows/fines/fines-mac/fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
