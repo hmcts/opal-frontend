@@ -125,6 +125,91 @@ When('I go to the Parent or guardian details section and the header is {string}'
 });
 
 /**
+ * @step Navigates to the Payment terms tab.
+ */
+When('I go to the Payment terms tab', () => {
+  log('step', 'Navigate to Payment terms tab');
+  flow().goToPaymentTermsTab();
+});
+
+/**
+ * @step Opens the amend payment terms form.
+ */
+When('I open the amend payment terms form', () => {
+  log('step', 'Open amend payment terms form');
+  flow().openPaymentTermsAmendForm();
+});
+
+/**
+ * @step Submits instalments-only payment terms with a payment card request.
+ */
+When('I submit instalments only payment terms with a payment card request', () => {
+  log('step', 'Submit instalments-only payment terms with card request');
+  flow().submitInstalmentsOnlyPaymentTermsWithCardRequest();
+});
+
+/**
+ * @step Cancels the amend payment terms form.
+ */
+When('I cancel payment terms amendments', () => {
+  log('step', 'Cancel payment terms amendments');
+  flow().cancelPaymentTermsAmendment();
+});
+
+/**
+ * @step Asserts the payment terms tab is active.
+ */
+Then('I should return to the Payment terms tab', () => {
+  log('assert', 'Payment terms tab is active');
+  flow().assertPaymentTermsTabIsActive();
+});
+
+/**
+ * @step Asserts payment terms instalment summary values.
+ */
+Then('the payment terms summary shows instalments:', (table: DataTable) => {
+  const rows = rowsHashSafe(table);
+  const amount = rows['instalment amount'] ?? rows['instalment'] ?? '';
+  const frequency = rows['frequency'] ?? '';
+  const startDate = rows['start date'] ?? '';
+
+  log('assert', 'Asserting payment terms instalment summary', { amount, frequency, startDate });
+  flow().assertPaymentTermsInstalmentsSummary({ amount, frequency, startDate });
+});
+
+/**
+ * @step Asserts pay by date on the payment terms tab.
+ */
+Then('the payment terms pay by date is {string}', (expected: string) => {
+  log('assert', 'Asserting payment terms pay by date', { expected });
+  flow().assertPaymentTermsPayByDate(expected);
+});
+
+/**
+ * @step Asserts instalment rows are not shown on the payment terms tab.
+ */
+Then('the payment terms instalment rows are not shown', () => {
+  log('assert', 'Asserting payment terms instalment rows absent');
+  flow().assertPaymentTermsInstalmentsAbsent();
+});
+
+/**
+ * @step Asserts the payment terms save request includes a payment card request.
+ */
+Then('the payment terms save request should include a payment card request', () => {
+  log('assert', 'Asserting payment terms save request includes card request');
+  flow().assertPaymentTermsSaveRequestedPaymentCard();
+});
+
+/**
+ * @step Verifies last enforcement is cleared after payment terms save.
+ */
+Then('the payment terms last enforcement is cleared', () => {
+  log('assert', 'Verifying payment terms last enforcement cleared');
+  flow().verifyPaymentTermsLastEnforcementCleared();
+});
+
+/**
  * @step Edits the Defendant details, changing the First name to a given value.
  *
  * @param value - New First name to enter.

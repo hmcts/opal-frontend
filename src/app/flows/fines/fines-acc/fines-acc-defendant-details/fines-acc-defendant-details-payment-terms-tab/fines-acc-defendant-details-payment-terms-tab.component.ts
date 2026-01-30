@@ -11,7 +11,7 @@ import {
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
-
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-fines-acc-defendant-details-payment-terms-tab',
   imports: [
@@ -21,6 +21,7 @@ import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
     GovukSummaryCardListComponent,
     DateFormatPipe,
     MonetaryPipe,
+    DatePipe,
   ],
   templateUrl: './fines-acc-defendant-details-payment-terms-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
