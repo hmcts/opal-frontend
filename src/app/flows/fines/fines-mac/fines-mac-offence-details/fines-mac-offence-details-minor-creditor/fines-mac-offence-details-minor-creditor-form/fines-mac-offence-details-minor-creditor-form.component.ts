@@ -70,6 +70,12 @@ const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTe
 })
 export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFormBaseComponent implements OnInit {
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly individualControls = [
+    'fm_offence_details_minor_creditor_title',
+    'fm_offence_details_minor_creditor_forenames',
+    'fm_offence_details_minor_creditor_surname',
+  ];
+  private readonly companyControls = ['fm_offence_details_minor_creditor_company_name'];
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsMinorCreditorForm>();
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
@@ -85,6 +91,8 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   public override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS,
   };
+  public readonly individualConditionalId = 'fm_offence_details_minor_creditor_creditor_type_individual';
+  public readonly companyConditionalId = 'fm_offence_details_minor_creditor_creditor_type_company';
 
   /**
    * Sets up the form for capturing minor creditor details.
@@ -138,6 +146,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
         this.rePopulateForm(minorCreditor.formData);
       }
     }
+    this.handleCreditorTypeChange(this.form.controls['fm_offence_details_minor_creditor_creditor_type'].value, false);
   }
 
   /**
@@ -270,23 +279,83 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
 
-    creditorType.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-      this.resetNameValidators();
-
-      switch (creditorType.value) {
-        case 'individual':
-          this.setIndividualValidators();
-          break;
-        case 'company':
-          this.setCompanyValidators();
-          break;
-      }
-
+    creditorType.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((selectedType) => {
+      this.handleCreditorTypeChange(selectedType, creditorType.dirty);
       companyName.updateValueAndValidity();
       title.updateValueAndValidity();
       forenames.updateValueAndValidity();
       surname.updateValueAndValidity();
     });
+  }
+
+  private handleCreditorTypeChange(selectedType: string | null, resetValues: boolean): void {
+    if (resetValues) {
+      this.resetNameValidators();
+    } else {
+      this.clearNameValidators();
+    }
+
+    const isIndividual = selectedType === 'individual';
+    const isCompany = selectedType === 'company';
+
+    this.setControlsEnabled(this.individualControls, isIndividual);
+    this.setControlsEnabled(this.companyControls, isCompany);
+
+    if (isIndividual) {
+      this.setIndividualValidators();
+    }
+
+    if (isCompany) {
+      this.setCompanyValidators();
+    }
+
+    const {
+      fm_offence_details_minor_creditor_title: title,
+      fm_offence_details_minor_creditor_forenames: forenames,
+      fm_offence_details_minor_creditor_surname: surname,
+      fm_offence_details_minor_creditor_company_name: companyName,
+    } = this.form.controls;
+
+    title.updateValueAndValidity({ emitEvent: false });
+    forenames.updateValueAndValidity({ emitEvent: false });
+    surname.updateValueAndValidity({ emitEvent: false });
+    companyName.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private setControlsEnabled(controlNames: string[], enabled: boolean): void {
+    for (const controlName of controlNames) {
+      const control = this.form.get(controlName);
+      if (!control) {
+        continue;
+      }
+
+      if (enabled) {
+        control.enable({ emitEvent: false });
+      } else {
+        control.disable({ emitEvent: false });
+      }
+
+      control.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  private clearNameValidators(): void {
+    const {
+      fm_offence_details_minor_creditor_title: title,
+      fm_offence_details_minor_creditor_forenames: forenames,
+      fm_offence_details_minor_creditor_surname: surname,
+      fm_offence_details_minor_creditor_company_name: companyName,
+    } = this.form.controls;
+
+    title.clearValidators();
+    forenames.clearValidators();
+    surname.clearValidators();
+    companyName.clearValidators();
+
+    title.updateValueAndValidity({ emitEvent: false });
+    forenames.updateValueAndValidity({ emitEvent: false });
+    surname.updateValueAndValidity({ emitEvent: false });
+    companyName.updateValueAndValidity({ emitEvent: false });
   }
 
   public override ngOnInit(): void {

@@ -115,8 +115,8 @@ export const DOM_ELEMENTS = {
   timeLineStatus: 'h2.moj-timeline__title',
 
   //Decision section
-  approveRadioButton: 'input[id="approve"]',
-  rejectRadioButton: 'input[id="reject"]',
+  approveRadioButton: 'input[name="fm_review_account_decision"][value="approve"]',
+  rejectRadioButton: 'input[name="fm_review_account_decision"][value="reject"]',
   rejectionText: 'label[for="fm_review_account_decision_reason"]',
   continue: 'button[id = "submitForm"]',
   textArea: 'textarea[id="fm_review_account_decision_reason"]',

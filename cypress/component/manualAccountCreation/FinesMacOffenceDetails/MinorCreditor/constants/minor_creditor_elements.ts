@@ -5,8 +5,8 @@ export const DOM_ELEMENTS = {
   legendS: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
   legendM: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   // Creditor Type Radios
-  creditorTypeIndividual: 'input[id="individual"]',
-  creditorTypeCompany: 'input[id="company"]',
+  creditorTypeIndividual: 'input[name="fm_offence_details_minor_creditor_creditor_type"][value="individual"]',
+  creditorTypeCompany: 'input[name="fm_offence_details_minor_creditor_creditor_type"][value="company"]',
 
   // Individual-Specific Fields
   titleSelect: 'select[id="fm_offence_details_minor_creditor_title"]',

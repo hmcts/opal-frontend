@@ -6,13 +6,26 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-ma
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorFormComponent>;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
       providers: [
@@ -45,6 +58,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set individual validators for title, forenames and surname controls', () => {
+    component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('individual');
+    fixture.detectChanges();
+
     const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
@@ -83,6 +99,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set validators for company name control', () => {
+    component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('company');
+    fixture.detectChanges();
+
     const companyNameControl = component.form.controls['fm_offence_details_minor_creditor_company_name'];
 
     // Call the method to set validators
@@ -154,6 +173,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and clear validators for name-related controls', () => {
+    component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('individual');
+    fixture.detectChanges();
+
     const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
@@ -178,6 +200,39 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     companyNameControl.setValue(''); // Empty string to trigger required validation
     expect(companyNameControl.errors).toBeNull(); // Should not have required error after clearValidators
+  });
+
+  it('should skip missing controls when toggling enabled state', () => {
+    const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
+    titleControl.disable({ emitEvent: false });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).setControlsEnabled(['missing_control', 'fm_offence_details_minor_creditor_title'], true);
+
+    expect(titleControl.enabled).toBeTrue();
+  });
+
+  it('should toggle conditional panels and enable the correct controls', async () => {
+    await fixture.whenStable();
+    const individualConditional = fixture.nativeElement.querySelector(`#${component.individualConditionalId}`);
+    const companyConditional = fixture.nativeElement.querySelector(`#${component.companyConditionalId}`);
+
+    expect(individualConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+    expect(companyConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+
+    const individualInput = fixture.nativeElement.querySelector('input[value="individual"]');
+    individualInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_offence_details_minor_creditor_title')?.enabled).toBeTrue();
+    expect(component.form.get('fm_offence_details_minor_creditor_company_name')?.disabled).toBeTrue();
+
+    const companyInput = fixture.nativeElement.querySelector('input[value="company"]');
+    companyInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_offence_details_minor_creditor_company_name')?.enabled).toBeTrue();
+    expect(component.form.get('fm_offence_details_minor_creditor_title')?.disabled).toBeTrue();
   });
 
   it('should reset and clear validators for payment detail controls', () => {
@@ -313,6 +368,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     fixture.detectChanges();
 
     // Simulate value change in creditorType to 'individual'
+    creditorTypeControl.markAsDirty();
     creditorTypeControl.setValue('individual');
 
     // Check that resetNameValidators was called
@@ -352,6 +408,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     fixture.detectChanges();
 
     // Simulate value change in creditorType to 'company'
+    creditorTypeControl.markAsDirty();
     creditorTypeControl.setValue('company');
 
     // Check that resetNameValidators was called

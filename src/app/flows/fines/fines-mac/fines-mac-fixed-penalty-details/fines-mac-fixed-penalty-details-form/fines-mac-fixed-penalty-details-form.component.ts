@@ -84,6 +84,12 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   extends AbstractFormAliasBaseComponent
   implements OnInit, OnDestroy
 {
+  private readonly vehicleOffenceControls = [
+    'fm_fp_offence_details_vehicle_registration_number',
+    'fm_fp_offence_details_driving_licence_number',
+    'fm_fp_offence_details_nto_nth',
+    'fm_fp_offence_details_date_nto_issued',
+  ];
   @Output() protected override formSubmit = new EventEmitter<IFinesMacFixedPenaltyDetailsForm>();
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);
@@ -95,6 +101,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   protected readonly finesPrefix = 'fm_';
   protected readonly fixedPenaltyPrefix = 'fm_fp_';
   protected readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
+  public readonly vehicleOffenceConditionalId = 'fm_fp_offence_details_offence_type_vehicle_conditional';
 
   @Input() public defendantType!: string;
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
@@ -241,7 +248,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    */
   private updateOffenceControlValidators(): void {
     const offenceType = this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].value;
-    if (offenceType === 'vehicle') {
+    const isVehicle = offenceType === 'vehicle';
+    if (isVehicle) {
       this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`);
       this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`);
     } else {
@@ -257,6 +265,18 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       `${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`
     ].updateValueAndValidity();
     this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].updateValueAndValidity();
+
+    for (const controlName of this.vehicleOffenceControls) {
+      const control = this.form.controls[controlName as keyof typeof this.form.controls];
+      if (control) {
+        if (isVehicle) {
+          control.enable({ emitEvent: false });
+        } else {
+          control.disable({ emitEvent: false });
+        }
+        control.updateValueAndValidity({ emitEvent: false });
+      }
+    }
   }
 
   /**

@@ -2,7 +2,6 @@ import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mock
 
 import {
   USER_STATE_MOCK_NO_PERMISSION,
-  USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
 

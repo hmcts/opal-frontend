@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesMacCreateAccountControlNames } from '../validators/fines-mac-create-account-control-names.validators';
 import { IFinesMacCreateAccountFieldErrors } from '../interfaces/fines-mac-create-account-field-errors.interface';
@@ -65,7 +65,8 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly routingPath = PAGES_ROUTING_PATHS;
 
-  @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true })
+  public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
     ([key, value]) => ({
       key: key.replaceAll(/\s+/g, ''),
@@ -89,6 +90,8 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
     ],
   ).map(([key, value]) => ({ key, value }));
   override fieldErrors: IFinesMacCreateAccountFieldErrors = FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS;
+  public readonly fineDefendantConditionalId = 'fm_create_account_fine_defendant_type_conditional';
+  public readonly fixedPenaltyDefendantConditionalId = 'fm_create_account_fixed_penalty_defendant_type_conditional';
 
   /**
    * Sets up the account details form with the necessary form controls.
@@ -98,12 +101,15 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
       fm_create_account_business_unit_id: new FormControl(null, [Validators.required]),
       fm_create_account_account_type: new FormControl(null, [Validators.required]),
       fm_create_account_defendant_type: new FormControl(null),
+      fm_create_account_fine_defendant_type: new FormControl(null),
+      fm_create_account_fixed_penalty_defendant_type: new FormControl(null),
     });
   }
 
   /**
    * Sets up a listener for changes in the account type form control.
    * When the account type changes, it triggers the handleAccountTypeChange method.
+   * Side effects: registers a subscription cleaned up in ngOnDestroy.
    */
   private setupAccountTypeListener(): void {
     this.form
@@ -115,28 +121,60 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   /**
    * Handles the change of the account type.
    * @param accountType - The selected account type.
+   * @remarks Enables the matching defendant type control and disables the others.
    */
   private handleAccountTypeChange(accountType: string): void {
-    const { fieldName, validators, fieldsToRemove } =
-      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesAccountTypes] ?? {};
+    const fineConfig = this.accountTypeDefendantTypeControlNames.Fine;
+    const fixedConfig = this.accountTypeDefendantTypeControlNames['Fixed Penalty'];
 
-    if (fieldsToRemove) {
-      for (const field of fieldsToRemove) {
-        this.removeControl(field);
-      }
-    }
-
-    if (fieldName && accountType !== FINES_ACCOUNT_TYPES['Conditional Caution']) {
-      this.createControl(fieldName, validators);
+    switch (accountType) {
+      case FINES_ACCOUNT_TYPES.Fine:
+        this.updateDefendantTypeControl(fineConfig.fieldName, true, fineConfig.validators);
+        this.updateDefendantTypeControl(fixedConfig.fieldName, false);
+        break;
+      case FINES_ACCOUNT_TYPES['Fixed Penalty']:
+        this.updateDefendantTypeControl(fixedConfig.fieldName, true, fixedConfig.validators);
+        this.updateDefendantTypeControl(fineConfig.fieldName, false);
+        break;
+      default:
+        this.updateDefendantTypeControl(fineConfig.fieldName, false);
+        this.updateDefendantTypeControl(fixedConfig.fieldName, false);
+        break;
     }
   }
 
   /**
+   * Toggles defendant type controls based on the selected account type.
+   * @param controlName - Name of the defendant type control to update.
+   * @param enabled - Whether the control should be enabled.
+   * @param validators - Validators to apply when enabling the control.
+   * @remarks Uses emitEvent: false to avoid re-triggering value-change handlers during setup.
+   */
+  private updateDefendantTypeControl(controlName: string, enabled: boolean, validators: ValidatorFn[] = []): void {
+    const control = this.form.get(controlName);
+    if (!control) {
+      return;
+    }
+
+    if (enabled) {
+      control.setValidators(validators);
+      control.enable({ emitEvent: false });
+    } else {
+      control.reset(null, { emitEvent: false });
+      control.clearValidators();
+      control.disable({ emitEvent: false });
+    }
+
+    control.updateValueAndValidity({ emitEvent: false });
+  }
+
+  /**
    * Sets the defendant type based on the selected account type.
+   * Side effects: updates the fm_create_account_defendant_type control.
    */
   private setDefendantType(): void {
     const accountType = this.form.get('fm_create_account_account_type')?.value;
-    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesAccountTypes] ?? '';
+    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesAccountTypes] ?? {};
     const fieldValue = this.form.get(fieldName)?.value;
 
     const defendantTypeMap: IFinesAccountTypes = {
@@ -165,6 +203,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
 
   /**
    * Handles the form submission event.
+   * Side effects: normalizes the defendant type before delegating to the base handler.
    */
   public override handleFormSubmit(event: SubmitEvent): void {
     this.setDefendantType();

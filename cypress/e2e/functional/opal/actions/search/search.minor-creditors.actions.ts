@@ -456,9 +456,16 @@ export class AccountSearchMinorCreditorsActions {
           return;
         }
 
-        if ($body.find(sel).length > 0) {
-          cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', '');
+        const visibleMatches = $body.find(sel).filter(':visible');
+
+        if (visibleMatches.length > 0) {
+          cy.get(sel, this.commonActions.getTimeoutOptions()).filter(':visible').should('have.value', '');
           log('assert', `Asserted visible ${label ?? sel} is empty`);
+          return;
+        }
+
+        if ($body.find(sel).length > 0) {
+          cy.log('locator', `assertCleared: ${label ?? sel} present but hidden; skipping emptiness assertion`);
         } else {
           // element not in DOM — that's fine for cleared state
           cy.log('locator', `assertCleared: ${label ?? sel} not present in DOM; skipping emptiness assertion`);
@@ -592,8 +599,10 @@ export class AccountSearchMinorCreditorsActions {
       }
       cy.get(L.type.individualConditional, this.commonActions.getTimeoutOptions()).should('be.visible');
     } else {
-      if (!L.panel?.root) throw new TypeError('chooseType: L.panel.root locator is required but missing.');
-      cy.get(L.panel.root, this.commonActions.getTimeoutOptions()).should('be.visible');
+      if (!L.type?.companyConditional) {
+        throw new TypeError('chooseType: L.type.companyConditional locator is required but missing.');
+      }
+      cy.get(L.type.companyConditional, this.commonActions.getTimeoutOptions()).should('be.visible');
     }
   }
 
