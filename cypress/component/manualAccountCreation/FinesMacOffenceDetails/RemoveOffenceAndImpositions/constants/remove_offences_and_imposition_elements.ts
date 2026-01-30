@@ -2,7 +2,7 @@ export const DOM_ELEMENTS = {
   app: 'div.govuk-grid-column-full',
   heading: 'h1.govuk-heading-l',
   caption: 'span.govuk-caption-m',
-  captionText: 'h1.govuk-heading-m',
+  captionText: 'h2.govuk-heading-m',
 
   tableHeadings: 'th.govuk-table__header',
 
