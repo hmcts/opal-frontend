@@ -9,6 +9,7 @@
 export const ManualCreateAccountLocators = {
   pageHeader: 'h1.govuk-heading-l',
   businessUnit: {
+    container: 'opal-lib-alphagov-accessible-autocomplete[inputname="fm_create_account_business_unit_id"]',
     // The accessible autocomplete renders a text input with the provided id/name; older renders append "-autocomplete".
     input:
       'input[id="fm_create_account_business_unit_id-autocomplete"], input[name="fm_create_account_business_unit_id"], input[id="fm_create_account_business_unit_id"]',
