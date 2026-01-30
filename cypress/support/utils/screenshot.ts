@@ -34,19 +34,38 @@ export function captureScenarioScreenshot(
   const safeTag = (tag || 'capture').replace(/[^\w-]+/g, '-').toLowerCase();
   const filename = `scenario-${scenario}-${safeTag}`;
   const relativeName = featurePath ? `${featurePath}/${filename}` : filename;
+  const evidencePath = `${relativeName}.png`;
 
   // Capture a screenshot using Cypress defaults, then mirror it into the evidence folder via a task.
-  const targetFileName = `${relativeName}.png`;
+  const targetFileName = evidencePath;
+  let capturedPath: string | undefined;
+  const userAfterScreenshot = options?.onAfterScreenshot;
+  const screenshotOptions: Partial<Cypress.ScreenshotOptions> = {
+    capture: 'fullPage',
+    ...options,
+    onAfterScreenshot: ($el, props) => {
+      capturedPath = props.path;
+      if (typeof userAfterScreenshot === 'function') {
+        userAfterScreenshot($el, props);
+      }
+    },
+  };
 
   return cy
-    .screenshot(relativeName, { capture: 'fullPage', ...options })
+    .screenshot(relativeName, screenshotOptions)
     .then(() =>
-      cy.task('screenshot:saveEvidence', { filename: targetFileName }, { log: false }).then((savedPath) => {
-        if (!savedPath) return undefined;
-        return cy.readFile(savedPath as string, 'base64').then((base64) => {
-          attach(base64, { mediaType: 'base64:image/png', fileName: targetFileName });
-        });
-      }),
+      cy
+        .task(
+          'screenshot:saveEvidence',
+          capturedPath ? { from: capturedPath, evidencePath } : { filename: targetFileName, evidencePath },
+          { log: false },
+        )
+        .then((savedPath) => {
+          if (!savedPath) return undefined;
+          return cy.readFile(savedPath as string, 'base64').then((base64) => {
+            attach(base64, { mediaType: 'base64:image/png', fileName: targetFileName });
+          });
+        }),
     )
     .then(() => undefined) as Cypress.Chainable<void>;
 }

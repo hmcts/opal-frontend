@@ -1,4 +1,3 @@
-@UAT-Technical
 Feature: Fixed Penalty Failed Account Validation (PO-1816)
   As a checker user
   I want to view and validate failed Fixed Penalty draft accounts

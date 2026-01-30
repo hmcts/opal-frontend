@@ -163,8 +163,8 @@ When('I cancel fixed penalty account deletion', () => {
  * @step Submits the fixed penalty account and records the generated account number.
  * @description Clicks Submit for review, waits for POST response, and logs the id for cleanup.
  */
-When('I submit the fixed penalty account for review and capture the account number', () => {
-  log('navigate', 'Submitting fixed penalty account and capturing id');
+When('I submit the fixed penalty account for review and capture the draft account id', () => {
+  log('navigate', 'Submitting fixed penalty account and capturing draft account id');
   flow().submitForReviewAndCapture();
 });
 

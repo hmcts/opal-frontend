@@ -1,4 +1,4 @@
-@ManualAccountCreation @EmployerDetails @PO-272 @PO-280 @PO-368 @PO-434 @PO-435 @UAT-Technical
+@ManualAccountCreation @EmployerDetails @PO-272 @PO-280 @PO-368 @PO-434 @PO-435
 Feature: Manual account creation - Employer Details
   #This feature file contains tests for the Employer Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the EmployerDetailsComponent.cy.ts component tests
