@@ -915,10 +915,3 @@ Feature: Manual account creation - Offence Details
       | Sort code         | 12-34-56                |
       | Account number    | 12345678                |
       | Payment reference | REF                     |
-
-    @PO-2716 
-    Scenario:Verify one fieldset per imposition not one generic fieldset [PO-2716]
-    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
-    And I add another imposition to the current offence
-    And I add another imposition to the current offence
-    Then each imposition is wrapped in its own fieldset

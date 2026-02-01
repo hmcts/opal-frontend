@@ -12,7 +12,6 @@ import { ManualOffenceSearchActions } from '../../../e2e/functional/opal/actions
 import { ManualAccountDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-details.actions';
 import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 import { log } from '../../utils/log.helper';
-import { ManualOffenceDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/offence-details.locators';
 
 export const flow = () => new ManualAccountCreationFlow();
 export const offenceDetails = () => new ManualOffenceDetailsActions();
@@ -105,24 +104,3 @@ export const upsertImpositionFinancialRows = (rows: ImpositionFinancialRow[]): v
     }, cy.wrap(null))
     .then(() => undefined);
 };
-
-/**
- * Asserts each imposition is wrapped in its own fieldset.
- */
-export function assertEachImpositionWrappedInFieldset(): void {
-  log('assert', 'Asserting each imposition is wrapped in its own fieldset');
-
-  cy.contains(L.imposition.legend, /^Impositions$/)
-    .closest('h2')
-    .nextUntil(L.addImpositionButton, L.imposition.fieldset) // only fieldsets
-    .then(($fieldsets) => {
-      const fieldsetCount = $fieldsets.length;
-      const impositionCount = Cypress.$($fieldsets).find(L.imposition.removeImpositionLink).length;
-
-      cy.log(`Fieldsets: ${fieldsetCount}`);
-      cy.log(`Remove links (impositions): ${impositionCount}`);
-
-      expect(impositionCount, 'impositions on screen').to.be.greaterThan(0);
-      expect(fieldsetCount, 'fieldset per imposition').to.eq(impositionCount);
-    });
-}

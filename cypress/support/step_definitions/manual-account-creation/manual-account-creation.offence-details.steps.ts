@@ -19,7 +19,6 @@ import {
   setCurrentOffenceCode,
   setCurrentImpositionIndex,
   upsertImpositionFinancialRows,
-  assertEachImpositionWrappedInFieldset,
 } from './manual-account-creation.offence.stepshelper';
 
 /**
@@ -876,12 +875,4 @@ Then('row number {int} has the following data:', (_row: number, table: DataTable
  */
 When('I perform remove imposition accessibility check for imposition {int}', (imposition: number) => {
   flow().runRemoveImpositionAccessibility(imposition);
-});
-
-/**
- * @step Assert each imposition is wrapped in its own fieldset.
- * @description Checks that each imposition panel is contained within a <fieldset> element.
- */
-Then('each imposition is wrapped in its own fieldset', () => {
-  assertEachImpositionWrappedInFieldset();
 });

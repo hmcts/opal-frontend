@@ -34,8 +34,6 @@ export const ManualOffenceDetailsLocators = {
     showMinorCreditorLink: 'a:contains("Show details")',
     changeMinorCreditorLink: 'a:contains("Change")',
     removeMinorCreditorLink: 'a:contains("Remove")',
-    legend: 'legend',
-    fieldset: 'fieldset.govuk-fieldset',
   },
   minorCreditorForm: {
     pageHeader: Common.pageHeader,
