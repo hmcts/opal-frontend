@@ -132,7 +132,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     },
   );
 
-  it('should have only one h1 element', { tags: ['@PO-2017'] }, () => {
+  it('should have only one h1 element', { tags: ['@PO-2717'] }, () => {
     setupComponent();
     cy.get('h1').should('have.length', 1);
   });
