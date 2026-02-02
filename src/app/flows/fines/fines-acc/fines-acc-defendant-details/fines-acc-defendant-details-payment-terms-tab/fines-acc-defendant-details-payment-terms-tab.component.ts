@@ -46,7 +46,7 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
     if (payment_terms.instalment_amount) return 'Instalments only';
 
     const typeCode = payment_terms.payment_terms_type?.payment_terms_type_code;
-    if (typeCode === 'B') return 'Pay by date';
+    if (typeCode === 'B') return 'Pay in full';
     if (typeCode === 'P') return 'Paid';
     return 'Paid'; // default
   }
