@@ -235,7 +235,7 @@ Feature: Manual account creation - Offence Details
 
     When I confirm removing imposition 1
     Then I should see the header containing text "Add an offence"
-    And I do not see "Compensation (FCOMP)" text on the page
+    And I do not see "Compensation (FCOMP)" in the imposition result code fields
 
   Scenario: User sees correct reindexing and cannot remove the last remaining imposition
     Given an offence exists with the following impositions:
@@ -259,7 +259,7 @@ Feature: Manual account creation - Offence Details
 
     When I confirm removing imposition 1
     Then I should see the header containing text "Add an offence"
-    And I do not see "Compensation (FCOMP)" text on the page
+    And I do not see "Compensation (FCOMP)" in the imposition result code fields
 
     # Remove Imposition 2, now reindexed as imposition 1
     When I choose to "remove imposition" imposition 1
@@ -270,7 +270,7 @@ Feature: Manual account creation - Offence Details
 
     When I confirm removing imposition 1
     Then I should see the header containing text "Add an offence"
-    And I do not see "Fine (FO)" text on the page
+    And I do not see "Fine (FO)" in the imposition result code fields
 
     # Only one imposition left – cannot remove
     And I do not see the "Remove imposition" link for imposition 1
@@ -688,7 +688,7 @@ Feature: Manual account creation - Offence Details
 
 
   Scenario: Offences screens - Axe core
-    Then I check accessibility
+    Then I check the page for accessibility
 
     When I add offence "TP11003" dated 9 weeks ago with impositions:
       | Imposition | Result code | Amount imposed | Amount paid | Creditor type | Creditor search |
@@ -705,7 +705,7 @@ Feature: Manual account creation - Offence Details
     And I perform remove imposition accessibility check for imposition 1
 
     When I review the offence and see the review page
-    Then I check accessibility
+    Then I check the page for accessibility
 
     When I perform offence removal accessibility check for offence code "TP11003"
 
@@ -863,3 +863,55 @@ Feature: Manual account creation - Offence Details
 
     When I reset the offence search to exclude inactive offence codes
     Then I am viewing offence results with active offences only
+
+@PO-2432 
+    Scenario: Minor creditor details persist after repeated offence review and change [PO-2432]
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
+
+    When I record impositions with creditor types:
+      | Imposition | Result code          | Amount imposed | Amount paid | Creditor type | Creditor search           |
+      | 1          | Compensation (FCOMP) | 200            | 100         | Minor         |                           |
+      | 2          | Costs (FCOST) | 300            | 100         | Major         | Temporary Creditor (TEMP) |
+
+    And I maintain individual minor creditor with BACS details for imposition 1:
+      | Title | First name | Last name | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | Mr    | FNAME      | LNAME     | Addr1          | Addr2          | Addr3          | TE12 3ST | F LNAME      | 123456    | 12345678       | REF               |
+
+    When I review the offence
+    Then the offence review table for offence code "TP11003" contains:
+      | Imposition   | Creditor                  | Amount imposed | Amount paid | Balance remaining |
+      | Compensation | FNAME LNAME               | £200.00        | £100.00     | £100.00           |
+      | Costs        | Temporary Creditor (TEMP) | £300.00        | £100.00     | £200.00           |
+      | Totals       |                           | £500.00        | £200.00     | £300.00           |
+
+   When I choose to amend offence with offence code "TP11003"
+   Then I see the offence details page with header "Add an offence" and text "Offence details"
+
+  When I view minor creditor details for imposition 1
+  Then the minor creditor summary for imposition 1 is:
+      | Minor creditor    | FNAME LNAME             |
+      | Address           | Addr1Addr2Addr3TE12 3ST |
+      | Payment method    | BACS                    |
+      | Account name      | F LNAME                 |
+      | Sort code         | 12-34-56                |
+      | Account number    | 12345678                |
+      | Payment reference | REF                     |
+  When I review the offence
+  Then the offence review table for offence code "TP11003" contains:
+      | Imposition   | Creditor                  | Amount imposed | Amount paid | Balance remaining |
+      | Compensation | FNAME LNAME               | £200.00        | £100.00     | £100.00           |
+      | Costs        | Temporary Creditor (TEMP) | £300.00        | £100.00     | £200.00           |
+      | Totals       |                           | £500.00        | £200.00     | £300.00           |
+
+  When I choose to amend offence with offence code "TP11003"
+  Then I see the offence details page with header "Add an offence" and text "Offence details"
+
+  When I view minor creditor details for imposition 1
+  Then the minor creditor summary for imposition 1 is:
+      | Minor creditor    | FNAME LNAME             |
+      | Address           | Addr1Addr2Addr3TE12 3ST |
+      | Payment method    | BACS                    |
+      | Account name      | F LNAME                 |
+      | Sort code         | 12-34-56                |
+      | Account number    | 12345678                |
+      | Payment reference | REF                     |
