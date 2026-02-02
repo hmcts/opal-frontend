@@ -50,6 +50,6 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
       response: string;
     }>;
     warrant_number: string;
-  };
+  } | null;
   next_enforcement_action_data: string;
 }
