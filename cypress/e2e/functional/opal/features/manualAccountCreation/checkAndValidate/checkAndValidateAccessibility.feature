@@ -1,3 +1,4 @@
+@UAT-Technical
 Feature: Accessibility Tests for Check and Validate Screens
   # This feature file ensures that all screens in the Check and Validate flow meet accessibility standards using Axe-Core.
 
@@ -11,9 +12,9 @@ Feature: Accessibility Tests for Check and Validate Screens
   Scenario: Rejected tab is accessible for rejected draft account
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
-      | account.defendant.surname   | Test          |
+      | account.defendant.surname   | TEST{uniq}          |
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
-    Then I see the following text "Test, Accessibility"
+    Then I see the following text "TEST{uniq}, Accessibility"
     And I check the page for accessibility
 
   Scenario: Approved tab is accessible
@@ -27,28 +28,28 @@ Feature: Accessibility Tests for Check and Validate Screens
   Scenario: Check and submit task list is accessible for rejected draft
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
-      | account.defendant.surname   | Test          |
+      | account.defendant.surname   | TEST{uniq}          |
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
-    And I open the draft account for defendant "Test, Accessibility"
-    Then I see the following text "Check and submit"
+    And I open the draft account for defendant "TEST{uniqUpper}, Accessibility"
+    Then I see the following text on the page "Check and submit"
     And I check the page for accessibility
 
   Scenario: Check account details page is accessible for rejected draft
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
-      | account.defendant.surname   | Test          |
+      | account.defendant.surname   | TEST{uniq}          |
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
-    And I open the draft account for defendant "Test, Accessibility"
-    And I check the manual account details for account header "Miss Accessibility TEST"
+    And I open the draft account for defendant "TEST{uniqUpper}, Accessibility"
+    And I check the manual account details for account header "Miss Accessibility TEST{uniqUpper}"
     And I check the page for accessibility
 
   Scenario: Submitting a rejected draft for review shows confirmation
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
-      | account.defendant.surname   | Test          |
+      | account.defendant.surname   | TEST{uniq}          |
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
-    And I open the draft account for defendant "Test, Accessibility"
-    And I check the manual account details for account header "Miss Accessibility TEST"
+    And I open the draft account for defendant "TEST{uniqUpper}, Accessibility"
+    And I check the manual account details for account header "Miss Accessibility TEST{uniqUpper}"
     When I submit the manual account for review
-    Then I see the following text "You have submitted Accessibility Test's account for review"
+    Then I see the following text on the page "You have submitted Accessibility TEST{uniq}'s account for review"
     And I check the page for accessibility

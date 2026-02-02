@@ -1,4 +1,4 @@
-@ManualAccountCreation @AccountCommentsAndNotes @PO-272 @PO-344 @PO-345 @PO-469 @PO-499 @PO-500
+@ManualAccountCreation @AccountCommentsAndNotes @PO-272 @PO-344 @PO-345 @PO-469 @PO-499 @PO-500 @UAT-Technical
 Feature: Manual account creation - Account Comments and Notes
   #This feature file contains tests for the Account Comments and Notes page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the AccountCommentsAndNotesComponent.cy.ts component tests
@@ -80,4 +80,4 @@ Feature: Manual account creation - Account Comments and Notes
   Scenario: Account Comments and Notes - Axe Core
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
     When I view the "Account comments and notes" task
-    Then I check accessibility
+    Then I check the page for accessibility

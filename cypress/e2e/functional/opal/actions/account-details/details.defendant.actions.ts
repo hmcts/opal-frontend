@@ -1,33 +1,27 @@
 /**
- * @fileoverview AccountDetailsDefendantActions
- * Provides reusable UI interactions and assertions for the Defendant Details page.
+ * @file details.defendant.actions.ts
+ * @description Provides reusable UI interactions and assertions for the Defendant Details page.
  * Supports both individual and company account contexts.
- *
- * @module actions/account.details.actions
  */
 import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant-details.locators';
 import { CommonActions } from '../common/common.actions';
 
+/** Actions and assertions for the Defendant tab on Account Details. */
 export class AccountDetailsDefendantActions {
   readonly common = new CommonActions();
 
   /**
-   * Assert page header contains expected text
-   * @param expected
-   */
-  assertHeaderContains(expected: string): void {
-    cy.get(L.header, { timeout: 15000 }).should('contain.text', expected);
-  }
-
-  /**
    * Assert section header text matches expectation
-   * @param expected
+   * @param expected - Expected heading text.
    */
   assertSectionHeader(expected: string): void {
-    cy.get(L.defendantTabHeader.title, { timeout: 10000 })
+    cy.get(L.defendantTabHeader.title, this.common.getTimeoutOptions())
       .should('be.visible')
-      .invoke('text')
-      .then((t) => expect(t.trim().toLowerCase()).to.contain(expected.trim().toLowerCase()));
+      .should(($h2) => {
+        const actual = $h2.text().trim().toLowerCase();
+        const exp = expected.trim().toLowerCase();
+        expect(actual).to.contain(exp);
+      });
   }
 
   /**
@@ -36,7 +30,7 @@ export class AccountDetailsDefendantActions {
    * Ensures the tab header is visible first, scrolls the link into view,
    * then clicks it. Optionally waits for a supplied form selector to appear.
    *
-   * @param {Object} [opts]
+   * @param {Object} [opts] - Optional configuration for the click/wait.
    * @param {number} [opts.timeout=10000] - Max time to wait for elements.
    * @param {string} [opts.formSelector] - If provided, waits for this form to be visible after clicking.
    */
@@ -60,6 +54,6 @@ export class AccountDetailsDefendantActions {
    * @param expected text expected in the name field
    */
   assertDefendantNameContains(expected: string): void {
-    cy.get(L.defendant.fields.name, { timeout: 10000 }).should('contain.text', expected);
+    cy.get(L.defendant.fields.name, this.common.getTimeoutOptions()).should('contain.text', expected);
   }
 }

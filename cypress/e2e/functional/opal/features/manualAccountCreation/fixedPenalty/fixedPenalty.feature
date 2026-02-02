@@ -1,3 +1,4 @@
+@UAT-Technical
 Feature: Manual fixed penalty account creation - Create Draft Account
 
   Rule: Adult or youth fixed penalty review
@@ -10,7 +11,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Court details    | Enforcement court      | Aram Court (123)             |
         | Personal details | Title                  | Mr                           |
         | Personal details | First names            | John                         |
-        | Personal details | Last name              | Smith                        |
+        | Personal details | Last name              | Smith{uniq}                  |
         | Personal details | Date of birth          | 01/01/1980                   |
         | Personal details | Address line 1         | 123 High Street              |
         | Personal details | Postcode               | SW1A 1AA                     |
@@ -35,7 +36,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Label         | Value           |
         | Title         | Mr              |
         | First names   | John            |
-        | Last name     | Smith           |
+        | Last name     | Smith{uniq}     |
         | Date of birth | 01/01/1980      |
         | Address       | 123 High Street |
       And the fixed penalty review "Offence details" summary is:
@@ -72,7 +73,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     @PO-1796
     Scenario: Submit adult or youth fixed penalty for review
       When I submit the fixed penalty account for review and capture the account number
-      Then I see the following text "You've submitted this account for review"
+      Then I see the following text on the page "You've submitted this account for review"
 
     @PO-1796
     Scenario: Submission failure shows global error for adult or youth
@@ -178,7 +179,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Section         | Field                  | Value                             |
         | Court details   | Issuing Authority      | Central London County Court (372) |
         | Court details   | Enforcement court      | Johns Maintenance Court (249)     |
-        | Company details | Company name           | Example Corporation Ltd           |
+        | Company details | Company name           | Example Corp Ltd {uniq}           |
         | Company details | Address line 1         | 123 Business Park                 |
         | Company details | Address line 2         | Commerce Way                      |
         | Company details | Postcode               | EC1A 1BB                          |
@@ -201,7 +202,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Enforcement court | Johns Maintenance Court (249)     |
       And the fixed penalty review "Company details" summary is:
         | Label        | Value                   |
-        | Company name | Example Corporation Ltd |
+        | Company name | Example Corp Ltd {uniq} |
         | Address      | 123 Business Park       |
       And the fixed penalty review "Offence details" summary is:
         | Label            | Value                                    |
@@ -241,7 +242,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     @PO-1796
     Scenario: Submit company fixed penalty for review
       When I submit the fixed penalty account for review and capture the account number
-      Then I see the following text "You've submitted this account for review"
+      Then I see the following text on the page "You've submitted this account for review"
 
     @PO-1796
     Scenario: Submission failure shows global error for company

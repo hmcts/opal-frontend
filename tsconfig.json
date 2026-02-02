@@ -21,23 +21,26 @@
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
+    "noUnusedLocals": true,
+    "allowSyntheticDefaultImports": true,
+
     "paths": {
-      "@app/api-client/*": ["src/app/api-client/*"],
+      "@app/*": ["./src/app/*"],
       "@constants/*": ["./src/app/constants/*"],
       "@services/fines/*": ["./src/app/flows/fines/services/*"],
       "@routing/pages/*": ["./src/app/pages/routing/*"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*"],
       "@routing/flows/*": ["./src/app/flows/routing/*"]
-    },
-    "allowSyntheticDefaultImports": true
+    }
   },
+
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src", "node_modules/cypress", "src/app/interfaces/.ts"],
+  "include": ["src", "node_modules/cypress", "src/app/interfaces/**/*.ts"],
   "exclude": [
     "node_modules/cypress",
     "**/*.mock.ts",
@@ -46,7 +49,3 @@
     "**/types/generated/**"
   ]
 }
-
-// include + exclude - Issue with cypress + jasmine
-
-// https://github.com/cypress-io/cypress/issues/7552#issuecomment-717329891

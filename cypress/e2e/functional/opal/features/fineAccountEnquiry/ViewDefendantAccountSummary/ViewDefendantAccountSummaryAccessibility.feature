@@ -6,13 +6,13 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     And I clear all approved accounts
 
   @PO-777
-  Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality
+  Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status                          | Submitted                      |
       | account.defendant.forenames             | John                           |
-      | account.defendant.surname               | AccDetailSurname               |
-      | account.defendant.email_address_1       | John.AccDetailSurname@test.com |
+      | account.defendant.surname               | AccDetailSurname{uniq}               |
+      | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
       | account.defendant.telephone_number_home | 02078259314                    |
       | account.account_type                    | Fine                           |
       | account.prosecutor_case_reference       | PCR-AUTO-002                   |
@@ -20,14 +20,14 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
       | account.collection_order_made_today     | false                          |
       | account.payment_card_request            | false                          |
       | account.defendant.dob                   | 2002-05-15                     |
-    And I search for the account by last name "AccDetailSurname" and verify the page header is "Mr John ACCDETAILSURNAME"
+    And I search for the account by last name "AccDetailSurname{uniq}" and verify the page header is "Mr John ACCDETAILSURNAME{uniqUpper}"
 
     #  Check Accessibility on Add Comments Page
     When I open the Comments page from the defendant summary and verify the page contents
     Then I check the page for accessibility and navigate back
 
     # Check Accessibility with Form Data Entered
-    When I save the following comments and verify the account header is "Mr John ACCDETAILSURNAME":
+    When I save the following comments and verify the account header is "Mr John ACCDETAILSURNAME{uniqUpper}":
       | field   | text         |
       | Comment | Comment Test |
       | Line 1  | Line1 Test   |
@@ -39,22 +39,22 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     # Create & publish a company account then check accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
       | Account_status                      | Submitted              |
-      | account.defendant.company_name      | Accdetail comp         |
-      | account.defendant.email_address_1   | Accdetailcomp@test.com |
+      | account.defendant.company_name      | Accdetail comp{uniq}         |
+      | account.defendant.email_address_1   | Accdetailcomp{uniq}@test.com |
       | account.defendant.post_code         | AB23 4RN               |
       | account.account_type                | Fine                   |
       | account.prosecutor_case_reference   | PCR-AUTO-003           |
       | account.collection_order_made       | false                  |
       | account.collection_order_made_today | false                  |
       | account.payment_card_request        | false                  |
-    When I open the company account details for "Accdetail comp"
+    When I open the company account details for "Accdetail comp{uniq}"
 
     # Check Accessibility on Add Comments Page for Company
     When I open the Comments page from the defendant summary and verify the page contents
     Then I check the page for accessibility and navigate back
 
     # Check Accessibility with Company Form Data Entered
-    When I save the following comments and verify the account header is "Accdetail comp":
+    When I save the following comments and verify the account header is "Accdetail comp{uniq}":
       | field   | text            |
       | Comment | Company Comment |
       | Line 1  | Company Line1   |
@@ -67,8 +67,8 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
       | Account_status                          | Submitted                       |
       | account.defendant.forenames             | Michael                         |
-      | account.defendant.surname               | ParentGuardianSurname           |
-      | account.defendant.email_address_1       | Michael.ParentGuardian@test.com |
+      | account.defendant.surname               | ParentGuardianSurname{uniq}           |
+      | account.defendant.email_address_1       | Michael.ParentGuardian{uniq}@test.com |
       | account.defendant.telephone_number_home | 02078259318                     |
       | account.account_type                    | Fine                            |
       | account.prosecutor_case_reference       | PCR-AUTO-007                    |
@@ -76,14 +76,14 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
       | account.collection_order_made_today     | false                           |
       | account.payment_card_request            | false                           |
       | account.defendant.dob                   | 2010-05-15                      |
-    When I search for the account by last name "ParentGuardianSurname" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME"
+    When I search for the account by last name "ParentGuardianSurname{uniq}" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}"
 
     # Check Accessibility on Add Comments Page for Parent Guardian Account
     When I open the Comments page from the defendant summary and verify the page contents
     Then I check the page for accessibility and navigate back
 
     # Check Accessibility with Parent Guardian Form Data Entered
-    When I save the following comments and verify the account header is "Miss Michael PARENTGUARDIANSURNAME":
+    When I save the following comments and verify the account header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}":
       | field   | text                    |
       | Comment | Parent Guardian Comment |
       | Line 1  | Parent Guardian Line1   |

@@ -12,6 +12,7 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_TITLES } from './constants/fines-acc-defendant-routing-titles.constant';
 import { defendantAccountPartyResolver } from './resolvers/defendant-account-party.resolver';
+import { defendantAccountPaymentTermsLatestResolver } from './resolvers/defendant-account-payment-terms-latest.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -102,6 +103,14 @@ export const routing: Routes = [
             (c) => c.FinesAccPaymentTermsAmendDeniedComponent,
           ),
         canActivate: [routePermissionsGuard],
+        data: {
+          title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-terms'],
+        },
+        resolve: {
+          title: TitleResolver,
+          defendantAccountHeadingData: defendantAccountHeadingResolver,
+          defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver,
+        },
       },
       {
         path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['party']}/:partyType/amend`,
@@ -119,6 +128,40 @@ export const routing: Routes = [
         resolve: {
           title: TitleResolver,
           partyAddAmendConvertData: defendantAccountPartyResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`,
+
+        loadComponent: () =>
+          import('../fines-acc-request-payment-card-submit/fines-acc-request-payment-card-submit.component').then(
+            (c) => c.FinesAccRequestPaymentCardSubmitComponent,
+          ),
+        canActivate: [routePermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['amend-payment-terms']],
+          title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-card'],
+          accessDeniedPath: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/permission`,
+        },
+        resolve: {
+          title: TitleResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/:type`,
+
+        loadComponent: () =>
+          import(
+            '../fines-acc-request-payment-card-access-denied/fines-acc-request-payment-card-access-denied.component'
+          ).then((c) => c.FinesAccRequestPaymentCardAccessDeniedComponent),
+        canActivate: [routePermissionsGuard],
+        data: {
+          title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-card'],
+        },
+        resolve: {
+          title: TitleResolver,
+          defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver,
         },
       },
     ],

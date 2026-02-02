@@ -297,13 +297,12 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Navigates to the “Filter by Business Units” flow, preserving the current form value and tab fragment.
+   * Navigates to the “Filter by Business Units” flow, preserving the current form value.
    */
   public goToFilterBusinessUnits(): void {
     this.finesSaStore.setSearchAccountTemporary(this.form.value);
     this.handleRoute(this.finesSaStore.getFilterByBusinessUnitsPath(), {
       nonRelative: false,
-      fragment: this.finesSaStore.activeTab(),
     });
   }
 

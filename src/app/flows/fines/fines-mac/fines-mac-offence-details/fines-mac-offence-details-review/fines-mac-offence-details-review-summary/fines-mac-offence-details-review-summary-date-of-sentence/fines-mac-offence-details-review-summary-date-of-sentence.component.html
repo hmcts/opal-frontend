@@ -8,8 +8,6 @@
     <ng-container name>
       <div class="govuk-!-padding-left-2">Date of sentence</div>
     </ng-container>
-    <ng-container value>{{
-      dateService.toFormat(dateService.getFromFormat(dateOfSentence, 'dd/MM/yyyy'), 'dd MMMM yyyy')
-    }}</ng-container>
+    <ng-container value>{{ dateOfSentence | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</ng-container>
   </div>
 </opal-lib-govuk-summary-list>

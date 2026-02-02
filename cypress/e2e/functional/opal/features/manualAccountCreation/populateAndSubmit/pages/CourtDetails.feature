@@ -1,4 +1,4 @@
-@ManualAccountCreation @CourtDetails @PO-272 @PO-344 @PO-345 @PO-389 @PO-527 @PO-529
+@ManualAccountCreation @CourtDetails @PO-272 @PO-344 @PO-345 @PO-389 @PO-527 @PO-529 @UAT-Technical
 Feature: Manual account creation - Court Details
   #This feature file contains tests for the Court Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the CourtDetailsComponent.cy.ts component tests
@@ -67,7 +67,7 @@ Feature: Manual account creation - Court Details
       | Prosecutor Case Reference (PCR) | 4321 |
 
   Scenario: Court Details - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility
 
   Scenario: (AC.6) Grey navigation links routes correctly [@PO-272, @PO-389]
     When I complete manual court details:

@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for the Manual Account Creation **Minor creditor** form.
- * Encapsulates field entry, radio/checkbox selection, and cancel/save handling.
+ * @file Actions for the Manual Account Creation **Minor creditor** form.
+ * @description Encapsulates field entry, radio/checkbox selection, and cancel/save handling.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -9,6 +9,9 @@ import { CommonActions } from '../common/common.actions';
 const log = createScopedLogger('ManualOffenceMinorCreditorActions');
 import { MinorCreditorFieldKey, MinorCreditorType } from '../../../../../support/utils/macFieldResolvers';
 
+/**
+ * Actions for the Minor Creditor form within Manual Account Creation.
+ */
 export class ManualOffenceMinorCreditorActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
@@ -136,6 +139,11 @@ export class ManualOffenceMinorCreditorActions {
       .click({ force: true });
   }
 
+  /**
+   * Resolves a minor creditor field key to its selector.
+   * @param field Logical field key for the minor creditor form.
+   * @returns Selector string targeting the field.
+   */
   private resolveFieldSelector(field: MinorCreditorFieldKey): string {
     switch (field) {
       case 'title':
@@ -167,6 +175,13 @@ export class ManualOffenceMinorCreditorActions {
     }
   }
 
+  /**
+   * Types into a minor creditor field and asserts the value.
+   * @param selector Field selector to target.
+   * @param value Value to type.
+   * @param label Logical label for logging.
+   * @returns Chainable Cypress command.
+   */
   private typeAndAssert(selector: string, value: string, label: string): void {
     cy.get(selector, this.common.getTimeoutOptions())
       .should('exist')

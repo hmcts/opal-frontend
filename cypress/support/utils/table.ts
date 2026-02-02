@@ -1,8 +1,15 @@
-// cypress/support/utils/table.ts
+/**
+ * @file table.ts
+ * @description Cucumber DataTable conversion helpers.
+ */
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import set from 'lodash/set';
 
-/** Converts a Cucumber DataTable to a nested object using dot-path keys. */
+/**
+ * Converts a Cucumber DataTable to a nested object using dot-path keys.
+ * @param dataTable Source Cucumber data table to convert.
+ * @returns Nested object keyed by the provided dot-paths.
+ */
 export function convertDataTableToNestedObject(dataTable: DataTable): Record<string, any> {
   const overrides: Record<string, any> = {};
   const rows = dataTable.rowsHash();

@@ -1,4 +1,4 @@
-@ManualAccountCreation @ContactDetails @PO-272 @PO-344 @PO-345 @PO-419 @PO-371 @PO-370 @PO-358
+@ManualAccountCreation @ContactDetails @PO-272 @PO-344 @PO-345 @PO-419 @PO-371 @PO-370 @PO-358 @UAT-Technical
 Feature: Manual account creation - Contact Details
   #This feature file contains tests for the Contact Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the ContactDetailsComponent.cy.ts component tests
@@ -96,4 +96,4 @@ Feature: Manual account creation - Contact Details
     And I see a manual contact inline error "Enter primary email address in the correct format, like name@example.com" for "Primary email address"
 
   Scenario: Contact Details - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility

@@ -72,7 +72,6 @@ Feature: Account Search and Matches
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, selected tab"
 
-
   @PO-705
   Scenario: Back returns to search with data intact after all-3-fields error
     When I search using the following inputs:
@@ -94,9 +93,9 @@ Feature: Account Search and Matches
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, selected tab"
     Examples:
-      | accountNumber | reference | lastName |
-      | 12345678      | REF-123   |          |
-      |               | REF-123   | Smith    |
+      | accountNumber | reference | lastName    |
+      | 12345678      | REF-123   |             |
+      |               | REF-123   | Smith       |
 
 
   @PO-712
@@ -132,9 +131,9 @@ Feature: Account Search and Matches
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
     Examples:
-      | accountNumber | reference | companyName |
-      |               | REF-123   | CompanyOne  |
-      | 2345678       | REF-123   |             |
+      | accountNumber | reference | companyName     |
+      |               | REF-123   | CompanyOne      |
+      | 2345678       | REF-123   |                 |
 
   @PO-715
   #- AC5i.
@@ -157,7 +156,7 @@ Feature: Account Search and Matches
 
   @PO-715
   #-AC9a
-  Scenario Outline: Minor creditors - company type error validation and data persistence
+  Scenario Outline: Minor creditors - company type error validation with examples
     And I view the Minor Creditors search form
     When I search using the following inputs:
       | minor creditor type      | Company         |
@@ -174,13 +173,13 @@ Feature: Account Search and Matches
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
     Examples:
-      | accountNumber | reference | companyName |
-      | 12345678      | REF-123   | CompanyOne  |
-      | 12345678      |           | CompanyOne  |
-      |               | REF-123   | CompanyOne  |
+      | accountNumber | reference | companyName     |
+      | 12345678      | REF-123   | CompanyOne      |
+      | 12345678      |           | CompanyOne      |
+      |               | REF-123   | CompanyOne      |
 
 
-  Scenario: Minor creditors - company type error validation and data persistence
+  Scenario: Minor creditors - company type displays validation message when name, address and postcode are missing
     #-AC9a
     And I view the Minor Creditors search form
     When I search using the following inputs:
@@ -246,7 +245,7 @@ Feature: Account Search and Matches
       | individual last name | Graham     |
     Then I see the Search results page
     # AC10 Check Back Link Works Correctly
-    When I click on the "Back" link
+    When I go back from the results page
     Then I see the "Search for an account" page for minor creditors - individual with the following details:
       | minor creditor type  | Individual |
       | individual last name | Graham     |
@@ -289,7 +288,7 @@ Feature: Account Search and Matches
     # AC1a, AC1b, AC1c
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
       | Account_status                      | Submitted              |
-      | account.defendant.company_name      | Test CGI Comp 1        |
+      | account.defendant.company_name      | Test CGI Comp 1{uniq}  |
       | account.defendant.email_address_1   | Accdetailcomp@test.com |
       | account.defendant.post_code         | AB23 4RN               |
       | account.account_type                | Fine                   |
@@ -300,8 +299,8 @@ Feature: Account Search and Matches
     And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status                          | Submitted                      |
       | account.defendant.forenames             | John                           |
-      | account.defendant.surname               | AccWithComp                    |
-      | account.defendant.email_address_1       | John.AccDetailSurname@test.com |
+      | account.defendant.surname               | AccWithComp{uniq}                    |
+      | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
       | account.defendant.telephone_number_home | 02078259314                    |
       | account.account_type                    | Fine                           |
       | account.prosecutor_case_reference       | PCRAUTO008                     |
@@ -337,7 +336,7 @@ Feature: Account Search and Matches
     #AC6
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
       | Account_status                      | Submitted         |
-      | account.defendant.company_name      | Test CGI Co       |
+      | account.defendant.company_name      | Test CGI Co{uniq}       |
       | account.defendant.email_address_1   | test@test.com     |
       | account.defendant.post_code         | AB23 4RN          |
       | account.account_type                | Fine              |
@@ -361,7 +360,7 @@ Feature: Account Search and Matches
     #AC6a - Return only exact match
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
       | Account_status                      | Submitted      |
-      | account.defendant.company_name      | Test CGI Co A  |
+      | account.defendant.company_name      | Test CGI Co A{uniq}  |
       | account.defendant.email_address_1   | testA@test.com |
       | account.defendant.post_code         | AB23 4RN       |
       | account.account_type                | Fine           |
@@ -371,7 +370,7 @@ Feature: Account Search and Matches
       | account.payment_card_request        | false          |
     And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
       | Account_status                      | Submitted      |
-      | account.defendant.company_name      | Test CGI Co B  |
+      | account.defendant.company_name      | Test CGI Co B{uniq}  |
       | account.defendant.email_address_1   | testB@test.com |
       | account.defendant.post_code         | AB23 4RN       |
       | account.account_type                | Fine           |
@@ -609,7 +608,7 @@ Feature: Account Search and Matches
       | address line 1            | 123 Test Street |
       | postcode                  | SW1A 1AA        |
     And I return to the dashboard using the HMCTS link
-    When I navigate to Search For An Account
+    When I open Search for an Account
     Then I see the "Search for an account" page for individuals with the following details:
       | account number            |  |
       | reference or case number  |  |

@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Contact details task.
- * Manages contact field entry, navigation CTAs, cancel handling, and inline errors.
+ * @file Actions for Manual Account Creation - Contact details task.
+ * @description Manages contact field entry, navigation CTAs, cancel handling, and inline errors.
  */
 import { ManualContactDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/contact-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
@@ -21,6 +21,7 @@ export class ManualContactDetailsActions {
 
   /**
    * Asserts the Contact details page is loaded with the expected header.
+   * @param expectedHeader Expected page header text.
    */
   assertOnContactDetailsPage(expectedHeader: string = 'contact details'): void {
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/contact-details');
@@ -29,6 +30,7 @@ export class ManualContactDetailsActions {
 
   /**
    * Fills contact details fields supplied in the payload.
+   * @param payload Field/value pairs for contact details.
    */
   fillContactDetails(payload: Partial<Record<ManualContactFieldKey, string>>): void {
     const entries = Object.entries(payload ?? {}).filter(([, v]) => v !== undefined);
@@ -63,6 +65,7 @@ export class ManualContactDetailsActions {
 
   /**
    * Clears a single contact details field.
+   * @param field Contact field key to clear.
    */
   clearField(field: ManualContactFieldKey): void {
     log('clear', `Clearing contact field: ${field}`);
@@ -71,6 +74,8 @@ export class ManualContactDetailsActions {
 
   /**
    * Sets a single contact details field.
+   * @param field Contact field key to set.
+   * @param value Text value to enter.
    */
   setFieldValue(field: ManualContactFieldKey, value: string): void {
     log('type', `Setting contact field: ${field}`, { value });
@@ -79,6 +84,8 @@ export class ManualContactDetailsActions {
 
   /**
    * Asserts the value of a contact details field.
+   * @param field Contact field key to assert.
+   * @param expected Expected field value.
    */
   assertFieldValue(field: ManualContactFieldKey, expected: string): void {
     cy.get(this.getSelector(field), this.common.getTimeoutOptions()).should('have.value', expected);
@@ -86,6 +93,8 @@ export class ManualContactDetailsActions {
 
   /**
    * Asserts an inline error message for a given field.
+   * @param field Contact field key to target.
+   * @param expected Expected inline error text.
    */
   assertInlineError(field: ManualContactFieldKey, expected: string): void {
     cy.get(this.getSelector(field), this.common.getTimeoutOptions())
@@ -119,6 +128,7 @@ export class ManualContactDetailsActions {
 
   /**
    * Handles Cancel click with a specified confirmation choice.
+   * @param choice Confirmation choice (Cancel/Ok/Stay/Leave).
    */
   cancelAndChoose(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
     const accept = /ok|leave/i.test(choice);

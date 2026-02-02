@@ -1,6 +1,6 @@
 /**
- * @fileoverview Actions for Manual Account Creation - Fixed Penalty review page.
- * Encapsulates summary assertions, change-link navigation, submission, and error handling.
+ * @file Actions for Manual Account Creation - Fixed Penalty review page.
+ * @description Encapsulates summary assertions, change-link navigation, submission, and error handling.
  */
 import { ManualReviewAccountActions } from './review-account.actions';
 import { FixedPenaltyReviewLocators as L } from '../../../../../shared/selectors/manual-account-creation/fixed-penalty.locators';
@@ -77,9 +77,10 @@ export class FixedPenaltyReviewActions {
 
   /**
    * Submits the Fixed Penalty account for review.
+   * @returns Cypress chainable for the submit action.
    */
-  submitForReview(): void {
-    this.review.submitForReview();
+  submitForReview(): Cypress.Chainable<void> {
+    return this.review.submitForReview();
   }
 
   /**

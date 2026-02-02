@@ -8,7 +8,7 @@ registerCypressGrep();
 beforeEach(function () {
   const test = this.currentTest;
 
-  // @ts-ignore
+  // @ts-expect-error Cypress test metadata is untyped here
   const tags = test?._testConfig.unverifiedTestConfig.tags;
 
   if (tags && tags.length > 0) {

@@ -1,5 +1,6 @@
 /**
- * @fileoverview AccountSearchMinorCreditorsActions
+ * @file AccountSearchMinorCreditorsActions
+ * @description Minor Creditors search page actions.
  *
  * Minor Creditors search page actions.
  *
@@ -21,6 +22,7 @@ type SimpleType = 'individual' | 'company';
 
 const log = createScopedLogger('AccountSearchMinorCreditorsActions');
 
+/** Actions for the Minor Creditors panel within Account Search. */
 export class AccountSearchMinorCreditorsActions {
   private readonly commonActions = new CommonActions();
 
@@ -210,6 +212,10 @@ export class AccountSearchMinorCreditorsActions {
    * Setters - use locator-file selectors only. Throw TypeError if required locator missing.
    */
 
+  /**
+   * Sets the Individual First names field.
+   * @param value - Value to type into the field.
+   */
   public setFirstNames(value: string): void {
     log('action', `Setting First names to "${value}"`);
     const sel = L.individual.firstNamesInput;
@@ -219,6 +225,10 @@ export class AccountSearchMinorCreditorsActions {
     cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
+  /**
+   * Sets the Individual Last name field.
+   * @param value - Value to type into the field.
+   */
   public setLastName(value: string): void {
     log('action', `Setting Last name to "${value}"`);
     const sel = L.individual.lastNameInput;
@@ -228,6 +238,10 @@ export class AccountSearchMinorCreditorsActions {
     cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
+  /**
+   * Sets the Individual Address line 1 field.
+   * @param value - Value to type into the field.
+   */
   public setIndividualAddressLine1(value: string): void {
     log('action', `Setting Individual Address line 1 to "${value}"`);
     const sel = L.individual.addressLine1Input;
@@ -237,6 +251,10 @@ export class AccountSearchMinorCreditorsActions {
     cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
+  /**
+   * Sets the Individual Postcode field.
+   * @param value - Value to type into the field.
+   */
   public setIndividualPostcode(value: string): void {
     log('action', `Setting Individual Postcode to "${value}"`);
     const sel = L.individual.postcodeInput;
@@ -246,6 +264,10 @@ export class AccountSearchMinorCreditorsActions {
     cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
+  /**
+   * Sets the Company name field.
+   * @param value - Value to type into the field.
+   */
   public setCompanyName(value: string): void {
     log('action', `Setting Company name to "${value}"`);
     const sel = L.company.companyNameInput;
@@ -255,6 +277,10 @@ export class AccountSearchMinorCreditorsActions {
     cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
+  /**
+   * Sets the Company Address line 1 field.
+   * @param value - Value to type into the field.
+   */
   public setCompanyAddressLine1(value: string): void {
     log('action', `Setting Company Address line 1 to "${value}"`);
     const sel = L.company.companyAddressLine1Input;
@@ -264,6 +290,10 @@ export class AccountSearchMinorCreditorsActions {
     cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
+  /**
+   * Sets the Company Postcode field.
+   * @param value - Value to type into the field.
+   */
   public setCompanyPostcode(value: string): void {
     log('action', `Setting Company Postcode to "${value}"`);
     const sel = L.company.companyPostcodeInput;
@@ -278,6 +308,7 @@ export class AccountSearchMinorCreditorsActions {
    *
    * Requires locator-file entry L.individual.lastNameExactMatchCheckbox.
    * Uses GOV.UK pattern-safe interaction (no visibility assertion on the input itself).
+   * @param checked - Whether the checkbox should be checked.
    */
   public setLastNameExactMatch(checked: boolean): void {
     log('action', `Setting Minor Creditor last name exact match to ${checked}`);
@@ -305,6 +336,7 @@ export class AccountSearchMinorCreditorsActions {
    * Sets the "First names exact match" checkbox for Minor Creditor Individuals.
    *
    * Requires locator-file entry L.individual.firstNamesExactMatchCheckbox.
+   * @param checked - Whether the checkbox should be checked.
    */
   public setFirstNamesExactMatch(checked: boolean): void {
     log('action', `Setting Minor Creditor first names exact match to ${checked}`);
@@ -340,6 +372,7 @@ export class AccountSearchMinorCreditorsActions {
   /**
    * Mapping-driven field assertions for Minor Creditors.
    * (Shared account/reference assertions intentionally omitted.)
+   * @returns Mapping of field keys to assertion handlers.
    */
   private get fieldAssertions(): Record<
     string,
@@ -369,6 +402,7 @@ export class AccountSearchMinorCreditorsActions {
    * No UI changes here — assertions only read/feature-detect the DOM and skip if the
    * relevant elements are not present. Any required radio selection should be done
    * by the flow before calling this method.
+   * @param map - Normalised key/value map from the DataTable.
    */
   public assertAllFieldValuesFromMap(map: Record<string, string>): void {
     for (const [key, cfg] of Object.entries(this.fieldAssertions)) {
@@ -504,6 +538,7 @@ export class AccountSearchMinorCreditorsActions {
    * NOTE: This implementation is **fallback-free** — it requires the radio fieldset
    * to be present (or the method will throw). This keeps behavior explicit and
    * surfaces missing locators quickly.
+   * @param type - Target Minor Creditor type to select.
    */
   public chooseType(type: MinorCreditorType | SimpleType): void {
     const simple = this.normalizeType(type);
@@ -527,6 +562,8 @@ export class AccountSearchMinorCreditorsActions {
    * - Asserts the radio is checked and that the conditional content is visible.
    *
    * Throws TypeError for any missing required locators.
+   * @param simple - Normalised type identifier.
+   * @param $body - Root body element used for presence checks.
    */
   private chooseTypeUsingFieldset(simple: SimpleType, $body: JQuery<HTMLElement>): void {
     // sanity checks for required locators
@@ -562,6 +599,7 @@ export class AccountSearchMinorCreditorsActions {
 
   /**
    * Prepare sample values for the specified MinorCreditorType.
+   * @param type - Target type to populate sample data for.
    */
   public prepareSample(type: MinorCreditorType): void {
     log('action', `Preparing Minor creditors sample values for ${type}`);
@@ -630,6 +668,7 @@ export class AccountSearchMinorCreditorsActions {
 
   /**
    * Assert the selected Minor Creditor type (Individual | Company).
+   * @param expectedRaw - Raw type value from the DataTable (Individual | Company).
    */
   public assertTypeEquals(expectedRaw: string): void {
     log('assert', `Asserting Minor Creditor type equals "${expectedRaw}"`);
@@ -660,6 +699,7 @@ export class AccountSearchMinorCreditorsActions {
 
   /**
    * Return whether the Minor Creditors panel is active (async).
+   * @returns Chainable resolving to `true` when the Minor Creditors panel is present.
    */
   public isActiveSync(): Cypress.Chainable<boolean> {
     return cy.get('body', this.commonActions.getTimeoutOptions()).then(($b) => {

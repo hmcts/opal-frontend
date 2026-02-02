@@ -64,6 +64,8 @@ cypress/videos
 cypress/screenshots
 cypress/downloads
 cypress/results
+cypress/artifacts
+functional-output/account_evidence
 functional-output
 smoke-output
 runner-results

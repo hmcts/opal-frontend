@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { FinesMacStore } from './stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
+import { OpalFines } from '../services/opal-fines-service/opal-fines.service';
 @Component({
   selector: 'app-fines-mac',
   imports: [RouterOutlet],
@@ -12,6 +13,7 @@ import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deact
 export class FinesMacComponent implements OnDestroy {
   private readonly globalStore = inject(GlobalStore);
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly opalFines = inject(OpalFines);
 
   /**
    * If the user navigates externally from the site or closes the tab
@@ -21,7 +23,7 @@ export class FinesMacComponent implements OnDestroy {
    *
    * @returns boolean
    */
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   handleBeforeUnload(): boolean {
     if (this.finesMacStore.unsavedChanges()) {
       return false;
@@ -47,9 +49,10 @@ export class FinesMacComponent implements OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.finesMacStore.resetFinesMacStore();
+    this.finesMacStore.resetStore();
+    this.opalFines.clearDraftAccountsCache();
 
     // Clear any errors...
     this.globalStore.resetBannerError();
