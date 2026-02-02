@@ -84,9 +84,7 @@ export class DraftAccountsCommonActions {
     const tryPage = () => {
       cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
       cy.get('body').then(($body) => {
-        const links = $body
-          .find(L.cells.defendantLink)
-          .filter((_, el) => matchesCandidate(Cypress.$(el).text()));
+        const links = $body.find(L.cells.defendantLink).filter((_, el) => matchesCandidate(Cypress.$(el).text()));
         if (links.length) {
           cy.wrap(links.first()).scrollIntoView().click({ force: true });
           return;
