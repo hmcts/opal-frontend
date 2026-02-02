@@ -51,8 +51,8 @@
       "prison_number": null,
       "interpreter_lang": null,
       "debtor_detail": {
-        "vehicle_make": null,
-        "vehicle_registration_mark": null,
+        "vehicle_make": "Ford Transit",
+        "vehicle_registration_mark": "CO12 MPY",
         "document_language": null,
         "hearing_language": null,
         "employee_reference": null,

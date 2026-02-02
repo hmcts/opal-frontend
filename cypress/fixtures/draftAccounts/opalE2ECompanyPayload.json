@@ -270,7 +270,7 @@
       "instalment_period": "M",
       "lump_sum_amount": null,
       "instalment_amount": 200,
-      "default_days_in_jail": null,
+      "default_days_in_jail": 0,
       "enforcements": null
     },
     "account_notes": [

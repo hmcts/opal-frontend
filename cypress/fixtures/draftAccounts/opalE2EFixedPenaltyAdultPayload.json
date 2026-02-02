@@ -51,8 +51,8 @@
       "prison_number": null,
       "interpreter_lang": null,
       "debtor_detail": {
-        "vehicle_make": null,
-        "vehicle_registration_mark": null,
+        "vehicle_make": "Ford Focus",
+        "vehicle_registration_mark": "AB12 CDE",
         "document_language": null,
         "hearing_language": null,
         "employee_reference": null,
