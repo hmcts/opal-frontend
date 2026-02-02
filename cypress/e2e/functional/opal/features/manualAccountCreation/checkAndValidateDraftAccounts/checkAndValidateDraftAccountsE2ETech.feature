@@ -1,4 +1,4 @@
-Feature: Check and Validate Draft Accounts - E2E Tech
+Feature: Check and Validate Draft Accounts - E2E Technical Scenarios
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
