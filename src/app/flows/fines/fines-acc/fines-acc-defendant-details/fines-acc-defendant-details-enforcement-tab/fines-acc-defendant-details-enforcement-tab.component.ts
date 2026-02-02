@@ -9,7 +9,9 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
-
+import { DatePipe, TitleCasePipe } from '@angular/common';
+import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
+import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
 @Component({
   selector: 'app-fines-acc-defendant-details-enforcement-tab',
   imports: [
@@ -18,6 +20,10 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
     GovukSummaryListRowComponent,
     MojBadgeComponent,
     FinesNotProvidedComponent,
+    DatePipe,
+    TitleCasePipe,
+    GovukTagComponent,
+    GovukDetailsComponent,
   ],
   templateUrl: './fines-acc-defendant-details-enforcement-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
