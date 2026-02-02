@@ -49,14 +49,44 @@ export class DraftAccountsCommonActions {
    */
   openDefendant(defendantName: string): void {
     log('navigate', 'Opening draft account by defendant', { defendantName });
-    const matcher = new RegExp(defendantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const normalizeName = (value: string) =>
+      value
+        .replace(/[\u00a0]/g, ' ')
+        .replace(/[,]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+
+    const buildCandidates = (value: string): string[] => {
+      const trimmed = value.trim();
+      const candidates: string[] = [trimmed];
+      if (trimmed.includes(',')) {
+        const parts = trimmed
+          .split(',')
+          .map((part) => part.trim())
+          .filter(Boolean);
+        if (parts.length >= 2) {
+          const swapped = `${parts.slice(1).join(' ')} ${parts[0]}`.trim();
+          candidates.push(swapped);
+        }
+      }
+      return Array.from(new Set(candidates.map((candidate) => normalizeName(candidate))));
+    };
+
+    const candidateNames = buildCandidates(defendantName);
+    const matchesCandidate = (text: string) => {
+      const normalizedText = normalizeName(text);
+      return candidateNames.some((candidate) => normalizedText.includes(candidate));
+    };
     /**
      * Walk pagination until a matching defendant link is found.
      */
     const tryPage = () => {
       cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
       cy.get('body').then(($body) => {
-        const links = $body.find(L.cells.defendantLink).filter((_, el) => matcher.test(Cypress.$(el).text()));
+        const links = $body
+          .find(L.cells.defendantLink)
+          .filter((_, el) => matchesCandidate(Cypress.$(el).text()));
         if (links.length) {
           cy.wrap(links.first()).scrollIntoView().click({ force: true });
           return;
