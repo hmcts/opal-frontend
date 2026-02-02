@@ -20,17 +20,22 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
 
   // Links
   enforcementStatusLink: '.govuk-link',
+  detailsLink: '.govuk-details__summary-text',
 
   // Table labels
   tableTitle: '.govuk-summary-card__title',
   collectionOrderStatus: '#enforcementOverviewDetailsCollection_order_statusKey',
   daysInDefault: '#enforcementOverviewDetailsDays_in_defaultKey',
   enforcementCourt: '#enforcementOverviewDetailsEnforcement_courtKey',
-  enforcementAction: '#enforcementOverviewDetailsEnforcement_actionKey',
-  reason: '#enforcementOverviewDetailsReasonKey',
-  court: '#enforcementOverviewDetailsCourtKey',
-  hearingDate: '#enforcementOverviewDetailsHearing_dateKey',
-  dateAdded: '#enforcementOverviewDetailsDate_addedKey',
+  enforcementAction: '#lastEnforcementActionDetailsEnforcement_actionKey',
+  reason: '#lastEnforcementActionDetailsReasonKey',
+  enforcer: '#lastEnforcementActionDetailsEnforcerKey',
+  warrantNumber: '#lastEnforcementActionDetailsWarrant_numberKey',
+  dateAdded: '#lastEnforcementActionDetailsDate_addedKey',
+
+  //Last enforcement action details section
+  detailsDaysInDefault: '[id="enforcementActionDetailsDays in defaultKey"]',
+  detailsReason: '#enforcementActionDetailsReasonKey',
 
   // Actions column
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
