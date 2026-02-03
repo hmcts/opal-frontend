@@ -7,6 +7,11 @@ import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccessibilityActions');
+/**
+ * This is a work around to allow exemption of specific violations related to
+ * https://github.com/alphagov/govuk-frontend/issues/979
+ */
+const DEFAULT_VIOLATION_EXEMPTIONS = ['aria-allowed-attr'];
 
 /**
  * Accessibility helpers for running axe checks within flows.
@@ -19,13 +24,39 @@ export class AccessibilityActions {
   public checkAccessibilityOnly(): void {
     log('a11y', 'Running axe-core accessibility audit on current page');
 
+    const exemptionIds = new Set(DEFAULT_VIOLATION_EXEMPTIONS.filter((exemption) => exemption?.trim().length));
+
+    if (exemptionIds.size) {
+      log('a11y', 'Applying accessibility violation exemptions', { exemptions: [...exemptionIds] });
+    }
+
     cy.injectAxe();
-    cy.checkA11y(undefined, undefined, (violations) => {
-      if (violations.length) {
-        log('a11y', `${violations.length} violation(s) found`, { violations });
-        assert.fail(`${violations.length} accessibility violation(s) detected.`);
-      }
-    });
+    cy.checkA11y(
+      undefined,
+      undefined,
+      (violations) => {
+        const filteredViolations = exemptionIds.size
+          ? violations.filter((violation) => !exemptionIds.has(violation.id))
+          : violations;
+
+        if (exemptionIds.size) {
+          const exemptedIds = violations
+            .filter((violation) => exemptionIds.has(violation.id))
+            .map((violation) => violation.id);
+          if (exemptedIds.length) {
+            log('a11y', 'Excluded violations from assertions', { exemptions: exemptedIds });
+          }
+        }
+
+        if (filteredViolations.length) {
+          log('a11y', `${filteredViolations.length} violation(s) found`, {
+            violations: filteredViolations,
+          });
+          assert.fail(`${filteredViolations.length} accessibility violation(s) detected.`);
+        }
+      },
+      true,
+    );
   }
 
   /**
@@ -78,13 +109,18 @@ export class AccessibilityActions {
       }
 
       cy.injectAxe();
-      cy.checkA11y(undefined, undefined, (violations) => {
-        if (violations.length) {
-          const violationMsg = `${violations.length} violation(s) found on ${url}`;
-          log('a11y', violationMsg, { url, violations });
-          assert.fail(`${violations.length} accessibility violation(s) detected on ${url}.`);
-        }
-      });
+      cy.checkA11y(
+        undefined,
+        undefined,
+        (violations) => {
+          if (violations.length) {
+            const violationMsg = `${violations.length} violation(s) found on ${url}`;
+            log('a11y', violationMsg, { url, violations });
+            assert.fail(`${violations.length} accessibility violation(s) detected on ${url}.`);
+          }
+        },
+        true,
+      );
     }
   }
 }

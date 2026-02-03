@@ -48,6 +48,7 @@ import { IOpalFinesCache } from './interfaces/opal-fines-cache.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
+import { IOpalFinesAccountRequestPaymentCardResponse } from './interfaces/opal-fines-account-request-payment-card-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -913,5 +914,34 @@ export class OpalFines {
         };
       }),
     );
+  }
+
+  /**
+   * Sends a request to add a payment card request for a defendant account.
+   *
+   * @param defendantAccountId - The unique identifier of the defendant account.
+   * @param version - The version string for optimistic concurrency control (If-Match header).
+   * @param businessUnitId - The business unit identifier.
+   * @param businessUnitUserId - The business unit user identifier.
+   * @returns An Observable that emits the response of the payment card request addition.
+   */
+  public addDefendantAccountPaymentCardRequest(
+    defendantAccountId: number,
+    version: string,
+    businessUnitId: string,
+    businessUnitUserId: string,
+  ): Observable<IOpalFinesAccountRequestPaymentCardResponse> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-card-request`;
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+    if (businessUnitUserId !== undefined) {
+      headers['Business-Unit-User-Id'] = businessUnitUserId;
+    }
+    return this.http.post<IOpalFinesAccountRequestPaymentCardResponse>(url, {}, { headers });
   }
 }

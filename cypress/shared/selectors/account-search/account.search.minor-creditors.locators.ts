@@ -25,9 +25,9 @@ export const AccountSearchMinorCreditorsLocators = {
 
   panel: {
     /** Minor creditors panel root (useful for scoping). */
-    root: '#minor-creditors',
+    root: '#minorCreditors',
     /** Optional heading within panel, if needed. */
-    heading: '#minor-creditors h1.govuk-heading-l',
+    heading: '#minorCreditors h1.govuk-heading-l',
   },
 
   // ──────────────────────────────
@@ -36,13 +36,15 @@ export const AccountSearchMinorCreditorsLocators = {
   type: {
     fieldset: '#fsa_search_account_minor_creditors_minor_creditor_type',
     /** Radio: Individual */
-    individualRadio: '#individual',
+    individualRadio: '#fsa_search_account_minor_creditors_minor_creditor_type-individual',
     /** Radio: Company */
-    companyRadio: '#company',
+    companyRadio: '#fsa_search_account_minor_creditors_minor_creditor_type-company',
     /** Optional: if a select is ever used instead of radios */
     selectFallback: 'select#fsa_search_account_minor_creditors_minor_creditor_type',
     /** Conditional wrapper that reveals the Individual fields */
-    individualConditional: '#fsa_search_account_minor_creditors_minor_creditor_type-conditional',
+    individualConditional: '#fsa_search_account_minor_creditors_minor_creditor_type_individual',
+    /** Conditional wrapper that reveals the Company fields */
+    companyConditional: '#fsa_search_account_minor_creditors_minor_creditor_type_company',
   },
 
   // ──────────────────────────────

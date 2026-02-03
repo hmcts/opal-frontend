@@ -1,8 +1,6 @@
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
 import {
-  createDefendantHeaderMockWithName,
   createParentGuardianHeaderMockWithName,
-  DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
 } from './mocks/defendant_details_mock';
 

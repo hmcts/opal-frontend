@@ -9,6 +9,7 @@ let currentScenarioTitle = 'Unknown scenario';
 let currentScenarioStartedAt = new Date().toISOString();
 let currentScenarioFinishedAt = '';
 let currentScenarioFeaturePath = '';
+const scenarioCounters = new Map<string, number>();
 
 /**
  * Set the current scenario title and start time for downstream consumers. Typically called at the start of each test
@@ -27,6 +28,28 @@ export function setCurrentScenarioTitle(title?: string): void {
   Cypress.env('currentScenarioFinishedAt', null);
   Cypress.env('currentScenarioFeaturePath', null);
   Cypress.env('currentScenarioUniq', createUniqSuffix());
+}
+
+/**
+ * Retrieve the next scenario index for a feature key (used for scenario outline evidence filenames).
+ * @param featureKey - Unique key per feature/spec.
+ * @param scenarioTitle - Scenario title to scope the index per feature.
+ * @returns Incremented index for the feature.
+ */
+export function getNextScenarioIndex(featureKey: string, scenarioTitle: string): number {
+  const safeFeature = (featureKey || 'unknown-feature').trim();
+  const safeTitle = (scenarioTitle || 'unknown-scenario').trim();
+  const key = `${safeFeature}::${safeTitle}`;
+  const next = (scenarioCounters.get(key) ?? 0) + 1;
+  scenarioCounters.set(key, next);
+  return next;
+}
+
+/**
+ * Reset per-feature scenario counters (useful for open-mode re-runs).
+ */
+export function resetScenarioCounters(): void {
+  scenarioCounters.clear();
 }
 
 /**

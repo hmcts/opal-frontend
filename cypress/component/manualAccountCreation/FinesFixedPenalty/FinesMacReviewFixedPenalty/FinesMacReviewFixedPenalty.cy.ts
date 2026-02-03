@@ -1,5 +1,5 @@
 import { mount } from 'cypress/angular';
-import { ActivatedRoute, provideRouter, Router, Routes } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { FinesMacStore } from '../../../../../src/app/flows/fines/fines-mac/stores/fines-mac.store';
@@ -11,7 +11,6 @@ import { FINES_COMPANY_FIXED_PENALTY_ACCOUNT_MOCK } from './mocks/fines_mac_revi
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
@@ -21,19 +20,12 @@ import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fin
 import { DOM_ELEMENTS } from './constants/fines_mac_review_fixed_penalty';
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { FinesMacSubmitConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
-  const routes: Routes = [
-    {
-      path: 'submit-confirmation',
-      component: FinesMacSubmitConfirmationComponent,
-    },
-  ];
   let fixedPenaltyMock: IFinesMacState;
 
   // Mock data map based on defendant type
