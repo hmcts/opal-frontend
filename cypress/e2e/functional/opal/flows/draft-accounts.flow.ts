@@ -110,6 +110,34 @@ export class DraftAccountsFlow {
         })
         .then((response) => {
           const body = this.isRecord(response.body) ? response.body : {};
+          const normalizeCourtId = (value: unknown): string | undefined => {
+            if (typeof value === 'string') {
+              const trimmed = value.trim();
+              return trimmed ? trimmed : undefined;
+            }
+            if (typeof value === 'number' && Number.isFinite(value)) {
+              return String(value);
+            }
+            return undefined;
+          };
+          const readImposingCourtId = (record: Record<string, unknown>): string | undefined => {
+            const direct = normalizeCourtId(record['imposing_court_id']);
+            if (direct) return direct;
+            const account = this.isRecord(record['account']) ? record['account'] : null;
+            const offences = account && Array.isArray(account['offences']) ? account['offences'] : [];
+            for (const offence of offences) {
+              if (!this.isRecord(offence)) continue;
+              const fromOffence = normalizeCourtId(offence['imposing_court_id']);
+              if (fromOffence) return fromOffence;
+            }
+            const rootOffences = Array.isArray(record['offences']) ? record['offences'] : [];
+            for (const offence of rootOffences) {
+              if (!this.isRecord(offence)) continue;
+              const fromOffence = normalizeCourtId(offence['imposing_court_id']);
+              if (fromOffence) return fromOffence;
+            }
+            return undefined;
+          };
           const statusValue = typeof body['account_status'] === 'string' ? body['account_status'] : undefined;
           const accountType = typeof body['account_type'] === 'string' ? body['account_type'] : 'draft';
           const accountNumber =
@@ -118,6 +146,7 @@ export class DraftAccountsFlow {
               : this.isRecord(body['account']) && typeof body['account']['account_number'] === 'string'
                 ? body['account']['account_number']
                 : undefined;
+          const imposingCourtId = readImposingCourtId(body);
           const updatedAt =
             typeof body['account_status_date'] === 'string'
               ? body['account_status_date']
@@ -136,6 +165,7 @@ export class DraftAccountsFlow {
             status: statusValue,
             accountId,
             accountNumber,
+            imposingCourtId,
             updatedAt,
             requestPayloads: requestPayloads?.length ? requestPayloads : undefined,
             requestSummary: {
