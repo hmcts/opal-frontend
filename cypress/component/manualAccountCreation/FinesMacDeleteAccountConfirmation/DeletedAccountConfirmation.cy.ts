@@ -1,5 +1,4 @@
 import { mount } from 'cypress/angular';
-import { FinesMacReviewAccountComponent } from 'src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
@@ -27,7 +26,6 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   let finesDraftState = structuredClone(FINES_DRAFT_STATE);
   let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
 
-  let store: any;
   const setupComponent = (
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,

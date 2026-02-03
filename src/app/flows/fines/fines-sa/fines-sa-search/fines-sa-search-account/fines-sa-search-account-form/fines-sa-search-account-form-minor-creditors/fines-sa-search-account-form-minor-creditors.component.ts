@@ -75,6 +75,8 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
       value,
     }),
   );
+  public readonly individualConditionalId = 'fsa_search_account_minor_creditors_minor_creditor_type_individual';
+  public readonly companyConditionalId = 'fsa_search_account_minor_creditors_minor_creditor_type_company';
   /**
    * Convenience accessor for the minor creditor type control from the installed parent form.
    * Returns the control instance; callers should treat it as present once controls are installed.
@@ -293,6 +295,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
     this.minorCreditorType?.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged())
       .subscribe((type) => {
+        this.handleMinorCreditorTypeChange(type);
         if (type === 'individual') {
           // Clear company tab: remove dynamic validators first, then clear field states
           this.clearCompanyDynamicValidators();
@@ -338,6 +341,28 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
     this.setupMinorCreditorTypeListener();
     this.setupIndividualConditionalValidation();
     this.setupCompanyConditionalValidation();
+    this.handleMinorCreditorTypeChange(this.minorCreditorType.value);
+  }
+
+  private handleMinorCreditorTypeChange(type: string | null): void {
+    const enableIndividual = type === 'individual';
+    const enableCompany = type === 'company';
+
+    if (this.individualGroup) {
+      if (enableIndividual) {
+        this.individualGroup.enable({ emitEvent: false });
+      } else {
+        this.individualGroup.disable({ emitEvent: false });
+      }
+    }
+
+    if (this.companyGroup) {
+      if (enableCompany) {
+        this.companyGroup.enable({ emitEvent: false });
+      } else {
+        this.companyGroup.disable({ emitEvent: false });
+      }
+    }
   }
 
   /**

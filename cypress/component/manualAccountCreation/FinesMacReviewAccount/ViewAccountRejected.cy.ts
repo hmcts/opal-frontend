@@ -1,5 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { mount } from 'cypress/angular';

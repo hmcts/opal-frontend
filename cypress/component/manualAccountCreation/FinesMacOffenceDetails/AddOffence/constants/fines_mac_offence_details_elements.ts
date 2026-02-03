@@ -14,7 +14,7 @@ export const DOM_ELEMENTS = {
 
   //labels
   dateOfSentenceLabel: 'label[for = "fm_offence_details_date_of_sentence"]',
-  dateHint: 'div[id = "date-hint"]',
+  dateHint: 'div[id = "fm_offence_details_date_of_sentence-hint"]',
   offenceCodeLabel: 'label[for = "fm_offence_details_offence_cjs_code"]',
   offenceCodeHint: 'div[id = "fm_offence_details_offence_cjs_code-hint"]',
 
@@ -51,10 +51,10 @@ export const impostitionSelectors = (number: number) => ({
   resultCodeAutoCompleteValues: `ul[id = "fm_offence_details_result_id_${number}-autocomplete__listbox"]`,
   amountImposedLabel: `label[for = "fm_offence_details_amount_imposed_${number}"]`,
   amountPaidLabel: `label[for = "fm_offence_details_amount_paid_${number}"]`,
-  majorCreditor: `input[id = "major_${number}"]`,
-  majorCreditorLabel: `label[for = "major_${number}"]`,
-  minorCreditor: `input[id = "minor_${number}"]`,
-  minorCreditorLabel: `label[for = "minor_${number}"]`,
+  majorCreditor: `input[name="fm_offence_details_creditor_${number}"][value="major"]`,
+  majorCreditorLabel: `label[for = "fm_offence_details_creditor_${number}-major_${number}"]`,
+  minorCreditor: `input[name="fm_offence_details_creditor_${number}"][value="minor"]`,
+  minorCreditorLabel: `label[for = "fm_offence_details_creditor_${number}-minor_${number}"]`,
   majorCreditorCode: `input[id = "fm_offence_details_major_creditor_id_${number}-autocomplete"]`,
   majorCreditorCodeLabel: `label[for = "fm_offence_details_major_creditor_id_${number}-autocomplete"]`,
 });
