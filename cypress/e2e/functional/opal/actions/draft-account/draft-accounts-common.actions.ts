@@ -421,7 +421,7 @@ export class DraftAccountsCommonActions {
         }
 
         const next = $body.find(L.pagination.next);
-        const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
+        const hasNext = next.length > 0 && !next.closest('li').hasClass('govuk-pagination__item--disabled');
         if (hasNext) {
           cy.wrap(next.first()).scrollIntoView().click({ force: true });
           cy.get(L.rows, { timeout }).should('exist');
