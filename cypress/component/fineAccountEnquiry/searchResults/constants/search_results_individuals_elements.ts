@@ -64,4 +64,3 @@ export const DOM_ELEMENTS = {
   paginationCurrentPage: '.govuk-pagination__item--current',
   paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
 };
-  
