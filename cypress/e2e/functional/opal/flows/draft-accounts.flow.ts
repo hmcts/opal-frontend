@@ -3,7 +3,8 @@
  * @description Coordinates navigation and assertions across Create/Manage and Check/Validate draft flows,
  * keeping Cucumber steps thin and delegating to shared draft actions.
  */
-import { createScopedLogger } from '../../../../support/utils/log.helper';
+import type { CyHttpMessages } from 'cypress/types/net-stubbing';
+import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { CheckAndValidateDraftsActions } from '../actions/draft-account/check-and-validate-drafts.actions';
 import {
   CheckAndValidateReviewActions,
@@ -16,6 +17,7 @@ import { captureScenarioScreenshot } from '../../../../support/utils/screenshot'
 import { isEvidenceCaptureEnabled } from '../../../../support/utils/evidenceMode';
 
 const log = createScopedLogger('DraftAccountsFlow');
+const logSync = createScopedSyncLogger('DraftAccountsFlow');
 
 type RequestPayloadEntry = {
   source: 'ui';
@@ -247,7 +249,7 @@ export class DraftAccountsFlow {
     };
     if (shouldCapturePayload) {
       const draftAccountUrlPattern = /\/(?:opal-fines-service\/)?draft-accounts\/.*/;
-      const capturePayload = (req) => {
+      const capturePayload = (req: CyHttpMessages.IncomingHttpRequest) => {
         const endpoint = normalizeEndpoint(req.url ?? '');
         const method = req.method?.toUpperCase() || 'PATCH';
         const requestTimestamp = new Date().toISOString();
@@ -262,8 +264,13 @@ export class DraftAccountsFlow {
             direction: 'request',
           });
         }
+        logSync('intercept', 'Captured draft account mutation request', {
+          endpoint,
+          method,
+          hasBody: Boolean(requestBody),
+        });
 
-        req.continue((res) => {
+        req.continue((res: CyHttpMessages.IncomingHttpResponse) => {
           const responseTimestamp = new Date().toISOString();
           const responsePayload = toPayloadRecord(res.body);
           const responseSummary: Record<string, unknown> = { ...(responsePayload ?? {}) };
@@ -271,10 +278,10 @@ export class DraftAccountsFlow {
             responseSummary['status'] = res.statusCode;
           }
           const etagHeader =
-            typeof res.headers?.etag === 'string'
-              ? res.headers.etag
-              : typeof res.headers?.ETag === 'string'
-                ? res.headers.ETag
+            typeof res.headers?.['etag'] === 'string'
+              ? res.headers['etag']
+              : typeof res.headers?.['ETag'] === 'string'
+                ? res.headers['ETag']
                 : undefined;
           if (etagHeader) {
             responseSummary['etag'] = etagHeader;
@@ -289,6 +296,12 @@ export class DraftAccountsFlow {
             timestamp: responseTimestamp,
             payload: responseSummary,
             direction: 'response',
+          });
+          logSync('intercept', 'Captured draft account mutation response', {
+            endpoint,
+            method,
+            status: res.statusCode,
+            hasBody: Boolean(responsePayload),
           });
         });
       };
@@ -306,14 +319,35 @@ export class DraftAccountsFlow {
     captureScenarioScreenshot('check-validate-decision-before-submit');
     this.review.submitDecision();
     if (normalized === 'approve') {
-      const waitForPatchPayloads = shouldCapturePayload
-        ? cy.wrap(null, { log: false }).then(
+      const hasPatchResponse = (): boolean => patchPayloads.some((entry) => entry.direction === 'response');
+      const logPatchCaptureSummary = () => {
+        if (!shouldCapturePayload) return;
+        const requestCount = patchPayloads.filter((entry) => entry.direction === 'request').length;
+        const responseCount = patchPayloads.filter((entry) => entry.direction === 'response').length;
+        const lastEntry = patchPayloads[patchPayloads.length - 1];
+        log('info', 'Draft account approval payload capture summary', {
+          requestCount,
+          responseCount,
+          lastEndpoint: lastEntry?.endpoint,
+          lastMethod: lastEntry?.method,
+        });
+        if (!responseCount) {
+          log('warn', 'No draft account mutation response captured before evidence write');
+        }
+      };
+      const waitForPatchPayloads = (): Cypress.Chainable<void> => {
+        if (!shouldCapturePayload) {
+          return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
+        }
+        return cy
+          .wrap(null, { log: false })
+          .then(
             () =>
               new Cypress.Promise<void>((resolve) => {
                 const start = Date.now();
-                const timeoutMs = 6000;
+                const timeoutMs = 15000;
                 const poll = () => {
-                  if (patchPayloads.length) {
+                  if (hasPatchResponse()) {
                     resolve();
                     return;
                   }
@@ -325,10 +359,11 @@ export class DraftAccountsFlow {
                 };
                 poll();
               }),
-          )
-        : cy.wrap(undefined, { log: false });
+          ) as Cypress.Chainable<void>;
+      };
 
-      return waitForPatchPayloads
+      return waitForPatchPayloads()
+        .then(() => logPatchCaptureSummary())
         .then(() => this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']))
         .then(() => this.captureApprovedAccountEvidence(patchPayloads));
     }
