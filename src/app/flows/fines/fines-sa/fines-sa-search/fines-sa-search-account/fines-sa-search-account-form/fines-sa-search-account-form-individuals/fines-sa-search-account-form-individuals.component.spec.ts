@@ -4,10 +4,25 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesSaSearchAccountFormIndividualsComponent } from './fines-sa-search-account-form-individuals.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 
 describe('FinesSaSearchAccountFormIndividualsComponent', () => {
   let component: FinesSaSearchAccountFormIndividualsComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormIndividualsComponent>;
+  let originalConfigureDatePicker: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+  });
+
+  beforeEach(() => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

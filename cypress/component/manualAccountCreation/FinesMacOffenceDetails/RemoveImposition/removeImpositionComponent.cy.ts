@@ -11,7 +11,6 @@ import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DOM_ELEMENTS } from './constants/remove_imposition_elements';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('FinesRemoveImpositionComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);

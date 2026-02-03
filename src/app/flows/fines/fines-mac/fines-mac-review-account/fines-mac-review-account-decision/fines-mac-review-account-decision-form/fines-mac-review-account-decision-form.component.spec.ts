@@ -4,13 +4,26 @@ import { IFinesMacReviewAccountDecisionForm } from '../interfaces/fines-mac-revi
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FORM_MOCK } from '../mocks/fines-mac-review-account-decision-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacReviewAccountDecisionFormComponent', () => {
   let component: FinesMacReviewAccountDecisionFormComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountDecisionFormComponent>;
   let formSubmit: IFinesMacReviewAccountDecisionForm;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     formSubmit = structuredClone(FINES_MAC_REVIEW_ACCOUNT_DECISION_FORM_MOCK);
 
     await TestBed.configureTestingModule({
@@ -48,7 +61,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
 
   it('should initialize the form with correct controls and validators', () => {
     expect(component.form.contains('fm_review_account_decision')).toBeTrue();
-    expect(component.form.contains('fm_review_account_decision_reason')).toBeTrue();
+    expect(component.form.get('fm_review_account_decision_reason')).toBeTruthy();
 
     const decisionControl = component.form.get('fm_review_account_decision');
     const rejectionReasonControl = component.form.get('fm_review_account_decision_reason');
@@ -58,8 +71,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     decisionControl?.setValue('approve');
     expect(decisionControl?.valid).toBeTrue();
 
-    rejectionReasonControl?.setValue('Some reason');
-    expect(rejectionReasonControl?.valid).toBeTrue();
+    expect(rejectionReasonControl?.disabled).toBeTrue();
   });
 
   it('should add required validator to rejection reason when decision is reject', () => {
@@ -69,6 +81,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     decisionControl?.setValue('reject');
     fixture.detectChanges();
 
+    expect(rejectionReasonControl?.enabled).toBeTrue();
     rejectionReasonControl?.setValue('');
     rejectionReasonControl?.markAsTouched();
     expect(rejectionReasonControl?.hasError('required')).toBeTrue();
@@ -88,7 +101,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
 
     decisionControl?.setValue('approve');
     fixture.detectChanges();
-    rejectionReasonControl?.setValue('');
+    expect(rejectionReasonControl?.disabled).toBeTrue();
     expect(rejectionReasonControl?.hasError('required')).toBeFalse();
   });
 
@@ -106,7 +119,21 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     decisionControl?.setValue('approve');
     fixture.detectChanges();
     expect(rejectionReasonControl?.value).toBeNull();
-    expect(rejectionReasonControl?.valid).toBeTrue();
+    expect(rejectionReasonControl?.disabled).toBeTrue();
+  });
+
+  it('should show the reject conditional only when reject is selected', async () => {
+    await fixture.whenStable();
+    const conditional = fixture.nativeElement.querySelector(`#${component.decisionRejectConditionalId}`);
+    expect(conditional).toBeTruthy();
+    expect(conditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+
+    const rejectInput = fixture.nativeElement.querySelector(
+      `input[aria-controls="${component.decisionRejectConditionalId}"]`,
+    );
+    rejectInput.click();
+    fixture.detectChanges();
+    expect(component.form.get('fm_review_account_decision_reason')?.enabled).toBeTrue();
   });
 
   it('should call initialDecisionFormSetup and super.ngOnInit on ngOnInit', () => {

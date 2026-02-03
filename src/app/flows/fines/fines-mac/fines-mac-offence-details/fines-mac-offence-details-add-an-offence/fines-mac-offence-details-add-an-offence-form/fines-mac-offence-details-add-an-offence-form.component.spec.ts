@@ -27,6 +27,8 @@ import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -36,8 +38,24 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let mockDateService: jasmine.SpyObj<DateService>;
   let finesMacStore: FinesMacStoreType;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let originalConfigureDatePicker: () => void;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     mockOpalFinesService = {
       getOffenceByCjsCode: jasmine
         .createSpy('getOffenceByCjsCode')
@@ -259,9 +277,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should test majorCreditorValidation and add validator when add is true', () => {
     const index = 0;
     const formGroup = new FormGroup({
-      fm_offence_details_major_creditor_id: new FormGroup({
-        fm_offence_details_major_creditor_id_0: new FormControl(''),
-      }),
+      fm_offence_details_major_creditor_id_0: new FormControl(''),
     });
     const formArrayFormGroupControl = component.getFormArrayFormGroupControl(
       formGroup,
@@ -283,9 +299,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should test majorCreditorValidation and remove validator when add is false', () => {
     const index = 0;
     const formGroup = new FormGroup({
-      fm_offence_details_major_creditor_id: new FormGroup({
-        fm_offence_details_major_creditor_id_0: new FormControl('', [Validators.required]),
-      }),
+      fm_offence_details_major_creditor_id_0: new FormControl('', [Validators.required]),
     });
     const formArrayFormGroupControl = component.getFormArrayFormGroupControl(
       formGroup,
@@ -300,6 +314,30 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(component.addFormArrayFormGroupControlValidators).not.toHaveBeenCalled();
     expect(component.removeFormArrayFormGroupControlValidators).toHaveBeenCalledWith(formArrayFormGroupControl);
+    expect(formArrayFormGroupControl.disabled).toBeTrue();
+  });
+
+  it('should toggle creditor conditionals and enable the major creditor control', () => {
+    const impositionsFormGroup = component.getFormArrayFormGroup(0, 'fm_offence_details_impositions');
+    const creditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      0,
+    );
+    const majorCreditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_major_creditor_id',
+      0,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).creditorListener(0);
+
+    creditorControl.setValue('major');
+    expect(majorCreditorControl.enabled).toBeTrue();
+
+    creditorControl.setValue('minor');
+    expect(majorCreditorControl.disabled).toBeTrue();
   });
 
   it('should perform major creditor validation when creditor value is major', () => {

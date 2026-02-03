@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form.component';
 import { ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
@@ -17,6 +18,8 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
@@ -26,6 +29,25 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   let formSubmit: IFinesMacPaymentTermsForm;
   let globalStore: GlobalStoreType;
   let finesMacStore: FinesMacStoreType;
+  let originalConfigureDatePicker: () => void;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
+
+  beforeEach(() => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+  });
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, [
@@ -208,10 +230,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(true);
 
-    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
-    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(true);
-    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
-    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(true);
+    expect(component.form.get('fm_payment_terms_suspended_committal_date')?.enabled).toBeTrue();
+    expect(component.form.get('fm_payment_terms_default_days_in_jail')?.enabled).toBeTrue();
   });
 
   it('should remove controls when has days in default is false', () => {
@@ -222,10 +242,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(false);
 
-    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
-    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(false);
-    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
-    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(false);
+    expect(component.form.get('fm_payment_terms_suspended_committal_date')?.disabled).toBeTrue();
+    expect(component.form.get('fm_payment_terms_default_days_in_jail')?.disabled).toBeTrue();
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
@@ -380,7 +398,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['noEnfListener']();
 
-    expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(true);
+    expect(component.form.get('fm_payment_terms_reason_account_is_on_noenf')?.enabled).toBeTrue();
   });
 
   it('should remove control when hold enforcement on account is false', () => {
@@ -391,7 +409,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['noEnfListener']();
 
-    expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(false);
+    expect(component.form.get('fm_payment_terms_reason_account_is_on_noenf')?.disabled).toBeTrue();
   });
 
   it('should reset and create collection order date when has collection order value is "yes"', () => {
@@ -550,6 +568,31 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     });
   });
 
+  it('should toggle payment term conditional panels and enable controls', async () => {
+    await fixture.whenStable();
+    const payInFullConditionalId = `${component.paymentTermsConditionalIdPrefix}payInFull`;
+    const instalmentsConditionalId = `${component.paymentTermsConditionalIdPrefix}instalmentsOnly`;
+
+    const payInFullConditional = fixture.nativeElement.querySelector(`#${payInFullConditionalId}`);
+    const instalmentsConditional = fixture.nativeElement.querySelector(`#${instalmentsConditionalId}`);
+
+    expect(payInFullConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+    expect(instalmentsConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+
+    const payInFullInput = fixture.nativeElement.querySelector(`input[aria-controls="${payInFullConditionalId}"]`);
+    payInFullInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_payment_terms_pay_by_date')?.enabled).toBeTrue();
+
+    const instalmentsInput = fixture.nativeElement.querySelector(`input[aria-controls="${instalmentsConditionalId}"]`);
+    instalmentsInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_payment_terms_pay_by_date')?.disabled).toBeTrue();
+    expect(component.form.get('fm_payment_terms_instalment_amount')?.enabled).toBeTrue();
+  });
+
   it('should remove controls', () => {
     const controlsToRemove: IAbstractFormArrayControlValidation[] = [
       { controlName: 'control1', validators: [] },
@@ -557,14 +600,15 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       { controlName: 'control3', validators: [] },
     ];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeControl');
+    controlsToRemove.forEach((control) => {
+      component.form.addControl(control.controlName, new FormControl('value'));
+    });
 
     component['removeControls'](controlsToRemove);
 
-    expect(component['removeControl']).toHaveBeenCalledTimes(3);
-    expect(component['removeControl']).toHaveBeenCalledWith('control1');
-    expect(component['removeControl']).toHaveBeenCalledWith('control2');
-    expect(component['removeControl']).toHaveBeenCalledWith('control3');
+    controlsToRemove.forEach((control) => {
+      const formControl = component.form.get(control.controlName);
+      expect(formControl?.disabled).toBeTrue();
+    });
   });
 });
