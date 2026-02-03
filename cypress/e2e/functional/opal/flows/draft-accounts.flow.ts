@@ -306,9 +306,31 @@ export class DraftAccountsFlow {
     captureScenarioScreenshot('check-validate-decision-before-submit');
     this.review.submitDecision();
     if (normalized === 'approve') {
-      return this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']).then(() =>
-        this.captureApprovedAccountEvidence(patchPayloads),
-      );
+      const waitForPatchPayloads = shouldCapturePayload
+        ? cy.wrap(null, { log: false }).then(
+            () =>
+              new Cypress.Promise<void>((resolve) => {
+                const start = Date.now();
+                const timeoutMs = 6000;
+                const poll = () => {
+                  if (patchPayloads.length) {
+                    resolve();
+                    return;
+                  }
+                  if (Date.now() - start >= timeoutMs) {
+                    resolve();
+                    return;
+                  }
+                  setTimeout(poll, 200);
+                };
+                poll();
+              }),
+          )
+        : cy.wrap(undefined, { log: false });
+
+      return waitForPatchPayloads
+        .then(() => this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']))
+        .then(() => this.captureApprovedAccountEvidence(patchPayloads));
     }
     return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
   }
