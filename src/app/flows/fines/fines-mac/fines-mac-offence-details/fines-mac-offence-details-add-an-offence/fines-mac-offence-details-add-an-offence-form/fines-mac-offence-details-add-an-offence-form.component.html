@@ -66,11 +66,11 @@
     }
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
-  <fieldset class="govuk-fieldset">
-    <h2 class="govuk-label-wrapper">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
-    </h2>
-    @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
+  <h2 class="govuk-label-wrapper">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
+  </h2>
+  @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
+    <fieldset class="govuk-fieldset">
       <opal-lib-moj-ticket-panel>
         <div class="govuk-grid-row govuk-form-group">
           <div class="govuk-grid-column-one-half">
@@ -247,15 +247,15 @@
           </div>
         }
       </opal-lib-moj-ticket-panel>
-    }
-    <opal-lib-govuk-button
-      buttonId="addImposition"
-      buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
-      type="button"
-      (buttonClickEvent)="addControlsToFormArray(formArrayControls.length, 'fm_offence_details_impositions')"
-      >Add another imposition</opal-lib-govuk-button
-    >
-  </fieldset>
+    </fieldset>
+  }
+  <opal-lib-govuk-button
+    buttonId="addImposition"
+    buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+    type="button"
+    (buttonClickEvent)="addControlsToFormArray(formArrayControls.length, 'fm_offence_details_impositions')"
+    >Add another imposition</opal-lib-govuk-button
+  >
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">

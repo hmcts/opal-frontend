@@ -614,4 +614,38 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
     },
   );
+
+  it('Each imposition is wrapped in its own fieldset', { tags: ['@PO-2716'] }, () => {
+    setupComponent(null);
+
+    // Prepare three impositions in the store
+    let Imposition = structuredClone(IMPOSITION_MOCK_2);
+    if (!Array.isArray(Imposition)) Imposition = [Imposition];
+    // Ensure at least 3 impositions
+    while (Imposition.length < 3) {
+      Imposition.push(structuredClone(IMPOSITION_MOCK_1)[0] ?? structuredClone(IMPOSITION_MOCK_2)[0]);
+    }
+
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+      structuredClone(Imposition);
+
+    cy.log('assert', 'Asserting each imposition is wrapped in its own fieldset');
+
+    cy.contains(DOM_ELEMENTS.legend, /^Impositions$/)
+      .closest('h2')
+      .nextUntil(DOM_ELEMENTS.addImpositionButton, DOM_ELEMENTS.fieldset) // only fieldsets
+      .then(($fieldsets) => {
+        const fieldsetCount = $fieldsets.length;
+        const impositionCount = Cypress.$($fieldsets).find(DOM_ELEMENTS.removeImpositionLink).length;
+
+        cy.log(`Fieldsets: ${fieldsetCount}`);
+        cy.log(`Remove links (impositions): ${impositionCount}`);
+
+        expect(impositionCount, 'impositions on screen').to.be.greaterThan(0);
+        expect(fieldsetCount, 'fieldset per imposition').to.eq(impositionCount);
+      });
+  });
 });

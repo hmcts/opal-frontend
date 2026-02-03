@@ -6,6 +6,7 @@ export const DOM_ELEMENTS = {
   pageTitle: 'h1.govuk-heading-l',
   legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   errorSummary: 'div.govuk-error-summary',
+  fieldset: 'fieldset.govuk-fieldset',
 
   //Inputs
   dateOfSentenceInput: 'input[id = "fm_offence_details_date_of_sentence"]',
