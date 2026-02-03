@@ -28,6 +28,16 @@ const log = createScopedLogger('DraftAccountsCommonActions');
  */
 export class DraftAccountsCommonActions {
   protected readonly common = new CommonActions();
+  /**
+   * Resolve the Next pagination link and whether another page exists.
+   * @param $body - Cypress-wrapped body element to search within.
+   * @returns JQuery results with the next link and a boolean for availability.
+   */
+  private getNextPagination($body: JQuery<HTMLElement>): { next: JQuery<HTMLElement>; hasNext: boolean } {
+    const next = $body.find(L.pagination.next);
+    const hasNext = next.length > 0 && !next.closest('li').hasClass(L.pagination.disabledItem.replace('.', ''));
+    return { next, hasNext };
+  }
 
   /**
    * Opens a draft account by defendant/company name.
@@ -39,11 +49,42 @@ export class DraftAccountsCommonActions {
    */
   openDefendant(defendantName: string): void {
     log('navigate', 'Opening draft account by defendant', { defendantName });
-    const matcher = new RegExp(defendantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const normalizeName = (value: string) =>
+      value
+        .replace(/[\u00a0]/g, ' ')
+        .replace(/[,]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+
+    const buildCandidates = (value: string): string[] => {
+      const trimmed = value.trim();
+      const candidates: string[] = [trimmed];
+      if (trimmed.includes(',')) {
+        const parts = trimmed
+          .split(',')
+          .map((part) => part.trim())
+          .filter(Boolean);
+        if (parts.length >= 2) {
+          const swapped = `${parts.slice(1).join(' ')} ${parts[0]}`.trim();
+          candidates.push(swapped);
+        }
+      }
+      return Array.from(new Set(candidates.map((candidate) => normalizeName(candidate))));
+    };
+
+    const candidateNames = buildCandidates(defendantName);
+    const matchesCandidate = (text: string) => {
+      const normalizedText = normalizeName(text);
+      return candidateNames.some((candidate) => normalizedText.includes(candidate));
+    };
+    /**
+     * Walk pagination until a matching defendant link is found.
+     */
     const tryPage = () => {
       cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
       cy.get('body').then(($body) => {
-        const links = $body.find(L.cells.defendantLink).filter((_, el) => matcher.test(Cypress.$(el).text()));
+        const links = $body.find(L.cells.defendantLink).filter((_, el) => matchesCandidate(Cypress.$(el).text()));
         if (links.length) {
           cy.wrap(links.first()).scrollIntoView().click({ force: true });
           return;
@@ -152,7 +193,41 @@ export class DraftAccountsCommonActions {
   assertColumnContains(column: DraftAccountsTableColumn, expectedText: string): void {
     const selector = this.resolveColumnSelector(column);
     log('assert', 'Asserting draft table column contains text', { column, expectedText });
-    cy.get(selector, this.common.getTimeoutOptions()).should('contain.text', expectedText);
+    const normalize = (text: string) =>
+      text
+        .replace(/[\u00a0]/g, ' ')
+        .replace(/[\u2013\u2014]/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const expectedNormalized = normalize(expectedText);
+    const timeout = this.common.getTimeoutOptions().timeout;
+
+    const searchPage = () => {
+      cy.get(L.rows, { timeout }).should('exist');
+      cy.get('body').then(($body) => {
+        const cells = $body.find(selector).toArray();
+        const matches = cells.some((cell) =>
+          normalize(Cypress.$(cell).text()).toLowerCase().includes(expectedNormalized.toLowerCase()),
+        );
+
+        if (matches) {
+          return;
+        }
+
+        const next = $body.find(L.pagination.next);
+        const hasNext = next.length > 0 && !next.closest('li').hasClass(L.pagination.disabledItem.replace('.', ''));
+        if (hasNext) {
+          cy.wrap(next.first()).scrollIntoView().click({ force: true });
+          cy.get(L.rows, { timeout }).should('exist');
+          searchPage();
+          return;
+        }
+
+        throw new Error(`No draft row found in column "${column}" containing "${expectedText}".`);
+      });
+    };
+
+    searchPage();
   }
 
   /**
@@ -260,41 +335,65 @@ export class DraftAccountsCommonActions {
   ): void {
     const normalize = (text: string) =>
       text
+        .replace(/[\u00a0]/g, ' ')
         .replace(/[\u2013\u2014]/g, '-')
         .replace(/\s+/g, ' ')
         .trim();
 
     const matchSelector = this.resolveColumnSelector(matchColumn);
+    const expectedNormalized = normalize(matchValue);
+    const searchPage = (): Cypress.Chainable<JQuery<HTMLElement>> =>
+      cy.then(() => {
+        const $body = Cypress.$('body');
+        const $rows = $body.find(L.rows);
+        const rows = Cypress.$.makeArray($rows);
+        const snapshot = rows.map((row) =>
+          Cypress.$(row)
+            .find(matchSelector)
+            .map((_, el) => normalize(Cypress.$(el).text()))
+            .toArray()
+            .join(' | '),
+        );
 
-    cy.get(L.rows, this.common.getTimeoutOptions())
-      .then(($rows) => {
-        const rowIndex = Cypress.$.makeArray($rows).findIndex((row) => {
+        const rowIndex = rows.findIndex((row) => {
           const cellTexts = Cypress.$(row)
             .find(matchSelector)
             .map((_, el) => normalize(Cypress.$(el).text()))
             .toArray();
-          return cellTexts.some((text) => text.includes(normalize(matchValue)));
+          return cellTexts.some((text) => text.includes(expectedNormalized));
         });
 
-        if (rowIndex === -1) {
-          throw new Error(`Row with ${matchColumn} containing "${matchValue}" was not found`);
+        if (rowIndex >= 0) {
+          return cy.wrap($rows.eq(rowIndex));
         }
 
-        return cy.wrap($rows[rowIndex]);
-      })
-      .within(() => {
-        Object.entries(expectations).forEach(([column, value]) => {
-          const selector = this.resolveColumnSelector(column as DraftAccountsTableColumn);
-          const expectedNormalized = normalize(value);
-          cy.get(selector, this.common.getTimeoutOptions()).should(($cells) => {
-            const cellTexts = $cells.map((_, el) => normalize(Cypress.$(el).text())).toArray();
-            expect(
-              cellTexts.some((text) => text.includes(expectedNormalized)),
-              `Expected "${expectedNormalized}" in column ${column}`,
-            ).to.be.true;
-          });
+        const { next, hasNext } = this.getNextPagination($body);
+        if (hasNext) {
+          return cy
+            .wrap(next.first())
+            .scrollIntoView()
+            .click({ force: true })
+            .then(() => searchPage());
+        }
+
+        throw new Error(
+          `Row with ${matchColumn} containing "${matchValue}" was not found. Snapshot: ${snapshot.join(' || ')}`,
+        );
+      }) as Cypress.Chainable<JQuery<HTMLElement>>;
+
+    searchPage().within(() => {
+      Object.entries(expectations).forEach(([column, value]) => {
+        const selector = this.resolveColumnSelector(column as DraftAccountsTableColumn);
+        const expectedNormalized = normalize(value);
+        cy.get(selector, this.common.getTimeoutOptions()).should(($cells) => {
+          const cellTexts = $cells.map((_, el) => normalize(Cypress.$(el).text())).toArray();
+          expect(
+            cellTexts.some((text) => text.includes(expectedNormalized)),
+            `Expected "${expectedNormalized}" in column ${column}`,
+          ).to.be.true;
         });
       });
+    });
   }
 
   /**
