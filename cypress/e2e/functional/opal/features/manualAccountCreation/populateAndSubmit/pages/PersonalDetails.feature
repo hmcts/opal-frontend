@@ -127,7 +127,7 @@ Feature: Manual account creation - Personal Details
       | first names | FNAME EDITED |
 
   Scenario: Personal Details - Axe Core
-    Then I check accessibility
+    Then I check the page for accessibility
 
   Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-433]
     When I complete manual personal details:

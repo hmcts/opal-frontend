@@ -156,7 +156,7 @@ Feature: Account Search and Matches
 
   @PO-715
   #-AC9a
-  Scenario Outline: Minor creditors - company type error validation and data persistence
+  Scenario Outline: Minor creditors - company type error validation with examples
     And I view the Minor Creditors search form
     When I search using the following inputs:
       | minor creditor type      | Company         |
@@ -179,7 +179,7 @@ Feature: Account Search and Matches
       |               | REF-123   | CompanyOne      |
 
 
-  Scenario: Minor creditors - company type error validation and data persistence
+  Scenario: Minor creditors - company type displays validation message when name, address and postcode are missing
     #-AC9a
     And I view the Minor Creditors search form
     When I search using the following inputs:
@@ -245,7 +245,7 @@ Feature: Account Search and Matches
       | individual last name | Graham     |
     Then I see the Search results page
     # AC10 Check Back Link Works Correctly
-    When I click on the "Back" link
+    When I go back from the results page
     Then I see the "Search for an account" page for minor creditors - individual with the following details:
       | minor creditor type  | Individual |
       | individual last name | Graham     |
@@ -324,7 +324,7 @@ Feature: Account Search and Matches
     #AC5b, AC5c, AC5e, AC5f
     Then I see the Individuals search results:
       | Ref | PCRAUTO008 |
-    And I see the Companies search results:
+    And I see the Companies search results by tab switch:
       | Ref | PCRAUTO008 |
     #   #AC7: Verify Back navigation behaviour
     When I return to the Companies search page from the results it is displayed with:
@@ -608,7 +608,7 @@ Feature: Account Search and Matches
       | address line 1            | 123 Test Street |
       | postcode                  | SW1A 1AA        |
     And I return to the dashboard using the HMCTS link
-    When I navigate to Search For An Account
+    When I open Search for an Account
     Then I see the "Search for an account" page for individuals with the following details:
       | account number            |  |
       | reference or case number  |  |

@@ -80,3 +80,12 @@ export function performLogin(email: string): void {
   log('navigate', 'Navigating to /sign-in after session setup');
   cy.visit('/sign-in');
 }
+
+/**
+ * Asserts the "Sign out" link is visible in the global header.
+ */
+export function assertSignOutLinkVisible(): void {
+  log('assert', 'Verifying sign out link is visible');
+  cy.get(L.signOutLink, { timeout: 10_000 }).should('be.visible');
+  log('done', 'Sign out link is visible');
+}

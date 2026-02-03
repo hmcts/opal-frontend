@@ -26,7 +26,10 @@
                 {{ 'No collection order' }}
               }
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (
+              hasAccountMaintenancePermission &&
+              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
+            ) {
               <ng-container action>Change</ng-container>
             }
           </div>
@@ -118,16 +121,20 @@
             }
           </div>
 
-          @if (tabData.last_enforcement_action.reason) {
-            <div
-              opal-lib-govuk-summary-list-row
-              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="lastEnforcementActionDetails"
-              summaryListRowId="reason"
-            >
-              <ng-container name>Reason</ng-container>
-              <ng-container value>{{ tabData.last_enforcement_action.reason }}</ng-container>
-            </div>
+          @if (tabData.last_enforcement_action.result_responses) {
+            @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
+              @if (param.parameter_name === 'reason' && param.response) {
+                <div
+                  opal-lib-govuk-summary-list-row
+                  class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+                  summaryListId="lastEnforcementActionDetails"
+                  summaryListRowId="reason"
+                >
+                  <ng-container name>Reason</ng-container>
+                  <ng-container value>{{ param.response }}</ng-container>
+                </div>
+              }
+            }
           }
 
           @if (tabData.last_enforcement_action.enforcer && tabData.last_enforcement_action.enforcer.enforcer_name) {
@@ -144,7 +151,7 @@
 
           @if (tabData.last_enforcement_action.result_responses) {
             @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
-              @if (param.parameter_name === 'days_in_default' && param.response) {
+              @if (param.parameter_name === 'days in default' && param.response) {
                 <div
                   opal-lib-govuk-summary-list-row
                   class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -232,9 +239,9 @@
                   >
                     <ng-container name>{{ response.parameter_name | titlecase }}</ng-container>
                     <ng-container value>
-                      @if (response.parameter_name === 'hearing_date') {
+                      @if (response.parameter_name === 'hearing date') {
                         {{ response.response | date: 'dd MMMM yyyy' }}
-                      } @else if (response.parameter_name === 'days_in_default') {
+                      } @else if (response.parameter_name === 'days in default') {
                         @let daysValue = +response.response;
                         @let daysText = daysValue === 1 ? 'day' : 'days';
                         {{ daysValue }} {{ daysText }}

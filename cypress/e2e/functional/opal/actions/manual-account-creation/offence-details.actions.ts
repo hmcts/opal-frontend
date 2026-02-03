@@ -243,7 +243,12 @@ export class ManualOffenceDetailsActions {
     const panel = this.getImpositionPanel(index);
 
     // Ensure the minor creditor radio is selected so the link is rendered
-    panel.find('input[id^="minor_"]', this.common.getTimeoutOptions()).first().scrollIntoView().check({ force: true });
+    panel
+      .find(L.imposition.creditorRadio('minor', index), this.common.getTimeoutOptions())
+      .first()
+      .should('exist')
+      .scrollIntoView()
+      .check({ force: true });
 
     this.getImpositionPanel(index)
       .contains('a', 'Add minor creditor details', this.common.getTimeoutOptions())
@@ -266,6 +271,24 @@ export class ManualOffenceDetailsActions {
    */
   getImpositionCount(): Cypress.Chainable<number> {
     return cy.get(this.resultCodeInputSelector, this.common.getTimeoutOptions()).its('length');
+  }
+
+  /**
+   * Asserts a result code text is not present in any imposition result code inputs.
+   * @param text - Result code text expected to be absent.
+   */
+  assertResultCodeAbsentInImpositions(text: string): void {
+    const expected = text.trim().toLowerCase();
+    log('assert', 'Ensuring result code is absent from impositions', { text });
+
+    cy.get(this.resultCodeInputSelector, this.common.getTimeoutOptions())
+      .should('have.length.at.least', 1)
+      .each(($input) => {
+        const actual = String($input.val() ?? '')
+          .trim()
+          .toLowerCase();
+        expect(actual).not.to.contain(expected);
+      });
   }
 
   /**
@@ -310,11 +333,22 @@ export class ManualOffenceDetailsActions {
    */
   assertRemoveImpositionLink(index: number, expectedVisible: boolean = true): void {
     log('assert', 'Checking remove imposition link visibility', { index, expectedVisible });
-    const chain = this.getImpositionPanel(index)
-      .find(L.imposition.removeImpositionLink, this.common.getTimeoutOptions())
-      .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'));
+    const panel = this.getImpositionPanel(index);
 
-    expectedVisible ? chain.should('exist') : chain.should('not.exist');
+    if (expectedVisible) {
+      panel
+        .find(L.imposition.removeImpositionLink, this.common.getTimeoutOptions())
+        .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'))
+        .should('exist');
+      return;
+    }
+
+    panel.then(($panel) => {
+      const matches = $panel
+        .find(L.imposition.removeImpositionLink)
+        .filter((_, el) => Cypress.$(el).text().trim().includes('Remove imposition'));
+      expect(matches.length, 'Remove imposition link absent').to.equal(0);
+    });
   }
 
   /**
@@ -534,7 +568,10 @@ export class ManualOffenceDetailsActions {
    * @returns Chainable wrapping the imposition container.
    */
   private getImpositionPanel(index: number) {
-    return cy.get(L.imposition.resultCodeInput(index), this.common.getTimeoutOptions()).closest(L.imposition.container);
+    return cy
+      .get(L.imposition.resultCodeInput(index), this.common.getTimeoutOptions())
+      .first()
+      .closest(L.imposition.container);
   }
 
   /**

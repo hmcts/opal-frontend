@@ -71,7 +71,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     @PO-1796
     Scenario: Submit adult or youth fixed penalty for review
-      When I submit the fixed penalty account for review and capture the account number
+      When I submit the fixed penalty account for review and capture the draft account id
       Then I see the following text on the page "You've submitted this account for review"
 
     @PO-1796
@@ -178,7 +178,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Section         | Field                  | Value                             |
         | Court details   | Issuing Authority      | Central London County Court (372) |
         | Court details   | Enforcement court      | Johns Maintenance Court (249)     |
-        | Company details | Company name           | Example Corp Ltd {uniq}    |
+        | Company details | Company name           | Example Corp Ltd {uniq}           |
         | Company details | Address line 1         | 123 Business Park                 |
         | Company details | Address line 2         | Commerce Way                      |
         | Company details | Postcode               | EC1A 1BB                          |
@@ -200,9 +200,9 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Issuing Authority | Central London County Court (372) |
         | Enforcement court | Johns Maintenance Court (249)     |
       And the fixed penalty review "Company details" summary is:
-        | Label        | Value                          |
+        | Label        | Value                   |
         | Company name | Example Corp Ltd {uniq} |
-        | Address      | 123 Business Park              |
+        | Address      | 123 Business Park       |
       And the fixed penalty review "Offence details" summary is:
         | Label            | Value                                    |
         | Notice Number    | CORP2025                                 |
@@ -240,7 +240,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     @PO-1796
     Scenario: Submit company fixed penalty for review
-      When I submit the fixed penalty account for review and capture the account number
+      When I submit the fixed penalty account for review and capture the draft account id
       Then I see the following text on the page "You've submitted this account for review"
 
     @PO-1796

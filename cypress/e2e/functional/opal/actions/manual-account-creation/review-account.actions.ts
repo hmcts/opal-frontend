@@ -7,6 +7,8 @@ import { ManualReviewAccountLocators as L } from '../../../../../shared/selector
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
+import type { Interception } from 'cypress/types/net-stubbing';
+import { captureScenarioScreenshot } from '../../../../../support/utils/screenshot';
 
 type SummaryRow = { label: string; value: string };
 type OffenceRow = {
@@ -23,6 +25,14 @@ type OffenceRow = {
 export class ManualReviewAccountActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
+
+  /**
+   * Take a named screenshot for evidence on the review screen.
+   * @param tag - Short label describing the capture moment.
+   */
+  private captureReviewScreenshot(tag: string): void {
+    captureScenarioScreenshot(`manual-review-${tag}`);
+  }
 
   /**
    * Clicks the Check account button from Account details.
@@ -199,12 +209,42 @@ export class ManualReviewAccountActions {
   }
 
   /**
+   * Submits the account and captures success/failure metadata for downstream validation.
+   * @param assertSuccess - Whether to assert a successful submission.
+   * @returns Cypress chainable for the submission flow.
+   */
+  private submitAndCapture(assertSuccess: boolean): Cypress.Chainable<void> {
+    log('navigate', 'Submitting manual account for review');
+    this.captureReviewScreenshot('before-submit');
+    cy.intercept(
+      {
+        method: /POST|PUT/,
+        url: /\/opal-fines-service\/draft-accounts(?:\/.*)?/,
+      },
+      (req) => req,
+    ).as('manualAccountSubmit');
+
+    cy.get(L.submitForReviewButton, this.common.getTimeoutOptions()).should('be.visible').click();
+
+    return (cy.wait('@manualAccountSubmit') as unknown as Cypress.Chainable<void>).then(() => {
+      if (!assertSuccess) {
+        return;
+      }
+      cy.get<Interception>('@manualAccountSubmit').then(({ response }) => {
+        expect(response, 'submit response').to.exist;
+        const status = response?.statusCode ?? 0;
+        expect(status, 'submit status').to.be.gte(200).and.lt(300);
+      });
+    });
+  }
+
+  /**
    * Clicks Submit for review on the review page.
    * @example
    *   review.submitForReview();
+   * @returns Cypress chainable for the submit action.
    */
-  submitForReview(): void {
-    log('navigate', 'Submitting manual account for review');
-    cy.get(L.submitForReviewButton, this.common.getTimeoutOptions()).should('be.visible').click();
+  submitForReview(): Cypress.Chainable<void> {
+    return this.submitAndCapture(false);
   }
 }

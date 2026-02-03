@@ -7,12 +7,12 @@ export const ManualLanguagePreferencesLocators = {
   documentFieldset: '#fm_language_preferences_document_language',
   hearingFieldset: '#fm_language_preferences_hearing_language',
   document: {
-    englishOnly: '#ENDocumentRadioOption',
-    welshAndEnglish: '#CYDocumentRadioOption',
+    englishOnly: 'input[name="fm_language_preferences_document_language"][value="EN"]',
+    welshAndEnglish: 'input[name="fm_language_preferences_document_language"][value="CY"]',
   },
   hearing: {
-    englishOnly: '#ENCourtHearingRadioOption',
-    welshAndEnglish: '#CYCourtHearingRadioOption',
+    englishOnly: 'input[name="fm_language_preferences_hearing_language"][value="EN"]',
+    welshAndEnglish: 'input[name="fm_language_preferences_hearing_language"][value="CY"]',
   },
   saveButton: '#submitForm',
   cancelLink: 'a.govuk-link, button.govuk-link, [role="button"].govuk-link',

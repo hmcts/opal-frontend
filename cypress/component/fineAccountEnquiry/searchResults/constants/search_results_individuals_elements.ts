@@ -46,9 +46,9 @@ export const DOM_ELEMENTS = {
 
   tabs: 'opal-lib-govuk-tabs',
   tabsList: '.govuk-tabs__list',
-  individualsTab: '[id="tab-individuals"]',
-  companiesTab: '[id="tab-companies"]',
-  minorCreditorsTab: '[id="tab-minor-creditors"]',
+  individualsTab: '[tabitemid="tab-individuals"]',
+  companiesTab: '[tabitemid="tab-companies"]',
+  minorCreditorsTab: '[tabitemid="tab-minor-creditors"]',
 
   individualsPanel: '[id="individuals"]',
   companiesPanel: '[id="companies"]',

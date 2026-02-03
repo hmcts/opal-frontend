@@ -104,6 +104,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
+  public readonly collectionOrderYesConditionalId = 'fm_payment_terms_collection_order_made_yes';
+  public readonly collectionOrderNoConditionalId = 'fm_payment_terms_collection_order_made_no';
+  public readonly paymentTermsConditionalIdPrefix = 'fm_payment_terms_payment_terms_';
+  public readonly enforcementActionConditionalIdPrefix = 'fm_payment_terms_enforcement_action_';
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
     value,
@@ -183,6 +187,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     const { formData } = this.finesMacStore.paymentTerms();
     this.setupPermissions();
     this.setupPaymentTermsForm();
+    this.disableConditionalControls();
     this.paymentTermsListener();
     this.determineAccess();
     this.earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
@@ -487,11 +492,44 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private addControls(controlsToAdd: IAbstractFormArrayControlValidation[]): void {
     for (const control of controlsToAdd) {
       this.updateControl(control.controlName, control.validators);
+      const formControl = this.form.get(control.controlName);
+      if (formControl) {
+        formControl.enable({ emitEvent: false });
+        formControl.updateValueAndValidity({ emitEvent: false });
+      }
       if (
         control.controlName === 'fm_payment_terms_start_date' ||
         control.controlName === 'fm_payment_terms_pay_by_date'
       ) {
         this.dateListener(control.controlName);
+      }
+    }
+  }
+
+  private disableConditionalControls(): void {
+    const conditionalControls = [
+      'fm_payment_terms_collection_order_date',
+      'fm_payment_terms_collection_order_made_today',
+      'fm_payment_terms_pay_by_date',
+      'fm_payment_terms_lump_sum_amount',
+      'fm_payment_terms_instalment_amount',
+      'fm_payment_terms_instalment_period',
+      'fm_payment_terms_start_date',
+      'fm_payment_terms_enforcement_action',
+      'fm_payment_terms_earliest_release_date',
+      'fm_payment_terms_prison_and_prison_number',
+      'fm_payment_terms_reason_account_is_on_noenf',
+      'fm_payment_terms_suspended_committal_date',
+      'fm_payment_terms_default_days_in_jail',
+    ];
+
+    for (const controlName of conditionalControls) {
+      const control = this.form.get(controlName);
+      if (control) {
+        control.reset();
+        control.clearValidators();
+        control.disable({ emitEvent: false });
+        control.updateValueAndValidity({ emitEvent: false });
       }
     }
   }
@@ -506,8 +544,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       const formControl = this.form.get(control.controlName);
       if (formControl) {
         formControl.reset();
+        formControl.clearValidators();
+        formControl.disable({ emitEvent: false });
+        formControl.updateValueAndValidity({ emitEvent: false });
       }
-      this.removeControl(control.controlName);
       if (
         control.controlName === 'fm_payment_terms_start_date' ||
         control.controlName === 'fm_payment_terms_pay_by_date'

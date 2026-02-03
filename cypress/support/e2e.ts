@@ -9,10 +9,76 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
+import 'cypress-axe';
+import {
+  getCurrentScenarioStartedAt,
+  getCurrentScenarioTitle,
+  getNextScenarioIndex,
+  resetScenarioCounters,
+  setCurrentScenarioFinishedAt,
+  setCurrentScenarioFeaturePath,
+  setCurrentScenarioTitle,
+} from './utils/scenarioContext';
 
 // Simple marker so we can confirm in CI logs this file is actually loaded
 
 console.log('*** Cypress e2e support file loaded ***');
+
+// When running in Cypress open mode, reset evidence at the start of a spec run so only the latest
+// run's JSON/screenshots are kept if the runner "refresh" button is used.
+before(() => {
+  resetScenarioCounters();
+  if (!Cypress.config('isInteractive')) {
+    return;
+  }
+  cy.task('accountCapture:resetEvidence', undefined, { log: false });
+});
+
+// Capture the current scenario title and reset the per-scenario `{uniq}` suffix.
+beforeEach(function () {
+  const runnable = this.currentTest;
+  const titlePath = typeof runnable?.titlePath === 'function' ? runnable.titlePath() : [];
+  const rawTitle = String(runnable?.title || '').trim();
+  const featureTitle = String(titlePath?.[0] || '').trim();
+  const specRelative = String(Cypress.spec?.relative || '').replace(/\\/g, '/');
+  const specName = String(Cypress.spec?.name || '').trim();
+  const featureFile = specRelative.split('/').pop() || specName || specRelative;
+
+  let baseTitle = rawTitle;
+  if (!baseTitle || /^examples?:/i.test(baseTitle) || /^(example|row)\b/i.test(baseTitle)) {
+    baseTitle = featureTitle || rawTitle || 'Unknown scenario';
+  }
+
+  const featureKey = specRelative || featureTitle || featureFile || 'unknown-feature';
+  const occurrenceIndex = getNextScenarioIndex(featureKey, baseTitle);
+  const scenarioTitle = occurrenceIndex > 1 ? `${baseTitle} (${occurrenceIndex})` : baseTitle;
+  setCurrentScenarioTitle(String(scenarioTitle || '').trim());
+  setCurrentScenarioFeaturePath(featureFile || specRelative);
+});
+
+// Mark the scenario finish time and persist it for any account capture entries in this scenario.
+afterEach(() => {
+  const scenario = getCurrentScenarioTitle();
+  const scenarioStartedAt = getCurrentScenarioStartedAt();
+  const scenarioFinishedAt = new Date().toISOString();
+  setCurrentScenarioFinishedAt(scenarioFinishedAt);
+
+  return cy.task(
+    'accountCapture:finalizeScenario',
+    { scenario, scenarioStartedAt, scenarioFinishedAt },
+    { log: false },
+  );
+});
+
+// In open mode, release the per-run reset lock once the spec finishes.
+after(() => {
+  if (!Cypress.config('isInteractive')) {
+    return;
+  }
+  return cy
+    .task('accountCapture:releaseResetLock', undefined, { log: false })
+    .then(() => cy.task('screenshot:cleanupEmptyDirs', undefined, { log: false }));
+});
 
 Cypress.on('uncaught:exception', (err) => {
   const message = String((err as any)?.message || err || '');

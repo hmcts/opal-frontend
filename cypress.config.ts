@@ -1,10 +1,32 @@
-// cypress.config.ts
+/**
+ * @file cypress.config.ts
+ * @description Cypress configuration, plugin wiring, and reporting setup for Opal.
+ */
 import { defineConfig } from 'cypress';
 import webpack from '@cypress/webpack-preprocessor';
-import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
+import {
+  addCucumberPreprocessorPlugin,
+  beforeRunHandler,
+  afterRunHandler,
+  afterSpecHandler,
+  afterScreenshotHandler,
+} from '@badeball/cypress-cucumber-preprocessor';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import * as path from 'node:path';
+import {
+  ensureAccountCaptureFile,
+  initializeAccountCapture,
+  registerAccountCaptureTasks,
+  resetEvidenceForRun,
+  releaseEvidenceResetLock,
+} from './cypress/support/tasks/accountCaptureTask';
+import { cleanupEmptyScreenshotDirs, registerScreenshotTasks } from './cypress/support/tasks/screenshotTask';
 
+/**
+ * Register browser launch hooks to standardize window size in headless runs.
+ * @param on - Cypress plugin event emitter.
+ * @returns void
+ */
 function setupBrowserLaunch(on: Cypress.PluginEvents): void {
   on('before:browser:launch', (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
     // eslint-disable-next-line no-console
@@ -40,11 +62,52 @@ function setupBrowserLaunch(on: Cypress.PluginEvents): void {
   });
 }
 
+/**
+ * Configure Cypress node event handlers, plugins, and per-run evidence tasks.
+ * @param on - Cypress plugin event emitter.
+ * @param config - Cypress plugin configuration.
+ * @returns Cypress plugin configuration after setup.
+ */
 async function setupNodeEvents(
   on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
-  await addCucumberPreprocessorPlugin(on, config);
+  await addCucumberPreprocessorPlugin(on, config, {
+    omitAfterScreenshotHandler: true,
+    omitAfterSpecHandler: true,
+  });
+  // Evidence reset is handled in before:run with a per-run lock.
+  // Register tasks so Cypress can write the per-run created-accounts artifact.
+  registerAccountCaptureTasks(on);
+  // Register tasks to relocate scenario evidence screenshots.
+  registerScreenshotTasks(on, config);
+  // Relay selected logs to the terminal for CI troubleshooting.
+  on('task', {
+    'log:message': (payload: unknown) => {
+      if (typeof payload === 'string') {
+        // eslint-disable-next-line no-console
+        console.log(payload);
+        return null;
+      }
+      if (payload && typeof payload === 'object') {
+        const record = payload as { message?: unknown; details?: unknown };
+        if (typeof record.message === 'string') {
+          // eslint-disable-next-line no-console
+          console.log(record.message);
+        }
+        if (typeof record.details !== 'undefined') {
+          try {
+            // eslint-disable-next-line no-console
+            console.log(typeof record.details === 'string' ? record.details : JSON.stringify(record.details));
+          } catch {
+            // eslint-disable-next-line no-console
+            console.log(record.details);
+          }
+        }
+      }
+      return null;
+    },
+  });
 
   on(
     'file:preprocessor',
@@ -102,6 +165,42 @@ async function setupNodeEvents(
 
   setupBrowserLaunch(on);
 
+  // Initialize the artifact at run start and flush it at run end.
+  on('before:run', async () => {
+    await beforeRunHandler(config);
+    await resetEvidenceForRun();
+    await initializeAccountCapture();
+  });
+
+  // Flush the artifact to disk once the entire run completes.
+  on('after:run', async (results) => {
+    await ensureAccountCaptureFile();
+    try {
+      await afterRunHandler(config, results);
+    } finally {
+      await releaseEvidenceResetLock();
+      await cleanupEmptyScreenshotDirs(config.screenshotsFolder as string | undefined);
+    }
+  });
+
+  // In open mode, clean up per-run locks after each spec execution.
+  on('after:spec', async (spec, results) => {
+    try {
+      await afterSpecHandler(config, spec, results);
+    } finally {
+      await releaseEvidenceResetLock();
+      await cleanupEmptyScreenshotDirs(config.screenshotsFolder as string | undefined);
+    }
+  });
+
+  // Only attach screenshots for failed steps (evidence screenshots attach separately).
+  on('after:screenshot', async (details) => {
+    if (!details?.testFailure) {
+      return details;
+    }
+    return afterScreenshotHandler(config, details);
+  });
+
   // messagesOutput logic (unchanged)
   if (process.env.TEST_MODE === 'OPAL' && process.env.BROWSER_TO_RUN === 'chrome') {
     config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
@@ -118,6 +217,8 @@ export default defineConfig({
   viewportWidth: 2560,
   viewportHeight: 2560,
   reporter: 'junit',
+  // Keep failure screenshots in the default functional output location.
+  screenshotsFolder: 'functional-output/screenshots/opal',
 
   e2e: {
     baseUrl: process.env.TEST_URL || 'http://localhost:4000/',
@@ -141,6 +242,9 @@ export default defineConfig({
     CYPRESS_TEST_PASSWORD: process.env.OPAL_TEST_USER_PASSWORD,
     TEST_MODE: process.env.TEST_MODE || 'OPAL',
     TAGS: process.env.TAGS || '',
+    DEV_DEFAULT_APP_MODE: process.env.DEV_DEFAULT_APP_MODE || '',
+    DEFAULT_APP_MODE: process.env.DEFAULT_APP_MODE || '',
+    LEGACY_ENABLED: process.env.LEGACY_ENABLED || '',
     omitFiltered: true,
     filterSpecs: true,
   },
@@ -178,6 +282,12 @@ export default defineConfig({
         json: true,
       },
     },
+    /**
+     * Configure component testing plugins and reporters.
+     * @param on - Cypress plugin event emitter.
+     * @param config - Cypress plugin configuration.
+     * @returns Cypress plugin configuration after setup.
+     */
     setupNodeEvents(on, config) {
       setupBrowserLaunch(on);
       // eslint-disable-next-line @typescript-eslint/no-var-requires

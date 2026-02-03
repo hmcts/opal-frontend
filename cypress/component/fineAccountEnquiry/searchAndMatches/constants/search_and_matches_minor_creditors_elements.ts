@@ -7,8 +7,8 @@ export const DOM_ELEMENTS = {
   companiesTab: '[id="tab-companies"]',
   minorCreditorsTab: '[id="tab-minor-creditors"]',
   majorCreditorsTab: '[id="tab-major-creditors"]',
-  minorCreditorsPanel: '[id="minor-creditors"]',
-  minorCreditorsHeading: '[id="minor-creditors"] .govuk-heading-l',
+  minorCreditorsPanel: '[id="minorCreditors"]',
+  minorCreditorsHeading: '[id="minorCreditors"] .govuk-heading-l',
   searchButton: '[buttonId="submitForm"]',
 
   // Filter by business unit section
@@ -28,8 +28,10 @@ export const DOM_ELEMENTS = {
 
   // Minor creditors tab fields
 
-  minorCreditorIndividualRadioButton: '#individual',
-  minorCreditorCompanyRadioButton: '#company',
+  minorCreditorIndividualRadioButton:
+    'input[name="fsa_search_account_minor_creditors_minor_creditor_type"][value="individual"]',
+  minorCreditorCompanyRadioButton:
+    'input[name="fsa_search_account_minor_creditors_minor_creditor_type"][value="company"]',
 
   //Individual
   lastNameLabel: '[for="fsa_search_account_minor_creditors_last_name"]',

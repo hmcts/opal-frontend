@@ -80,4 +80,4 @@ Feature: Manual account creation - Account Comments and Notes
   Scenario: Account Comments and Notes - Axe Core
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
     When I view the "Account comments and notes" task
-    Then I check accessibility
+    Then I check the page for accessibility

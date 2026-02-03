@@ -1,3 +1,7 @@
+interface IOpalFinesAccountDefendantDetailsEnforcementTabRefDataEnforcementOverviewCollectionOrder {
+  collection_order_date: string;
+  collection_order_flag: boolean;
+}
 export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
   version: string | null;
   account_status_reference: {
@@ -21,11 +25,8 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
     };
   };
   enforcement_overview: {
-    collection_order: {
-      collection_order_date: string;
-      collection_order_flag: boolean;
-    };
-    days_in_default: number;
+    collection_order: IOpalFinesAccountDefendantDetailsEnforcementTabRefDataEnforcementOverviewCollectionOrder | null;
+    days_in_default: number | null;
     enforcement_court: {
       court_id: number;
       court_code: number;
@@ -49,6 +50,6 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
       response: string;
     }>;
     warrant_number: string;
-  };
+  } | null;
   next_enforcement_action_data: string;
 }
