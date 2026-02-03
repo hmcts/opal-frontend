@@ -110,11 +110,11 @@
       @if (defendantType !== defendantTypesKeys.company) {
         <div
           opal-lib-govuk-summary-list-row
-          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          class="govuk-summary-list__row"
           summaryListId="paymentTerms"
           summaryListRowId="requestPaymentCard"
         >
-          <ng-container name>Request payment card</ng-container>
+          <ng-container name>Request&nbsp;payment&nbsp;card</ng-container>
           <ng-container value>{{
             paymentTermsState.fm_payment_terms_payment_card_request ? 'Yes' : 'No'
           }}</ng-container>

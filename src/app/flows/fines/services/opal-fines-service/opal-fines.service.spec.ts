@@ -49,6 +49,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MO
 import { of } from 'rxjs';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from './mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -1243,5 +1244,19 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  // Isolated matcher test suite to avoid TestBed reconfiguration errors
+  it('should getMinorCreditorAccountHeader', () => {
+    const accountId = 456;
+    const expectedResponse = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}/header-summary`;
+
+    service.getMinorCreditorAccountHeadingData(accountId).subscribe((response) => {
+      response.version = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.version;
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse);
+  });
 });

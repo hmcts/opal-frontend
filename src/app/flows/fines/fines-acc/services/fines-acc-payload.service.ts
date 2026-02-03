@@ -17,6 +17,7 @@ import { IFinesAccPartyAddAmendConvertState } from '../fines-acc-party-add-amend
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { transformDefendantAccountPartyPayload } from './utils/fines-acc-payload-transform-defendant-data.utils';
 import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
+import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -76,6 +77,35 @@ export class FinesAccPayloadService {
       party_id: headingData.defendant_account_party_id,
       party_type: headingData.debtor_type,
       party_name: party_name,
+      base_version: headingData.version,
+      business_unit_id: headingData.business_unit_summary.business_unit_id,
+      business_unit_user_id: business_unit_user_id,
+      welsh_speaking: headingData.business_unit_summary.welsh_speaking,
+    };
+  }
+
+  /**
+   * Transforms the given IOpalFinesAccountMinorCreditorDetailsHeader into IFinesAccountState for the Account Store
+   *
+   * @param headingData - The payload object to be transformed.
+   * @returns The transformed payload object.
+   */
+  public transformMinorCreditorAccountHeaderForStore(
+    account_id: number,
+    headingData: IOpalFinesAccountMinorCreditorDetailsHeader,
+  ): IFinesAccountState {
+    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+      Number(headingData.business_unit_summary.business_unit_id),
+      this.globalStore.userState(),
+    );
+
+    return {
+      account_number: headingData.account_number,
+      account_id: Number(account_id),
+      pg_party_id: null,
+      party_id: headingData.party_details.party_id,
+      party_type: 'Minor Creditor',
+      party_name: headingData.party_details.organisation_details.organisation_name,
       base_version: headingData.version,
       business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id: business_unit_user_id,

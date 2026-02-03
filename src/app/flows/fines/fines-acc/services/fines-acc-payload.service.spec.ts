@@ -16,6 +16,8 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/o
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-map-transform-items-config.constant';
 import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines-acc-party-add-amend-convert/mocks/fines-acc-party-add-amend-convert-form-empty.mock';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
+import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -207,6 +209,37 @@ describe('FinesAccPayloadService', () => {
     );
     expect(result.base_version).toBe(header.version);
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
+  });
+
+  it('should transform account header for store for a minor creditor', () => {
+    mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
+    );
+    const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
+    );
+    const account_id = 77;
+
+    const result: IFinesAccountState = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
+
+    expect(result).toEqual({
+      account_number: header.account_number,
+      account_id: account_id,
+      pg_party_id: null,
+      party_id: header.party_details.party_id,
+      party_type: header.creditor_account_type.display_name,
+      party_name: header.party_details.organisation_details.organisation_name,
+      base_version: header.version,
+      business_unit_id: header.business_unit_summary.business_unit_id,
+      business_unit_user_id: header.business_unit_summary.business_unit_id,
+      welsh_speaking: header.business_unit_summary.welsh_speaking,
+    });
+
+    expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
+      Number(header.business_unit_summary.business_unit_id),
+      OPAL_USER_STATE_MOCK,
+    );
+    expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
   describe('transformDefendantDataToDebtorForm', () => {

@@ -11,8 +11,11 @@ import { finesAccStateGuard } from './guards/fines-acc-state-guard/fines-acc-sta
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_TITLES } from './constants/fines-acc-defendant-routing-titles.constant';
+import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES } from './constants/fines-acc-minor-creditor-routing-titles.constant';
 import { defendantAccountPartyResolver } from './resolvers/defendant-account-party.resolver';
 import { defendantAccountPaymentTermsLatestResolver } from './resolvers/defendant-account-payment-terms-latest.resolver';
+import { minorCreditorAccountHeadingResolver } from './resolvers/defendant-minor-creditor-heading.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -163,6 +166,40 @@ export const routing: Routes = [
           title: TitleResolver,
           defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver,
         },
+      },
+    ],
+  },
+  {
+    path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root}/:accountId`,
+    canActivateChild: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+    },
+    children: [
+      {
+        path: FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
+
+        loadComponent: () =>
+          import('../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details.component').then(
+            (c) => c.FinesAccMinorCreditorDetailsComponent,
+          ),
+        data: {
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.details,
+        },
+        resolve: { title: TitleResolver, minorCreditorAccountHeadingData: minorCreditorAccountHeadingResolver },
+      },
+      {
+        path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`,
+
+        loadComponent: () =>
+          import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
+        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.note,
+        },
+        resolve: { title: TitleResolver },
       },
     ],
   },
