@@ -12,6 +12,7 @@ import {
 import { CommonActions } from '../actions/common/common.actions';
 import { DashboardActions } from '../actions/dashboard.actions';
 import { recordCreatedAccount } from '../../../../support/utils/accountCapture';
+import { captureScenarioScreenshot } from '../../../../support/utils/screenshot';
 
 const log = createScopedLogger('DraftAccountsFlow');
 
@@ -212,6 +213,7 @@ export class DraftAccountsFlow {
       }
       this.review.enterRejectionReason(reason);
     }
+    captureScenarioScreenshot('check-validate-decision-before-submit');
     this.review.submitDecision();
     if (normalized === 'approve') {
       return this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']).then(() =>
