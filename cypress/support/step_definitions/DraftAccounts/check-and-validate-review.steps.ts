@@ -65,7 +65,7 @@ When('I record the following decision on the draft account:', (table: DataTable)
   const reason = pickValue(reasonRow);
 
   log('step', 'Recording draft decision', { decision, hasReason: Boolean(reason) });
-  draftsFlow().recordDecision(decision, reason);
+  return draftsFlow().recordDecision(decision, reason);
 });
 
 /**

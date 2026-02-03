@@ -28,6 +28,7 @@ type RequestPayloadEntry = {
   method?: string;
   timestamp: string;
   payload: Record<string, unknown>;
+  direction?: 'request' | 'response';
 };
 
 type CreatedAccountInput = {
@@ -227,6 +228,7 @@ function buildRequestPayloadEntry(
     source,
     timestamp,
     payload,
+    direction: 'request',
   };
 
   if (endpoint) entry.endpoint = endpoint;
@@ -261,6 +263,7 @@ function mergeRequestPayloads(
   for (const entry of merged) {
     const key = [
       entry.source,
+      entry.direction ?? '',
       entry.method ?? '',
       entry.endpoint ?? '',
       entry.timestamp,

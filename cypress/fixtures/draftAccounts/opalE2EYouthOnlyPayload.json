@@ -1,0 +1,186 @@
+{
+  "draft_account_id": null,
+  "created_at": null,
+  "account_snapshot": null,
+  "account_status_date": null,
+  "business_unit_id": 77,
+  "submitted_by": "L077JG",
+  "submitted_by_name": "opal-test",
+  "account": {
+    "account_type": "Fine",
+    "defendant_type": "adultOrYouthOnly",
+    "originator_name": "Central London Magistrates' Court",
+    "originator_id": 2570,
+    "prosecutor_case_reference": "66666",
+    "enforcement_court_id": 770000000001,
+    "collection_order_made": null,
+    "collection_order_made_today": null,
+    "collection_order_date": null,
+    "suspended_committal_date": null,
+    "payment_card_request": null,
+    "account_sentence_date": "2025-08-02",
+    "defendant": {
+      "company_flag": false,
+      "title": "Mr",
+      "surname": "OPAL E TO E",
+      "forenames": "Opal Scenario six",
+      "company_name": null,
+      "dob": "2010-01-01",
+      "address_line_1": "ADDR1 6",
+      "address_line_2": "Addr2 6",
+      "address_line_3": "Addr3 6",
+      "address_line_4": null,
+      "address_line_5": null,
+      "post_code": "TE12 3ST",
+      "telephone_number_home": "01987 123 123",
+      "telephone_number_business": "0800 000 1066",
+      "telephone_number_mobile": "07123456789",
+      "email_address_1": "email6@email.com",
+      "email_address_2": "email6@test.com",
+      "national_insurance_number": "OT000005B",
+      "driving_licence_number": null,
+      "pnc_id": null,
+      "nationality_1": null,
+      "nationality_2": null,
+      "ethnicity_self_defined": null,
+      "ethnicity_observed": null,
+      "cro_number": null,
+      "occupation": null,
+      "gender": null,
+      "custody_status": null,
+      "prison_number": null,
+      "interpreter_lang": null,
+      "debtor_detail": {
+        "vehicle_make": "Cozy Coupe",
+        "vehicle_registration_mark": "CZY COUP",
+        "document_language": null,
+        "hearing_language": null,
+        "employee_reference": null,
+        "employer_company_name": null,
+        "employer_address_line_1": null,
+        "employer_address_line_2": null,
+        "employer_address_line_3": null,
+        "employer_address_line_4": null,
+        "employer_address_line_5": null,
+        "employer_post_code": null,
+        "employer_telephone_number": null,
+        "employer_email_address": null,
+        "aliases": [
+          {
+            "alias_forenames": "youth alias one",
+            "alias_surname": "ACCOUNT SIX",
+            "alias_company_name": null
+          }
+        ]
+      },
+      "parent_guardian": null
+    },
+    "offences": [
+      {
+        "date_of_sentence": "2025-08-02",
+        "imposing_court_id": 770000000001,
+        "offence_id": 59610,
+        "impositions": [
+          {
+            "result_id": "FVS",
+            "amount_imposed": 100,
+            "amount_paid": 10,
+            "major_creditor_id": null,
+            "minor_creditor": null
+          },
+          {
+            "result_id": "FVS",
+            "amount_imposed": 200,
+            "amount_paid": 20,
+            "major_creditor_id": null,
+            "minor_creditor": null
+          },
+          {
+            "result_id": "FCPC",
+            "amount_imposed": 300,
+            "amount_paid": 30,
+            "major_creditor_id": null,
+            "minor_creditor": null
+          },
+          {
+            "result_id": "FCPC",
+            "amount_imposed": 400,
+            "amount_paid": 40,
+            "major_creditor_id": null,
+            "minor_creditor": null
+          },
+          {
+            "result_id": "FO",
+            "amount_imposed": 500,
+            "amount_paid": 50,
+            "major_creditor_id": null,
+            "minor_creditor": null
+          },
+          {
+            "result_id": "FVEBD",
+            "amount_imposed": 600,
+            "amount_paid": 60,
+            "major_creditor_id": null,
+            "minor_creditor": null
+          },
+          {
+            "result_id": "FCC",
+            "amount_imposed": 700,
+            "amount_paid": 70,
+            "major_creditor_id": null,
+            "minor_creditor": null
+          },
+          {
+            "result_id": "FFR",
+            "amount_imposed": 800,
+            "amount_paid": 80,
+            "major_creditor_id": null,
+            "minor_creditor": null
+          }
+        ]
+      }
+    ],
+    "fp_ticket_detail": null,
+    "payment_terms": {
+      "payment_terms_type_code": "I",
+      "effective_date": "2025-08-01",
+      "instalment_period": "W",
+      "lump_sum_amount": null,
+      "instalment_amount": 100,
+      "default_days_in_jail": null,
+      "enforcements": [
+        {
+          "result_id": "NOENF",
+          "enforcement_result_responses": [
+            {
+              "parameter_name": "reason",
+              "response": "opal Acc 6 no enf"
+            }
+          ]
+        }
+      ]
+    },
+    "account_notes": [
+      {
+        "account_note_serial": 3,
+        "account_note_text": "Opal scenario 6 comment",
+        "note_type": "AC"
+      },
+      {
+        "account_note_serial": 2,
+        "account_note_text": "Opal scenario 6 note",
+        "note_type": "AA"
+      }
+    ]
+  },
+  "account_type": "Fine",
+  "account_status": "Submitted",
+  "timeline_data": [
+    {
+      "username": "opal-test",
+      "status": "Submitted",
+      "status_date": "2025-08-11",
+      "reason_text": null
+    }
+  ]
+}

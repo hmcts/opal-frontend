@@ -13,6 +13,8 @@ import 'cypress-axe';
 import {
   getCurrentScenarioStartedAt,
   getCurrentScenarioTitle,
+  getNextScenarioIndex,
+  resetScenarioCounters,
   setCurrentScenarioFinishedAt,
   setCurrentScenarioFeaturePath,
   setCurrentScenarioTitle,
@@ -25,6 +27,7 @@ console.log('*** Cypress e2e support file loaded ***');
 // When running in Cypress open mode, reset evidence at the start of a spec run so only the latest
 // run's JSON/screenshots are kept if the runner "refresh" button is used.
 before(() => {
+  resetScenarioCounters();
   if (!Cypress.config('isInteractive')) {
     return;
   }
@@ -35,38 +38,22 @@ before(() => {
 beforeEach(function () {
   const runnable = this.currentTest;
   const titlePath = typeof runnable?.titlePath === 'function' ? runnable.titlePath() : [];
-  const rawTitle = (titlePath && titlePath.length ? titlePath[titlePath.length - 1] : runnable?.title) || '';
-  const extractExampleIndex = (path: string[], title: string): { baseTitle: string; exampleIndex?: number } => {
-    const exampleEntry = path.find((segment) => /example|row/i.test(segment));
-    if (exampleEntry) {
-      const match = exampleEntry.match(/(\d+)/);
-      if (match) {
-        const entryIndex = path.indexOf(exampleEntry);
-        const baseTitle = entryIndex > 0 ? path[entryIndex - 1] : title;
-        return { baseTitle: baseTitle || title, exampleIndex: Number(match[1]) };
-      }
-    }
-
-    const inlineMatch =
-      title.match(/\((?:example|row)?\s*#?\s*(\d+)\)\s*$/i) ||
-      title.match(/\[(\d+)\]\s*$/) ||
-      title.match(/#(\d+)\s*$/);
-    if (inlineMatch) {
-      const baseTitle = title.replace(inlineMatch[0], '').trim();
-      return { baseTitle: baseTitle || title, exampleIndex: Number(inlineMatch[1]) };
-    }
-
-    return { baseTitle: title };
-  };
-
-  const { baseTitle, exampleIndex } = extractExampleIndex(titlePath, String(rawTitle || '').trim());
-  const scenarioTitle = exampleIndex ? `${baseTitle} (${exampleIndex})` : baseTitle;
-  setCurrentScenarioTitle(String(scenarioTitle || '').trim());
-
+  const rawTitle = String(runnable?.title || '').trim();
+  const featureTitle = String(titlePath?.[0] || '').trim();
   const specRelative = String(Cypress.spec?.relative || '').replace(/\\/g, '/');
-  let featurePath = specRelative.replace(/^cypress\/e2e\//, '');
-  featurePath = featurePath.replace(/^functional\/opal\/features\//, '');
-  setCurrentScenarioFeaturePath(featurePath || specRelative);
+  const specName = String(Cypress.spec?.name || '').trim();
+  const featureFile = specRelative.split('/').pop() || specName || specRelative;
+
+  let baseTitle = rawTitle;
+  if (!baseTitle || /^examples?:/i.test(baseTitle) || /^(example|row)\b/i.test(baseTitle)) {
+    baseTitle = featureTitle || rawTitle || 'Unknown scenario';
+  }
+
+  const featureKey = specRelative || featureTitle || featureFile || 'unknown-feature';
+  const occurrenceIndex = getNextScenarioIndex(featureKey, baseTitle);
+  const scenarioTitle = occurrenceIndex > 1 ? `${baseTitle} (${occurrenceIndex})` : baseTitle;
+  setCurrentScenarioTitle(String(scenarioTitle || '').trim());
+  setCurrentScenarioFeaturePath(featureFile || specRelative);
 });
 
 // Mark the scenario finish time and persist it for any account capture entries in this scenario.
