@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form.component';
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
-import { Validators } from '@angular/forms';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../mocks/fines-mac-create-account-form.mock';
 import { ActivatedRoute } from '@angular/router';
@@ -11,14 +10,28 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
   let formSubmit: IFinesMacAccountDetailsForm;
   let finesMacStore: FinesMacStoreType;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
+    // Prevent GOV.UK Frontend SupportError logs during Karma runs.
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
     await TestBed.configureTestingModule({
@@ -98,58 +111,43 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should handle account type change - fine', () => {
-    const accountType = FINES_ACCOUNT_TYPES.Fine;
-    const fieldName = 'fm_create_account_fine_defendant_type';
-    const validators = [Validators.required];
-    const fieldsToRemove = ['fm_create_account_fixed_penalty_defendant_type'];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeControl');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'createControl');
+    component['handleAccountTypeChange'](FINES_ACCOUNT_TYPES.Fine);
 
-    component['handleAccountTypeChange'](accountType);
+    const fineControl = component.form.get('fm_create_account_fine_defendant_type');
+    const fixedControl = component.form.get('fm_create_account_fixed_penalty_defendant_type');
 
-    expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
-    fieldsToRemove.forEach((field) => {
-      expect(component['removeControl']).toHaveBeenCalledWith(field);
-    });
-    expect(component['createControl']).toHaveBeenCalledWith(fieldName, validators);
+    expect(fineControl?.enabled).toBeTrue();
+    expect(fixedControl?.disabled).toBeTrue();
   });
 
   it('should handle account type change - fixed penalty', () => {
-    const accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
-    const fieldName = 'fm_create_account_fixed_penalty_defendant_type';
-    const validators = [Validators.required];
-    const fieldsToRemove = ['fm_create_account_fine_defendant_type'];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeControl');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'createControl');
+    component['handleAccountTypeChange'](FINES_ACCOUNT_TYPES['Fixed Penalty']);
 
-    component['handleAccountTypeChange'](accountType);
+    const fineControl = component.form.get('fm_create_account_fine_defendant_type');
+    const fixedControl = component.form.get('fm_create_account_fixed_penalty_defendant_type');
 
-    expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
-    fieldsToRemove.forEach((field) => {
-      expect(component['removeControl']).toHaveBeenCalledWith(field);
-    });
-    expect(component['createControl']).toHaveBeenCalledWith(fieldName, validators);
+    expect(fixedControl?.enabled).toBeTrue();
+    expect(fineControl?.disabled).toBeTrue();
   });
 
   it('should handle account type change - conditional caution', () => {
-    const accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
-    const fieldsToRemove = ['fm_create_account_fine_defendant_type', 'fm_create_account_fixed_penalty_defendant_type'];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeControl');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'createControl');
+    component['handleAccountTypeChange'](FINES_ACCOUNT_TYPES['Conditional Caution']);
 
-    component['handleAccountTypeChange'](accountType);
+    const fineControl = component.form.get('fm_create_account_fine_defendant_type');
+    const fixedControl = component.form.get('fm_create_account_fixed_penalty_defendant_type');
 
-    expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
-    fieldsToRemove.forEach((field) => {
-      expect(component['removeControl']).toHaveBeenCalledWith(field);
-    });
-    expect(component['createControl']).not.toHaveBeenCalled();
+    expect(fineControl?.disabled).toBeTrue();
+    expect(fixedControl?.disabled).toBeTrue();
+  });
+
+  it('should ignore missing defendant type controls', () => {
+    const fineControl = component.form.get('fm_create_account_fine_defendant_type');
+    fineControl?.disable({ emitEvent: false });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).updateDefendantTypeControl('missing_control', true);
+
+    expect(fineControl?.disabled).toBeTrue();
   });
 
   it('should set defendant type based on account type - fixed penalty', () => {
@@ -158,6 +156,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fieldValue = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     component.form.get('fm_create_account_account_type')?.setValue(accountType);
+    component['handleAccountTypeChange'](accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
@@ -171,11 +170,23 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fieldValue = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     component.form.get('fm_create_account_account_type')?.setValue(accountType);
+    component['handleAccountTypeChange'](accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
     expect(component.form.get('fm_create_account_defendant_type')?.value).toEqual(fieldValue);
+  });
+
+  it('should keep account type selected when choosing a defendant type', () => {
+    const accountType = FINES_ACCOUNT_TYPES.Fine;
+    const fieldValue = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+
+    component.form.get('fm_create_account_account_type')?.setValue(accountType);
+    component['handleAccountTypeChange'](accountType);
+    component.form.get('fm_create_account_fine_defendant_type')?.setValue(fieldValue);
+
+    expect(component.form.get('fm_create_account_account_type')?.value).toEqual(accountType);
   });
 
   it('should set defendant type to default for conditional caution account type', () => {
@@ -187,6 +198,16 @@ describe('FinesMacCreateAccountFormComponent', () => {
     component['setDefendantType']();
 
     expect(component.form.get('fm_create_account_defendant_type')?.value).toEqual(defaultDefendantType);
+  });
+
+  it('should render conditional panels hidden by default', () => {
+    const finePanel = fixture.nativeElement.querySelector(`#${component.fineDefendantConditionalId}`);
+    const fixedPanel = fixture.nativeElement.querySelector(`#${component.fixedPenaltyDefendantConditionalId}`);
+
+    expect(finePanel).toBeTruthy();
+    expect(fixedPanel).toBeTruthy();
+    expect(finePanel.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+    expect(fixedPanel.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
   });
 
   it('should not do anything as the account, fieldName, and fieldValue are not real', () => {

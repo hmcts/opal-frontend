@@ -32,44 +32,42 @@
       <div
         opal-lib-govuk-radios-item
         [labelText]="accountType.value"
-        [inputId]="accountType.key"
+        [inputId]="'fm_create_account_account_type-' + accountType.key"
         inputName="fm_create_account_account_type"
         [inputValue]="accountType.value"
+        [ariaControls]="
+          accountType.value === accountTypesKeys.Fine
+            ? fineDefendantConditionalId
+            : accountType.value === accountTypesKeys['Fixed Penalty']
+              ? fixedPenaltyDefendantConditionalId
+              : ''
+        "
         [control]="form.get('fm_create_account_account_type')"
         [inputValueHint]="accountType.value === accountTypesKeys['Conditional Caution'] ? 'Adult or youth only' : ''"
       ></div>
 
-      @switch (accountType.value) {
-        @case (accountTypesKeys.Fine) {
-          @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys.Fine) {
-            <div aria-live="polite" aria-labelledby="fine-conditional-label">
-              <span id="fine-conditional-label" class="govuk-visually-hidden">
-                Defendant type options for Fine account
-              </span>
-              <ng-container
-                *ngTemplateOutlet="
-                  defendantTypesRadioOptions;
-                  context: { defendantTypes: fineDefendantTypes, isFine: true }
-                "
-              ></ng-container>
-            </div>
-          }
-        }
-        @case (accountTypesKeys['Fixed Penalty']) {
-          @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys['Fixed Penalty']) {
-            <div aria-live="polite" aria-labelledby="fixed-penalty-conditional-label">
-              <span id="fixed-penalty-conditional-label" class="govuk-visually-hidden">
-                Defendant type options for Fixed Penalty account
-              </span>
-              <ng-container
-                *ngTemplateOutlet="
-                  defendantTypesRadioOptions;
-                  context: { defendantTypes: fixedPenaltyDefendantTypes, isFine: false }
-                "
-              ></ng-container>
-            </div>
-          }
-        }
+      @if (accountType.value === accountTypesKeys.Fine) {
+        <opal-lib-govuk-radios-conditional [conditionalId]="fineDefendantConditionalId">
+          <ng-container
+            *ngTemplateOutlet="
+              defendantTypesRadioOptions;
+              context: { defendantTypes: fineDefendantTypes, controlName: 'fm_create_account_fine_defendant_type' }
+            "
+          ></ng-container>
+        </opal-lib-govuk-radios-conditional>
+      }
+      @if (accountType.value === accountTypesKeys['Fixed Penalty']) {
+        <opal-lib-govuk-radios-conditional [conditionalId]="fixedPenaltyDefendantConditionalId">
+          <ng-container
+            *ngTemplateOutlet="
+              defendantTypesRadioOptions;
+              context: {
+                defendantTypes: fixedPenaltyDefendantTypes,
+                controlName: 'fm_create_account_fixed_penalty_defendant_type',
+              }
+            "
+          ></ng-container>
+        </opal-lib-govuk-radios-conditional>
       }
     }
   </opal-lib-govuk-radio>
@@ -87,35 +85,23 @@
   </div>
 </form>
 
-<ng-template #defendantTypesRadioOptions let-defendantTypes="defendantTypes" let-isFine="isFine">
-  <div opal-lib-govuk-radios-conditional conditionalId="radio">
-    <opal-lib-govuk-radio
-      [fieldSetId]="isFine ? 'fm_create_account_fine_defendant_type' : 'fm_create_account_fixed_penalty_defendant_type'"
-      legendText="Defendant type"
-      legendClasses="govuk-fieldset__legend--m"
-      legendHint="If sole trader, choose 'Adult or youth only'"
-      [errors]="
-        isFine
-          ? formControlErrorMessages['fm_create_account_fine_defendant_type']
-          : formControlErrorMessages['fm_create_account_fixed_penalty_defendant_type']
-      "
-    >
-      @for (defendantType of defendantTypes; track defendantType.key) {
-        <div
-          opal-lib-govuk-radios-item
-          [labelText]="defendantType.value"
-          [inputId]="defendantType.key"
-          [inputName]="
-            isFine ? 'fm_create_account_fine_defendant_type' : 'fm_create_account_fixed_penalty_defendant_type'
-          "
-          [inputValue]="defendantType.key"
-          [control]="
-            isFine
-              ? form.get('fm_create_account_fine_defendant_type')
-              : form.get('fm_create_account_fixed_penalty_defendant_type')
-          "
-        ></div>
-      }
-    </opal-lib-govuk-radio>
-  </div>
+<ng-template #defendantTypesRadioOptions let-defendantTypes="defendantTypes" let-controlName="controlName">
+  <opal-lib-govuk-radio
+    [fieldSetId]="controlName"
+    legendText="Defendant type"
+    legendClasses="govuk-fieldset__legend--m"
+    legendHint="If sole trader, choose 'Adult or youth only'"
+    [errors]="formControlErrorMessages[controlName]"
+  >
+    @for (defendantType of defendantTypes; track defendantType.key) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="defendantType.value"
+        [inputId]="controlName + '-' + defendantType.key"
+        [inputName]="controlName"
+        [inputValue]="defendantType.key"
+        [control]="form.get(controlName)"
+      ></div>
+    }
+  </opal-lib-govuk-radio>
 </ng-template>

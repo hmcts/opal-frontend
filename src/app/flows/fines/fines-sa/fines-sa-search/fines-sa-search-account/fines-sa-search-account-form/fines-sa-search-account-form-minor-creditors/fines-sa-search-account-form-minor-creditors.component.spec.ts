@@ -3,10 +3,12 @@ import { FinesSaSearchAccountFormMinorCreditorsComponent } from './fines-sa-sear
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   let component: FinesSaSearchAccountFormMinorCreditorsComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormMinorCreditorsComponent>;
+  let originalInitOuterRadios: () => void;
 
   const buildForm = () =>
     new FormGroup({
@@ -54,7 +56,18 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     };
   };
 
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
+
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchAccountFormMinorCreditorsComponent],
       providers: [
@@ -96,6 +109,31 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       'fsa_search_account_minor_creditors_company',
     ];
     names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
+  });
+
+  it('should toggle conditional panels and enable the correct group', async () => {
+    await fixture.whenStable();
+    const individualConditional = fixture.nativeElement.querySelector(`#${component.individualConditionalId}`);
+    const companyConditional = fixture.nativeElement.querySelector(`#${component.companyConditionalId}`);
+
+    expect(component.individualGroup.disabled).toBeTrue();
+    expect(component.companyGroup.disabled).toBeTrue();
+    expect(individualConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+    expect(companyConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+
+    const individualInput = fixture.nativeElement.querySelector('input[value="individual"]');
+    individualInput.click();
+    fixture.detectChanges();
+
+    expect(component.individualGroup.enabled).toBeTrue();
+    expect(component.companyGroup.disabled).toBeTrue();
+
+    const companyInput = fixture.nativeElement.querySelector('input[value="company"]');
+    companyInput.click();
+    fixture.detectChanges();
+
+    expect(component.companyGroup.enabled).toBeTrue();
+    expect(component.individualGroup.disabled).toBeTrue();
   });
 
   describe('Individual conditional validation', () => {
@@ -246,18 +284,6 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     });
   });
 
-  // Helper to create a fresh component instance with a custom form shape and run detectChanges
-  const createComponentWithForm = (form: FormGroup) => {
-    const fx = TestBed.createComponent(FinesSaSearchAccountFormMinorCreditorsComponent);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cmp = fx.componentInstance as any;
-    cmp.form = form;
-    cmp.formControlErrorMessages = {};
-    cmp.formErrorSummaryMessage = [];
-    fx.detectChanges();
-    return { fx, cmp: fx.componentInstance } as { fx: typeof fx; cmp: FinesSaSearchAccountFormMinorCreditorsComponent };
-  };
-
   // Helper to create a fresh component instance with a custom form shape but DO NOT run detectChanges/ngOnInit
   const createComponentWithFormNoInit = (form: FormGroup) => {
     const fx = TestBed.createComponent(FinesSaSearchAccountFormMinorCreditorsComponent);
@@ -313,16 +339,11 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         }),
       });
 
-      const { cmp } = createComponentWithForm(badForm);
-      const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
-      const individual = cmp.form.get('fsa_search_account_minor_creditors_individual') as FormGroup;
-      const firstNamesExact = individual.get(
-        'fsa_search_account_minor_creditors_first_names_exact_match',
-      ) as FormControl;
+      const { cmp } = createComponentWithFormNoInit(badForm);
 
-      // Move to individual and toggle exact match -> should not throw and should early-return due to missing control
-      typeCtrl.setValue('individual');
-      firstNamesExact.setValue(true);
+      // Should no-op safely when required controls are missing.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).setupIndividualConditionalValidation();
 
       expect(true).toBeTrue();
     });
@@ -343,18 +364,12 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         }),
       });
 
-      const { cmp } = createComponentWithForm(badForm);
+      const { cmp } = createComponentWithFormNoInit(badForm);
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
-      const company = cmp.form.get('fsa_search_account_minor_creditors_company') as FormGroup;
-      const companyNameExact = company.get(
-        'fsa_search_account_minor_creditors_company_name_exact_match',
-      ) as FormControl;
 
-      // Switch away from company to individual, which calls clearCompanyDynamicValidators() internally
-      typeCtrl.setValue('individual');
-
-      // Toggle exact match on the company group while the name control is missing
-      companyNameExact.setValue(true);
+      typeCtrl.setValue('company');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).handleCompanyConditionalValidation();
 
       expect(true).toBeTrue();
     });
@@ -373,7 +388,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         fsa_search_account_minor_creditors_company: new FormGroup({}),
       });
 
-      const { cmp } = createComponentWithForm(badForm);
+      const { cmp } = createComponentWithFormNoInit(badForm);
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
       typeCtrl.setValue('company');
 
@@ -388,8 +403,33 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
+    it('early-returns in setupCompanyConditionalValidation when company controls are missing', () => {
+      const badForm = new FormGroup({
+        fsa_search_account_minor_creditors_minor_creditor_type: new FormControl<string | null>(null),
+        fsa_search_account_minor_creditors_individual: new FormGroup({
+          fsa_search_account_minor_creditors_first_names: new FormControl<string | null>(null),
+          fsa_search_account_minor_creditors_first_names_exact_match: new FormControl<boolean>(false),
+          fsa_search_account_minor_creditors_last_name: new FormControl<string | null>(null),
+          fsa_search_account_minor_creditors_last_name_exact_match: new FormControl<boolean>(false),
+        }),
+        fsa_search_account_minor_creditors_company: new FormGroup({
+          // company_name missing on purpose
+          fsa_search_account_minor_creditors_company_name_exact_match: new FormControl<boolean>(false),
+        }),
+      });
+
+      const { cmp } = createComponentWithFormNoInit(badForm);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const spy = spyOn<any>(cmp as any, 'subscribeValidation').and.callThrough();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).setupCompanyConditionalValidation();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
     it('early-returns in handleIndividualConditionalValidation when type is not individual (no setValidatorPresence call)', () => {
-      const { cmp } = createComponentWithForm(buildForm());
+      const { cmp } = createComponentWithFormNoInit(buildForm());
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
       // Set an explicit non-individual type
       typeCtrl.setValue('company');
@@ -421,7 +461,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         }),
       });
 
-      const { cmp } = createComponentWithForm(badForm);
+      const { cmp } = createComponentWithFormNoInit(badForm);
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
       typeCtrl.setValue('individual');
 
