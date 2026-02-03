@@ -329,13 +329,17 @@ List<String> allLabels = githubApi.getLabels(env.BRANCH_NAME)
 
 // Find the first label like: run_tag:<expression>
 String tagLabel = allLabels.find { String label -> label.startsWith(runTagPrefix) }
+String skipTagExpression = 'not @skip'
 
 if (tagLabel) {
-    env.TAGS = tagLabel.substring(runTagPrefix.length()).trim()
+    String baseTags = tagLabel.substring(runTagPrefix.length()).trim()
+    env.TAGS = baseTags ? "(${baseTags}) and ${skipTagExpression}" : skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
-    echo "Running only scenarios matching TAGS=${env.TAGS}"
+    echo "Running scenarios matching TAGS=${env.TAGS}"
 } else {
-    echo 'Running all scenarios (no run_tag label found)'
+    env.TAGS = skipTagExpression
+    env.CYPRESS_TAGS = env.TAGS
+    echo "Running all scenarios except @skip (TAGS=${env.TAGS})"
 }
 
 // Primary pipeline definition and lifecycle hooks

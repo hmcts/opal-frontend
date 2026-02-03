@@ -214,7 +214,7 @@ export class DraftAccountsFlow {
     }
     this.review.submitDecision();
     if (normalized === 'approve') {
-      return this.waitForPublishStatus(['Published', 'Publishing Pending']).then(() =>
+      return this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']).then(() =>
         this.captureApprovedAccountEvidence(),
       );
     }

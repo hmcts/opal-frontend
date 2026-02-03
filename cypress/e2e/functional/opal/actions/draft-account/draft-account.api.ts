@@ -442,12 +442,12 @@ export function createDraftAndSetStatus(
               expect(afterEtag, 'ETag should change after update').not.to.eq(beforeEtag);
             }
 
-            // 3) Extract account number from response (if publish succeeds).
+            // a) Extract account number from response (if publish succeeds).
             // Optional chaining + bracket notation for index signature access
             const accRaw = (patchResp.body as Record<string, unknown> | null | undefined)?.['account_number'];
             numberForUI = typeof accRaw === 'string' ? accRaw : null;
 
-            // 4) Alias metadata for downstream tests.
+            // b) Alias metadata for downstream tests.
             log('action', `Alias @etagUpdate created (Account ${numberForUI ?? 'unknown'})`, {
               etagBefore: beforeEtag,
               etagAfter: afterEtag,
