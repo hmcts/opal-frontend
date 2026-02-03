@@ -343,29 +343,27 @@ export class DraftAccountsFlow {
         if (!shouldCapturePayload) {
           return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
         }
-        return cy
-          .wait('@draftAccountMutation', { timeout: 15000 })
-          .then(() =>
-            cy.wrap(null, { log: false }).then(
-              () =>
-                new Cypress.Promise<void>((resolve) => {
-                  const start = Date.now();
-                  const timeoutMs = 15000;
-                  const poll = () => {
-                    if (hasPatchResponse()) {
-                      resolve();
-                      return;
-                    }
-                    if (Date.now() - start >= timeoutMs) {
-                      resolve();
-                      return;
-                    }
-                    setTimeout(poll, 200);
-                  };
-                  poll();
-                }),
-            ),
-          ) as Cypress.Chainable<void>;
+        return cy.wait('@draftAccountMutation', { timeout: 15000 }).then(() =>
+          cy.wrap(null, { log: false }).then(
+            () =>
+              new Cypress.Promise<void>((resolve) => {
+                const start = Date.now();
+                const timeoutMs = 15000;
+                const poll = () => {
+                  if (hasPatchResponse()) {
+                    resolve();
+                    return;
+                  }
+                  if (Date.now() - start >= timeoutMs) {
+                    resolve();
+                    return;
+                  }
+                  setTimeout(poll, 200);
+                };
+                poll();
+              }),
+          ),
+        ) as Cypress.Chainable<void>;
       };
 
       return waitForPatchPayloads()
