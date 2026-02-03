@@ -13,8 +13,18 @@ import { CommonActions } from '../actions/common/common.actions';
 import { DashboardActions } from '../actions/dashboard.actions';
 import { recordCreatedAccount } from '../../../../support/utils/accountCapture';
 import { captureScenarioScreenshot } from '../../../../support/utils/screenshot';
+import { isEvidenceCaptureEnabled } from '../../../../support/utils/evidenceMode';
 
 const log = createScopedLogger('DraftAccountsFlow');
+
+type RequestPayloadEntry = {
+  source: 'ui';
+  endpoint?: string;
+  method?: string;
+  timestamp: string;
+  payload: Record<string, unknown>;
+  direction?: 'request' | 'response';
+};
 
 /**
  * Flow helpers that orchestrate draft account actions.
@@ -85,9 +95,10 @@ export class DraftAccountsFlow {
 
   /**
    * Record UI approval evidence after publish status resolves.
+   * @param requestPayloads - Optional PATCH request/response payloads captured during approval.
    * @returns Cypress chainable for the capture task.
    */
-  private captureApprovedAccountEvidence(): Cypress.Chainable<void> {
+  private captureApprovedAccountEvidence(requestPayloads?: RequestPayloadEntry[]): Cypress.Chainable<void> {
     return cy.get<number>('@lastCreatedDraftId').then((accountId) =>
       cy
         .request({
@@ -124,6 +135,7 @@ export class DraftAccountsFlow {
             accountId,
             accountNumber,
             updatedAt,
+            requestPayloads: requestPayloads?.length ? requestPayloads : undefined,
             requestSummary: {
               endpoint: `/opal-fines-service/draft-accounts/${accountId}`,
               method: 'GET',
@@ -206,6 +218,84 @@ export class DraftAccountsFlow {
   recordDecision(decision: Decision, reason?: string): Cypress.Chainable<void> {
     const normalized = decision.toLowerCase() as Decision;
     log('action', 'Recording checker decision (flow)', { decision: normalized, hasReason: Boolean(reason?.trim()) });
+    const shouldCapturePayload = isEvidenceCaptureEnabled();
+    const patchPayloads: RequestPayloadEntry[] = [];
+    const normalizeEndpoint = (endpoint: string): string => {
+      if (!endpoint) return '';
+      try {
+        const url = new URL(endpoint, 'http://placeholder.local');
+        return url.pathname || endpoint;
+      } catch {
+        return endpoint;
+      }
+    };
+    const toPayloadRecord = (value: unknown): Record<string, unknown> | null => {
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        return value as Record<string, unknown>;
+      }
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value);
+          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            return parsed as Record<string, unknown>;
+          }
+        } catch {
+          return null;
+        }
+      }
+      return null;
+    };
+    if (shouldCapturePayload) {
+      const draftAccountUrlPattern = /\/(?:opal-fines-service\/)?draft-accounts\/.*/;
+      const capturePayload = (req) => {
+        const endpoint = normalizeEndpoint(req.url ?? '');
+        const method = req.method?.toUpperCase() || 'PATCH';
+        const requestTimestamp = new Date().toISOString();
+        const requestBody = toPayloadRecord(req.body);
+        if (requestBody) {
+          patchPayloads.push({
+            source: 'ui',
+            endpoint,
+            method,
+            timestamp: requestTimestamp,
+            payload: requestBody,
+            direction: 'request',
+          });
+        }
+
+        req.continue((res) => {
+          const responseTimestamp = new Date().toISOString();
+          const responsePayload = toPayloadRecord(res.body);
+          const responseSummary: Record<string, unknown> = { ...(responsePayload ?? {}) };
+          if (typeof res.statusCode === 'number') {
+            responseSummary['status'] = res.statusCode;
+          }
+          const etagHeader =
+            typeof res.headers?.etag === 'string'
+              ? res.headers.etag
+              : typeof res.headers?.ETag === 'string'
+                ? res.headers.ETag
+                : undefined;
+          if (etagHeader) {
+            responseSummary['etag'] = etagHeader;
+          }
+          if (responsePayload) {
+            responseSummary['responseKeys'] = Object.keys(responsePayload);
+          }
+          patchPayloads.push({
+            source: 'ui',
+            endpoint,
+            method,
+            timestamp: responseTimestamp,
+            payload: responseSummary,
+            direction: 'response',
+          });
+        });
+      };
+
+      cy.intercept({ method: 'PATCH', url: draftAccountUrlPattern, middleware: true }, capturePayload);
+      cy.intercept({ method: 'PUT', url: draftAccountUrlPattern, middleware: true }, capturePayload);
+    }
     this.review.selectDecision(normalized);
     if (normalized === 'reject') {
       if (!reason?.trim()) {
@@ -217,7 +307,7 @@ export class DraftAccountsFlow {
     this.review.submitDecision();
     if (normalized === 'approve') {
       return this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']).then(() =>
-        this.captureApprovedAccountEvidence(),
+        this.captureApprovedAccountEvidence(patchPayloads),
       );
     }
     return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
