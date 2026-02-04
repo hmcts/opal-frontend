@@ -5,9 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
-//../../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
-import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -30,7 +28,6 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   let finesDraftState = structuredClone(FINES_DRAFT_STATE);
   let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
 
-  let store: any;
   const setupComponent = (
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,
@@ -590,7 +587,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
       expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
       expect(request.body.timeline_data[1]).to.have.property('status', 'Publishing Pending');
       expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-      expect(request.body.timeline_data[1]).to.have.property('reason_text', null);
+      expect(request.body.timeline_data[1]).not.to.have.property('reason_text');
     });
   });
 });

@@ -140,7 +140,6 @@ export const routing: Routes = [
             (c) => c.FinesAccRequestPaymentCardSubmitComponent,
           ),
         canActivate: [routePermissionsGuard],
-        canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['amend-payment-terms']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-card'],

@@ -18,6 +18,8 @@ import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../fines-mac-offenc
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../validators/fines-mac-fixed-penalty-details-form-validators';
 import { OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-issuing-authority-autocomplete-items.mock';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 
 describe('FinesMacFixedPenaltyFormComponent', () => {
   let component: FinesMacFixedPenaltyDetailsFormComponent;
@@ -26,8 +28,24 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   let mockTransformationService: jasmine.SpyObj<TransformationService>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>; // Replace with actual service type if available
   let finesMacStore: FinesMacStoreType;
+  let originalConfigureDatePicker: () => void;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     mockDateService = jasmine.createSpyObj(DateService, [
       'isValidDate',
       'calculateAge',
@@ -122,6 +140,23 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(
       component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required),
     ).toBeFalse();
+    expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.disabled).toBeTrue();
+    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.disabled).toBeTrue();
+  });
+
+  it('should toggle the vehicle conditional panel and controls', async () => {
+    await fixture.whenStable();
+    const conditional = fixture.nativeElement.querySelector(`#${component.vehicleOffenceConditionalId}`);
+    expect(conditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+
+    const vehicleInput = fixture.nativeElement.querySelector(
+      `input[aria-controls="${component.vehicleOffenceConditionalId}"]`,
+    );
+    vehicleInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.enabled).toBeTrue();
+    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.enabled).toBeTrue();
   });
 
   it('should listen to changes in the dob and update the dateObject', () => {

@@ -1180,5 +1180,49 @@ describe('OpalFines', () => {
     });
   });
 
+  it('should add a defendant account payment card request with headers and context', () => {
+    const defendantAccountId = 123456;
+    const version = '2';
+    const businessUnitId = '61';
+    const businessUnitUserId = 'USER99';
+
+    service
+      .addDefendantAccountPaymentCardRequest(defendantAccountId, version, businessUnitId, businessUnitUserId)
+      .subscribe((response) => {
+        expect(response).toEqual({ defendant_account_id: defendantAccountId });
+      });
+
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-card-request`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({});
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+    expect(req.request.headers.get('Business-Unit-User-Id')).toBe(businessUnitUserId);
+
+    req.flush({ defendant_account_id: defendantAccountId });
+  });
+
+  it('should add a defendant account payment card request without optional headers', () => {
+    const defendantAccountId = 123456;
+    const version = '';
+    const businessUnitId = undefined as unknown as string;
+    const businessUnitUserId = undefined as unknown as string;
+
+    service
+      .addDefendantAccountPaymentCardRequest(defendantAccountId, version, businessUnitId, businessUnitUserId)
+      .subscribe((response) => {
+        expect(response).toEqual({ defendant_account_id: defendantAccountId });
+      });
+
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-card-request`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({});
+    expect(req.request.headers.has('If-Match')).toBe(false);
+    expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+    expect(req.request.headers.has('Business-Unit-User-Id')).toBe(false);
+
+    req.flush({ defendant_account_id: defendantAccountId });
+  });
+
   // Isolated matcher test suite to avoid TestBed reconfiguration errors
 });

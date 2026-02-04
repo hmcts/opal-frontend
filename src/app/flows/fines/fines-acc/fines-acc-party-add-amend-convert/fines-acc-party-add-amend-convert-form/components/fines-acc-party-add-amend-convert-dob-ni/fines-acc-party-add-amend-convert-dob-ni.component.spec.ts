@@ -2,10 +2,25 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FinesAccPartyAddAmendConvertDobNi } from './fines-acc-party-add-amend-convert-dob-ni.component';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 
 describe('FinesAccPartyAddAmendConvertDobNi', () => {
   let component: FinesAccPartyAddAmendConvertDobNi;
   let fixture: ComponentFixture<FinesAccPartyAddAmendConvertDobNi>;
+  let originalConfigureDatePicker: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+  });
+
+  beforeEach(() => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

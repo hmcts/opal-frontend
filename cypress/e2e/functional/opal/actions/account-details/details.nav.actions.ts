@@ -85,8 +85,17 @@ export class AccountDetailsNavActions {
   /**
    * Navigates to the "Payment terms" tab within the Account Details shell.
    *
+   * @description
+   * Clicks the “Payment terms” sub-navigation tab and prepares for assertions
+   * or further content checks within the tab panel.
+   *
    * @remarks
    * - Relies on `subNav.paymentTermsTab` in `AccountNavDetailsLocators`.
+   *
+   * @example
+   *  const nav = new AccountDetailsNavActions();
+   *  nav.goToPaymentTermsTab();
+   *  nav.assertPaymentTermsTabIsActive();
    */
   goToPaymentTermsTab(): void {
     log('navigate', 'Navigating to "Payment terms" tab');
@@ -156,6 +165,10 @@ export class AccountDetailsNavActions {
 
   /**
    * Asserts that the "Payment terms" tab is currently active.
+   *
+   * @description
+   * Confirms that the active tab link displays “Payment terms”
+   * and has the `aria-current="page"` attribute.
    *
    * @remarks
    * - Validates the active tab label and `aria-current="page"`.
