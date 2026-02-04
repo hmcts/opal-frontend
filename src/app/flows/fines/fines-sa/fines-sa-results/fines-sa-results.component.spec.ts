@@ -8,6 +8,7 @@ import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-a
 import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
 import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
 import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
+import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -631,5 +632,10 @@ describe('FinesSaResultsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [row] = (component as any)['mapDefendantAccounts'](mockData, 'individual');
     expect(row['Parent or guardian']).toBeNull();
+  });
+
+  it('should return minor creditor path segment when search type is minorCreditors', () => {
+    spyOn(finesSaStore, 'getSearchType').and.returnValue('minorCreditors');
+    expect(component.getAccountTypePathSegment()).toBe(FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root);
   });
 });
