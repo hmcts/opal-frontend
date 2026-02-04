@@ -7,13 +7,12 @@ export const PAYMENT_TERMS_AMEND_ELEMENTS = {
   form: 'app-fines-acc-payment-terms-amend-form form',
 
   paymentTermsFieldset: 'fieldset#facc_payment_terms_payment_terms',
-  payInFullRadio: 'input#payInFull',
-  payInFullLabel: 'label[for="payInFull"]',
-  instalmentsOnlyRadio: 'input#instalmentsOnly',
-  instalmentsOnlyLabel: 'label[for="instalmentsOnly"]',
-  lumpSumPlusInstalmentsRadio: 'input#lumpSumPlusInstalments',
-  lumpSumPlusInstalmentsLabel: 'label[for="lumpSumPlusInstalments"]',
-
+  payInFullRadio: 'input#facc_payment_terms_payment_terms-payInFull',
+  payInFullLabel: 'label[for="facc_payment_terms_payment_terms-payInFull"]',
+  instalmentsOnlyRadio: 'input#facc_payment_terms_payment_terms-instalmentsOnly',
+  instalmentsOnlyLabel: 'label[for="facc_payment_terms_payment_terms-instalmentsOnly"]',
+  lumpSumPlusInstalmentsRadio: 'input#facc_payment_terms_payment_terms-lumpSumPlusInstalments',
+  lumpSumPlusInstalmentsLabel: 'label[for="facc_payment_terms_payment_terms-lumpSumPlusInstalments"]',
   payByDateInput: 'input#facc_payment_terms_pay_by_date',
   payByDateLabel: 'label[for="facc_payment_terms_pay_by_date"]',
 
@@ -22,12 +21,12 @@ export const PAYMENT_TERMS_AMEND_ELEMENTS = {
   instalmentAmountInput: 'input#facc_payment_terms_instalment_amount',
   instalmentAmountLabel: 'label[for="facc_payment_terms_instalment_amount"]',
 
-  frequencyWeeklyRadio: 'input#W',
-  frequencyWeeklyLabel: 'label[for="W"]',
-  frequencyFortnightlyRadio: 'input#F',
-  frequencyFortnightlyLabel: 'label[for="F"]',
-  frequencyMonthlyRadio: 'input#M',
-  frequencyMonthlyLabel: 'label[for="M"]',
+  frequencyWeeklyRadio: 'input#facc_payment_terms_instalment_period-W',
+  frequencyWeeklyLabel: 'label[for="facc_payment_terms_instalment_period-W"]',
+  frequencyFortnightlyRadio: 'input#facc_payment_terms_instalment_period-F',
+  frequencyFortnightlyLabel: 'label[for="facc_payment_terms_instalment_period-F"]',
+  frequencyMonthlyRadio: 'input#facc_payment_terms_instalment_period-M',
+  frequencyMonthlyLabel: 'label[for="facc_payment_terms_instalment_period-M"]',
 
   startDateInput: 'input#facc_payment_terms_start_date',
   startDateLabel: 'label[for="facc_payment_terms_start_date"]',

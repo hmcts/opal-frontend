@@ -441,7 +441,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       },
       effective_date: '31/12/2024',
       instalment_period: null,
-      lump_sum_amount: 100,
+      lump_sum_amount: null,
       instalment_amount: null,
     };
 
@@ -451,8 +451,8 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
     setupAccountEnquiryComponent(componentProperties);
     cy.get('h2').contains('Payment terms').should('exist');
-    cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay by date');
-    cy.get('h3').contains('By date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
+    cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay in full');
+    cy.get('h3').contains('Pay by date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
 
     // Verify that instalment-specific fields are not displayed
     cy.get('h3').contains('Frequency').should('not.exist');
