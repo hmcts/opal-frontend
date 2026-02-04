@@ -37,6 +37,7 @@ type CreatedAccountInput = {
   status?: string;
   accountId?: number;
   accountNumber?: string | null;
+  imposingCourtId?: string;
   uniq?: string;
   scenario?: string;
   featurePath?: string;

@@ -191,12 +191,12 @@
     "account_notes": [
       {
         "account_note_serial": 3,
-        "account_note_text": "scenario five comment this is a very long comment hopefuly more than 30 characters",
+        "account_note_text": "Scenario five comment",
         "note_type": "AC"
       },
       {
         "account_note_serial": 2,
-        "account_note_text": "scenario five note this is a very long comment hopefuly more than 30 characters",
+        "account_note_text": "Scenario five note",
         "note_type": "AA"
       }
     ]
