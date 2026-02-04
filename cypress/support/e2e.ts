@@ -13,6 +13,7 @@ import 'cypress-axe';
 import {
   getCurrentScenarioStartedAt,
   getCurrentScenarioTitle,
+  getScenarioIndex,
   getNextScenarioIndex,
   resetScenarioCounters,
   setCurrentScenarioFinishedAt,
@@ -50,7 +51,10 @@ beforeEach(function () {
   }
 
   const featureKey = specRelative || featureTitle || featureFile || 'unknown-feature';
-  const occurrenceIndex = getNextScenarioIndex(featureKey, baseTitle);
+  const retryCount = typeof runnable?.currentRetry === 'function' ? runnable.currentRetry() : 0;
+  const existingIndex = retryCount > 0 ? getScenarioIndex(featureKey, baseTitle) : 0;
+  const occurrenceIndex =
+    retryCount > 0 && existingIndex > 0 ? existingIndex : getNextScenarioIndex(featureKey, baseTitle);
   const scenarioTitle = occurrenceIndex > 1 ? `${baseTitle} (${occurrenceIndex})` : baseTitle;
   setCurrentScenarioTitle(String(scenarioTitle || '').trim());
   setCurrentScenarioFeaturePath(featureFile || specRelative);
