@@ -3,7 +3,8 @@
  * @description Coordinates navigation and assertions across Create/Manage and Check/Validate draft flows,
  * keeping Cucumber steps thin and delegating to shared draft actions.
  */
-import { createScopedLogger } from '../../../../support/utils/log.helper';
+import type { CyHttpMessages } from 'cypress/types/net-stubbing';
+import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { CheckAndValidateDraftsActions } from '../actions/draft-account/check-and-validate-drafts.actions';
 import {
   CheckAndValidateReviewActions,
@@ -16,6 +17,7 @@ import { captureScenarioScreenshot } from '../../../../support/utils/screenshot'
 import { isEvidenceCaptureEnabled } from '../../../../support/utils/evidenceMode';
 
 const log = createScopedLogger('DraftAccountsFlow');
+const logSync = createScopedSyncLogger('DraftAccountsFlow');
 
 type RequestPayloadEntry = {
   source: 'ui';
@@ -108,6 +110,34 @@ export class DraftAccountsFlow {
         })
         .then((response) => {
           const body = this.isRecord(response.body) ? response.body : {};
+          const normalizeCourtId = (value: unknown): string | undefined => {
+            if (typeof value === 'string') {
+              const trimmed = value.trim();
+              return trimmed ? trimmed : undefined;
+            }
+            if (typeof value === 'number' && Number.isFinite(value)) {
+              return String(value);
+            }
+            return undefined;
+          };
+          const readImposingCourtId = (record: Record<string, unknown>): string | undefined => {
+            const direct = normalizeCourtId(record['imposing_court_id']);
+            if (direct) return direct;
+            const account = this.isRecord(record['account']) ? record['account'] : null;
+            const offences = account && Array.isArray(account['offences']) ? account['offences'] : [];
+            for (const offence of offences) {
+              if (!this.isRecord(offence)) continue;
+              const fromOffence = normalizeCourtId(offence['imposing_court_id']);
+              if (fromOffence) return fromOffence;
+            }
+            const rootOffences = Array.isArray(record['offences']) ? record['offences'] : [];
+            for (const offence of rootOffences) {
+              if (!this.isRecord(offence)) continue;
+              const fromOffence = normalizeCourtId(offence['imposing_court_id']);
+              if (fromOffence) return fromOffence;
+            }
+            return undefined;
+          };
           const statusValue = typeof body['account_status'] === 'string' ? body['account_status'] : undefined;
           const accountType = typeof body['account_type'] === 'string' ? body['account_type'] : 'draft';
           const accountNumber =
@@ -116,6 +146,7 @@ export class DraftAccountsFlow {
               : this.isRecord(body['account']) && typeof body['account']['account_number'] === 'string'
                 ? body['account']['account_number']
                 : undefined;
+          const imposingCourtId = readImposingCourtId(body);
           const updatedAt =
             typeof body['account_status_date'] === 'string'
               ? body['account_status_date']
@@ -134,6 +165,7 @@ export class DraftAccountsFlow {
             status: statusValue,
             accountId,
             accountNumber,
+            imposingCourtId,
             updatedAt,
             requestPayloads: requestPayloads?.length ? requestPayloads : undefined,
             requestSummary: {
@@ -247,7 +279,7 @@ export class DraftAccountsFlow {
     };
     if (shouldCapturePayload) {
       const draftAccountUrlPattern = /\/(?:opal-fines-service\/)?draft-accounts\/.*/;
-      const capturePayload = (req) => {
+      const capturePayload = (req: CyHttpMessages.IncomingHttpRequest) => {
         const endpoint = normalizeEndpoint(req.url ?? '');
         const method = req.method?.toUpperCase() || 'PATCH';
         const requestTimestamp = new Date().toISOString();
@@ -262,8 +294,13 @@ export class DraftAccountsFlow {
             direction: 'request',
           });
         }
+        logSync('intercept', 'Captured draft account mutation request', {
+          endpoint,
+          method,
+          hasBody: Boolean(requestBody),
+        });
 
-        req.continue((res) => {
+        req.continue((res: CyHttpMessages.IncomingHttpResponse) => {
           const responseTimestamp = new Date().toISOString();
           const responsePayload = toPayloadRecord(res.body);
           const responseSummary: Record<string, unknown> = { ...(responsePayload ?? {}) };
@@ -271,10 +308,10 @@ export class DraftAccountsFlow {
             responseSummary['status'] = res.statusCode;
           }
           const etagHeader =
-            typeof res.headers?.etag === 'string'
-              ? res.headers.etag
-              : typeof res.headers?.ETag === 'string'
-                ? res.headers.ETag
+            typeof res.headers?.['etag'] === 'string'
+              ? res.headers['etag']
+              : typeof res.headers?.['ETag'] === 'string'
+                ? res.headers['ETag']
                 : undefined;
           if (etagHeader) {
             responseSummary['etag'] = etagHeader;
@@ -290,11 +327,21 @@ export class DraftAccountsFlow {
             payload: responseSummary,
             direction: 'response',
           });
+          logSync('intercept', 'Captured draft account mutation response', {
+            endpoint,
+            method,
+            status: res.statusCode,
+            hasBody: Boolean(responsePayload),
+          });
         });
       };
 
-      cy.intercept({ method: 'PATCH', url: draftAccountUrlPattern, middleware: true }, capturePayload);
-      cy.intercept({ method: 'PUT', url: draftAccountUrlPattern, middleware: true }, capturePayload);
+      cy.intercept({ method: 'PATCH', url: draftAccountUrlPattern, middleware: true }, capturePayload).as(
+        'draftAccountMutation',
+      );
+      cy.intercept({ method: 'PUT', url: draftAccountUrlPattern, middleware: true }, capturePayload).as(
+        'draftAccountMutation',
+      );
     }
     this.review.selectDecision(normalized);
     if (normalized === 'reject') {
@@ -305,10 +352,70 @@ export class DraftAccountsFlow {
     }
     captureScenarioScreenshot('check-validate-decision-before-submit');
     this.review.submitDecision();
+    const aliases = ((Cypress as any).state?.('aliases') ?? {}) as Record<string, unknown>;
+    const expectsFailure =
+      Boolean(aliases['draftDecisionExpectFailure']) || Cypress.env('draftDecisionExpectFailure') === true;
+    if (expectsFailure) {
+      log('info', 'Draft decision failure expected; skipping publish wait');
+      Cypress.env('draftDecisionExpectFailure', false);
+      if (aliases['draftDecisionExpectFailure']) {
+        cy.wrap(false, { log: false }).as('draftDecisionExpectFailure');
+      }
+      if (aliases['patchDraftAccountError']) {
+        return cy
+          .wait('@patchDraftAccountError', { timeout: 15000 })
+          .then(() => cy.wrap(undefined, { log: false })) as Cypress.Chainable<void>;
+      }
+      return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
+    }
     if (normalized === 'approve') {
-      return this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']).then(() =>
-        this.captureApprovedAccountEvidence(patchPayloads),
-      );
+      const hasPatchResponse = (): boolean => patchPayloads.some((entry) => entry.direction === 'response');
+      const logPatchCaptureSummary = () => {
+        if (!shouldCapturePayload) return;
+        const requestCount = patchPayloads.filter((entry) => entry.direction === 'request').length;
+        const responseCount = patchPayloads.filter((entry) => entry.direction === 'response').length;
+        const lastEntry = patchPayloads[patchPayloads.length - 1];
+        log('info', 'Draft account approval payload capture summary', {
+          requestCount,
+          responseCount,
+          lastEndpoint: lastEntry?.endpoint,
+          lastMethod: lastEntry?.method,
+        });
+        if (!responseCount) {
+          log('warn', 'No draft account mutation response captured before evidence write');
+        }
+      };
+      const waitForPatchPayloads = (): Cypress.Chainable<void> => {
+        if (!shouldCapturePayload) {
+          return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
+        }
+        return cy.wait('@draftAccountMutation', { timeout: 15000 }).then(() =>
+          cy.wrap(null, { log: false }).then(
+            () =>
+              new Cypress.Promise<void>((resolve) => {
+                const start = Date.now();
+                const timeoutMs = 15000;
+                const poll = () => {
+                  if (hasPatchResponse()) {
+                    resolve();
+                    return;
+                  }
+                  if (Date.now() - start >= timeoutMs) {
+                    resolve();
+                    return;
+                  }
+                  setTimeout(poll, 200);
+                };
+                poll();
+              }),
+          ),
+        ) as Cypress.Chainable<void>;
+      };
+
+      return waitForPatchPayloads()
+        .then(() => logPatchCaptureSummary())
+        .then(() => this.waitForPublishStatus(['Published', 'Publishing Pending', 'Legacy Response Pending']))
+        .then(() => this.captureApprovedAccountEvidence(patchPayloads));
     }
     return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
   }
