@@ -352,6 +352,22 @@ export class DraftAccountsFlow {
     }
     captureScenarioScreenshot('check-validate-decision-before-submit');
     this.review.submitDecision();
+    const aliases = ((Cypress as any).state?.('aliases') ?? {}) as Record<string, unknown>;
+    const expectsFailure =
+      Boolean(aliases['draftDecisionExpectFailure']) || Cypress.env('draftDecisionExpectFailure') === true;
+    if (expectsFailure) {
+      log('info', 'Draft decision failure expected; skipping publish wait');
+      Cypress.env('draftDecisionExpectFailure', false);
+      if (aliases['draftDecisionExpectFailure']) {
+        cy.wrap(false, { log: false }).as('draftDecisionExpectFailure');
+      }
+      if (aliases['patchDraftAccountError']) {
+        return cy.wait('@patchDraftAccountError', { timeout: 15000 }).then(() =>
+          cy.wrap(undefined, { log: false }),
+        ) as Cypress.Chainable<void>;
+      }
+      return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
+    }
     if (normalized === 'approve') {
       const hasPatchResponse = (): boolean => patchPayloads.some((entry) => entry.direction === 'response');
       const logPatchCaptureSummary = () => {
