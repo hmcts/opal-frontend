@@ -14,9 +14,14 @@ export interface IOpalFinesAccountMinorCreditorDetailsHeader {
   party_details: {
     party_id: string;
     organisation_flag: boolean;
-    organisation_details: {
+    organisation_details?: {
       organisation_name: string;
       organisation_aliases: string | null;
+    };
+    individual_details?: {
+      title: string;
+      forenames: string;
+      surname: string;
     };
   };
   awarded_amount: number;
