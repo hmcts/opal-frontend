@@ -46,6 +46,19 @@ export function getNextScenarioIndex(featureKey: string, scenarioTitle: string):
 }
 
 /**
+ * Retrieve the current scenario index without incrementing.
+ * @param featureKey - Unique key per feature/spec.
+ * @param scenarioTitle - Scenario title to scope the index per feature.
+ * @returns Current index for the scenario, or 0 if none recorded.
+ */
+export function getScenarioIndex(featureKey: string, scenarioTitle: string): number {
+  const safeFeature = (featureKey || 'unknown-feature').trim();
+  const safeTitle = (scenarioTitle || 'unknown-scenario').trim();
+  const key = `${safeFeature}::${safeTitle}`;
+  return scenarioCounters.get(key) ?? 0;
+}
+
+/**
  * Reset per-feature scenario counters (useful for open-mode re-runs).
  */
 export function resetScenarioCounters(): void {
