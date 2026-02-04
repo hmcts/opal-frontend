@@ -332,9 +332,15 @@ List<String> allLabels = githubApi.getLabels(env.BRANCH_NAME)
 // Find the first label like: run_tag:<expression>
 String tagLabel = allLabels.find { String label -> label.startsWith(runTagPrefix) }
 String skipTagExpression = 'not @skip'
+String baseTags = tagLabel ? tagLabel.substring(runTagPrefix.length()).trim() : ''
+
+// Guard: legacy mode must explicitly scope tests via run_tag:<expression>
+if (legacyEnabled && isPR && !baseTags) {
+    error 'Legacy mode requires a populated run_tag:<expression> label ' +
+      '(e.g. run_tag:@UAT-Technical) to avoid running the full suite.'
+}
 
 if (tagLabel) {
-    String baseTags = tagLabel.substring(runTagPrefix.length()).trim()
     env.TAGS = baseTags ? "(${baseTags}) and ${skipTagExpression}" : skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
     echo "Running scenarios matching TAGS=${env.TAGS}"
