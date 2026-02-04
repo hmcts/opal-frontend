@@ -362,9 +362,9 @@ export class DraftAccountsFlow {
         cy.wrap(false, { log: false }).as('draftDecisionExpectFailure');
       }
       if (aliases['patchDraftAccountError']) {
-        return cy.wait('@patchDraftAccountError', { timeout: 15000 }).then(() =>
-          cy.wrap(undefined, { log: false }),
-        ) as Cypress.Chainable<void>;
+        return cy
+          .wait('@patchDraftAccountError', { timeout: 15000 })
+          .then(() => cy.wrap(undefined, { log: false })) as Cypress.Chainable<void>;
       }
       return cy.wrap(undefined, { log: false }) as Cypress.Chainable<void>;
     }
