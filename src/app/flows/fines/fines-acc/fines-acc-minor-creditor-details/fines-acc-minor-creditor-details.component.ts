@@ -38,15 +38,10 @@ import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fine
 // Interfaces
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from './interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IFinesAccountMinorCreditorDetailsTabs } from './interfaces/fines-acc-minor-creditor-details-tabs.interface';
-import {
-  MojAlertComponent,
-  MojAlertContentComponent,
-  MojAlertIconComponent,
-  MojAlertTextComponent,
-} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { IFinesAccSummaryTabsContentStyles } from '../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages-component';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -65,11 +60,8 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
     GovukHeadingWithCaptionComponent,
     CustomPageHeaderComponent,
     GovukButtonDirective,
-    MojAlertComponent,
-    MojAlertContentComponent,
-    MojAlertTextComponent,
-    MojAlertIconComponent,
     MonetaryPipe,
+    FinesAccBannerMessagesComponent,
   ],
   templateUrl: './fines-acc-minor-creditor-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

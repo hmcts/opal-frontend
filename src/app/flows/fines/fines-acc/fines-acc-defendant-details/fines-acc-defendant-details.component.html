@@ -1,34 +1,10 @@
-@if (accountStore.hasVersionMismatch()) {
-  <div class="govuk-grid-column-full">
-    <opal-lib-moj-alert type="warning" ariaLabel="offenceCodeMessage">
-      <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
-      <opal-lib-moj-alert-content content>
-        <opal-lib-moj-alert-content-text
-          >Some information on this page may be out of date.
-          <a tabindex="0" (click)="refreshPage()" (keyup.enter)="refreshPage()"
-            >Refresh</a
-          ></opal-lib-moj-alert-content-text
-        >
-      </opal-lib-moj-alert-content>
-    </opal-lib-moj-alert>
-  </div>
-}
+<app-fines-acc-banner-messages
+  [hasVersionMismatch]="accountStore.hasVersionMismatch()"
+  [successMessage]="accountStore.successMessage()"
+  (clearSuccessMessage)="accountStore.clearSuccessMessage()"
+  (refreshPage)="refreshPage()"
+></app-fines-acc-banner-messages>
 
-@if (accountStore.successMessage()) {
-  <div class="govuk-grid-column-full">
-    <opal-lib-moj-alert
-      type="success"
-      ariaLabel="offenceCodeMessage"
-      [showDismiss]="true"
-      (dismissed)="accountStore.clearSuccessMessage()"
-    >
-      <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
-      <opal-lib-moj-alert-content content>
-        <opal-lib-moj-alert-content-text>{{ accountStore.successMessage() }}</opal-lib-moj-alert-content-text>
-      </opal-lib-moj-alert-content>
-    </opal-lib-moj-alert>
-  </div>
-}
 <div class="govuk-grid-column-full">
   <opal-lib-custom-page-header>
     <ng-container pageHeaderHeading>

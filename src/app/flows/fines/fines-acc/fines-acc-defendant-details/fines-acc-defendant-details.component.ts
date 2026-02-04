@@ -37,12 +37,6 @@ import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendan
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
-import {
-  MojAlertComponent,
-  MojAlertContentComponent,
-  MojAlertIconComponent,
-  MojAlertTextComponent,
-} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
@@ -64,6 +58,7 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@servic
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
+import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages-component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -90,12 +85,9 @@ import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-de
     CustomPageHeaderComponent,
     UpperCasePipe,
     GovukButtonDirective,
-    MojAlertComponent,
-    MojAlertContentComponent,
-    MojAlertTextComponent,
-    MojAlertIconComponent,
     FinesAccDefendantDetailsEnforcementTab,
     MonetaryPipe,
+    FinesAccBannerMessagesComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
