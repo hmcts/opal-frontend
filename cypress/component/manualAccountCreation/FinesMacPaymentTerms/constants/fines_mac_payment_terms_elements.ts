@@ -10,9 +10,12 @@ export const DOM_ELEMENTS = {
   payByDateLabel: 'label[for="fm_payment_terms_pay_by_date"]',
   instalmentsOnlyLabel: 'label[for="fm_payment_terms_payment_terms-instalmentsOnly"]',
   instalmentAmountLabel: 'label[for="fm_payment_terms_instalment_amount"]',
-  frequencyWeeklyLabel: 'label[for="fm_payment_terms_instalment_period-W"]',
-  frequencyFortnightlyLabel: 'label[for="fm_payment_terms_instalment_period-F"]',
-  frequencyMonthlyLabel: 'label[for="fm_payment_terms_instalment_period-M"]',
+  instalmentsOnlyFrequencyWeeklyLabel: 'label[for="instalmentsOnly-W"]',
+  instalmentsOnlyFrequencyFortnightlyLabel: 'label[for="instalmentsOnly-F"]',
+  instalmentsOnlyFrequencyMonthlyLabel: 'label[for="instalmentsOnly-M"]',
+  lumpSumFrequencyWeeklyLabel: 'label[for="lumpSumPlusInstalments-W"]',
+  lumpSumFrequencyFortnightlyLabel: 'label[for="lumpSumPlusInstalments-F"]',
+  lumpSumFrequencyMonthlyLabel: 'label[for="lumpSumPlusInstalments-M"]',
   startDateLabel: 'label[for="fm_payment_terms_start_date"]',
   lumpSumPlusInstalmentsLabel: 'label[for="fm_payment_terms_payment_terms-lumpSumPlusInstalments"]',
   lumpSumAmountLabel: 'label[for="fm_payment_terms_lump_sum_amount"]',
@@ -68,9 +71,12 @@ export const DOM_ELEMENTS = {
   lumpSumAmount: 'input[id="fm_payment_terms_lump_sum_amount"]',
 
   //Fequency Options
-  frequencyWeekly: 'input[name="fm_payment_terms_instalment_period"][value="W"]',
-  frequencyMonthly: 'input[name="fm_payment_terms_instalment_period"][value="M"]',
-  frequencyFortnightly: 'input[name="fm_payment_terms_instalment_period"][value="F"]',
+  instalmentsOnlyFrequencyWeekly: 'input[name="instalmentsOnly"][value="W"]',
+  instalmentsOnlyFrequencyMonthly: 'input[name="instalmentsOnly"][value="M"]',
+  instalmentsOnlyFrequencyFortnightly: 'input[name="instalmentsOnly"][value="F"]',
+  lumpSumFrequencyWeekly: 'input[name="lumpSumPlusInstalments"][value="W"]',
+  lumpSumFrequencyMonthly: 'input[name="lumpSumPlusInstalments"][value="M"]',
+  lumpSumFrequencyFortnightly: 'input[name="lumpSumPlusInstalments"][value="F"]',
 
   // Submit & error displays
   submitButton: 'button[type="submit"]',
