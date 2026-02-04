@@ -28,7 +28,7 @@ export const AccountPaymentTermsDetailsLocators = {
     lastAmendedBy: '#payment-terms-amendmentsLast-amended-byValue',
     amendmentReason: '#payment-terms-amendmentsAmendement-reasonValue',
   },
-    
+
   // ──────────────────────────────
   // Payment terms tab (Account Details)
   // ──────────────────────────────
