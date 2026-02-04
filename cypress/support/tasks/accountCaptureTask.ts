@@ -34,6 +34,7 @@ type AccountCreated = {
   uniq: string;
   accountId: number;
   accountNumber?: string;
+  imposingCourtId?: string;
   createdAt: string;
   updatedAt?: string;
   requestPayloads?: RequestPayloadEntry[];
@@ -649,6 +650,7 @@ async function appendEntry(kind: 'created' | 'failed', entry: AccountCreated | A
           accountType: existing.accountType || incoming.accountType,
           status: incoming.status || existing.status,
           accountNumber: incoming.accountNumber ?? existing.accountNumber,
+          imposingCourtId: incoming.imposingCourtId ?? existing.imposingCourtId,
           createdAt: existing.createdAt || incoming.createdAt,
           updatedAt: incoming.updatedAt ?? existing.updatedAt,
           scenario: existing.scenario || incoming.scenario,
