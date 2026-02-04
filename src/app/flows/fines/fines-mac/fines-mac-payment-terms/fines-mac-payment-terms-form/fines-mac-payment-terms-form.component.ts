@@ -103,7 +103,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   };
 
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
-  public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
+  public readonly paymentTermOptions = FINES_PAYMENT_TERMS_OPTIONS;
   public readonly collectionOrderYesConditionalId = 'fm_payment_terms_collection_order_made_yes';
   public readonly collectionOrderNoConditionalId = 'fm_payment_terms_collection_order_made_no';
   public readonly paymentTermsConditionalIdPrefix = 'fm_payment_terms_payment_terms_';
