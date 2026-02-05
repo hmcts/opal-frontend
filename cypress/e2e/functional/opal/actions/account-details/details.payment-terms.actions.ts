@@ -133,7 +133,7 @@ export class AccountDetailsPaymentTermsActions {
         return A.frequencyMonthlyRadio;
     }
   }
-  
+
   /**
    * Normalizes whitespace for consistent text comparisons.
    *
