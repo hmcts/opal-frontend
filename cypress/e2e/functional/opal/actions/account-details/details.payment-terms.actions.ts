@@ -17,7 +17,6 @@ type InstalmentFrequencyCode = 'W' | 'F' | 'M';
 export class AccountDetailsPaymentTermsActions {
   private readonly common = new CommonActions();
   private static readonly DEFAULT_TIMEOUT = 15_000;
-  private readonly common = new CommonActions();
 
   /**
    * Opens the payment terms amend form from the details tab.
@@ -56,12 +55,15 @@ export class AccountDetailsPaymentTermsActions {
     log('input', 'Completing instalments only payment terms', options);
 
     cy.get(A.instalmentsOnlyRadio, this.common.getTimeoutOptions()).check({ force: true });
-    cy.get(A.instalmentAmountInput, this.common.getTimeoutOptions()).clear().type(options.instalmentAmount);
+    cy.get(A.instalmentAmountInput, this.common.getTimeoutOptions())
+      .filter(':visible')
+      .clear()
+      .type(options.instalmentAmount);
 
     const frequencySelector = this.getFrequencySelector(options.frequencyCode);
     cy.get(frequencySelector, this.common.getTimeoutOptions()).check({ force: true });
 
-    cy.get(A.startDateInput, this.common.getTimeoutOptions()).clear().type(options.startDate);
+    cy.get(A.startDateInput, this.common.getTimeoutOptions()).filter(':visible').clear().type(options.startDate);
     cy.get(A.reasonForChangeTextarea, this.common.getTimeoutOptions()).clear().type(options.reason);
 
     if (options.requestPaymentCard) {

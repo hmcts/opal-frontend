@@ -21,12 +21,12 @@ export const PAYMENT_TERMS_AMEND_ELEMENTS = {
   instalmentAmountInput: 'input#facc_payment_terms_instalment_amount',
   instalmentAmountLabel: 'label[for="facc_payment_terms_instalment_amount"]',
 
-  frequencyWeeklyRadio: 'input#facc_payment_terms_instalment_period-W',
-  frequencyWeeklyLabel: 'label[for="facc_payment_terms_instalment_period-W"]',
-  frequencyFortnightlyRadio: 'input#facc_payment_terms_instalment_period-F',
-  frequencyFortnightlyLabel: 'label[for="facc_payment_terms_instalment_period-F"]',
-  frequencyMonthlyRadio: 'input#facc_payment_terms_instalment_period-M',
-  frequencyMonthlyLabel: 'label[for="facc_payment_terms_instalment_period-M"]',
+  frequencyWeeklyRadio: 'fieldset#facc_payment_terms_instalment_period input[id$="-W"]',
+  frequencyWeeklyLabel: 'fieldset#facc_payment_terms_instalment_period label[for$="-W"]',
+  frequencyFortnightlyRadio: 'fieldset#facc_payment_terms_instalment_period input[id$="-F"]',
+  frequencyFortnightlyLabel: 'fieldset#facc_payment_terms_instalment_period label[for$="-F"]',
+  frequencyMonthlyRadio: 'fieldset#facc_payment_terms_instalment_period input[id$="-M"]',
+  frequencyMonthlyLabel: 'fieldset#facc_payment_terms_instalment_period label[for$="-M"]',
 
   startDateInput: 'input#facc_payment_terms_start_date',
   startDateLabel: 'label[for="facc_payment_terms_start_date"]',
