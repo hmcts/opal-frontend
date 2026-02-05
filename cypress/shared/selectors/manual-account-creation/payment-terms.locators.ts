@@ -23,10 +23,15 @@ export const ManualPaymentTermsLocators = {
   payByDate: 'input[id="fm_payment_terms_pay_by_date"]',
   lumpSumAmount: '#fm_payment_terms_lump_sum_amount',
   instalmentAmount: '#fm_payment_terms_instalment_amount',
-  frequency: {
-    weekly: 'input[name="fm_payment_terms_instalment_period"][value="W"]',
-    fortnightly: 'input[name="fm_payment_terms_instalment_period"][value="F"]',
-    monthly: 'input[name="fm_payment_terms_instalment_period"][value="M"]',
+  instalmentsOnlyFrequency: {
+    weekly: 'input[name="instalmentsOnly"][value="W"]',
+    fortnightly: 'input[name="instalmentsOnly"][value="F"]',
+    monthly: 'input[name="instalmentsOnly"][value="M"]',
+  },
+  lumpSumFrequency: {
+    weekly: 'input[name="lumpSumPlusInstalments"][value="W"]',
+    fortnightly: 'input[name="lumpSumPlusInstalments"][value="F"]',
+    monthly: 'input[name="lumpSumPlusInstalments"][value="M"]',
   },
   startDate: '#fm_payment_terms_start_date',
   requestPaymentCard: '#fm_payment_terms_payment_card_request',

@@ -846,7 +846,7 @@ Feature: Manual account creation - Offence Details
     And I search offences with:
       | Offence code    | A |
       | Act and section |   |
-    Then I see the offence search max results message "100 results"
+    Then I see the offence search max results message "100 total results"
 
   @PO-667 @PO-987 @PO-545
   Scenario: AC2a-b Active and inactive offence filter behaviour
