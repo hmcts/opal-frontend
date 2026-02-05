@@ -21,11 +21,7 @@ import { CustomAccountInformationComponent } from '@hmcts/opal-frontend-common/c
 import { CustomAccountInformationItemComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item';
 import { CustomAccountInformationItemLabelComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-label';
 import { CustomAccountInformationItemValueComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-value';
-import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
-import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
-import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 // Pipes & Directives
-import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_TABS } from './constants/fines-acc-minor-creditor-details-tabs.constant';
@@ -41,7 +37,7 @@ import { IFinesAccountMinorCreditorDetailsTabs } from './interfaces/fines-acc-mi
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { IFinesAccSummaryTabsContentStyles } from '../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
-import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages-component';
+import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -56,12 +52,8 @@ import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fi
     CustomAccountInformationItemComponent,
     CustomAccountInformationItemLabelComponent,
     CustomAccountInformationItemValueComponent,
-    MojButtonMenuComponent,
-    GovukHeadingWithCaptionComponent,
-    CustomPageHeaderComponent,
-    GovukButtonDirective,
     MonetaryPipe,
-    FinesAccBannerMessagesComponent,
+    FinesAccSummaryHeaderComponent,
   ],
   templateUrl: './fines-acc-minor-creditor-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

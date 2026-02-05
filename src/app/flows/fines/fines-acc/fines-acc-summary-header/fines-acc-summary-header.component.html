@@ -1,0 +1,31 @@
+<app-fines-acc-banner-messages
+  [hasVersionMismatch]="accountStore.hasVersionMismatch()"
+  [successMessage]="accountStore.successMessage()"
+  (clearSuccessMessage)="accountStore.clearSuccessMessage()"
+  (refreshPage)="handleRefreshPage()"
+></app-fines-acc-banner-messages>
+
+<div class="govuk-grid-column-full">
+  <opal-lib-custom-page-header>
+    <ng-container pageHeaderHeading>
+      <opal-lib-govuk-heading-with-caption
+        [captionText]="accountStore.account_number() ?? ''"
+        [headingText]="accountStore.party_name() ?? ''"
+      ></opal-lib-govuk-heading-with-caption>
+    </ng-container>
+    <ng-container pageHeaderButtons>
+      @if (hasAddAccountActivityNotePermission) {
+        <button
+          opalLibGovukButton
+          buttonId="addAccountNote"
+          buttonClasses="govuk-button--secondary"
+          (click)="handleNavigateToAddAccountNotePage()"
+        >
+          Add account note
+        </button>
+      }
+
+      <opal-lib-moj-button-menu menuButtonTitle="More options:"></opal-lib-moj-button-menu>
+    </ng-container>
+  </opal-lib-custom-page-header>
+</div>

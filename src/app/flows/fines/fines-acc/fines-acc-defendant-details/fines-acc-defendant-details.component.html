@@ -1,34 +1,9 @@
-<app-fines-acc-banner-messages
-  [hasVersionMismatch]="accountStore.hasVersionMismatch()"
-  [successMessage]="accountStore.successMessage()"
-  (clearSuccessMessage)="accountStore.clearSuccessMessage()"
+<app-fines-acc-summary-header
+  [accountStore]="accountStore"
+  [hasAddAccountActivityNotePermission]="hasPermission('add-account-activity-notes')"
   (refreshPage)="refreshPage()"
-></app-fines-acc-banner-messages>
-
-<div class="govuk-grid-column-full">
-  <opal-lib-custom-page-header>
-    <ng-container pageHeaderHeading>
-      <opal-lib-govuk-heading-with-caption
-        [captionText]="accountData.account_number"
-        headingText="{{ accountStore.party_name() }}"
-      ></opal-lib-govuk-heading-with-caption>
-    </ng-container>
-    <ng-container pageHeaderButtons>
-      @if (hasPermission('add-account-activity-notes')) {
-        <button
-          opalLibGovukButton
-          buttonId="addAccountNote"
-          buttonClasses="govuk-button--secondary"
-          (click)="navigateToAddAccountNotePage()"
-        >
-          Add account note
-        </button>
-      }
-
-      <opal-lib-moj-button-menu menuButtonTitle="More options:"></opal-lib-moj-button-menu>
-    </ng-container>
-  </opal-lib-custom-page-header>
-</div>
+  (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"
+></app-fines-acc-summary-header>
 
 @if (accountData.debtor_type === debtorTypes.parentGuardian || accountData.is_youth) {
   <div class="govuk-grid-column-full govuk-!-margin-bottom-3">

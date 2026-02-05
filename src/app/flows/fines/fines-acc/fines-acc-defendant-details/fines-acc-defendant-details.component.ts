@@ -23,12 +23,8 @@ import { CustomAccountInformationItemComponent } from '@hmcts/opal-frontend-comm
 import { CustomAccountInformationItemLabelComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-label';
 import { CustomAccountInformationItemValueComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-value';
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
-import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
-import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
-import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 // Pipes & Directives
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
-import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
@@ -58,7 +54,7 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@servic
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
-import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages-component';
+import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -80,14 +76,10 @@ import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fi
     CustomAccountInformationItemLabelComponent,
     CustomAccountInformationItemValueComponent,
     GovukTagComponent,
-    MojButtonMenuComponent,
-    GovukHeadingWithCaptionComponent,
-    CustomPageHeaderComponent,
     UpperCasePipe,
-    GovukButtonDirective,
     FinesAccDefendantDetailsEnforcementTab,
     MonetaryPipe,
-    FinesAccBannerMessagesComponent,
+    FinesAccSummaryHeaderComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
