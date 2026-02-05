@@ -17,9 +17,9 @@ export const DOM_ELEMENTS = {
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
 
-  previousPageButton: '.moj-pagination__item--prev',
-  nextPageButton: '.moj-pagination__item--next',
+  previousPageButton: '.govuk-pagination__prev',
+  nextPageButton: '.govuk-pagination__next',
   //Added as Page Number is now dynamic
-  paginationPageNumber: (pageNum: number | string) => `.moj-pagination__item:contains("${pageNum}")`,
+  paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
   rejectedAccounts: 'a.govuk-link',
 };
