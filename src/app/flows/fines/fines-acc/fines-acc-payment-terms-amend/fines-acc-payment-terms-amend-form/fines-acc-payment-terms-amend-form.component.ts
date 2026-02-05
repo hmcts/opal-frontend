@@ -116,6 +116,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS).map(
     ([key, value]) => ({ key, value }),
   );
+  public readonly paymentTermsConditionalIdPrefix = 'payment-terms-conditional-';
   public today!: string;
   public yesterday!: string;
 

@@ -21,75 +21,72 @@
         [inputId]="paymentTerm.key"
         [inputName]="'facc_payment_terms_payment_terms'"
         [inputValue]="paymentTerm.key"
+        [ariaControls]="paymentTermsConditionalIdPrefix + paymentTerm.key"
         [control]="form.get('facc_payment_terms_payment_terms')"
       ></div>
 
       @switch (paymentTerm.key) {
         @case ('payInFull') {
-          @if (form.get('facc_payment_terms_payment_terms')!.value === paymentTerm.key) {
-            <span id="payment-term-pay-in-full-conditional-label" class="govuk-visually-hidden">
-              Options for Pay In Full
-            </span>
-            <div opal-lib-govuk-radios-conditional conditionalId="facc_payment_terms_payment_terms">
-              <div class="govuk-form-group">
-                <opal-lib-moj-date-picker
-                  labelText="Enter pay by date"
-                  labelClasses="govuk-label--s"
-                  inputId="facc_payment_terms_pay_by_date"
-                  inputName="facc_payment_terms_pay_by_date"
-                  inputClasses="govuk-input--width-10"
-                  hintText="For example, 31/01/2023"
-                  [control]="form.get('facc_payment_terms_pay_by_date')!"
-                  [errors]="formControlErrorMessages['facc_payment_terms_pay_by_date']"
-                  (dateChange)="setInputValue($event, 'facc_payment_terms_pay_by_date')"
-                ></opal-lib-moj-date-picker>
-                @if (payByDateInPast) {
-                  <ng-container
-                    *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Pay by date' }"
-                  ></ng-container>
-                }
-                @if (payByDateInFuture) {
-                  <ng-container
-                    *ngTemplateOutlet="dateInFutureTemplate; context: { $implicit: 'Pay by date' }"
-                  ></ng-container>
-                }
-              </div>
+          <span id="payment-term-pay-in-full-conditional-label" class="govuk-visually-hidden">
+            Options for Pay In Full
+          </span>
+          <opal-lib-govuk-radios-conditional [conditionalId]="paymentTermsConditionalIdPrefix + paymentTerm.key">
+            <div class="govuk-form-group">
+              <opal-lib-moj-date-picker
+                labelText="Enter pay by date"
+                labelClasses="govuk-label--s"
+                inputId="facc_payment_terms_pay_by_date"
+                inputName="facc_payment_terms_pay_by_date"
+                inputClasses="govuk-input--width-10"
+                hintText="For example, 31/01/2023"
+                [control]="form.get('facc_payment_terms_pay_by_date')!"
+                [errors]="formControlErrorMessages['facc_payment_terms_pay_by_date']"
+                (dateChange)="setInputValue($event, 'facc_payment_terms_pay_by_date')"
+              ></opal-lib-moj-date-picker>
+              @if (payByDateInPast) {
+                <ng-container
+                  *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Pay by date' }"
+                ></ng-container>
+              }
+              @if (payByDateInFuture) {
+                <ng-container
+                  *ngTemplateOutlet="dateInFutureTemplate; context: { $implicit: 'Pay by date' }"
+                ></ng-container>
+              }
             </div>
-          }
+          </opal-lib-govuk-radios-conditional>
         }
         @case ('instalmentsOnly') {
-          @if (form.get('facc_payment_terms_payment_terms')!.value === paymentTerm.key) {
-            <span id="payment-term-instalments-only-conditional-label" class="govuk-visually-hidden">
-              Options for Instalments Only
-            </span>
-            <div opal-lib-govuk-radios-conditional conditionalId="facc_payment_terms_payment_terms">
-              <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
-            </div>
-          }
+          <span id="payment-term-instalments-only-conditional-label" class="govuk-visually-hidden">
+            Options for Instalments Only
+          </span>
+          <opal-lib-govuk-radios-conditional [conditionalId]="paymentTermsConditionalIdPrefix + paymentTerm.key">
+            <ng-container
+              *ngTemplateOutlet="instalmentsFrequencyStartDate; context: { selectedFrequency: paymentTerm.key }"
+            ></ng-container>
+          </opal-lib-govuk-radios-conditional>
         }
         @case ('lumpSumPlusInstalments') {
-          @if (form.get('facc_payment_terms_payment_terms')!.value === paymentTerm.key) {
-            <span id="payment-term-lump-sum-plus-instalments-conditional-label" class="govuk-visually-hidden">
-              Options for Lump Sum Plus Instalments
-            </span>
-            <div opal-lib-govuk-radios-conditional conditionalId="facc_payment_terms_payment_terms">
-              <div class="govuk-form-group">
-                <opal-lib-govuk-text-input-prefix-suffix
-                  labelText="Lump sum"
-                  labelClasses="govuk-label--s"
-                  inputId="facc_payment_terms_lump_sum_amount"
-                  inputName="facc_payment_terms_lump_sum_amount"
-                  inputClasses="govuk-input--width-5"
-                  prefixText="£"
-                  [control]="form.get('facc_payment_terms_lump_sum_amount')"
-                  [errors]="formControlErrorMessages['facc_payment_terms_lump_sum_amount']"
-                  [forceTwoDecimalPoints]="true"
-                >
-                </opal-lib-govuk-text-input-prefix-suffix>
-              </div>
-              <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
+          <span id="payment-term-lump-sum-plus-instalments-conditional-label" class="govuk-visually-hidden">
+            Options for Lump Sum Plus Instalments
+          </span>
+          <opal-lib-govuk-radios-conditional [conditionalId]="paymentTermsConditionalIdPrefix + paymentTerm.key">
+            <div class="govuk-form-group">
+              <opal-lib-govuk-text-input-prefix-suffix
+                labelText="Lump sum"
+                labelClasses="govuk-label--s"
+                inputId="facc_payment_terms_lump_sum_amount"
+                inputName="facc_payment_terms_lump_sum_amount"
+                inputClasses="govuk-input--width-5"
+                prefixText="£"
+                [control]="form.get('facc_payment_terms_lump_sum_amount')"
+                [errors]="formControlErrorMessages['facc_payment_terms_lump_sum_amount']"
+                [forceTwoDecimalPoints]="true"
+              >
+              </opal-lib-govuk-text-input-prefix-suffix>
             </div>
-          }
+            <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
+          </opal-lib-govuk-radios-conditional>
         }
       }
     }
@@ -227,7 +224,7 @@
 </form>
 
 <!-- Template for Instalments Frequency and Start Date -->
-<ng-template #instalmentsFrequencyStartDate>
+<ng-template #instalmentsFrequencyStartDate let-selectedFrequency="selectedFrequency">
   <div class="govuk-form-group">
     <opal-lib-govuk-text-input-prefix-suffix
       labelText="Instalment"
@@ -253,8 +250,8 @@
         <div
           opal-lib-govuk-radios-item
           [labelText]="frequency.value"
-          [inputId]="frequency.key"
-          inputName="facc_payment_terms_instalment_period"
+          [inputId]="selectedFrequency + '-' + frequency.key"
+          [inputName]="selectedFrequency"
           [inputValue]="frequency.key"
           [control]="form.get('facc_payment_terms_instalment_period')"
         ></div>
