@@ -275,9 +275,9 @@ export class ManualPaymentTermsActions {
    * @param option - Frequency choice.
    */
   private setFrequency(option: PaymentFrequencyOption): void {
-    const selector = this.resolveFrequencySelector(option);
-    log('select', 'Setting payment frequency', { option });
     const checkedPaymentTerm = 'input[name="fm_payment_terms_payment_terms"]:checked';
+    const selector = this.resolveFrequencySelector(option, checkedPaymentTerm);
+    log('select', 'Setting payment frequency', { option });
 
     cy.get('body', this.common.getTimeoutOptions()).then(($body) => {
       const ariaControls = $body.find(checkedPaymentTerm).attr('aria-controls');
@@ -390,13 +390,22 @@ export class ManualPaymentTermsActions {
    * @param option - Expected frequency or "Not selected".
    */
   private assertFrequency(option: PaymentFrequencyOption | 'Not selected'): void {
+    const checkedPaymentTerm = 'input[name="fm_payment_terms_payment_terms"]:checked';
+
     if (option === 'Not selected') {
-      cy.get(L.frequency.weekly, this.common.getTimeoutOptions()).should('not.be.checked');
-      cy.get(L.frequency.fortnightly, this.common.getTimeoutOptions()).should('not.be.checked');
-      cy.get(L.frequency.monthly, this.common.getTimeoutOptions()).should('not.be.checked');
-      return;
+      if (checkedPaymentTerm.includes('instalmentsOnly')) {
+        cy.get(L.instalmentsOnlyFrequency.weekly, this.common.getTimeoutOptions()).should('not.be.checked');
+        cy.get(L.instalmentsOnlyFrequency.fortnightly, this.common.getTimeoutOptions()).should('not.be.checked');
+        cy.get(L.instalmentsOnlyFrequency.monthly, this.common.getTimeoutOptions()).should('not.be.checked');
+        return;
+      } else {
+        cy.get(L.lumpSumFrequency.weekly, this.common.getTimeoutOptions()).should('not.be.checked');
+        cy.get(L.lumpSumFrequency.fortnightly, this.common.getTimeoutOptions()).should('not.be.checked');
+        cy.get(L.lumpSumFrequency.monthly, this.common.getTimeoutOptions()).should('not.be.checked');
+        return;
+      }
     }
-    const selector = this.resolveFrequencySelector(option);
+    const selector = this.resolveFrequencySelector(option, checkedPaymentTerm);
     cy.get(selector, this.common.getTimeoutOptions()).should('be.checked');
   }
 
@@ -458,18 +467,32 @@ export class ManualPaymentTermsActions {
   /**
    * Resolves a frequency option to its selector.
    * @param option - Frequency option.
+   * @param checkedPaymentTerm - Currently checked payment term to determine frequency context.
    * @returns Selector for the corresponding frequency radio.
    */
-  private resolveFrequencySelector(option: PaymentFrequencyOption): string {
-    switch (option) {
-      case 'Weekly':
-        return L.frequency.weekly;
-      case 'Fortnightly':
-        return L.frequency.fortnightly;
-      case 'Monthly':
-        return L.frequency.monthly;
-      default:
-        throw new Error(`Unknown payment frequency: ${option as string}`);
+  private resolveFrequencySelector(option: PaymentFrequencyOption, checkedPaymentTerm: string): string {
+    if (checkedPaymentTerm.includes('instalmentsOnly')) {
+      switch (option) {
+        case 'Weekly':
+          return L.instalmentsOnlyFrequency.weekly;
+        case 'Fortnightly':
+          return L.instalmentsOnlyFrequency.fortnightly;
+        case 'Monthly':
+          return L.instalmentsOnlyFrequency.monthly;
+        default:
+          throw new Error(`Unknown payment frequency: ${option as string}`);
+      }
+    } else {
+      switch (option) {
+        case 'Weekly':
+          return L.lumpSumFrequency.weekly;
+        case 'Fortnightly':
+          return L.lumpSumFrequency.fortnightly;
+        case 'Monthly':
+          return L.lumpSumFrequency.monthly;
+        default:
+          throw new Error(`Unknown payment frequency: ${option as string}`);
+      }
     }
   }
 
