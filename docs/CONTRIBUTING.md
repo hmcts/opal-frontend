@@ -1,21 +1,24 @@
 # Contributing
 
 ## Commit and Pull Request Guidelines
+
 - Follow Conventional Commits, optionally prefixed with Jira keys (e.g., `PO-716`); keep subjects at or below 72 characters.
 - Reference the Jira ticket and linked PR (e.g., `(#1828)`) in subject or body.
 - Include a concise summary, testing evidence, and updated checklists in PRs; attach Cypress artifacts when debugging flakes.
 
 ## Pull Request Template
+
 Use this template for PR descriptions:
 
 ```md
 ### Jira link
 
-<!-- 
+<!--
 Replace PROJ-XXXXXX with your Jira key
 Remove this section if its not applicable, or replace it with another reference link
 -->
-See [PROJ-XXXXXX](https://tools.hmcts.net/jira/browse/PROJ-XXXXXX)
+
+See [PROJ-XXXXXX](JIRA_LINK)
 
 ### Change description
 
@@ -36,7 +39,7 @@ For frontend changes, include screenshots of the relevant page(s) before and aft
 For refactoring and code cleanup changes, exercise the code before and after the change and verify the behaviour remains the same.
 -->
 
-### Security Vulnerability Assessment ###
+### Security Vulnerability Assessment
 
 <!-- Comment:
 If Yes to the below question, please provide details below:
@@ -46,8 +49,9 @@ Mitigating Factors/Compensating Controls: Describe any measures taken to reduce 
 -->
 
 **CVE Suppression:** Are there any CVEs present in the codebase (either newly introduced or pre-existing) that are being intentionally suppressed or ignored by this commit?
-  * [ ] Yes
-  * [ ] No
+
+- [ ] Yes
+- [ ] No
 
 ### Checklist
 
