@@ -139,7 +139,7 @@ describe('FinesAccPayloadService', () => {
     header.party_details.organisation_flag = false;
     const account_id = 77;
 
-    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header);
+    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'defendant');
 
     expect(result).toEqual({
       account_number: header.account_number,
@@ -171,7 +171,7 @@ describe('FinesAccPayloadService', () => {
     header.party_details.organisation_flag = true;
     const account_id = 77;
 
-    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header);
+    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'defendant');
 
     expect(result).toEqual({
       account_number: header.account_number,
@@ -198,7 +198,7 @@ describe('FinesAccPayloadService', () => {
     header.party_details.organisation_flag = false;
     const account_id = 77;
 
-    const result = service.transformAccountHeaderForStore(account_id, header);
+    const result = service.transformAccountHeaderForStore(account_id, header, 'defendant');
 
     expect(result.party_name).toBe(
       header.party_details.individual_details?.title +
@@ -220,7 +220,7 @@ describe('FinesAccPayloadService', () => {
     );
     const account_id = 77;
 
-    const result: IFinesAccountState = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
+    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'minorCreditor');
 
     expect(result).toEqual({
       account_number: header.account_number,
@@ -258,7 +258,7 @@ describe('FinesAccPayloadService', () => {
     };
     delete header.party_details.organisation_details;
 
-    const result: IFinesAccountState = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
+    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'minorCreditor');
 
     expect(result).toEqual({
       account_number: header.account_number,

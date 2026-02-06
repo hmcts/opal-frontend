@@ -26,7 +26,9 @@ export const minorCreditorAccountHeadingResolver: ResolveFn<IOpalFinesAccountMin
    */
   return opalFinesService.getMinorCreditorAccountHeadingData(accountId).pipe(
     tap((headingData) => {
-      accountStore.setAccountState(payloadService.transformMinorCreditorAccountHeaderForStore(accountId, headingData));
+      accountStore.setAccountState(
+        payloadService.transformAccountHeaderForStore(accountId, headingData, 'minorCreditor'),
+      );
     }),
     map((headingData) => payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
   );

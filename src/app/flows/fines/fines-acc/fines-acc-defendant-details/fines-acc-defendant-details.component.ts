@@ -345,7 +345,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       .pipe(
         tap((headingData) => {
           this.accountStore.setAccountState(
-            this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
+            this.payloadService.transformAccountHeaderForStore(
+              Number(this.accountStore.account_id()),
+              headingData,
+              'defendant',
+            ),
           );
         }),
         map((headingData) => this.payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),

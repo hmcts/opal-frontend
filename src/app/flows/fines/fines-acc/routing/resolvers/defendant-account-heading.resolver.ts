@@ -26,7 +26,7 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
    */
   return opalFinesService.getDefendantAccountHeadingData(accountId).pipe(
     tap((headingData) => {
-      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(accountId, headingData));
+      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(accountId, headingData, 'defendant'));
     }),
     map((headingData) => payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
   );

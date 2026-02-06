@@ -132,9 +132,10 @@ export class FinesAccMinorCreditorDetailsComponent extends AbstractTabData imple
       .pipe(
         tap((headingData) => {
           this.accountStore.setAccountState(
-            this.payloadService.transformMinorCreditorAccountHeaderForStore(
+            this.payloadService.transformAccountHeaderForStore(
               Number(this.accountStore.account_id()),
               headingData,
+              'minorCreditor',
             ),
           );
         }),
