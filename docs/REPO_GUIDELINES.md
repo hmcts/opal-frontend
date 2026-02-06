@@ -21,6 +21,12 @@ This document captures repo structure, commands, and coding conventions for opal
 - Prefer standalone components/routes/providers; avoid creating Angular modules by default.
 - Avoid barrel exports and barrel imports; use direct imports.
 
+## Design System and Content Standards
+- GOV.UK Design System patterns are the baseline for every flow.
+- Ministry of Justice Design System patterns are used where MoJ components exist.
+- Pages use GOV.UK typography, spacing tokens, and colour palette. Bespoke styling is only allowed when no pattern exists.
+- Content follows the GOV.UK style guide and interactive states retain WCAG AA contrast.
+
 ## Testing Basics
 - Name Jasmine specs as `*.spec.ts` alongside sources.
 - Prefer shallow `TestBed` setups and mock HTTP/Store dependencies.
