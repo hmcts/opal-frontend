@@ -21,6 +21,11 @@ This document captures repo structure, commands, and coding conventions for opal
 - Prefer standalone components/routes/providers; avoid creating Angular modules by default.
 - Avoid barrel exports and barrel imports; use direct imports.
 
+## Code Quality Is Non-Negotiable
+- Changes must be maintainable: avoid new duplication, keep cognitive load flat, use idiomatic TypeScript and modern Angular, keep routes modular, and ship GOV.UK/MoJ-compliant UI.
+- Linting, formatting, and type errors block merge; behavior changes require tests (unit, component, or E2E as appropriate).
+- Use existing naming patterns: match file, class, function, and route names to nearby modules; avoid new abbreviations unless already established.
+
 ## Design System and Content Standards
 - GOV.UK Design System patterns are the baseline for every flow.
 - Ministry of Justice Design System patterns are used where MoJ components exist.
@@ -31,6 +36,13 @@ This document captures repo structure, commands, and coding conventions for opal
 - Name Jasmine specs as `*.spec.ts` alongside sources.
 - Prefer shallow `TestBed` setups and mock HTTP/Store dependencies.
 - Keep major features above 80% branch coverage before merging.
+
+## Tests Define Release Readiness
+- Every feature ships with unit tests (Karma/Jasmine) that cover edge cases and error paths.
+- Server/Express route changes include route or integration tests where feasible.
+- Automated accessibility coverage is required via Cypress + axe (see `docs/CYPRESS_E2E_TESTING.md`).
+- Smoke tests cover unmocked happy paths using the Cypress smoke suites.
+- Tests act as living documentation for intended behavior.
 
 ## Local Environment and Tooling
 - Use Node `24.13.0` from `.nvmrc` and Yarn `4.12.0`; run `corepack enable` before `yarn install`.
