@@ -21,7 +21,7 @@ export class FinesMacOffenceDetailsSearchOffencesComponent implements OnDestroy 
    *
    * @returns boolean
    */
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   handleBeforeUnload(): boolean {
     if (this.finesMacOffenceDetailsSearchOffencesStore.unsavedChanges()) {
       return false;
