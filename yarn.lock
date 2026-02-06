@@ -13281,15 +13281,15 @@ __metadata:
   linkType: hard
 
 "mochawesome-merge@npm:^5.0.0":
-  version: 5.1.0
-  resolution: "mochawesome-merge@npm:5.1.0"
+  version: 5.1.1
+  resolution: "mochawesome-merge@npm:5.1.1"
   dependencies:
     fs-extra: "npm:^11.3.0"
-    glob: "npm:^13.0.0"
+    glob: "npm:^13.0.1"
     yargs: "npm:^17.7.2"
   bin:
     mochawesome-merge: bin/mochawesome-merge.js
-  checksum: 10/72e29526726036afd0bd6b77e84502ef4ac4b569d1bf63ffce9114221198202fab33fe35e6c4a9af8db626f339d51092041932c4266e8f4414104bacccf1d785
+  checksum: 10/c64725dccafc8f758f479066bc40627c662b6f68724218aa820a8d5196401378c41b86e66aa523b583a6d22e1edb5b560856eb24ebbcdcdd300f99ceb371479e
   languageName: node
   linkType: hard
 
