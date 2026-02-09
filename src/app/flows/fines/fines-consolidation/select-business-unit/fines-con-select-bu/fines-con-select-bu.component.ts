@@ -5,7 +5,7 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IFinesConSelectBuForm } from './interfaces/fines-con-select-bu-form.interface';
-import { FINES_CON_DEFENDANT_TYPES } from '../../constants/fines-con-defendant-types.constant';
+import { FINES_CON_DEFENDANT_TYPES } from '../fines-con-select-bu/constants/fines-con-defendant-types.constant';
 import { FinesConStore } from '../../stores/fines-con.store';
 
 @Component({

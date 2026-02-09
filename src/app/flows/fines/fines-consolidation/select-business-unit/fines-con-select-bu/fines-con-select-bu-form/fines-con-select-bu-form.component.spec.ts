@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesConSelectBuFormComponent } from './fines-con-select-bu-form.component';
-import { FINES_CON_DEFENDANT_TYPES } from '../../../constants/fines-con-defendant-types.constant';
+import { FINES_CON_DEFENDANT_TYPES } from '../constants/fines-con-defendant-types.constant';
 import { FINES_CON_SELECT_BU_FORM } from '../constants/fines-con-select-bu-form.constant';
 import { IFinesConSelectBuForm } from '../interfaces/fines-con-select-bu-form.interface';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
