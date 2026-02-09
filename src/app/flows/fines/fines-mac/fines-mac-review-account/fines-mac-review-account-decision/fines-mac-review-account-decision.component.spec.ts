@@ -16,7 +16,7 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from '@services/fines/opal-fi
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createSpyObj } from '@app/testing/create-spy-obj';
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacReviewAccountDecisionComponent', () => {
   let component: FinesMacReviewAccountDecisionComponent;

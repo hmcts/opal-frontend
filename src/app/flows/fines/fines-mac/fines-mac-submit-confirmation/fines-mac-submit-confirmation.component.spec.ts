@@ -17,7 +17,7 @@ import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createSpyObj } from '@app/testing/create-spy-obj';
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacSubmitConfirmationComponent', () => {
   let component: FinesMacSubmitConfirmationComponent;

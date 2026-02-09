@@ -12,7 +12,7 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { getGuardWithDummyUrl } from '@hmcts/opal-frontend-common/guards/helpers';
 import { describe } from 'vitest';
 
-import { createSpyObj } from '@app/testing/create-spy-obj';
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('finesMacFlowStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

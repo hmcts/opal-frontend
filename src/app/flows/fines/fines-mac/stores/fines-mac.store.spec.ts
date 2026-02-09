@@ -36,7 +36,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { createSpyObj } from '@app/testing/create-spy-obj';
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacStore', () => {
   let store: FinesMacStoreType;

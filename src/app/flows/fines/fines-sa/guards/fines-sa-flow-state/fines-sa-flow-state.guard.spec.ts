@@ -12,7 +12,7 @@ import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 import { of } from 'rxjs';
 import { describe } from 'vitest';
 
-import { createSpyObj } from '@app/testing/create-spy-obj';
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('finesSaFlowStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

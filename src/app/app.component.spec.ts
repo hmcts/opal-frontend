@@ -19,7 +19,7 @@ import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createSpyObj } from './testing/create-spy-obj';
+import { createSpyObj } from './testing/create-spy-obj.helper';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
