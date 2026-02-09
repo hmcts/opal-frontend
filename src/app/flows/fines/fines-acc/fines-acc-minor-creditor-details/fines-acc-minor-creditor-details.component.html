@@ -9,11 +9,13 @@
   <opal-lib-custom-account-information>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       <h2 opal-lib-custom-account-information-item-label>Account type:</h2>
-      <p opal-lib-custom-account-information-item-value>{{ accountData.creditor_account_type.display_name }}</p>
+      <p opal-lib-custom-account-information-item-value id="minor-creditor-account-type">
+        {{ accountData.creditor_account_type.display_name }}
+      </p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
-      <p opal-lib-custom-account-information-item-value>
+      <p opal-lib-custom-account-information-item-value id="minor-creditor-business-unit">
         {{ accountData.business_unit_summary.business_unit_name }} ({{
           accountData.business_unit_summary.business_unit_id
         }})

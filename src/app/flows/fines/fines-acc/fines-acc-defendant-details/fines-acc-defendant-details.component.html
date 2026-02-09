@@ -21,20 +21,24 @@
   <opal-lib-custom-account-information>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       <h2 opal-lib-custom-account-information-item-label>Account type:</h2>
-      <p opal-lib-custom-account-information-item-value>{{ accountData.account_type }}</p>
+      <p opal-lib-custom-account-information-item-value id="defendant-account-type">{{ accountData.account_type }}</p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       @if (accountData.account_type === accountTypes['Fixed Penalty']) {
         <h3 opal-lib-custom-account-information-item-label>PCR or ticket number:</h3>
-        <p opal-lib-custom-account-information-item-value>{{ accountData.fixed_penalty_ticket_number | uppercase }}</p>
+        <p opal-lib-custom-account-information-item-value id="defendant-pcr-case-number">
+          {{ accountData.fixed_penalty_ticket_number | uppercase }}
+        </p>
       } @else {
         <h3 opal-lib-custom-account-information-item-label>PCR or case number:</h3>
-        <p opal-lib-custom-account-information-item-value>{{ accountData.prosecutor_case_reference | uppercase }}</p>
+        <p opal-lib-custom-account-information-item-value id="defendant-pcr-case-number">
+          {{ accountData.prosecutor_case_reference | uppercase }}
+        </p>
       }
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
-      <p opal-lib-custom-account-information-item-value>
+      <p opal-lib-custom-account-information-item-value id="defendant-business-unit">
         {{ accountData.business_unit_summary.business_unit_name }} ({{
           accountData.business_unit_summary.business_unit_id
         }})
