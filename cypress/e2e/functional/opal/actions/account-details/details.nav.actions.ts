@@ -89,6 +89,9 @@ export class AccountDetailsNavActions {
    * Clicks the “Payment terms” sub-navigation tab and prepares for assertions
    * or further content checks within the tab panel.
    *
+   * @remarks
+   * - Relies on `subNav.paymentTermsTab` in `AccountNavDetailsLocators`.
+   *
    * @example
    *  const nav = new AccountDetailsNavActions();
    *  nav.goToPaymentTermsTab();
@@ -166,6 +169,9 @@ export class AccountDetailsNavActions {
    * @description
    * Confirms that the active tab link displays “Payment terms”
    * and has the `aria-current="page"` attribute.
+   *
+   * @remarks
+   * - Validates the active tab label and `aria-current="page"`.
    */
   assertPaymentTermsTabIsActive(): void {
     log('assert', 'Asserting "Payment terms" tab is active');
