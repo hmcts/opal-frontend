@@ -49,55 +49,6 @@ export class FinesAccPayloadService {
     };
   }
 
-  // /**
-  //  * Transforms the given IOpalFinesDefendantAccountHeader into IFinesAccountState for the Account Store
-  //  *
-  //  * @param headingData - The payload object to be transformed.
-  //  * @returns The transformed payload object.
-  //  */
-  // public transformAccountHeaderForStore<T extends IOpalFinesAccountDefendantDetailsHeader | IOpalFinesAccountMinorCreditorDetailsHeader>(
-  //   account_id: number,
-  //   headingData: T,
-  //   partyType: string = 'defendant'
-  // ): IFinesAccountState {
-  //   let party_name = '';
-  //   if (headingData.party_details.organisation_flag) {
-  //     party_name = headingData.party_details.organisation_details?.organisation_name ?? '';
-  //   } else {
-  //     party_name = `${headingData.party_details.individual_details?.title} ${headingData.party_details.individual_details?.forenames} ${headingData.party_details.individual_details?.surname?.toUpperCase()}`;
-  //   }
-  //   const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
-  //     Number(headingData.business_unit_summary.business_unit_id),
-  //     this.globalStore.userState(),
-  //   );
-
-  //   let pg_party_id: string | null = null;
-  //   let party_type = '';
-  //   let party_id = '';
-
-  //   if (partyType === 'defendant') {
-  //       pg_party_id = (headingData as IOpalFinesAccountDefendantDetailsHeader).parent_guardian_party_id;
-  //       party_type = (headingData as IOpalFinesAccountDefendantDetailsHeader).debtor_type;
-  //       party_id = (headingData as IOpalFinesAccountDefendantDetailsHeader).defendant_account_party_id;
-  //   } else if (partyType === 'minorCreditor') {
-  //       party_type = 'Minor Creditor';
-  //       party_id = (headingData as IOpalFinesAccountMinorCreditorDetailsHeader).party_details.party_id;
-  //   }
-
-  //   return {
-  //     account_number: headingData.account_number,
-  //     account_id: Number(account_id),
-  //     pg_party_id,
-  //     party_id,
-  //     party_type,
-  //     party_name: party_name,
-  //     base_version: headingData.version,
-  //     business_unit_id: headingData.business_unit_summary.business_unit_id,
-  //     business_unit_user_id: business_unit_user_id,
-  //     welsh_speaking: headingData.business_unit_summary.welsh_speaking,
-  //   };
-  // }
-
   /**
    *
    * @param account_id

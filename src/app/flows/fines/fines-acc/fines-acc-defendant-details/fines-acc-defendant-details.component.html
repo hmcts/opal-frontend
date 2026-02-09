@@ -26,7 +26,7 @@
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       @if (accountData.account_type === accountTypes['Fixed Penalty']) {
         <h3 opal-lib-custom-account-information-item-label>PCR or ticket number:</h3>
-        <p opal-lib-custom-account-information-item-value id="defendant-pcr-case-number">
+        <p opal-lib-custom-account-information-item-value id="defendant-pcr-ticket-number">
           {{ accountData.fixed_penalty_ticket_number | uppercase }}
         </p>
       } @else {
