@@ -10,18 +10,23 @@ import { of } from 'rxjs';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacParentGuardianDetailsFormComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
   let formSubmit: IFinesMacParentGuardianDetailsForm;
   let finesMacStore: FinesMacStoreType;
   let originalConfigureDatePicker: () => void;
 
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
-    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(MojDatePickerComponent.prototype, 'configureDatePicker').mockImplementation(() => {});
   });
 
   afterAll(() => {
@@ -33,8 +38,8 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   });
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj(DateService, ['getPreviousDate', 'getDateFromFormat']);
-    mockDateService.getPreviousDate.and.returnValue('19/08/2024');
+    mockDateService = createSpyObj(DateService, ['getPreviousDate', 'getDateFromFormat']);
+    mockDateService.getPreviousDate.mockReturnValue('19/08/2024');
     formSubmit = structuredClone(FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
@@ -67,7 +72,8 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
 
     formSubmit.nestedFlow = true;
@@ -76,7 +82,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: true,
       }),
@@ -84,7 +90,8 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = {} as SubmitEvent;
 
     formSubmit.nestedFlow = false;
@@ -93,7 +100,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
       }),

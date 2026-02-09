@@ -6,6 +6,7 @@ import { FinesSaStore } from './stores/fines-sa.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from './fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaComponent', () => {
   let component: FinesSaComponent;
@@ -32,7 +33,8 @@ describe('FinesSaComponent', () => {
   });
 
   it('should call on destroy and clear state', () => {
-    const destroy = spyOn(component, 'ngOnDestroy');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const destroy = vi.spyOn<any, any>(component, 'ngOnDestroy');
 
     component.ngOnDestroy();
     fixture.detectChanges();

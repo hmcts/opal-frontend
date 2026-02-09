@@ -49,6 +49,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MO
 import { of } from 'rxjs';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from './mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -595,7 +596,9 @@ describe('OpalFines', () => {
     const errorMessage = 'Failed to search offences';
 
     service.searchOffences(filters).subscribe({
-      next: () => fail('Expected an error, but got a response'),
+      next: () => {
+        throw new Error('Expected an error, but got a response');
+      },
       error: (error) => {
         expect(error).toBeTruthy();
         expect(error.status).toBe(500);
@@ -895,7 +898,8 @@ describe('OpalFines', () => {
     const version = '1';
     const mockResponse = OPAL_FINES_ADD_NOTE_RESPONSE_MOCK;
 
-    const httpPostSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const httpPostSpy = vi.spyOn<any, any>(service['http'], 'post').mockReturnValue(of(mockResponse));
 
     service.addNote(payload, version).subscribe((response) => {
       expect(response).toEqual(mockResponse);
@@ -1036,7 +1040,9 @@ describe('OpalFines', () => {
     const errorMessage = 'Failed to search defendant accounts';
 
     service.getDefendantAccounts(filters).subscribe({
-      next: () => fail('Expected an error, but got a response'),
+      next: () => {
+        throw new Error('Expected an error, but got a response');
+      },
       error: (error) => {
         expect(error).toBeTruthy();
         expect(error.status).toBe(500);
@@ -1072,7 +1078,9 @@ describe('OpalFines', () => {
     const errorMessage = 'Failed to search creditor accounts';
 
     service.getMinorCreditorAccounts(filters).subscribe({
-      next: () => fail('Expected an error, but got a response'),
+      next: () => {
+        throw new Error('Expected an error, but got a response');
+      },
       error: (error) => {
         expect(error).toBeTruthy();
         expect(error.status).toBe(500);

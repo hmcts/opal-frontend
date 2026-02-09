@@ -2,6 +2,7 @@ import { finesMacPayloadMapAccountPaymentTerms } from './fines-mac-payload-map-a
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadMapAccountPaymentTerms', () => {
   let mappedFinesMacState: IFinesMacState | null;
@@ -38,7 +39,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map payment terms type correctly', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -51,7 +52,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map lump sum amount correctly', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -62,7 +63,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map instalment amount correctly', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -73,7 +74,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map effective date correctly for pay in full', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -86,7 +87,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map effective date correctly for instalment', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -99,7 +100,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map enforcement actions correctly', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FinesAccPartyAddAmendConvertDobNi } from './fines-acc-party-add-amend-convert-dob-ni.component';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertDobNi', () => {
   let component: FinesAccPartyAddAmendConvertDobNi;
@@ -11,7 +12,8 @@ describe('FinesAccPartyAddAmendConvertDobNi', () => {
 
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
-    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(MojDatePickerComponent.prototype, 'configureDatePicker').mockImplementation(() => {});
   });
 
   afterAll(() => {

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   let component: FinesAccDefendantDetailsAtAGlanceTabComponent;
@@ -23,7 +24,8 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should handle add comments click', () => {
-    spyOn(component.addComments, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.addComments, 'emit');
     component.handleAddComments();
     expect(component.addComments.emit).toHaveBeenCalled();
   });

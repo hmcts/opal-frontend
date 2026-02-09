@@ -8,22 +8,28 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-map-transform-items-config.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('defendantAccountPartyResolver', () => {
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockPayloadService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRouter: any;
 
   beforeEach(() => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', [
-      'getDefendantAccountParty',
-      'getDefendantAccountHeadingData',
-    ]);
-    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
-      'mapDebtorAccountPartyPayload',
-      'transformPayload',
-    ]);
-    mockRouter = jasmine.createSpyObj('Router', ['createUrlTree']);
+    mockOpalFinesService = {
+      getDefendantAccountParty: vi.fn().mockName('OpalFines.getDefendantAccountParty'),
+      getDefendantAccountHeadingData: vi.fn().mockName('OpalFines.getDefendantAccountHeadingData'),
+    };
+    mockPayloadService = {
+      mapDebtorAccountPartyPayload: vi.fn().mockName('FinesAccPayloadService.mapDebtorAccountPartyPayload'),
+      transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
+    };
+    mockRouter = {
+      createUrlTree: vi.fn().mockName('Router.createUrlTree'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -37,14 +43,14 @@ describe('defendantAccountPartyResolver', () => {
   it('should return a RedirectCommand when accountId is missing', () => {
     const route = {
       paramMap: {
-        get: jasmine.createSpy('get').and.returnValue(null),
+        get: vi.fn().mockReturnValue(null),
       },
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockUrlTree = {} as any;
-    mockRouter.createUrlTree.and.returnValue(mockUrlTree);
+    mockRouter.createUrlTree.mockReturnValue(mockUrlTree);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
@@ -56,7 +62,7 @@ describe('defendantAccountPartyResolver', () => {
   it('should return observable with transformed form data on successful API call with individual party', async () => {
     const route = {
       paramMap: {
-        get: jasmine.createSpy('get').and.callFake((key: string) => {
+        get: vi.fn().mockImplementation((key: string) => {
           if (key === 'accountId') return '123';
           if (key === 'partyType') return 'individual';
           return null;
@@ -80,10 +86,10 @@ describe('defendantAccountPartyResolver', () => {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockTransformedData = {} as any;
 
-    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
-    mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
-    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
-    mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(mockHeaderData));
+    mockOpalFinesService.getDefendantAccountParty.mockReturnValue(of(mockDefendantData));
+    mockPayloadService.transformPayload.mockReturnValue(mockDefendantData);
+    mockPayloadService.mapDebtorAccountPartyPayload.mockReturnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
@@ -107,7 +113,7 @@ describe('defendantAccountPartyResolver', () => {
   it('should return a RedirectCommand when no valid party ID is found', async () => {
     const route = {
       paramMap: {
-        get: jasmine.createSpy('get').and.callFake((key: string) => {
+        get: vi.fn().mockImplementation((key: string) => {
           if (key === 'accountId') return '123';
           if (key === 'partyType') return 'individual';
           return null;
@@ -123,9 +129,9 @@ describe('defendantAccountPartyResolver', () => {
     } as any;
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockUrlTree = {} as any;
-    mockRouter.createUrlTree.and.returnValue(mockUrlTree);
-    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
-    mockOpalFinesService.getDefendantAccountParty.and.returnValue(throwError(() => new Error('API Error')));
+    mockRouter.createUrlTree.mockReturnValue(mockUrlTree);
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(mockHeaderData));
+    mockOpalFinesService.getDefendantAccountParty.mockReturnValue(throwError(() => new Error('API Error')));
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
@@ -137,14 +143,14 @@ describe('defendantAccountPartyResolver', () => {
       expect(emittedValue).toBeInstanceOf(RedirectCommand);
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
     } else {
-      fail('Expected observable result');
+      throw new Error('Expected observable result');
     }
   });
 
   it('should return observable with transformed form data on successful API call with parent guardian party', async () => {
     const route = {
       paramMap: {
-        get: jasmine.createSpy('get').and.callFake((key: string) => {
+        get: vi.fn().mockImplementation((key: string) => {
           if (key === 'accountId') return '123';
           if (key === 'partyType') return 'parentGuardian';
           return null;
@@ -168,11 +174,11 @@ describe('defendantAccountPartyResolver', () => {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockTransformedData = {} as any;
 
-    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
-    mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
-    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
-    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
-    mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(mockHeaderData));
+    mockOpalFinesService.getDefendantAccountParty.mockReturnValue(of(mockDefendantData));
+    mockPayloadService.transformPayload.mockReturnValue(mockDefendantData);
+    mockPayloadService.transformPayload.mockReturnValue(mockDefendantData);
+    mockPayloadService.mapDebtorAccountPartyPayload.mockReturnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
@@ -196,7 +202,7 @@ describe('defendantAccountPartyResolver', () => {
   it('should return a RedirectCommand when no valid party ID is found', async () => {
     const route = {
       paramMap: {
-        get: jasmine.createSpy('get').and.callFake((key: string) => {
+        get: vi.fn().mockImplementation((key: string) => {
           if (key === 'accountId') return '123';
           if (key === 'partyType') return 'individual';
           return null;
@@ -213,8 +219,8 @@ describe('defendantAccountPartyResolver', () => {
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockUrlTree = {} as any;
-    mockRouter.createUrlTree.and.returnValue(mockUrlTree);
-    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
+    mockRouter.createUrlTree.mockReturnValue(mockUrlTree);
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(mockHeaderData));
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
@@ -226,14 +232,14 @@ describe('defendantAccountPartyResolver', () => {
       expect(emittedValue).toBeInstanceOf(RedirectCommand);
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
     } else {
-      fail('Expected observable result');
+      throw new Error('Expected observable result');
     }
   });
 
   it('should return a RedirectCommand on heading data fetch error', async () => {
     const route = {
       paramMap: {
-        get: jasmine.createSpy('get').and.callFake((key: string) => {
+        get: vi.fn().mockImplementation((key: string) => {
           if (key === 'accountId') return '123';
           if (key === 'partyType') return 'individual';
           return null;
@@ -244,8 +250,8 @@ describe('defendantAccountPartyResolver', () => {
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockUrlTree = {} as any;
-    mockRouter.createUrlTree.and.returnValue(mockUrlTree);
-    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(
+    mockRouter.createUrlTree.mockReturnValue(mockUrlTree);
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(
       throwError(() => new Error('Heading API Error')),
     );
 
@@ -259,14 +265,14 @@ describe('defendantAccountPartyResolver', () => {
       expect(emittedValue).toBeInstanceOf(RedirectCommand);
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
     } else {
-      fail('Expected observable result');
+      throw new Error('Expected observable result');
     }
   });
 
   it('should return a RedirectCommand when getDefendantAccountParty fails', async () => {
     const route = {
       paramMap: {
-        get: jasmine.createSpy('get').and.callFake((key: string) => {
+        get: vi.fn().mockImplementation((key: string) => {
           if (key === 'accountId') return '123';
           if (key === 'partyType') return 'individual';
           return null;
@@ -283,9 +289,9 @@ describe('defendantAccountPartyResolver', () => {
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockUrlTree = {} as any;
-    mockRouter.createUrlTree.and.returnValue(mockUrlTree);
-    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
-    mockOpalFinesService.getDefendantAccountParty.and.returnValue(throwError(() => new Error('Party API Error')));
+    mockRouter.createUrlTree.mockReturnValue(mockUrlTree);
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(mockHeaderData));
+    mockOpalFinesService.getDefendantAccountParty.mockReturnValue(throwError(() => new Error('Party API Error')));
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
@@ -297,14 +303,14 @@ describe('defendantAccountPartyResolver', () => {
       expect(emittedValue).toBeInstanceOf(RedirectCommand);
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
     } else {
-      fail('Expected observable result');
+      throw new Error('Expected observable result');
     }
   });
 
   it('should return a RedirectCommand when requested partyType has no corresponding party ID', async () => {
     const route = {
       paramMap: {
-        get: jasmine.createSpy('get').and.callFake((key: string) => {
+        get: vi.fn().mockImplementation((key: string) => {
           if (key === 'accountId') return '123';
           if (key === 'partyType') return 'parentGuardian';
           return null;
@@ -321,8 +327,8 @@ describe('defendantAccountPartyResolver', () => {
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockUrlTree = {} as any;
-    mockRouter.createUrlTree.and.returnValue(mockUrlTree);
-    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
+    mockRouter.createUrlTree.mockReturnValue(mockUrlTree);
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(mockHeaderData));
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
@@ -334,7 +340,7 @@ describe('defendantAccountPartyResolver', () => {
       expect(emittedValue).toBeInstanceOf(RedirectCommand);
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
     } else {
-      fail('Expected observable result');
+      throw new Error('Expected observable result');
     }
   });
 });

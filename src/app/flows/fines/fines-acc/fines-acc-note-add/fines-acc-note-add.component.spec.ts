@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import type { Mock } from 'vitest';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccNoteAddComponent } from './fines-acc-note-add.component';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -12,34 +13,41 @@ import { IFinesAccAddNoteForm } from './interfaces/fines-acc-note-add-form.inter
 import { FINES_ACC_ADD_NOTE_FORM_MOCK } from './mocks/fines-acc-add-note-form.mock';
 import { IOpalFinesAddNotePayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
 import { IOpalFinesAddNoteResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note-response.interface';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccNoteAddComponent', () => {
   let component: FinesAccNoteAddComponent;
   let fixture: ComponentFixture<FinesAccNoteAddComponent>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockFinesAccPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockFinesAccPayloadService: any;
   let mockFinesAccountStore: {
-    party_type: jasmine.Spy;
-    party_id: jasmine.Spy;
-    getAccountNumber: jasmine.Spy;
-    party_name: jasmine.Spy;
-    base_version: jasmine.Spy;
+    party_type: Mock;
+    party_id: Mock;
+    getAccountNumber: Mock;
+    party_name: Mock;
+    base_version: Mock;
   };
 
   beforeEach(async () => {
     // Create mock OpalFines service
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['addNote']);
+    mockOpalFinesService = {
+      addNote: vi.fn().mockName('OpalFines.addNote'),
+    };
 
     // Create mock FinesAccPayloadService
-    mockFinesAccPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['buildAddNotePayload']);
+    mockFinesAccPayloadService = {
+      buildAddNotePayload: vi.fn().mockName('FinesAccPayloadService.buildAddNotePayload'),
+    };
 
     // Create mock FinesAccountStore with signal methods
     mockFinesAccountStore = {
-      party_type: jasmine.createSpy('party_type').and.returnValue('PERSON'),
-      party_id: jasmine.createSpy('party_id').and.returnValue('12345'),
-      getAccountNumber: jasmine.createSpy('getAccountNumber').and.returnValue('123456789'),
-      party_name: jasmine.createSpy('party_name').and.returnValue('Mr John, Peter DOE'),
-      base_version: jasmine.createSpy('base_version').and.returnValue(1),
+      party_type: vi.fn().mockReturnValue('PERSON'),
+      party_id: vi.fn().mockReturnValue('12345'),
+      getAccountNumber: vi.fn().mockReturnValue('123456789'),
+      party_name: vi.fn().mockReturnValue('Mr John, Peter DOE'),
+      base_version: vi.fn().mockReturnValue(1),
     };
 
     await TestBed.configureTestingModule({
@@ -93,17 +101,18 @@ describe('FinesAccNoteAddComponent', () => {
       note_id: 123,
     };
 
-    mockOpalFinesService.addNote.and.returnValue(of(mockResponse));
-    mockFinesAccPayloadService.buildAddNotePayload.and.returnValue(expectedPayload);
-    spyOn(component, 'routerNavigate' as never);
+    mockOpalFinesService.addNote.mockReturnValue(of(mockResponse));
+    mockFinesAccPayloadService.buildAddNotePayload.mockReturnValue(expectedPayload);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
 
     expect(mockFinesAccPayloadService.buildAddNotePayload).toHaveBeenCalledWith(testForm);
-    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, jasmine.any(String));
+    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, expect.any(String));
   });
 
-  it('should navigate to details page on successful API call', fakeAsync(() => {
+  it('should navigate to details page on successful API call', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
       activity_note: {
@@ -117,17 +126,17 @@ describe('FinesAccNoteAddComponent', () => {
       note_id: 123,
     };
 
-    mockOpalFinesService.addNote.and.returnValue(of(mockResponse));
-    mockFinesAccPayloadService.buildAddNotePayload.and.returnValue(expectedPayload);
-    spyOn(component, 'routerNavigate' as never);
+    mockOpalFinesService.addNote.mockReturnValue(of(mockResponse));
+    mockFinesAccPayloadService.buildAddNotePayload.mockReturnValue(expectedPayload);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
-    tick(); // Wait for observable to complete
 
-    expect(component['routerNavigate']).toHaveBeenCalledWith(jasmine.any(String));
-  }));
+    expect(component['routerNavigate']).toHaveBeenCalledWith(expect.any(String));
+  });
 
-  it('should not navigate on API call failure', fakeAsync(() => {
+  it('should not navigate on API call failure', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
       activity_note: {
@@ -138,15 +147,15 @@ describe('FinesAccNoteAddComponent', () => {
       },
     };
 
-    mockOpalFinesService.addNote.and.returnValue(throwError(() => new Error('API Error')));
-    mockFinesAccPayloadService.buildAddNotePayload.and.returnValue(expectedPayload);
-    spyOn(component, 'routerNavigate' as never);
+    mockOpalFinesService.addNote.mockReturnValue(throwError(() => new Error('API Error')));
+    mockFinesAccPayloadService.buildAddNotePayload.mockReturnValue(expectedPayload);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
-    tick(); // Wait for error to be handled
 
     expect(component['routerNavigate']).not.toHaveBeenCalled();
-  }));
+  });
 
   it('should set stateUnsavedChanges to true when passed true', () => {
     component.handleUnsavedChanges(true);
@@ -183,7 +192,7 @@ describe('FinesAccNoteAddComponent', () => {
     expect(component['finesAccStore']).toBeDefined();
   });
 
-  it('should call utilsService.scrollToTop on API call failure', fakeAsync(() => {
+  it('should call utilsService.scrollToTop on API call failure', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
       activity_note: {
@@ -194,19 +203,21 @@ describe('FinesAccNoteAddComponent', () => {
       },
     };
 
-    spyOn(component['utilsService'], 'scrollToTop');
-    mockOpalFinesService.addNote.and.returnValue(throwError(() => new Error('API Error')));
-    mockFinesAccPayloadService.buildAddNotePayload.and.returnValue(expectedPayload);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['utilsService'], 'scrollToTop');
+    mockOpalFinesService.addNote.mockReturnValue(throwError(() => new Error('API Error')));
+    mockFinesAccPayloadService.buildAddNotePayload.mockReturnValue(expectedPayload);
 
     component.handleAddNoteSubmit(testForm);
-    tick(); // Wait for error to be handled
 
     expect(component['utilsService'].scrollToTop).toHaveBeenCalled();
-  }));
+  });
 
   it('should call next and complete on ngUnsubscribe when ngOnDestroy is invoked', () => {
-    spyOn(component['ngUnsubscribe'], 'next');
-    spyOn(component['ngUnsubscribe'], 'complete');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['ngUnsubscribe'], 'next');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['ngUnsubscribe'], 'complete');
 
     component.ngOnDestroy();
 

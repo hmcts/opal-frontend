@@ -11,21 +11,23 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchAccountFormComponent', () => {
   let component: FinesSaSearchAccountFormComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let routerSpy: any;
   let mockFinesSaStore: FinesSaStoreType;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
 
     mockOpalFinesService = {
-      getMajorCreditorPrettyName: jasmine
-        .createSpy('getMajorCreditorPrettyName')
-        .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
     await TestBed.configureTestingModule({
@@ -74,7 +76,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     fixture.detectChanges();
 
     // The validator should detect conflicting inputs (multiple criteria populated)
-    expect(component.form.errors?.['atLeastOneCriteriaRequired']).toBeTrue();
+    expect(component.form.errors?.['atLeastOneCriteriaRequired']).toBe(true);
 
     // Submit
     const submitEvent = new SubmitEvent('submit', { bubbles: true, cancelable: true });
@@ -82,7 +84,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
     // Verify the store was updated with searchAccountTemporary
     expect(mockFinesSaStore.searchAccount()).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         fsa_search_account_number: '12345678',
         fsa_search_account_reference_case_number: 'REF123',
         fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
@@ -120,7 +122,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
   it('should trigger setSearchAccountTemporary and navigate to filter business units', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn(component as any, 'handleRoute');
+    vi.spyOn<any, any>(component as any, 'handleRoute');
     component.goToFilterBusinessUnits();
     expect(mockFinesSaStore.searchAccount()).toEqual(component.form.value);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -164,8 +166,8 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
   it('should return empty FormGroup for unknown tab', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn(component.finesSaStore, 'activeTab').and.returnValue('unknown' as any);
-    expect(component.searchCriteriaForm).toEqual(jasmine.any(FormGroup));
+    vi.spyOn<any, any>(component.finesSaStore, 'activeTab').mockReturnValue('unknown' as any);
+    expect(component.searchCriteriaForm).toEqual(expect.any(FormGroup));
     expect(Object.keys(component.searchCriteriaForm.controls)).toEqual([]);
   });
 
@@ -178,12 +180,13 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
   it('should return an empty FormGroup when switching to an unknown tab', () => {
     component['switchTab']('unknown');
-    expect(component.searchCriteriaForm instanceof FormGroup).toBeTrue();
+    expect(component.searchCriteriaForm instanceof FormGroup).toBe(true);
     expect(Object.keys(component.searchCriteriaForm.controls)).toEqual([]);
   });
 
   it('should call super.handleFormSubmit when only account number is used', () => {
-    const superSubmitSpy = spyOn(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const superSubmitSpy = vi.spyOn<any, any>(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit');
 
     // only one of the three
     component.form.get('fsa_search_account_number')?.setValue('12345678');
@@ -195,7 +198,8 @@ describe('FinesSaSearchAccountFormComponent', () => {
   });
 
   it('should call super.handleFormSubmit when only account number is used', () => {
-    const superSubmitSpy = spyOn(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const superSubmitSpy = vi.spyOn<any, any>(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit');
 
     mockFinesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,

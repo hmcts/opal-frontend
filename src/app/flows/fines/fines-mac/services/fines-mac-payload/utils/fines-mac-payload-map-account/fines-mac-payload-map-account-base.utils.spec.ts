@@ -3,6 +3,7 @@ import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface
 import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_MAC_STATE } from '../../../../constants/fines-mac-state';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../mocks/fines-mac-payload-add-account.mock';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadMapAccountBase', () => {
   let initialState: IFinesMacState | null;
@@ -16,7 +17,7 @@ describe('finesMacPayloadMapAccountBase', () => {
 
   it('should map account details correctly', () => {
     if (!initialState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
 

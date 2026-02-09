@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPaymentTermsAmendComponent', () => {
   let component: FinesAccDefendantDetailsPaymentTermsTabComponent;
@@ -67,13 +68,15 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
   });
 
   it('should handle change payment terms by emitting an event', () => {
-    spyOn(component.changePaymentTerms, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.changePaymentTerms, 'emit');
     component.handleChangePaymentTerms();
     expect(component.changePaymentTerms.emit).toHaveBeenCalled();
   });
 
   it('should handle request payment card by emitting an event', () => {
-    spyOn(component.requestPaymentCard, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.requestPaymentCard, 'emit');
     component.handleRequestPaymentCard();
     expect(component.requestPaymentCard.emit).toHaveBeenCalled();
   });

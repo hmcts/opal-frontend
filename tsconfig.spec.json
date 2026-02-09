@@ -3,12 +3,20 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
+    "lib": [
+      "ES2022",
+      "dom",
+      "esnext.disposable"
+    ],
+    "noUnusedLocals": false,
+    "skipLibCheck": true,
     "types": [
-      "jasmine"
+      "vitest/globals"
     ]
   },
   "include": [
     "src/**/*.spec.ts",
+    "src/test-setup.ts",
     "src/**/*.d.ts"
   ],
   "exclude": [

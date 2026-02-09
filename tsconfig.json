@@ -44,5 +44,5 @@
 
   "include": ["src", "node_modules/cypress", "src/app/interfaces/**/*.ts"],
 
-  "exclude": ["node_modules/cypress", "**/*.mock.ts", "**/helpers/*.ts"]
+  "exclude": ["node_modules/cypress", "**/*.mock.ts", "**/helpers/*.ts", "**/*.spec.ts", "src/test-setup.ts"]
 }

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccPaymentTermsAmendComponent } from './fines-acc-payment-terms-amend.component';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesAccPaymentTermsAmendComponent', () => {
   let component: FinesAccPaymentTermsAmendComponent;

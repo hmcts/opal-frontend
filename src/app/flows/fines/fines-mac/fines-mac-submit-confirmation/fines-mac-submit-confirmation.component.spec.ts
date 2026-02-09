@@ -15,23 +15,25 @@ import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/f
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj';
 
 describe('FinesMacSubmitConfirmationComponent', () => {
   let component: FinesMacSubmitConfirmationComponent;
   let fixture: ComponentFixture<FinesMacSubmitConfirmationComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockFinesMacPayloadService: any;
   let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      postDraftAddAccountPayload: jasmine
-        .createSpy('postDraftAddAccountPayload')
-        .and.returnValue(of(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK)),
+      postDraftAddAccountPayload: vi.fn().mockReturnValue(of(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK)),
     };
 
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, ['buildAddAccountPayload']);
-    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
+    mockFinesMacPayloadService = createSpyObj(FinesMacPayloadService, ['buildAddAccountPayload']);
+    mockFinesMacPayloadService.buildAddAccountPayload.mockReturnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
 
     await TestBed.configureTestingModule({
       imports: [FinesMacSubmitConfirmationComponent],
@@ -64,7 +66,8 @@ describe('FinesMacSubmitConfirmationComponent', () => {
   });
 
   it('should navigate to create account on createNewAccount', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.createNewAccount();
 
@@ -74,7 +77,8 @@ describe('FinesMacSubmitConfirmationComponent', () => {
   });
 
   it('should navigate to create account on seeAllAccounts', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.seeAllAccounts();
 

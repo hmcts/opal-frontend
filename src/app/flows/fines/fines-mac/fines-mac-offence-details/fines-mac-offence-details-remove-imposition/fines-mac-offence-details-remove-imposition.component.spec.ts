@@ -17,23 +17,25 @@ import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offen
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj';
 
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveImpositionComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getResultPrettyName: jasmine.createSpy('getResults').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
-      getMajorCreditorPrettyName: jasmine
-        .createSpy('getMajorCreditorPrettyName')
-        .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
+      getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
+    mockUtilsService = createSpyObj(UtilsService, ['convertToMonetaryString']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsRemoveImpositionComponent],
@@ -76,7 +78,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   it('should update monetary string correctly', () => {
     const value = 150;
     const expectedMonetaryString = '£150.00';
-    mockUtilsService.convertToMonetaryString.and.returnValue(expectedMonetaryString);
+    mockUtilsService.convertToMonetaryString.mockReturnValue(expectedMonetaryString);
 
     const monetaryString = component['updateMonetaryString'](value);
 
@@ -86,7 +88,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   it('should get imposition to be removed', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     finesMacOffenceDetailsStore.setRowIndex(0);
-    mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
+    mockUtilsService.convertToMonetaryString.mockReturnValue('£50.00');
 
     fixture.detectChanges();
     component['getImpositionToBeRemoved']();
@@ -111,7 +113,8 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should confirm removal and update form data', () => {
-    spyOn(component, 'handleRoute');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'handleRoute');
 
     const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     offenceWithMinorCreditor[0].childFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
@@ -123,7 +126,8 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should not confirm removal as rowIndex is null', () => {
-    spyOn(component, 'handleRoute');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'handleRoute');
     finesMacOffenceDetailsStore.setRowIndex(null);
 
     component.confirmRemoval();
@@ -132,7 +136,8 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should confirm removal and update form data', () => {
-    spyOn(component, 'handleRoute');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'handleRoute');
     const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
     offenceWithMinorCreditor.childFormData = [
       {

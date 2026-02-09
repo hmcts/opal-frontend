@@ -7,6 +7,7 @@ import { provideRouter } from '@angular/router';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsReviewOffenceHeadingComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceHeadingComponent;
@@ -15,9 +16,7 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getOffenceByCjsCode: jasmine
-        .createSpy('getOffenceByCjsCode')
-        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
+      getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
     };
 
     await TestBed.configureTestingModule({
@@ -54,7 +53,8 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingComponent', () => {
   it('should emit actionClicked event with correct parameters', () => {
     const action = 'Change';
     const emittedValue = { actionName: action, offenceId: component.offenceId };
-    const emitSpy = spyOn(component.actionClicked, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.actionClicked, 'emit');
 
     component.onActionClick(action);
 

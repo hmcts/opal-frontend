@@ -21,29 +21,27 @@ import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offen
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj';
 
 describe('FinesMacOffenceDetailsReviewComponent', () => {
   let component: FinesMacOffenceDetailsReviewComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
   let finesMacStore: FinesMacStoreType;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
-      getMajorCreditors: jasmine
-        .createSpy('getMajorCreditors')
-        .and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
-      getMajorCreditorPrettyName: jasmine
-        .createSpy('getMajorCreditorPrettyName')
-        .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
-      getOffenceByCjsCode: jasmine
-        .createSpy('getOffenceByCjsCode')
-        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+      getResults: vi.fn().mockReturnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
+      getMajorCreditors: vi.fn().mockReturnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
+      getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
-    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormat']);
+    mockDateService = createSpyObj(DateService, ['getFromFormat']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewComponent],
@@ -55,7 +53,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
         { provide: DateService, mockDateService },
         {
           provide: UtilsService,
-          useValue: jasmine.createSpyObj(UtilsService, [
+          useValue: createSpyObj(UtilsService, [
             'checkFormValues',
             'getFormStatus',
             'upperCaseFirstLetter',
