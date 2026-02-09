@@ -4,12 +4,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   resolve: {
     alias: {
-      '@app': resolve(__dirname, 'src/app'),
-      '@constants': resolve(__dirname, 'src/app/constants'),
-      '@services/fines': resolve(__dirname, 'src/app/flows/fines/services'),
-      '@routing/pages': resolve(__dirname, 'src/app/pages/routing'),
-      '@routing/fines': resolve(__dirname, 'src/app/flows/fines/routing'),
-      '@routing/flows': resolve(__dirname, 'src/app/flows/routing'),
       '@ministryofjustice/frontend/moj/all': resolve(__dirname, 'node_modules/@ministryofjustice/frontend/moj/all.mjs'),
     },
   },

@@ -23,10 +23,8 @@
     "resolveJsonModule": false,
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
-
     "paths": {
       "@app/*": ["./src/app/*"],
-
       "@constants/*": ["./src/app/constants/*"],
       "@services/fines/*": ["./src/app/flows/fines/services/*"],
       "@routing/pages/*": ["./src/app/pages/routing/*"],
@@ -34,15 +32,12 @@
       "@routing/flows/*": ["./src/app/flows/routing/*"]
     }
   },
-
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-
   "include": ["src", "node_modules/cypress", "src/app/interfaces/**/*.ts"],
-
-  "exclude": ["node_modules/cypress", "**/*.mock.ts", "**/helpers/*.ts", "**/*.spec.ts", "src/test-setup.ts"]
+  "exclude": ["node_modules/cypress", "**/helpers/*.ts", "src/test-setup.ts"]
 }
