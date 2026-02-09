@@ -8,12 +8,13 @@ import {
 
 @Component({
   selector: 'app-fines-acc-banner-messages',
-  templateUrl: './fines-acc-banner-messages-component.html',
+  templateUrl: './fines-acc-banner-messages.component.html',
   imports: [MojAlertComponent, MojAlertContentComponent, MojAlertTextComponent, MojAlertIconComponent],
 })
 export class FinesAccBannerMessagesComponent {
   @Input({ required: true }) hasVersionMismatch!: boolean;
   @Input({ required: true }) successMessage: string | null = null;
+  @Input() id = 'acc-summary-header-banners';
   @Output() clearSuccessMessage = new EventEmitter<void>();
   @Output() refreshPage = new EventEmitter<void>();
 

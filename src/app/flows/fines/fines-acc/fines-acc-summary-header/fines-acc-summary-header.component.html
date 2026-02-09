@@ -1,4 +1,5 @@
 <app-fines-acc-banner-messages
+  id="{{ id }}-banners"
   [hasVersionMismatch]="accountStore.hasVersionMismatch()"
   [successMessage]="accountStore.successMessage()"
   (clearSuccessMessage)="accountStore.clearSuccessMessage()"
@@ -17,7 +18,7 @@
       @if (hasAddAccountActivityNotePermission) {
         <button
           opalLibGovukButton
-          buttonId="addAccountNote"
+          buttonId="{{ id }}-addAccountNote"
           buttonClasses="govuk-button--secondary"
           (click)="handleNavigateToAddAccountNotePage()"
         >

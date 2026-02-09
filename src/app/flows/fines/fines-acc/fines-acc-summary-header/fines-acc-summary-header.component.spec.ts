@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FinesAccSummaryHeaderComponent } from './fines-acc-summary-header.component';
-import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages-component';
+import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
 
 describe('FinesAccSummaryHeaderComponent', () => {
   let component: FinesAccSummaryHeaderComponent;

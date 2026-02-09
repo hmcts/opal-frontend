@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { FinesAccBannerMessagesComponent } from './fines-acc-banner-messages-component';
+import { FinesAccBannerMessagesComponent } from './fines-acc-banner-messages.component';
 
 describe('FinesAccBannerMessagesComponent', () => {
   let component: FinesAccBannerMessagesComponent;
