@@ -1,0 +1,8 @@
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-con-select-bu-form
+    [autoCompleteItems]="businessUnitAutoCompleteItems()"
+    [defendantTypes]="defendantTypes"
+    (formSubmit)="handleFormSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-con-select-bu-form>
+</div>

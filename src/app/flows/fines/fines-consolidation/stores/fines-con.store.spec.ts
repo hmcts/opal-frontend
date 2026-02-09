@@ -1,0 +1,90 @@
+import { TestBed } from '@angular/core/testing';
+import { FinesConStore } from './fines-con.store';
+import { IFinesConSelectBuState } from '../select-business-unit/fines-con-select-bu/interfaces/fines-con-select-bu-state.interface';
+import { FINES_CON_SELECT_BU_FORM } from '../select-business-unit/fines-con-select-bu/constants/fines-con-select-bu-form.constant';
+
+describe('FinesConStore', () => {
+  let store: InstanceType<typeof FinesConStore>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    store = TestBed.inject(FinesConStore);
+  });
+
+  it('should be created', () => {
+    expect(store).toBeTruthy();
+  });
+
+  it('should have initial state', () => {
+    expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBeNull();
+    expect(store.selectBuForm().formData.fcon_select_bu_defendant_type).toBe('individual');
+    expect(store.selectBuForm().nestedFlow).toBe(false);
+    expect(store.isSelectBuFormComplete()).toBeFalsy();
+  });
+
+  it('should update business unit and defendant type', () => {
+    const testData: IFinesConSelectBuState = {
+      fcon_select_bu_business_unit_id: 123,
+      fcon_select_bu_defendant_type: 'individual',
+    };
+
+    store.updateSelectBuForm(testData);
+
+    expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(123);
+    expect(store.selectBuForm().formData.fcon_select_bu_defendant_type).toBe('individual');
+    expect(store.isSelectBuFormComplete()).toBeTruthy();
+  });
+
+  it('should update entire select BU form with nested flow flag', () => {
+    const completeForm: typeof FINES_CON_SELECT_BU_FORM = {
+      formData: {
+        fcon_select_bu_business_unit_id: 456,
+        fcon_select_bu_defendant_type: 'company',
+      },
+      nestedFlow: true,
+    };
+
+    store.updateSelectBuFormComplete(completeForm);
+
+    expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(456);
+    expect(store.selectBuForm().formData.fcon_select_bu_defendant_type).toBe('company');
+    expect(store.selectBuForm().nestedFlow).toBe(true);
+    expect(store.isSelectBuFormComplete()).toBeTruthy();
+  });
+
+  it('should reset entire consolidation state', () => {
+    const testData: IFinesConSelectBuState = {
+      fcon_select_bu_business_unit_id: 123,
+      fcon_select_bu_defendant_type: 'individual',
+    };
+
+    store.updateSelectBuForm(testData);
+    store.resetConsolidationState();
+
+    expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(
+      FINES_CON_SELECT_BU_FORM.formData.fcon_select_bu_business_unit_id,
+    );
+    expect(store.selectBuForm().formData.fcon_select_bu_defendant_type).toBe(
+      FINES_CON_SELECT_BU_FORM.formData.fcon_select_bu_defendant_type,
+    );
+    expect(store.selectBuForm().nestedFlow).toBe(FINES_CON_SELECT_BU_FORM.nestedFlow);
+  });
+
+  it('should compute business unit id correctly', () => {
+    store.updateSelectBuForm({
+      fcon_select_bu_business_unit_id: 456,
+      fcon_select_bu_defendant_type: 'company',
+    });
+
+    expect(store.getBusinessUnitId()).toBe(456);
+  });
+
+  it('should compute defendant type correctly', () => {
+    store.updateSelectBuForm({
+      fcon_select_bu_business_unit_id: 456,
+      fcon_select_bu_defendant_type: 'company',
+    });
+
+    expect(store.getDefendantType()).toBe('company');
+  });
+});
