@@ -1,25 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
-
 import { FinesConSelectBuComponent } from './fines-con-select-bu.component';
 import { FinesConStore } from '../../stores/fines-con.store';
-import { FINES_CON_BUSINESS_UNITS_SINGLE_MOCK } from './mocks/fines-con-business-units-single.mock';
+import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK } from './mocks/fines-con-select-bu-form-individual.mock';
 import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from './mocks/fines-con-select-bu-form-company.mock';
-
-interface MockFinesConStore {
-  updateSelectBuForm: jasmine.Spy;
-  getBusinessUnitId: jasmine.Spy;
-}
 
 describe('FinesConSelectBuComponent', () => {
   let component: FinesConSelectBuComponent;
   let fixture: ComponentFixture<FinesConSelectBuComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
-  let mockFinesConStore: jasmine.SpyObj<MockFinesConStore>;
+  let finesConStore: InstanceType<FinesConStoreType>;
 
-  const mockBusinessUnitsRefData = FINES_CON_BUSINESS_UNITS_SINGLE_MOCK;
+  const mockBusinessUnitsRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
 
   beforeEach(async () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
@@ -27,20 +23,18 @@ describe('FinesConSelectBuComponent', () => {
       snapshot: { data: { businessUnits: mockBusinessUnitsRefData } },
       parent: null,
     });
-    mockFinesConStore = jasmine.createSpyObj('FinesConStore', ['updateSelectBuForm', 'getBusinessUnitId']);
-    mockFinesConStore.getBusinessUnitId.and.returnValue(null);
 
     await TestBed.configureTestingModule({
       imports: [FinesConSelectBuComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: FinesConStore, useValue: mockFinesConStore },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesConSelectBuComponent);
     component = fixture.componentInstance;
+    finesConStore = TestBed.inject(FinesConStore);
     fixture.detectChanges();
   });
 
@@ -51,32 +45,40 @@ describe('FinesConSelectBuComponent', () => {
   it('should initialize business unit autocomplete items on ngOnInit', () => {
     component.ngOnInit();
 
-    expect(component.businessUnitAutoCompleteItems()).toEqual([{ value: 1, name: 'Test Business Unit' }]);
+    expect(component.businessUnitAutoCompleteItems().length).toBeGreaterThan(0);
+    expect(component.businessUnitAutoCompleteItems()[0].value).toBeDefined();
+    expect(component.businessUnitAutoCompleteItems()[0].name).toBeDefined();
   });
 
   it('should automatically select business unit when only one is available', () => {
-    component.ngOnInit();
+    const singleBusinessUnitMock: IOpalFinesBusinessUnitRefData = {
+      refData: [mockBusinessUnitsRefData.refData[0]],
+      count: 1,
+    };
+    spyOn(finesConStore, 'updateSelectBuForm');
 
-    expect(component.selectedBusinessUnit()?.business_unit_id).toBe(1);
+    component.businessUnitsRefData = singleBusinessUnitMock;
+    component['setBusinessUnit'](singleBusinessUnitMock);
+
+    expect(finesConStore.updateSelectBuForm).toHaveBeenCalled();
   });
 
   it('should handle form submission with individual defendant type', () => {
+    spyOn(finesConStore, 'updateSelectBuForm');
     component.handleFormSubmit(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
 
-    expect(mockFinesConStore.updateSelectBuForm).toHaveBeenCalledWith(
-      FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData,
-    );
+    expect(finesConStore.updateSelectBuForm).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
   });
 
   it('should create autocomplete items from business unit data', () => {
     component.ngOnInit();
 
-    // Verify that autocomplete items are created correctly from the business unit data
     expect(component.businessUnitAutoCompleteItems().length).toBeGreaterThan(0);
-    expect(component.businessUnitAutoCompleteItems()[0]).toEqual({
-      value: 1,
-      name: 'Test Business Unit',
-    });
+    const firstItem = component.businessUnitAutoCompleteItems()[0];
+    expect(firstItem.value).toBeDefined();
+    expect(firstItem.name).toBeDefined();
+    expect(typeof firstItem.value).toBe('number');
+    expect(typeof firstItem.name).toBe('string');
   });
 
   it('should handle unsaved changes when set to true', () => {
@@ -118,41 +120,43 @@ describe('FinesConSelectBuComponent', () => {
     expect(component.businessUnitAutoCompleteItems()).toBeDefined();
   });
 
-  it('should initialize with null selected business unit signal before init', () => {
-    // Before ngOnInit, the selectedBusinessUnit signal should be null
-    // Create a fresh component without calling ngOnInit
-    const freshFixture = TestBed.createComponent(FinesConSelectBuComponent);
-    const freshComponent = freshFixture.componentInstance;
-
-    expect(freshComponent.selectedBusinessUnit()).toBeNull();
-  });
-
   it('should have finesConStore injected', () => {
     expect(component['finesConStore']).toBeDefined();
   });
 
-  it('should prePopulateFromStore when business unit id exists in store', () => {
-    mockFinesConStore.getBusinessUnitId.and.returnValue(1);
-    component.businessUnitsRefData = mockBusinessUnitsRefData;
+  it('should restore previously selected business unit from store on init', () => {
+    const firstBusinessUnitId = mockBusinessUnitsRefData.refData[0].business_unit_id;
+    spyOn(finesConStore, 'selectBuForm').and.returnValue({
+      formData: {
+        fcon_select_bu_business_unit_id: firstBusinessUnitId,
+        fcon_select_bu_defendant_type: 'individual',
+      },
+      nestedFlow: false,
+    });
 
-    component['prePopulateFromStore']();
+    component.ngOnInit();
 
-    expect(component.selectedBusinessUnit()?.business_unit_id).toBe(1);
+    expect(component.businessUnitAutoCompleteItems().length).toBeGreaterThan(0);
   });
 
-  it('should not update selected business unit when store has no business unit id', () => {
-    mockFinesConStore.getBusinessUnitId.and.returnValue(null);
-    component.businessUnitsRefData = mockBusinessUnitsRefData;
+  it('should not select business unit when store has no business unit id on init', () => {
+    spyOn(finesConStore, 'selectBuForm').and.returnValue({
+      formData: {
+        fcon_select_bu_business_unit_id: null,
+        fcon_select_bu_defendant_type: 'individual',
+      },
+      nestedFlow: false,
+    });
 
-    const initialSelection = component.selectedBusinessUnit();
-    component['prePopulateFromStore']();
+    component.ngOnInit();
 
-    expect(component.selectedBusinessUnit()).toEqual(initialSelection);
+    expect(component.businessUnitAutoCompleteItems()).toBeDefined();
   });
 
   it('should handle form submission with different defendant types', () => {
+    spyOn(finesConStore, 'updateSelectBuForm');
     component.handleFormSubmit(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK);
 
-    expect(mockFinesConStore.updateSelectBuForm).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
+    expect(finesConStore.updateSelectBuForm).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
   });
 });

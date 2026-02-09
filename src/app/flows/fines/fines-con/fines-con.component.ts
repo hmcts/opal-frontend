@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-fines-consolidation',
   imports: [RouterOutlet],
-  templateUrl: './fines-consolidation.component.html',
+  templateUrl: './fines-con.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesConsolidationComponent {}
+export class FinesConComponent {}

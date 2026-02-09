@@ -3,15 +3,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesConSelectBuFormComponent } from './fines-con-select-bu-form.component';
+import { FinesConStore } from '../../../stores/fines-con.store';
+import { FinesConStoreType } from '../../../stores/types/fines-con-store.type';
 import { FINES_CON_DEFENDANT_TYPES } from '../constants/fines-con-defendant-types.constant';
-import { FINES_CON_SELECT_BU_FORM } from '../constants/fines-con-select-bu-form.constant';
-import { IFinesConSelectBuForm } from '../interfaces/fines-con-select-bu-form.interface';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
-import { FINES_CON_SELECT_BU_AUTOCOMPLETE_ITEMS_MOCK } from '../mocks/fines-con-select-bu-autocomplete-items.mock';
+import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
+import { FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK } from '../mocks/fines-con-select-bu-form-individual.mock';
 
 describe('FinesConSelectBuFormComponent', () => {
   let component: FinesConSelectBuFormComponent;
   let fixture: ComponentFixture<FinesConSelectBuFormComponent>;
+  let finesConStore: InstanceType<FinesConStoreType>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -29,9 +31,10 @@ describe('FinesConSelectBuFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesConSelectBuFormComponent);
     component = fixture.componentInstance;
+    finesConStore = TestBed.inject(FinesConStore);
 
     // Set required inputs before detectChanges
-    component.autoCompleteItems = FINES_CON_SELECT_BU_AUTOCOMPLETE_ITEMS_MOCK;
+    component.autoCompleteItems = OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
     component.defendantTypes = FINES_CON_DEFENDANT_TYPES;
 
     fixture.detectChanges();
@@ -95,27 +98,20 @@ describe('FinesConSelectBuFormComponent', () => {
     expect(component.form.valid).toBeFalsy();
   });
 
-  it('should repopulate form with initial form data', () => {
-    const initialFormData: IFinesConSelectBuForm = {
-      formData: {
-        fcon_select_bu_business_unit_id: 2,
-        fcon_select_bu_defendant_type: 'company',
-      },
-      nestedFlow: false,
-    };
-
-    component.initialFormData = initialFormData;
+  it('should use constant default form data on initialization', () => {
     component.ngOnInit();
 
-    expect(component.form.get('fcon_select_bu_business_unit_id')?.value).toBe(2);
-    expect(component.form.get('fcon_select_bu_defendant_type')?.value).toBe('company');
+    expect(component.form.get('fcon_select_bu_business_unit_id')?.value).toBeNull();
+    expect(component.form.get('fcon_select_bu_defendant_type')?.value).toBe('individual');
   });
 
-  it('should use default form data when initial form data is null', () => {
-    component.initialFormData = null as never;
+  it('should restore form data from store when available', () => {
+    const businessUnitId = FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData.fcon_select_bu_business_unit_id;
+    spyOn(finesConStore, 'selectBuForm').and.returnValue(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
+
     component.ngOnInit();
 
-    expect(component.initialFormData).toEqual(FINES_CON_SELECT_BU_FORM);
+    expect(component.form.get('fcon_select_bu_business_unit_id')?.value).toBe(businessUnitId);
   });
 
   it('should set dashboard path from routing paths', () => {
@@ -145,8 +141,8 @@ describe('FinesConSelectBuFormComponent', () => {
   });
 
   it('should accept autocomplete items as input', () => {
-    expect(component.autoCompleteItems).toEqual(FINES_CON_SELECT_BU_AUTOCOMPLETE_ITEMS_MOCK);
-    expect(component.autoCompleteItems.length).toBe(3);
+    expect(component.autoCompleteItems).toEqual(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
+    expect(component.autoCompleteItems.length).toBeGreaterThan(0);
   });
 
   it('should accept defendant types as input', () => {

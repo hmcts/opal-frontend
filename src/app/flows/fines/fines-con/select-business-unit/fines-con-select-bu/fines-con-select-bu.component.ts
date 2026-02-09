@@ -19,16 +19,21 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
 
   public businessUnitsRefData!: IOpalFinesBusinessUnitRefData;
   public businessUnitAutoCompleteItems = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
-  public selectedBusinessUnit = signal<IOpalFinesBusinessUnit | null>(null);
   public defendantTypes = FINES_CON_DEFENDANT_TYPES;
 
   /**
-   * Sets the business unit automatically if there's only one available
-   * and caches the selection for the consolidation journey
+   * Sets the business unit for the consolidation selection.
+   * If there is only one business unit available and the current business unit is null,
+   * it sets the business unit to the first available business unit.
    */
   private setBusinessUnit(result: IOpalFinesBusinessUnitRefData): void {
-    if (result.refData.length === 1) {
-      this.selectedBusinessUnit.set(result.refData[0]);
+    const { formData } = this.finesConStore.selectBuForm();
+
+    if (result.refData.length === 1 && !formData.fcon_select_bu_business_unit_id) {
+      this.finesConStore.updateSelectBuForm({
+        fcon_select_bu_business_unit_id: result.refData[0].business_unit_id,
+        fcon_select_bu_defendant_type: formData.fcon_select_bu_defendant_type,
+      });
     }
   }
 
@@ -42,21 +47,6 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
     }));
   }
 
-  /**
-   * Pre-populates the form with data from the store if it exists
-   */
-  private prePopulateFromStore(): void {
-    const storedBusinessUnitId = this.finesConStore.getBusinessUnitId();
-
-    if (storedBusinessUnitId) {
-      const businessUnit = this.businessUnitsRefData.refData.find(
-        (unit) => unit.business_unit_id === storedBusinessUnitId,
-      );
-      if (businessUnit) {
-        this.selectedBusinessUnit.set(businessUnit);
-      }
-    }
-  }
   /**
    * Handles form submission for business unit and defendant type selection
    * Stores the data in the consolidation store for use across the flow
@@ -78,13 +68,12 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
 
   /**
    * Initializes the component by loading business unit reference data from the route,
-   * applying the selected business unit, preparing autocomplete items, and prepopulating
-   * values from the store.
+   * auto-selecting if only one is available, and preparing autocomplete items.
+   * The form component handles restoring data from store.
    */
   public ngOnInit(): void {
     this.businessUnitsRefData = this['activatedRoute'].snapshot.data['businessUnits'] || { refData: [] };
     this.setBusinessUnit(this.businessUnitsRefData);
     this.businessUnitAutoCompleteItems.set(this.createAutoCompleteItems(this.businessUnitsRefData));
-    this.prePopulateFromStore();
   }
 }

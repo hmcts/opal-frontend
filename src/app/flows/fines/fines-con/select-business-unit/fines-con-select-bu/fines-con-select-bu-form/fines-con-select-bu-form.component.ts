@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -13,9 +13,8 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { IFinesConSelectBuFieldErrors } from '../interfaces/fines-con-select-bu-field-errors.interface';
 import { FINES_CON_SELECT_BU_FIELD_ERRORS } from '../constants/fines-con-select-bu-field-errors.constant';
-import { IFinesConSelectBuForm } from '../interfaces/fines-con-select-bu-form.interface';
-import { FINES_CON_SELECT_BU_FORM } from '../constants/fines-con-select-bu-form.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
+import { FinesConStore } from '../../../stores/fines-con.store';
 
 @Component({
   selector: 'app-fines-con-select-bu-form',
@@ -32,6 +31,7 @@ import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.cons
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesConSelectBuFormComponent extends AbstractFormBaseComponent implements OnInit {
+  private readonly finesConStore = inject(FinesConStore);
   protected override fieldErrors: IFinesConSelectBuFieldErrors = FINES_CON_SELECT_BU_FIELD_ERRORS;
   protected readonly dashboardPath = PAGES_ROUTING_PATHS.children.dashboard;
   protected readonly routingPath = PAGES_ROUTING_PATHS;
@@ -39,7 +39,19 @@ export class FinesConSelectBuFormComponent extends AbstractFormBaseComponent imp
 
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public defendantTypes!: IGovUkRadioOptions[];
-  @Input({ required: false }) public initialFormData: IFinesConSelectBuForm = FINES_CON_SELECT_BU_FORM;
+
+  /**
+   * Performs the initial setup for the select business unit form.
+   * This method sets up the form, initializes error messages,
+   * and repopulates the form with data from the store.
+   */
+  private initialiseSelectBuForm(): void {
+    const { formData } = this.finesConStore.selectBuForm();
+    this.initialiseForm();
+    this.setInitialErrorMessages();
+    this.rePopulateForm(formData);
+  }
+
   /**
    * Sets up the form with business unit and defendant type controls
    */
@@ -54,13 +66,7 @@ export class FinesConSelectBuFormComponent extends AbstractFormBaseComponent imp
    * Initialize the form component following standard patterns
    */
   public override ngOnInit(): void {
-    if (!this.initialFormData) {
-      this.initialFormData = FINES_CON_SELECT_BU_FORM;
-    }
-
-    this.initialiseForm();
-    this.rePopulateForm(this.initialFormData.formData || null);
-    this.setInitialErrorMessages();
+    this.initialiseSelectBuForm();
     super.ngOnInit();
   }
 }
