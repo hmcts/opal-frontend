@@ -343,16 +343,18 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.opalFinesService
       .getDefendantAccountHeadingData(Number(this.accountStore.account_id()))
       .pipe(
-        tap((headingData) => {
+        tap((defendantHeadingData) => {
           this.accountStore.setAccountState(
             this.payloadService.transformAccountHeaderForStore(
               Number(this.accountStore.account_id()),
-              headingData,
+              defendantHeadingData,
               'defendant',
             ),
           );
         }),
-        map((headingData) => this.payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
+        map((defendantHeadingData) =>
+          this.payloadService.transformPayload(defendantHeadingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
+        ),
         takeUntil(this.destroy$),
       )
       .subscribe((res) => {

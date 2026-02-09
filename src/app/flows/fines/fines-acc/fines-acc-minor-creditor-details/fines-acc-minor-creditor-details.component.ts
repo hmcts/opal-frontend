@@ -130,16 +130,18 @@ export class FinesAccMinorCreditorDetailsComponent extends AbstractTabData imple
     this.opalFinesService
       .getMinorCreditorAccountHeadingData(Number(this.accountStore.account_id()))
       .pipe(
-        tap((headingData) => {
+        tap((minorCreditorHeadingData) => {
           this.accountStore.setAccountState(
             this.payloadService.transformAccountHeaderForStore(
               Number(this.accountStore.account_id()),
-              headingData,
+              minorCreditorHeadingData,
               'minorCreditor',
             ),
           );
         }),
-        map((headingData) => this.payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
+        map((minorCreditorHeadingData) =>
+          this.payloadService.transformPayload(minorCreditorHeadingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
+        ),
         takeUntil(this.destroy$),
       )
       .subscribe((res) => {
