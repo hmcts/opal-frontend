@@ -566,9 +566,9 @@ describe('FinesAccPayloadService', () => {
       const result = service.transformPaymentTermsPayload(mockPaymentTermsData, mockResultData);
 
       expect(result).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           nestedFlow: false,
-          formData: jasmine.any(Object),
+          formData: expect.any(Object),
         }),
       );
     });
@@ -581,15 +581,15 @@ describe('FinesAccPayloadService', () => {
         facc_payment_terms_pay_by_date: '2025-01-01',
       } as never;
 
-      spyOn(service, 'transformPayload').and.callFake((payload) => payload);
+      vi.spyOn(service, 'transformPayload').mockImplementation((payload) => payload);
 
       const result = service.buildPaymentTermsAmendPayload(mockFormData);
 
       expect(service.transformPayload).toHaveBeenCalled();
       expect(result).toBeDefined();
       expect(result).toEqual(
-        jasmine.objectContaining({
-          payment_terms: jasmine.any(Object),
+        expect.objectContaining({
+          payment_terms: expect.any(Object),
         }),
       );
     });

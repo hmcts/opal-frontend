@@ -17,25 +17,35 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { payInFullPaymentCardValidator } from '../validators/fines-acc-payment-terms-pay-in-full.validator';
 import { changeLetterWithoutChangesValidator } from '../validators/fines-acc-payment-terms-change-letter.validator';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesAccPaymentTermsAmendFormComponent', () => {
   let component: FinesAccPaymentTermsAmendFormComponent;
   let fixture: ComponentFixture<FinesAccPaymentTermsAmendFormComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockAccountStore: jasmine.SpyObj<typeof FinesAccountStore>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let mockRouter: ReturnType<typeof createSpyObj>;
+  let mockActivatedRoute: ActivatedRoute;
+  let mockDateService: ReturnType<typeof createSpyObj>;
+  let mockAccountStore: {
+    defendantType: ReturnType<typeof signal>;
+    accountDetails: ReturnType<typeof signal>;
+    paymentTerms: ReturnType<typeof signal>;
+    account_number: ReturnType<typeof signal>;
+    party_name: ReturnType<typeof signal>;
+    business_unit_id: ReturnType<typeof signal>;
+  };
+  let mockOpalFinesService: ReturnType<typeof createSpyObj>;
 
   beforeEach(async () => {
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
+    mockRouter = createSpyObj('Router', ['navigate']);
+    mockActivatedRoute = {
       snapshot: { data: {} },
       params: of({}),
       queryParams: of({}),
       data: of({}),
-    });
-    mockDateService = jasmine.createSpyObj('DateService', [
+    } as unknown as ActivatedRoute;
+    mockDateService = createSpyObj('DateService', [
       'isValidDate',
       'isDateInThePast',
       'isDateInTheFuture',
@@ -43,17 +53,17 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       'toFormat',
       'getPreviousDate',
     ]);
-    mockAccountStore = jasmine.createSpyObj('FinesAccountStore', [], {
+    mockAccountStore = {
       defendantType: signal('individual'),
       accountDetails: signal({}),
       paymentTerms: signal({}),
       account_number: signal('ACC123'),
       party_name: signal('John Doe'),
       business_unit_id: signal('61'),
-    });
+    };
 
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getBusinessUnitById']);
-    mockOpalFinesService.getBusinessUnitById.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK));
+    mockOpalFinesService = createSpyObj('OpalFines', ['getBusinessUnitById']);
+    mockOpalFinesService['getBusinessUnitById'].mockReturnValue(of(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK));
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, HttpClientTestingModule, FinesAccPaymentTermsAmendFormComponent],
@@ -67,20 +77,20 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
     }).compileComponents();
 
     // Setup DateService mock return values
-    mockDateService.getDateNow.and.returnValue(DateTime.fromISO('2024-01-02'));
-    mockDateService.toFormat.and.returnValue('02/01/2024');
-    mockDateService.getPreviousDate.and.returnValue('01/01/2024');
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.isDateInThePast.and.returnValue(false);
-    mockDateService.isDateInTheFuture.and.returnValue(false);
+    mockDateService['getDateNow'].mockReturnValue(DateTime.fromISO('2024-01-02'));
+    mockDateService['toFormat'].mockReturnValue('02/01/2024');
+    mockDateService['getPreviousDate'].mockReturnValue('01/01/2024');
+    mockDateService['isValidDate'].mockReturnValue(true);
+    mockDateService['isDateInThePast'].mockReturnValue(false);
+    mockDateService['isDateInTheFuture'].mockReturnValue(false);
 
     fixture = TestBed.createComponent(FinesAccPaymentTermsAmendFormComponent);
     component = fixture.componentInstance;
 
     // Setup date service mocks
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.isDateInThePast.and.returnValue(false);
-    mockDateService.isDateInTheFuture.and.returnValue(false);
+    mockDateService['isValidDate'].mockReturnValue(true);
+    mockDateService['isDateInThePast'].mockReturnValue(false);
+    mockDateService['isDateInTheFuture'].mockReturnValue(false);
   });
 
   it('should create', () => {
@@ -271,7 +281,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
     it('should route to defendant details with payment-terms fragment', () => {
       component.handleRouteToDefendantDetails();
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      expect(mockRouter['navigate']).toHaveBeenCalledWith(['../../details'], {
         relativeTo: mockActivatedRoute,
         fragment: 'payment-terms',
       });
@@ -354,9 +364,9 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       component.startDateInFuture = false;
 
       // Setup mock to return different values based on the input date
-      mockDateService.isValidDate.and.callFake((date: string) => date === '2023-01-01');
-      mockDateService.isDateInThePast.and.callFake((date: string) => date === '2023-01-01');
-      mockDateService.isDateInTheFuture.and.callFake(() => false);
+      mockDateService['isValidDate'].mockImplementation((date: string) => date === '2023-01-01');
+      mockDateService['isDateInThePast'].mockImplementation((date: string) => date === '2023-01-01');
+      mockDateService['isDateInTheFuture'].mockImplementation(() => false);
 
       const testData: IFinesAccPaymentTermsAmendForm = {
         formData: {
@@ -381,7 +391,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       component.ngOnInit();
 
       // Verify that date validation was called and flags are set
-      expect(mockDateService.isDateInThePast).toHaveBeenCalledWith('2023-01-01');
+      expect(mockDateService['isDateInThePast']).toHaveBeenCalledWith('2023-01-01');
       expect(component.payByDateInPast).toBe(true);
       expect(component.payByDateInFuture).toBe(false);
       expect(component.startDateInPast).toBe(false);
@@ -396,9 +406,9 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       component.startDateInFuture = false;
 
       // Setup mock to return different values based on the input date
-      mockDateService.isValidDate.and.callFake((date: string) => date === '2025-12-31');
-      mockDateService.isDateInThePast.and.callFake(() => false);
-      mockDateService.isDateInTheFuture.and.callFake((date: string) => date === '2025-12-31');
+      mockDateService['isValidDate'].mockImplementation((date: string) => date === '2025-12-31');
+      mockDateService['isDateInThePast'].mockImplementation(() => false);
+      mockDateService['isDateInTheFuture'].mockImplementation((date: string) => date === '2025-12-31');
 
       const testData: IFinesAccPaymentTermsAmendForm = {
         formData: {
@@ -423,7 +433,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       component.ngOnInit();
 
       // Verify that date validation was called and flags are set
-      expect(mockDateService.isDateInTheFuture).toHaveBeenCalledWith('2025-12-31', 0.6);
+      expect(mockDateService['isDateInTheFuture']).toHaveBeenCalledWith('2025-12-31', 0.6);
       expect(component.payByDateInPast).toBe(false);
       expect(component.payByDateInFuture).toBe(false);
       expect(component.startDateInPast).toBe(false);
@@ -432,14 +442,14 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
     it('should not validate suspended committal date for banner flags', () => {
       // Reset mocks and component state
-      mockDateService.isDateInThePast.calls.reset();
-      mockDateService.isDateInTheFuture.calls.reset();
-      mockDateService.isValidDate.calls.reset();
+      mockDateService['isDateInThePast'].mockReset();
+      mockDateService['isDateInTheFuture'].mockReset();
+      mockDateService['isValidDate'].mockReset();
 
       // Setup mocks to return false for date validation methods since no relevant dates should be validated
-      mockDateService.isValidDate.and.returnValue(false);
-      mockDateService.isDateInThePast.and.returnValue(false);
-      mockDateService.isDateInTheFuture.and.returnValue(false);
+      mockDateService['isValidDate'].mockReturnValue(false);
+      mockDateService['isDateInThePast'].mockReturnValue(false);
+      mockDateService['isDateInTheFuture'].mockReturnValue(false);
 
       const testData: IFinesAccPaymentTermsAmendForm = {
         formData: {
@@ -464,7 +474,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       component.ngOnInit();
 
       // Verify that suspended committal date was not checked for banner validation
-      expect(mockDateService.isDateInThePast).not.toHaveBeenCalledWith('2023-01-01');
+      expect(mockDateService['isDateInThePast']).not.toHaveBeenCalledWith('2023-01-01');
       expect(component.payByDateInPast).toBe(false);
       expect(component.payByDateInFuture).toBe(false);
       expect(component.startDateInPast).toBe(false);
@@ -1220,7 +1230,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
     describe('daysInDefaultListener', () => {
       it('should set up initial validators when daysInDefaultListener is called', () => {
-        const updateValidatorsSpy = jasmine.createSpy('updateDaysInDefaultValidators');
+        const updateValidatorsSpy = vi.fn();
         component['updateDaysInDefaultValidators'] = updateValidatorsSpy;
 
         // Call the private method
@@ -1231,7 +1241,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
 
       it('should call updateDaysInDefaultValidators when has_days_in_default changes', () => {
         const hasDaysInDefaultControl = component.form.get('facc_payment_terms_has_days_in_default');
-        const updateValidatorsSpy = jasmine.createSpy('updateDaysInDefaultValidators');
+        const updateValidatorsSpy = vi.fn();
         component['updateDaysInDefaultValidators'] = updateValidatorsSpy;
 
         // Call daysInDefaultListener to set up the subscription
@@ -1299,7 +1309,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       });
 
       it('should validate future dates for suspended committal date', () => {
-        mockDateService.isDateInTheFuture.and.returnValue(true);
+        mockDateService['isDateInTheFuture'].mockReturnValue(true);
 
         const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
 
@@ -1312,7 +1322,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       });
 
       it('should not validate future dates when date is not in future', () => {
-        mockDateService.isDateInTheFuture.and.returnValue(false);
+        mockDateService['isDateInTheFuture'].mockReturnValue(false);
 
         const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
 
@@ -1336,7 +1346,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       });
 
       it('should not validate future dates when date is invalid', () => {
-        mockDateService.isValidDate.and.returnValue(false);
+        mockDateService['isValidDate'].mockReturnValue(false);
 
         const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
 
@@ -1366,8 +1376,8 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
         const defaultDaysInJailControl = component.form.get('facc_payment_terms_default_days_in_jail');
 
-        spyOn(suspendedCommittalDateControl!, 'clearValidators').and.callThrough();
-        spyOn(defaultDaysInJailControl!, 'clearValidators').and.callThrough();
+        vi.spyOn(suspendedCommittalDateControl!, 'clearValidators');
+        vi.spyOn(defaultDaysInJailControl!, 'clearValidators');
 
         component['updateDaysInDefaultValidators']();
 
@@ -1379,8 +1389,8 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
         const suspendedCommittalDateControl = component.form.get('facc_payment_terms_suspended_committal_date');
         const defaultDaysInJailControl = component.form.get('facc_payment_terms_default_days_in_jail');
 
-        spyOn(suspendedCommittalDateControl!, 'updateValueAndValidity').and.callThrough();
-        spyOn(defaultDaysInJailControl!, 'updateValueAndValidity').and.callThrough();
+        vi.spyOn(suspendedCommittalDateControl!, 'updateValueAndValidity');
+        vi.spyOn(defaultDaysInJailControl!, 'updateValueAndValidity');
 
         component['updateDaysInDefaultValidators']();
 
