@@ -125,14 +125,7 @@ describe('FinesConSelectBuComponent', () => {
   });
 
   it('should restore previously selected business unit from store on init', () => {
-    const firstBusinessUnitId = mockBusinessUnitsRefData.refData[0].business_unit_id;
-    spyOn(finesConStore, 'selectBuForm').and.returnValue({
-      formData: {
-        fcon_select_bu_business_unit_id: firstBusinessUnitId,
-        fcon_select_bu_defendant_type: 'individual',
-      },
-      nestedFlow: false,
-    });
+    spyOn(finesConStore, 'selectBuForm').and.returnValue(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
 
     component.ngOnInit();
 
@@ -141,11 +134,11 @@ describe('FinesConSelectBuComponent', () => {
 
   it('should not select business unit when store has no business unit id on init', () => {
     spyOn(finesConStore, 'selectBuForm').and.returnValue({
+      ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK,
       formData: {
+        ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData,
         fcon_select_bu_business_unit_id: null,
-        fcon_select_bu_defendant_type: 'individual',
       },
-      nestedFlow: false,
     });
 
     component.ngOnInit();

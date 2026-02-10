@@ -48,6 +48,17 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
   }
 
   /**
+   * Performs the initial setup for the select business unit component.
+   * Loads business unit reference data, auto-selects if only one is available,
+   * and prepares autocomplete items.
+   */
+  private initialSelectBuSetup(): void {
+    this.businessUnitsRefData = this['activatedRoute'].snapshot.data['businessUnits'] || { refData: [] };
+    this.setBusinessUnit(this.businessUnitsRefData);
+    this.businessUnitAutoCompleteItems.set(this.createAutoCompleteItems(this.businessUnitsRefData));
+  }
+
+  /**
    * Handles form submission for business unit and defendant type selection
    * Stores the data in the consolidation store for use across the flow
    */
@@ -67,13 +78,10 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
   }
 
   /**
-   * Initializes the component by loading business unit reference data from the route,
-   * auto-selecting if only one is available, and preparing autocomplete items.
+   * Initializes the component by performing initial select business unit setup.
    * The form component handles restoring data from store.
    */
   public ngOnInit(): void {
-    this.businessUnitsRefData = this['activatedRoute'].snapshot.data['businessUnits'] || { refData: [] };
-    this.setBusinessUnit(this.businessUnitsRefData);
-    this.businessUnitAutoCompleteItems.set(this.createAutoCompleteItems(this.businessUnitsRefData));
+    this.initialSelectBuSetup();
   }
 }

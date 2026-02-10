@@ -57,8 +57,8 @@ export class FinesConSelectBuFormComponent extends AbstractFormBaseComponent imp
    */
   protected initialiseForm(): void {
     this.form = new FormGroup({
-      fcon_select_bu_business_unit_id: new FormControl<string | null>(null, [Validators.required]),
-      fcon_select_bu_defendant_type: new FormControl<string | null>('individual', [Validators.required]),
+      fcon_select_bu_business_unit_id: new FormControl(null, [Validators.required]),
+      fcon_select_bu_defendant_type: new FormControl(null, [Validators.required]),
     });
   }
 

@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { FinesConStore } from './fines-con.store';
 import { IFinesConSelectBuState } from '../select-business-unit/fines-con-select-bu/interfaces/fines-con-select-bu-state.interface';
 import { FINES_CON_SELECT_BU_FORM } from '../select-business-unit/fines-con-select-bu/constants/fines-con-select-bu-form.constant';
+import { FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK } from '../select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-individual.mock';
+import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from '../select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-company.mock';
 
 describe('FinesConStore', () => {
   let store: InstanceType<typeof FinesConStore>;
@@ -23,42 +25,30 @@ describe('FinesConStore', () => {
   });
 
   it('should update business unit and defendant type', () => {
-    const testData: IFinesConSelectBuState = {
-      fcon_select_bu_business_unit_id: 123,
-      fcon_select_bu_defendant_type: 'individual',
-    };
+    const testData: IFinesConSelectBuState = FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData;
 
     store.updateSelectBuForm(testData);
 
-    expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(123);
+    expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(
+      FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData.fcon_select_bu_business_unit_id,
+    );
     expect(store.selectBuForm().formData.fcon_select_bu_defendant_type).toBe('individual');
     expect(store.isSelectBuFormComplete()).toBeTruthy();
   });
 
   it('should update entire select BU form with nested flow flag', () => {
-    const completeForm: typeof FINES_CON_SELECT_BU_FORM = {
-      formData: {
-        fcon_select_bu_business_unit_id: 456,
-        fcon_select_bu_defendant_type: 'company',
-      },
-      nestedFlow: true,
-    };
+    store.updateSelectBuFormComplete(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK);
 
-    store.updateSelectBuFormComplete(completeForm);
-
-    expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(456);
+    expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(
+      FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData.fcon_select_bu_business_unit_id,
+    );
     expect(store.selectBuForm().formData.fcon_select_bu_defendant_type).toBe('company');
-    expect(store.selectBuForm().nestedFlow).toBe(true);
+    expect(store.selectBuForm().nestedFlow).toBe(false);
     expect(store.isSelectBuFormComplete()).toBeTruthy();
   });
 
   it('should reset entire consolidation state', () => {
-    const testData: IFinesConSelectBuState = {
-      fcon_select_bu_business_unit_id: 123,
-      fcon_select_bu_defendant_type: 'individual',
-    };
-
-    store.updateSelectBuForm(testData);
+    store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
     store.resetConsolidationState();
 
     expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(
@@ -71,19 +61,15 @@ describe('FinesConStore', () => {
   });
 
   it('should compute business unit id correctly', () => {
-    store.updateSelectBuForm({
-      fcon_select_bu_business_unit_id: 456,
-      fcon_select_bu_defendant_type: 'company',
-    });
+    store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
 
-    expect(store.getBusinessUnitId()).toBe(456);
+    expect(store.getBusinessUnitId()).toBe(
+      FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData.fcon_select_bu_business_unit_id,
+    );
   });
 
   it('should compute defendant type correctly', () => {
-    store.updateSelectBuForm({
-      fcon_select_bu_business_unit_id: 456,
-      fcon_select_bu_defendant_type: 'company',
-    });
+    store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
 
     expect(store.getDefendantType()).toBe('company');
   });

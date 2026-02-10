@@ -9,6 +9,7 @@ import { FINES_CON_DEFENDANT_TYPES } from '../constants/fines-con-defendant-type
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK } from '../mocks/fines-con-select-bu-form-individual.mock';
+import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from '../mocks/fines-con-select-bu-form-company.mock';
 
 describe('FinesConSelectBuFormComponent', () => {
   let component: FinesConSelectBuFormComponent;
@@ -72,18 +73,15 @@ describe('FinesConSelectBuFormComponent', () => {
   });
 
   it('should accept valid form data', () => {
-    component.form.patchValue({
-      fcon_select_bu_business_unit_id: 1,
-      fcon_select_bu_defendant_type: 'company',
-    });
+    component.form.patchValue(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
 
     expect(component.form.valid).toBeTruthy();
   });
 
   it('should reject invalid form data when business unit is missing', () => {
     component.form.patchValue({
+      ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData,
       fcon_select_bu_business_unit_id: null,
-      fcon_select_bu_defendant_type: 'individual',
     });
 
     expect(component.form.valid).toBeFalsy();
@@ -91,7 +89,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it('should reject invalid form data when defendant type is missing', () => {
     component.form.patchValue({
-      fcon_select_bu_business_unit_id: 1,
+      ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData,
       fcon_select_bu_defendant_type: null,
     });
 
@@ -157,10 +155,7 @@ describe('FinesConSelectBuFormComponent', () => {
   it('should handle form submission with valid data', () => {
     spyOn(component['formSubmit'], 'emit');
 
-    component.form.patchValue({
-      fcon_select_bu_business_unit_id: 1,
-      fcon_select_bu_defendant_type: 'individual',
-    });
+    component.form.patchValue(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
 
     const mockEvent = new SubmitEvent('submit');
     component.handleFormSubmit(mockEvent);
@@ -172,8 +167,8 @@ describe('FinesConSelectBuFormComponent', () => {
     spyOn(component['formSubmit'], 'emit');
 
     component.form.patchValue({
+      ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData,
       fcon_select_bu_business_unit_id: null,
-      fcon_select_bu_defendant_type: 'individual',
     });
 
     const mockEvent = new SubmitEvent('submit');
