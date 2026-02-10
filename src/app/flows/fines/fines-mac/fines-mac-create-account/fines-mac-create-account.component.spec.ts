@@ -154,8 +154,11 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should initialise but capture business unit id', () => {
     spyOn(finesMacStore, 'setBusinessUnitId');
+    spyOn(finesMacStore, 'setOriginatorType');
     finesMacStore.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    finesMacStore.setOriginatorType(FINES_MAC_STATE_MOCK.originatorType);
     component.ngOnInit();
     expect(finesMacStore.setBusinessUnitId).toHaveBeenCalled();
+    expect(finesMacStore.setOriginatorType).toHaveBeenCalled();
   });
 });

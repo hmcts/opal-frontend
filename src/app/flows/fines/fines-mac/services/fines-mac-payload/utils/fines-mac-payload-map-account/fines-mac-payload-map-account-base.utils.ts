@@ -47,5 +47,11 @@ export const finesMacPayloadMapAccountBase = (
     fm_payment_terms_payment_card_request: payloadAccount.payment_card_request,
   };
 
+  // Update originator type
+  mappedFinesMacState.originatorType.formData = {
+    ...mappedFinesMacState.originatorType.formData,
+    fm_originator_type_originator_type: payloadAccount.originator_type,
+  };
+
   return mappedFinesMacState;
 };

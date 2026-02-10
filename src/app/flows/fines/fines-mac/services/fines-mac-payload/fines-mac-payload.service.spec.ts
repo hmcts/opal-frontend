@@ -86,6 +86,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
+    finesMacState.originatorType.formData.fm_originator_type_originator_type = 'FP';
     finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fixed Penalty'];
     finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
     finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);

@@ -18,6 +18,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
     defendant_type: 'adultOrYouthOnly',
     originator_name: 'Crown Prosecution Service',
     originator_id: '4821',
+    originator_type: 'NEW',
     prosecutor_case_reference: 'P2BC305678',
     enforcement_court_id: 'Magistrates Court Database (204)',
     collection_order_made: true,
