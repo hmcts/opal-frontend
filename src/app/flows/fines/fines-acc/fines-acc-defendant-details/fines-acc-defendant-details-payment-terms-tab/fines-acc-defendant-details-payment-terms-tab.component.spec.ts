@@ -48,7 +48,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     component.tabData.payment_terms.lump_sum_amount = 0.0;
     component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = 'B';
     fixture.detectChanges();
-    expect(component.cardTitle()).toBe('Pay by date');
+    expect(component.cardTitle()).toBe('Pay in full');
   });
 
   it('should return the correct card title for Paid when there are no values in installment_amount or lump_sum_amount and the code is P', () => {

@@ -552,4 +552,46 @@ describe('FinesAccPayloadService', () => {
       expect(result.language_preferences).toBeDefined();
     });
   });
+
+  describe('transformPaymentTermsPayload', () => {
+    it('should return form structure with nestedFlow false', () => {
+      const mockPaymentTermsData = {
+        payment_terms: {
+          payment_terms_type: { payment_terms_type_code: 'B' },
+          effective_date: '2025-01-01',
+        },
+      } as never;
+      const mockResultData = null;
+
+      const result = service.transformPaymentTermsPayload(mockPaymentTermsData, mockResultData);
+
+      expect(result).toEqual(
+        jasmine.objectContaining({
+          nestedFlow: false,
+          formData: jasmine.any(Object),
+        }),
+      );
+    });
+  });
+
+  describe('buildPaymentTermsAmendPayload', () => {
+    it('should build and return payment terms amend payload', () => {
+      const mockFormData = {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '2025-01-01',
+      } as never;
+
+      spyOn(service, 'transformPayload').and.callFake((payload) => payload);
+
+      const result = service.buildPaymentTermsAmendPayload(mockFormData);
+
+      expect(service.transformPayload).toHaveBeenCalled();
+      expect(result).toBeDefined();
+      expect(result).toEqual(
+        jasmine.objectContaining({
+          payment_terms: jasmine.any(Object),
+        }),
+      );
+    });
+  });
 });

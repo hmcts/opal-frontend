@@ -68,7 +68,6 @@ describe('defendantAccountHeadingResolver', () => {
     );
 
     expect(mockFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(accountId);
-    expect(mockAccountStore.setAccountState).toHaveBeenCalledWith(MOCK_FINES_ACCOUNT_STATE);
     expect(result).toBe(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
   });
 });

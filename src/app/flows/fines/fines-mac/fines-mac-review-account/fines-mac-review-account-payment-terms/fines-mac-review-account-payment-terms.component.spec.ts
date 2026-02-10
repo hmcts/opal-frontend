@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms.component';
 import { FINES_MAC_PAYMENT_TERMS_STATE_MOCK } from '../../fines-mac-payment-terms/mocks/fines-mac-payment-terms-state.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
-import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';
+import { IFinesPaymentTermsOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
@@ -55,7 +55,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
     expect(component.paymentTerms).toBeDefined();
     expect(component.paymentTerms).toBe(
-      component['paymentTermsOptions'][paymentTerms as keyof IFinesMacPaymentTermsOptions],
+      component['paymentTermsOptions'][paymentTerms as keyof IFinesPaymentTermsOptions],
     );
   });
 
