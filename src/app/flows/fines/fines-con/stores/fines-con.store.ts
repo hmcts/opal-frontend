@@ -33,14 +33,6 @@ export const FinesConStore = signalStore(
       getDefendantType: computed(() => {
         return store.selectBuForm().formData.fcon_select_bu_defendant_type;
       }),
-
-      /**
-       * Checks if both business unit and defendant type are selected
-       */
-      isSelectBuFormComplete: computed(() => {
-        const formData = store.selectBuForm().formData;
-        return !!(formData.fcon_select_bu_business_unit_id && formData.fcon_select_bu_defendant_type);
-      }),
     };
   }),
   withMethods((store) => ({
