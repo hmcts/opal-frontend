@@ -420,7 +420,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     setupAccountEnquiryComponent(minorCreditorComponentProperties);
 
     cy.get(DOM.pageHeader).should('exist');
-    cy.get(DOM.addNoteButton).should('exist').click();
+    cy.get(DOM.minorCreditorAddNoteButton).should('exist').click();
     cy.get('@routerNavigate')
       .its('lastCall.args.0')
       .should((arg0) => {
@@ -437,7 +437,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
       interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
       setupAccountEnquiryComponent(minorCreditorComponentProperties);
 
-      cy.get(DOM.addNoteButton).should('exist').click();
+      cy.get(DOM.minorCreditorAddNoteButton).should('exist').click();
       cy.get('@routerNavigate')
         .its('lastCall.args.0')
         .should((arg0) => {

@@ -6,7 +6,8 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   pageHeader: 'opal-lib-custom-page-header',
 
   // Buttons
-  addNoteButton: 'button#addAccountNote',
+  addNoteButton: 'button#defendant-addAccountNote',
+  minorCreditorAddNoteButton: 'button#minor-creditor-addAccountNote',
 
   // Info sections
   summaryMetricBar: 'opal-lib-custom-summary-metric-bar',
