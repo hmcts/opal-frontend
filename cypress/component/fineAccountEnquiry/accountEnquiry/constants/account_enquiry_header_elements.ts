@@ -1,4 +1,4 @@
-// Stable selectors / visible text hooks for the Defendant Details page.
+// Stable selectors / visible text hooks for Account Enquiry header pages.
 
 export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
@@ -10,6 +10,7 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
 
   // Info sections
   summaryMetricBar: 'opal-lib-custom-summary-metric-bar',
+  summaryMetricBarItem: 'opal-lib-custom-summary-metric-bar-item',
   accountInfo: 'opal-lib-custom-account-information',
 
   // Visible labels used in assertions
@@ -18,6 +19,10 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   labelBusinessUnit: 'Business Unit:',
   labelImposed: 'Imposed:',
   labelArrears: 'Arrears:',
+  labelAwarded: 'Awarded:',
+  labelPaidOut: 'Paid out:',
+  labelAwaitingPayout: 'Awaiting payout:',
+  labelOutstanding: 'Outstanding:',
   labelDefendant: 'Defendant',
   labelPaymentTerms: 'Payment terms',
   labelEnforcementStatus: 'Enforcement status',
@@ -36,4 +41,8 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   linkText: 'a[class="govuk-link govuk-link--no-visited-state"]',
   badgeBlue: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--blue"]',
   badgeRed: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--red"]',
+
+  // Minor creditor info fields
+  minorCreditorAccountType: '#minor-creditor-account-type',
+  minorCreditorBusinessUnit: '#minor-creditor-business-unit',
 };

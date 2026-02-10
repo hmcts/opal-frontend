@@ -1,4 +1,8 @@
-import { interceptAtAGlance, interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
+import {
+  interceptAtAGlance,
+  interceptDefendantHeader,
+  interceptMinorCreditorHeader,
+} from './intercept/defendantAccountIntercepts';
 
 // constants + mocks
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
@@ -13,6 +17,8 @@ import {
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
+
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
@@ -351,4 +357,93 @@ describe('Account Enquiry - Defendant Header', () => {
     setupAccountEnquiryComponent(componentProperties);
     cy.get(DOM.addNoteButton).should('not.exist');
   });
+});
+
+describe('Account Enquiry - Minor Creditor Header', () => {
+  beforeEach(() => {
+    interceptAuthenticatedUser();
+  });
+
+  const minorCreditorAccountId = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.account_number;
+  const minorCreditorComponentProperties: IComponentProperties = {
+    accountId: minorCreditorAccountId,
+    routeRoot: 'minor-creditor',
+    fragments: undefined,
+    interceptedRoutes: [
+      '/access-denied',
+      '../note/add',
+      '../debtor/individual/amend',
+      '../debtor/parentGuardian/amend',
+      // Add more routes here as needed
+    ],
+  };
+
+  it.only('AC1, AC2a: renders the Minor Creditor Account Header Summary', { tags: ['PO-1924'] }, () => {
+    const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+    header.has_associated_defendant = true;
+    header.awaiting_payout_amount = 100;
+    header.awarded_amount = 200;
+    header.paid_out_amount = 50;
+    header.outstanding_amount = 150;
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
+    setupAccountEnquiryComponent(minorCreditorComponentProperties);
+
+    cy.get(DOM.pageHeader).should('exist');
+    cy.get(DOM.minorCreditorAccountType).should('contain.text', 'Minor Creditor');
+    cy.get(DOM.minorCreditorBusinessUnit).should('contain.text', 'Camberwell Green (77)');
+
+    cy.get(DOM.summaryMetricBar).within(() => {
+      cy.contains(DOM.labelAwaitingPayout)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£100.00');
+      cy.contains(DOM.labelAwarded)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£200.00');
+      cy.contains(DOM.labelPaidOut)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£50.00');
+      cy.contains(DOM.labelOutstanding)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£150.00');
+    });
+  });
+
+  it.only('AC3a: shows add account note button and navigates to add note page', { tags: ['PO-1924'] }, () => {
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
+    setupAccountEnquiryComponent(minorCreditorComponentProperties);
+
+    cy.get(DOM.pageHeader).should('exist');
+    cy.get(DOM.addNoteButton).should('exist').click();
+    cy.get('@routerNavigate')
+      .its('lastCall.args.0')
+      .should((arg0) => {
+        const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+        expect(path).to.match(/note\/add/);
+      });
+  });
+
+  it.only(
+    'AC3b: access denied when user has no permission and minor creditor does have permission',
+    { tags: ['PO-1924'] },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
+      interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
+      setupAccountEnquiryComponent(minorCreditorComponentProperties);
+
+      cy.get(DOM.addNoteButton).should('exist').click();
+      cy.get('@routerNavigate')
+        .its('lastCall.args.0')
+        .should((arg0) => {
+          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+          expect(path).to.match(/access-denied/);
+        });
+    },
+  );
 });
