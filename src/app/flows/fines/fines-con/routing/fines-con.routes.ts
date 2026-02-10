@@ -12,7 +12,7 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 const consolidationRootPermissionIds = FINES_PERMISSIONS;
 export const routing: Routes = [
   {
-    path: FINES_CON_ROUTING_PATHS.root,
+    path: '',
     redirectTo: PAGES_ROUTING_PATHS.children.dashboard, // Redirect to dashboard
     pathMatch: 'full',
     canActivateChild: [authGuard, routePermissionsGuard],
