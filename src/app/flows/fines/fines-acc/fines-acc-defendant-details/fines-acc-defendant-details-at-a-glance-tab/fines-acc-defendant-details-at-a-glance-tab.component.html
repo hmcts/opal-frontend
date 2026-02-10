@@ -114,11 +114,11 @@
       @if (tabData.payment_terms) {
         <hr [class]="style.hr" />
 
-        @if (tabData.payment_terms.lump_sum_amount && !tabData.payment_terms.instalment_amount) {
+        @if (!tabData.payment_terms.lump_sum_amount && !tabData.payment_terms.instalment_amount) {
           <h3 [class]="style.key">Payment terms</h3>
-          <p [class]="style.value">Pay by date</p>
+          <p [class]="style.value">Pay in full</p>
           @if (tabData.payment_terms.effective_date) {
-            <h3 [class]="style.key">By date</h3>
+            <h3 [class]="style.key">Pay by date</h3>
             <p [class]="style.value">
               {{ tabData.payment_terms.effective_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}
             </p>

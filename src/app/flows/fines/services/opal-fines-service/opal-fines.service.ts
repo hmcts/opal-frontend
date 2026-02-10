@@ -35,6 +35,7 @@ import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-
 import { IOpalFinesAccountPartyDetails } from './interfaces/opal-fines-account-party-details.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note-response.interface';
@@ -258,8 +259,14 @@ export class OpalFines {
    * @param itemName - The name of the configuration item.
    * @returns The value of the configuration item, or null if the item is not found.
    */
-  public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
-    return businessUnit.configuration_items.find((item) => item.item_name === itemName)?.item_value ?? null;
+  public getConfigurationItemValue(
+    businessUnit: IOpalFinesBusinessUnit | IOpalFinesBusinessUnitNonSnakeCase,
+    itemName: string,
+  ): string | null {
+    if ('configurationItems' in businessUnit === false) {
+      return businessUnit.configuration_items.find((item) => item.item_name === itemName)?.item_value ?? null;
+    }
+    return businessUnit.configurationItems.find((item) => item.itemName === itemName)?.itemValue ?? null;
   }
 
   /**
@@ -768,6 +775,34 @@ export class OpalFines {
         );
     }
     return this.cache.defendantAccountPaymentTermsLatestCache$;
+  }
+
+  /**
+   * Sends a PUT request to add payment terms to a defendant account.
+   *
+   * @param defendantAccountId - The ID of the defendant account to add payment terms to.
+   * @param payload - The payment terms payload containing the payment terms data.
+   * @param businessUnitId - Optional Business Unit ID header.
+   * @param ifMatch - Optional If-Match header for optimistic locking.
+   * @returns An Observable of the payment terms response.
+   */
+  public postDefendantAccountPaymentTerms(
+    defendantAccountId: number,
+    payload: IOpalFinesAmendPaymentTermsPayload,
+    businessUnitId?: string,
+    ifMatch?: string,
+  ): Observable<IOpalFinesAmendPaymentTermsPayload> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-terms`;
+
+    const headers: Record<string, string> = {};
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+    if (ifMatch) {
+      headers['If-Match'] = ifMatch;
+    }
+
+    return this.http.post<IOpalFinesAmendPaymentTermsPayload>(url, payload, { headers });
   }
 
   /**
