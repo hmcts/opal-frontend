@@ -378,7 +378,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     ],
   };
 
-  it.only('AC1, AC2a: renders the Minor Creditor Account Header Summary', { tags: ['PO-1924'] }, () => {
+  it('AC1, AC2a: renders the Minor Creditor Account Header Summary', { tags: ['PO-1924'] }, () => {
     const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
     header.has_associated_defendant = true;
     header.awaiting_payout_amount = 100;
@@ -414,7 +414,31 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     });
   });
 
-  it.only('AC3a: shows add account note button and navigates to add note page', { tags: ['PO-1924'] }, () => {
+  it('AC2b: hides Awarded and Outstanding when no defendant is associated', () => {
+    const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+    header.awaiting_payout_amount = 100;
+    header.paid_out_amount = 50;
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
+
+    setupAccountEnquiryComponent(minorCreditorComponentProperties);
+
+    cy.get(DOM.summaryMetricBar).within(() => {
+      cy.contains(DOM.labelPaidOut)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£50.00');
+      cy.contains(DOM.labelAwaitingPayout)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£100.00');
+    });
+    cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelAwarded);
+    cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelOutstanding);
+  });
+
+  it('AC3a: shows add account note button and navigates to add note page', { tags: ['PO-1924'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
     setupAccountEnquiryComponent(minorCreditorComponentProperties);
@@ -429,7 +453,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
       });
   });
 
-  it.only(
+  it(
     'AC3b: access denied when user has no permission and minor creditor does have permission',
     { tags: ['PO-1924'] },
     () => {
@@ -446,4 +470,13 @@ describe('Account Enquiry - Minor Creditor Header', () => {
         });
     },
   );
+
+  it('AC3c: hides Add account note when user has no permission in any BU', () => {
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
+
+    setupAccountEnquiryComponent(minorCreditorComponentProperties);
+
+    cy.get(DOM.minorCreditorAddNoteButton).should('not.exist');
+  });
 });
