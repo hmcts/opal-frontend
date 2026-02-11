@@ -222,7 +222,12 @@ export class AccountSearchFlow {
 
     // safe normaliser for values (trim only; preserve case)
     const normaliseValue = (cell: unknown): string => {
-      return typeof cell === 'string' ? cell.normalize('NFKC').replace(/\u00A0/g, ' ').trim() : '';
+      return typeof cell === 'string'
+        ? cell
+            .normalize('NFKC')
+            .replace(/\u00A0/g, ' ')
+            .trim()
+        : '';
     };
 
     const map: InputMap = {};
@@ -865,9 +870,7 @@ export class AccountSearchFlow {
     );
 
     // Fallback: look for the same candidates in the map keys (in case buildInputMap uses a different normaliser)
-    const mapKeys = Object.keys(map).map((k) =>
-      String(k).normalize('NFKC').replace(/\s+/g, ' ').trim().toLowerCase(),
-    );
+    const mapKeys = Object.keys(map).map((k) => String(k).normalize('NFKC').replace(/\s+/g, ' ').trim().toLowerCase());
     const hasMinorTypeInMapKeys = mapKeys.some((k) => minorKeyCandidates.has(k));
 
     log('prepare', `Raw rows (normalised matrix): ${JSON.stringify(normalisedMatrix)}`);
