@@ -122,6 +122,10 @@ export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
           permission_id: 10,
           permission_name: 'Enter Enforcement',
         },
+        {
+          permission_id: 13,
+          permission_name: 'Consolidate',
+        },
       ],
     },
   ],
