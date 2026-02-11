@@ -11,17 +11,20 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccMinorCreditorDetailsComponent', () => {
   let component: FinesAccMinorCreditorDetailsComponent;
   let fixture: ComponentFixture<FinesAccMinorCreditorDetailsComponent>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let routerSpy: Pick<Router, 'navigate'>;
   let activatedRouteStub: Partial<ActivatedRoute>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
+  let mockOpalFinesService: Pick<OpalFines, 'getMinorCreditorAccountHeadingData' | 'clearCache' | 'getResult'>;
+  let mockPayloadService: Pick<FinesAccPayloadService, 'transformAccountHeaderForStore' | 'transformPayload'>;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = {
+      navigate: vi.fn(),
+    };
     activatedRouteStub = {
       fragment: of('at-a-glance'),
       snapshot: {
@@ -33,23 +36,20 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
       } as any as ActivatedRouteSnapshot, // Using 'as any' to avoid type issues
     };
 
-    mockPayloadService = jasmine.createSpyObj<FinesAccPayloadService>('FinesAccPayloadService', [
-      'transformAccountHeaderForStore',
-      'transformPayload',
-    ]);
-    mockPayloadService.transformAccountHeaderForStore.and.returnValue(MOCK_FINES_ACCOUNT_STATE);
-    mockPayloadService.transformPayload.and.callFake((...args) => {
-      return args[0]; // returns the first argument = payload
-    });
+    mockPayloadService = {
+      transformAccountHeaderForStore: vi.fn().mockReturnValue(MOCK_FINES_ACCOUNT_STATE),
+      transformPayload: vi.fn().mockImplementation((...args) => {
+        return args[0]; // returns the first argument = payload
+      }),
+    };
 
-    mockOpalFinesService = jasmine.createSpyObj<OpalFines>('OpalFines', [
-      'getMinorCreditorAccountHeadingData',
-      'clearCache',
-      'getResult',
-    ]);
-    mockOpalFinesService.getMinorCreditorAccountHeadingData.and.returnValue(
-      of(structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK)),
-    );
+    mockOpalFinesService = {
+      getMinorCreditorAccountHeadingData: vi
+        .fn()
+        .mockReturnValue(of(structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK))),
+      clearCache: vi.fn(),
+      getResult: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesAccMinorCreditorDetailsComponent, MojSubNavigationComponent, MojSubNavigationItemComponent],
@@ -88,7 +88,7 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
   });
 
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.navigateToAddAccountNotePage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`],
@@ -107,7 +107,7 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
   });
 
   it('should navigate to access-denied if user lacks permission for the add account note page', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.navigateToAddAccountNotePage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],

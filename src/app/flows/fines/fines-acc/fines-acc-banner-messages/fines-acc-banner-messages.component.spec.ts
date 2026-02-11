@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FinesAccBannerMessagesComponent } from './fines-acc-banner-messages.component';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('FinesAccBannerMessagesComponent', () => {
   let component: FinesAccBannerMessagesComponent;
@@ -23,7 +24,7 @@ describe('FinesAccBannerMessagesComponent', () => {
   });
 
   it('should emit clearSuccessMessage when handleClearSuccessMessage is called', () => {
-    spyOn(component.clearSuccessMessage, 'emit');
+    vi.spyOn(component.clearSuccessMessage, 'emit');
 
     component.handleClearSuccessMessage();
 
@@ -31,7 +32,7 @@ describe('FinesAccBannerMessagesComponent', () => {
   });
 
   it('should emit refreshPage when handleRefreshPage is called', () => {
-    spyOn(component.refreshPage, 'emit');
+    vi.spyOn(component.refreshPage, 'emit');
 
     component.handleRefreshPage();
 

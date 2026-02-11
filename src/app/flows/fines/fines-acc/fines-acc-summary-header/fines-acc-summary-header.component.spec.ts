@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FinesAccSummaryHeaderComponent } from './fines-acc-summary-header.component';
 import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccSummaryHeaderComponent', () => {
   let component: FinesAccSummaryHeaderComponent;
@@ -16,11 +17,11 @@ describe('FinesAccSummaryHeaderComponent', () => {
     component = fixture.componentInstance;
 
     component.accountStore = {
-      hasVersionMismatch: jasmine.createSpy('hasVersionMismatch').and.returnValue(false),
-      successMessage: jasmine.createSpy('successMessage').and.returnValue(null),
-      clearSuccessMessage: jasmine.createSpy('clearSuccessMessage'),
-      account_number: jasmine.createSpy('account_number').and.returnValue('123456'),
-      party_name: jasmine.createSpy('party_name').and.returnValue('Test Person'),
+      hasVersionMismatch: vi.fn().mockReturnValue(false),
+      successMessage: vi.fn().mockReturnValue(null),
+      clearSuccessMessage: vi.fn(),
+      account_number: vi.fn().mockReturnValue('123456'),
+      party_name: vi.fn().mockReturnValue('Test Person'),
     } as unknown as typeof component.accountStore;
 
     component.hasAddAccountActivityNotePermission = false;
@@ -33,7 +34,7 @@ describe('FinesAccSummaryHeaderComponent', () => {
   });
 
   it('should emit refreshPage when handleRefreshPage is called', () => {
-    spyOn(component.refreshPage, 'emit');
+    vi.spyOn(component.refreshPage, 'emit');
 
     component.handleRefreshPage();
 
@@ -41,7 +42,7 @@ describe('FinesAccSummaryHeaderComponent', () => {
   });
 
   it('should emit navigateToAddAccountNotePage when handleNavigateToAddAccountNotePage is called', () => {
-    spyOn(component.navigateToAddAccountNotePage, 'emit');
+    vi.spyOn(component.navigateToAddAccountNotePage, 'emit');
 
     component.handleNavigateToAddAccountNotePage();
 
@@ -49,12 +50,12 @@ describe('FinesAccSummaryHeaderComponent', () => {
   });
 
   it('should pass banner inputs from accountStore', () => {
-    (component.accountStore.hasVersionMismatch as unknown as jasmine.Spy).and.returnValue(true);
-    (component.accountStore.successMessage as unknown as jasmine.Spy).and.returnValue('Saved');
+    vi.spyOn(component.accountStore, 'hasVersionMismatch').mockReturnValue(true);
+    vi.spyOn(component.accountStore, 'successMessage').mockReturnValue('Saved');
     fixture.detectChanges();
 
     const banner = fixture.debugElement.query(By.directive(FinesAccBannerMessagesComponent));
-    expect(banner.componentInstance.hasVersionMismatch).toBeTrue();
+    expect(banner.componentInstance.hasVersionMismatch).toBe(true);
     expect(banner.componentInstance.successMessage).toBe('Saved');
   });
 

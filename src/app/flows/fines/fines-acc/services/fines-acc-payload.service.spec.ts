@@ -219,7 +219,7 @@ describe('FinesAccPayloadService', () => {
   });
 
   it('should transform account header for store for a minor creditor (organisation)', () => {
-    mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
+    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
     );
     const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
@@ -250,7 +250,7 @@ describe('FinesAccPayloadService', () => {
   });
 
   it('should transform account header for store for a minor creditor (individual)', () => {
-    mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
+    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
     );
     const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
