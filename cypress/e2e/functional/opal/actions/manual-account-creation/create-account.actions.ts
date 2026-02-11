@@ -2,7 +2,7 @@
  * @file Actions for Manual Account Creation - Create account page.
  * @description Encapsulates business unit selection, account type/defendant type selection, and navigation to task list.
  */
-import { ManualCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/create-account.locators';
+import { MacCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.create-account.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { AccountType } from '../../../../../support/utils/payloads';

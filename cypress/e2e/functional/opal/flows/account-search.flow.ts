@@ -222,7 +222,7 @@ export class AccountSearchFlow {
 
     // safe normaliser for values (trim only; preserve case)
     const normaliseValue = (cell: unknown): string => {
-      return typeof cell === 'string' ? cell.normalize('NFKC').replaceAll('\u00A0', ' ').trim() : '';
+      return typeof cell === 'string' ? cell.normalize('NFKC').replace(/\u00A0/g, ' ').trim() : '';
     };
 
     const map: InputMap = {};
@@ -824,17 +824,17 @@ export class AccountSearchFlow {
     const stripInvisible = (s: string): string =>
       s
         // remove BOM
-        .replaceAll('\uFEFF', '')
+        .replace(/\uFEFF/g, '')
         // replace non-breaking space with normal space
-        .replaceAll('\u00A0', ' ')
+        .replace(/\u00A0/g, ' ')
         // remove zero-width characters (ZWJ, ZWNJ, LRM, RLM, etc.)
-        .replaceAll(/[\u200B-\u200F\u202A-\u202F]/g, '');
+        .replace(/[\u200B-\u200F\u202A-\u202F]/g, '');
 
     const normalizeCell = (cell: unknown): string => {
       const val = typeof cell === 'string' ? cell : '';
       const stripped = stripInvisible(val);
       // NFKC normalisation, collapse whitespace, trim, lowercase
-      return stripped.normalize('NFKC').replaceAll(/\s+/g, ' ').trim().toLowerCase();
+      return stripped.normalize('NFKC').replace(/\s+/g, ' ').trim().toLowerCase();
     };
 
     // Defensive: use raw() so first row is never interpreted as a header
@@ -866,7 +866,7 @@ export class AccountSearchFlow {
 
     // Fallback: look for the same candidates in the map keys (in case buildInputMap uses a different normaliser)
     const mapKeys = Object.keys(map).map((k) =>
-      String(k).normalize('NFKC').replaceAll(/\s+/g, ' ').trim().toLowerCase(),
+      String(k).normalize('NFKC').replace(/\s+/g, ' ').trim().toLowerCase(),
     );
     const hasMinorTypeInMapKeys = mapKeys.some((k) => minorKeyCandidates.has(k));
 
