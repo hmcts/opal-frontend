@@ -1,6 +1,18 @@
 /**
- * Locators for account enquiries view details functionality.
- * Used for testing defendant details forms including route guards and cancel changes.
+ * @file account.enquiry.view-details.locators.ts
+ * @description
+ * Selector map for the **Account Enquiry – View details** screens.
+ * Covers defendant details forms, route guard prompts, and cancel/change flows.
+ *
+ * @remarks
+ * - Locators are grouped by page regions and form sections.
+ * - Prefer these selectors in Cypress component/e2e tests to avoid duplication.
+ *
+ * @example
+ * ```ts
+ * cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
+ * cy.get(DOM_ELEMENTS.organisationNameInput).type('Example Corp');
+ * ```
  */
 export const DOM_ELEMENTS = {
   // Main component selectors

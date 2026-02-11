@@ -1,5 +1,18 @@
 /**
- * Locators for the amend payment terms screen in the account enquiry flow.
+ * @file account.enquiry.payment-terms-amend.locators.ts
+ * @description
+ * Selector map for the **Account Enquiry – Amend payment terms** screen.
+ * Includes payment term options, instalments, dates, and action controls.
+ *
+ * @remarks
+ * - Use these selectors in Cypress tests to keep steps selector-free.
+ * - Prefer ID-based selectors for stability.
+ *
+ * @example
+ * ```ts
+ * cy.get(PAYMENT_TERMS_AMEND_ELEMENTS.payInFullRadio).check();
+ * cy.get(PAYMENT_TERMS_AMEND_ELEMENTS.payByDateInput).type('01/01/2030');
+ * ```
  */
 export const PAYMENT_TERMS_AMEND_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
