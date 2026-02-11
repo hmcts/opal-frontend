@@ -10,8 +10,6 @@ import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 import type { Interception } from 'cypress/types/net-stubbing';
 import { captureScenarioScreenshot } from '../../../../../support/utils/screenshot';
 import { readDraftIdFromBody, recordCreatedId } from 'cypress/support/draftAccounts';
-import { is } from 'node_modules/cypress/types/bluebird';
-import { isLegacy } from 'cypress/support/e2e';
 
 type SummaryRow = { label: string; value: string };
 type OffenceRow = {
