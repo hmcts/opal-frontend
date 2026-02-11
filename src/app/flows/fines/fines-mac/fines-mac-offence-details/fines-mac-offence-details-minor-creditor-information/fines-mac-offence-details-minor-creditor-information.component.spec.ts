@@ -3,15 +3,19 @@ import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from './fines
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorInformationComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorInformationComponent>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
 
   beforeEach(async () => {
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
-    mockUtilsService.formatSortCode.and.returnValue('12-34-56');
+    mockUtilsService = createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
+    mockUtilsService.formatSortCode.mockReturnValue('12-34-56');
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorInformationComponent],
@@ -192,7 +196,8 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
 
   it('should emit actionClicked event with correct action and index', () => {
     const action = 'remove';
-    spyOn(component.actionClicked, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.actionClicked, 'emit');
 
     component.summaryListActionClick(action);
 

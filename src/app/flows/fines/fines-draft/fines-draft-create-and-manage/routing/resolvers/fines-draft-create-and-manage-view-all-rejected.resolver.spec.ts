@@ -9,19 +9,26 @@ import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executeResolver: ResolveFn<any> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => finesDraftCreateAndManageViewAllRejectedResolver(...resolverParameters));
 
-  let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
-  let dateServiceMock: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let opalFinesServiceMock: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let dateServiceMock: any;
   let globalStoreMock: GlobalStoreType;
 
   beforeEach(() => {
-    opalFinesServiceMock = jasmine.createSpyObj('OpalFines', ['getDraftAccounts']);
-    dateServiceMock = jasmine.createSpyObj('dateService', ['getDateRange']);
+    opalFinesServiceMock = {
+      getDraftAccounts: vi.fn().mockName('OpalFines.getDraftAccounts'),
+    };
+    dateServiceMock = {
+      getDateRange: vi.fn().mockName('dateService.getDateRange'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -43,7 +50,7 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
   });
 
   it('should return result from getDraftAccounts with expected params', async () => {
-    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+    opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
     const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

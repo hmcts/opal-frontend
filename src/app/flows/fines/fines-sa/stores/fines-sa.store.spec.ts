@@ -7,6 +7,7 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from '../fines-sa
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-companies/mocks/fines-sa-search-account-form-companies-state.mock';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/mocks/fines-sa-search-account-form-minor-creditors-state.mock';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-state.constant';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesSaStore', () => {
   let store: FinesSaStoreType;
@@ -21,18 +22,18 @@ describe('FinesSaStore', () => {
   it('should initialise with the default state', () => {
     expect(store.searchAccount()).toEqual(FINES_SA_SEARCH_ACCOUNT_STATE);
     expect(store.activeTab()).toBe('individuals');
-    expect(store.stateChanges()).toBeFalse();
-    expect(store.unsavedChanges()).toBeFalse();
-    expect(store.searchAccountPopulated()).toBeFalse();
+    expect(store.stateChanges()).toBe(false);
+    expect(store.unsavedChanges()).toBe(false);
+    expect(store.searchAccountPopulated()).toBe(false);
   });
 
   it('should patch searchAccount state via setSearchAccount', () => {
     const newState = { ...FINES_SA_SEARCH_ACCOUNT_STATE, fsa_search_account_number: '12345678' };
     store.setSearchAccount(newState as IFinesSaSearchAccountState);
     expect(store.searchAccount().fsa_search_account_number).toBe('12345678');
-    expect(store.stateChanges()).toBeTrue();
-    expect(store.unsavedChanges()).toBeFalse();
-    expect(store.searchAccountPopulated()).toBeFalse();
+    expect(store.stateChanges()).toBe(true);
+    expect(store.unsavedChanges()).toBe(false);
+    expect(store.searchAccountPopulated()).toBe(false);
     expect(store.getSearchType()).toBe('accountNumber');
   });
 
@@ -93,7 +94,7 @@ describe('FinesSaStore', () => {
     const tempState = { ...FINES_SA_SEARCH_ACCOUNT_STATE, fsa_search_account_number: 'TEMP' };
     store.setSearchAccountTemporary(tempState as IFinesSaSearchAccountState);
     expect(store.searchAccount().fsa_search_account_number).toBe('TEMP');
-    expect(store.searchAccountPopulated()).toBeTrue();
+    expect(store.searchAccountPopulated()).toBe(true);
   });
 
   it('should update the active tab', () => {
@@ -103,10 +104,10 @@ describe('FinesSaStore', () => {
 
   it('should update stateChanges and unsavedChanges flags', () => {
     store.setStateChanges(true);
-    expect(store.stateChanges()).toBeTrue();
+    expect(store.stateChanges()).toBe(true);
 
     store.setUnsavedChanges(true);
-    expect(store.unsavedChanges()).toBeTrue();
+    expect(store.unsavedChanges()).toBe(true);
   });
 
   it('should reset search criteria only', () => {
@@ -125,8 +126,8 @@ describe('FinesSaStore', () => {
     store.setStateChanges(true);
     store.setUnsavedChanges(true);
     store.resetStateChangesUnsavedChanges();
-    expect(store.stateChanges()).toBeFalse();
-    expect(store.unsavedChanges()).toBeFalse();
+    expect(store.stateChanges()).toBe(false);
+    expect(store.unsavedChanges()).toBe(false);
   });
 
   it('should fully reset the store', () => {
@@ -138,8 +139,8 @@ describe('FinesSaStore', () => {
     store.resetStore();
     expect(store.searchAccount()).toEqual(FINES_SA_SEARCH_ACCOUNT_STATE);
     expect(store.activeTab()).toBe('individuals');
-    expect(store.stateChanges()).toBeFalse();
-    expect(store.unsavedChanges()).toBeFalse();
+    expect(store.stateChanges()).toBe(false);
+    expect(store.unsavedChanges()).toBe(false);
   });
 
   it('should expose the correct filter path from computed getter', () => {

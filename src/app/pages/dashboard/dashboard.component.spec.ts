@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule } from '@angular/router';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;

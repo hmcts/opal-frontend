@@ -6,6 +6,7 @@ import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchFilterBusinessUnitForm', () => {
   let component: FinesSaSearchFilterBusinessUnitForm;
@@ -50,13 +51,13 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
   it('initialises selection and counts from the store ids', () => {
     const record = component['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
 
-    expect(record.get('61')?.value).toBeTrue();
-    expect(record.get('67')?.value).toBeFalse();
-    expect(record.get('68')?.value).toBeTrue();
-    expect(record.get('69')?.value).toBeFalse();
-    expect(record.get('70')?.value).toBeFalse();
-    expect(record.get('71')?.value).toBeFalse();
-    expect(record.get('73')?.value).toBeFalse();
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(false);
+    expect(record.get('68')?.value).toBe(true);
+    expect(record.get('69')?.value).toBe(false);
+    expect(record.get('70')?.value).toBe(false);
+    expect(record.get('71')?.value).toBe(false);
+    expect(record.get('73')?.value).toBe(false);
 
     // Counts
     expect(component.selectedFines()).toBe(1); // only id 61 is a Fines BU
@@ -64,14 +65,14 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     expect(component.selectedTotal()).toBe(2);
 
     // Header checkboxes reflect computed state
-    expect(component['form'].get('fsa_search_account_business_unit_ids_fines_select_all')?.value).toBeFalse();
-    expect(component['form'].get('fsa_search_account_business_unit_ids_confiscation_select_all')?.value).toBeTrue();
+    expect(component['form'].get('fsa_search_account_business_unit_ids_fines_select_all')?.value).toBe(false);
+    expect(component['form'].get('fsa_search_account_business_unit_ids_confiscation_select_all')?.value).toBe(true);
   });
 
   it('getBusinessUnitControl should return the specific BU control', () => {
     const ctrl = component.getBusinessUnitControl('67');
     expect(ctrl).toBeTruthy();
-    expect(ctrl.value).toBeFalse();
+    expect(ctrl.value).toBe(false);
   });
 
   it('toggling the fines select-all header control checks all fines children and updates counts', () => {
@@ -83,12 +84,12 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     const record = component['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
 
     // Fines BUs (61,67,69,70,71) should now be true; Confiscation unchanged (68 true from store)
-    expect(record.get('61')?.value).toBeTrue();
-    expect(record.get('67')?.value).toBeTrue();
-    expect(record.get('69')?.value).toBeTrue();
-    expect(record.get('70')?.value).toBeTrue();
-    expect(record.get('71')?.value).toBeTrue();
-    expect(record.get('68')?.value).toBeTrue();
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(true);
+    expect(record.get('69')?.value).toBe(true);
+    expect(record.get('70')?.value).toBe(true);
+    expect(record.get('71')?.value).toBe(true);
+    expect(record.get('68')?.value).toBe(true);
 
     // Counts: fines 5, conf 1, total 6
     expect(component.selectedFines()).toBe(5);
@@ -105,10 +106,10 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     const record = component['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
 
     // Confiscation BUs (68) should now be true; fines unchanged from initial (61 true, 67 false, 69 false)
-    expect(record.get('68')?.value).toBeTrue();
-    expect(record.get('61')?.value).toBeTrue();
-    expect(record.get('67')?.value).toBeFalse();
-    expect(record.get('69')?.value).toBeFalse();
+    expect(record.get('68')?.value).toBe(true);
+    expect(record.get('61')?.value).toBe(true);
+    expect(record.get('67')?.value).toBe(false);
+    expect(record.get('69')?.value).toBe(false);
 
     // Counts: fines 1, conf 1, total 2
     expect(component.selectedFines()).toBe(1);
@@ -117,7 +118,8 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
   });
 
   it('should cancel and route back to the search screen', () => {
-    spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
     component.cancel();
     expect(component['router'].navigate).toHaveBeenCalledWith(
       [component['finesSaSearchAccountRoutingPaths'].children.search],
@@ -139,7 +141,7 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     fresh.detectChanges();
 
     const record = cmp['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
-    expect(record.get('68')?.value).toBeFalse();
+    expect(record.get('68')?.value).toBe(false);
     expect(cmp.selectedConfiscation()).toBe(0);
   });
 
@@ -157,7 +159,7 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     const record = cmp['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
     // All BUs should be false
     ['61', '67', '68', '69', '70', '71', '73'].forEach((id) => {
-      expect(record.get(id)?.value).toBeFalse();
+      expect(record.get(id)?.value).toBe(false);
     });
     expect(cmp.selectedTotal()).toBe(0);
     expect(cmp.selectedFines()).toBe(0);
@@ -173,15 +175,15 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
 
     // Form should be defined and valid
     expect(cmp['form']).toBeTruthy();
-    expect(cmp['form'].valid).toBeTrue();
+    expect(cmp['form'].valid).toBe(true);
 
     // No child controls in the record
     const record = cmp['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
     expect(Object.keys(record.controls).length).toBe(0);
 
     // Header checkboxes should be false
-    expect(cmp['form'].get('fsa_search_account_business_unit_ids_fines_select_all')?.value).toBeFalse();
-    expect(cmp['form'].get('fsa_search_account_business_unit_ids_confiscation_select_all')?.value).toBeFalse();
+    expect(cmp['form'].get('fsa_search_account_business_unit_ids_fines_select_all')?.value).toBe(false);
+    expect(cmp['form'].get('fsa_search_account_business_unit_ids_confiscation_select_all')?.value).toBe(false);
 
     // Counts should be zero
     expect(cmp.selectedTotal()).toBe(0);

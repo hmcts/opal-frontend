@@ -26,6 +26,9 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceComponent;
@@ -34,23 +37,18 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let formSubmit: IFinesMacOffenceDetailsForm;
   let finesMacStore: FinesMacStoreType;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
 
   beforeEach(async () => {
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['getFormStatus']);
+    mockUtilsService = createSpyObj(UtilsService, ['getFormStatus']);
 
     mockOpalFinesService = {
-      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
-      getResultPrettyName: jasmine.createSpy('getResultPrettyName').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
-      getMajorCreditors: jasmine
-        .createSpy('getMajorCreditors')
-        .and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
-      getMajorCreditorPrettyName: jasmine
-        .createSpy('getMajorCreditorPrettyName')
-        .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
-      getOffenceByCjsCode: jasmine
-        .createSpy('getOffenceByCjsCode')
-        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+      getResults: vi.fn().mockReturnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
+      getMajorCreditors: vi.fn().mockReturnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
+      getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
     formSubmit = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM[0]);
@@ -97,7 +95,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);
@@ -113,7 +112,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should handle form submission and navigate to next route', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);
@@ -325,7 +325,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);
@@ -341,7 +342,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should handle form submission and navigate to next route', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);
@@ -375,7 +377,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should get collection order date from payment terms', () => {
     const date = new Date();
-    spyOn(component['dateService'], 'getDateFromFormat').and.returnValue(date);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['dateService'], 'getDateFromFormat').mockReturnValue(date);
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.paymentTerms = {
       ...structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK),
@@ -418,7 +421,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     };
     finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     finesMacStore.setFinesMacStore(finesMacState);
-    mockUtilsService.getFormStatus.and.returnValue(FINES_MAC_STATUS.INCOMPLETE);
+    mockUtilsService.getFormStatus.mockReturnValue(FINES_MAC_STATUS.INCOMPLETE);
 
     component['checkPaymentTermsCollectionOrder']();
 
@@ -428,7 +431,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   it('should not set payment terms status to INCOMPLETE when collection order date is not earlier than earliest date of sentence', () => {
     const collectionOrderDate = new Date('2022-03-01');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn(component as any, 'getCollectionOrderDate').and.returnValue(collectionOrderDate);
+    vi.spyOn<any, any>(component as any, 'getCollectionOrderDate').mockReturnValue(collectionOrderDate);
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
     finesMacStore.setFinesMacStore(finesMacState);

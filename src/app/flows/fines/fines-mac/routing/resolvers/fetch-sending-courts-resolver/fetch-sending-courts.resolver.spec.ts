@@ -6,16 +6,20 @@ import { fetchSendingCourtsResolver } from './fetch-sending-courts.resolver';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { firstValueFrom } from 'rxjs';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('fetchSendingCourtsResolver', () => {
   const executeResolver: ResolveFn<IOpalFinesLocalJusticeAreaRefData> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => fetchSendingCourtsResolver(...resolverParameters));
 
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
 
   beforeEach(() => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getLocalJusticeAreas']);
-    mockOpalFinesService.getLocalJusticeAreas.and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
+    mockOpalFinesService = {
+      getLocalJusticeAreas: vi.fn().mockName('OpalFines.getLocalJusticeAreas'),
+    };
+    mockOpalFinesService.getLocalJusticeAreas.mockReturnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
 
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],

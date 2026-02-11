@@ -4,15 +4,19 @@ import { FinesSaSearchProblemComponent } from './fines-sa-search-problem.compone
 import { FinesSaStore } from '../../stores/fines-sa.store';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../routing/constants/fines-sa-search-routing-paths.constant';
 import { FinesSaStoreType } from '../../stores/types/fines-sa.type';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchProblemComponent', () => {
   let component: FinesSaSearchProblemComponent;
   let fixture: ComponentFixture<FinesSaSearchProblemComponent>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let routerSpy: any;
   let mockFinesSaStore: FinesSaStoreType;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchProblemComponent],
