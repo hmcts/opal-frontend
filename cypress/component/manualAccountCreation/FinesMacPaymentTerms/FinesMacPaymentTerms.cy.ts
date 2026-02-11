@@ -201,6 +201,24 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
 
+  it('has legend text for enforcement action fieldset', { tags: ['@PO-2783'] }, () => {
+    setupComponent('adultOrYouthOnly');
+    cy.get(DOM_ELEMENTS.addEnforcementAction).click();
+
+    cy.get(DOM_ELEMENTS.enforcementActionFieldset)
+      .find(DOM_ELEMENTS.enforcementActionLegend)
+      .should('contain.text', 'Select enforcement action')
+      .and('have.class', 'govuk-visually-hidden')
+      .and('have.class', 'govuk-fieldset__legend--s');
+
+    cy.get(DOM_ELEMENTS.enforcementActionFieldset)
+      .find(DOM_ELEMENTS.enforcementActionRadios)
+      .should('have.length.greaterThan', 0)
+      .each(($radio) => {
+        cy.wrap($radio).should('not.have.attr', 'aria-label');
+      });
+  });
+
   it(
     '(AC.1,AC.3,AC.4)Should load all elements on the screen correctly for AYPG defendant types',
     { tags: ['@PO-566', '@PO-587', '@PO-649', '@PO-344'] },

@@ -111,4 +111,9 @@ export const DOM_ELEMENTS = {
   monthsLabel: 'label[for="months"]',
   daysLabel: 'label[for="days"]',
   weeksLabel: 'label[for="weeks"]',
+
+  // enforcement action fieldset
+  enforcementActionFieldset: 'fieldset#fm_payment_terms_enforcement_action',
+  enforcementActionLegend: 'legend.govuk-fieldset__legend',
+  enforcementActionRadios: 'input[type="radio"]',
 };
