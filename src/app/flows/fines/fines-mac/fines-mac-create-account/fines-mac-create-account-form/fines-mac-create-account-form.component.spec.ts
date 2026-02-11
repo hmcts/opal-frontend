@@ -11,6 +11,8 @@ import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM } from '../../fines-mac-originator-type/constants/fines-mac-originator-type-form.constant';
+import { FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK } from '../../fines-mac-originator-type/mocks/fines-mac-originator-type-state.mock';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
@@ -239,5 +241,29 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['setupAccountTypeListener']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(finesMacStore.accountDetails().formData);
+  });
+
+  it('should include Conditional Caution account type when user is NEW', () => {
+    finesMacStore.setOriginatorType({
+      ...FINES_MAC_ORIGINATOR_TYPE_FORM,
+      formData: { ...FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK, fm_originator_type_originator_type: 'NEW' },
+    });
+    component['getAccountTypes']();
+
+    const hasConditionalCaution = component.accountTypes.some((type) => type.key.includes('ConditionalCaution'));
+
+    expect(hasConditionalCaution).toBeTrue();
+  });
+
+  it('should filter out Conditional Caution account type when user is a TFO', () => {
+    finesMacStore.setOriginatorType({
+      ...FINES_MAC_ORIGINATOR_TYPE_FORM,
+      formData: { ...FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK, fm_originator_type_originator_type: 'TFO' },
+    });
+    component['getAccountTypes']();
+
+    const hasConditionalCaution = component.accountTypes.some((type) => type.key === 'ConditionalCaution');
+
+    expect(hasConditionalCaution).toBeFalse();
   });
 });
