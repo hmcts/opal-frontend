@@ -2,6 +2,8 @@ import { finesMacPayloadBuildAccountFixedPenalty } from './fines-mac-payload-bui
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE_MOCK } from '../../../../fines-mac-fixed-penalty-details/mocks/fines-mac-fixed-penalty-details-store-state.mock';
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
+import { describe, expect, it } from 'vitest';
+
 describe('finesMacPayloadBuildFixedPenaltyDetails', () => {
   it('should map all fields from state to payload', () => {
     const fixedPenaltyDetailsMock: IFinesMacFixedPenaltyDetailsStoreState =

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacReviewAccountChangeLinkComponent } from './fines-mac-review-account-change-link.component';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacReviewAccountChangeLinkComponent', () => {
   let component: FinesMacReviewAccountChangeLinkComponent;
@@ -21,7 +22,8 @@ describe('FinesMacReviewAccountChangeLinkComponent', () => {
   });
 
   it('should emit change link event', () => {
-    spyOn(component.emitChange, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChange, 'emit');
 
     component.changeData();
 

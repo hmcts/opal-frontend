@@ -9,13 +9,17 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../mocks/fines-acc-party-add-amend-convert-form.mock';
 import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '../mocks/fines-acc-party-add-amend-convert-form-with-aliases.mock';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   let component: FinesAccPartyAddAmendConvertFormComponent;
   let fixture: ComponentFixture<FinesAccPartyAddAmendConvertFormComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockActivatedRoute: any;
   let mockFinesAccountStore: {
     welsh_speaking: ReturnType<typeof signal>;
     account_number: ReturnType<typeof signal>;
@@ -23,21 +27,25 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   };
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj('DateService', [
-      'isValidDate',
-      'calculateAge',
-      'getPreviousDate',
-      'getAgeObject',
-    ]);
+    mockDateService = {
+      isValidDate: vi.fn().mockName('DateService.isValidDate'),
+      calculateAge: vi.fn().mockName('DateService.calculateAge'),
+      getPreviousDate: vi.fn().mockName('DateService.getPreviousDate'),
+      getAgeObject: vi.fn().mockName('DateService.getAgeObject'),
+    };
 
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], { data: of({}) });
+    mockRouter = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
+    mockActivatedRoute = {
+      data: of({}),
+    };
 
-    mockFinesAccountStore = jasmine.createSpyObj('FinesAccountStore', [], {
+    mockFinesAccountStore = {
       welsh_speaking: signal('N'),
       account_number: signal('1234567890'),
       party_name: signal('Test Party Name'),
-    });
+    };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FinesAccPartyAddAmendConvertFormComponent],
@@ -52,10 +60,10 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     fixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
     component = fixture.componentInstance;
 
-    mockDateService.getPreviousDate.and.returnValue('2024-01-01');
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.calculateAge.and.returnValue(25);
-    mockDateService.getAgeObject.and.returnValue({ value: 25, group: 'Adult' });
+    mockDateService.getPreviousDate.mockReturnValue('2024-01-01');
+    mockDateService.isValidDate.mockReturnValue(true);
+    mockDateService.calculateAge.mockReturnValue(25);
+    mockDateService.getAgeObject.mockReturnValue({ value: 25, group: 'Adult' });
   });
 
   it('should create', () => {
@@ -165,7 +173,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should calculate age when valid date of birth is provided', () => {
-    mockDateService.getAgeObject.and.returnValue({ value: 30, group: 'Adult' });
+    mockDateService.getAgeObject.mockReturnValue({ value: 30, group: 'Adult' });
     component.partyType = 'individual';
     fixture.detectChanges();
 
@@ -178,7 +186,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should set ageLabel to "Youth" for age under 18', () => {
-    mockDateService.getAgeObject.and.returnValue({ value: 16, group: 'Youth' });
+    mockDateService.getAgeObject.mockReturnValue({ value: 16, group: 'Youth' });
     component.partyType = 'individual';
     fixture.detectChanges();
 
@@ -190,7 +198,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should not calculate age for invalid date', () => {
-    mockDateService.getAgeObject.and.returnValue(null);
+    mockDateService.getAgeObject.mockReturnValue(null);
     component.partyType = 'individual';
     fixture.detectChanges();
 
@@ -204,7 +212,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.partyType = 'company';
     fixture.detectChanges();
 
-    mockDateService.getAgeObject.calls.reset();
+    mockDateService.getAgeObject.mockClear();
     component['dateOfBirthListener']();
     expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
   });
@@ -214,7 +222,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     fixture.detectChanges();
 
     component.form.removeControl('facc_party_add_amend_convert_dob');
-    mockDateService.getAgeObject.calls.reset();
+    mockDateService.getAgeObject.mockClear();
     component['dateOfBirthListener']();
     expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
   });
@@ -340,7 +348,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
 
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component.form.patchValue({
       facc_party_add_amend_convert_title: 'Mr',
@@ -386,7 +395,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       facc_party_add_amend_convert_surname: 'DOE',
       facc_party_add_amend_convert_address_line_1: '123 Test Street',
     };
-    spyOn(component.form, 'patchValue').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.form, 'patchValue');
 
     component['rePopulateForm'](mockFormData);
 
@@ -407,7 +417,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       facc_party_add_amend_convert_individual_aliases: [{ facc_party_add_amend_convert_alias_forenames_0: 'Johnny' }],
       facc_party_add_amend_convert_organisation_aliases: [],
     };
-    spyOn(component.form, 'patchValue').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.form, 'patchValue');
 
     component['rePopulateForm'](mockFormData);
 
@@ -579,7 +590,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
         facc_party_add_amend_convert_post_code: 'B12 3CD',
       };
 
-      spyOn(component.form, 'patchValue').and.callThrough();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component.form, 'patchValue');
 
       component['rePopulateForm'](mockFormData);
 
@@ -597,7 +609,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
         ],
       };
 
-      spyOn(component.form, 'patchValue').and.callThrough();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component.form, 'patchValue');
 
       component['rePopulateForm'](mockFormData);
 

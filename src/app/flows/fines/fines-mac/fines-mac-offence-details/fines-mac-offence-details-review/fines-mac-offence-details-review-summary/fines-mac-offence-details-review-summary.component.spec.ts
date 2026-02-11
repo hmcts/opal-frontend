@@ -18,16 +18,20 @@ import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-of
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-defendant-types-keys';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryComponent>;
   let finesMacStore: FinesMacStoreType;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
 
   beforeEach(async () => {
-    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+    mockUtilsService = createSpyObj(UtilsService, [
       'checkFormValues',
       'getFormStatus',
       'upperCaseFirstLetter',
@@ -71,7 +75,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
 
-    mockUtilsService.getFormStatus.and.returnValue(FINES_MAC_STATUS.PROVIDED);
+    mockUtilsService.getFormStatus.mockReturnValue(FINES_MAC_STATUS.PROVIDED);
 
     fixture.detectChanges();
   });
@@ -95,7 +99,8 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should set the offenceIndex and navigate to addOffence route when actionName is "Change"', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const action = { actionName: 'change', offenceId: 1 };
 
     component.offenceAction(action);
@@ -107,7 +112,8 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should not set the offenceIndex and navigate to addOffence route when actionName is not "Change"', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const action = { actionName: 'remove', offenceId: 1 };
 
     component.offenceAction(action);
@@ -133,7 +139,8 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should set the offenceIndex and navigate to addOffence route when addAnotherOffence is called', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const maxOffenceId = component['getMaxOffenceId']();
     const expectedOffenceIndex = maxOffenceId + 1;
 
@@ -146,8 +153,12 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should navigate to relative route with event', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    const event = jasmine.createSpyObj('event', ['preventDefault']);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const event: any = {
+      preventDefault: vi.fn().mockName('event.preventDefault'),
+    };
 
     component.handleRoute('test', true, event);
 
@@ -156,7 +167,8 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should test ngOnInit when offencesImpositions is empty', () => {
-    const addAnotherOffenceSpy = spyOn(component, 'addAnotherOffence');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addAnotherOffenceSpy = vi.spyOn<any, any>(component, 'addAnotherOffence');
     component.offencesImpositions = [];
 
     component.ngOnInit();

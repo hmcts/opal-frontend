@@ -7,15 +7,19 @@ import { FinesSaStore } from '../../stores/fines-sa.store';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FinesSaStoreType } from '../../stores/types/fines-sa.type';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchFilterBusinessUnitComponent', () => {
   let component: FinesSaSearchFilterBusinessUnitComponent;
   let fixture: ComponentFixture<FinesSaSearchFilterBusinessUnitComponent>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let routerSpy: any;
   let mockFinesSaStore: FinesSaStoreType;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchFilterBusinessUnitComponent],
@@ -61,14 +65,15 @@ describe('FinesSaSearchFilterBusinessUnitComponent', () => {
   });
 
   it('handleUnsavedChanges updates store and local state', () => {
-    spyOn(mockFinesSaStore, 'setUnsavedChanges');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(mockFinesSaStore, 'setUnsavedChanges');
     component.handleUnsavedChanges(true);
     expect(mockFinesSaStore.setUnsavedChanges).toHaveBeenCalledWith(true);
-    expect(component.stateUnsavedChanges).toBeTrue();
+    expect(component.stateUnsavedChanges).toBe(true);
 
     component.handleUnsavedChanges(false);
     expect(mockFinesSaStore.setUnsavedChanges).toHaveBeenCalledWith(false);
-    expect(component.stateUnsavedChanges).toBeFalse();
+    expect(component.stateUnsavedChanges).toBe(false);
   });
 
   it('getBusinessUnitsFromSelectedIds returns matching units by selected ids', () => {
@@ -98,7 +103,7 @@ describe('FinesSaSearchFilterBusinessUnitComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalled();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [, navOpts] = routerSpy.navigate.calls.mostRecent().args as [unknown, any];
+    const [, navOpts] = vi.mocked(routerSpy.navigate).mock.lastCall as [unknown, any];
     expect(navOpts.fragment).toBe('individuals');
     expect(navOpts.relativeTo).toBe('search-account');
   });

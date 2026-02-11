@@ -12,6 +12,7 @@ import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/stat
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-personal-details-state.mock';
 import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-parent-guardian-details-state.mock';
 import { finesMacPayloadBuildAccountDefendantParentGuardian } from './fines-mac-payload-build-account-defendant-parent-guardian.utils';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
   let contactDetailsState: IFinesMacContactDetailsState | null;
@@ -44,7 +45,7 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
       !parentGuardianDetailsState ||
       !languagePreferencesState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -75,7 +76,7 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
       !parentGuardianDetailsState ||
       !languagePreferencesState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -111,7 +112,7 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
       !parentGuardianDetailsState ||
       !languagePreferencesState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 

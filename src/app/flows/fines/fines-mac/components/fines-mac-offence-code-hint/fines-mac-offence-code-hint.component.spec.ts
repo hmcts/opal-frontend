@@ -4,6 +4,7 @@ import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/
 import { FinesMacOffenceCodeHintComponent } from './fines-mac-offence-code-hint.component';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesMacOffenceCodeHintComponent', () => {
   let component: FinesMacOffenceCodeHintComponent;

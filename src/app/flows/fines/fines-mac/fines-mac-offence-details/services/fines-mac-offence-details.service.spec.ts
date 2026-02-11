@@ -1,15 +1,16 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsService } from './fines-mac-offence-details.service';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of, Subject } from 'rxjs';
-import { fakeAsync, tick } from '@angular/core/testing';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsService', () => {
   let service: FinesMacOffenceDetailsService;
@@ -102,8 +103,8 @@ describe('FinesMacOffenceDetailsService', () => {
   describe('initOffenceListener', () => {
     let form: FormGroup;
     let destroy$: Subject<void>;
-    let onResultSpy: jasmine.Spy;
-    let onConfirmChangeSpy: jasmine.Spy;
+    let onResultSpy: Mock;
+    let onConfirmChangeSpy: Mock;
     let getOffenceByCjsCode: (code: string) => Observable<IOpalFinesOffencesRefData>;
 
     const offenceMockResponse: IOpalFinesOffencesRefData = {
@@ -119,16 +120,18 @@ describe('FinesMacOffenceDetailsService', () => {
       });
 
       destroy$ = new Subject<void>();
-      onResultSpy = jasmine.createSpy('onResult');
-      onConfirmChangeSpy = jasmine.createSpy('onConfirmChange');
+      onResultSpy = vi.fn();
+      onConfirmChangeSpy = vi.fn();
     });
 
     afterEach(() => {
       destroy$.next();
       destroy$.complete();
+      vi.useRealTimers();
     });
 
-    it('should call populateHint immediately if initial code is present', fakeAsync(() => {
+    it('should call populateHint immediately if initial code is present', () => {
+      vi.useFakeTimers();
       form.get('code')?.setValue('ab12345');
 
       service.initOffenceCodeListener(
@@ -141,15 +144,17 @@ describe('FinesMacOffenceDetailsService', () => {
         onConfirmChangeSpy,
       );
 
-      tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
       expect(form.get('id')?.value).toBe(314441);
       expect(onResultSpy).toHaveBeenCalledWith(offenceMockResponse);
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
-    }));
+    });
 
-    it('should listen for value changes, uppercase input, and trigger populateHint', fakeAsync(() => {
-      const uppercaseAllLettersSpy = spyOn(service.utilsService, 'upperCaseAllLetters').and.callThrough();
+    it('should listen for value changes, uppercase input, and trigger populateHint', () => {
+      vi.useFakeTimers();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const uppercaseAllLettersSpy = vi.spyOn<any, any>(service.utilsService, 'upperCaseAllLetters');
 
       service.initOffenceCodeListener(
         form,
@@ -164,16 +169,17 @@ describe('FinesMacOffenceDetailsService', () => {
       form.get('code')?.setValue('xy98765');
       form.get('code')?.updateValueAndValidity();
 
-      tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
       expect(uppercaseAllLettersSpy).toHaveBeenCalledWith('xy98765');
       expect(form.get('code')?.value).toBe('XY98765');
       expect(form.get('id')?.value).toBe(314441);
       expect(onResultSpy).toHaveBeenCalled();
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
-    }));
+    });
 
-    it('should mark code as invalid when response count is 0', fakeAsync(() => {
+    it('should mark code as invalid when response count is 0', () => {
+      vi.useFakeTimers();
       const invalidResponse = { count: 0, refData: [] };
       getOffenceByCjsCode = () => of(invalidResponse);
 
@@ -188,14 +194,15 @@ describe('FinesMacOffenceDetailsService', () => {
       );
 
       form.get('code')?.setValue('zz99999');
-      tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
       expect(form.get('code')?.errors).toEqual({ invalidOffenceCode: true });
       expect(form.get('id')?.value).toBeNull();
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
-    }));
+    });
 
-    it('should not call populateHint for short code', fakeAsync(() => {
+    it('should not call populateHint for short code', () => {
+      vi.useFakeTimers();
       service.initOffenceCodeListener(
         form,
         'code',
@@ -207,9 +214,9 @@ describe('FinesMacOffenceDetailsService', () => {
       );
 
       form.get('code')?.setValue('ab12');
-      tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(false);
-    }));
+    });
   });
 });
