@@ -69,7 +69,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
     ([key, value]) => ({
-      key: key.replace(/\s+/g, ''),
+      key: key.replaceAll(/\s+/g, ''),
       value,
     }),
   );
