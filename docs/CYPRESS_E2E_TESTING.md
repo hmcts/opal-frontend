@@ -1,13 +1,6 @@
----
-name: opal-frontend-cypress-e2e
-description: Cypress end-to-end testing guidance for opal-frontend, including Cucumber feature layout, tags, step definitions, Actions or Flows, selectors, and accessibility specs. Use when adding or updating E2E scenarios.
----
+# Cypress E2E Testing
 
-# Opal Frontend Cypress E2E Testing
-
-## Overview
-
-Use these rules when writing or updating Cypress E2E tests and Cucumber feature files in opal-frontend.
+Use this guide when writing or updating Cypress E2E tests and Cucumber feature files in opal-frontend.
 
 ## Required References
 
@@ -40,8 +33,11 @@ Use these rules when writing or updating Cypress E2E tests and Cucumber feature 
 
 ## Running a Feature
 
-- Run a single feature file with:
-  `yarn cypress run --browser chrome --spec 'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/PopulateAndSubmit.feature'`
+Run a single feature file with:
+
+```
+yarn cypress run --browser chrome --spec 'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/PopulateAndSubmit.feature'
+```
 
 ## Handling Real Product Bugs
 

@@ -29,9 +29,12 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   enforcementCourt: '#enforcementOverviewDetailsEnforcement_courtKey',
   enforcementAction: '#lastEnforcementActionDetailsEnforcement_actionKey',
   reason: '#lastEnforcementActionDetailsReasonKey',
-  enforcer: '#lastEnforcementActionDetailsEnforcerKey',
+  lastEnfEnforcer: '#lastEnforcementActionDetailsEnforcerKey',
   warrantNumber: '#lastEnforcementActionDetailsWarrant_numberKey',
   dateAdded: '#lastEnforcementActionDetailsDate_addedKey',
+  enforcementOverride: '#enforcementOverrideDetailsEnforcement_overrideKey',
+  enfOverrideEnforcer: '#enforcementOverrideDetailsEnforcerKey',
+  localJusticeArea: '#enforcementOverrideDetailsLocal_justice_areaKey',
 
   //Last enforcement action details section
   detailsDaysInDefault: '[id="enforcementActionDetailsDays in defaultKey"]',
