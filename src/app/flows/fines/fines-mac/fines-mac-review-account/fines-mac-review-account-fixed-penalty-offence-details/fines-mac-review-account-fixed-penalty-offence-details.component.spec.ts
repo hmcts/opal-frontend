@@ -5,6 +5,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { of } from 'rxjs';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE_MOCK } from '../../fines-mac-fixed-penalty-details/mocks/fines-mac-fixed-penalty-details-store-state.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacReviewAccountFixedPenaltyDetailsComponent', () => {
   let component: FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent;
@@ -13,9 +14,7 @@ describe('FinesMacReviewAccountFixedPenaltyDetailsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getOffenceByCjsCode: jasmine
-        .createSpy('getOffenceByCjsCode')
-        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
+      getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
     };
 
     await TestBed.configureTestingModule({
@@ -35,7 +34,8 @@ describe('FinesMacReviewAccountFixedPenaltyDetailsComponent', () => {
   });
 
   it('should emit change contact details event', () => {
-    spyOn(component.emitChangeOffenceDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChangeOffenceDetails, 'emit');
 
     component.changeOffenceDetails();
 

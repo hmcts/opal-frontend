@@ -3,15 +3,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": [
-      "jasmine"
-    ]
+    "lib": ["ES2022", "dom", "esnext.disposable"],
+    "noUnusedLocals": false,
+    "skipLibCheck": true,
+    "types": ["vitest/globals"]
   },
-  "include": [
-    "src/**/*.spec.ts",
-    "src/**/*.d.ts"
-  ],
-  "exclude": [
-    "src/**/*.routing.ts"
-  ]
+  "include": ["src/**/*.spec.ts", "src/test-setup.ts", "src/**/*.d.ts"],
+  "exclude": ["src/**/*.routing.ts"]
 }

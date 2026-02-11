@@ -1,7 +1,7 @@
+import type { Mock } from 'vitest';
 import { FinesAccPayloadService } from './fines-acc-payload.service';
 import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
 import { FINES_ACC_ADD_NOTE_FORM_MOCK } from '../fines-acc-note-add/mocks/fines-acc-add-note-form.mock';
@@ -18,32 +18,39 @@ import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/f
 import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines-acc-party-add-amend-convert/mocks/fines-acc-party-add-amend-convert-form-empty.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
-  let mockMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
-  let mockGlobalStore: jasmine.SpyObj<GlobalStoreType>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockMacPayloadService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockGlobalStore: any;
   let mockFinesAccountStore: {
-    version: jasmine.Spy;
-    base_version: jasmine.Spy;
-    party_type: jasmine.Spy;
-    account_id: jasmine.Spy;
+    version: Mock;
+    base_version: Mock;
+    party_type: Mock;
+    account_id: Mock;
   };
 
   beforeEach(() => {
-    mockMacPayloadService = jasmine.createSpyObj('FinesMacPayloadService', ['getBusinessUnitBusinessUserId']);
-    mockGlobalStore = jasmine.createSpyObj('GlobalStore', ['userState']);
+    mockMacPayloadService = {
+      getBusinessUnitBusinessUserId: vi.fn().mockName('FinesMacPayloadService.getBusinessUnitBusinessUserId'),
+    };
+    mockGlobalStore = {
+      userState: vi.fn().mockName('GlobalStore.userState'),
+    };
 
     const mockStore = {
-      version: jasmine.createSpy('version').and.returnValue(1),
-      base_version: jasmine.createSpy('base_version').and.returnValue(1),
-      party_type: jasmine.createSpy('party_type').and.returnValue('PERSON'),
-      account_id: jasmine.createSpy('account_id').and.returnValue(77),
+      version: vi.fn().mockReturnValue(1),
+      base_version: vi.fn().mockReturnValue(1),
+      party_type: vi.fn().mockReturnValue('PERSON'),
+      account_id: vi.fn().mockReturnValue(77),
     };
-    mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
+    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
       FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
     );
-    mockGlobalStore.userState.and.returnValue(OPAL_USER_STATE_MOCK);
+    mockGlobalStore.userState.mockReturnValue(OPAL_USER_STATE_MOCK);
 
     TestBed.configureTestingModule({
       providers: [
@@ -64,9 +71,9 @@ describe('FinesAccPayloadService', () => {
   describe('buildAddNotePayload', () => {
     it('should build correct payload with form data', () => {
       // Setup mocks
-      mockFinesAccountStore.base_version.and.returnValue(5);
-      mockFinesAccountStore.party_type.and.returnValue('PERSON');
-      mockFinesAccountStore.account_id.and.returnValue(77);
+      mockFinesAccountStore.base_version.mockReturnValue(5);
+      mockFinesAccountStore.party_type.mockReturnValue('PERSON');
+      mockFinesAccountStore.account_id.mockReturnValue(77);
 
       const testForm: IFinesAccAddNoteForm = {
         formData: {
@@ -89,9 +96,9 @@ describe('FinesAccPayloadService', () => {
 
     it('should call store methods to get party data', () => {
       // Setup mocks
-      mockFinesAccountStore.base_version.and.returnValue(1);
-      mockFinesAccountStore.party_type.and.returnValue('COMPANY');
-      mockFinesAccountStore.account_id.and.returnValue(88);
+      mockFinesAccountStore.base_version.mockReturnValue(1);
+      mockFinesAccountStore.party_type.mockReturnValue('COMPANY');
+      mockFinesAccountStore.account_id.mockReturnValue(88);
 
       const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
 
@@ -102,9 +109,9 @@ describe('FinesAccPayloadService', () => {
 
     it('should use the note text from form data', () => {
       // Setup mocks
-      mockFinesAccountStore.base_version.and.returnValue(3);
-      mockFinesAccountStore.party_type.and.returnValue('PERSON');
-      mockFinesAccountStore.account_id.and.returnValue(99);
+      mockFinesAccountStore.base_version.mockReturnValue(3);
+      mockFinesAccountStore.party_type.mockReturnValue('PERSON');
+      mockFinesAccountStore.account_id.mockReturnValue(99);
 
       const result = service.buildAddNotePayload(FINES_ACC_ADD_NOTE_FORM_MOCK);
 
@@ -115,9 +122,9 @@ describe('FinesAccPayloadService', () => {
 
     it('should handle null note text from form', () => {
       // Setup mocks
-      mockFinesAccountStore.base_version.and.returnValue(2);
-      mockFinesAccountStore.party_type.and.returnValue('PERSON');
-      mockFinesAccountStore.account_id.and.returnValue(111);
+      mockFinesAccountStore.base_version.mockReturnValue(2);
+      mockFinesAccountStore.party_type.mockReturnValue('PERSON');
+      mockFinesAccountStore.account_id.mockReturnValue(111);
 
       const testForm: IFinesAccAddNoteForm = {
         formData: {
@@ -405,7 +412,11 @@ describe('FinesAccPayloadService', () => {
     });
 
     it('should transform payload using the transformation service', () => {
-      spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (...args: any[]) => args[0],
+      );
       const inputPayload = {
         date_of_birth: '2000-09-09',
       };
@@ -558,7 +569,11 @@ describe('FinesAccPayloadService', () => {
       });
 
       it('should transform payload using the transformation service', () => {
-        spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (...args: any[]) => args[0],
+        );
         const inputPayload = {
           date_of_birth: '2000-09-09',
         };
@@ -573,7 +588,11 @@ describe('FinesAccPayloadService', () => {
       });
 
       it('should transform payload using the transformation service', () => {
-        spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (...args: any[]) => args[0],
+        );
         const inputPayload = {
           date_of_birth: '2000-09-09',
         };
@@ -623,9 +642,9 @@ describe('FinesAccPayloadService', () => {
       const result = service.transformPaymentTermsPayload(mockPaymentTermsData, mockResultData);
 
       expect(result).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           nestedFlow: false,
-          formData: jasmine.any(Object),
+          formData: expect.any(Object),
         }),
       );
     });
@@ -638,15 +657,15 @@ describe('FinesAccPayloadService', () => {
         facc_payment_terms_pay_by_date: '2025-01-01',
       } as never;
 
-      spyOn(service, 'transformPayload').and.callFake((payload) => payload);
+      vi.spyOn(service, 'transformPayload').mockImplementation((payload) => payload);
 
       const result = service.buildPaymentTermsAmendPayload(mockFormData);
 
       expect(service.transformPayload).toHaveBeenCalled();
       expect(result).toBeDefined();
       expect(result).toEqual(
-        jasmine.objectContaining({
-          payment_terms: jasmine.any(Object),
+        expect.objectContaining({
+          payment_terms: expect.any(Object),
         }),
       );
     });

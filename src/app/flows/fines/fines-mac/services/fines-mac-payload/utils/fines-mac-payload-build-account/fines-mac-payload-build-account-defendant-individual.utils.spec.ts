@@ -9,6 +9,7 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK } from '
 import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-contact-details-state.mock';
 import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/state/fines-mac-payload-language-preferences-state.mock';
 import { finesMacPayloadBuildAccountDefendantIndividual } from './fines-mac-payload-build-account-defendant-individual.utils';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
   let contactDetailsState: IFinesMacContactDetailsState | null;
@@ -32,7 +33,7 @@ describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
 
   it('should build the individual defendant payload correctly', () => {
     if (!personalDetailsState || !contactDetailsState || !employerDetailsState || !languagePreferencesState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -51,7 +52,7 @@ describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
 
   it('should build the individual defendant payload correctly with aliases', () => {
     if (!personalDetailsState || !contactDetailsState || !employerDetailsState || !languagePreferencesState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -67,7 +68,7 @@ describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
 
   it('should return null for alias forenames and surname if dynamic keys are missing', () => {
     if (!personalDetailsState || !contactDetailsState || !employerDetailsState || !languagePreferencesState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 

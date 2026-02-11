@@ -7,6 +7,7 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM_MOCK } from '../../mocks
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../../stores/fines-mac-offence-details-search-offences.store';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsSearchOffencesFormComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesSearchFormComponent;
@@ -44,14 +45,15 @@ describe('FinesMacOffenceDetailsSearchOffencesFormComponent', () => {
 
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
 
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
       }),

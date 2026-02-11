@@ -11,7 +11,8 @@ This document captures repo structure, commands, and coding conventions for opal
 - Run `yarn start` for `ng serve` at `http://localhost:4200/` with live reload.
 - Run `yarn lint:ng` for Angular ESLint across `src/**/*.ts` and `src/**/*.html`.
 - Run `yarn build` for a production bundle in `dist/`.
-- Run `yarn test` for Karma/Jasmine once; use `yarn test:coverage` for lcov in `coverage/`.
+- Run `yarn test` for Vitest unit tests in non-watch mode; use `yarn test:watch` for watch mode.
+- Run `yarn test:coverage` for lcov output in `coverage/lcov.info`.
 - Run `yarn test:a11y` for accessibility checks.
 
 ## Coding Style and Naming
@@ -33,12 +34,12 @@ This document captures repo structure, commands, and coding conventions for opal
 - Content follows the GOV.UK style guide and interactive states retain WCAG AA contrast.
 
 ## Testing Basics
-- Name Jasmine specs as `*.spec.ts` alongside sources.
+- Name unit specs as `*.spec.ts` alongside sources.
 - Prefer shallow `TestBed` setups and mock HTTP/Store dependencies.
 - Keep major features above 80% branch coverage before merging.
 
 ## Tests Define Release Readiness
-- Every feature ships with unit tests (Karma/Jasmine) that cover edge cases and error paths.
+- Every feature ships with unit tests (Vitest) that cover edge cases and error paths.
 - Server/Express route changes include route or integration tests where feasible.
 - Automated accessibility coverage is required via Cypress + axe (see `docs/CYPRESS_E2E_TESTING.md`).
 - Smoke tests cover unmocked happy paths using the Cypress smoke suites.

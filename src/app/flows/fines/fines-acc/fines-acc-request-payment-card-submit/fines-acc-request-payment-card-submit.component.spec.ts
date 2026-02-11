@@ -5,13 +5,17 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FinesAccRequestPaymentCardSubmitComponent } from './fines-acc-request-payment-card-submit.component';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccRequestPaymentCardSubmitComponent', () => {
   let component: FinesAccRequestPaymentCardSubmitComponent;
   let fixture: ComponentFixture<FinesAccRequestPaymentCardSubmitComponent>;
-  let mockAccountStore: jasmine.SpyObj<InstanceType<typeof FinesAccountStore>>;
-  let mockOpalFines: jasmine.SpyObj<OpalFines>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockAccountStore: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFines: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRouter: any;
   let mockActivatedRoute: ActivatedRoute;
 
   const accountId = 123;
@@ -20,21 +24,21 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
   const businessUnitUserId = 'USER99';
 
   beforeEach(async () => {
-    mockAccountStore = jasmine.createSpyObj<InstanceType<typeof FinesAccountStore>>('FinesAccountStore', [
-      'base_version',
-      'account_id',
-      'business_unit_id',
-      'business_unit_user_id',
-      'getAccountState',
-      'setSuccessMessage',
-      'account_number',
-      'party_name',
-    ]);
-    mockAccountStore.base_version.and.returnValue(baseVersion);
-    mockAccountStore.account_id.and.returnValue(accountId);
-    mockAccountStore.business_unit_id.and.returnValue(businessUnitId);
-    mockAccountStore.business_unit_user_id.and.returnValue(businessUnitUserId);
-    mockAccountStore.getAccountState.and.returnValue({
+    mockAccountStore = {
+      base_version: vi.fn().mockName('FinesAccountStore.base_version'),
+      account_id: vi.fn().mockName('FinesAccountStore.account_id'),
+      business_unit_id: vi.fn().mockName('FinesAccountStore.business_unit_id'),
+      business_unit_user_id: vi.fn().mockName('FinesAccountStore.business_unit_user_id'),
+      getAccountState: vi.fn().mockName('FinesAccountStore.getAccountState'),
+      setSuccessMessage: vi.fn().mockName('FinesAccountStore.setSuccessMessage'),
+      account_number: vi.fn().mockName('FinesAccountStore.account_number'),
+      party_name: vi.fn().mockName('FinesAccountStore.party_name'),
+    };
+    mockAccountStore.base_version.mockReturnValue(baseVersion);
+    mockAccountStore.account_id.mockReturnValue(accountId);
+    mockAccountStore.business_unit_id.mockReturnValue(businessUnitId);
+    mockAccountStore.business_unit_user_id.mockReturnValue(businessUnitUserId);
+    mockAccountStore.getAccountState.mockReturnValue({
       account_number: 'TEST-123',
       account_id: accountId,
       pg_party_id: null,
@@ -46,11 +50,15 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
       business_unit_user_id: businessUnitUserId,
       welsh_speaking: null,
     });
-    mockAccountStore.account_number.and.returnValue('TEST-123');
-    mockAccountStore.party_name.and.returnValue('Test Party');
+    mockAccountStore.account_number.mockReturnValue('TEST-123');
+    mockAccountStore.party_name.mockReturnValue('Test Party');
 
-    mockOpalFines = jasmine.createSpyObj<OpalFines>('OpalFines', ['addDefendantAccountPaymentCardRequest']);
-    mockRouter = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    mockOpalFines = {
+      addDefendantAccountPaymentCardRequest: vi.fn().mockName('OpalFines.addDefendantAccountPaymentCardRequest'),
+    };
+    mockRouter = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
     mockActivatedRoute = {} as ActivatedRoute;
 
     await TestBed.configureTestingModule({
@@ -73,7 +81,7 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
   });
 
   it('should submit a payment card request and navigate on success', () => {
-    mockOpalFines.addDefendantAccountPaymentCardRequest.and.returnValue(of({ defendant_account_id: accountId }));
+    mockOpalFines.addDefendantAccountPaymentCardRequest.mockReturnValue(of({ defendant_account_id: accountId }));
 
     component.handleRequestPaymentCard();
 

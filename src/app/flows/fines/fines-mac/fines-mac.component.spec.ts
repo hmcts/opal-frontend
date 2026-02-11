@@ -1,22 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacComponent } from './fines-mac.component';
 import { FINES_MAC_STATE_MOCK } from './mocks/fines-mac-state.mock';
+import { FINES_MAC_STATE } from './constants/fines-mac-state';
 import { FinesMacStoreType } from './stores/types/fines-mac-store.type';
 import { FinesMacStore } from './stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacComponent', () => {
   let component: FinesMacComponent;
   let fixture: ComponentFixture<FinesMacComponent>;
   let finesMacStore: FinesMacStoreType;
   let globalStore: GlobalStoreType;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['clearDraftAccountsCache']);
+    mockOpalFinesService = {
+      clearDraftAccountsCache: vi.fn().mockName('OpalFines.clearDraftAccountsCache'),
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacComponent],
@@ -38,13 +43,14 @@ describe('FinesMacComponent', () => {
   });
 
   it('should call on destroy and clear state', () => {
-    const destroy = spyOn(component, 'ngOnDestroy');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const destroy = vi.spyOn<any, any>(component, 'ngOnDestroy');
 
     component.ngOnDestroy();
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
+    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE);
     expect(globalStore.bannerError()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 

@@ -13,6 +13,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchAccountComponent', () => {
   let component: FinesSaSearchAccountComponent;
@@ -54,7 +55,8 @@ describe('FinesSaSearchAccountComponent', () => {
   });
 
   it('should handle form submit', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const mockForm = FINES_SA_SEARCH_ACCOUNT_FORM_MOCK;
 
     component.handleSearchAccountSubmit(mockForm);
@@ -66,9 +68,10 @@ describe('FinesSaSearchAccountComponent', () => {
   });
 
   it('should handle form submit when major creditor', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'navigateToMajorCreditor').and.callThrough();
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'navigateToMajorCreditor');
     const mockForm = {
       ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK,
       formData: {
@@ -93,7 +96,7 @@ describe('FinesSaSearchAccountComponent', () => {
   it('should handle unsaved changes flag', () => {
     component.handleUnsavedChanges(true);
     expect(mockFinesSaStore.unsavedChanges()).toEqual(true);
-    expect(component.stateUnsavedChanges).toBeTrue();
+    expect(component.stateUnsavedChanges).toBe(true);
   });
 
   it('ngOnInit should populate businessUnitRefData (filtering by opal_domain) and set default ids in store when missing', () => {
@@ -145,7 +148,8 @@ describe('FinesSaSearchAccountComponent', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    const setSpy = spyOn(mockFinesSaStore, 'setSearchAccount').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setSpy = vi.spyOn<any, any>(mockFinesSaStore, 'setSearchAccount');
 
     component.ngOnInit();
 
@@ -179,7 +183,8 @@ describe('FinesSaSearchAccountComponent', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    const setSpy = spyOn(mockFinesSaStore, 'setSearchAccount').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setSpy = vi.spyOn<any, any>(mockFinesSaStore, 'setSearchAccount');
 
     component.ngOnInit();
 
@@ -196,7 +201,8 @@ describe('FinesSaSearchAccountComponent', () => {
       fsa_search_account_business_unit_ids: [123],
     });
 
-    const setSpy = spyOn(mockFinesSaStore, 'setSearchAccount').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setSpy = vi.spyOn<any, any>(mockFinesSaStore, 'setSearchAccount');
 
     component.ngOnInit();
 
@@ -214,8 +220,10 @@ describe('FinesSaSearchAccountComponent', () => {
 
   it('navigateToMajorCreditor should open a new tab with the correct URL', () => {
     const accountId = 456;
-    const routerSpy = spyOn(component['router'], 'serializeUrl').and.returnValue('mockUrl');
-    const windowOpenSpy = spyOn(window, 'open');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'serializeUrl').mockReturnValue('mockUrl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const windowOpenSpy = vi.spyOn<any, any>(window, 'open');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any).navigateToMajorCreditor(accountId);

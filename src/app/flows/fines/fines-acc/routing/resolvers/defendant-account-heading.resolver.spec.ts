@@ -7,32 +7,42 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MOCK_FINES_ACCOUNT_STATE } from '../../mocks/fines-acc-state.mock';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-let mockFinesService: jasmine.SpyObj<OpalFines>;
-let mockGlobalStore: jasmine.SpyObj<GlobalStoreType>;
-let mockAccountStore: jasmine.SpyObj<InstanceType<typeof FinesAccountStore>>;
-let mockAccPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let mockFinesService: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let mockGlobalStore: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let mockAccountStore: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let mockAccPayloadService: any;
 
 describe('defendantAccountHeadingResolver', () => {
   beforeEach(() => {
-    mockFinesService = jasmine.createSpyObj('OpalFines', ['getDefendantAccountHeadingData']);
-    mockFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
+    mockFinesService = {
+      getDefendantAccountHeadingData: vi.fn().mockName('OpalFines.getDefendantAccountHeadingData'),
+    };
+    mockFinesService.getDefendantAccountHeadingData.mockReturnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
 
-    mockGlobalStore = jasmine.createSpyObj('GlobalStore', ['userState']);
-    mockGlobalStore.userState.and.returnValue(OPAL_USER_STATE_MOCK);
+    mockGlobalStore = {
+      userState: vi.fn().mockName('GlobalStore.userState'),
+    };
+    mockGlobalStore.userState.mockReturnValue(OPAL_USER_STATE_MOCK);
 
-    mockAccountStore = jasmine.createSpyObj('FinesAccountStore', ['setAccountState']);
+    mockAccountStore = {
+      setAccountState: vi.fn().mockName('FinesAccountStore.setAccountState'),
+    };
 
-    mockAccPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
-      'transformAccountHeaderForStore',
-      'transformPayload',
-    ]);
-    mockAccPayloadService.transformAccountHeaderForStore.and.returnValue(MOCK_FINES_ACCOUNT_STATE);
-    mockAccPayloadService.transformPayload.and.returnValue(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    mockAccPayloadService = {
+      transformAccountHeaderForStore: vi.fn().mockName('FinesAccPayloadService.transformAccountHeaderForStore'),
+      transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
+    };
+    mockAccPayloadService.transformAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockAccPayloadService.transformPayload.mockReturnValue(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
 
     TestBed.configureTestingModule({
       providers: [

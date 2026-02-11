@@ -9,12 +9,14 @@ import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-s
 import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
 import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
   let fixture: ComponentFixture<FinesSaResultsComponent>;
   let finesSaStore: FinesSaStoreType;
-  let router: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let router: any;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -30,7 +32,11 @@ describe('FinesSaResultsComponent', () => {
         },
         {
           provide: Router,
-          useValue: jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl']),
+          useValue: {
+            navigate: vi.fn().mockName('Router.navigate'),
+            createUrlTree: vi.fn().mockName('Router.createUrlTree'),
+            serializeUrl: vi.fn().mockName('Router.serializeUrl'),
+          },
         },
       ],
     }).compileComponents();
@@ -38,7 +44,8 @@ describe('FinesSaResultsComponent', () => {
     fixture = TestBed.createComponent(FinesSaResultsComponent);
     component = fixture.componentInstance;
     finesSaStore = TestBed.inject(FinesSaStore);
-    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    router = TestBed.inject(Router) as any;
 
     fixture.detectChanges();
   });
@@ -53,7 +60,7 @@ describe('FinesSaResultsComponent', () => {
     finesSaStore.setSearchAccount(searchAccount as IFinesSaSearchAccountState);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupFragmentListener');
+    vi.spyOn<any, any>(component, 'setupFragmentListener');
 
     component['activatedRoute'].snapshot.data = {
       individualAccounts: {
@@ -105,9 +112,10 @@ describe('FinesSaResultsComponent', () => {
 
   it('should open account details in a new tab', () => {
     const mockUrl = '/fines/account/ACC123/details';
-    router.serializeUrl.and.returnValue(mockUrl);
+    router.serializeUrl.mockReturnValue(mockUrl);
 
-    spyOn(window, 'open');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(window, 'open');
     component.onAccountIdClick(1);
 
     expect(router.serializeUrl).toHaveBeenCalled();
@@ -124,7 +132,8 @@ describe('FinesSaResultsComponent', () => {
     activatedRoute.fragment = of(null);
 
     const navigateSpy = router.navigate;
-    const setTabSpy = spyOn(finesSaStore, 'setResultsActiveTab');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setTabSpy = vi.spyOn<any, any>(finesSaStore, 'setResultsActiveTab');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any).setupFragmentListener();
@@ -222,7 +231,8 @@ describe('FinesSaResultsComponent', () => {
     activatedRoute.fragment = of('individuals');
 
     const navigateSpy = router.navigate;
-    const setTabSpy = spyOn(finesSaStore, 'setResultsActiveTab');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setTabSpy = vi.spyOn<any, any>(finesSaStore, 'setResultsActiveTab');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any).setupFragmentListener();
@@ -242,7 +252,8 @@ describe('FinesSaResultsComponent', () => {
     activatedRoute.fragment = of(null);
 
     const navigateSpy = router.navigate;
-    const setTabSpy = spyOn(finesSaStore, 'setResultsActiveTab');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setTabSpy = vi.spyOn<any, any>(finesSaStore, 'setResultsActiveTab');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any).setupFragmentListener();
@@ -252,7 +263,8 @@ describe('FinesSaResultsComponent', () => {
   });
 
   it('should navigate back to search page with correct fragment', () => {
-    spyOn(finesSaStore, 'activeTab').and.returnValue('individuals');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesSaStore, 'activeTab').mockReturnValue('individuals');
 
     component.navigateBackToSearch();
 
@@ -293,7 +305,7 @@ describe('FinesSaResultsComponent', () => {
     const result = component['mapDefendantAccounts'](mockData, 'individual');
     expect(result.length).toBe(1);
     expect(result[0]).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         Account: 'ACC123',
         Name: 'Smith, John',
         Aliases: 'Jones, J',
@@ -349,7 +361,7 @@ describe('FinesSaResultsComponent', () => {
     const result = component['mapDefendantAccounts'](mockData, 'company');
     expect(result.length).toBe(1);
     expect(result[0]).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         Account: 'ACC999',
         Name: 'Acme Corp',
         Aliases: 'Acme Subsidiary',
@@ -392,7 +404,7 @@ describe('FinesSaResultsComponent', () => {
     const result = component['mapCreditorAccounts'](mockData);
     expect(result.length).toBe(1);
     expect(result[0]).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         Account: 'ACC123',
         Name: 'Smith, John',
         'Address line 1': '1 Main St',
@@ -433,7 +445,7 @@ describe('FinesSaResultsComponent', () => {
     const result = component['mapCreditorAccounts'](mockData);
     expect(result.length).toBe(1);
     expect(result[0]).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         Account: 'ACC123',
         Name: 'Test Corp',
         'Address line 1': '1 Main St',
@@ -635,7 +647,7 @@ describe('FinesSaResultsComponent', () => {
   });
 
   it('should return minor creditor path segment when search type is minorCreditors', () => {
-    spyOn(finesSaStore, 'getSearchType').and.returnValue('minorCreditors');
+    vi.spyOn(finesSaStore, 'getSearchType').mockReturnValue('minorCreditors');
     expect(component.getAccountTypePathSegment()).toBe(FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root);
   });
 });

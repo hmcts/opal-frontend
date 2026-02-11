@@ -2,14 +2,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details.component';
 import { FINES_MAC_COMPANY_DETAILS_STATE_MOCK } from '../../fines-mac-company-details/mocks/fines-mac-company-details-state.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
   let component: FinesMacReviewAccountCompanyDetailsComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountCompanyDetailsComponent>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
 
   beforeEach(async () => {
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
+    mockUtilsService = createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountCompanyDetailsComponent],
@@ -50,7 +54,7 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
 
   it('should format address correctly', () => {
     const formattedAddress = ['123 Main St', 'Apt 4B', 'Springfield', '12345'];
-    mockUtilsService.formatAddress.and.returnValue(formattedAddress);
+    mockUtilsService.formatAddress.mockReturnValue(formattedAddress);
 
     component['getAddressData']();
 
@@ -64,7 +68,8 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
   });
 
   it('should emit change company details event', () => {
-    spyOn(component.emitChangeCompanyDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChangeCompanyDetails, 'emit');
 
     component.changeCompanyDetails();
 
@@ -73,7 +78,7 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
 
   it('should call getCompanyData on init', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getCompanyData');
+    vi.spyOn<any, any>(component, 'getCompanyData');
 
     component.ngOnInit();
 
