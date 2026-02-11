@@ -9,6 +9,9 @@ import { CommonActions } from '../common/common.actions';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 import type { Interception } from 'cypress/types/net-stubbing';
 import { captureScenarioScreenshot } from '../../../../../support/utils/screenshot';
+import { readDraftIdFromBody, recordCreatedId } from 'cypress/support/draftAccounts';
+import { is } from 'node_modules/cypress/types/bluebird';
+import { isLegacy } from 'cypress/support/e2e';
 
 type SummaryRow = { label: string; value: string };
 type OffenceRow = {
@@ -227,13 +230,20 @@ export class ManualReviewAccountActions {
     cy.get(L.submitForReviewButton, this.common.getTimeoutOptions()).should('be.visible').click();
 
     return (cy.wait('@manualAccountSubmit') as unknown as Cypress.Chainable<void>).then(() => {
-      if (!assertSuccess) {
-        return;
-      }
       cy.get<Interception>('@manualAccountSubmit').then(({ response }) => {
-        expect(response, 'submit response').to.exist;
         const status = response?.statusCode ?? 0;
-        expect(status, 'submit status').to.be.gte(200).and.lt(300);
+        const accountId = readDraftIdFromBody(response?.body);
+
+        if (accountId) {
+          recordCreatedId(accountId);
+          log('navigate', 'Manual account ID recorded', { status, accountId });
+        }
+
+        if (assertSuccess) {
+          expect(response, 'submit response').to.exist;
+          expect(status, 'submit status').to.be.gte(200).and.lt(300);
+          log('navigate', 'Manual account submitted successfully', { status, accountId });
+        }
       });
     });
   }

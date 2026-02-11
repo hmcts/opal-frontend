@@ -1,5 +1,7 @@
 // cypress/support/draftAccounts.ts
 
+import { isLegacy } from './e2e';
+
 /** Store created draft account IDs for cleanup. */
 const createdIds: number[] = [];
 
@@ -209,7 +211,8 @@ export function installDraftAccountCleanup(): void {
   afterEach(() => {
     const ids = getAllIds();
     clearAllIds();
-    if (ids.length === 0) return;
+
+    if (ids.length === 0 || isLegacy) return;
 
     // First delete any promoted defendant accounts
     return cy.wrap(ids, { log: false }).each((idNum: number) => {
