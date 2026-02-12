@@ -8,8 +8,8 @@ export const CheckAndValidateReviewLocators = {
   statusTag: '#status',
   decision: {
     group: 'fieldset#fm_review_account_decision',
-    approveRadio: 'input#approve',
-    rejectRadio: 'input#reject',
+    approveRadio: 'input#approve, input[name="fm_review_account_decision"][value="approve"]',
+    rejectRadio: 'input#reject, input[name="fm_review_account_decision"][value="reject"]',
     reasonInput: '#fm_review_account_decision_reason',
     continueButton: '#submitForm',
     deleteLink: 'a.govuk-link.govuk-error-colour',

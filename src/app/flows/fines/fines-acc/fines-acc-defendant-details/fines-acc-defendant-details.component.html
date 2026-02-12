@@ -12,7 +12,9 @@
       </opal-lib-moj-alert-content>
     </opal-lib-moj-alert>
   </div>
-} @else if (accountStore.successMessage()) {
+}
+
+@if (accountStore.successMessage()) {
   <div class="govuk-grid-column-full">
     <opal-lib-moj-alert
       type="success"

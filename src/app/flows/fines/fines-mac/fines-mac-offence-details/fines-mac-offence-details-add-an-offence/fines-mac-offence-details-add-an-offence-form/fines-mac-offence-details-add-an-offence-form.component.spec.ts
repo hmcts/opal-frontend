@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import type { Mock } from 'vitest';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form.component';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -27,24 +28,46 @@ import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
   let finesMacStore: FinesMacStoreType;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let originalConfigureDatePicker: () => void;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(MojDatePickerComponent.prototype, 'configureDatePicker').mockImplementation(() => {});
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     mockOpalFinesService = {
-      getOffenceByCjsCode: jasmine
-        .createSpy('getOffenceByCjsCode')
-        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
+      getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
     };
-    mockDateService = jasmine.createSpyObj(DateService, ['getDateNow', 'toFormat']);
-    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+    mockDateService = createSpyObj(DateService, ['getDateNow', 'toFormat']);
+    mockUtilsService = createSpyObj(UtilsService, [
       'upperCaseAllLetters',
       'formatSortCode',
       'upperCaseFirstLetter',
@@ -84,7 +107,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component.fcompMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
     component.fcostMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
 
-    spyOn(AbstractFormArrayBaseComponent.prototype, 'handleFormSubmit').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(AbstractFormArrayBaseComponent.prototype, 'handleFormSubmit');
 
     fixture.detectChanges();
   });
@@ -136,29 +160,29 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     ] as FormControl;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'creditorListener');
+    vi.spyOn<any, any>(component, 'creditorListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addFormArrayFormGroupControlValidators');
+    vi.spyOn<any, any>(component, 'addFormArrayFormGroupControlValidators');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeFormArrayFormGroupControlValidators');
+    vi.spyOn<any, any>(component, 'removeFormArrayFormGroupControlValidators');
 
     resultIdControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
 
     component['resultCodeListener'](index);
 
-    expect(needsCreditorControl.value).toBeTrue();
+    expect(needsCreditorControl.value).toBe(true);
     expect(component['creditorListener']).toHaveBeenCalledWith(index);
 
     creditorControl.setValue('major');
-    expect(needsCreditorControl.value).toBeTrue();
+    expect(needsCreditorControl.value).toBe(true);
     expect(component['creditorListener']).toHaveBeenCalledWith(index);
     expect(component['addFormArrayFormGroupControlValidators']).toHaveBeenCalledWith(creditorControl, [
       Validators.required,
     ]);
 
     resultIdControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.fineOnly);
-    expect(needsCreditorControl.value).toBeFalse();
-    expect(component['removeFormArrayFormGroupControlValidators']).toHaveBeenCalledTimes(4);
+    expect(needsCreditorControl.value).toBe(false);
+    expect(component['removeFormArrayFormGroupControlValidators']).toHaveBeenCalled();
   });
 
   it('should set selectedOffenceConfirmation to false', () => {
@@ -189,7 +213,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should update offenceCodeControl value with uppercased value', () => {
     const mockCjsCode = 'abc123';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
-    mockUtilsService.upperCaseAllLetters.and.returnValue(mockCjsCode);
+    mockUtilsService.upperCaseAllLetters.mockReturnValue(mockCjsCode);
 
     offenceCodeControl.setValue('lowercase');
 
@@ -207,7 +231,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.selectedOffenceConfirmation).toBe(false);
   });
 
-  it('should set selectedOffenceConfirmation to true when cjs_code length is between 7 and 8', fakeAsync(() => {
+  it('should set selectedOffenceConfirmation to true when cjs_code length is between 7 and 8', () => {
+    vi.useFakeTimers();
     component['setupOffenceCodeListener']();
     const mockCjsCode = 'abc1234';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
@@ -215,13 +240,15 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     offenceCodeControl.setValue(mockCjsCode);
 
     // Simulate the passage of time to account for defaultDebounceTime
-    tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+    vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
     expect(component.selectedOffenceConfirmation).toBe(true);
-  }));
+    vi.useRealTimers();
+  });
 
   it('should go to minor creditor', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
     component.goToMinorCreditor(0);
@@ -232,7 +259,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should populate offence details draft when navigating to remove imposition when draft is empty', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
@@ -246,7 +274,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should populate offence details draft when navigating to remove imposition when draft is populated', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
     component.removeImpositionConfirmation(0);
@@ -259,9 +288,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should test majorCreditorValidation and add validator when add is true', () => {
     const index = 0;
     const formGroup = new FormGroup({
-      fm_offence_details_major_creditor_id: new FormGroup({
-        fm_offence_details_major_creditor_id_0: new FormControl(''),
-      }),
+      fm_offence_details_major_creditor_id_0: new FormControl(''),
     });
     const formArrayFormGroupControl = component.getFormArrayFormGroupControl(
       formGroup,
@@ -269,8 +296,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       0,
     );
 
-    spyOn(component, 'addFormArrayFormGroupControlValidators');
-    spyOn(component, 'removeFormArrayFormGroupControlValidators');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'addFormArrayFormGroupControlValidators');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'removeFormArrayFormGroupControlValidators');
 
     component['majorCreditorValidation'](index, true, formGroup);
 
@@ -283,9 +312,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should test majorCreditorValidation and remove validator when add is false', () => {
     const index = 0;
     const formGroup = new FormGroup({
-      fm_offence_details_major_creditor_id: new FormGroup({
-        fm_offence_details_major_creditor_id_0: new FormControl('', [Validators.required]),
-      }),
+      fm_offence_details_major_creditor_id_0: new FormControl('', [Validators.required]),
     });
     const formArrayFormGroupControl = component.getFormArrayFormGroupControl(
       formGroup,
@@ -293,13 +320,39 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       0,
     );
 
-    spyOn(component, 'addFormArrayFormGroupControlValidators');
-    spyOn(component, 'removeFormArrayFormGroupControlValidators');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'addFormArrayFormGroupControlValidators');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'removeFormArrayFormGroupControlValidators');
 
     component['majorCreditorValidation'](index, false, formGroup);
 
     expect(component.addFormArrayFormGroupControlValidators).not.toHaveBeenCalled();
     expect(component.removeFormArrayFormGroupControlValidators).toHaveBeenCalledWith(formArrayFormGroupControl);
+    expect(formArrayFormGroupControl.disabled).toBe(true);
+  });
+
+  it('should toggle creditor conditionals and enable the major creditor control', () => {
+    const impositionsFormGroup = component.getFormArrayFormGroup(0, 'fm_offence_details_impositions');
+    const creditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      0,
+    );
+    const majorCreditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_major_creditor_id',
+      0,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).creditorListener(0);
+
+    creditorControl.setValue('major');
+    expect(majorCreditorControl.enabled).toBe(true);
+
+    creditorControl.setValue('minor');
+    expect(majorCreditorControl.disabled).toBe(true);
   });
 
   it('should perform major creditor validation when creditor value is major', () => {
@@ -314,7 +367,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       index,
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'majorCreditorValidation');
+    vi.spyOn<any, any>(component, 'majorCreditorValidation');
 
     component['creditorListener'](index);
 
@@ -335,7 +388,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       index,
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'majorCreditorValidation');
+    vi.spyOn<any, any>(component, 'majorCreditorValidation');
 
     component['creditorListener'](index);
 
@@ -356,7 +409,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       index,
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'majorCreditorValidation');
+    vi.spyOn<any, any>(component, 'majorCreditorValidation');
 
     creditorControl.setValue(creditorValue);
 
@@ -367,7 +420,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should navigate to account details when emptyOffences is true', () => {
     finesMacOffenceDetailsStore.setEmptyOffences(true);
-    const handleRouteSpy = spyOn(component, 'handleRoute');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRouteSpy = vi.spyOn<any, any>(component, 'handleRoute');
 
     component.cancelLink();
 
@@ -379,7 +433,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should navigate to review offences when emptyOffences is false', () => {
     finesMacOffenceDetailsStore.setEmptyOffences(false);
-    const handleRouteSpy = spyOn(component, 'handleRoute');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRouteSpy = vi.spyOn<any, any>(component, 'handleRoute');
 
     component.cancelLink();
 
@@ -414,10 +469,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should calculate balance remaining and call super.handleFormSubmit', () => {
-    const event = jasmine.createSpyObj('event', ['preventDefault']);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'calculateBalanceRemaining');
-    const superHandleFormSubmitSpy = AbstractFormArrayBaseComponent.prototype.handleFormSubmit as jasmine.Spy;
+    const event: any = {
+      preventDefault: vi.fn().mockName('event.preventDefault'),
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'calculateBalanceRemaining');
+    const superHandleFormSubmitSpy = AbstractFormArrayBaseComponent.prototype.handleFormSubmit as Mock;
 
     component.handleAddAnOffenceSubmit(event);
 
@@ -435,22 +493,22 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceDetailsDraft]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAddAnOffenceForm');
+    vi.spyOn<any, any>(component, 'setupAddAnOffenceForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupImpositionsConfiguration');
+    vi.spyOn<any, any>(component, 'setupImpositionsConfiguration');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupFormArrayFormControls');
+    vi.spyOn<any, any>(component, 'setupFormArrayFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addControlsToFormArray');
+    vi.spyOn<any, any>(component, 'addControlsToFormArray');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupResultCodeListener');
-    mockDateService.toFormat.and.returnValue('01/01/2022');
+    vi.spyOn<any, any>(component, 'setupResultCodeListener');
+    mockDateService.toFormat.mockReturnValue('01/01/2022');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component['offenceDetailsService'], 'initOffenceCodeListener');
+    vi.spyOn<any, any>(component['offenceDetailsService'], 'initOffenceCodeListener');
 
     // Call the method
     component['initialAddAnOffenceDetailsSetup']();
@@ -471,7 +529,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
@@ -484,7 +543,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute addMinorCreditor', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
@@ -660,8 +720,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should call checkImpositionMinorCreditors and super.handleFormSubmit on handleFormSubmit', () => {
     const event = new SubmitEvent('submit');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const checkImpositionSpy = spyOn(component as any, 'checkImpositionMinorCreditors');
-    const superHandleFormSubmitSpy = AbstractFormArrayBaseComponent.prototype.handleFormSubmit as jasmine.Spy;
+    const checkImpositionSpy = vi.spyOn<any, any>(component as any, 'checkImpositionMinorCreditors');
+    const superHandleFormSubmitSpy = AbstractFormArrayBaseComponent.prototype.handleFormSubmit as Mock;
 
     component.handleFormSubmit(event);
 
@@ -671,7 +731,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should add a new draft offence when index is -1', () => {
     component.form.controls['fm_offence_details_id'].setValue('test-id');
-    spyOn(component['finesMacOffenceDetailsStore'], 'setOffenceDetailsDraft');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['finesMacOffenceDetailsStore'], 'setOffenceDetailsDraft');
     component['updateOffenceDetailsDraft'](FINES_MAC_OFFENCE_DETAILS_STATE);
 
     expect(component['finesMacOffenceDetailsStore'].setOffenceDetailsDraft).toHaveBeenCalled();

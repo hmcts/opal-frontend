@@ -16,8 +16,6 @@ import { OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK } from './mocks/fines-draft-delet
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesDraftCreateAndManageDeletedComponent', () => {
-  const dateService = new DateService();
-
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCreateAndManageTabsComponent, {
@@ -87,12 +85,8 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
       cy.wrap($row)
         .find(DOM_ELEMENTS.deleted)
         .invoke('text')
-        .then((relativeDateText) => {
-          const text = relativeDateText.trim().toLowerCase();
+        .then(() => {
           let daysAgo = null;
-
-          // if (daysAgo !== null) {
-          //   expect(daysAgo).to.be.lessThan(8, `Account was deleted ${daysAgo} days ago`);
           if (daysAgo !== null && daysAgo >= 8) {
             throw new Error(`Account deleted ${daysAgo} days ago is still visible in the table.`);
           }
@@ -158,7 +152,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
 
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
-      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 results').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 total results').should('exist');
       cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
       cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
       cy.get(DOM_ELEMENTS.nextPageButton).contains('Next').should('exist');

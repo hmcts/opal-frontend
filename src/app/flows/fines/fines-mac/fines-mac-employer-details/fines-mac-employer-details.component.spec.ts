@@ -9,6 +9,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacEmployerDetailsComponent', () => {
   let component: FinesMacEmployerDetailsComponent;
@@ -47,7 +48,8 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = false;
 
@@ -60,7 +62,8 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to offence details - adult or youth only', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
 
@@ -73,7 +76,8 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to personal details - parent or guardian to pay', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
     formSubmit.nestedFlow = true;
 

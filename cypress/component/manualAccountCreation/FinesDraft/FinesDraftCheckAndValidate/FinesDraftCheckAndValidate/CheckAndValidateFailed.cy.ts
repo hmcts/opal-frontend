@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesDraftCheckAndValidateTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-validate/fines-draft-check-and-validate-tabs/fines-draft-check-and-validate-tabs.component';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -9,7 +9,7 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/check-and-validate-session-mock';
 import { DOM_ELEMENTS } from './constants/fines_draft_cav_elements';
-import { NAVIGATION_LINKS, TABLE_HEADINGS, TABLE_HEADINGS_FAILED } from './constants/fines_draft_cav_tableConstants';
+import { NAVIGATION_LINKS, TABLE_HEADINGS_FAILED } from './constants/fines_draft_cav_tableConstants';
 import {
   interceptCAVGetDeletedAccounts,
   interceptCAVGetFailedAccounts,
@@ -18,7 +18,6 @@ import {
 } from './intercepts/check-and-validate-intercepts';
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
-import { of } from 'rxjs';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesDraftCheckAndValidateFailedComponent', () => {
@@ -261,17 +260,17 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
     cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Failed').click();
 
-    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 results').should('exist');
+    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 total results').should('exist');
     cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
     cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
-    cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');
+    cy.get(DOM_ELEMENTS.paginationLinksNext).contains('Next').should('exist');
     cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Robert Brown').should('exist');
 
-    cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
-    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 26 to 50 of 50 results').should('exist');
+    cy.get(DOM_ELEMENTS.paginationLinksNext).contains('Next').click({ force: true });
+    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 26 to 50 of 50 total results').should('exist');
 
     cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Emma Gonzalez').should('exist');
-    cy.get(DOM_ELEMENTS.paginationLinks).contains('Previous').should('exist');
+    cy.get(DOM_ELEMENTS.paginationLinksPrevious).contains('Previous').should('exist');
 
     cy.get(DOM_ELEMENTS.defendant)
       .its('length')

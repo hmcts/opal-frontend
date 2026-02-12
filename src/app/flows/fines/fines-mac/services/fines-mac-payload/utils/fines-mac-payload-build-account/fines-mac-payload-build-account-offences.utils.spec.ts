@@ -10,6 +10,7 @@ import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadBuildAccountOffences', () => {
   let offencesMockState: IFinesMacOffenceDetailsForm[] | null;
@@ -32,7 +33,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
 
   it('should build payload with impositions with a major creditor', () => {
     if (!offencesMockState || !courtDetailsState || !offencesMockStateMinorCreditor) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -42,7 +43,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
 
   it('should build payload with a minor creditor', () => {
     if (!offencesMockState || !courtDetailsState || !offencesMockStateMinorCreditor) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -55,7 +56,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
 
   it('should build payload with a null response object', () => {
     if (!offencesMockState || !offencesMockStateMinorCreditor) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -87,7 +88,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
 
   it('should build payload with null values', () => {
     if (!offencesMockState || !offencesMockStateMinorCreditor) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -160,7 +161,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
 
   it('should fallback to null and false when optional fields are undefined in minor creditor childFormData', () => {
     if (!offencesMockState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -253,7 +254,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
 
   it('should build payload with fixed penalty details', () => {
     if (!offencesMockState || !courtDetailsState || !fixedPenaltyMockState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 

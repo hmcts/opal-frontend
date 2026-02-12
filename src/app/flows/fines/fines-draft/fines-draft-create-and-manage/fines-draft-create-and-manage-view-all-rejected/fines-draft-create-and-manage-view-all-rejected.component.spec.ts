@@ -8,22 +8,27 @@ import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constant
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
   let component: FinesDraftCreateAndManageViewAllRejectedComponent;
   let fixture: ComponentFixture<FinesDraftCreateAndManageViewAllRejectedComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRouter: any;
   let finesDraftStore: FinesDraftStoreType;
-  let finesDraftService: jasmine.SpyObj<FinesDraftService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let finesDraftService: any;
 
   beforeEach(async () => {
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    mockRouter = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
 
-    finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
-      'onDefendantClick',
-      'populateTableData',
-    ]);
-    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    finesDraftService = {
+      onDefendantClick: vi.fn().mockName('FinesDraftService.onDefendantClick'),
+      populateTableData: vi.fn().mockName('FinesDraftService.populateTableData'),
+    };
+    finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesDraftCreateAndManageViewAllRejectedComponent, GovukBackLinkComponent],

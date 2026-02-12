@@ -4,6 +4,7 @@ import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from './constants/fines-draft-table-wrapper-table-sort.constants';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from './mocks/fines-draft-table-wrapper-table-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesDraftTableWrapperComponent', () => {
   let component: FinesDraftTableWrapperComponent;
@@ -45,7 +46,8 @@ describe('FinesDraftTableWrapperComponent', () => {
   });
 
   it('should emit linkClicked event with the correct id when onDefendantClick is called', () => {
-    spyOn(component.linkClicked, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.linkClicked, 'emit');
 
     component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
 
@@ -53,7 +55,8 @@ describe('FinesDraftTableWrapperComponent', () => {
   });
 
   it('should emit accountClicked event with the correct account number when onAccountClick is called', () => {
-    spyOn(component.accountClicked, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.accountClicked, 'emit');
 
     const testAccountId = 77;
     component.onAccountClick(testAccountId);

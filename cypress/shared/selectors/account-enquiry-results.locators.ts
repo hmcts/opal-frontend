@@ -93,7 +93,7 @@ export const AccountEnquiryResultsLocators = {
   // Pagination
   // ──────────────────────────────
   pagination: {
-    next: 'nav.moj-pagination .moj-pagination__item--next a.moj-pagination__link',
+    next: 'nav.govuk-pagination .govuk-pagination__next a.govuk-pagination__link',
   },
 
   // ──────────────────────────────

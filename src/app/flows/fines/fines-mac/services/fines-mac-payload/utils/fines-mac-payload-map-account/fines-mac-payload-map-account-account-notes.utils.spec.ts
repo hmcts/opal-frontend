@@ -1,6 +1,7 @@
 import { finesMacPayloadMapAccountAccountNotesPayload } from './fines-mac-payload-map-account-account-notes.utils';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccountAccountNote } from '../interfaces/fines-mac-payload-account-account-note.interface';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadMapAccountAccountNotesPayload', () => {
   let initialState: IFinesMacState | null;
@@ -22,7 +23,7 @@ describe('finesMacPayloadMapAccountAccountNotesPayload', () => {
 
   it('should return the initial state if payload is null', () => {
     if (!initialState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
     const result = finesMacPayloadMapAccountAccountNotesPayload(initialState, null);
@@ -31,7 +32,7 @@ describe('finesMacPayloadMapAccountAccountNotesPayload', () => {
 
   it('should map account note with note_type "AC" to fm_account_comments_notes_comments', () => {
     if (!initialState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
     const payload: IFinesMacPayloadAccountAccountNote[] = [
@@ -43,7 +44,7 @@ describe('finesMacPayloadMapAccountAccountNotesPayload', () => {
 
   it('should map account note with note_type "AA" and serial 2 to fm_account_comments_notes_notes', () => {
     if (!initialState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
 
@@ -56,7 +57,7 @@ describe('finesMacPayloadMapAccountAccountNotesPayload', () => {
 
   it('should not map account note with note_type "AA" and serial not equal to 2', () => {
     if (!initialState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
     const payload: IFinesMacPayloadAccountAccountNote[] = [

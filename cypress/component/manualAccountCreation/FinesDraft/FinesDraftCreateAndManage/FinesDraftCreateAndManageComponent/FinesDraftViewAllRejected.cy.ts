@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesDraftCreateAndManageViewAllRejectedComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-view-all-rejected/fines-draft-create-and-manage-view-all-rejected.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
@@ -115,7 +115,7 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
 
       setupComponent(allRejectedMockData);
 
-      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 results').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 total results').should('exist');
       cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
       cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
       cy.get(DOM_ELEMENTS.nextPageButton).should('exist');

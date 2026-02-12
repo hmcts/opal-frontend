@@ -1,4 +1,4 @@
-@manualAccountCreation @languagePreferences @PO-272 @PO-344 @PO-345 @PO-545 @PO-464 @PO-465 @PO-542 @PO-544 @PO-1396 @UAT-Technical
+@manualAccountCreation @languagePreferences @PO-272 @PO-344 @PO-345 @PO-545 @PO-464 @PO-465 @PO-542 @PO-544 @PO-1396
 Feature: Manual account creation - Language preferences
   # This feature file contains tests for the Language preferences page of the
   # Manual Account Creation journey that cannot be exercised in the component tests #

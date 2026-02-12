@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ResolveFn, Router } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -7,22 +7,37 @@ import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from '@services/fines/opal-fines-serv
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { finesMacOffenceDetailsSearchOffencesResolver } from './fines-mac-offence-details-search-offences.resolver';
 import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executeResolver: ResolveFn<any> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => finesMacOffenceDetailsSearchOffencesResolver(...resolverParameters));
 
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRouter: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
 
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj('Router', ['currentNavigation']);
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['searchOffences']);
-    mockDateService = jasmine.createSpyObj('DateService', ['getDateNow', 'toFormat']);
-    mockUtilsService = jasmine.createSpyObj('UtilsService', ['scrollToTop', 'filterNullOrUndefined']);
+    mockRouter = {
+      currentNavigation: vi.fn().mockName('Router.currentNavigation'),
+    };
+    mockOpalFinesService = {
+      searchOffences: vi.fn().mockName('OpalFines.searchOffences'),
+    };
+    mockDateService = {
+      getDateNow: vi.fn().mockName('DateService.getDateNow'),
+      toFormat: vi.fn().mockName('DateService.toFormat'),
+    };
+    mockUtilsService = {
+      scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
+      filterNullOrUndefined: vi.fn().mockName('UtilsService.filterNullOrUndefined'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -34,8 +49,8 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
     });
   });
 
-  it('should resolve and return offence data when state.payload is provided', (done) => {
-    mockRouter.currentNavigation.and.returnValue({
+  it('should resolve and return offence data when state.payload is provided', async () => {
+    mockRouter.currentNavigation.mockReturnValue({
       extras: {
         state: {
           payload: {
@@ -49,12 +64,12 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
-    mockDateService.getDateNow.and.returnValue({
+    mockDateService.getDateNow.mockReturnValue({
       toUTC: () => ({ toISO: () => '2025-05-07' }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
-    mockOpalFinesService.searchOffences.and.returnValue(
+    mockOpalFinesService.searchOffences.mockReturnValue(
       of({
         count: 1,
         searchData: [structuredClone(OPAL_FINES_SEARCH_OFFENCES_MOCK.searchData[0])],
@@ -67,12 +82,11 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
         count: 1,
         searchData: [structuredClone(OPAL_FINES_SEARCH_OFFENCES_MOCK.searchData[0])],
       });
-      done();
     });
   });
 
-  it('should resolve and return offence data when state.payload is provided with active true', (done) => {
-    mockRouter.currentNavigation.and.returnValue({
+  it('should resolve and return offence data when state.payload is provided with active true', async () => {
+    mockRouter.currentNavigation.mockReturnValue({
       extras: {
         state: {
           payload: {
@@ -86,12 +100,12 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
-    mockDateService.getDateNow.and.returnValue({
+    mockDateService.getDateNow.mockReturnValue({
       toUTC: () => ({ toISO: () => '2025-05-07' }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
-    mockOpalFinesService.searchOffences.and.returnValue(
+    mockOpalFinesService.searchOffences.mockReturnValue(
       of({
         count: 1,
         searchData: [structuredClone(OPAL_FINES_SEARCH_OFFENCES_MOCK.searchData[0])],
@@ -104,23 +118,21 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
         count: 1,
         searchData: [structuredClone(OPAL_FINES_SEARCH_OFFENCES_MOCK.searchData[0])],
       });
-      done();
     });
   });
 
-  it('should return empty array if no state.payload is available', (done) => {
+  it('should return empty array if no state.payload is available', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mockRouter.currentNavigation.and.returnValue({ extras: {} } as any);
+    mockRouter.currentNavigation.mockReturnValue({ extras: {} } as any);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     executeResolver({} as any, {} as any).subscribe((result: IOpalFinesSearchOffencesData) => {
       expect(result).toEqual({ searchData: [], count: 0 });
-      done();
     });
   });
 
-  it('should return empty array if API call fails', fakeAsync(() => {
-    mockRouter.currentNavigation.and.returnValue({
+  it('should return empty array if API call fails', () => {
+    mockRouter.currentNavigation.mockReturnValue({
       extras: {
         state: {
           payload: {
@@ -134,13 +146,13 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
-    mockDateService.getDateNow.and.returnValue({
+    mockDateService.getDateNow.mockReturnValue({
       toUTC: () => ({ toISO: () => '2025-05-07' }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
-    mockOpalFinesService.searchOffences.and.returnValue(throwError(() => new Error('Server error')));
-    mockUtilsService.scrollToTop.calls.reset();
+    mockOpalFinesService.searchOffences.mockReturnValue(throwError(() => new Error('Server error')));
+    mockUtilsService.scrollToTop.mockClear();
 
     let result: IOpalFinesSearchOffencesData = { searchData: [], count: 0 };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -148,9 +160,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
       result = response;
     });
 
-    tick();
-
     expect(result).toEqual({ searchData: [], count: 0 });
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
-  }));
+  });
 });

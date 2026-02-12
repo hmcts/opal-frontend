@@ -11,17 +11,37 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacPersonalDetailsFormComponent', () => {
   let component: FinesMacPersonalDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacPersonalDetailsFormComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
 
   let formSubmit: IFinesMacPersonalDetailsForm;
   let finesMacStore: FinesMacStoreType;
+  let originalConfigureDatePicker: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(MojDatePickerComponent.prototype, 'configureDatePicker').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+  });
+
+  beforeEach(() => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+  });
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj(DateService, ['isValidDate', 'calculateAge', 'getPreviousDate']);
+    mockDateService = createSpyObj(DateService, ['isValidDate', 'calculateAge', 'getPreviousDate']);
 
     formSubmit = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);
 
@@ -64,13 +84,14 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: true,
       }),
@@ -80,13 +101,14 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
       }),
@@ -117,8 +139,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
     const dateOfBirth = '01/01/1990';
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.calculateAge.and.returnValue(34);
+    mockDateService.isValidDate.mockReturnValue(true);
+    mockDateService.calculateAge.mockReturnValue(34);
 
     component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
 
@@ -134,8 +156,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should call dateOfBirthListener on DOB value changes Youth', () => {
     const dateOfBirth = '01/01/2014';
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.calculateAge.and.returnValue(10);
+    mockDateService.isValidDate.mockReturnValue(true);
+    mockDateService.calculateAge.mockReturnValue(10);
 
     component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
 
@@ -151,8 +173,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
     const dateOfBirth = '01/01/1990';
     component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.calculateAge.and.returnValue(34);
+    mockDateService.isValidDate.mockReturnValue(true);
+    mockDateService.calculateAge.mockReturnValue(34);
 
     component['dateOfBirthListener']();
 
@@ -166,22 +188,22 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should call the necessary setup methods', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupPersonalDetailsForm');
+    vi.spyOn<any, any>(component, 'setupPersonalDetailsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAliasConfiguration');
+    vi.spyOn<any, any>(component, 'setupAliasConfiguration');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAliasFormControls');
+    vi.spyOn<any, any>(component, 'setupAliasFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addVehicleDetailsControls');
+    vi.spyOn<any, any>(component, 'addVehicleDetailsControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setUpAliasCheckboxListener');
+    vi.spyOn<any, any>(component, 'setUpAliasCheckboxListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'dateOfBirthListener');
-    mockDateService.getPreviousDate.and.returnValue('19/08/2024');
+    vi.spyOn<any, any>(component, 'dateOfBirthListener');
+    mockDateService.getPreviousDate.mockReturnValue('19/08/2024');
 
     component['initialPersonalDetailsSetup']();
 
@@ -205,22 +227,22 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should call the necessary setup methods - parent/guardian', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupPersonalDetailsForm');
+    vi.spyOn<any, any>(component, 'setupPersonalDetailsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAliasConfiguration');
+    vi.spyOn<any, any>(component, 'setupAliasConfiguration');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAliasFormControls');
+    vi.spyOn<any, any>(component, 'setupAliasFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addVehicleDetailsControls');
+    vi.spyOn<any, any>(component, 'addVehicleDetailsControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setUpAliasCheckboxListener');
+    vi.spyOn<any, any>(component, 'setUpAliasCheckboxListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'dateOfBirthListener');
-    mockDateService.getPreviousDate.and.returnValue('19/08/2024');
+    vi.spyOn<any, any>(component, 'dateOfBirthListener');
+    mockDateService.getPreviousDate.mockReturnValue('19/08/2024');
 
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
     component['initialPersonalDetailsSetup']();

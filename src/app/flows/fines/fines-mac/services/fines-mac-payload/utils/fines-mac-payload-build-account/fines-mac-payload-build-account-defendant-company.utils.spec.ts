@@ -7,6 +7,7 @@ import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/stat
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK } from '../mocks/fines-mac-payload-account-defendant-company.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from '../mocks/fines-mac-payload-account-defendant-company-with-aliases.mock';
 import { finesMacPayloadBuildAccountDefendantCompany } from './fines-mac-payload-build-account-defendant-company.utils';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadBuildAccountDefendantCompany', () => {
   let contactDetailsState: IFinesMacContactDetailsState | null;
@@ -27,7 +28,7 @@ describe('finesMacPayloadBuildAccountDefendantCompany', () => {
 
   it('should build the correct payload', () => {
     if (!companyDetailsState || !contactDetailsState || !languagePreferencesState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -42,7 +43,7 @@ describe('finesMacPayloadBuildAccountDefendantCompany', () => {
 
   it('should handle empty alias array', () => {
     if (!companyDetailsState || !contactDetailsState || !languagePreferencesState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -60,7 +61,7 @@ describe('finesMacPayloadBuildAccountDefendantCompany', () => {
 
   it('should return null for alias company name if dynamic key is missing', () => {
     if (!companyDetailsState || !contactDetailsState || !languagePreferencesState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 

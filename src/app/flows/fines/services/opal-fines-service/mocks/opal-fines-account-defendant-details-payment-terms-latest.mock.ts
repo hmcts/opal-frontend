@@ -20,7 +20,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK: IOp
       lump_sum_amount: 0.0,
       instalment_amount: 20.0,
       posted_details: {
-        posted_date: '2025-10-21',
+        posted_date: '2025-10-21T00:00:00.000Z',
         posted_by: 'L080JG',
         posted_by_name: 'opal-test-2',
       },

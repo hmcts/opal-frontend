@@ -1,4 +1,4 @@
-@ManualAccountCreation @PaymentTerms @PO-272 @PO-344 @PO-345 @PO-545 @PO-429 @PO-587 @PO-592 @UAT-Technical
+@ManualAccountCreation @PaymentTerms @PO-272 @PO-344 @PO-345 @PO-545 @PO-429 @PO-587 @PO-592
 Feature: Manual account creation - Payment Terms
   #This feature file contains tests for the Payment Terms page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the PaymentTermsComponent.cy.ts component tests

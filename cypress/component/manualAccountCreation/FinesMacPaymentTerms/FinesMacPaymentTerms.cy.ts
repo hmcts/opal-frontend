@@ -115,7 +115,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -126,17 +126,17 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -150,17 +150,17 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -224,7 +224,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -235,17 +235,17 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -259,17 +259,17 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -310,7 +310,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -321,17 +321,17 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -345,17 +345,17 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
@@ -509,9 +509,9 @@ describe('FinesMacPaymentTermsComponent', () => {
         setupComponent(defendantType);
 
         cy.get(DOM_ELEMENTS.payInFull).click();
-        cy.get(DOM_ELEMENTS.datePickerButton).click();
+        cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
         cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
-        cy.get(DOM_ELEMENTS.testDate).click();
+        cy.get(DOM_ELEMENTS.datePickerPayByDateElement).filter(':visible').find(DOM_ELEMENTS.testDate).first().click();
         cy.get(DOM_ELEMENTS.payByDate).should(
           'have.value',
           `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
@@ -528,9 +528,9 @@ describe('FinesMacPaymentTermsComponent', () => {
         setupComponent(defendantType);
 
         cy.get(DOM_ELEMENTS.instalmentsOnly).click();
-        cy.get(DOM_ELEMENTS.datePickerButton).click();
+        cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
         cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
-        cy.get(DOM_ELEMENTS.testDate).click();
+        cy.get(DOM_ELEMENTS.datePickerStartDateElement).filter(':visible').find(DOM_ELEMENTS.testDate).first().click();
         cy.get(DOM_ELEMENTS.startDate).should(
           'have.value',
           `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
@@ -697,11 +697,11 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           cy.get(DOM_ELEMENTS.lumpSumPlusInstalments).click();
           cy.get(DOM_ELEMENTS.lumpSumAmount).type('100.5', { delay: 0 });
-          cy.get(DOM_ELEMENTS.instalmentAmount).type('100.5', { delay: 0 });
+          cy.get(DOM_ELEMENTS.instalmentAmount).filter(':visible').type('100.5', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).first().click();
 
           cy.get(DOM_ELEMENTS.lumpSumAmount).should('have.value', '100.50');
-          cy.get(DOM_ELEMENTS.instalmentAmount).should('have.value', '100.50');
+          cy.get(DOM_ELEMENTS.instalmentAmount).filter(':visible').should('have.value', '100.50');
         });
       });
     },
