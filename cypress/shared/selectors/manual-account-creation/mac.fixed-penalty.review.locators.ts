@@ -6,7 +6,7 @@ export const MacFixedPenaltyReviewLocators = {
   app: 'app-fines-mac-review-account',
   header: 'h1.govuk-heading-l',
   pageHeading: 'h1.govuk-heading-l',
-  backLink: 'opal-lib-govuk-back-link',
+  backLink: 'opal-lib-govuk-back-link a.govuk-back-link',
   submitButton: '#submitAccountButton',
 
   summaryCards: '.govuk-summary-card',
