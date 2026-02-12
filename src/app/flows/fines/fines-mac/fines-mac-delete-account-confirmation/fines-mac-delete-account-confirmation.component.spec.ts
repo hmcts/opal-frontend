@@ -15,26 +15,40 @@ import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from './constants/fines-mac-delete-account-confirmation-form';
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-patch-delete-account-payload.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacDeleteAccountConfirmationComponent', () => {
   let component: FinesMacDeleteAccountConfirmationComponent;
   let fixture: ComponentFixture<FinesMacDeleteAccountConfirmationComponent>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRouter: any;
 
   let finesMacStore: FinesMacStoreType;
   let finesDraftStore: FinesDraftStoreType;
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['patchDraftAccountPayload']);
-    mockUtilsService = jasmine.createSpyObj('UtilsService', ['scrollToTop']);
-    mockDateService = jasmine.createSpyObj('DateService', ['toFormat', 'getDateNow']);
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    mockOpalFinesService = {
+      patchDraftAccountPayload: vi.fn().mockName('OpalFines.patchDraftAccountPayload'),
+    };
+    mockUtilsService = {
+      scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
+    };
+    mockDateService = {
+      toFormat: vi.fn().mockName('DateService.toFormat'),
+      getDateNow: vi.fn().mockName('DateService.getDateNow'),
+    };
+    mockRouter = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
 
-    mockDateService.getDateNow.and.returnValue(DateTime.fromISO('2024-01-01'));
-    mockDateService.toFormat.and.returnValue('2024-01-01');
+    mockDateService.getDateNow.mockReturnValue(DateTime.fromISO('2024-01-01'));
+    mockDateService.toFormat.mockReturnValue('2024-01-01');
 
     await TestBed.configureTestingModule({
       imports: [FinesMacDeleteAccountConfirmationComponent, FinesMacDeleteAccountConfirmationFormComponent],
@@ -70,36 +84,39 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should call setDeleteAccountConfirmation and patchDraftAccountPayload on form submit', () => {
-    spyOn(finesMacStore, 'setDeleteAccountConfirmation');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setDeleteAccountConfirmation');
     const form = {
       ...FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
     };
     const patchResponse = of(FINES_DRAFT_STATE);
-    mockOpalFinesService.patchDraftAccountPayload.and.returnValue(patchResponse);
+    mockOpalFinesService.patchDraftAccountPayload.mockReturnValue(patchResponse);
 
-    component['processPatchResponse'] = jasmine.createSpy('processPatchResponse').and.callThrough();
+    component['processPatchResponse'] = vi.fn();
 
     component.handleDeleteAccountConfirmationSubmit(form);
 
     expect(finesMacStore.setDeleteAccountConfirmation).toHaveBeenCalledWith(form);
     expect(mockOpalFinesService.patchDraftAccountPayload).toHaveBeenCalledWith(
       42,
-      jasmine.objectContaining({
+      expect.objectContaining({
         account_status: 'Deleted',
-        timeline_data: jasmine.any(Array),
+        timeline_data: expect.any(Array),
       }),
     );
   });
 
   it('should handle patch response and navigate', () => {
-    spyOn(finesMacStore, 'resetStateChangesUnsavedChanges');
-    spyOn(finesDraftStore, 'setBannerMessage');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'resetStateChangesUnsavedChanges');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'setBannerMessage');
     const response = FINES_DRAFT_STATE;
     component['processPatchResponse'](response);
 
     expect(finesDraftStore.setBannerMessage).toHaveBeenCalled();
     expect(finesMacStore.resetStateChangesUnsavedChanges).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith([jasmine.any(String)], { fragment: '' });
+    expect(mockRouter.navigate).toHaveBeenCalledWith([expect.any(String)], { fragment: '' });
   });
 
   it('should handle request error by scrolling to top', () => {
@@ -109,20 +126,23 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should set unsaved changes state', () => {
-    spyOn(finesMacStore, 'setUnsavedChanges');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setUnsavedChanges');
     component.handleUnsavedChanges(true);
     expect(finesMacStore.setUnsavedChanges).toHaveBeenCalledWith(true);
-    expect(component.stateUnsavedChanges).toBeTrue();
+    expect(component.stateUnsavedChanges).toBe(true);
   });
 
   it('should call setDeleteFromCheckAccount(false) on destroy', () => {
-    spyOn(finesMacStore, 'setDeleteFromCheckAccount');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setDeleteFromCheckAccount');
     component.ngOnDestroy();
     expect(finesMacStore.setDeleteFromCheckAccount).toHaveBeenCalledWith(false);
   });
 
   it('should log an error when accountId is null during handlePatchRequest', () => {
-    spyOn(console, 'error');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(console, 'error');
     component['accountId'] = null;
     component['handlePatchRequest'](OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK);
     expect(console.error).toHaveBeenCalledWith('Account ID is not defined');
@@ -133,9 +153,9 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
       ...FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
     };
     // Simulate error from patchDraftAccountPayload using throwError
-    mockOpalFinesService.patchDraftAccountPayload.and.returnValue(throwError(() => new Error('Simulated error')));
+    mockOpalFinesService.patchDraftAccountPayload.mockReturnValue(throwError(() => new Error('Simulated error')));
 
-    component['handleRequestError'] = jasmine.createSpy('handleRequestError').and.callThrough();
+    component['handleRequestError'] = vi.fn();
 
     component.handleDeleteAccountConfirmationSubmit(form);
 
@@ -143,7 +163,8 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should set referrer to reviewAccountRoute when deleteFromCheckAccount is true', () => {
-    spyOn(finesMacStore, 'deleteFromCheckAccount').and.returnValue(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'deleteFromCheckAccount').mockReturnValue(true);
 
     // Need to destroy and recreate the component to re-run constructor logic
     fixture.destroy();
@@ -156,7 +177,8 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should set referrer to accountDetailsRoute when deleteFromCheckAccount is false', () => {
-    spyOn(finesMacStore, 'deleteFromCheckAccount').and.returnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'deleteFromCheckAccount').mockReturnValue(false);
     expect(component.referrer).toBe(component['accountDetailsRoute']);
   });
 
@@ -186,21 +208,26 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should setReferrer to reviewAccountRoute when deleteFromCheckAccount is true', () => {
-    spyOn(finesDraftStore, 'checker').and.returnValue(false);
-    spyOn(finesMacStore, 'deleteFromCheckAccount').and.returnValue(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'checker').mockReturnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'deleteFromCheckAccount').mockReturnValue(true);
     component.referrer = component['setReferrer']();
     expect(component.referrer).toBe(component['reviewAccountRoute']);
   });
 
   it('should setReferrer to accountDetailsRoute when deleteFromCheckAccount is false', () => {
-    spyOn(finesDraftStore, 'checker').and.returnValue(false);
-    spyOn(finesMacStore, 'deleteFromCheckAccount').and.returnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'checker').mockReturnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'deleteFromCheckAccount').mockReturnValue(false);
     component.referrer = component['setReferrer']();
     expect(component.referrer).toBe(component['accountDetailsRoute']);
   });
 
   it('should setReferrer to reviewAccountRoute when user is a checker', () => {
-    spyOn(finesDraftStore, 'checker').and.returnValue(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'checker').mockReturnValue(true);
     component.referrer = component['setReferrer']();
     expect(component.referrer).toBe(component['reviewAccountRoute']);
   });

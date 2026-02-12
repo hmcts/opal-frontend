@@ -38,7 +38,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map payment terms type correctly', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -51,7 +51,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map lump sum amount correctly', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -62,7 +62,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map instalment amount correctly', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -73,7 +73,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map effective date correctly for pay in full', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -86,7 +86,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map effective date correctly for instalment', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 
@@ -99,7 +99,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
   it('should map enforcement actions correctly', () => {
     if (!payload || !mappedFinesMacState) {
-      fail('Payload is not properly initialised');
+      throw new Error('Payload is not properly initialised');
       return;
     }
 

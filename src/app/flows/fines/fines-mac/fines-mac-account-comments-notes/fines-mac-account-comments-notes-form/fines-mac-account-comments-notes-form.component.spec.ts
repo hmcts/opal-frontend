@@ -9,6 +9,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
   let component: FinesMacAccountCommentsNotesFormComponent;
@@ -47,14 +48,15 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   it('should emit form submit event with form value - nestedFlow true', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
 
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: true,
       }),
@@ -65,14 +67,15 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
 
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
       }),
@@ -87,7 +90,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     };
     finesMacStore.setFinesMacStore(adultOrYouthOnly);
     component['checkMandatorySections']();
-    expect(component.mandatorySectionsCompleted).toBeFalse();
+    expect(component.mandatorySectionsCompleted).toBe(false);
 
     const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
     parentOrGuardianToPay.accountDetails.formData = {
@@ -96,7 +99,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     };
     finesMacStore.setFinesMacStore(parentOrGuardianToPay);
     component['checkMandatorySections']();
-    expect(component.mandatorySectionsCompleted).toBeFalse();
+    expect(component.mandatorySectionsCompleted).toBe(false);
 
     const company = structuredClone(parentOrGuardianToPay);
     company.accountDetails.formData = {
@@ -105,7 +108,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     };
     finesMacStore.setFinesMacStore(company);
     component['checkMandatorySections']();
-    expect(component.mandatorySectionsCompleted).toBeFalse();
+    expect(component.mandatorySectionsCompleted).toBe(false);
 
     const defaultCase = structuredClone(company);
     defaultCase.accountDetails.formData = {
@@ -114,6 +117,6 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     };
     finesMacStore.setFinesMacStore(defaultCase);
     component['checkMandatorySections']();
-    expect(component.mandatorySectionsCompleted).toBeFalse();
+    expect(component.mandatorySectionsCompleted).toBe(false);
   });
 });

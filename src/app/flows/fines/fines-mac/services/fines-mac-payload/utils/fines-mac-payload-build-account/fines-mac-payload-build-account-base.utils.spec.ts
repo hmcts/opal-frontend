@@ -12,6 +12,7 @@ import { IFinesMacOffenceDetailsState } from '../../../../fines-mac-offence-deta
 import { FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK } from '../mocks/fines-mac-payload-account-account-initial.mock';
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK } from '@app/flows/fines/fines-mac/fines-mac-originator-type/mocks/fines-mac-originator-type-state.mock';
 import { IFinesMacOriginatorTypeState } from '@app/flows/fines/fines-mac/fines-mac-originator-type/interfaces/fines-mac-originator-type-state.interface';
 
@@ -72,8 +73,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !paymentTermsState ||
       !originatorTypeState
     ) {
-      fail('Required mock states are not properly initialised');
-      return;
+      throw new Error('Required mock states are not properly initialised');
     }
 
     const result = finesMacPayloadBuildAccountBase(
@@ -98,8 +98,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !paymentTermsState ||
       !originatorTypeState
     ) {
-      fail('Required mock states are not properly initialised');
-      return;
+      throw new Error('Required mock states are not properly initialised');
     }
 
     const mostRecentOffenceDate = '01/07/2024';
@@ -129,8 +128,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !paymentTermsState ||
       !originatorTypeState
     ) {
-      fail('Required mock states are not properly initialised');
-      return;
+      throw new Error('Required mock states are not properly initialised');
     }
 
     offenceMock.fm_offence_details_date_of_sentence = 'Hello World';
@@ -162,8 +160,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !paymentTermsState ||
       !originatorTypeState
     ) {
-      fail('Required mock states are not properly initialised');
-      return;
+      throw new Error('Required mock states are not properly initialised');
     }
 
     offenceDetailsState.push(offenceMock);
@@ -190,8 +187,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !paymentTermsState ||
       !originatorTypeState
     ) {
-      fail('Required mock states are not properly initialised');
-      return;
+      throw new Error('Required mock states are not properly initialised');
     }
 
     offenceDetailsState[0].fm_offence_details_date_of_sentence = null;
@@ -222,8 +218,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !paymentTermsState ||
       !originatorTypeState
     ) {
-      fail('Required mock states are not properly initialised');
-      return;
+      throw new Error('Required mock states are not properly initialised');
     }
 
     offenceDetailsState[0].fm_offence_details_date_of_sentence = 'Hello';
@@ -254,8 +249,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !paymentTermsState ||
       !originatorTypeState
     ) {
-      fail('Required mock states are not properly initialised');
-      return;
+      throw new Error('Required mock states are not properly initialised');
     }
 
     offenceMock.fm_offence_details_date_of_sentence = 'Hello';
@@ -282,8 +276,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !paymentTermsState ||
       !originatorTypeState
     ) {
-      fail('Required mock states are not properly initialised');
-      return;
+      throw new Error('Required mock states are not properly initialised');
     }
 
     paymentTermsState.fm_payment_terms_collection_order_made = undefined as unknown as boolean;

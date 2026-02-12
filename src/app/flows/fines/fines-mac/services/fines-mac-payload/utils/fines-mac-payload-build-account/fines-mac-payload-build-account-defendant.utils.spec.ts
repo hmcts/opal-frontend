@@ -22,6 +22,7 @@ import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../mocks/state/fin
 import { finesMacPayloadBuildAccountDefendant } from './fines-mac-payload-build-account-defendant.utils';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-account-details-state.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../../constants/fines-mac-defendant-types-keys';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadBuildAccountDefendant', () => {
   let contactDetailsState: IFinesMacContactDetailsState | null;
@@ -62,7 +63,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       !companyDetailsState ||
       !parentGuardianDetailsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -99,7 +100,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       !companyDetailsState ||
       !parentGuardianDetailsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -133,7 +134,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       !companyDetailsState ||
       !parentGuardianDetailsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -165,7 +166,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       !companyDetailsState ||
       !parentGuardianDetailsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -194,7 +195,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       !companyDetailsState ||
       !parentGuardianDetailsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -223,7 +224,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       !companyDetailsState ||
       !parentGuardianDetailsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 

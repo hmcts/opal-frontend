@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IFinesMacReviewAccountDecisionForm } from './interfaces/fines-mac-review-account-decision-form.interface';
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FORM_MOCK } from './mocks/fines-mac-review-account-decision-form.mock';
@@ -13,14 +14,19 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacReviewAccountDecisionComponent', () => {
   let component: FinesMacReviewAccountDecisionComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountDecisionComponent>;
   let formSubmit: IFinesMacReviewAccountDecisionForm;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockFinesMacPayloadService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
   let finesMacStore: FinesMacStoreType;
   let finesDraftStore: FinesDraftStoreType;
 
@@ -28,18 +34,13 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
     formSubmit = structuredClone(FINES_MAC_REVIEW_ACCOUNT_DECISION_FORM_MOCK);
 
     mockOpalFinesService = {
-      patchDraftAccountPayload: jasmine
-        .createSpy('patchDraftAccountPayload')
-        .and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
+      patchDraftAccountPayload: vi.fn().mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
     };
 
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['scrollToTop']);
+    mockUtilsService = createSpyObj(UtilsService, ['scrollToTop']);
 
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
-      'buildPatchAccountPayload',
-      'getDefendantName',
-    ]);
-    mockFinesMacPayloadService.buildPatchAccountPayload.and.returnValue(
+    mockFinesMacPayloadService = createSpyObj(FinesMacPayloadService, ['buildPatchAccountPayload', 'getDefendantName']);
+    mockFinesMacPayloadService.buildPatchAccountPayload.mockReturnValue(
       structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD),
     );
 
@@ -76,7 +77,8 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
   });
 
   it('should handle form submission and navigate to check and validate tabs', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.handleFormSubmit(formSubmit);
 
@@ -91,8 +93,9 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
       account_status: 'Publishing Pending',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
-    const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesMacPayloadService.getDefendantName.and.returnValue('Testing Co Ltd');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    mockFinesMacPayloadService.getDefendantName.mockReturnValue('Testing Co Ltd');
 
     component['successfulSubmission'](response);
 
@@ -110,8 +113,9 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
       account_status: 'Rejected',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
-    const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesMacPayloadService.getDefendantName.and.returnValue('Jane Doe');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    mockFinesMacPayloadService.getDefendantName.mockReturnValue('Jane Doe');
 
     component['successfulSubmission'](response);
 
@@ -125,10 +129,10 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should call scrollToTop on error in submitDecision', () => {
     // Patch the service to throw error
-    (mockOpalFinesService.patchDraftAccountPayload as jasmine.Spy).and.returnValue(
+    (mockOpalFinesService.patchDraftAccountPayload as Mock).mockReturnValue(
       throwError(() => new Error('Something went wrong')),
     );
-    mockUtilsService.scrollToTop.calls.reset();
+    mockUtilsService.scrollToTop.mockClear();
 
     component['submitDecision'](formSubmit);
 
@@ -137,7 +141,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should call successfulSubmission on submitDecision with reject', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const successfulSubmissionSpy = spyOn<any>(component, 'successfulSubmission');
+    const successfulSubmissionSpy = vi.spyOn<any, any>(component, 'successfulSubmission');
 
     component['submitDecision'](formSubmit);
 
@@ -147,7 +151,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should call successfulSubmission on submitDecision with approve', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const successfulSubmissionSpy = spyOn<any>(component, 'successfulSubmission');
+    const successfulSubmissionSpy = vi.spyOn<any, any>(component, 'successfulSubmission');
 
     const data = structuredClone(formSubmit);
     data.formData.fm_review_account_decision = 'approve';
@@ -161,7 +165,8 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should clean up subscriptions and reset error on ngOnDestroy', () => {
     const globalStore = component['globalStore'];
-    const setErrorSpy = spyOn(globalStore, 'resetBannerError');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setErrorSpy = vi.spyOn<any, any>(globalStore, 'resetBannerError');
 
     component.ngOnDestroy();
 

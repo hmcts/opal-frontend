@@ -7,6 +7,7 @@ import { FinesAccCommentsAddFormComponent } from './fines-acc-comments-add-form.
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IFinesAccAddCommentsFormState } from '../interfaces/fines-acc-comments-add-form-state.interface';
 import { FINES_ACC_ADD_COMMENTS_STATE } from '../constants/fines-acc-comments-add-form-state.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccCommentsAddFormComponent', () => {
   let component: FinesAccCommentsAddFormComponent;
@@ -23,7 +24,7 @@ describe('FinesAccCommentsAddFormComponent', () => {
 
   beforeEach(async () => {
     mockFinesAccStore = {
-      getAccountNumber: jasmine.createSpy('getAccountNumber').and.returnValue(signal('123456')),
+      getAccountNumber: vi.fn().mockReturnValue(signal('123456')),
       party_name: signal('John Doe'),
     };
 
@@ -108,7 +109,8 @@ describe('FinesAccCommentsAddFormComponent', () => {
   });
 
   it('should emit formSubmit event when form is submitted', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     const formData: IFinesAccAddCommentsFormState = {
       facc_add_comment: 'Test comment',
