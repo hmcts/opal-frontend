@@ -1,0 +1,119 @@
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
+import { IFinesConSearchAccountForm } from '../interfaces/fines-con-search-account-form.interface';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { FinesConSearchAccountFormIndividualsComponent } from './fines-con-search-account-form-individuals/fines-con-search-account-form-individuals.component';
+import { IFinesConSearchAccountFieldErrors } from '../interfaces/fines-con-search-account-field-errors.interface';
+import { FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-con-search-account-field-errors.constant';
+import { CommonModule } from '@angular/common';
+import { IFinesConDefendantType } from '../../../interfaces/fines-con-defendant-type.interface';
+import { exclusiveSearchFieldValidator } from './validators/fines-con-search-account-form-exclusive-field.validator';
+import { FinesConStore } from '../../../stores/fines-con.store';
+
+// Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
+const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_PATTERN = /^[a-zA-Z0-9\s'-]*$/;
+const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_PATTERN,
+  'alphanumericTextPattern',
+);
+
+/**
+ * Search Account Form Component
+ *
+ * Responsibilities:
+ * - Owns the root FormGroup and all error state (field error templates, inline messages, and summary).
+ * - Builds controls and hosts nested groups for the individuals sub-form.
+ * - Determines the defendant type and manages form validation.
+ * - Persists and rehydrates form state via the FinesConStore.
+ *
+ * Notes:
+ * - The parent (store) is the single source of truth for form state persistence.
+ * - Children do not emit error maps; this component remains the single source of truth for
+ *   `fieldErrors`, `formControlErrorMessages`, and `formErrorSummaryMessage`.
+ */
+@Component({
+  selector: 'app-fines-con-search-account-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    GovukTextInputComponent,
+    GovukButtonComponent,
+    GovukErrorSummaryComponent,
+    FinesConSearchAccountFormIndividualsComponent,
+  ],
+  templateUrl: './fines-con-search-account-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponent {
+  private readonly finesConStore = inject(FinesConStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesConSearchAccountForm>();
+  override fieldErrors: IFinesConSearchAccountFieldErrors = FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS;
+  @Input({ required: true }) defendantType: IFinesConDefendantType = 'individual';
+
+  /**
+   * Creates the form with quick search fields and detail search fields.
+   */
+  private setupSearchAccountForm(): void {
+    this.form = new FormGroup(
+      {
+        fcon_search_account_number: new FormControl<string | null>(null, [
+          patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
+          Validators.maxLength(9),
+        ]),
+        fcon_search_account_individuals_national_insurance_number: new FormControl<string | null>(null, [
+          ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
+          Validators.maxLength(9),
+        ]),
+      },
+      { validators: exclusiveSearchFieldValidator },
+    );
+  }
+
+  /**
+   * Builds the form shell and seeds initial error message structures.
+   */
+  private initialFormSetup(): void {
+    this.setupSearchAccountForm();
+    this.rePopulateForm(this.finesConStore.searchAccountForm());
+    this.setInitialErrorMessages();
+  }
+
+  /**
+   * Persists the current form state as temporary/transient data in the store.
+   *
+   * Useful for preserving search state when navigating to intermediate steps
+   * or when the form needs to be validated before final submission.
+   */
+  public setSearchAccountTemporary(): void {
+    this.finesConStore.updateSearchAccountFormTemporary(this.form.value);
+  }
+
+  /**
+   * AC7: Clears all data entered on the Search tab.
+   *
+   * Resets the form to its initial state, clearing all search criteria.
+   * The Results and For consolidation tabs are not affected.
+   */
+  public clearSearchForm(): void {
+    this.form.reset();
+    this.clearAllErrorMessages();
+    this.setInitialErrorMessages();
+  }
+
+  /**
+   * Angular lifecycle:
+   * - Build the form shell and initial state.
+   * - Invoke the base lifecycle for shared behaviour (e.g., unsaved-changes wiring).
+   */
+  public override ngOnInit(): void {
+    this.initialFormSetup();
+    super.ngOnInit();
+  }
+}

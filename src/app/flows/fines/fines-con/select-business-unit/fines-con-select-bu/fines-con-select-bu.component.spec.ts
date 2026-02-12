@@ -65,6 +65,7 @@ describe('FinesConSelectBuComponent', () => {
 
   it('should handle form submission with individual defendant type', () => {
     spyOn(finesConStore, 'updateSelectBuForm');
+    component.businessUnitsRefData = mockBusinessUnitsRefData;
     component.handleFormSubmit(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
 
     expect(finesConStore.updateSelectBuForm).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
@@ -148,6 +149,7 @@ describe('FinesConSelectBuComponent', () => {
 
   it('should handle form submission with different defendant types', () => {
     spyOn(finesConStore, 'updateSelectBuForm');
+    component.businessUnitsRefData = mockBusinessUnitsRefData;
     component.handleFormSubmit(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK);
 
     expect(finesConStore.updateSelectBuForm).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);

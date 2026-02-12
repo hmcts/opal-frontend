@@ -7,6 +7,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 import { IFinesConSelectBuForm } from './interfaces/fines-con-select-bu-form.interface';
 import { FINES_CON_DEFENDANT_TYPES } from '../fines-con-select-bu/constants/fines-con-defendant-types.constant';
 import { FinesConStore } from '../../stores/fines-con.store';
+import { FINES_CON_ROUTING_PATHS } from '../../routing/constants/fines-con-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-con-select-bu',
@@ -32,6 +33,7 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
     if (result.refData.length === 1 && !formData.fcon_select_bu_business_unit_id) {
       this.finesConStore.updateSelectBuForm({
         fcon_select_bu_business_unit_id: result.refData[0].business_unit_id,
+        fcon_select_bu_business_unit_name: result.refData[0].business_unit_name,
         fcon_select_bu_defendant_type: formData.fcon_select_bu_defendant_type,
       });
     }
@@ -63,9 +65,17 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
    * Stores the data in the consolidation store for use across the flow
    */
   public handleFormSubmit(formData: IFinesConSelectBuForm): void {
-    this.finesConStore.updateSelectBuForm(formData.formData);
+    const selectedBusinessUnitId = formData.formData.fcon_select_bu_business_unit_id;
+    const selectedBusinessUnit = this.businessUnitsRefData.refData.find(
+      (bu) => bu.business_unit_id === selectedBusinessUnitId,
+    );
 
-    // Navigate to next screen when routing is implemented
+    this.finesConStore.updateSelectBuForm({
+      fcon_select_bu_business_unit_id: formData.formData.fcon_select_bu_business_unit_id,
+      fcon_select_bu_business_unit_name: selectedBusinessUnit?.business_unit_name || null,
+      fcon_select_bu_defendant_type: formData.formData.fcon_select_bu_defendant_type,
+    });
+    this.routerNavigate(FINES_CON_ROUTING_PATHS.children.consolidateAcc);
   }
 
   /**

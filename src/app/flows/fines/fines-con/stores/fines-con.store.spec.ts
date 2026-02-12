@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { FinesConStore } from './fines-con.store';
 import { IFinesConSelectBuState } from '../select-business-unit/fines-con-select-bu/interfaces/fines-con-select-bu-state.interface';
+import { IFinesConSearchAccountState } from '../consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
 import { FINES_CON_SELECT_BU_FORM } from '../select-business-unit/fines-con-select-bu/constants/fines-con-select-bu-form.constant';
 import { FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK } from '../select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-individual.mock';
 import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from '../select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-company.mock';
+import { FINES_CON_SEARCH_ACCOUNT_STATE } from '../consolidate-acc/fines-con-search-account/constants/fines-con-search-account-state.constant';
 
 describe('FinesConStore', () => {
   let store: InstanceType<typeof FinesConStore>;
@@ -77,5 +79,86 @@ describe('FinesConStore', () => {
     store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
 
     expect(store.getDefendantType()).toBe('company');
+  });
+
+  it('should have unsavedChanges initialized to false', () => {
+    expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should set unsavedChanges to true', () => {
+    store.setUnsavedChanges(true);
+
+    expect(store.unsavedChanges()).toBe(true);
+  });
+
+  it('should set unsavedChanges to false', () => {
+    store.setUnsavedChanges(true);
+    store.setUnsavedChanges(false);
+
+    expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should reset unsavedChanges to false on resetConsolidationState', () => {
+    store.setUnsavedChanges(true);
+    store.resetConsolidationState();
+
+    expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should compute business unit name correctly', () => {
+    store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
+
+    expect(store.getBusinessUnitName()).toBe(
+      FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData.fcon_select_bu_business_unit_name,
+    );
+  });
+
+  it('should update search account form temporarily', () => {
+    const testData: IFinesConSearchAccountState = {
+      ...FINES_CON_SEARCH_ACCOUNT_STATE,
+      fcon_search_account_number: '12345678',
+      fcon_search_account_individuals_last_name: 'Smith',
+    };
+
+    store.updateSearchAccountFormTemporary(testData);
+
+    expect(store.searchAccountForm().fcon_search_account_number).toBe('12345678');
+    expect(store.searchAccountForm().fcon_search_account_individuals_last_name).toBe('Smith');
+  });
+
+  it('should reset search account form to initial state', () => {
+    const testData: IFinesConSearchAccountState = {
+      ...FINES_CON_SEARCH_ACCOUNT_STATE,
+      fcon_search_account_number: '12345678',
+      fcon_search_account_individuals_last_name: 'Smith',
+    };
+
+    store.updateSearchAccountFormTemporary(testData);
+    expect(store.searchAccountForm().fcon_search_account_number).toBe('12345678');
+
+    store.resetSearchAccountForm();
+
+    expect(store.searchAccountForm()).toEqual(FINES_CON_SEARCH_ACCOUNT_STATE);
+    expect(store.searchAccountForm().fcon_search_account_number).toBeNull();
+    expect(store.searchAccountForm().fcon_search_account_individuals_last_name).toBeNull();
+  });
+
+  it('should preserve search account form data when updating', () => {
+    const initialData: IFinesConSearchAccountState = {
+      ...FINES_CON_SEARCH_ACCOUNT_STATE,
+      fcon_search_account_number: '12345678',
+    };
+
+    store.updateSearchAccountFormTemporary(initialData);
+
+    const updatedData: IFinesConSearchAccountState = {
+      ...store.searchAccountForm(),
+      fcon_search_account_individuals_last_name: 'Smith',
+    };
+
+    store.updateSearchAccountFormTemporary(updatedData);
+
+    expect(store.searchAccountForm().fcon_search_account_number).toBe('12345678');
+    expect(store.searchAccountForm().fcon_search_account_individuals_last_name).toBe('Smith');
   });
 });

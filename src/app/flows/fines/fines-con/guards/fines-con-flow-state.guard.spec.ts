@@ -1,0 +1,106 @@
+import { fakeAsync, TestBed } from '@angular/core/testing';
+import { finesConFlowStateGuard } from './fines-con-flow-state.guard';
+import { FinesConStore } from '../stores/fines-con.store';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_CON_ROUTING_PATHS } from '../routing/constants/fines-con-routing-paths.constant';
+import { FinesConStoreType } from '../stores/types/fines-con-store.type';
+import { getGuardWithDummyUrl } from '@hmcts/opal-frontend-common/guards/helpers';
+import { runFinesConFlowStateGuardWithContext } from './helpers/run-fines-con-flow-state-guard-with-context';
+import { FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK } from '../select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-individual.mock';
+import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from '../select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-company.mock';
+import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
+import { of } from 'rxjs';
+
+describe('finesConFlowStateGuard', () => {
+  let mockRouter: jasmine.SpyObj<Router>;
+  let mockFinesConStore: InstanceType<FinesConStoreType>;
+
+  const urlPath = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.con.root}/${FINES_CON_ROUTING_PATHS.children.consolidateAcc}`;
+  const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.con.root}/${FINES_CON_ROUTING_PATHS.children.selectBusinessUnit}`;
+
+  beforeEach(() => {
+    mockRouter = jasmine.createSpyObj(finesConFlowStateGuard, ['navigate', 'createUrlTree', 'parseUrl']);
+    mockRouter.parseUrl.and.callFake((url: string) => {
+      const urlTree = new UrlTree();
+      const urlSegment = new UrlSegment(url, {});
+      urlTree.root = new UrlSegmentGroup([urlSegment], {});
+      return urlTree;
+    });
+
+    TestBed.configureTestingModule({
+      providers: [FinesConStore, { provide: Router, useValue: mockRouter }],
+    });
+
+    mockRouter.createUrlTree.and.returnValue(new UrlTree());
+
+    mockFinesConStore = TestBed.inject(FinesConStore);
+  });
+
+  it('should return true if business unit ID and defendant type are present (individual)', fakeAsync(async () => {
+    mockFinesConStore.updateSelectBuFormComplete(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
+
+    const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
+    expect(result).toBeTrue();
+  }));
+
+  it('should return true if business unit ID and defendant type are present (company)', fakeAsync(async () => {
+    mockFinesConStore.updateSelectBuFormComplete(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK);
+
+    const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
+    expect(result).toBeTrue();
+  }));
+
+  it('should return false and redirect if business unit ID is missing', fakeAsync(async () => {
+    mockFinesConStore.updateSelectBuForm({
+      fcon_select_bu_business_unit_id: null,
+      fcon_select_bu_business_unit_name: 'Test BU',
+      fcon_select_bu_defendant_type: 'individual',
+    });
+
+    const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
+    expect(result).toEqual(jasmine.any(UrlTree));
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
+      queryParams: undefined,
+      fragment: undefined,
+    });
+  }));
+
+  it('should return false and redirect if defendant type is missing', fakeAsync(async () => {
+    mockFinesConStore.updateSelectBuForm({
+      fcon_select_bu_business_unit_id: 123,
+      fcon_select_bu_business_unit_name: 'Test BU',
+      fcon_select_bu_defendant_type: null,
+    });
+
+    const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
+    expect(result).toEqual(jasmine.any(UrlTree));
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
+      queryParams: undefined,
+      fragment: undefined,
+    });
+  }));
+
+  it('should return false and redirect if both business unit ID and defendant type are missing', fakeAsync(async () => {
+    mockFinesConStore.updateSelectBuForm({
+      fcon_select_bu_business_unit_id: null,
+      fcon_select_bu_business_unit_name: 'Test BU',
+      fcon_select_bu_defendant_type: null,
+    });
+
+    const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
+    expect(result).toEqual(jasmine.any(UrlTree));
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
+      queryParams: undefined,
+      fragment: undefined,
+    });
+  }));
+
+  it('should handle observable result correctly', fakeAsync(async () => {
+    const mockResult = true;
+    const guardReturningObservable = () => of(mockResult);
+
+    const result = await runFinesConFlowStateGuardWithContext(guardReturningObservable);
+
+    expect(result).toBe(mockResult);
+  }));
+});

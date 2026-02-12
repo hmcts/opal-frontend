@@ -1,48 +1,48 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { atLeastOneCriteriaValidator } from './fines-sa-search-account.validator';
 
+function createForm({
+  accountNumber,
+  referenceNumber,
+  individuals,
+  companies,
+  minorCreditors,
+  majorCreditors,
+  nestedValid = true,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  accountNumber?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  referenceNumber?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  individuals?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  companies?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  minorCreditors?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  majorCreditors?: any;
+  nestedValid?: boolean;
+}) {
+  // Helper to create nested group with optional validity
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const makeGroup = (value: any) =>
+    new FormGroup({ field: new FormControl(value, nestedValid ? [] : [Validators.required]) });
+
+  return new FormGroup(
+    {
+      fsa_search_account_number: new FormControl(accountNumber),
+      fsa_search_account_reference_case_number: new FormControl(referenceNumber),
+      fsa_search_account_individuals_search_criteria: makeGroup(individuals),
+      fsa_search_account_companies_search_criteria: makeGroup(companies),
+      fsa_search_account_minor_creditors_search_criteria: makeGroup(minorCreditors),
+      fsa_search_account_major_creditors_search_criteria: makeGroup(majorCreditors),
+    },
+    { validators: atLeastOneCriteriaValidator },
+  );
+}
+
 describe('atLeastOneCriteriaValidator', () => {
-  function createForm({
-    accountNumber,
-    referenceNumber,
-    individuals,
-    companies,
-    minorCreditors,
-    majorCreditors,
-    nestedValid = true,
-  }: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    accountNumber?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    referenceNumber?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    individuals?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    companies?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    minorCreditors?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    majorCreditors?: any;
-    nestedValid?: boolean;
-  }) {
-    // Helper to create nested group with optional validity
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const makeGroup = (value: any) =>
-      new FormGroup({ field: new FormControl(value, nestedValid ? [] : [Validators.required]) });
-
-    return new FormGroup(
-      {
-        fsa_search_account_number: new FormControl(accountNumber),
-        fsa_search_account_reference_case_number: new FormControl(referenceNumber),
-        fsa_search_account_individuals_search_criteria: makeGroup(individuals),
-        fsa_search_account_companies_search_criteria: makeGroup(companies),
-        fsa_search_account_minor_creditors_search_criteria: makeGroup(minorCreditors),
-        fsa_search_account_major_creditors_search_criteria: makeGroup(majorCreditors),
-      },
-      { validators: atLeastOneCriteriaValidator },
-    );
-  }
-
   it('should return null if the control is not a FormGroup', () => {
     const control = new FormControl('some value');
     expect(atLeastOneCriteriaValidator(control)).toBeNull();
