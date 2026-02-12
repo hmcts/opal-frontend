@@ -9,6 +9,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacCompanyDetailsFormComponent', () => {
   let component: FinesMacCompanyDetailsFormComponent;
@@ -57,13 +58,14 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   it('should emit form submit event with form value - nestedFlow true', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: true,
       }),
@@ -73,13 +75,14 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   it('should emit form submit event with form value - nestedFlow false', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
       }),
@@ -106,17 +109,17 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
   it('should call the necessary setup methods', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupCompanyDetailsForm');
+    vi.spyOn<any, any>(component, 'setupCompanyDetailsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAliasConfiguration');
+    vi.spyOn<any, any>(component, 'setupAliasConfiguration');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAliasFormControls');
+    vi.spyOn<any, any>(component, 'setupAliasFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setUpAliasCheckboxListener');
+    vi.spyOn<any, any>(component, 'setUpAliasCheckboxListener');
 
     component['initialCompanyDetailsSetup']();
 

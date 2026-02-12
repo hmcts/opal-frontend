@@ -7,6 +7,7 @@ import { FinesMacOffenceDetailsSearchOffencesStore } from './stores/fines-mac-of
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM } from './constants/fines-mac-offence-details-search-offences-form.constant';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM_MOCK } from './mocks/fines-mac-offence-details-search-offences-form.mock';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesComponent;
@@ -36,7 +37,8 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   });
 
   it('should call on destroy and clear state', () => {
-    const destroy = spyOn(component, 'ngOnDestroy');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const destroy = vi.spyOn<any, any>(component, 'ngOnDestroy');
 
     component.ngOnDestroy();
     fixture.detectChanges();

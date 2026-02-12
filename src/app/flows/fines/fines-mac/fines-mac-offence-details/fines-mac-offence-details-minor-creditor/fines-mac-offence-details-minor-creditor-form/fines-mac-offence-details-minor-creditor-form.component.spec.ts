@@ -7,6 +7,7 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../mocks/fin
 import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
@@ -17,7 +18,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   beforeAll(() => {
     originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
   });
 
   afterAll(() => {
@@ -209,7 +210,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any).setControlsEnabled(['missing_control', 'fm_offence_details_minor_creditor_title'], true);
 
-    expect(titleControl.enabled).toBeTrue();
+    expect(titleControl.enabled).toBe(true);
   });
 
   it('should toggle conditional panels and enable the correct controls', async () => {
@@ -217,22 +218,22 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     const individualConditional = fixture.nativeElement.querySelector(`#${component.individualConditionalId}`);
     const companyConditional = fixture.nativeElement.querySelector(`#${component.companyConditionalId}`);
 
-    expect(individualConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
-    expect(companyConditional.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+    expect(individualConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+    expect(companyConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
 
     const individualInput = fixture.nativeElement.querySelector('input[value="individual"]');
     individualInput.click();
     fixture.detectChanges();
 
-    expect(component.form.get('fm_offence_details_minor_creditor_title')?.enabled).toBeTrue();
-    expect(component.form.get('fm_offence_details_minor_creditor_company_name')?.disabled).toBeTrue();
+    expect(component.form.get('fm_offence_details_minor_creditor_title')?.enabled).toBe(true);
+    expect(component.form.get('fm_offence_details_minor_creditor_company_name')?.disabled).toBe(true);
 
     const companyInput = fixture.nativeElement.querySelector('input[value="company"]');
     companyInput.click();
     fixture.detectChanges();
 
-    expect(component.form.get('fm_offence_details_minor_creditor_company_name')?.enabled).toBeTrue();
-    expect(component.form.get('fm_offence_details_minor_creditor_title')?.disabled).toBeTrue();
+    expect(component.form.get('fm_offence_details_minor_creditor_company_name')?.enabled).toBe(true);
+    expect(component.form.get('fm_offence_details_minor_creditor_title')?.disabled).toBe(true);
   });
 
   it('should reset and clear validators for payment detail controls', () => {
@@ -275,15 +276,19 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     // Spy on resetPaymentDetailValidators and setPaymentDetailValidators methods
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const resetPaymentDetailValidatorsSpy = spyOn<any>(component, 'resetPaymentDetailValidators').and.callThrough();
+    const resetPaymentDetailValidatorsSpy = vi.spyOn<any, any>(component, 'resetPaymentDetailValidators');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setPaymentDetailValidatorsSpy = spyOn<any>(component, 'setPaymentDetailValidators').and.callThrough();
+    const setPaymentDetailValidatorsSpy = vi.spyOn<any, any>(component, 'setPaymentDetailValidators');
 
     // Spy on updateValueAndValidity for the payment detail controls
-    const nameOnAccountUpdateSpy = spyOn(nameOnAccountControl, 'updateValueAndValidity').and.callThrough();
-    const sortCodeUpdateSpy = spyOn(sortCodeControl, 'updateValueAndValidity').and.callThrough();
-    const accountNumberUpdateSpy = spyOn(accountNumberControl, 'updateValueAndValidity').and.callThrough();
-    const paymentReferenceUpdateSpy = spyOn(paymentReferenceControl, 'updateValueAndValidity').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nameOnAccountUpdateSpy = vi.spyOn<any, any>(nameOnAccountControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sortCodeUpdateSpy = vi.spyOn<any, any>(sortCodeControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const accountNumberUpdateSpy = vi.spyOn<any, any>(accountNumberControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const paymentReferenceUpdateSpy = vi.spyOn<any, any>(paymentReferenceControl, 'updateValueAndValidity');
 
     // Call the listener method
     component['hasPaymentDetailsListener']();
@@ -314,15 +319,19 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Spy on resetPaymentDetailValidators and setPaymentDetailValidators methods
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const resetPaymentDetailValidatorsSpy = spyOn<any>(component, 'resetPaymentDetailValidators').and.callThrough();
+    const resetPaymentDetailValidatorsSpy = vi.spyOn<any, any>(component, 'resetPaymentDetailValidators');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setPaymentDetailValidatorsSpy = spyOn<any>(component, 'setPaymentDetailValidators').and.callThrough();
+    const setPaymentDetailValidatorsSpy = vi.spyOn<any, any>(component, 'setPaymentDetailValidators');
 
     // Spy on updateValueAndValidity for the payment detail controls
-    const nameOnAccountUpdateSpy = spyOn(nameOnAccountControl, 'updateValueAndValidity').and.callThrough();
-    const sortCodeUpdateSpy = spyOn(sortCodeControl, 'updateValueAndValidity').and.callThrough();
-    const accountNumberUpdateSpy = spyOn(accountNumberControl, 'updateValueAndValidity').and.callThrough();
-    const paymentReferenceUpdateSpy = spyOn(paymentReferenceControl, 'updateValueAndValidity').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nameOnAccountUpdateSpy = vi.spyOn<any, any>(nameOnAccountControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sortCodeUpdateSpy = vi.spyOn<any, any>(sortCodeControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const accountNumberUpdateSpy = vi.spyOn<any, any>(accountNumberControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const paymentReferenceUpdateSpy = vi.spyOn<any, any>(paymentReferenceControl, 'updateValueAndValidity');
 
     // Call the listener method
     component['hasPaymentDetailsListener']();
@@ -353,15 +362,19 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Spy on resetNameValidators and setIndividualValidators methods
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const resetNameValidatorsSpy = spyOn<any>(component, 'resetNameValidators').and.callThrough();
+    const resetNameValidatorsSpy = vi.spyOn<any, any>(component, 'resetNameValidators');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setIndividualValidatorsSpy = spyOn<any>(component, 'setIndividualValidators').and.callThrough();
+    const setIndividualValidatorsSpy = vi.spyOn<any, any>(component, 'setIndividualValidators');
 
     // Spy on updateValueAndValidity for form controls
-    const companyNameUpdateSpy = spyOn(companyNameControl, 'updateValueAndValidity').and.callThrough();
-    const titleUpdateSpy = spyOn(titleControl, 'updateValueAndValidity').and.callThrough();
-    const forenamesUpdateSpy = spyOn(forenamesControl, 'updateValueAndValidity').and.callThrough();
-    const surnameUpdateSpy = spyOn(surnameControl, 'updateValueAndValidity').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const companyNameUpdateSpy = vi.spyOn<any, any>(companyNameControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const titleUpdateSpy = vi.spyOn<any, any>(titleControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const forenamesUpdateSpy = vi.spyOn<any, any>(forenamesControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const surnameUpdateSpy = vi.spyOn<any, any>(surnameControl, 'updateValueAndValidity');
 
     // Call the listener method
     component['creditorTypeListener']();
@@ -393,15 +406,19 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Spy on resetNameValidators and setCompanyValidators methods
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const resetNameValidatorsSpy = spyOn<any>(component, 'resetNameValidators').and.callThrough();
+    const resetNameValidatorsSpy = vi.spyOn<any, any>(component, 'resetNameValidators');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setCompanyValidatorsSpy = spyOn<any>(component, 'setCompanyValidators').and.callThrough();
+    const setCompanyValidatorsSpy = vi.spyOn<any, any>(component, 'setCompanyValidators');
 
     // Spy on updateValueAndValidity for form controls
-    const companyNameUpdateSpy = spyOn(companyNameControl, 'updateValueAndValidity').and.callThrough();
-    const titleUpdateSpy = spyOn(titleControl, 'updateValueAndValidity').and.callThrough();
-    const forenamesUpdateSpy = spyOn(forenamesControl, 'updateValueAndValidity').and.callThrough();
-    const surnameUpdateSpy = spyOn(surnameControl, 'updateValueAndValidity').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const companyNameUpdateSpy = vi.spyOn<any, any>(companyNameControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const titleUpdateSpy = vi.spyOn<any, any>(titleControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const forenamesUpdateSpy = vi.spyOn<any, any>(forenamesControl, 'updateValueAndValidity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const surnameUpdateSpy = vi.spyOn<any, any>(surnameControl, 'updateValueAndValidity');
 
     // Call the listener method
     component['creditorTypeListener']();
@@ -431,15 +448,15 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupMinorCreditorForm');
+    vi.spyOn<any, any>(component, 'setupMinorCreditorForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'creditorTypeListener');
+    vi.spyOn<any, any>(component, 'creditorTypeListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'hasPaymentDetailsListener');
+    vi.spyOn<any, any>(component, 'hasPaymentDetailsListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
 
     component['initialMinorCreditorSetup']();
 

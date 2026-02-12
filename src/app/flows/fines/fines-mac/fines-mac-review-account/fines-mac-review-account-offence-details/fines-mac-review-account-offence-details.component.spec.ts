@@ -7,6 +7,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacReviewAccountOffenceDetailsComponent', () => {
   let component: FinesMacReviewAccountOffenceDetailsComponent;
@@ -45,7 +46,8 @@ describe('FinesMacReviewAccountOffenceDetailsComponent', () => {
   });
 
   it('should emit changeOffenceDetails event when changeOffenceDetails is called', () => {
-    spyOn(component.emitChangeOffenceDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChangeOffenceDetails, 'emit');
 
     component.changeOffenceDetails();
 

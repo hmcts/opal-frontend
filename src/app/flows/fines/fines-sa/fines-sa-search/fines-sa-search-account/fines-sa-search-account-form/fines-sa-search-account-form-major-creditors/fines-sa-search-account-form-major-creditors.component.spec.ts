@@ -6,6 +6,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-autocomplete-items.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchAccountFormMajorCreditorsComponent', () => {
   let component: FinesSaSearchAccountFormMajorCreditorsComponent;
@@ -39,24 +40,24 @@ describe('FinesSaSearchAccountFormMajorCreditorsComponent', () => {
 
   it('should initialize the form on ngOnInit', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupMajorCreditorForm').and.callThrough();
+    vi.spyOn<any, any>(component, 'setupMajorCreditorForm');
     component.ngOnInit();
     expect(component['setupMajorCreditorForm']).toHaveBeenCalled();
   });
 
   it('should build major creditor form controls', () => {
     const formGroup = component['buildMajorCreditorFormControls']();
-    expect(formGroup.contains('fsa_search_account_major_creditors_major_creditor_id')).toBeTrue();
+    expect(formGroup.contains('fsa_search_account_major_creditors_major_creditor_id')).toBe(true);
     expect(formGroup.get('fsa_search_account_major_creditors_major_creditor_id')?.validator).toBeTruthy();
   });
 
   it('should set up the major creditor form', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addControlsToNestedFormGroup').and.callThrough();
+    vi.spyOn<any, any>(component, 'addControlsToNestedFormGroup');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm').and.callThrough();
+    vi.spyOn<any, any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(mockFinesSaStore, 'resetDefendantSearchCriteria').and.callThrough();
+    vi.spyOn<any, any>(mockFinesSaStore, 'resetDefendantSearchCriteria');
 
     component['setupMajorCreditorForm']();
 

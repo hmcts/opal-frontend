@@ -5,6 +5,7 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from '../../mocks/fi
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM_MOCK } from '../../../../fines-mac-fixed-penalty-details/mocks/fines-mac-fixed-penalty-details-store-form.mock';
 import { finesMacPayloadMapAccountFixedPenalty } from './fines-mac-payload-map-account-fixed-penalty.utils';
 import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-non-snake-case.interface';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 const cjsCodes: IOpalFinesOffencesNonSnakeCase[] = [
   { offenceId: 12345, cjsCode: 'CJS12345' },
@@ -22,7 +23,7 @@ describe('finesMacPayloadMapAccountFixedPenalty', () => {
 
   it('should map fixed penalty details to the state correctly when offence codes are provided', () => {
     if (!initialState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
     const expectedFixedPenaltyState = structuredClone(FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM_MOCK);
@@ -40,7 +41,7 @@ describe('finesMacPayloadMapAccountFixedPenalty', () => {
 
   it('should map fixed penalty details to the state correctly when offence codes are not provided', () => {
     if (!initialState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
 
@@ -60,7 +61,7 @@ describe('finesMacPayloadMapAccountFixedPenalty', () => {
 
   it('should map fixed penalty details to the state correctly when offence type is not vehicle', () => {
     if (!initialState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
 

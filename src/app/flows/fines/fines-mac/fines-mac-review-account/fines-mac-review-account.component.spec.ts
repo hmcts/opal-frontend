@@ -29,28 +29,23 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createTestModule(snapshotData?: any) {
   const mockOpalFinesService = {
-    getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
-    getLocalJusticeAreaPrettyName: jasmine
-      .createSpy('getLocalJusticeAreaPrettyName')
-      .and.returnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
-    getOffenceByCjsCode: jasmine
-      .createSpy('getOffenceByCjsCode')
-      .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
-    postDraftAddAccountPayload: jasmine
-      .createSpy('postDraftAddAccountPayload')
-      .and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
-    putDraftAddAccountPayload: jasmine
-      .createSpy('postDraftAddAccountPayload')
-      .and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
+    getCourtPrettyName: vi.fn().mockReturnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
+    getLocalJusticeAreaPrettyName: vi.fn().mockReturnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
+    getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+    postDraftAddAccountPayload: vi.fn().mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
+    putDraftAddAccountPayload: vi.fn().mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
   };
 
-  const mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
-  const mockUtilsService = jasmine.createSpyObj(UtilsService, [
+  const mockDateService = createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
+  const mockUtilsService = createSpyObj(UtilsService, [
     'scrollToTop',
     'upperCaseFirstLetter',
     'formatSortCode',
@@ -59,15 +54,17 @@ function createTestModule(snapshotData?: any) {
     'upperCaseAllLetters',
   ]);
 
-  const mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
+  const mockFinesMacPayloadService = createSpyObj(FinesMacPayloadService, [
     'buildAddAccountPayload',
     'buildReplaceAccountPayload',
     'mapAccountPayload',
     'getDefendantName',
   ]);
-  mockFinesMacPayloadService.buildReplaceAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
-  mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
-  mockFinesMacPayloadService.getDefendantName.and.returnValue('Test Defendant Name');
+  mockFinesMacPayloadService['buildReplaceAccountPayload'].mockReturnValue(
+    structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+  );
+  mockFinesMacPayloadService['buildAddAccountPayload'].mockReturnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
+  mockFinesMacPayloadService['getDefendantName'].mockReturnValue('Test Defendant Name');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const defaultData: any = {
@@ -138,8 +135,10 @@ describe('FinesMacReviewAccountComponent', () => {
   describe('when snapshot has localJusticeAreas, courts, results, and major creditors only', () => {
     let component: FinesMacReviewAccountComponent;
     let mockOpalFinesService: Partial<OpalFines>;
-    let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
-    let mockUtilsService: jasmine.SpyObj<UtilsService>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let mockFinesMacPayloadService: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let mockUtilsService: any;
     let finesMacStore: FinesMacStoreType;
     let finesDraftStore: FinesDraftStoreType;
 
@@ -171,10 +170,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should call reviewAccountFetchedMappedPayload on ngOnInit', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const reviewAccountFetchedMappedPayloadSpy = spyOn<any>(
-        component,
-        'reviewAccountFetchedMappedPayload',
-      ).and.callThrough();
+      const reviewAccountFetchedMappedPayloadSpy = vi.spyOn<any, any>(component, 'reviewAccountFetchedMappedPayload');
 
       component.ngOnInit();
 
@@ -183,16 +179,17 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should handle submitPayload failure', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const handleRequestErrorSpy = spyOn<any>(component, 'handleRequestError');
-      mockOpalFinesService.putDraftAddAccountPayload = jasmine
-        .createSpy('putDraftAddAccountPayload')
-        .and.returnValue(throwError(() => new Error('Something went wrong')));
+      const handleRequestErrorSpy = vi.spyOn<any, any>(component, 'handleRequestError');
+      mockOpalFinesService.putDraftAddAccountPayload = vi
+        .fn()
+        .mockReturnValue(throwError(() => new Error('Something went wrong')));
       component['handlePutRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
       expect(handleRequestErrorSpy).toHaveBeenCalled();
     });
 
     it('should call router.navigate with submitConfirmation on submitPayload success', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       component['submitPayload']();
       expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.submitConfirmation], {
         relativeTo: component['activatedRoute'].parent,
@@ -201,24 +198,25 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should handle submitPayload failure', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const handleRequestErrorSpy = spyOn<any>(component, 'handleRequestError');
-      mockOpalFinesService.postDraftAddAccountPayload = jasmine
-        .createSpy('postDraftAddAccountPayload')
-        .and.returnValue(throwError(() => new Error('Something went wrong')));
+      const handleRequestErrorSpy = vi.spyOn<any, any>(component, 'handleRequestError');
+      mockOpalFinesService.postDraftAddAccountPayload = vi
+        .fn()
+        .mockReturnValue(throwError(() => new Error('Something went wrong')));
       component['handlePostRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
       expect(handleRequestErrorSpy).toHaveBeenCalled();
     });
 
     it('should test processPutResponse', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       const expectedResult = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
       finesDraftStore.setFragment('review');
 
       component['processPutResponse'](expectedResult);
 
       expect(finesDraftStore.bannerMessage()).toEqual(`You have submitted Test Defendant Name's account for review.`);
-      expect(finesMacStore.stateChanges()).toBeFalse();
-      expect(finesMacStore.unsavedChanges()).toBeFalse();
+      expect(finesMacStore.stateChanges()).toBe(false);
+      expect(finesMacStore.unsavedChanges()).toBe(false);
       expect(mockFinesMacPayloadService.getDefendantName).toHaveBeenCalledWith(expectedResult);
       expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], {
         fragment: finesDraftStore.fragment(),
@@ -226,21 +224,23 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should test processPutResponse when fragment is empty', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       const expectedResult = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
       finesDraftStore.setFragment('');
 
       component['processPutResponse'](expectedResult);
 
       expect(finesDraftStore.bannerMessage()).toEqual(`You have submitted Test Defendant Name's account for review.`);
-      expect(finesMacStore.stateChanges()).toBeFalse();
-      expect(finesMacStore.unsavedChanges()).toBeFalse();
+      expect(finesMacStore.stateChanges()).toBe(false);
+      expect(finesMacStore.unsavedChanges()).toBe(false);
       expect(mockFinesMacPayloadService.getDefendantName).toHaveBeenCalledWith(expectedResult);
       expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], {});
     });
 
     it('should test processPostResponse', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
       component['processPostResponse']();
 
@@ -268,9 +268,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should test submitPutPayload', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const preparePutPayloadSpy = spyOn<any>(component, 'preparePutPayload');
+      const preparePutPayloadSpy = vi.spyOn<any, any>(component, 'preparePutPayload');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const handlePutRequestSpy = spyOn<any>(component, 'handlePutRequest');
+      const handlePutRequestSpy = vi.spyOn<any, any>(component, 'handlePutRequest');
 
       component['submitPutPayload']();
 
@@ -280,9 +280,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should test submitPostPayload', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const preparePostPayloadSpy = spyOn<any>(component, 'preparePostPayload');
+      const preparePostPayloadSpy = vi.spyOn<any, any>(component, 'preparePostPayload');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const handlePostRequestSpy = spyOn<any>(component, 'handlePostRequest');
+      const handlePostRequestSpy = vi.spyOn<any, any>(component, 'handlePostRequest');
 
       component['submitPostPayload']();
 
@@ -292,7 +292,8 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should handle submitPayload success', () => {
       finesDraftStore.setAmend(false);
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
       component['submitPayload']();
 
@@ -302,7 +303,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should call router.navigate with POST', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setAmend(false);
 
       component['submitPayload']();
@@ -313,7 +315,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should call router.navigate with PUT', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragmentAndAmend('review', true);
 
       component['submitPayload']();
@@ -324,7 +327,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back on navigateBack when isReadOnly is false', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       component.isReadOnly = false;
 
       component.navigateBack();
@@ -335,7 +339,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back the fixed Penalty Details form when isReadOnly is false, there is no accountType in the store and the account status is not Rejected', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
       finesDraftStore.setAccountType('');
       finesDraftStore.setAccountStatus('In Progress');
@@ -345,12 +350,13 @@ describe('FinesMacReviewAccountComponent', () => {
       component.navigateBack();
 
       expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
-        relativeTo: jasmine.any(Object),
+        relativeTo: expect.any(Object),
       });
     });
 
     it('should navigate back to inputter on navigateBack when isReadOnly is true', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragment('review');
       finesDraftStore.setViewAllAccounts(false);
       finesDraftStore.setChecker(false);
@@ -362,7 +368,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back to inputter on navigateBack when isReadOnly is true and fragment is empty', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragment('');
       finesDraftStore.setViewAllAccounts(false);
       finesDraftStore.setChecker(false);
@@ -372,7 +379,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back to inputter on navigateBack when isReadOnly is true and fragment has value', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragment('test-fragment');
       finesDraftStore.setViewAllAccounts(false);
       finesDraftStore.setChecker(false);
@@ -382,7 +390,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragment('review');
       finesDraftStore.setViewAllAccounts(true);
       finesDraftStore.setChecker(false);
@@ -392,7 +401,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back to in-review on navigateBack when checker is true', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragment('in-review');
       finesDraftStore.setViewAllAccounts(false);
       finesDraftStore.setChecker(true);
@@ -402,7 +412,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setViewAllAccounts(true);
       component.isReadOnly = true;
       component.navigateBack();
@@ -410,11 +421,12 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate to fixed penalty details when not read-only, accountType is Fixed Penalty and status is not Rejected (late branch)', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
       // Ensure we do NOT hit the early return branch at the start of navigateBack
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      spyOn(component['finesMacStore'], 'getAccountType').and.returnValue('Some Other Type' as any);
+      vi.spyOn<any, any>(component['finesMacStore'], 'getAccountType').mockReturnValue('Some Other Type' as any);
 
       // Drive execution into the later else-branch under !isReadOnly
       component.isReadOnly = false;
@@ -424,24 +436,26 @@ describe('FinesMacReviewAccountComponent', () => {
       component.navigateBack();
 
       expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
-        relativeTo: jasmine.any(Object),
+        relativeTo: expect.any(Object),
       });
     });
 
     it('should navigate back to referrer when account type is fixed penalty and account type is "Rejected"', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       component.accountStatus = 'Rejected';
       component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
       component.isReadOnly = false;
       component.navigateBack();
 
       expect(routerSpy).toHaveBeenCalledWith([component['getBackPath']()], {
-        relativeTo: jasmine.any(Object),
+        relativeTo: expect.any(Object),
       });
     });
 
     it('should navigate back to referrer when account type is fixed penalty, status is "Rejected", and fragment has value', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       finesDraftStore.setFragment('test-fragment');
       component.accountStatus = 'Rejected';
       component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
@@ -456,7 +470,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should submit payload on submitForReview', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const submitPayloadSpy = spyOn<any>(component, 'submitPayload').and.callThrough();
+      const submitPayloadSpy = vi.spyOn<any, any>(component, 'submitPayload');
 
       component.submitForReview();
 
@@ -464,10 +478,15 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should call router.navigate with relative route when handleDeleteAccount is called and account id is 0', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
-      spyOn(component['finesMacStore'], 'setDeleteFromCheckAccount').and.stub();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['finesMacStore'], 'setDeleteFromCheckAccount').mockImplementation(() => {});
       const route = component['finesMacRoutes'].children.deleteAccountConfirmation;
-      const mockEvent: Event = jasmine.createSpyObj('Event', ['preventDefault']);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockEvent: any = {
+        preventDefault: vi.fn().mockName('Event.preventDefault'),
+      };
       component.accountId = 0; // Set accountId to 0 to simulate the condition
 
       component.handleDeleteAccount(mockEvent);
@@ -477,10 +496,15 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should call router.navigate with relative route when handleDeleteAccount is called and account id is > 0', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
-      spyOn(component['finesMacStore'], 'setDeleteFromCheckAccount').and.stub();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['finesMacStore'], 'setDeleteFromCheckAccount').mockImplementation(() => {});
       const route = component['finesMacRoutes'].children.deleteAccountConfirmation + `/${component.accountId}`;
-      const mockEvent: Event = jasmine.createSpyObj('Event', ['preventDefault']);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockEvent: any = {
+        preventDefault: vi.fn().mockName('Event.preventDefault'),
+      };
       component.accountId = 1; // Set accountId to 1 to simulate the condition
 
       component.handleDeleteAccount(mockEvent);
@@ -496,7 +520,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should route to the account details page when change() is called from a fine account', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       component.accountType = FINES_ACCOUNT_TYPES['Fine'];
 
       component.change();
@@ -507,13 +532,14 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should route to the fixed penalty details form when change() is called from a fixed penalty account', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
       component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
       component.change();
 
       expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
-        relativeTo: jasmine.any(Object),
+        relativeTo: expect.any(Object),
       });
     });
   });
@@ -534,7 +560,7 @@ describe('FinesMacReviewAccountComponent', () => {
       const setup = createTestModule({ reviewAccountFetchMap: snapshotData });
       component = setup.component;
       component['reviewAccountFetchedMappedPayload']();
-      expect(component.isReadOnly).toBeTrue();
+      expect(component.isReadOnly).toBe(true);
     });
 
     it('should set correct flags when  reviewAccountFetchedMappedPayload is called for a fixed penalty account', () => {
@@ -556,7 +582,7 @@ describe('FinesMacReviewAccountComponent', () => {
       component['finesDraftStore'].setChecker(false);
 
       component['reviewAccountFetchedMappedPayload']();
-      expect(component.isReadOnly).toBeFalse();
+      expect(component.isReadOnly).toBe(false);
     });
   });
 

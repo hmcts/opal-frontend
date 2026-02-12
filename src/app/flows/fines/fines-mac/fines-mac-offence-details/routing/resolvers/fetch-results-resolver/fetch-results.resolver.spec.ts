@@ -6,16 +6,20 @@ import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/int
 import { of, firstValueFrom, Observable } from 'rxjs';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../constants/fines-mac-offence-details-result-codes.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('fetchResultsResolver', () => {
   const executeResolver: ResolveFn<IOpalFinesResultsRefData> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => fetchResultsResolver(...resolverParameters));
 
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
 
   beforeEach(() => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getResults']);
-    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
+    mockOpalFinesService = {
+      getResults: vi.fn().mockName('OpalFines.getResults'),
+    };
+    mockOpalFinesService.getResults.mockReturnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
 
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],

@@ -14,6 +14,7 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opa
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-pretty-name.mock';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   let component: FinesMacReviewAccountCourtDetailsComponent;
@@ -22,13 +23,9 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
-      getLocalJusticeAreaPrettyName: jasmine
-        .createSpy('getLocalJusticeAreaPrettyName')
-        .and.returnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
-      getProsecutorPrettyName: jasmine
-        .createSpy('getProsecutorPrettyName')
-        .and.returnValue(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK),
+      getCourtPrettyName: vi.fn().mockReturnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
+      getLocalJusticeAreaPrettyName: vi.fn().mockReturnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
+      getProsecutorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK),
     };
 
     await TestBed.configureTestingModule({
@@ -77,7 +74,8 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should emit change court details event', () => {
-    spyOn(component.emitChangeCourtDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChangeCourtDetails, 'emit');
 
     component.changeCourtDetails();
 
@@ -86,7 +84,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
   it('should call getCourtDetailsData on init', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getCourtDetailsData');
+    vi.spyOn<any, any>(component, 'getCourtDetailsData');
 
     component.ngOnInit();
 
@@ -101,11 +99,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
   it('should get court data and set issuingAuthority from getCourtDetailsData for a fixed penalty account when issuing authority is a prosecutor', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getEnforcementCourt').and.stub();
+    vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getProsecutor').and.callThrough();
+    vi.spyOn<any, any>(component, 'getProsecutor');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getSendingCourt').and.callThrough();
+    vi.spyOn<any, any>(component, 'getSendingCourt');
     component.courtDetails.fm_court_details_originator_id = '1865';
     component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
@@ -118,11 +116,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
   it('should get court data and set issuingAuthority from getCourtDetailsData for a fixed penalty account when issuing authority is a local justice authority', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getEnforcementCourt').and.stub();
+    vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getProsecutor').and.callThrough();
+    vi.spyOn<any, any>(component, 'getProsecutor');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getSendingCourt').and.callThrough();
+    vi.spyOn<any, any>(component, 'getSendingCourt');
     component.courtDetails.fm_court_details_originator_id = '9985';
     component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
@@ -135,11 +133,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
   it('should get court data and set sendingCourt from getCourtDetailsData for a non-fixed penalty account', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getEnforcementCourt').and.stub();
+    vi.spyOn<any, any>(component, 'getEnforcementCourt').mockImplementation(() => {});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getProsecutor').and.callThrough();
+    vi.spyOn<any, any>(component, 'getProsecutor');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getSendingCourt').and.callThrough();
+    vi.spyOn<any, any>(component, 'getSendingCourt');
     component.courtDetails.fm_court_details_originator_id = '9985';
     component.accountType = FINES_ACCOUNT_TYPES['Fine'];
 

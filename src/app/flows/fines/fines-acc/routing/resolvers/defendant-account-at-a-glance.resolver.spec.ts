@@ -6,14 +6,23 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { IFinesAccAddCommentsFormState } from '../../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('defendantAccountAtAGlanceResolver', () => {
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockPayloadService: any;
 
   beforeEach(() => {
-    const opalFinesServiceSpy = jasmine.createSpyObj('OpalFines', ['getDefendantAccountAtAGlance']);
-    const payloadServiceSpy = jasmine.createSpyObj('FinesAccPayloadService', ['transformAtAGlanceDataToCommentsForm']);
+    const opalFinesServiceSpy = {
+      getDefendantAccountAtAGlance: vi.fn().mockName('OpalFines.getDefendantAccountAtAGlance'),
+    };
+    const payloadServiceSpy = {
+      transformAtAGlanceDataToCommentsForm: vi
+        .fn()
+        .mockName('FinesAccPayloadService.transformAtAGlanceDataToCommentsForm'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -22,10 +31,10 @@ describe('defendantAccountAtAGlanceResolver', () => {
       ],
     });
 
-    mockOpalFinesService = TestBed.inject(OpalFines) as jasmine.SpyObj<OpalFines>;
-    mockPayloadService = TestBed.inject(FinesAccPayloadService) as jasmine.SpyObj<
-      InstanceType<typeof FinesAccPayloadService>
-    >;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockOpalFinesService = TestBed.inject(OpalFines) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockPayloadService = TestBed.inject(FinesAccPayloadService) as any;
   });
 
   it('should resolve comments form data successfully', async () => {
@@ -43,10 +52,10 @@ describe('defendantAccountAtAGlanceResolver', () => {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const state = {} as any;
 
-    mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
+    mockOpalFinesService.getDefendantAccountAtAGlance.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK),
     );
-    mockPayloadService.transformAtAGlanceDataToCommentsForm.and.returnValue(expectedFormData);
+    mockPayloadService.transformAtAGlanceDataToCommentsForm.mockReturnValue(expectedFormData);
 
     const result = await TestBed.runInInjectionContext(() =>
       firstValueFrom(defendantAccountAtAGlanceResolver(route, state) as Observable<IFinesAccAddCommentsFormState>),
