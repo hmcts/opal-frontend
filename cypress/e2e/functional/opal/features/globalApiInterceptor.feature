@@ -12,7 +12,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
 
       When I attempt to open Manual Account Creation and the business units request fails with <errorCode>
       Then the global error banner is displayed
-      And the global banner clears after refresh on the "Dashboard" page
+      And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
       Examples:
         | errorCode |
@@ -34,15 +34,15 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | title        | Temporary System Issue                         |
         | message      | Please try again later or contact the help desk. |
         | operation id | OP12345                                        |
-      And the global banner clears after refresh on the "Dashboard" page
+      And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
-    @PO-2109
+    @PO-2109 
     Scenario: Global warning banner appears for business units network failures
       When I attempt to open Manual Account Creation and the business units request fails due to a network error
       Then the global warning banner is displayed with:
         | field   | value                                                             |
         | message | You can try again. If the problem persists, contact the service desk. |
-      And the global banner clears after refresh on the "Dashboard" page
+      And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
     @PO-2108
     Scenario: Internal Server Error page is displayed for non-retriable business units errors
