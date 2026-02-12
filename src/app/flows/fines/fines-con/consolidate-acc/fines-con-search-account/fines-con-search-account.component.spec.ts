@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinesConSearchAccountComponent } from './fines-con-search-account.component';
 import { IFinesConSearchAccountForm } from './interfaces/fines-con-search-account-form.interface';
 import { FinesConStore } from '../../stores/fines-con.store';
@@ -11,10 +12,10 @@ describe('FinesConSearchAccountComponent', () => {
   let finesConStore: InstanceType<FinesConStoreType>;
 
   beforeEach(async () => {
-    const activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', [], {
+    const activatedRouteSpy = {
       params: { subscribe: () => {} },
       queryParams: { subscribe: () => {} },
-    });
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesConSearchAccountComponent],
@@ -41,8 +42,8 @@ describe('FinesConSearchAccountComponent', () => {
   });
 
   it('should handle search account form submission', () => {
-    spyOn(finesConStore, 'updateSearchAccountFormTemporary');
-    spyOn(finesConStore, 'setUnsavedChanges');
+    const updateSpy = vi.spyOn(finesConStore, 'updateSearchAccountFormTemporary');
+    const setSpy = vi.spyOn(finesConStore, 'setUnsavedChanges');
     const formData: IFinesConSearchAccountForm = {
       formData: {
         fcon_search_account_number: '12345678',
@@ -62,22 +63,22 @@ describe('FinesConSearchAccountComponent', () => {
     };
 
     component.handleSearchAccountSubmit(formData);
-    expect(finesConStore.updateSearchAccountFormTemporary).toHaveBeenCalledWith(formData.formData);
-    expect(finesConStore.setUnsavedChanges).toHaveBeenCalledWith(false);
+    expect(updateSpy).toHaveBeenCalledWith(formData.formData);
+    expect(setSpy).toHaveBeenCalledWith(false);
   });
 
   it('should call store.setUnsavedChanges with true when handling unsaved changes true', () => {
-    spyOn(finesConStore, 'setUnsavedChanges');
+    const setSpy = vi.spyOn(finesConStore, 'setUnsavedChanges');
     component.handleUnsavedChanges(true);
 
-    expect(finesConStore.setUnsavedChanges).toHaveBeenCalledWith(true);
+    expect(setSpy).toHaveBeenCalledWith(true);
   });
 
   it('should call store.setUnsavedChanges with false when handling unsaved changes false', () => {
-    spyOn(finesConStore, 'setUnsavedChanges');
+    const setSpy = vi.spyOn(finesConStore, 'setUnsavedChanges');
     component.handleUnsavedChanges(false);
 
-    expect(finesConStore.setUnsavedChanges).toHaveBeenCalledWith(false);
+    expect(setSpy).toHaveBeenCalledWith(false);
   });
 
   it('should have FinesConStore injected', () => {

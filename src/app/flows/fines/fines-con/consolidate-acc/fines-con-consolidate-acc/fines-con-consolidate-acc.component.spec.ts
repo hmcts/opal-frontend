@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinesConConsolidateAccComponent } from './fines-con-consolidate-acc.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FinesConStore } from '../../stores/fines-con.store';
@@ -8,21 +9,21 @@ import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
 describe('FinesConConsolidateAccComponent', () => {
   let component: FinesConConsolidateAccComponent;
   let fixture: ComponentFixture<FinesConConsolidateAccComponent>;
-  let router: jasmine.SpyObj<Router>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+  let mockRouter: { navigate: ReturnType<typeof vi.fn> };
+  let mockActivatedRoute: { parent: Record<string, unknown> };
   let finesConStore: InstanceType<FinesConStoreType>;
 
   beforeEach(async () => {
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    mockRouter = { navigate: vi.fn() };
     const parentActivatedRoute = {};
     mockActivatedRoute = {
       parent: parentActivatedRoute,
-    } as jasmine.SpyObj<ActivatedRoute>;
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesConConsolidateAccComponent],
       providers: [
-        { provide: Router, useValue: routerSpy },
+        { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -30,7 +31,6 @@ describe('FinesConConsolidateAccComponent', () => {
 
     fixture = TestBed.createComponent(FinesConConsolidateAccComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     finesConStore = TestBed.inject(FinesConStore);
     // Don't call detectChanges to avoid initializing child components
   });
@@ -61,7 +61,7 @@ describe('FinesConConsolidateAccComponent', () => {
   it('should navigate back to select business unit', () => {
     component.navigateBack();
 
-    expect(router.navigate).toHaveBeenCalledWith(['select-business-unit'], {
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['select-business-unit'], {
       relativeTo: mockActivatedRoute.parent,
     });
   });
@@ -73,17 +73,17 @@ describe('FinesConConsolidateAccComponent', () => {
   });
 
   it('should return false for canDeactivate when there are unsaved changes', () => {
-    spyOn(finesConStore, 'unsavedChanges').and.returnValue(true);
+    vi.spyOn(finesConStore, 'unsavedChanges').mockReturnValue(true);
     const result = component.canDeactivate();
 
     expect(result).toBe(false);
   });
 
   it('should reset consolidation state and navigate to dashboard on cancelConsolidation', () => {
-    spyOn(finesConStore, 'resetConsolidationState');
+    const resetSpy = vi.spyOn(finesConStore, 'resetConsolidationState');
     component.cancelConsolidation();
 
-    expect(finesConStore.resetConsolidationState).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['dashboard']);
+    expect(resetSpy).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['dashboard']);
   });
 });

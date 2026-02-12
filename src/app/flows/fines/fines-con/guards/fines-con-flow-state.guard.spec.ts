@@ -1,4 +1,5 @@
-import { fakeAsync, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { finesConFlowStateGuard } from './fines-con-flow-state.guard';
 import { FinesConStore } from '../stores/fines-con.store';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -12,45 +13,52 @@ import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 import { of } from 'rxjs';
 
 describe('finesConFlowStateGuard', () => {
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter: {
+    navigate: ReturnType<typeof vi.fn>;
+    createUrlTree: ReturnType<typeof vi.fn>;
+    parseUrl: ReturnType<typeof vi.fn>;
+  };
   let mockFinesConStore: InstanceType<FinesConStoreType>;
 
   const urlPath = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.con.root}/${FINES_CON_ROUTING_PATHS.children.consolidateAcc}`;
   const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.con.root}/${FINES_CON_ROUTING_PATHS.children.selectBusinessUnit}`;
 
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj(finesConFlowStateGuard, ['navigate', 'createUrlTree', 'parseUrl']);
-    mockRouter.parseUrl.and.callFake((url: string) => {
-      const urlTree = new UrlTree();
-      const urlSegment = new UrlSegment(url, {});
-      urlTree.root = new UrlSegmentGroup([urlSegment], {});
-      return urlTree;
-    });
+    mockRouter = {
+      navigate: vi.fn(),
+      createUrlTree: vi.fn(),
+      parseUrl: vi.fn().mockImplementation((url: string) => {
+        const urlTree = new UrlTree();
+        const urlSegment = new UrlSegment(url, {});
+        urlTree.root = new UrlSegmentGroup([urlSegment], {});
+        return urlTree;
+      }),
+    };
 
     TestBed.configureTestingModule({
       providers: [FinesConStore, { provide: Router, useValue: mockRouter }],
     });
 
-    mockRouter.createUrlTree.and.returnValue(new UrlTree());
+    (mockRouter.createUrlTree as ReturnType<typeof vi.fn>).mockReturnValue(new UrlTree());
 
     mockFinesConStore = TestBed.inject(FinesConStore);
   });
 
-  it('should return true if business unit ID and defendant type are present (individual)', fakeAsync(async () => {
+  it('should return true if business unit ID and defendant type are present (individual)', async () => {
     mockFinesConStore.updateSelectBuFormComplete(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
-    expect(result).toBeTrue();
-  }));
+    expect(result).toBe(true);
+  });
 
-  it('should return true if business unit ID and defendant type are present (company)', fakeAsync(async () => {
+  it('should return true if business unit ID and defendant type are present (company)', async () => {
     mockFinesConStore.updateSelectBuFormComplete(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK);
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
-    expect(result).toBeTrue();
-  }));
+    expect(result).toBe(true);
+  });
 
-  it('should return false and redirect if business unit ID is missing', fakeAsync(async () => {
+  it('should return false and redirect if business unit ID is missing', async () => {
     mockFinesConStore.updateSelectBuForm({
       fcon_select_bu_business_unit_id: null,
       fcon_select_bu_business_unit_name: 'Test BU',
@@ -58,14 +66,14 @@ describe('finesConFlowStateGuard', () => {
     });
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
-    expect(result).toEqual(jasmine.any(UrlTree));
+    expect(result).toBeInstanceOf(UrlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
       queryParams: undefined,
       fragment: undefined,
     });
-  }));
+  });
 
-  it('should return false and redirect if defendant type is missing', fakeAsync(async () => {
+  it('should return false and redirect if defendant type is missing', async () => {
     mockFinesConStore.updateSelectBuForm({
       fcon_select_bu_business_unit_id: 123,
       fcon_select_bu_business_unit_name: 'Test BU',
@@ -73,14 +81,14 @@ describe('finesConFlowStateGuard', () => {
     });
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
-    expect(result).toEqual(jasmine.any(UrlTree));
+    expect(result).toBeInstanceOf(UrlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
       queryParams: undefined,
       fragment: undefined,
     });
-  }));
+  });
 
-  it('should return false and redirect if both business unit ID and defendant type are missing', fakeAsync(async () => {
+  it('should return false and redirect if both business unit ID and defendant type are missing', async () => {
     mockFinesConStore.updateSelectBuForm({
       fcon_select_bu_business_unit_id: null,
       fcon_select_bu_business_unit_name: 'Test BU',
@@ -88,19 +96,19 @@ describe('finesConFlowStateGuard', () => {
     });
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
-    expect(result).toEqual(jasmine.any(UrlTree));
+    expect(result).toBeInstanceOf(UrlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
       queryParams: undefined,
       fragment: undefined,
     });
-  }));
+  });
 
-  it('should handle observable result correctly', fakeAsync(async () => {
+  it('should handle observable result correctly', async () => {
     const mockResult = true;
     const guardReturningObservable = () => of(mockResult);
 
     const result = await runFinesConFlowStateGuardWithContext(guardReturningObservable);
 
     expect(result).toBe(mockResult);
-  }));
+  });
 });

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinesConSearchAccountFormComponent } from './fines-con-search-account-form.component';
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FinesConStoreType } from '../../../stores/types/fines-con-store.type';
@@ -12,10 +13,10 @@ describe('FinesConSearchAccountFormComponent', () => {
   let finesConStore: InstanceType<FinesConStoreType>;
 
   beforeEach(async () => {
-    const activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', [], {
+    const activatedRouteSpy = {
       params: { subscribe: () => {} },
       queryParams: { subscribe: () => {} },
-    });
+    };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FinesConSearchAccountFormComponent],
@@ -61,13 +62,13 @@ describe('FinesConSearchAccountFormComponent', () => {
   });
 
   it('should call store.updateSearchAccountFormTemporary with form value when setSearchAccountTemporary is called', () => {
-    spyOn(finesConStore, 'updateSearchAccountFormTemporary');
+    const updateSpy = vi.spyOn(finesConStore, 'updateSearchAccountFormTemporary');
     const formValue = { fcon_search_account_number: '12345678' };
     component.form.patchValue(formValue);
 
     component.setSearchAccountTemporary();
 
-    expect(finesConStore.updateSearchAccountFormTemporary).toHaveBeenCalledWith(component.form.value);
+    expect(updateSpy).toHaveBeenCalledWith(component.form.value);
   });
 
   it('should reset form when clearSearchForm is called', () => {

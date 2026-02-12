@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { FinesConSearchAccountFormIndividualsComponent } from './fines-con-search-account-form-individuals.component';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 
@@ -9,10 +10,10 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
   let fixture: ComponentFixture<FinesConSearchAccountFormIndividualsComponent>;
 
   beforeEach(async () => {
-    const activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', [], {
+    const activatedRouteSpy = {
       params: { subscribe: () => {} },
       queryParams: { subscribe: () => {} },
-    });
+    };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FinesConSearchAccountFormIndividualsComponent],
