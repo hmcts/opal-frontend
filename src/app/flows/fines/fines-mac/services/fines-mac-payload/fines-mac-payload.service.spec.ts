@@ -20,6 +20,7 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from './utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -54,11 +55,12 @@ describe('FinesMacPayloadService', () => {
 
   it('should create an add account payload', () => {
     if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
-    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
@@ -67,12 +69,13 @@ describe('FinesMacPayloadService', () => {
 
   it('should create an add account payload with minor creditor', () => {
     if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
     finesMacState.offenceDetails = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
-    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
 
     finesMacPayloadAddAccount.account.offences = FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR;
@@ -82,7 +85,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should create an add account payload for fixed penalty', () => {
     if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -91,7 +94,8 @@ describe('FinesMacPayloadService', () => {
     finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
     finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
 
-    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
 
     expect(result).toEqual(finesMacPayloadAddAccountFixedPenalty);
@@ -99,7 +103,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should create a replace account payload', () => {
     if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -111,7 +115,8 @@ describe('FinesMacPayloadService', () => {
       },
     ];
 
-    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
     const result = service.buildReplaceAccountPayload(finesMacState, finesMacPayloadAddAccount, sessionUserState);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
@@ -120,7 +125,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should mapAccountPayload', () => {
     if (!sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -136,7 +141,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should get the business unit user id', () => {
     if (!service || !sessionUserState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -148,7 +153,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should mapAccountPayload with businessUnitRefData and offencesRefData', () => {
     if (!sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -181,14 +186,15 @@ describe('FinesMacPayloadService', () => {
 
   it('should build a patch payload with provided status and reason', () => {
     if (!service || !finesMacPayloadAddAccount || !sessionUserState || !dateService) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
     const status = 'Rejected';
     const reasonText = 'Some reason';
 
-    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
     // We need to call the real util to get the expected timeline_data
     const timeline_data = finesMacPayloadBuildAccountTimelineData(
@@ -214,14 +220,15 @@ describe('FinesMacPayloadService', () => {
 
   it('should build a patch payload with null reasonText', () => {
     if (!service || !finesMacPayloadAddAccount || !sessionUserState || !dateService) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
     const status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
     const reasonText = null;
 
-    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(dateService, 'getDateNow').mockReturnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
     const timeline_data = finesMacPayloadBuildAccountTimelineData(
       sessionUserState['name'],
@@ -249,7 +256,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should return forenames and surname when defendant_type is "adultOrYouthOnly"', () => {
     if (!service) {
-      fail('Service is not properly initialised');
+      throw new Error('Service is not properly initialised');
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -268,7 +275,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should return forenames and surname when defendant_type is "pgToPay"', () => {
     if (!service) {
-      fail('Service is not properly initialised');
+      throw new Error('Service is not properly initialised');
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -287,7 +294,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should return company_name when defendant_type is not "adultOrYouthOnly" or "pgToPay"', () => {
     if (!service) {
-      fail('Service is not properly initialised');
+      throw new Error('Service is not properly initialised');
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -306,7 +313,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should handle missing forenames or surname gracefully', () => {
     if (!service) {
-      fail('Service is not properly initialised');
+      throw new Error('Service is not properly initialised');
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -325,7 +332,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should handle missing company_name gracefully', () => {
     if (!service) {
-      fail('Service is not properly initialised');
+      throw new Error('Service is not properly initialised');
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -14,6 +14,7 @@ import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/stat
 import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-parent-guardian-details-state.mock';
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-personal-details-state.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK } from '../mocks/fines-mac-payload-account-defendant-parent-guardian-complete-with-alias.mock';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
   let initialState: IFinesMacState | null;
@@ -50,7 +51,7 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
       !languagePreferencesState ||
       !parentGuardianDetailsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -77,7 +78,7 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
 
   it('should not map debtor details from payload to state if parent_guardian is null', () => {
     if (!initialState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -106,7 +107,7 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
 
   it('should map parent/guardian details if present in payload', () => {
     if (!initialState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -121,7 +122,7 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
 
   it('should map parent/guardian details if present in payload, if aliases has no len return empty array', () => {
     if (!initialState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -138,7 +139,7 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
   });
 
   it('should return mapped state directly if debtor_detail is null', () => {
-    if (!initialState) fail('Required mock state not initialised');
+    if (!initialState) throw new Error('Required mock state not initialised');
 
     const payload = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK);
 

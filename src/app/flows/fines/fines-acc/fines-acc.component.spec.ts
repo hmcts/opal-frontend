@@ -2,14 +2,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccComponent } from './fines-acc.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccComponent', () => {
   let component: FinesAccComponent;
   let fixture: ComponentFixture<FinesAccComponent>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['clearAccountDetailsCache']);
+    mockOpalFinesService = {
+      clearAccountDetailsCache: vi.fn().mockName('OpalFines.clearAccountDetailsCache'),
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesAccComponent],

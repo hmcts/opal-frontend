@@ -1,6 +1,7 @@
 import { finesMacPayloadMapBusinessUnit } from './fines-mac-payload-map-business-unit.utils';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from '../../mocks/fines-mac-payload-fines-mac-state.mock';
+import { describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadMapBusinessUnit', () => {
   it('should map business unit reference data to fines MAC state', () => {

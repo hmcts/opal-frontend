@@ -9,6 +9,7 @@ import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-ty
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesMacLanguagePreferencesOptions } from '../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
 import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacReviewAccountAccountDetailsComponent', () => {
   let component: FinesMacReviewAccountAccountDetailsComponent;
@@ -76,7 +77,7 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
 
   it('should call getAccountDetailsData on init', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getAccountDetailsData');
+    vi.spyOn<any, any>(component, 'getAccountDetailsData');
 
     component.ngOnInit();
 

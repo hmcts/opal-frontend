@@ -8,18 +8,22 @@ import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('fetchIssuingAuthoritiesResolver', () => {
   const executeResolver: ResolveFn<IOpalFinesProsecutorRefData> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => fetchProsecutorsResolver(...resolverParameters));
 
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
   let finesMacStore: FinesMacStoreType;
   const mockBusinessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
 
   beforeEach(() => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getProsecutors']);
-    mockOpalFinesService.getProsecutors.and.returnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK));
+    mockOpalFinesService = {
+      getProsecutors: vi.fn().mockName('OpalFines.getProsecutors'),
+    };
+    mockOpalFinesService.getProsecutors.mockReturnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK));
 
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],

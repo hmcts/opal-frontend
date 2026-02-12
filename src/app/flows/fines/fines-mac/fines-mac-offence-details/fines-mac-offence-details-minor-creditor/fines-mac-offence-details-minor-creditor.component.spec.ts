@@ -13,6 +13,7 @@ import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offen
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorComponent;
@@ -52,7 +53,8 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   });
 
   it('should handle form submission when editing and navigate to add an offence', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);
@@ -74,7 +76,8 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   });
 
   it('should handle form submission when editing and navigate to add an offence multiple childFormData', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);
@@ -103,7 +106,8 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   });
 
   it('should handle form submission and navigate to add an offence', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);

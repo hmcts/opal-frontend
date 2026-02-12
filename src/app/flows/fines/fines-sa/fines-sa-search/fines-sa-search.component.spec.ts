@@ -3,6 +3,7 @@ import { FinesSaSearchComponent } from './fines-sa-search.component';
 import { FinesSaStoreType } from '../stores/types/fines-sa.type';
 import { FinesSaStore } from '../stores/fines-sa.store';
 import { FINES_SA_SEARCH_ACCOUNT_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/mocks/fines-sa-search-account-state.mock';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesSaSearchComponent', () => {
   let component: FinesSaSearchComponent;

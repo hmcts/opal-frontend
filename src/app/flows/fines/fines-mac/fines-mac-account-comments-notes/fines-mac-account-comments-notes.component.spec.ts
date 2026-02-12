@@ -11,6 +11,7 @@ import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from './constants/fines-mac-ac
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacAccountCommentsNotesComponent', () => {
   let component: FinesMacAccountCommentsNotesComponent;
@@ -49,7 +50,8 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = false;
@@ -63,7 +65,8 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should handle form submission and navigate to next route', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = true;
@@ -77,7 +80,8 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should handle form submission and navigate to next route - form empty', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     const form = formSubmit;
     form.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE);

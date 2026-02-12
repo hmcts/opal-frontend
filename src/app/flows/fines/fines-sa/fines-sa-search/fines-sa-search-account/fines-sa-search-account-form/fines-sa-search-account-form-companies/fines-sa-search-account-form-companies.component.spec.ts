@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { FinesSaSearchAccountFormCompaniesComponent } from './fines-sa-search-account-form-companies.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesSaSearchAccountFormCompaniesComponent', () => {
   let component: FinesSaSearchAccountFormCompaniesComponent;
@@ -36,9 +37,9 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.form.get('fsa_search_account_companies_company_name')?.setValue('');
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeFalse();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
+      false,
+    );
   });
 
   it('should require company name if exact match is set to true and company name is empty', () => {
@@ -47,9 +48,9 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.form.get('fsa_search_account_companies_company_name')?.setValue('');
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should require company name if add aliases is set to true', () => {
@@ -58,9 +59,9 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.form.get('fsa_search_account_companies_company_name')?.setValue('');
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should require company name if both add aliases and exact match are true', () => {
@@ -70,9 +71,9 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.form.get('fsa_search_account_companies_company_name')?.setValue('');
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should NOT require company name when a non-empty value is present even if exact match is true', () => {
@@ -80,9 +81,9 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.form.get('fsa_search_account_companies_company_name_exact_match')?.setValue(true);
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeFalse();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
+      false,
+    );
   });
 
   it('should treat whitespace-only as empty and require when exact match is true', () => {
@@ -90,9 +91,9 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.form.get('fsa_search_account_companies_company_name_exact_match')?.setValue(true);
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should require company name when value is null and include aliases is true', () => {
@@ -100,9 +101,9 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.form.get('fsa_search_account_companies_include_aliases')?.setValue(true);
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should treat non-string values as present and NOT require company name even if flags are true', () => {
@@ -115,9 +116,9 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
 
     ctrl.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeFalse();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
+      false,
+    );
   });
 
   it('should skip validation logic if controls are missing', () => {
@@ -150,7 +151,7 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
       'fsa_search_account_companies_address_line_1',
       'fsa_search_account_companies_post_code',
     ];
-    names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
+    names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
   });
 
   it('should remove its installed controls on destroy when nested in a parent group', () => {
@@ -170,7 +171,7 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.ngOnDestroy();
 
     const names = Object.keys(child.controls);
-    expect(names).withContext('expected no controls after destroy').toEqual([]);
+    expect(names, 'expected no controls after destroy').toEqual([]);
     // parent still has the child group placeholder
     expect(parent.get('fsa_search_account_companies_search_criteria')).toBe(child);
   });

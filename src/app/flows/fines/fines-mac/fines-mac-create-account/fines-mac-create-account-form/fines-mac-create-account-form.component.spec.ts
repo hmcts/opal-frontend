@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
@@ -22,7 +23,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   beforeAll(() => {
     originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
   });
 
   afterAll(() => {
@@ -30,7 +31,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   beforeEach(async () => {
-    // Prevent GOV.UK Frontend SupportError logs during Karma runs.
     document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
@@ -63,7 +63,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should setup account type listener', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'handleAccountTypeChange');
+    vi.spyOn<any, any>(component, 'handleAccountTypeChange');
 
     component.ngOnInit();
     component.form.controls['fm_create_account_account_type'].setValue(FINES_ACCOUNT_TYPES.Fine);
@@ -73,7 +73,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should call handleAccountTypeChange when accountType value changes', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'handleAccountTypeChange');
+    vi.spyOn<any, any>(component, 'handleAccountTypeChange');
 
     component['setupAccountTypeListener']();
     component.form.get('fm_create_account_account_type')!.setValue(FINES_ACCOUNT_TYPES.Fine);
@@ -82,7 +82,8 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = {} as SubmitEvent;
 
     component['rePopulateForm'](formSubmit.formData);
@@ -90,7 +91,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
       }),
@@ -98,10 +99,12 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should unsubscribe from account type listener on ngOnDestroy', () => {
-    spyOn(component['accountTypeSubject'], 'next');
-    spyOn(component['accountTypeSubject'], 'complete');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'ngOnDestroy').and.callThrough();
+    vi.spyOn<any, any>(component['accountTypeSubject'], 'next');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['accountTypeSubject'], 'complete');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'ngOnDestroy');
 
     component.ngOnDestroy();
 
@@ -116,8 +119,8 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fineControl = component.form.get('fm_create_account_fine_defendant_type');
     const fixedControl = component.form.get('fm_create_account_fixed_penalty_defendant_type');
 
-    expect(fineControl?.enabled).toBeTrue();
-    expect(fixedControl?.disabled).toBeTrue();
+    expect(fineControl?.enabled).toBe(true);
+    expect(fixedControl?.disabled).toBe(true);
   });
 
   it('should handle account type change - fixed penalty', () => {
@@ -126,8 +129,8 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fineControl = component.form.get('fm_create_account_fine_defendant_type');
     const fixedControl = component.form.get('fm_create_account_fixed_penalty_defendant_type');
 
-    expect(fixedControl?.enabled).toBeTrue();
-    expect(fineControl?.disabled).toBeTrue();
+    expect(fixedControl?.enabled).toBe(true);
+    expect(fineControl?.disabled).toBe(true);
   });
 
   it('should handle account type change - conditional caution', () => {
@@ -136,8 +139,8 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fineControl = component.form.get('fm_create_account_fine_defendant_type');
     const fixedControl = component.form.get('fm_create_account_fixed_penalty_defendant_type');
 
-    expect(fineControl?.disabled).toBeTrue();
-    expect(fixedControl?.disabled).toBeTrue();
+    expect(fineControl?.disabled).toBe(true);
+    expect(fixedControl?.disabled).toBe(true);
   });
 
   it('should ignore missing defendant type controls', () => {
@@ -147,7 +150,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any).updateDefendantTypeControl('missing_control', true);
 
-    expect(fineControl?.disabled).toBeTrue();
+    expect(fineControl?.disabled).toBe(true);
   });
 
   it('should set defendant type based on account type - fixed penalty', () => {
@@ -206,8 +209,8 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     expect(finePanel).toBeTruthy();
     expect(fixedPanel).toBeTruthy();
-    expect(finePanel.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
-    expect(fixedPanel.classList.contains('govuk-radios__conditional--hidden')).toBeTrue();
+    expect(finePanel.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+    expect(fixedPanel.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
   });
 
   it('should not do anything as the account, fieldName, and fieldValue are not real', () => {
@@ -225,13 +228,13 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should call initialCreateAccountSetup method', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupCreateAccountForm');
+    vi.spyOn<any, any>(component, 'setupCreateAccountForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAccountTypeListener');
+    vi.spyOn<any, any>(component, 'setupAccountTypeListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
 
     component['initialCreateAccountSetup']();
 
