@@ -15,6 +15,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   let component: FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent;
@@ -25,9 +26,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getOffenceByCjsCode: jasmine
-        .createSpy('getOffenceByCjsCode')
-        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+      getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
     await TestBed.configureTestingModule({
@@ -74,11 +73,12 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   it('should remove the offence and set offenceRemoved to true', () => {
     component.confirmOffenceRemoval();
     expect(finesMacStore.offenceDetails().length).toBe(0);
-    expect(finesMacOffenceDetailsStore.offenceRemoved()).toBeTrue();
+    expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(true);
   });
 
   it('should navigate to reviewOffences route after removing offence', () => {
-    spyOn(component, 'handleRoute');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'handleRoute');
     component.confirmOffenceRemoval();
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
   });

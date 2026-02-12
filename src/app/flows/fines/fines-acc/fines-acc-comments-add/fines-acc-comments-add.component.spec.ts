@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
@@ -12,15 +13,19 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { IFinesAccAddCommentsForm } from './interfaces/fines-acc-comments-add-form.interface';
 import { IFinesAccAddCommentsFormState } from './interfaces/fines-acc-comments-add-form-state.interface';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccCommentsAddComponent', () => {
   let component: FinesAccCommentsAddComponent;
   let fixture: ComponentFixture<FinesAccCommentsAddComponent>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFinesAccStore: any;
-  let mockFinesAccPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockFinesAccPayloadService: any;
 
   const mockPrefilledFormData: IFinesAccAddCommentsFormState = {
     facc_add_comment: 'Test comment',
@@ -30,8 +35,12 @@ describe('FinesAccCommentsAddComponent', () => {
   };
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['patchDefendantAccount']);
-    mockUtilsService = jasmine.createSpyObj('UtilsService', ['upperCaseFirstLetter']);
+    mockOpalFinesService = {
+      patchDefendantAccount: vi.fn().mockName('OpalFines.patchDefendantAccount'),
+    };
+    mockUtilsService = {
+      upperCaseFirstLetter: vi.fn().mockName('UtilsService.upperCaseFirstLetter'),
+    };
     mockFinesAccStore = {
       account_number: signal('123456'),
       party_name: signal('John Doe'),
@@ -40,9 +49,9 @@ describe('FinesAccCommentsAddComponent', () => {
       business_unit_user_id: signal(456),
       base_version: signal('1'),
       business_unit_id: signal('1'),
-      getAccountNumber: jasmine.createSpy('getAccountNumber').and.returnValue(signal('123456')),
-      unsavedChanges: jasmine.createSpy('unsavedChanges').and.returnValue(false),
-      getAccountState: jasmine.createSpy('getAccountState').and.returnValue({
+      getAccountNumber: vi.fn().mockReturnValue(signal('123456')),
+      unsavedChanges: vi.fn().mockReturnValue(false),
+      getAccountState: vi.fn().mockReturnValue({
         account_number: '123456',
         account_id: 789,
         party_id: 789,
@@ -53,7 +62,9 @@ describe('FinesAccCommentsAddComponent', () => {
         base_version: 1,
       }),
     };
-    mockFinesAccPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['buildCommentsFormPayload']);
+    mockFinesAccPayloadService = {
+      buildCommentsFormPayload: vi.fn().mockName('FinesAccPayloadService.buildCommentsFormPayload'),
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesAccCommentsAddComponent],
@@ -169,8 +180,8 @@ describe('FinesAccCommentsAddComponent', () => {
       },
     };
 
-    mockFinesAccPayloadService.buildCommentsFormPayload.and.returnValue(mockPayload);
-    mockOpalFinesService.patchDefendantAccount.and.returnValue(
+    mockFinesAccPayloadService.buildCommentsFormPayload.mockReturnValue(mockPayload);
+    mockOpalFinesService.patchDefendantAccount.mockReturnValue(
       of({ version: 2, defendant_account_id: 789, message: 'Success' }),
     );
 
@@ -192,7 +203,7 @@ describe('FinesAccCommentsAddComponent', () => {
   });
 
   it('should extend AbstractFormParentBaseComponent', () => {
-    expect(component.constructor.name).toBe('FinesAccCommentsAddComponent');
+    expect(component).toBeInstanceOf(FinesAccCommentsAddComponent);
     // Verify it has properties from the parent class
     expect(component['activatedRoute']).toBeDefined();
   });
@@ -217,8 +228,8 @@ describe('FinesAccCommentsAddComponent', () => {
       },
     };
 
-    mockFinesAccPayloadService.buildCommentsFormPayload.and.returnValue(mockPayload);
-    mockOpalFinesService.patchDefendantAccount.and.returnValue(
+    mockFinesAccPayloadService.buildCommentsFormPayload.mockReturnValue(mockPayload);
+    mockOpalFinesService.patchDefendantAccount.mockReturnValue(
       of({ version: 2, defendant_account_id: 789, message: 'Success' }),
     );
 
@@ -236,13 +247,13 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     // Reset the spy before each test
-    (mockFinesAccStore.unsavedChanges as jasmine.Spy).and.returnValue(true);
+    (mockFinesAccStore.unsavedChanges as Mock).mockReturnValue(true);
 
     component.handleUnsavedChanges(true);
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     // Reset the spy for false case
-    (mockFinesAccStore.unsavedChanges as jasmine.Spy).and.returnValue(false);
+    (mockFinesAccStore.unsavedChanges as Mock).mockReturnValue(false);
 
     component.handleUnsavedChanges(false);
     expect(component.stateUnsavedChanges).toBeFalsy();

@@ -4,6 +4,7 @@ import { IFinesAccPartyAddAmendConvertState } from '../../fines-acc-party-add-am
 import { IOpalFinesDefendantAccountIndividualAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-individual-alias.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK } from '../mocks/opal-fines-account-defendant-account-party-null-data.mock';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('transformDefendantAccountPartyPayload', () => {
   let mockDefendantData: IOpalFinesAccountDefendantAccountParty;

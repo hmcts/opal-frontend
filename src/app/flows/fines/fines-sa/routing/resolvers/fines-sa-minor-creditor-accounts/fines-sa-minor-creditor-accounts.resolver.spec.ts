@@ -8,24 +8,32 @@ import { of, lastValueFrom, Observable } from 'rxjs';
 import { IFinesSaSearchAccountFormMinorCreditorsState } from '../../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/interfaces/fines-sa-search-account-form-minor-creditors-state.interface';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE } from '../../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-state.constant';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT } from '@services/fines/opal-fines-service/constants/opal-fines-creditor-account-search-params-creditor-default.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('finesSaMinorCreditorAccountsResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executeResolver: ResolveFn<any> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => finesSaMinorCreditorAccountsResolver(...resolverParameters));
 
-  let opalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let opalFinesService: any;
   let finesSaStore: FinesSaStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: OpalFines, useValue: jasmine.createSpyObj('OpalFines', ['getMinorCreditorAccounts']) },
+        {
+          provide: OpalFines,
+          useValue: {
+            getMinorCreditorAccounts: vi.fn().mockName('OpalFines.getMinorCreditorAccounts'),
+          },
+        },
         FinesSaStore,
       ],
     });
 
-    opalFinesService = TestBed.inject(OpalFines) as jasmine.SpyObj<OpalFines>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    opalFinesService = TestBed.inject(OpalFines) as any;
     finesSaStore = TestBed.inject(FinesSaStore);
   });
 
@@ -40,14 +48,14 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: false,
     });
-    opalFinesService.getMinorCreditorAccounts.and.returnValue(of({ count: 1, creditor_accounts: [] }));
+    opalFinesService.getMinorCreditorAccounts.mockReturnValue(of({ count: 1, creditor_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
 
     expect(opalFinesService.getMinorCreditorAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         account_number: 'ACC123',
         business_unit_ids: [1],
         active_accounts_only: false,
@@ -67,7 +75,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: false,
     });
-    opalFinesService.getMinorCreditorAccounts.and.returnValue(of({ count: 0, creditor_accounts: [] }));
+    opalFinesService.getMinorCreditorAccounts.mockReturnValue(of({ count: 0, creditor_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,14 +108,14 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: false,
     });
-    opalFinesService.getMinorCreditorAccounts.and.returnValue(of({ count: 1, creditor_accounts: [] }));
+    opalFinesService.getMinorCreditorAccounts.mockReturnValue(of({ count: 1, creditor_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
 
     expect(opalFinesService.getMinorCreditorAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         creditor: {
           ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,
           organisation: false,
@@ -144,14 +152,14 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: false,
     });
-    opalFinesService.getMinorCreditorAccounts.and.returnValue(of({ count: 1, creditor_accounts: [] }));
+    opalFinesService.getMinorCreditorAccounts.mockReturnValue(of({ count: 1, creditor_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
 
     expect(opalFinesService.getMinorCreditorAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         creditor: {
           ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,
           organisation: true,

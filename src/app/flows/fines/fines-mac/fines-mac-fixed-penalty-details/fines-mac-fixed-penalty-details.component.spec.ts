@@ -19,6 +19,7 @@ import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacFixedPenaltyDetailsComponent', () => {
   let component: FinesMacFixedPenaltyDetailsComponent;
@@ -29,14 +30,10 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getProsecutorPrettyName: jasmine
-        .createSpy('getProsecutorPrettyName')
-        .and.returnValue(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK),
-      getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
-      getLocalJusticeAreaPrettyName: jasmine
-        .createSpy('getCourtPrettyName')
-        .and.returnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
-      getOffenceByCjsCode: jasmine.createSpy('getOffenceByCjsCode').and.returnValue(OPAL_FINES_OFFENCES_REF_DATA_MOCK),
+      getProsecutorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK),
+      getCourtPrettyName: vi.fn().mockReturnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
+      getLocalJusticeAreaPrettyName: vi.fn().mockReturnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
+      getOffenceByCjsCode: vi.fn().mockReturnValue(OPAL_FINES_OFFENCES_REF_DATA_MOCK),
     };
     formSubmit = structuredClone(FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK);
 
@@ -80,13 +77,18 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
   it('should handlefixedPenaltyDetailsSubmit and navigate to account details', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'routerNavigate');
+    vi.spyOn<any, any>(component, 'routerNavigate');
     const finesMacStoreSpies = [
-      spyOn(finesMacStore, 'setPersonalDetails'),
-      spyOn(finesMacStore, 'setCourtDetails'),
-      spyOn(finesMacStore, 'setAccountCommentsNotes'),
-      spyOn(finesMacStore, 'setLanguagePreferences'),
-      spyOn(finesMacStore, 'setFixedPenaltyDetails'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(finesMacStore, 'setPersonalDetails'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(finesMacStore, 'setCourtDetails'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(finesMacStore, 'setAccountCommentsNotes'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(finesMacStore, 'setLanguagePreferences'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(finesMacStore, 'setFixedPenaltyDetails'),
     ];
     component.handleFixedPenaltyDetailsSubmit(formSubmit);
     expect(finesMacStoreSpies[0]).toHaveBeenCalled();
@@ -98,7 +100,8 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
   });
 
   it('should handle unsaved changes', () => {
-    spyOn(finesMacStore, 'setUnsavedChanges');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setUnsavedChanges');
     const unsavedChanges = true;
     component.handleUnsavedChanges(unsavedChanges);
     expect(finesMacStore.setUnsavedChanges).toHaveBeenCalledWith(unsavedChanges);
@@ -226,7 +229,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
   it('should set courts and enforcement data onInit', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'createAutoCompleteItemsCourts').and.callThrough();
+    vi.spyOn<any, any>(component, 'createAutoCompleteItemsCourts');
 
     component['ngOnInit']();
 
@@ -237,7 +240,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
   it('should set issuing authories data onInit', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'createAutoCompleteItemsAuthorities').and.callThrough();
+    vi.spyOn<any, any>(component, 'createAutoCompleteItemsAuthorities');
 
     component['ngOnInit']();
 
@@ -254,7 +257,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
   it('should call createAutoCompleteData on ngOnInit', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'createAutoCompleteData').and.callThrough();
+    vi.spyOn<any, any>(component, 'createAutoCompleteData');
 
     component['ngOnInit']();
 

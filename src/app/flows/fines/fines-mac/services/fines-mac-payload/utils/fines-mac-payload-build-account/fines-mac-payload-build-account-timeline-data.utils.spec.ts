@@ -1,5 +1,6 @@
 import { IFinesMacAccountTimelineData } from '../../interfaces/fines-mac-payload-account-timeline-data.interface';
 import { finesMacPayloadBuildAccountTimelineData } from './fines-mac-payload-build-account-timeline-data.utils';
+import { describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadBuildAccountTimelineData', () => {
   it('should add a new timeline entry to an empty array', () => {

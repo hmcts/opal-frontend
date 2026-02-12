@@ -16,6 +16,7 @@ import { OPAL_FINES_COURT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-se
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let component: FinesMacCourtDetailsComponent;
@@ -26,10 +27,8 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getLocalJusticeAreaPrettyName: jasmine
-        .createSpy('getLocalJusticeAreaPrettyName')
-        .and.returnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
-      getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
+      getLocalJusticeAreaPrettyName: vi.fn().mockReturnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
+      getCourtPrettyName: vi.fn().mockReturnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
     };
     formSubmit = structuredClone(FINES_MAC_COURT_DETAILS_FORM_MOCK);
 
@@ -71,7 +70,8 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = false;
 
@@ -84,7 +84,8 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to personal details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
 

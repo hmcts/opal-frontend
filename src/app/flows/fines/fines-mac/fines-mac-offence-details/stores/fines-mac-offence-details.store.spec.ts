@@ -3,6 +3,7 @@ import { FinesMacOffenceDetailsStoreType } from './types/fines-mac-offence-detai
 import { FinesMacOffenceDetailsStore } from './fines-mac-offence-details.store';
 import { IAbstractFormArrayControls } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesMacOffenceDetailsStore', () => {
   let store: FinesMacOffenceDetailsStoreType;
@@ -17,10 +18,10 @@ describe('FinesMacOffenceDetailsStore', () => {
     expect(store.formArrayControls()).toEqual([]);
     expect(store.removeMinorCreditor()).toBeNull();
     expect(store.offenceIndex()).toEqual(0);
-    expect(store.emptyOffences()).toBeFalse();
+    expect(store.emptyOffences()).toBe(false);
     expect(store.addedOffenceCode()).toEqual('');
-    expect(store.minorCreditorAdded()).toBeFalse();
-    expect(store.offenceRemoved()).toBeFalse();
+    expect(store.minorCreditorAdded()).toBe(false);
+    expect(store.offenceRemoved()).toBe(false);
     expect(store.offenceCodeMessage()).toEqual('');
   });
 
@@ -32,12 +33,12 @@ describe('FinesMacOffenceDetailsStore', () => {
 
   it('should update offence removed', () => {
     store.setOffenceRemoved(true);
-    expect(store.offenceRemoved()).toBeTrue();
+    expect(store.offenceRemoved()).toBe(true);
   });
 
   it('should update minor creditor added', () => {
     store.setMinorCreditorAdded(true);
-    expect(store.minorCreditorAdded()).toBeTrue();
+    expect(store.minorCreditorAdded()).toBe(true);
   });
 
   it('should update added offence code', () => {
@@ -48,7 +49,7 @@ describe('FinesMacOffenceDetailsStore', () => {
 
   it('should update empty offences', () => {
     store.setEmptyOffences(true);
-    expect(store.emptyOffences()).toBeTrue();
+    expect(store.emptyOffences()).toBe(true);
   });
 
   it('should update offence index', () => {
@@ -110,10 +111,10 @@ describe('FinesMacOffenceDetailsStore', () => {
     expect(store.formArrayControls()).toEqual([]);
     expect(store.removeMinorCreditor()).toBeNull();
     expect(store.offenceIndex()).toEqual(0);
-    expect(store.emptyOffences()).toBeFalse();
+    expect(store.emptyOffences()).toBe(false);
     expect(store.addedOffenceCode()).toEqual('');
-    expect(store.minorCreditorAdded()).toBeFalse();
-    expect(store.offenceRemoved()).toBeFalse();
+    expect(store.minorCreditorAdded()).toBe(false);
+    expect(store.offenceRemoved()).toBe(false);
     expect(store.offenceCodeMessage()).toEqual('');
   });
 });
