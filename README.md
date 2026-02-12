@@ -15,6 +15,8 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 - [Running End-to-End Tests](#running-end-to-end-tests)
 - [Accessibility Tests](#running-accessibility-tests)
 - [Switching Between Local and Published Common Libraries](#switching-between-local-and-published-common-libraries)
+- [OpenAPI reference models](#openapi-reference-models)
+- [OpenAPI docs](#openapi-docs)
 
 ## Getting Started
 
@@ -310,6 +312,17 @@ yarn import:published:common-node-lib
 This is useful when you're no longer working on the libraries directly or want to verify against the published versions that your project is pinned to.
 
 **Note:** Version upgrades should come via Renovate PRs. These commands do **not** upgrade to the latest; they reinstall the exact versions specified in `package.json`. For extra safety in CI, consider using `yarn install --immutable` to prevent lockfile drift.
+
+## OpenAPI reference models
+
+- Run `yarn generate:openapi` to download and merge the fines-service specs, then emit reference-only models to `src/app/generated/api-client` and `src/app/flows/fines/services/opal-fines-service/{interfaces/generated,types/generated}`.
+- The generated files are gitignored and excluded from TypeScript/Jasmine; they are **not** used by application code or tests.
+- When schema changes are needed, copy shapes from the generated output into the hand-written interfaces under `src/app/flows/fines/services/opal-fines-service/interfaces` and adjust as required.
+
+## OpenAPI docs
+
+- Backend fines OpenAPI specs live in the fines service repo under `src/main/resources/openapi/` (DefendantAccount, MajorCreditor, MinorCreditor, common, types) and are merged via `openapi/openapi-merge-config.json`.
+- The merged spec is written locally to `openapi/opal-merged.yaml` when you run `yarn generate:openapi`; open that file for endpoint/schema details or to copy shapes into the hand-cranked interfaces.
 
 ## Angular code scaffolding
 
