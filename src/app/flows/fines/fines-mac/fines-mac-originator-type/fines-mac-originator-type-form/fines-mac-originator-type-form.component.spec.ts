@@ -8,6 +8,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { describe, beforeAll, afterAll, beforeEach, it, expect, vi } from 'vitest';
 
 describe('FinesMacOriginatorTypeFormComponent', () => {
   let component: FinesMacOriginatorTypeFormComponent;
@@ -19,7 +20,7 @@ describe('FinesMacOriginatorTypeFormComponent', () => {
   beforeAll(() => {
     originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
   });
 
   afterAll(() => {
@@ -57,7 +58,7 @@ describe('FinesMacOriginatorTypeFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    spyOn(component['formSubmit'], 'emit');
+    vi.spyOn(component['formSubmit'], 'emit');
     const event = {} as SubmitEvent;
 
     component['rePopulateForm'](formSubmit.formData);
@@ -65,7 +66,7 @@ describe('FinesMacOriginatorTypeFormComponent', () => {
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
       }),
@@ -74,11 +75,11 @@ describe('FinesMacOriginatorTypeFormComponent', () => {
 
   it('should call initialOriginatorTypeSetup method', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupOriginatorTypeForm');
+    vi.spyOn<any, any>(component, 'setupOriginatorTypeForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
 
     component['initialOriginatorTypeSetup']();
 

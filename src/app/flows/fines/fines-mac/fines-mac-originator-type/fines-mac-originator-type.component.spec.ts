@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('FinesMacOriginatorTypeComponent', () => {
   let component: FinesMacOriginatorTypeComponent;
@@ -50,7 +51,7 @@ describe('FinesMacOriginatorTypeComponent', () => {
   });
 
   it('should handle form submission and navigate', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    const routerSpy = vi.spyOn(component['router'], 'navigate');
 
     component.handleOriginatorTypeSubmit(formSubmit);
 

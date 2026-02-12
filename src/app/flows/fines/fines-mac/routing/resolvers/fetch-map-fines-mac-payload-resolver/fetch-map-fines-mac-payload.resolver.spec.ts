@@ -18,30 +18,35 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opa
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('fetchMapFinesMacPayloadResolver', () => {
   const executeResolver: ResolveFn<IFetchMapFinesMacPayload> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => fetchMapFinesMacPayloadResolver(...resolverParameters));
 
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockFinesMacPayloadService: any;
   let globalStore: GlobalStoreType;
 
   const DRAFT_ACCOUNT_ID = 1;
 
   beforeEach(() => {
     // Mock services
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', [
-      'getDraftAccountById',
-      'getBusinessUnitById',
-      'getOffenceById',
-      'getCourts',
-      'getMajorCreditors',
-      'getLocalJusticeAreas',
-      'getResults',
-      'getProsecutors',
-    ]);
-    mockFinesMacPayloadService = jasmine.createSpyObj('FinesMacPayloadService', ['mapAccountPayload']);
+    mockOpalFinesService = {
+      getDraftAccountById: vi.fn().mockName('OpalFines.getDraftAccountById'),
+      getBusinessUnitById: vi.fn().mockName('OpalFines.getBusinessUnitById'),
+      getOffenceById: vi.fn().mockName('OpalFines.getOffenceById'),
+      getCourts: vi.fn().mockName('OpalFines.getCourts'),
+      getMajorCreditors: vi.fn().mockName('OpalFines.getMajorCreditors'),
+      getLocalJusticeAreas: vi.fn().mockName('OpalFines.getLocalJusticeAreas'),
+      getResults: vi.fn().mockName('OpalFines.getResults'),
+      getProsecutors: vi.fn().mockName('OpalFines.getProsecutors'),
+    };
+    mockFinesMacPayloadService = {
+      mapAccountPayload: vi.fn().mockName('FinesMacPayloadService.mapAccountPayload'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -55,23 +60,26 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
   it('should resolve data when all API calls succeed', async () => {
     // Mock successful API calls
-    mockOpalFinesService.getDraftAccountById.and.returnValue(of(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT)));
-    mockOpalFinesService.getBusinessUnitById.and.returnValue(
+    mockOpalFinesService.getDraftAccountById.mockReturnValue(of(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT)));
+    mockOpalFinesService.getBusinessUnitById.mockReturnValue(
       of(structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK)),
     );
-    mockOpalFinesService.getOffenceById.and.returnValue(
+    mockOpalFinesService.getOffenceById.mockReturnValue(
       of(structuredClone(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK)),
     );
-    mockOpalFinesService.getCourts.and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK));
-    mockOpalFinesService.getMajorCreditors.and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
-    mockOpalFinesService.getLocalJusticeAreas.and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
-    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
-    mockOpalFinesService.getProsecutors.and.returnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK));
-    mockFinesMacPayloadService.mapAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE));
+    mockOpalFinesService.getCourts.mockReturnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK));
+    mockOpalFinesService.getMajorCreditors.mockReturnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
+    mockOpalFinesService.getLocalJusticeAreas.mockReturnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
+    mockOpalFinesService.getResults.mockReturnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
+    mockOpalFinesService.getProsecutors.mockReturnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK));
+    mockFinesMacPayloadService.mapAccountPayload.mockReturnValue(structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
-    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
 
     const result = await executeResolver(route, mockRouterStateSnapshot);
 
@@ -100,24 +108,27 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
       account: { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT).account, offences: null },
     };
-    mockOpalFinesService.getDraftAccountById.and.returnValue(of(draftAccountWithEmptyOffences));
-    mockOpalFinesService.getBusinessUnitById.and.returnValue(
+    mockOpalFinesService.getDraftAccountById.mockReturnValue(of(draftAccountWithEmptyOffences));
+    mockOpalFinesService.getBusinessUnitById.mockReturnValue(
       of(structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK)),
     );
-    mockOpalFinesService.getCourts.and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK));
-    mockOpalFinesService.getMajorCreditors.and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
-    mockOpalFinesService.getLocalJusticeAreas.and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
-    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
-    mockOpalFinesService.getProsecutors.and.returnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK));
+    mockOpalFinesService.getCourts.mockReturnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK));
+    mockOpalFinesService.getMajorCreditors.mockReturnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
+    mockOpalFinesService.getLocalJusticeAreas.mockReturnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
+    mockOpalFinesService.getResults.mockReturnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
+    mockOpalFinesService.getProsecutors.mockReturnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK));
 
     const mapPayloadResult = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     mapPayloadResult.offenceDetails = [];
 
-    mockFinesMacPayloadService.mapAccountPayload.and.returnValue(mapPayloadResult);
+    mockFinesMacPayloadService.mapAccountPayload.mockReturnValue(mapPayloadResult);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
-    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
 
     const result = await executeResolver(route, mockRouterStateSnapshot);
 
@@ -147,13 +158,16 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
       business_unit_id: null,
     };
-    mockOpalFinesService.getDraftAccountById.and.returnValue(of(draftAccountWithoutBusinessUnitId));
+    mockOpalFinesService.getDraftAccountById.mockReturnValue(of(draftAccountWithoutBusinessUnitId));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
-    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
 
-    await expectAsync(executeResolver(route, mockRouterStateSnapshot)).toBeRejectedWithError(
+    await expect(executeResolver(route, mockRouterStateSnapshot)).rejects.toThrowError(
       `Business unit ID is missing for draftAccountId: ${DRAFT_ACCOUNT_ID}`,
     );
 
@@ -167,16 +181,19 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
   it('should throw an error and update global state if business unit is not found', async () => {
     // Mock API responses
-    mockOpalFinesService.getDraftAccountById.and.returnValue(of(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT)));
-    mockOpalFinesService.getBusinessUnitById.and.returnValue(
+    mockOpalFinesService.getDraftAccountById.mockReturnValue(of(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT)));
+    mockOpalFinesService.getBusinessUnitById.mockReturnValue(
       of(null) as unknown as Observable<IOpalFinesBusinessUnitNonSnakeCase>,
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
-    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
 
-    await expectAsync(executeResolver(route, mockRouterStateSnapshot)).toBeRejectedWithError(
+    await expect(executeResolver(route, mockRouterStateSnapshot)).rejects.toThrowError(
       'Cannot find business unit for ID: 61',
     );
 
@@ -190,13 +207,16 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
   it('should handle unexpected errors and update global state', async () => {
     // Mock API response with an unexpected error
-    mockOpalFinesService.getDraftAccountById.and.returnValue(throwError(() => new Error('Unexpected error')));
+    mockOpalFinesService.getDraftAccountById.mockReturnValue(throwError(() => new Error('Unexpected error')));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
-    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
 
-    await expectAsync(executeResolver(route, mockRouterStateSnapshot)).toBeRejectedWithError('Unexpected error');
+    await expect(executeResolver(route, mockRouterStateSnapshot)).rejects.toThrowError('Unexpected error');
 
     expect(globalStore.bannerError()).toEqual({
       ...GLOBAL_ERROR_STATE,
@@ -208,15 +228,18 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
   it('should handle unexpected errors with a default error message', async () => {
     // Mock API response with an unexpected error that does not have a message
-    mockOpalFinesService.getDraftAccountById.and.returnValue(
+    mockOpalFinesService.getDraftAccountById.mockReturnValue(
       throwError(() => ({ name: 'ErrorWithoutMessage' }) as Error),
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
-    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {
+      toString: vi.fn().mockName('RouterStateSnapshot.toString'),
+    };
 
-    await expectAsync(executeResolver(route, mockRouterStateSnapshot)).toBeRejectedWith({
+    await expect(executeResolver(route, mockRouterStateSnapshot)).rejects.toEqual({
       name: 'ErrorWithoutMessage',
     });
 

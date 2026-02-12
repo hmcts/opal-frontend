@@ -5,6 +5,7 @@ import { FinesSaSearchAccountFormIndividualsComponent } from './fines-sa-search-
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchAccountFormIndividualsComponent', () => {
   let component: FinesSaSearchAccountFormIndividualsComponent;
@@ -13,7 +14,8 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
 
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
-    spyOn(MojDatePickerComponent.prototype, 'configureDatePicker').and.stub();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(MojDatePickerComponent.prototype, 'configureDatePicker').mockImplementation(() => {});
   });
 
   afterAll(() => {
@@ -61,9 +63,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required),
-    ).toBeFalse();
+    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
+      false,
+    );
   });
 
   it('should require last name if first name is populated', () => {
@@ -72,9 +74,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should require last name if date of birth is populated', () => {
@@ -83,9 +85,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should not require last name if both first name and dob are empty', () => {
@@ -96,9 +98,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required),
-    ).toBeFalse();
+    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
+      false,
+    );
   });
 
   it('should require first name if firstNamesExactMatch is set and first name is empty', () => {
@@ -107,9 +109,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component['handleConditionalValidation']();
     component.form.get('fsa_search_account_individuals_first_names')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should require last name if lastNameExactMatch is set and last name is empty', () => {
@@ -118,9 +120,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component['handleConditionalValidation']();
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should require last name if includeAliases is set and last name is empty', () => {
@@ -129,9 +131,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component['handleConditionalValidation']();
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should require last name when first name is a non-string value (covers non-string branch of hasValue)', () => {
@@ -146,9 +148,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     fnCtrl.updateValueAndValidity();
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should NOT require first names when exact match is true but first names already contain a value', () => {
@@ -158,9 +160,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component['handleConditionalValidation']();
     component.form.get('fsa_search_account_individuals_first_names')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required),
-    ).toBeFalse();
+    expect(component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required)).toBe(
+      false,
+    );
   });
 
   it('should treat whitespace-only first names as empty and require when exact match is true', () => {
@@ -170,9 +172,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component['handleConditionalValidation']();
     component.form.get('fsa_search_account_individuals_first_names')?.updateValueAndValidity();
 
-    expect(
-      component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    expect(component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should skip validation logic if controls are missing', () => {
@@ -214,7 +216,7 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
       'fsa_search_account_individuals_address_line_1',
       'fsa_search_account_individuals_post_code',
     ];
-    names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
+    names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
   });
 
   it('should remove its installed controls on destroy when nested in a parent group', () => {
@@ -234,7 +236,7 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     component.ngOnDestroy();
 
     const names = Object.keys(child.controls);
-    expect(names).withContext('expected no controls after destroy').toEqual([]);
+    expect(names, 'expected no controls after destroy').toEqual([]);
     // parent still has the child group placeholder
     expect(parent.get('fsa_search_account_individuals_search_criteria')).toBe(child);
   });

@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacPaymentTermsComponent', () => {
   let component: FinesMacPaymentTermsComponent;
@@ -44,7 +45,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = false;
 
@@ -57,7 +59,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('should handle form submission and navigate to next route', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
 
@@ -70,7 +73,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('should handle form submission and navigate to next route with number data', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
     formSubmit.formData.fm_payment_terms_default_days_in_jail = 1;
@@ -86,7 +90,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('should handle form submission and navigate to next route with number data', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
     formSubmit.formData.fm_payment_terms_default_days_in_jail = null;
@@ -132,14 +137,15 @@ describe('FinesMacPaymentTermsComponent', () => {
     const collectionOrderDate = '01/01/2024';
     const collectionOrderMade = true;
 
-    const setSpy = spyOn(finesMacStore, 'setAccountCommentsNotes');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setSpy = vi.spyOn<any, any>(finesMacStore, 'setAccountCommentsNotes');
     const expectedNote = `A collection order was previously made on ${collectionOrderDate} prior to this account creation`;
 
     component['addSystemGeneratedNote'](collectionOrderDate, collectionOrderMade);
 
     expect(setSpy).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        formData: jasmine.objectContaining({
+      expect.objectContaining({
+        formData: expect.objectContaining({
           fm_account_comments_notes_system_notes: expectedNote,
         }),
       }),

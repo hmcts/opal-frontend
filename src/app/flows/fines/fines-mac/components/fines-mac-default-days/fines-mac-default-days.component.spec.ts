@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacDefaultDaysComponent } from './fines-mac-default-days.component';
 import { SimpleChange } from '@angular/core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacDefaultDaysComponent', () => {
   let component: FinesMacDefaultDaysComponent;
@@ -62,8 +63,10 @@ describe('FinesMacDefaultDaysComponent', () => {
   });
 
   it('should unsubscribe from valueChanges on component destroy', () => {
-    spyOn(component['ngUnsubscribe'], 'next');
-    spyOn(component['ngUnsubscribe'], 'complete');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['ngUnsubscribe'], 'next');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['ngUnsubscribe'], 'complete');
     component.ngOnDestroy();
     expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
     expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();

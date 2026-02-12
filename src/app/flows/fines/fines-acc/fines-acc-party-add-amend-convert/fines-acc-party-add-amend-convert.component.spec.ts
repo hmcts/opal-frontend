@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import type { Mock } from 'vitest';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { FinesAccPartyAddAmendConvert } from './fines-acc-party-add-amend-convert.component';
@@ -9,48 +10,60 @@ import { OpalFines } from '../../services/opal-fines-service/opal-fines.service'
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvert', () => {
   let component: FinesAccPartyAddAmendConvert;
   let fixture: ComponentFixture<FinesAccPartyAddAmendConvert>;
-  let mockPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockPayloadService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
   let mockFinesAccStore: {
-    account_id: jasmine.Spy;
-    party_id: jasmine.Spy;
-    pg_party_id: jasmine.Spy;
-    business_unit_id: jasmine.Spy;
-    account_number: jasmine.Spy;
-    party_name: jasmine.Spy;
-    welsh_speaking: jasmine.Spy;
+    account_id: Mock;
+    party_id: Mock;
+    pg_party_id: Mock;
+    business_unit_id: Mock;
+    account_number: Mock;
+    party_name: Mock;
+    welsh_speaking: Mock;
   };
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRouter: any;
 
   beforeEach(async () => {
-    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
-      'mapDebtorAccountPartyPayload',
-      'buildAccountPartyPayload',
-    ]);
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['putDefendantAccountParty', 'clearCache']);
-    mockFinesAccStore = {
-      account_id: jasmine.createSpy().and.returnValue(123),
-      party_id: jasmine.createSpy().and.returnValue('party-123'),
-      pg_party_id: jasmine.createSpy().and.returnValue('pg-party-123'),
-      business_unit_id: jasmine.createSpy().and.returnValue('bu-123'),
-      account_number: jasmine.createSpy().and.returnValue('12345ABC'),
-      party_name: jasmine.createSpy().and.returnValue('John Doe'),
-      welsh_speaking: jasmine.createSpy().and.returnValue('Yes'),
+    mockPayloadService = {
+      mapDebtorAccountPartyPayload: vi.fn().mockName('FinesAccPayloadService.mapDebtorAccountPartyPayload'),
+      buildAccountPartyPayload: vi.fn().mockName('FinesAccPayloadService.buildAccountPartyPayload'),
     };
-    mockUtilsService = jasmine.createSpyObj('UtilsService', ['scrollToTop']);
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    mockOpalFinesService = {
+      putDefendantAccountParty: vi.fn().mockName('OpalFines.putDefendantAccountParty'),
+      clearCache: vi.fn().mockName('OpalFines.clearCache'),
+    };
+    mockFinesAccStore = {
+      account_id: vi.fn().mockReturnValue(123),
+      party_id: vi.fn().mockReturnValue('party-123'),
+      pg_party_id: vi.fn().mockReturnValue('pg-party-123'),
+      business_unit_id: vi.fn().mockReturnValue('bu-123'),
+      account_number: vi.fn().mockReturnValue('12345ABC'),
+      party_name: vi.fn().mockReturnValue('John Doe'),
+      welsh_speaking: vi.fn().mockReturnValue('Yes'),
+    };
+    mockUtilsService = {
+      scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
+    };
+    mockRouter = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
 
     // Set up default return values
-    mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(
+    mockPayloadService.mapDebtorAccountPartyPayload.mockReturnValue(
       MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
     );
-    mockPayloadService.buildAccountPartyPayload.and.returnValue({} as IOpalFinesAccountPartyDetails);
-    mockOpalFinesService.putDefendantAccountParty.and.returnValue(
+    mockPayloadService.buildAccountPartyPayload.mockReturnValue({} as IOpalFinesAccountPartyDetails);
+    mockOpalFinesService.putDefendantAccountParty.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK),
     );
 
@@ -91,7 +104,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle form submission for individual party type', fakeAsync(() => {
+  it('should handle form submission for individual party type', () => {
     // Arrange
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -100,24 +113,23 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Act
     component.handleFormSubmit(mockFormData);
-    tick(); // Allow async operations to complete
 
     // Assert
     expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalledWith(
       123, // account_id
       'party-123', // party_id (for individual)
-      jasmine.any(Object), // payload
-      jasmine.any(String), // version
-      'bu-123', // business_unit_id
+      expect.any(Object), // payload
+      expect.any(String), // version
+      'bu-123',
     );
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'defendant',
     });
-  }));
+  });
 
-  it('should handle form submission for parentGuardian party type', fakeAsync(() => {
+  it('should handle form submission for parentGuardian party type', () => {
     // Arrange
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -130,41 +142,39 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Act
     component.handleFormSubmit(mockFormData);
-    tick(); // Allow async operations to complete
 
     // Assert
     expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalledWith(
       123, // account_id
       'pg-party-123', // pg_party_id (for parentGuardian)
-      jasmine.any(Object), // payload
-      jasmine.any(String), // version
-      'bu-123', // business_unit_id
+      expect.any(Object), // payload
+      expect.any(String), // version
+      'bu-123',
     );
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'parent-or-guardian',
     });
-  }));
+  });
 
-  it('should call utilsService.scrollToTop on API call failure and reset unsaved changes', fakeAsync(() => {
+  it('should call utilsService.scrollToTop on API call failure and reset unsaved changes', () => {
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
       nestedFlow: false,
     };
 
     // Reset the existing spy and set up error response
-    mockUtilsService.scrollToTop.calls.reset();
-    mockOpalFinesService.putDefendantAccountParty.and.returnValue(throwError(() => new Error('API Error')));
+    mockUtilsService.scrollToTop.mockClear();
+    mockOpalFinesService.putDefendantAccountParty.mockReturnValue(throwError(() => new Error('API Error')));
 
     component.handleFormSubmit(mockFormData);
-    tick(); // Wait for error to be handled
 
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
-    expect(component.stateUnsavedChanges).toBeTrue();
-  }));
+    expect(component.stateUnsavedChanges).toBe(true);
+  });
 
-  it('should navigate to details page on successful API call', fakeAsync(() => {
+  it('should navigate to details page on successful API call', () => {
     // Arrange
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -172,14 +182,13 @@ describe('FinesAccPartyAddAmendConvert', () => {
     };
 
     // Reset router spy and setup successful response
-    mockRouter.navigate.calls.reset();
-    mockOpalFinesService.putDefendantAccountParty.and.returnValue(
+    mockRouter.navigate.mockClear();
+    mockOpalFinesService.putDefendantAccountParty.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK),
     );
 
     // Act
     component.handleFormSubmit(mockFormData);
-    tick(); // Wait for observable to complete
 
     // Assert
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
@@ -187,9 +196,9 @@ describe('FinesAccPartyAddAmendConvert', () => {
       relativeTo: undefined,
       fragment: 'defendant',
     });
-  }));
+  });
 
-  it('should navigate with parent-or-guardian fragment for parentGuardian party type on success', fakeAsync(() => {
+  it('should navigate with parent-or-guardian fragment for parentGuardian party type on success', () => {
     // Arrange
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -201,14 +210,13 @@ describe('FinesAccPartyAddAmendConvert', () => {
     Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
 
     // Reset router spy and setup successful response
-    mockRouter.navigate.calls.reset();
-    mockOpalFinesService.putDefendantAccountParty.and.returnValue(
+    mockRouter.navigate.mockClear();
+    mockOpalFinesService.putDefendantAccountParty.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK),
     );
 
     // Act
     component.handleFormSubmit(mockFormData);
-    tick(); // Wait for observable to complete
 
     // Assert
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
@@ -216,7 +224,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       relativeTo: undefined,
       fragment: 'parent-or-guardian',
     });
-  }));
+  });
 
   it('should redirect to details page when required store values are missing', () => {
     const mockFormData = {
@@ -238,10 +246,10 @@ describe('FinesAccPartyAddAmendConvert', () => {
     ];
 
     testCases.forEach((testCase) => {
-      mockFinesAccStore.account_id.and.returnValue(testCase.account_id);
-      mockFinesAccStore.business_unit_id.and.returnValue(testCase.business_unit_id);
-      mockFinesAccStore.party_id.and.returnValue(testCase.party_id);
-      mockRouter.navigate.calls.reset();
+      mockFinesAccStore.account_id.mockReturnValue(testCase.account_id);
+      mockFinesAccStore.business_unit_id.mockReturnValue(testCase.business_unit_id);
+      mockFinesAccStore.party_id.mockReturnValue(testCase.party_id);
+      mockRouter.navigate.mockClear();
 
       component.handleFormSubmit(mockFormData);
 
@@ -260,8 +268,8 @@ describe('FinesAccPartyAddAmendConvert', () => {
     };
 
     Object.defineProperty(component, 'partyType', { value: 'parentGuardian', writable: true });
-    mockFinesAccStore.pg_party_id.and.returnValue(null);
-    mockRouter.navigate.calls.reset();
+    mockFinesAccStore.pg_party_id.mockReturnValue(null);
+    mockRouter.navigate.mockClear();
 
     component.handleFormSubmit(mockFormData);
 
@@ -272,7 +280,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
   });
 
-  it('should proceed with API call when all store values are present and valid', fakeAsync(() => {
+  it('should proceed with API call when all store values are present and valid', () => {
     // Arrange
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -280,14 +288,13 @@ describe('FinesAccPartyAddAmendConvert', () => {
     };
 
     // Ensure all store values are valid
-    mockFinesAccStore.account_id.and.returnValue(123);
-    mockFinesAccStore.business_unit_id.and.returnValue('bu-123');
-    mockFinesAccStore.party_id.and.returnValue('party-123');
-    mockRouter.navigate.calls.reset();
+    mockFinesAccStore.account_id.mockReturnValue(123);
+    mockFinesAccStore.business_unit_id.mockReturnValue('bu-123');
+    mockFinesAccStore.party_id.mockReturnValue('party-123');
+    mockRouter.navigate.mockClear();
 
     // Act
     component.handleFormSubmit(mockFormData);
-    tick(); // Wait for observable to complete
 
     // Assert
     expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalled();
@@ -296,7 +303,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       relativeTo: undefined,
       fragment: 'defendant',
     });
-  }));
+  });
 
   it('should correctly set stateUnsavedChanges based on input value', () => {
     // Test with true

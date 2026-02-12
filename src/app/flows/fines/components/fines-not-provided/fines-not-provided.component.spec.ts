@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesNotProvidedComponent } from './fines-not-provided.component';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesNotProvidedComponent', () => {
   let component: FinesNotProvidedComponent;
