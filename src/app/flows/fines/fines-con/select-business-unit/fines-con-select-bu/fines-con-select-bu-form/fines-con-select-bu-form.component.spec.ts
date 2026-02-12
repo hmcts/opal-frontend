@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinesConSelectBuFormComponent } from './fines-con-select-bu-form.component';
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FinesConStoreType } from '../../../stores/types/fines-con-store.type';
@@ -105,7 +106,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it('should restore form data from store when available', () => {
     const businessUnitId = FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData.fcon_select_bu_business_unit_id;
-    spyOn(finesConStore, 'selectBuForm').and.returnValue(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
+    vi.spyOn(finesConStore, 'selectBuForm').mockReturnValue(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
 
     component.ngOnInit();
 
@@ -123,11 +124,11 @@ describe('FinesConSelectBuFormComponent', () => {
   });
 
   it('should emit unsavedChanges event when defined', () => {
-    spyOn(component['unsavedChanges'], 'emit');
+    const emitSpy = vi.spyOn(component['unsavedChanges'], 'emit');
 
     component['unsavedChanges'].emit(true);
 
-    expect(component['unsavedChanges'].emit).toHaveBeenCalledWith(true);
+    expect(emitSpy).toHaveBeenCalledWith(true);
   });
 
   it('should handle form changes correctly', () => {
@@ -153,18 +154,18 @@ describe('FinesConSelectBuFormComponent', () => {
   });
 
   it('should handle form submission with valid data', () => {
-    spyOn(component['formSubmit'], 'emit');
+    const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
 
     component.form.patchValue(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
 
     const mockEvent = new SubmitEvent('submit');
     component.handleFormSubmit(mockEvent);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should not submit form with invalid data', () => {
-    spyOn(component['formSubmit'], 'emit');
+    const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
 
     component.form.patchValue({
       ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData,
@@ -174,6 +175,6 @@ describe('FinesConSelectBuFormComponent', () => {
     const mockEvent = new SubmitEvent('submit');
     component.handleFormSubmit(mockEvent);
 
-    expect(component['formSubmit'].emit).not.toHaveBeenCalled();
+    expect(emitSpy).not.toHaveBeenCalled();
   });
 });
