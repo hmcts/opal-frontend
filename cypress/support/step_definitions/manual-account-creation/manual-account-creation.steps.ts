@@ -85,7 +85,7 @@ When(
   'I start a fine manual account for business unit {string} with defendant type {string}',
   (businessUnit: string, defendantType: DefendantType) => {
     log('step', 'Starting manual account creation', { businessUnit, defendantType });
-    flow().startFineAccount(businessUnit, defendantType);
+    flow().startFineAccount(businessUnit, defendantType, 'New');
   },
 );
 /**
@@ -97,7 +97,7 @@ When(
   'I start a fine manual account using the default business unit with defendant type {string}',
   (defendantType: DefendantType) => {
     log('step', 'Starting manual account creation with default business unit (no BU provided)', { defendantType });
-    flow().startFineAccount('default business unit', defendantType);
+    flow().startFineAccount('default business unit', defendantType, 'New');
   },
 );
 /**
@@ -223,7 +223,7 @@ When('I continue to manual account details', () => {
  */
 Given('I am viewing account details for a manual account', () => {
   log('step', 'Starting default manual account (West London, Adult or youth)');
-  flow().startFineAccount('West London', 'Adult or youth');
+  flow().startFineAccount('West London', 'Adult or youth', 'New');
 });
 
 /**

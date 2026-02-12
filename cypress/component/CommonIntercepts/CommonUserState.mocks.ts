@@ -91,6 +91,10 @@ export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
       business_unit_id: 77,
       permissions: [
         {
+          permission_id: 1,
+          permission_name: 'Create and manage draft accounts',
+        },
+        {
           permission_id: 3,
           permission_name: 'Account Enquiry',
         },
@@ -102,6 +106,7 @@ export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
           permission_id: 5,
           permission_name: 'Check and Validate Draft Accounts',
         },
+
         {
           permission_id: 6,
           permission_name: 'Search and view accounts',

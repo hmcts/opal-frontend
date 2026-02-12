@@ -61,6 +61,10 @@ import {
 } from '../../../../support/utils/macFieldResolvers';
 import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
+import {
+  ManualCreateOrTransferInActions,
+  OriginatorType,
+} from '../actions/manual-account-creation/create-transfer.actions';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -117,6 +121,7 @@ type CompositeEntry = {
 export class ManualAccountCreationFlow {
   private readonly dashboard = new DashboardActions();
   private readonly createAccount = new ManualCreateAccountActions();
+  private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly accountDetails = new ManualAccountDetailsActions();
   private readonly commentsAndNotes = new ManualAccountCommentsNotesActions();
   private readonly companyDetails = new ManualCompanyDetailsActions();
@@ -159,9 +164,14 @@ export class ManualAccountCreationFlow {
    * Starts a Fine manual account and lands on the task list.
    * @param businessUnit - Business unit to select.
    * @param defendantType - Defendant type option to choose.
+   * @param originatorType - Whether the account is a new creation or transfer in, which determines the entry point.
    */
-  startFineAccount(businessUnit: string, defendantType: DefendantType): void {
-    log('flow', 'Start manual fine account', { businessUnit, defendantType });
+  startFineAccount(businessUnit: string, defendantType: DefendantType, originatorType: OriginatorType): void {
+    log('flow', 'Start manual fine account', { businessUnit, originatorType, defendantType });
+    this.ensureOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType(originatorType);
+    this.originatorType.continueToCreateAccount();
+
     this.ensureOnCreateAccountPage();
     if (!this.isDefaultBusinessUnit(businessUnit)) {
       this.createAccount.selectBusinessUnit(businessUnit);
@@ -984,7 +994,7 @@ export class ManualAccountCreationFlow {
     taskName: ManualAccountTaskName,
   ): void {
     log('flow', 'Start fine account and open task', { businessUnit, defendantType, taskName });
-    this.startFineAccount(businessUnit, defendantType);
+    this.startFineAccount(businessUnit, defendantType, 'New');
     this.openTaskFromAccountDetails(taskName);
   }
 
@@ -997,6 +1007,9 @@ export class ManualAccountCreationFlow {
   restartManualAccount(businessUnit: string, accountType: AccountType, defendantType: DefendantType): void {
     log('flow', 'Restart manual account after refresh', { businessUnit, accountType, defendantType });
     cy.reload();
+    this.originatorType.assertOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.createAccount.assertOnCreateAccountPage();
     if (!this.isDefaultBusinessUnit(businessUnit)) {
       this.createAccount.selectBusinessUnit(businessUnit);
@@ -2745,12 +2758,20 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Ensures the create or transfer in page is loaded by navigating from the dashboard.
+   * Ensures the originator type page is loaded for Manual Account Creation.
+   */
+  private ensureOnCreateOrTransferInPage(): void {
+    this.dashboard.goToManualAccountCreation();
+    this.originatorType.assertOnCreateOrTransferInPage();
+  }
+
+  /**
    * Ensures the Manual Account Creation start page is loaded from the dashboard.
    * Clicks the dashboard entry for Manual Account Creation, asserts the create account
    * header is visible, and should be called before selecting business unit/account/defendant type.
    */
   private ensureOnCreateAccountPage(): void {
-    this.dashboard.goToManualAccountCreation();
     this.createAccount.assertOnCreateAccountPage();
   }
 
