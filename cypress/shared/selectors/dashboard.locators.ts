@@ -24,6 +24,9 @@ export const DashboardLocators = {
   /** Link to open the Account Search interface. */
   searchForAnAccountLink: '#finesSaSearchLink',
 
+  /** Link to open the Consolidate Accounts workflow. */
+  consolidateAccountsLink: '#finesConsolidationLink',
+
   /** Inputter navigation link to Create and Manage Draft Accounts. */
   createAndManageDraftAccountsLink: '#finesCavInputterLink',
 

@@ -71,7 +71,6 @@ describe('FinesConSelectBuFormComponent', () => {
   beforeEach(() => {
     finesConFormData = structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
     autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
-    defendantTypes = structuredClone(FINES_CON_DEFENDANT_TYPES);
   });
 
   it('(AC1, AC2, AC3) should show business unit and defendant type fields', { tags: ['@PO-2412'] }, () => {
@@ -112,5 +111,28 @@ describe('FinesConSelectBuFormComponent', () => {
           expect($items.eq(index)).to.contain(item.name);
         });
       });
+  });
+
+  it('(AC2a) should auto select a single business unit', { tags: ['@PO-2412'] }, () => {
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK.slice(0, 1));
+
+    setupComponent();
+
+    cy.get(SelectBusinessUnitLocators.singleBusinessUnitMessage).should(
+      'have.text',
+      `The consolidation will be processed in Historical Debt`,
+    );
+    cy.get(SelectBusinessUnitLocators.businessUnitInput).should('not.exist');
+  });
+
+  it('(AC4) should show an error when continuing without selecting a business unit', { tags: ['@PO-2412'] }, () => {
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    finesConFormData.fcon_select_bu_business_unit_id = null;
+    setupComponent();
+
+    cy.get(SelectBusinessUnitLocators.continueButton).click();
+    cy.get(SelectBusinessUnitLocators.businessUnitErrorMessage).should('contain', 'Select a business unit');
+    cy.get(SelectBusinessUnitLocators.errorSummary).should('contain', 'Select a business unit');
   });
 });
