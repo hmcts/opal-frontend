@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinesConSelectBuComponent } from './fines-con-select-bu.component';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
@@ -11,18 +12,18 @@ import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from './mocks/fines-con-select-
 describe('FinesConSelectBuComponent', () => {
   let component: FinesConSelectBuComponent;
   let fixture: ComponentFixture<FinesConSelectBuComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+  let mockRouter: { navigate: ReturnType<typeof vi.fn> };
+  let mockActivatedRoute: { snapshot: { data: { businessUnits: IOpalFinesBusinessUnitRefData } }; parent: null };
   let finesConStore: InstanceType<FinesConStoreType>;
 
   const mockBusinessUnitsRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
 
   beforeEach(async () => {
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
+    mockRouter = { navigate: vi.fn() };
+    mockActivatedRoute = {
       snapshot: { data: { businessUnits: mockBusinessUnitsRefData } },
       parent: null,
-    });
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesConSelectBuComponent],
@@ -55,20 +56,19 @@ describe('FinesConSelectBuComponent', () => {
       refData: [mockBusinessUnitsRefData.refData[0]],
       count: 1,
     };
-    spyOn(finesConStore, 'updateSelectBuForm');
+    const updateSpy = vi.spyOn(finesConStore, 'updateSelectBuForm');
 
     component.businessUnitsRefData = singleBusinessUnitMock;
     component['setBusinessUnit'](singleBusinessUnitMock);
 
-    expect(finesConStore.updateSelectBuForm).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalled();
   });
 
   it('should handle form submission with individual defendant type', () => {
-    spyOn(finesConStore, 'updateSelectBuForm');
-    component.businessUnitsRefData = mockBusinessUnitsRefData;
+    const updateSpy = vi.spyOn(finesConStore, 'updateSelectBuForm');
     component.handleFormSubmit(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
 
-    expect(finesConStore.updateSelectBuForm).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
+    expect(updateSpy).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
   });
 
   it('should create autocomplete items from business unit data', () => {
@@ -126,7 +126,7 @@ describe('FinesConSelectBuComponent', () => {
   });
 
   it('should restore previously selected business unit from store on init', () => {
-    spyOn(finesConStore, 'selectBuForm').and.returnValue(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
+    vi.spyOn(finesConStore, 'selectBuForm').mockReturnValue(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
 
     component.ngOnInit();
 
@@ -134,7 +134,7 @@ describe('FinesConSelectBuComponent', () => {
   });
 
   it('should not select business unit when store has no business unit id on init', () => {
-    spyOn(finesConStore, 'selectBuForm').and.returnValue({
+    vi.spyOn(finesConStore, 'selectBuForm').mockReturnValue({
       ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK,
       formData: {
         ...FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData,
@@ -148,10 +148,9 @@ describe('FinesConSelectBuComponent', () => {
   });
 
   it('should handle form submission with different defendant types', () => {
-    spyOn(finesConStore, 'updateSelectBuForm');
-    component.businessUnitsRefData = mockBusinessUnitsRefData;
+    const updateSpy = vi.spyOn(finesConStore, 'updateSelectBuForm');
     component.handleFormSubmit(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK);
 
-    expect(finesConStore.updateSelectBuForm).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
+    expect(updateSpy).toHaveBeenCalledWith(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
   });
 });
