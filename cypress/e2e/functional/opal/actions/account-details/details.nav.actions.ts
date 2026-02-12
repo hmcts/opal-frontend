@@ -83,6 +83,27 @@ export class AccountDetailsNavActions {
   }
 
   /**
+   * Navigates to the "Payment terms" tab within the Account Details shell.
+   *
+   * @description
+   * Clicks the “Payment terms” sub-navigation tab and prepares for assertions
+   * or further content checks within the tab panel.
+   *
+   * @remarks
+   * - Relies on `subNav.paymentTermsTab` in `AccountNavDetailsLocators`.
+   *
+   * @example
+   *  const nav = new AccountDetailsNavActions();
+   *  nav.goToPaymentTermsTab();
+   *  nav.assertPaymentTermsTabIsActive();
+   */
+  goToPaymentTermsTab(): void {
+    log('navigate', 'Navigating to "Payment terms" tab');
+
+    cy.get(N.subNav.paymentTermsTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
    * Asserts that the "Parent or guardian" tab is currently active.
    *
    * @description
@@ -140,5 +161,24 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'At a glance');
+  }
+
+  /**
+   * Asserts that the "Payment terms" tab is currently active.
+   *
+   * @description
+   * Confirms that the active tab link displays “Payment terms”
+   * and has the `aria-current="page"` attribute.
+   *
+   * @remarks
+   * - Validates the active tab label and `aria-current="page"`.
+   */
+  assertPaymentTermsTabIsActive(): void {
+    log('assert', 'Asserting "Payment terms" tab is active');
+
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Payment terms');
   }
 }

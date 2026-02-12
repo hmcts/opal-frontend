@@ -10,6 +10,7 @@ import { IFinesMacLanguagePreferencesState } from '../../../../fines-mac-languag
 import { FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-company-details-state.mock';
 import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-contact-details-state.mock';
 import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/state/fines-mac-payload-language-preferences-state.mock';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
   let initialState: IFinesMacState | null;
@@ -33,7 +34,7 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
 
   it('should map payload to fines MAC state', () => {
     if (!initialState || !contactDetailsState || !languagePreferencesState || !companyDetailsState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -53,7 +54,7 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
 
   it('should not map debtor details from payload to state if debtor detail is null', () => {
     if (!initialState || !contactDetailsState || !languagePreferencesState || !companyDetailsState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -75,7 +76,7 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
 
   it('should map the payload with aliases', () => {
     if (!initialState || !contactDetailsState || !languagePreferencesState || !companyDetailsState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -90,7 +91,7 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
 
   it('should map the payload and return an empty array if aliases has no len', () => {
     if (!initialState || !contactDetailsState || !languagePreferencesState || !companyDetailsState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 

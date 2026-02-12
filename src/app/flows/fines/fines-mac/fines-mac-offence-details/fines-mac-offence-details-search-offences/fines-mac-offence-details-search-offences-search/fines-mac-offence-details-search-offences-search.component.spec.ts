@@ -10,6 +10,7 @@ import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../stores/fines-mac-offence-details-search-offences.store';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsSearchOffencesSearchComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesSearchComponent;
@@ -49,7 +50,8 @@ describe('FinesMacOffenceDetailsSearchOffencesSearchComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.handleSearchOffencesSubmit(formSubmit);
 

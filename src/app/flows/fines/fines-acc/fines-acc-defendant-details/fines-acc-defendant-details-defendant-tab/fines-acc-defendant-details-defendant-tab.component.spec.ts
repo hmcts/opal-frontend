@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defendant-details-defendant-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   let component: FinesAccDefendantDetailsDefendantTabComponent;
@@ -23,14 +24,16 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should handle convert account click when partyType is a company', () => {
-    spyOn(component.convertAccount, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.convertAccount, 'emit');
     component.tabData.defendant_account_party.party_details.organisation_flag = true;
     component.handleConvertAccount();
     expect(component.convertAccount.emit).toHaveBeenCalledWith(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
   });
 
   it('should handle convert account click when partyType is an individual', () => {
-    spyOn(component.convertAccount, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.convertAccount, 'emit');
     component.tabData.defendant_account_party.party_details.organisation_flag = false;
     component.handleConvertAccount();
     expect(component.convertAccount.emit).toHaveBeenCalledWith(
@@ -39,7 +42,8 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should handle change defendant details when partyType is a company', () => {
-    spyOn(component.changeDefendantDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.changeDefendantDetails, 'emit');
     component.tabData.defendant_account_party.party_details.organisation_flag = true;
     component.handleChangeDefendantDetails();
     expect(component.changeDefendantDetails.emit).toHaveBeenCalledWith(
@@ -48,7 +52,8 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should handle change defendant details when partyType is an individual', () => {
-    spyOn(component.changeDefendantDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.changeDefendantDetails, 'emit');
     component.tabData.defendant_account_party.party_details.organisation_flag = false;
     component.handleChangeDefendantDetails();
     expect(component.changeDefendantDetails.emit).toHaveBeenCalledWith(

@@ -15,12 +15,11 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-default-days-control-validation';
-import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants/fines-mac-payment-terms-options';
+import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
 import { FinesMacDefaultDaysComponent } from '../../components/fines-mac-default-days/fines-mac-default-days.component';
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
 import { IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-all-payment-term-options-control-validation.interface';
-import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
 import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-types';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
@@ -55,6 +54,7 @@ import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/g
 import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date-before';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -103,14 +103,18 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   };
 
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
-  public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
+  public readonly paymentTermOptions = FINES_PAYMENT_TERMS_OPTIONS;
+  public readonly collectionOrderYesConditionalId = 'fm_payment_terms_collection_order_made_yes';
+  public readonly collectionOrderNoConditionalId = 'fm_payment_terms_collection_order_made_no';
+  public readonly paymentTermsConditionalIdPrefix = 'fm_payment_terms_payment_terms_';
+  public readonly enforcementActionConditionalIdPrefix = 'fm_payment_terms_enforcement_action_';
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
     value,
   }));
-  public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS,
-  ).map(([key, value]) => ({ key, value }));
+  public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS).map(
+    ([key, value]) => ({ key, value }),
+  );
   public readonly enforcementActionsOptions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
   public readonly enforcementActions: IGovUkRadioOptions[] = Object.entries(this.enforcementActionsOptions).map(
     ([key, value]) => ({
@@ -183,6 +187,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     const { formData } = this.finesMacStore.paymentTerms();
     this.setupPermissions();
     this.setupPaymentTermsForm();
+    this.disableConditionalControls();
     this.paymentTermsListener();
     this.determineAccess();
     this.earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
@@ -487,11 +492,44 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private addControls(controlsToAdd: IAbstractFormArrayControlValidation[]): void {
     for (const control of controlsToAdd) {
       this.updateControl(control.controlName, control.validators);
+      const formControl = this.form.get(control.controlName);
+      if (formControl) {
+        formControl.enable({ emitEvent: false });
+        formControl.updateValueAndValidity({ emitEvent: false });
+      }
       if (
         control.controlName === 'fm_payment_terms_start_date' ||
         control.controlName === 'fm_payment_terms_pay_by_date'
       ) {
         this.dateListener(control.controlName);
+      }
+    }
+  }
+
+  private disableConditionalControls(): void {
+    const conditionalControls = [
+      'fm_payment_terms_collection_order_date',
+      'fm_payment_terms_collection_order_made_today',
+      'fm_payment_terms_pay_by_date',
+      'fm_payment_terms_lump_sum_amount',
+      'fm_payment_terms_instalment_amount',
+      'fm_payment_terms_instalment_period',
+      'fm_payment_terms_start_date',
+      'fm_payment_terms_enforcement_action',
+      'fm_payment_terms_earliest_release_date',
+      'fm_payment_terms_prison_and_prison_number',
+      'fm_payment_terms_reason_account_is_on_noenf',
+      'fm_payment_terms_suspended_committal_date',
+      'fm_payment_terms_default_days_in_jail',
+    ];
+
+    for (const controlName of conditionalControls) {
+      const control = this.form.get(controlName);
+      if (control) {
+        control.reset();
+        control.clearValidators();
+        control.disable({ emitEvent: false });
+        control.updateValueAndValidity({ emitEvent: false });
       }
     }
   }
@@ -506,8 +544,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       const formControl = this.form.get(control.controlName);
       if (formControl) {
         formControl.reset();
+        formControl.clearValidators();
+        formControl.disable({ emitEvent: false });
+        formControl.updateValueAndValidity({ emitEvent: false });
       }
-      this.removeControl(control.controlName);
       if (
         control.controlName === 'fm_payment_terms_start_date' ||
         control.controlName === 'fm_payment_terms_pay_by_date'

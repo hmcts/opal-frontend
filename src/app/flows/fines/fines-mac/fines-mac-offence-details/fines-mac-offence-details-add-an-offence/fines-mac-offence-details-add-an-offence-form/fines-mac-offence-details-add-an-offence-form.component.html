@@ -66,11 +66,11 @@
     }
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
-  <fieldset class="govuk-fieldset">
-    <h2 class="govuk-label-wrapper">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
-    </h2>
-    @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
+  <h2 class="govuk-label-wrapper">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
+  </h2>
+  @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
+    <fieldset class="govuk-fieldset">
       <opal-lib-moj-ticket-panel>
         <div class="govuk-grid-row govuk-form-group">
           <div class="govuk-grid-column-one-half">
@@ -166,6 +166,13 @@
                       [inputId]="creditorOption.key + '_' + rowIndex"
                       [inputName]="formArrayControl['fm_offence_details_creditor'].controlName"
                       [inputValue]="creditorOption.key"
+                      [ariaControls]="
+                        creditorOption.key === 'major'
+                          ? 'fm_offence_details_creditor_' + rowIndex + '_major'
+                          : creditorOption.key === 'minor'
+                            ? 'fm_offence_details_creditor_' + rowIndex + '_minor'
+                            : ''
+                      "
                       [control]="
                         form.get([
                           'fm_offence_details_impositions',
@@ -174,63 +181,53 @@
                         ])
                       "
                     ></div>
-                    <div opal-lib-govuk-radios-conditional conditionalId="creditor">
-                      @if (creditorOption.key === 'major') {
-                        @if (
-                          form.get([
-                            'fm_offence_details_impositions',
-                            rowIndex,
-                            formArrayControl['fm_offence_details_creditor'].controlName,
-                          ])?.value === 'major'
-                        ) {
-                          <span id="major-creditor-conditional-label" class="govuk-visually-hidden">
-                            Options for Major Creditor
-                          </span>
-                          <opal-lib-alphagov-accessible-autocomplete
-                            [control]="
-                              form.get([
-                                'fm_offence_details_impositions',
-                                rowIndex,
-                                formArrayControl['fm_offence_details_major_creditor_id'].controlName,
-                              ])
-                            "
-                            labelText="Search using name or code"
-                            labelClasses="govuk-fieldset__legend--s"
-                            [inputId]="formArrayControl['fm_offence_details_major_creditor_id'].inputId"
-                            [inputName]="formArrayControl['fm_offence_details_major_creditor_id'].inputName"
-                            inputClasses="govuk-!-width-one-half"
-                            [autoCompleteItems]="majorCreditorItemsByCode[currentResultCodeByRow[rowIndex]]"
-                            [errors]="
-                              formControlErrorMessages[
-                                formArrayControl['fm_offence_details_major_creditor_id'].controlName
-                              ]
-                            "
-                          >
-                          </opal-lib-alphagov-accessible-autocomplete>
-                        }
-                      }
-                      @if (creditorOption.key === 'minor') {
-                        @if (
-                          form.get([
-                            'fm_offence_details_impositions',
-                            rowIndex,
-                            formArrayControl['fm_offence_details_creditor'].controlName,
-                          ])?.value === 'minor'
-                        ) {
-                          <span id="minor-creditor-conditional-label" class="govuk-visually-hidden">
-                            Options for Minor Creditor
-                          </span>
-                          <a
-                            class="govuk-link govuk-link--no-visited-state"
-                            (click)="goToMinorCreditor(rowIndex)"
-                            (keyup.enter)="goToMinorCreditor(rowIndex)"
-                            tabindex="0"
-                          >
-                            Add minor creditor details
-                          </a>
-                        }
-                      }
-                    </div>
+                    @if (creditorOption.key === 'major') {
+                      <span id="major-creditor-conditional-label" class="govuk-visually-hidden">
+                        Options for Major Creditor
+                      </span>
+                      <opal-lib-govuk-radios-conditional
+                        [conditionalId]="'fm_offence_details_creditor_' + rowIndex + '_major'"
+                      >
+                        <opal-lib-alphagov-accessible-autocomplete
+                          [control]="
+                            form.get([
+                              'fm_offence_details_impositions',
+                              rowIndex,
+                              formArrayControl['fm_offence_details_major_creditor_id'].controlName,
+                            ])
+                          "
+                          labelText="Search using name or code"
+                          labelClasses="govuk-fieldset__legend--s"
+                          [inputId]="formArrayControl['fm_offence_details_major_creditor_id'].inputId"
+                          [inputName]="formArrayControl['fm_offence_details_major_creditor_id'].inputName"
+                          inputClasses="govuk-!-width-one-half"
+                          [autoCompleteItems]="majorCreditorItemsByCode[currentResultCodeByRow[rowIndex]]"
+                          [errors]="
+                            formControlErrorMessages[
+                              formArrayControl['fm_offence_details_major_creditor_id'].controlName
+                            ]
+                          "
+                        >
+                        </opal-lib-alphagov-accessible-autocomplete>
+                      </opal-lib-govuk-radios-conditional>
+                    }
+                    @if (creditorOption.key === 'minor') {
+                      <span id="minor-creditor-conditional-label" class="govuk-visually-hidden">
+                        Options for Minor Creditor
+                      </span>
+                      <opal-lib-govuk-radios-conditional
+                        [conditionalId]="'fm_offence_details_creditor_' + rowIndex + '_minor'"
+                      >
+                        <a
+                          class="govuk-link govuk-link--no-visited-state"
+                          (click)="goToMinorCreditor(rowIndex)"
+                          (keyup.enter)="goToMinorCreditor(rowIndex)"
+                          tabindex="0"
+                        >
+                          Add minor creditor details
+                        </a>
+                      </opal-lib-govuk-radios-conditional>
+                    }
                   }
                 </opal-lib-govuk-radio>
               }
@@ -250,15 +247,15 @@
           </div>
         }
       </opal-lib-moj-ticket-panel>
-    }
-    <opal-lib-govuk-button
-      buttonId="addImposition"
-      buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
-      type="button"
-      (buttonClickEvent)="addControlsToFormArray(formArrayControls.length, 'fm_offence_details_impositions')"
-      >Add another imposition</opal-lib-govuk-button
-    >
-  </fieldset>
+    </fieldset>
+  }
+  <opal-lib-govuk-button
+    buttonId="addImposition"
+    buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+    type="button"
+    (buttonClickEvent)="addControlsToFormArray(formArrayControls.length, 'fm_offence_details_impositions')"
+    >Add another imposition</opal-lib-govuk-button
+  >
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">

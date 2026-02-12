@@ -27,6 +27,8 @@ opal-fines-service:
     devcpuRequests: "250m"
     devmemoryLimits: "2Gi"
     devcpuLimits: "2500m"
+    global:
+      enableKeyVaults: true
     keyVaults:
       opal:
         secrets:
@@ -60,6 +62,7 @@ opal-fines-service:
       OPAL_LEGACY_GATEWAY_URL: ${DEV_OPAL_LEGACY_GATEWAY_URL}
       OPAL_LEGACY_GATEWAY_USERNAME: ${OPAL_LEGACY_GATEWAY_USERNAME}
       OPAL_LEGACY_GATEWAY_PASSWORD: ${OPAL_LEGACY_GATEWAY_PASSWORD}
+      LAUNCH_DARKLY_ENABLED: false
 postgresql:
   enabled: ${DEV_ENABLE_OPAL_FINES_SERVICE}
   image:

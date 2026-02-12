@@ -28,6 +28,7 @@ type RequestPayloadEntry = {
   method?: string;
   timestamp: string;
   payload: Record<string, unknown>;
+  direction?: 'request' | 'response';
 };
 
 type CreatedAccountInput = {
@@ -36,6 +37,7 @@ type CreatedAccountInput = {
   status?: string;
   accountId?: number;
   accountNumber?: string | null;
+  imposingCourtId?: string;
   uniq?: string;
   scenario?: string;
   featurePath?: string;
@@ -227,6 +229,7 @@ function buildRequestPayloadEntry(
     source,
     timestamp,
     payload,
+    direction: 'request',
   };
 
   if (endpoint) entry.endpoint = endpoint;
@@ -261,6 +264,7 @@ function mergeRequestPayloads(
   for (const entry of merged) {
     const key = [
       entry.source,
+      entry.direction ?? '',
       entry.method ?? '',
       entry.endpoint ?? '',
       entry.timestamp,

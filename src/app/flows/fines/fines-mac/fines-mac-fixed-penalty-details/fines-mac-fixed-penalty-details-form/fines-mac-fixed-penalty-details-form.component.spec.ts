@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -18,24 +18,44 @@ import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../fines-mac-offenc
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../validators/fines-mac-fixed-penalty-details-form-validators';
 import { OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-issuing-authority-autocomplete-items.mock';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacFixedPenaltyFormComponent', () => {
   let component: FinesMacFixedPenaltyDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacFixedPenaltyDetailsFormComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockTransformationService: jasmine.SpyObj<TransformationService>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>; // Replace with actual service type if available
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockTransformationService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any; // Replace with actual service type if available
   let finesMacStore: FinesMacStoreType;
+  let originalConfigureDatePicker: () => void;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(MojDatePickerComponent.prototype, 'configureDatePicker').mockImplementation(() => {});
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj(DateService, [
-      'isValidDate',
-      'calculateAge',
-      'getPreviousDate',
-      'getAgeObject',
-    ]);
-    mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getOffenceByCjsCode']);
-    mockTransformationService = jasmine.createSpyObj(TransformationService, ['replaceKeys']);
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+    mockDateService = createSpyObj(DateService, ['isValidDate', 'calculateAge', 'getPreviousDate', 'getAgeObject']);
+    mockOpalFinesService = createSpyObj(OpalFines, ['getOffenceByCjsCode']);
+    mockTransformationService = createSpyObj(TransformationService, ['replaceKeys']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacFixedPenaltyDetailsFormComponent],
@@ -94,7 +114,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   it('should create the form with the correct controls', () => {
     component['setupFixedPenaltyDetailsForm']();
     Object.keys(FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK.formData).forEach((key) => {
-      expect(component.form.contains(key)).toBeTrue();
+      expect(component.form.contains(key)).toBe(true);
     });
   });
 
@@ -105,10 +125,10 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(
       component.form.get('fm_fp_offence_details_vehicle_registration_number')?.hasValidator(Validators.required),
-    ).toBeTrue();
-    expect(
-      component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required),
-    ).toBeTrue();
+    ).toBe(true);
+    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required)).toBe(
+      true,
+    );
   });
 
   it('should remove validators from the form controls', () => {
@@ -118,14 +138,31 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(
       component.form.get('fm_fp_offence_details_vehicle_registration_number')?.hasValidator(Validators.required),
-    ).toBeFalse();
-    expect(
-      component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required),
-    ).toBeFalse();
+    ).toBe(false);
+    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required)).toBe(
+      false,
+    );
+    expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.disabled).toBe(true);
+    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.disabled).toBe(true);
+  });
+
+  it('should toggle the vehicle conditional panel and controls', async () => {
+    await fixture.whenStable();
+    const conditional = fixture.nativeElement.querySelector(`#${component.vehicleOffenceConditionalId}`);
+    expect(conditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+
+    const vehicleInput = fixture.nativeElement.querySelector(
+      `input[aria-controls="${component.vehicleOffenceConditionalId}"]`,
+    );
+    vehicleInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_fp_offence_details_vehicle_registration_number')?.enabled).toBe(true);
+    expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.enabled).toBe(true);
   });
 
   it('should listen to changes in the dob and update the dateObject', () => {
-    mockDateService.getAgeObject.and.returnValue({ value: 46, group: 'Adult' });
+    mockDateService.getAgeObject.mockReturnValue({ value: 46, group: 'Adult' });
     component['setupFixedPenaltyDetailsForm']();
     component['dateOfBirthListener']();
     const dobControl = component.form.controls['fm_fp_personal_details_dob'];
@@ -145,17 +182,17 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should perform the initial setup for the fixed penalty details form', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupFixedPenaltyDetailsForm');
+    vi.spyOn<any, any>(component, 'setupFixedPenaltyDetailsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'dateOfBirthListener');
+    vi.spyOn<any, any>(component, 'dateOfBirthListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'offenceTypeListener');
+    vi.spyOn<any, any>(component, 'offenceTypeListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupOffenceCodeListener');
+    vi.spyOn<any, any>(component, 'setupOffenceCodeListener');
 
     component['initialFixedPenaltyDetailsSetup']();
 
@@ -168,8 +205,9 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component['setupOffenceCodeListener']).toHaveBeenCalled();
   });
 
-  it('should update offenceCode$ and selectedOffenceConfirmation when callbacks are invoked', fakeAsync(() => {
-    mockOpalFinesService.getOffenceByCjsCode.and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
+  it('should update offenceCode$ and selectedOffenceConfirmation when callbacks are invoked', () => {
+    vi.useFakeTimers();
+    mockOpalFinesService.getOffenceByCjsCode.mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
 
     component['setupFixedPenaltyDetailsForm']();
     component.form.addControl('fm_fp_offence_details_offence_id', new FormControl(''));
@@ -180,15 +218,16 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     component.form.get('fm_fp_offence_details_offence_cjs_code')?.setValue('AK123456');
 
-    tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+    vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
     // Assert
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let value: any;
     component.offenceCode$.subscribe((v) => (value = v));
     expect(value).toEqual(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
-    expect(component.selectedOffenceConfirmation).toBeTrue();
-  }));
+    expect(component.selectedOffenceConfirmation).toBe(true);
+    vi.useRealTimers();
+  });
 
   it('should set initial value if dob value already exists', () => {
     component['setupFixedPenaltyDetailsForm']();
@@ -239,8 +278,8 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     component['setValidators']();
 
     // Assert
-    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeTrue();
-    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeFalse();
+    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(true);
+    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(false);
   });
 
   it('should set validators to the correct fields when defendant type is company', () => {
@@ -257,13 +296,13 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     component['setValidators']();
 
     // Assert
-    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeFalse();
-    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeTrue();
+    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(false);
+    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBe(true);
   });
 
   it('should set prosecutor name when handleFormSubmit is called', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setProsecutorName');
+    vi.spyOn<any, any>(component, 'setProsecutorName');
     const event = new SubmitEvent('submit');
     component.handleFormSubmit(event);
     expect(component['setProsecutorName']).toHaveBeenCalled();
@@ -291,7 +330,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should set the prosecutor name in the form control', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getProsecutorFromId').and.returnValue({
+    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue({
       value: '101',
       name: 'Police force',
     });
@@ -306,7 +345,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should clear the prosecutor name in the form control if the prosecutor is not found', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getProsecutorFromId').and.returnValue(null);
+    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue(null);
     component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
     component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
 
@@ -318,7 +357,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should clear the prosecutor name in the form control if the prosecutor id is not set', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getProsecutorFromId').and.returnValue(null);
+    vi.spyOn<any, any>(component, 'getProsecutorFromId').mockReturnValue(null);
     component.form.controls['fm_fp_court_details_originator_id'].setValue(null);
     component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
 

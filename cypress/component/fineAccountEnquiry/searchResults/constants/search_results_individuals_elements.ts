@@ -46,9 +46,9 @@ export const DOM_ELEMENTS = {
 
   tabs: 'opal-lib-govuk-tabs',
   tabsList: '.govuk-tabs__list',
-  individualsTab: '[id="tab-individuals"]',
-  companiesTab: '[id="tab-companies"]',
-  minorCreditorsTab: '[id="tab-minor-creditors"]',
+  individualsTab: '[tabitemid="tab-individuals"]',
+  companiesTab: '[tabitemid="tab-companies"]',
+  minorCreditorsTab: '[tabitemid="tab-minor-creditors"]',
 
   individualsPanel: '[id="individuals"]',
   companiesPanel: '[id="companies"]',
@@ -56,10 +56,11 @@ export const DOM_ELEMENTS = {
 
   paginationElement: 'opal-lib-moj-pagination',
   paginationText: '.moj-pagination__results',
-  previousPageButton: '.moj-pagination__item--prev',
-  nextPageButton: '.moj-pagination__item--next',
-  paginationList: '.moj-pagination__list',
-  paginationListItem: '.moj-pagination__item',
-  paginationCurrentPage: '.moj-pagination__item--active',
-  paginationPageNumber: (pageNum: number | string) => `.moj-pagination__item:contains("${pageNum}")`,
+  previousPageButton: '.govuk-pagination__prev',
+  nextPageButton: '.govuk-pagination__next',
+  paginationList: '.govuk-pagination__list',
+  paginationListItem: '.govuk-pagination__item',
+  paginationListItemElipsises: '.govuk-pagination__item--ellipses',
+  paginationCurrentPage: '.govuk-pagination__item--current',
+  paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
 };

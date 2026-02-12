@@ -9,7 +9,17 @@ export type DraftPayloadType =
   | 'failedAdultOrYouthOnly'
   | 'failedCompany'
   | 'fixedPenalty'
-  | 'fixedPenaltyCompany';
+  | 'fixedPenaltyCompany'
+  | 'opalE2EAdultEn'
+  | 'opalE2EAdultCy'
+  | 'opalE2EAdultPgMajor'
+  | 'opalE2EAdultPgMinor'
+  | 'opalE2EYouthPgPay'
+  | 'opalE2EYouthOnly'
+  | 'opalE2ECompany'
+  | 'opalE2EFixedPenaltyAdult'
+  | 'opalE2EFixedPenaltyYouth'
+  | 'opalE2EFixedPenaltyCompany';
 
 /** Defendant type options used by account creation/setup steps. */
 export type DefendantTypes = 'company' | 'adultOrYouthOnly' | 'pgToPay';
@@ -31,6 +41,16 @@ export function getDraftPayloadFile(type: DraftPayloadType): string {
     failedCompany: 'failedCompanyPayload.json',
     fixedPenalty: 'fixedPenaltyPayload.json',
     fixedPenaltyCompany: 'fixedPenaltyCompanyPayload.json',
+    opalE2EAdultEn: 'opalE2EAdultEnPayload.json',
+    opalE2EAdultCy: 'opalE2EAdultCyPayload.json',
+    opalE2EAdultPgMajor: 'opalE2EAdultPgMajorPayload.json',
+    opalE2EAdultPgMinor: 'opalE2EAdultPgMinorPayload.json',
+    opalE2EYouthPgPay: 'opalE2EYouthPgPayPayload.json',
+    opalE2EYouthOnly: 'opalE2EYouthOnlyPayload.json',
+    opalE2ECompany: 'opalE2ECompanyPayload.json',
+    opalE2EFixedPenaltyAdult: 'opalE2EFixedPenaltyAdultPayload.json',
+    opalE2EFixedPenaltyYouth: 'opalE2EFixedPenaltyYouthPayload.json',
+    opalE2EFixedPenaltyCompany: 'opalE2EFixedPenaltyCompanyPayload.json',
   };
   return map[type];
 }

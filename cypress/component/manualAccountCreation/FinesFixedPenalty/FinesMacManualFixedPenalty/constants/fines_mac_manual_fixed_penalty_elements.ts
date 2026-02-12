@@ -26,8 +26,8 @@ export const DOM_ELEMENTS = {
   companyPostcodeInput: '#fm_fp_company_details_postcode',
 
   noticeNumberInput: 'input[id="fm_fp_offence_details_notice_number"]',
-  vehicleRadioButton: '[labeltext="Vehicle"] > #fm_fp_offence_details_offence_type',
-  nonVehicleRadioButton: '[labeltext="Non-Vehicle"] > #fm_fp_offence_details_offence_type',
+  vehicleRadioButton: 'input[name="fm_fp_offence_details_offence_type"][value="vehicle"]',
+  nonVehicleRadioButton: 'input[name="fm_fp_offence_details_offence_type"][value="non-vehicle"]',
   vehicleRegistrationInput: 'input[id="fm_fp_offence_details_vehicle_registration_number"]',
   drivingLicenceInput: 'input[id="fm_fp_offence_details_driving_licence_number"]',
   ntoNthInput: 'input[id="fm_fp_offence_details_nto_nth"]',
@@ -47,8 +47,8 @@ export const DOM_ELEMENTS = {
   accountNoteInput: 'textarea[id="fm_fp_account_comments_notes_notes"]',
   accountNoteInputHint: 'div.govuk-character-count__message.govuk-character-count__status',
 
-  documentLanguageSelect: '#fm_language_preferences_document_language',
-  hearingLanguageSelect: '#fm_language_preferences_hearing_language',
+  documentLanguageSelect: 'input[name="fm_fp_language_preferences_document_language"][value="EN"]',
+  hearingLanguageSelect: 'input[name="fm_fp_language_preferences_hearing_language"][value="EN"]',
 
   cancelLink: 'a.govuk-link.button-link',
   submitButton: 'button[type="submit"]',

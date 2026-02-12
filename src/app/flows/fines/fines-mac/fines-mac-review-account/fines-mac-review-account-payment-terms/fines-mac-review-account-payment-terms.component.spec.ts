@@ -2,22 +2,26 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms.component';
 import { FINES_MAC_PAYMENT_TERMS_STATE_MOCK } from '../../fines-mac-payment-terms/mocks/fines-mac-payment-terms-state.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
-import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';
+import { IFinesPaymentTermsOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   let component: FinesMacReviewAccountPaymentTermsComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountPaymentTermsComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
   let globalStore: GlobalStoreType;
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat']);
+    mockDateService = createSpyObj(DateService, ['getFromFormatToFormat']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountPaymentTermsComponent],
@@ -51,7 +55,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
     expect(component.paymentTerms).toBeDefined();
     expect(component.paymentTerms).toBe(
-      component['paymentTermsOptions'][paymentTerms as keyof IFinesMacPaymentTermsOptions],
+      component['paymentTermsOptions'][paymentTerms as keyof IFinesPaymentTermsOptions],
     );
   });
 
@@ -61,7 +65,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
       ...component.paymentTermsState,
       fm_payment_terms_pay_by_date: '01/01/2023',
     };
-    mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
+    mockDateService.getFromFormatToFormat.mockReturnValue(formattedDate);
 
     component['getPayByDate']();
 
@@ -74,7 +78,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
       ...component.paymentTermsState,
       fm_payment_terms_suspended_committal_date: '01/01/2023',
     };
-    mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
+    mockDateService.getFromFormatToFormat.mockReturnValue(formattedDate);
 
     component['getDaysInDefaultDate']();
 
@@ -99,7 +103,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
       ...component.paymentTermsState,
       fm_payment_terms_earliest_release_date: '01/01/2023',
     };
-    mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
+    mockDateService.getFromFormatToFormat.mockReturnValue(formattedDate);
 
     component['getEarliestReleaseDate']();
 
@@ -124,7 +128,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
       ...component.paymentTermsState,
       fm_payment_terms_start_date: '01/01/2023',
     };
-    mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
+    mockDateService.getFromFormatToFormat.mockReturnValue(formattedDate);
 
     component['getStartDate']();
 
@@ -137,7 +141,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
       ...component.paymentTermsState,
       fm_payment_terms_collection_order_date: '01/01/2023',
     };
-    mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
+    mockDateService.getFromFormatToFormat.mockReturnValue(formattedDate);
 
     component['getCollectionOrderDate']();
 
@@ -145,14 +149,15 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should emit change payment terms event', () => {
-    spyOn(component.emitChangePaymentTerms, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChangePaymentTerms, 'emit');
     component.changePaymentTerms();
     expect(component.emitChangePaymentTerms.emit).toHaveBeenCalled();
   });
 
   it('should call getPaymentTermsData on init', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getPaymentTermsData');
+    vi.spyOn<any, any>(component, 'getPaymentTermsData');
 
     component.ngOnInit();
 
@@ -161,7 +166,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'hasBusinessUnitPermissionAccess');
+    vi.spyOn<any, any>(component, 'hasBusinessUnitPermissionAccess');
     globalStore.setUserState({} as IOpalUserState);
 
     component['setupPermissions']();

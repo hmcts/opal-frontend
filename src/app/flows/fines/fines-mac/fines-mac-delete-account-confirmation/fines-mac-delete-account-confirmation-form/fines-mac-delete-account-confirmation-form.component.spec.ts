@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FinesMacDeleteAccountConfirmationFormComponent } from './fines-mac-delete-account-confirmation-form.component';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
   let component: FinesMacDeleteAccountConfirmationFormComponent;
@@ -31,16 +32,17 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
 
   it('should be invalid if reason is empty', () => {
     component.form.controls['fm_delete_account_confirmation_reason'].setValue('');
-    expect(component.form.invalid).toBeTrue();
+    expect(component.form.invalid).toBe(true);
   });
 
   it('should be valid if reason is provided', () => {
     component.form.controls['fm_delete_account_confirmation_reason'].setValue('Some reason');
-    expect(component.form.valid).toBeTrue();
+    expect(component.form.valid).toBe(true);
   });
 
   it('should emit form submit event when form is valid and submitted', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
     component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
     fixture.detectChanges();
 
@@ -48,8 +50,8 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     form.triggerEventHandler('submit', { preventDefault: () => {} });
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        formData: jasmine.objectContaining({
+      expect.objectContaining({
+        formData: expect.objectContaining({
           fm_delete_account_confirmation_reason: 'Valid reason',
         }),
       }),
@@ -58,9 +60,12 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
 
   it('should handleFormSubmit method correctly when there is no accountId', () => {
     component.accountId = null;
-    spyOn(component.finesMacStore, 'resetStore');
-    spyOn(component, 'handleRoute');
-    const submitEvent: SubmitEvent = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.finesMacStore, 'resetStore');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'handleRoute');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const submitEvent: any = {
       preventDefault: () => {},
       submitter: null,
     } as SubmitEvent;
@@ -73,7 +78,8 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
   it('should handleRoute method correctly when there is no accountId', () => {
     component.accountId = null;
     const route = 'createAccount';
-    spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.handleRoute(route);
 
@@ -83,7 +89,8 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
   it('should handleRoute method correctly when there is an accountId', () => {
     component.accountId = 123;
     const route = 'createAccount';
-    spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.handleRoute(route);
 
@@ -95,7 +102,7 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     component.form.markAsDirty();
     component['formSubmitted'] = false;
 
-    expect(component['hasUnsavedChanges']()).toBeTrue();
+    expect(component['hasUnsavedChanges']()).toBe(true);
   });
 
   it('should return false from hasUnsavedChanges if form is pristine', () => {
@@ -103,7 +110,7 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     component.form.markAsPristine();
     component['formSubmitted'] = false;
 
-    expect(component['hasUnsavedChanges']()).toBeFalse();
+    expect(component['hasUnsavedChanges']()).toBe(false);
   });
 
   it('should return false from hasUnsavedChanges if reason is empty', () => {
@@ -111,7 +118,7 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     component.form.markAsDirty();
     component['formSubmitted'] = false;
 
-    expect(component['hasUnsavedChanges']()).toBeFalse();
+    expect(component['hasUnsavedChanges']()).toBe(false);
   });
 
   it('should return false from hasUnsavedChanges if form is submitted', () => {
@@ -119,6 +126,6 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     component.form.markAsDirty();
     component['formSubmitted'] = true;
 
-    expect(component['hasUnsavedChanges']()).toBeFalse();
+    expect(component['hasUnsavedChanges']()).toBe(false);
   });
 });

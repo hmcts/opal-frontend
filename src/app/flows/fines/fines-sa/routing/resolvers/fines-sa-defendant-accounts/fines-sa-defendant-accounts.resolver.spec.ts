@@ -6,6 +6,7 @@ import { FinesSaStore } from '../../../stores/fines-sa.store';
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { ResolveFn } from '@angular/router';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../../../fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const execIndividuals: ResolveFn<any> = (...params) =>
@@ -15,18 +16,25 @@ const execCompanies: ResolveFn<any> = (...params) =>
   TestBed.runInInjectionContext(() => finesSaDefendantAccountsResolver(true)(...params));
 
 describe('finesSaDefendantAccountsResolver (store-driven)', () => {
-  let opalFines: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let opalFines: any;
   let finesSaStore: FinesSaStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: OpalFines, useValue: jasmine.createSpyObj('OpalFines', ['getDefendantAccounts']) },
+        {
+          provide: OpalFines,
+          useValue: {
+            getDefendantAccounts: vi.fn().mockName('OpalFines.getDefendantAccounts'),
+          },
+        },
         FinesSaStore,
       ],
     });
 
-    opalFines = TestBed.inject(OpalFines) as jasmine.SpyObj<OpalFines>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    opalFines = TestBed.inject(OpalFines) as any;
     finesSaStore = TestBed.inject(FinesSaStore);
   });
 
@@ -48,13 +56,13 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
       fsa_search_account_reference_case_number: 'PCR-2',
     });
     finesSaStore.setActiveTab('companies');
-    opalFines.getDefendantAccounts.and.returnValue(of({ count: 1, defendant_accounts: [] }));
+    opalFines.getDefendantAccounts.mockReturnValue(of({ count: 1, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(execCompanies(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         active_accounts_only: false,
         business_unit_ids: [65, 66, 73, 77, 80, 78],
         reference_number: Object({ account_number: 'ACC-1', prosecutor_case_reference: null, organisation: true }),
@@ -71,13 +79,13 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
       fsa_search_account_reference_case_number: 'PCR-9',
     });
     finesSaStore.setActiveTab('individuals');
-    opalFines.getDefendantAccounts.and.returnValue(of({ count: 0, defendant_accounts: [] }));
+    opalFines.getDefendantAccounts.mockReturnValue(of({ count: 0, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         active_accounts_only: false,
         business_unit_ids: [65, 66, 73, 77, 80, 78],
         reference_number: Object({ account_number: null, prosecutor_case_reference: 'PCR-9', organisation: false }),
@@ -104,13 +112,13 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
       } as never,
     });
     finesSaStore.setActiveTab('individuals');
-    opalFines.getDefendantAccounts.and.returnValue(of({ count: 3, defendant_accounts: [] }));
+    opalFines.getDefendantAccounts.mockReturnValue(of({ count: 3, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         active_accounts_only: true,
         business_unit_ids: [65, 66, 73, 77, 80, 78],
         reference_number: null,
@@ -145,13 +153,13 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
       } as never,
     });
     finesSaStore.setActiveTab('companies');
-    opalFines.getDefendantAccounts.and.returnValue(of({ count: 4, defendant_accounts: [] }));
+    opalFines.getDefendantAccounts.mockReturnValue(of({ count: 4, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await lastValueFrom(execCompanies(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         active_accounts_only: true,
         business_unit_ids: [65, 66, 73, 77, 80, 78],
         reference_number: null,
@@ -185,13 +193,13 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     });
     finesSaStore.setActiveTab('individuals');
 
-    opalFines.getDefendantAccounts.and.returnValue(of({ count: 1, defendant_accounts: [] }));
+    opalFines.getDefendantAccounts.mockReturnValue(of({ count: 1, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({ active_accounts_only: true }),
+      expect.objectContaining({ active_accounts_only: true }),
     );
   });
 
@@ -247,7 +255,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
       } as never,
     });
     finesSaStore.setActiveTab('companies');
-    opalFines.getDefendantAccounts.and.returnValue(of({ count: 1, defendant_accounts: [] }));
+    opalFines.getDefendantAccounts.mockReturnValue(of({ count: 1, defendant_accounts: [] }));
 
     // Act
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -255,9 +263,9 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
 
     // Assert: defaults applied
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         active_accounts_only: true,
-        defendant: jasmine.objectContaining({
+        defendant: expect.objectContaining({
           organisation_name: 'Flagless PLC',
           exact_match_organisation_name: false,
           include_aliases: false,

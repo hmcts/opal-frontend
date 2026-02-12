@@ -6,25 +6,28 @@ export const DOM_ELEMENTS = {
   legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
 
   //labels
-  payInFullLabel: 'label[for="payInFull"]',
+  payInFullLabel: 'label[for="fm_payment_terms_payment_terms-payInFull"]',
   payByDateLabel: 'label[for="fm_payment_terms_pay_by_date"]',
-  instalmentsOnlyLabel: 'label[for="instalmentsOnly"]',
+  instalmentsOnlyLabel: 'label[for="fm_payment_terms_payment_terms-instalmentsOnly"]',
   instalmentAmountLabel: 'label[for="fm_payment_terms_instalment_amount"]',
-  frequencyWeeklyLabel: 'label[for="W"]',
-  frequencyFortnightlyLabel: 'label[for="F"]',
-  frequencyMonthlyLabel: 'label[for="M"]',
+  instalmentsOnlyFrequencyWeeklyLabel: 'label[for="instalmentsOnly-W"]',
+  instalmentsOnlyFrequencyFortnightlyLabel: 'label[for="instalmentsOnly-F"]',
+  instalmentsOnlyFrequencyMonthlyLabel: 'label[for="instalmentsOnly-M"]',
+  lumpSumFrequencyWeeklyLabel: 'label[for="lumpSumPlusInstalments-W"]',
+  lumpSumFrequencyFortnightlyLabel: 'label[for="lumpSumPlusInstalments-F"]',
+  lumpSumFrequencyMonthlyLabel: 'label[for="lumpSumPlusInstalments-M"]',
   startDateLabel: 'label[for="fm_payment_terms_start_date"]',
-  lumpSumPlusInstalmentsLabel: 'label[for="lumpSumPlusInstalments"]',
+  lumpSumPlusInstalmentsLabel: 'label[for="fm_payment_terms_payment_terms-lumpSumPlusInstalments"]',
   lumpSumAmountLabel: 'label[for="fm_payment_terms_lump_sum_amount"]',
   hasDaysInDefaultLabel: 'label[for="fm_payment_terms_has_days_in_default"]',
   suspendedCommittalDateLabel: 'label[for="fm_payment_terms_suspended_committal_date"]',
   defaultDaysInJailLabel: 'label[for="fm_payment_terms_default_days_in_jail"]',
   daysInDafaultCalculator: 'span.govuk-details__summary-text',
   addEnforcementActionLabel: 'label[for="fm_payment_terms_add_enforcement_action"]',
-  prisLabel: 'label[for="PRIS"]',
+  prisLabel: 'label[for="fm_payment_terms_enforcement_action-PRIS"]',
   earliestReleaseDateLabel: 'label[for="fm_payment_terms_earliest_release_date"]',
   prisonAndPrisonNumberLabel: 'label[for="fm_payment_terms_prison_and_prison_number"]',
-  noenfLabel: 'label[for="NOENF"]',
+  noenfLabel: 'label[for="fm_payment_terms_enforcement_action-NOENF"]',
   reasonAccountIsOnNoenfLabel: 'label[for="fm_payment_terms_reason_account_is_on_noenf"]',
   paymentCardLabel: 'label[for="fm_payment_terms_payment_card_request"]',
 
@@ -34,14 +37,14 @@ export const DOM_ELEMENTS = {
   noenfCharHint: 'div.govuk-character-count__message.govuk-character-count__status',
   dateHint: 'div.govuk-hint',
   // Collection order
-  collectionOrderMadeTrue: 'input[id="fm_payment_terms_collection_order_made_true"]',
+  collectionOrderMadeTrue: 'input[name="fm_payment_terms_collection_order_made"][value="true"]',
   collectionOrderDate: 'input[id="fm_payment_terms_collection_order_date"]',
   collectionOrderDateLabel: 'label[for="fm_payment_terms_collection_order_date"]',
   collectionOrderHint: 'div.govuk-hint',
-  collectionYes: 'input[id="fm_payment_terms_collection_order_made_true"]',
-  collectionNo: 'input[id="fm_payment_terms_collection_order_made_false"]',
-  collectionYesLabel: 'label[for="fm_payment_terms_collection_order_made_true"]',
-  collectionNoLabel: 'label[for="fm_payment_terms_collection_order_made_false"]',
+  collectionYes: 'input[name="fm_payment_terms_collection_order_made"][value="true"]',
+  collectionNo: 'input[name="fm_payment_terms_collection_order_made"][value="false"]',
+  collectionYesLabel: 'label[for="fm_payment_terms_collection_order_made-fm_payment_terms_collection_order_made_true"]',
+  collectionNoLabel: 'label[for="fm_payment_terms_collection_order_made-fm_payment_terms_collection_order_made_false"]',
   makeCollection: 'input[id = "fm_payment_terms_collection_order_made_today"]',
   makeCollectionLabel: 'label[for="fm_payment_terms_collection_order_made_today"]',
 
@@ -59,18 +62,21 @@ export const DOM_ELEMENTS = {
 
   // Payment options
   paymentCard: 'input[id = "fm_payment_terms_payment_card_request"]',
-  payInFull: 'input[id="payInFull"]',
+  payInFull: 'input[name="fm_payment_terms_payment_terms"][value="payInFull"]',
   payByDate: 'input[id="fm_payment_terms_pay_by_date"]',
-  instalmentsOnly: 'input[id="instalmentsOnly"]',
+  instalmentsOnly: 'input[name="fm_payment_terms_payment_terms"][value="instalmentsOnly"]',
   instalmentAmount: 'input[id="fm_payment_terms_instalment_amount"]',
   startDate: 'input[id="fm_payment_terms_start_date"]',
-  lumpSumPlusInstalments: 'input[id="lumpSumPlusInstalments"]',
+  lumpSumPlusInstalments: 'input[name="fm_payment_terms_payment_terms"][value="lumpSumPlusInstalments"]',
   lumpSumAmount: 'input[id="fm_payment_terms_lump_sum_amount"]',
 
   //Fequency Options
-  frequencyWeekly: 'input[id="W"]',
-  frequencyMonthly: 'input[id="M"]',
-  frequencyFortnightly: 'input[id="F"]',
+  instalmentsOnlyFrequencyWeekly: 'input[name="instalmentsOnly"][value="W"]',
+  instalmentsOnlyFrequencyMonthly: 'input[name="instalmentsOnly"][value="M"]',
+  instalmentsOnlyFrequencyFortnightly: 'input[name="instalmentsOnly"][value="F"]',
+  lumpSumFrequencyWeekly: 'input[name="lumpSumPlusInstalments"][value="W"]',
+  lumpSumFrequencyMonthly: 'input[name="lumpSumPlusInstalments"][value="M"]',
+  lumpSumFrequencyFortnightly: 'input[name="lumpSumPlusInstalments"][value="F"]',
 
   // Submit & error displays
   submitButton: 'button[type="submit"]',
@@ -84,10 +90,10 @@ export const DOM_ELEMENTS = {
 
   // Enforcement action
   addEnforcementAction: 'input[id="fm_payment_terms_add_enforcement_action"]',
-  pris: 'input[id="PRIS"]',
+  pris: 'input[name="fm_payment_terms_enforcement_action"][value="PRIS"]',
   earliestReleaseDate: 'input[id="fm_payment_terms_earliest_release_date"]',
   prisonAndPrisonNumber: 'textarea[id="fm_payment_terms_prison_and_prison_number"]',
-  noenf: 'input[id="NOENF"]',
+  noenf: 'input[name="fm_payment_terms_enforcement_action"][value="NOENF"]',
   reasonAccountIsOnNoenf: 'textarea[id="fm_payment_terms_reason_account_is_on_noenf"]',
 
   //calculate days in default

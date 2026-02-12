@@ -3,6 +3,7 @@ import { FinesMacOffenceDetailsSearchOffencesStore } from './fines-mac-offence-d
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM } from '../constants/fines-mac-offence-details-search-offences-form.constant';
 import { FinesMacOffenceDetailsSearchOffencesStoreType } from './types/fines-mac-offence-details-search-offences-store.type';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM_MOCK } from '../mocks/fines-mac-offence-details-search-offences-form.mock';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesMacOffenceDetailsSearchOffencesStore', () => {
   let store: FinesMacOffenceDetailsSearchOffencesStoreType;
@@ -13,8 +14,8 @@ describe('FinesMacOffenceDetailsSearchOffencesStore', () => {
 
   it('should have initial state', () => {
     expect(store.searchOffences()).toEqual(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM);
-    expect(store.unsavedChanges()).toBeFalse();
-    expect(store.stateChanges()).toBeFalse();
+    expect(store.unsavedChanges()).toBe(false);
+    expect(store.stateChanges()).toBe(false);
   });
 
   it('should set search offences and update flags', () => {
@@ -25,12 +26,12 @@ describe('FinesMacOffenceDetailsSearchOffencesStore', () => {
 
   it('should update unsavedChanges flag', () => {
     store.setUnsavedChanges(true);
-    expect(store.unsavedChanges()).toBeTrue();
+    expect(store.unsavedChanges()).toBe(true);
   });
 
   it('should update stateChanges flag', () => {
     store.setStateChanges(true);
-    expect(store.stateChanges()).toBeTrue();
+    expect(store.stateChanges()).toBe(true);
   });
 
   it('should reset the store to initial state', () => {
@@ -39,7 +40,7 @@ describe('FinesMacOffenceDetailsSearchOffencesStore', () => {
     store.setSearchOffences(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM_MOCK);
     store.resetSearchOffencesStore();
     expect(store.searchOffences()).toEqual(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM);
-    expect(store.unsavedChanges()).toBeFalse();
-    expect(store.stateChanges()).toBeFalse();
+    expect(store.unsavedChanges()).toBe(false);
+    expect(store.stateChanges()).toBe(false);
   });
 });

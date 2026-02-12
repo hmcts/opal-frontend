@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccNoteAddFormComponent } from './fines-acc-note-add-form.component';
 import { FINES_ACC_ADD_NOTE_FORM_MOCK } from '../mocks/fines-acc-add-note-form.mock';
@@ -7,24 +8,25 @@ import { IFinesAccAddNoteForm } from '../interfaces/fines-acc-note-add-form.inte
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { provideRouter } from '@angular/router';
 import { FINES_ACC_ADD_NOTE_FIELD_ERRORS } from '../constants/fines-acc-note-add-form-field-errors.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccNoteAddFormComponent', () => {
   let component: FinesAccNoteAddFormComponent;
   let fixture: ComponentFixture<FinesAccNoteAddFormComponent>;
   let formSubmit: IFinesAccAddNoteForm;
   let mockFinesAccountStore: {
-    getAccountNumber: jasmine.Spy;
-    party_name: jasmine.Spy;
-    account_number: jasmine.Spy;
+    getAccountNumber: Mock;
+    party_name: Mock;
+    account_number: Mock;
   };
 
   beforeEach(async () => {
     formSubmit = structuredClone(FINES_ACC_ADD_NOTE_FORM_MOCK);
 
     const mockStore = {
-      getAccountNumber: jasmine.createSpy('getAccountNumber').and.returnValue('123456789'),
-      party_name: jasmine.createSpy('party_name').and.returnValue('Mr John, Peter DOE'),
-      account_number: jasmine.createSpy('account_number').and.returnValue('123456789'),
+      getAccountNumber: vi.fn().mockReturnValue('123456789'),
+      party_name: vi.fn().mockReturnValue('Mr John, Peter DOE'),
+      account_number: vi.fn().mockReturnValue('123456789'),
     };
 
     await TestBed.configureTestingModule({
@@ -102,7 +104,8 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should emit formSubmit event when form is submitted with valid data', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component.form.patchValue({
       facc_add_notes: formSubmit.formData.facc_add_notes,
@@ -111,8 +114,8 @@ describe('FinesAccNoteAddFormComponent', () => {
     component.handleFormSubmit(mockEvent);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        formData: jasmine.objectContaining({
+      expect.objectContaining({
+        formData: expect.objectContaining({
           facc_add_notes: formSubmit.formData.facc_add_notes,
         }),
       }),
@@ -120,7 +123,8 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should not emit formSubmit event when form is invalid', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
     component.form.patchValue({
       facc_add_notes: null,
     });
@@ -144,7 +148,8 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should call super.ngOnInit() during initialization', () => {
-    const superSpy = spyOn(Object.getPrototypeOf(Object.getPrototypeOf(component)), 'ngOnInit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const superSpy = vi.spyOn<any, any>(Object.getPrototypeOf(Object.getPrototypeOf(component)), 'ngOnInit');
 
     component.ngOnInit();
 
@@ -204,7 +209,8 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should handle form submission with mock data', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component.form.patchValue({
       facc_add_notes: FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes,
@@ -215,8 +221,8 @@ describe('FinesAccNoteAddFormComponent', () => {
     component.handleFormSubmit(mockEvent);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        formData: jasmine.objectContaining({
+      expect.objectContaining({
+        formData: expect.objectContaining({
           facc_add_notes: FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes,
         }),
       }),
@@ -236,7 +242,8 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should call initialAddNotesSetup on ngOnInit', () => {
-    const spy = spyOn(component, 'initialAddNotesSetup' as never).and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const spy = vi.spyOn<any, any>(component, 'initialAddNotesSetup' as never);
 
     component.ngOnInit();
 
@@ -244,7 +251,8 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should call setupAddNotesForm during initialization', () => {
-    const spy = spyOn(component, 'setupAddNotesForm' as never).and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const spy = vi.spyOn<any, any>(component, 'setupAddNotesForm' as never);
 
     component['initialAddNotesSetup']();
 
