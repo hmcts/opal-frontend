@@ -104,11 +104,15 @@ export function parseNumericId(value: unknown): number {
   if (typeof value === 'string' && /^\d+$/.test(value)) return Number(value);
   throw new Error(`Expected numeric id, got: ${JSON.stringify(value)}`);
 }
-
-/** Read ['draft_account_id'] from an unknown response body */
-export function readDraftIdFromBody(body: unknown): number {
+/** Read ['draft_account_id'] from an unknown response body */ export function readDraftIdFromBody(
+  body: unknown,
+): number | undefined {
   const rec = toRecord(body);
   const raw = rec['draft_account_id'];
+  if (raw === undefined) {
+    cy.log('readDraftIdFromBody', 'draft_account_id not found in response body');
+    return undefined;
+  }
   return parseNumericId(raw);
 }
 
