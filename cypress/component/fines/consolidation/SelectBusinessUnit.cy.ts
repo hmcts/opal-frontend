@@ -96,6 +96,10 @@ describe('FinesConSelectBuFormComponent', () => {
     cy.get(SelectBusinessUnitLocators.individualInput).should('be.checked');
     cy.get(SelectBusinessUnitLocators.companyLabel).should('contain', 'Company');
     cy.get(SelectBusinessUnitLocators.companyInput).should('not.be.checked');
+
+    // Cancel & Continue buttons
+    cy.get(SelectBusinessUnitLocators.continueButton).should('be.visible').and('contain', 'Continue');
+    cy.get(SelectBusinessUnitLocators.cancelLink).should('be.visible').and('contain', 'Cancel');
   });
 
   it('(AC2) should list available business units in the autocomplete', { tags: ['@PO-2412'] }, () => {
