@@ -13,6 +13,8 @@ import {
   GovukSummaryListComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
+import { FINES_ORIGINATOR_TYPES } from '@app/flows/fines/constants/fines-originator-types.constant';
+import { IFinesMacOriginatorTypeState } from '../../fines-mac-originator-type/interfaces/fines-mac-originator-type-state.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account-account-details',
@@ -24,11 +26,14 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
   @Input({ required: true }) public accountDetails!: IFinesMacAccountDetailsState;
   @Input({ required: true }) public businessUnit!: IOpalFinesBusinessUnit;
   @Input({ required: true }) public languagePreferences!: IFinesMacLanguagePreferencesState;
+  @Input({ required: true }) public originatorTypeState!: IFinesMacOriginatorTypeState;
 
   public accountType!: string;
   public defendantType!: string;
   public documentLanguage!: string;
   public courtHearingLanguage!: string;
+  public originatorType!: string;
+  public showEntryType = true;
 
   /**
    * Retrieves the account type based on the account details and assigns it to the `accountType` property.
@@ -42,6 +47,24 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
       FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES[
         this.accountDetails.fm_create_account_account_type! as keyof IFinesAccountTypes
       ];
+  }
+
+  /**
+   * Retrieves and sets the originator type based on the current state.
+   * Maps the originator type from the state to the corresponding value in FINES_ORIGINATOR_TYPES.
+   * @private
+   */
+  private getOriginatorType(): void {
+    const mappedOriginatorType =
+      FINES_ORIGINATOR_TYPES[
+        this.originatorTypeState.fm_originator_type_originator_type! as keyof typeof FINES_ORIGINATOR_TYPES
+      ];
+
+    // Show the entry type only if the account type is not 'Fixed Penalty' and there is a valid originator type
+    this.showEntryType =
+      this.accountDetails.fm_create_account_account_type !== FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES['Fixed Penalty'] &&
+      !!mappedOriginatorType;
+    this.originatorType = mappedOriginatorType || '';
   }
 
   /**
@@ -93,6 +116,7 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
    */
   private getAccountDetailsData(): void {
     this.getAccountType();
+    this.getOriginatorType();
     this.getDefendantType();
     this.getDocumentLanguage();
     this.getHearingLanguage();

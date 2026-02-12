@@ -37,6 +37,7 @@ import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/inte
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesAccountTypes } from '../../interfaces/fines-account-types.interface';
+import { FINES_ORIGINATOR_TYPES } from '../../constants/fines-originator-types.constant';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -60,6 +61,7 @@ import { IFinesAccountTypes } from '../../interfaces/fines-account-types.interfa
 export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
+  private readonly originatorTypes = FINES_ORIGINATOR_TYPES;
 
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly finesDraftStore = inject(FinesDraftStore);
@@ -75,6 +77,8 @@ export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseCompo
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
   public defendantType!: string;
   public accountType!: string;
+  public originatorType!: string;
+  public showEntryType = true;
   public documentLanguage!: string;
   public courtHearingLanguage!: string;
   public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.pgToPay];
@@ -160,6 +164,23 @@ export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseCompo
   }
 
   /**
+   * Sets the originator type based on the value stored in the fines MAC store.
+   * Retrieves the originator type from the store's form data and maps it to the corresponding
+   * originator type label using the FINES_ORIGINATOR_TYPES mapping.
+   *
+   * @private
+   * @returns {void}
+   */
+  private setOriginatorType(): void {
+    const { fm_originator_type_originator_type: originatorTypeKey } = this.finesMacStore.originatorType().formData;
+    const mappedOriginatorType = this.originatorTypes[originatorTypeKey as keyof typeof FINES_ORIGINATOR_TYPES];
+
+    // Fixed penalty payloads set originator type to FP and should not render an "Entry type" row.
+    this.showEntryType = originatorTypeKey !== 'FP' && !!mappedOriginatorType;
+    this.originatorType = mappedOriginatorType || '';
+  }
+
+  /**
    * Sets the document language and court hearing language based on the language preferences
    * stored in the finesMacStore.
    */
@@ -221,6 +242,7 @@ export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseCompo
     this.setAccountDetailsStatus();
     this.setDefendantType();
     this.setAccountType();
+    this.setOriginatorType();
     this.setLanguage();
     this.checkMandatorySections();
     this.routerListener();
