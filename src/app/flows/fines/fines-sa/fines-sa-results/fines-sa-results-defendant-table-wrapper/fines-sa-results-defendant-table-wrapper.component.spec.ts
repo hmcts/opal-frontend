@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesSaResultsDefendantTableWrapperComponent } from './fines-sa-results-defendant-table-wrapper.component';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './constants/fines-sa-results-defendant-table-wrapper-table-sort-default.constant';
 import { GENERATE_FINES_SA_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS } from './mock/fines-sa-results-defendant-table-wrapper-table-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaResultsDefendantTableWrapperComponent', () => {
   let component: FinesSaResultsDefendantTableWrapperComponent;
@@ -40,7 +41,8 @@ describe('FinesSaResultsDefendantTableWrapperComponent', () => {
   });
 
   it('should emit account number when goToAccount is called', () => {
-    spyOn(component.accountIdClicked, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.accountIdClicked, 'emit');
 
     component.goToAccount(77);
 

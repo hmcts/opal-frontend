@@ -12,10 +12,15 @@ import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from './constants/fines-draft-res
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { IFinesDraftTabStatuses } from '../../interfaces/fines-draft-tab-statuses.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('finesDraftTabResolver', () => {
-  let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
-  const dateServiceMock: jasmine.SpyObj<DateService> = jasmine.createSpyObj('DateService', ['getDateRange']);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let opalFinesServiceMock: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dateServiceMock: any = {
+    getDateRange: vi.fn().mockName('DateService.getDateRange'),
+  };
   let globalStoreMock: GlobalStoreType;
 
   const executeResolver =
@@ -35,7 +40,9 @@ describe('finesDraftTabResolver', () => {
   }
 
   beforeEach(() => {
-    opalFinesServiceMock = jasmine.createSpyObj('OpalFines', ['getDraftAccounts']);
+    opalFinesServiceMock = {
+      getDraftAccounts: vi.fn().mockName('OpalFines.getDraftAccounts'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -50,7 +57,7 @@ describe('finesDraftTabResolver', () => {
   });
 
   it('should return result with `submittedBy` when includeSubmittedBy is true', async () => {
-    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+    opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
     const tab = FINES_DRAFT_TAB_STATUSES[0];
     const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeSubmittedBy: true }, tab.tab);
@@ -64,7 +71,7 @@ describe('finesDraftTabResolver', () => {
   });
 
   it('should return result with `notSubmittedBy` when includeNotSubmittedBy is true', async () => {
-    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+    opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
     const tab = FINES_DRAFT_TAB_STATUSES[0];
     const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeNotSubmittedBy: true }, tab.tab);
@@ -100,7 +107,7 @@ describe('finesDraftTabResolver', () => {
 
   it('should use defaultStatuses when provided and not using fragment', async () => {
     const defaultStatuses = ['Draft', 'AwaitingReview'];
-    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+    opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
     const result = await runResolverWithOptions({ defaultStatuses }, null);
 
@@ -120,9 +127,9 @@ describe('finesDraftTabResolver', () => {
     // Mock DateService
     const dateFrom = '2023-01-01';
     const dateTo = '2023-01-07';
-    dateServiceMock.getDateRange.and.returnValue({ from: dateFrom, to: dateTo });
+    dateServiceMock.getDateRange.mockReturnValue({ from: dateFrom, to: dateTo });
 
-    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+    opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
     const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeSubmittedBy: true }, tab.tab);
 

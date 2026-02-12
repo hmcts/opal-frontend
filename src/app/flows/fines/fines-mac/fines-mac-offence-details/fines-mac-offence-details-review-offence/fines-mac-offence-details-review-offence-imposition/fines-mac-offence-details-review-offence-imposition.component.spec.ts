@@ -18,22 +18,24 @@ import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } fr
 import { IFinesMacOffenceDetailsReviewSummaryImpositionTableData } from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceImpositionComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
   let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getMajorCreditorPrettyName: jasmine
-        .createSpy('getMajorCreditorPrettyName')
-        .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
-    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+    mockUtilsService = createSpyObj(UtilsService, [
       'convertToMonetaryString',
       'formatAddress',
       'formatSortCode',
@@ -41,8 +43,8 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       'checkFormArrayValues',
     ]);
 
-    mockUtilsService.formatAddress.and.returnValue(['Test Address']);
-    mockUtilsService.formatSortCode.and.returnValue('12-34-56');
+    mockUtilsService.formatAddress.mockReturnValue(['Test Address']);
+    mockUtilsService.formatSortCode.mockReturnValue('12-34-56');
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewOffenceImpositionComponent],
@@ -51,7 +53,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
         { provide: UtilsService, useValue: mockUtilsService },
         {
           provide: DateService,
-          useValue: jasmine.createSpyObj(DateService, ['getDateFromFormat']),
+          useValue: createSpyObj(DateService, ['getDateFromFormat']),
         },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
@@ -92,7 +94,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
   it('should set impositionsTotalsData with converted monetary strings', () => {
     const expectedTotal = '£100.00';
-    mockUtilsService.convertToMonetaryString.and.returnValue(expectedTotal);
+    mockUtilsService.convertToMonetaryString.mockReturnValue(expectedTotal);
 
     component['getImpositionsTotalData']();
 
@@ -103,7 +105,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
   it('should set impositionTableData with correct values', () => {
     const expectedTotal = '£100.00';
-    mockUtilsService.convertToMonetaryString.and.returnValue(expectedTotal);
+    mockUtilsService.convertToMonetaryString.mockReturnValue(expectedTotal);
     const imposition = { ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] };
     const expectedImpositionTableData: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[] = [
       {
@@ -127,7 +129,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       },
     ];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getMinorCreditorData').and.returnValue(expectedImpositionTableData[0].minorCreditor);
+    vi.spyOn<any, any>(component, 'getMinorCreditorData').mockReturnValue(expectedImpositionTableData[0].minorCreditor);
 
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component['getImpositionData']();
@@ -267,7 +269,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       },
     ];
     finesMacStore.setOffenceDetails(finesMacState.offenceDetails);
-    mockUtilsService.formatAddress.and.returnValue([]);
+    mockUtilsService.formatAddress.mockReturnValue([]);
 
     const minorCreditorData = component['getMinorCreditorData'](0);
 

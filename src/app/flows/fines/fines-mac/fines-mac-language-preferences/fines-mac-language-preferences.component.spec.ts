@@ -8,6 +8,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from './mocks/fines-mac-lang
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacLanguagePreferencesComponent', () => {
   let component: FinesMacLanguagePreferencesComponent;
@@ -45,7 +46,8 @@ describe('FinesMacLanguagePreferencesComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.handleLanguagePreferencesSubmit(formSubmit);
 

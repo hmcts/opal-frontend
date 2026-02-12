@@ -4,6 +4,7 @@ import { FINES_ACCOUNT_STATE } from '../constants/fines-acc-state.constant';
 import { FinesAccountStoreType } from '../types/fines-account-store.type';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesAccountStore', () => {
   let store: FinesAccountStoreType;
@@ -121,13 +122,13 @@ describe('FinesAccountStore', () => {
   it('should set hasVersionMismatch to true if versions do not match', () => {
     store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
     store.compareVersion('different-version');
-    expect(store.hasVersionMismatch()).toBeTrue();
+    expect(store.hasVersionMismatch()).toBe(true);
   });
 
   it('should not set hasVersionMismatch to true if versions match', () => {
     store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
     store.compareVersion(MOCK_FINES_ACCOUNT_STATE.base_version);
-    expect(store.hasVersionMismatch()).toBeFalse();
+    expect(store.hasVersionMismatch()).toBe(false);
   });
 
   it('should reset the store to default state', () => {

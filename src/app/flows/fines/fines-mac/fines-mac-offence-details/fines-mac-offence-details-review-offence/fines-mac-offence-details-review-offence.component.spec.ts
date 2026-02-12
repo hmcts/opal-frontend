@@ -8,6 +8,7 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines-mac-offence-details-state-impositions.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceComponent;
@@ -65,7 +66,8 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
 
   it('should emit action when onActionClick is called', () => {
     const event = { actionName: 'testAction', offenceId: 123 };
-    const emitSpy = spyOn(component.actionClicked, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.actionClicked, 'emit');
 
     component.emitAction(event);
 

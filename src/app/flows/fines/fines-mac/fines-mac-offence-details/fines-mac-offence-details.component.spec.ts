@@ -8,6 +8,7 @@ import { FinesMacOffenceDetailsStore } from './stores/fines-mac-offence-details.
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
@@ -39,7 +40,8 @@ describe('FinesMacOffenceDetailsComponent', () => {
   });
 
   it('should call on destroy and clear state', () => {
-    const destroy = spyOn(component, 'ngOnDestroy');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const destroy = vi.spyOn<any, any>(component, 'ngOnDestroy');
 
     component.ngOnDestroy();
     fixture.detectChanges();
