@@ -37,6 +37,7 @@ import { IFinesMacAccountTypeDefendantTypes } from '../../interfaces/fines-mac-a
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { FINES_ORIGINATOR_TYPES } from '@app/flows/fines/constants/fines-originator-types.constant';
 @Component({
   selector: 'app-fines-mac-create-account-form',
   imports: [
@@ -56,7 +57,6 @@ import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/g
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  private readonly finesMacStore = inject(FinesMacStore);
   private readonly accountTypeSubject = new Subject<void>();
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
     FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
@@ -67,12 +67,18 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
 
   @Input({ required: true })
   public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-  public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
-    ([key, value]) => ({
-      key: key.replaceAll(/\s+/g, ''),
-      value,
-    }),
+  public accountTypes!: IGovUkRadioOptions[];
+  public readonly finesOriginatorTypes = FINES_ORIGINATOR_TYPES;
+  public readonly finesOriginatorTypeKeys = Object.fromEntries(
+    Object.keys(FINES_ORIGINATOR_TYPES).map((key) => [key, key]),
   );
+  public readonly finesMacStore = inject(FinesMacStore);
+  get isTFO(): boolean {
+    return (
+      this.finesMacStore.originatorType().formData.fm_originator_type_originator_type ===
+      this.finesOriginatorTypeKeys['TFO']
+    );
+  }
   public readonly accountTypesKeys = FINES_ACCOUNT_TYPES;
   public readonly fineDefendantTypes: IGovUkRadioOptions[] = Object.entries(
     FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE[
@@ -104,6 +110,21 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
       fm_create_account_fine_defendant_type: new FormControl(null),
       fm_create_account_fixed_penalty_defendant_type: new FormControl(null),
     });
+  }
+
+  /**
+   * Retrieves and filters account types for fine MAC creation.
+   * Removes the 'Conditional Caution' option if the user is a TFO (Transfer in from England or Wales).
+   * Transforms the account types object entries into a normalized format with whitespace-stripped keys.
+   * @private
+   */
+  private getAccountTypes(): void {
+    this.accountTypes = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES)
+      .filter(([key]) => !(this.isTFO && key === 'Conditional Caution'))
+      .map(([key, value]) => ({
+        key: key.replaceAll(/\s+/g, ''),
+        value,
+      }));
   }
 
   /**
@@ -195,6 +216,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    */
   private initialCreateAccountSetup(): void {
     const { formData } = this.finesMacStore.accountDetails();
+    this.getAccountTypes();
     this.setupCreateAccountForm();
     this.setInitialErrorMessages();
     this.setupAccountTypeListener();
