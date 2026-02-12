@@ -30,6 +30,8 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { FINES_MAC_ORIGINATOR_TYPE_STATE } from '../fines-mac-originator-type/constants/fines-mac-originator-type-state.constant';
+import { FINES_ORIGINATOR_TYPES } from '../../constants/fines-originator-types.constant';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -125,8 +127,12 @@ describe('FinesMacAccountDetailsComponent', () => {
     );
   });
 
-  it('should set defendantType and accountType to be empty string', () => {
+  it('should set defendantType and accountType and originatorType to be empty string', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.originatorType.formData = {
+      ...structuredClone(FINES_MAC_ORIGINATOR_TYPE_STATE),
+      fm_originator_type_originator_type: '',
+    };
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: '',
@@ -136,13 +142,20 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     component['setDefendantType']();
     component['setAccountType']();
+    component['setOriginatorType']();
 
     expect(component.defendantType).toEqual('');
     expect(component.accountType).toEqual('');
+    expect(component.originatorType).toEqual('');
+    expect(component.showEntryType).toBe(false);
   });
 
-  it('should set defendantType and accountType to values', () => {
+  it('should set defendantType and accountType and originatorType to values', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.originatorType.formData = {
+      ...structuredClone(FINES_MAC_ORIGINATOR_TYPE_STATE),
+      fm_originator_type_originator_type: 'NEW',
+    };
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
@@ -152,9 +165,26 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     component['setDefendantType']();
     component['setAccountType']();
+    component['setOriginatorType']();
 
     expect(component.defendantType).toEqual('Adult or youth only');
     expect(component.accountType).toEqual(FINES_ACCOUNT_TYPES['Conditional Caution']);
+    expect(component.originatorType).toEqual(FINES_ORIGINATOR_TYPES['NEW']);
+    expect(component.showEntryType).toBe(true);
+  });
+
+  it('should hide entry type when originator type is fixed penalty', () => {
+    const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.originatorType.formData = {
+      ...structuredClone(FINES_MAC_ORIGINATOR_TYPE_STATE),
+      fm_originator_type_originator_type: 'FP',
+    };
+    finesMacStore.setFinesMacStore(finesMacState);
+
+    component['setOriginatorType']();
+
+    expect(component.originatorType).toEqual('');
+    expect(component.showEntryType).toBe(false);
   });
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
@@ -195,7 +225,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component.courtHearingLanguage).toBe('');
   });
 
-  it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
+  it('should call setDefendantType and setAccountType and setOriginatorType on initialAccountDetailsSetup', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'accountDetailsFetchedMappedPayload');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -206,6 +236,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     vi.spyOn<any, any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'setAccountType');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'setOriginatorType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'setLanguage');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,6 +252,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component['setAccountDetailsStatus']).toHaveBeenCalled();
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
+    expect(component['setOriginatorType']).toHaveBeenCalled();
     expect(component['setLanguage']).toHaveBeenCalled();
     expect(component['checkMandatorySections']).toHaveBeenCalled();
     expect(component['routerListener']).toHaveBeenCalled();
