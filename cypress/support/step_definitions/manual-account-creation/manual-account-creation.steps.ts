@@ -50,6 +50,7 @@ import { accessibilityActions } from '../../../e2e/functional/opal/actions/acces
 import { AccountType, ApprovedAccountType } from '../../utils/payloads';
 import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { installDraftAccountCleanup } from 'cypress/support/draftAccounts';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
@@ -64,6 +65,8 @@ const createAccount = () => new ManualCreateAccountActions();
 const languagePreferences = () => new ManualLanguagePreferencesActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
+
+installDraftAccountCleanup();
 /**
  * @step Confirms the user is on the dashboard.
  * @description Asserts the dashboard is visible to ensure navigation is in a known state.
