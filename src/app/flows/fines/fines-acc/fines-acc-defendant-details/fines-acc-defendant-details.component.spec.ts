@@ -1,6 +1,6 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
-import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { Router, ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 import {
   MojSubNavigationComponent,
@@ -22,17 +22,23 @@ import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-part
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsComponent>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let routerSpy: any;
   let activatedRouteStub: Partial<ActivatedRoute>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockPayloadService: any;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
     activatedRouteStub = {
       fragment: of('at-a-glance'),
       snapshot: {
@@ -40,56 +46,60 @@ describe('FinesAccDefendantDetailsComponent', () => {
           defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
         },
         fragment: 'at-a-glance',
+        paramMap: convertToParamMap({ accountId: '123' }),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any as ActivatedRouteSnapshot, // Using 'as any' to avoid type issues
     };
 
-    mockPayloadService = jasmine.createSpyObj<FinesAccPayloadService>('FinesAccPayloadService', [
-      'transformAccountHeaderForStore',
-      'transformPayload',
-    ]);
-    mockPayloadService.transformAccountHeaderForStore.and.returnValue(MOCK_FINES_ACCOUNT_STATE);
-    mockPayloadService.transformPayload.and.callFake((...args) => {
+    mockPayloadService = {
+      transformAccountHeaderForStore: vi.fn().mockName('FinesAccPayloadService.transformAccountHeaderForStore'),
+      transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
+    };
+    mockPayloadService.transformAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockPayloadService.transformPayload.mockImplementation((...args: any[]) => {
       return args[0]; // returns the first argument = payload
     });
 
-    mockOpalFinesService = jasmine.createSpyObj<OpalFines>('OpalFines', [
-      'getDefendantAccountHeadingData',
-      'getDefendantAccountAtAGlance',
-      'getDefendantAccountImpositionsTabData',
-      'getDefendantAccountHistoryAndNotesTabData',
-      'getDefendantAccountEnforcementTabData',
-      'getDefendantAccountPaymentTermsLatest',
-      'getDefendantAccountParty',
-      'getParentOrGuardianAccountParty',
-      'clearCache',
-      'getResult',
-      'getDefendantAccountFixedPenalty',
-    ]);
-    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
-    mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
+    mockOpalFinesService = {
+      getDefendantAccountHeadingData: vi.fn().mockName('OpalFines.getDefendantAccountHeadingData'),
+      getDefendantAccountAtAGlance: vi.fn().mockName('OpalFines.getDefendantAccountAtAGlance'),
+      getDefendantAccountImpositionsTabData: vi.fn().mockName('OpalFines.getDefendantAccountImpositionsTabData'),
+      getDefendantAccountHistoryAndNotesTabData: vi
+        .fn()
+        .mockName('OpalFines.getDefendantAccountHistoryAndNotesTabData'),
+      getDefendantAccountEnforcementTabData: vi.fn().mockName('OpalFines.getDefendantAccountEnforcementTabData'),
+      getDefendantAccountPaymentTermsLatest: vi.fn().mockName('OpalFines.getDefendantAccountPaymentTermsLatest'),
+      getDefendantAccountParty: vi.fn().mockName('OpalFines.getDefendantAccountParty'),
+      getParentOrGuardianAccountParty: vi.fn().mockName('OpalFines.getParentOrGuardianAccountParty'),
+      clearCache: vi.fn().mockName('OpalFines.clearCache'),
+      getResult: vi.fn().mockName('OpalFines.getResult'),
+      getDefendantAccountFixedPenalty: vi.fn().mockName('OpalFines.getDefendantAccountFixedPenalty'),
+    };
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
+    mockOpalFinesService.getDefendantAccountAtAGlance.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK));
-    mockOpalFinesService.getParentOrGuardianAccountParty.and.returnValue(
+    mockOpalFinesService.getDefendantAccountParty.mockReturnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK));
+    mockOpalFinesService.getParentOrGuardianAccountParty.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountFixedPenalty.and.returnValue(
+    mockOpalFinesService.getDefendantAccountFixedPenalty.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountEnforcementTabData.and.returnValue(
+    mockOpalFinesService.getDefendantAccountEnforcementTabData.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountPaymentTermsLatest.and.returnValue(
+    mockOpalFinesService.getDefendantAccountPaymentTermsLatest.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.and.returnValue(
+    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountImpositionsTabData.and.returnValue(
+    mockOpalFinesService.getDefendantAccountImpositionsTabData.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
     );
-    mockOpalFinesService.getResult.and.returnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK));
+    mockOpalFinesService.getResult.mockReturnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -133,7 +143,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.navigateToAddAccountNotePage();
     expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
       relativeTo: component['activatedRoute'],
@@ -179,13 +190,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
-  it('should fetch the payment terms tab data when fragment is changed to payment-terms', fakeAsync(() => {
+  it('should fetch the payment terms tab data when fragment is changed to payment-terms', () => {
     component['refreshFragment$'].next('payment-terms');
     component.tabPaymentTerms$.subscribe();
-    tick();
     expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalled();
     expect(mockOpalFinesService.getResult).toHaveBeenCalled();
-  }));
+  });
 
   it('should fetch the history and notes tab data when fragment is changed to history-and-notes', () => {
     component['refreshFragment$'].next('history-and-notes');
@@ -239,7 +249,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to access-denied if user lacks permission for the add account note page', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.navigateToAddAccountNotePage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
@@ -247,7 +258,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to access-denied if user lacks permission for the add comments page', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.navigateToAddCommentsPage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
@@ -256,7 +268,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should navigate to access-denied if user lacks permission for change defendant details page', () => {
     const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
@@ -264,7 +277,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to the change defendant payment terms access denied page if user does not have the relevant permission', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.navigateToAmendPaymentTermsPage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/permission`],
@@ -275,8 +289,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to the change defendant payment terms page if user has the relevant permission', () => {
-    routerSpy.navigate.calls.reset();
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+    routerSpy.navigate.mockClear();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.lastEnforcement = OPAL_FINES_RESULT_REF_DATA_MOCK;
     component.navigateToAmendPaymentTermsPage();
     expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
@@ -289,7 +304,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to the request payment card access denied page if user does not have the relevant permission', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.navigateToRequestPaymentCardPage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/permission`],
@@ -300,8 +316,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to the request payment card page if user has the relevant permission', () => {
-    routerSpy.navigate.calls.reset();
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+    routerSpy.navigate.mockClear();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.lastEnforcement = OPAL_FINES_RESULT_REF_DATA_MOCK;
     component.navigateToRequestPaymentCardPage();
     expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
@@ -322,7 +339,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
     });
 
     it('for a lack of permission with a BU should return "permission"', () => {
-      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
       const deniedType = component['getRequestPaymentCardDeniedType']();
       expect(deniedType).toBe('permission');
     });
@@ -343,7 +361,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
     });
 
     it('for a lack of permission with a BU should return "permission"', () => {
-      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
       const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('permission');
     });
@@ -359,30 +378,34 @@ describe('FinesAccDefendantDetailsComponent', () => {
     it('when the user has amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.prevent_payment_card = false;
-      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
       const canRequest = component['canRequestPaymentCard']();
-      expect(canRequest).toBeTrue();
+      expect(canRequest).toBe(true);
     });
     it('when the user has amend-payment-terms permisson and the prevent_payment_card flag is set to true', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.prevent_payment_card = true;
-      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
       const canRequest = component['canRequestPaymentCard']();
-      expect(canRequest).toBeFalse();
+      expect(canRequest).toBe(false);
     });
     it('when the user does not have amend-payment-terms permisson and the prevent_payment_card flag is set to true', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.prevent_payment_card = true;
-      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
       const canRequest = component['canRequestPaymentCard']();
-      expect(canRequest).toBeFalse();
+      expect(canRequest).toBe(false);
     });
     it('when the user does not have amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.prevent_payment_card = false;
-      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
       const canRequest = component['canRequestPaymentCard']();
-      expect(canRequest).toBeFalse();
+      expect(canRequest).toBe(false);
     });
   });
 });

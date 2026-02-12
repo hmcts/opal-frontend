@@ -7,18 +7,8 @@ import { ManualReviewAccountLocators as L } from '../../../../../shared/selector
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
-import {
-  deriveRequestSummary,
-  extractAccountNumber,
-  extractCreatedTimestamp,
-  extractUpdatedTimestamp,
-  recordCreatedAccount,
-  recordFailedAccount,
-  safeReadDraftId,
-  summarizeErrorPayload,
-} from '../../../../../support/utils/accountCapture';
+import type { Interception } from 'cypress/types/net-stubbing';
 import { captureScenarioScreenshot } from '../../../../../support/utils/screenshot';
-import { getCurrentScenarioTitle } from '../../../../../support/utils/scenarioContext';
 
 type SummaryRow = { label: string; value: string };
 type OffenceRow = {
@@ -226,7 +216,6 @@ export class ManualReviewAccountActions {
   private submitAndCapture(assertSuccess: boolean): Cypress.Chainable<void> {
     log('navigate', 'Submitting manual account for review');
     this.captureReviewScreenshot('before-submit');
-    const scenario = getCurrentScenarioTitle();
     cy.intercept(
       {
         method: /POST|PUT/,
@@ -237,78 +226,15 @@ export class ManualReviewAccountActions {
 
     cy.get(L.submitForReviewButton, this.common.getTimeoutOptions()).should('be.visible').click();
 
-    return cy.wait('@manualAccountSubmit').then(({ request, response }) => {
-      const { endpoint, method } = deriveRequestSummary(request);
-      const requestBody = request?.body;
-      const requestAccountId = requestBody ? safeReadDraftId(requestBody as unknown) : undefined;
-      const isUpdate =
-        (method || '').toUpperCase() === 'PUT' ||
-        /\/opal-fines-service\/draft-accounts\/\d+/.test(endpoint || '') ||
-        typeof requestAccountId === 'number';
-      const status = response?.statusCode ?? 0;
-      const responseAccountId = response ? safeReadDraftId(response.body as unknown) : undefined;
-      const endpointMatch = endpoint?.match(/\/draft-accounts\/(\d+)/);
-      const endpointAccountId = endpointMatch ? Number(endpointMatch[1]) : undefined;
-      const accountId = responseAccountId ?? requestAccountId ?? endpointAccountId;
-      const accountNumber = response
-        ? extractAccountNumber(response.body as unknown, response.headers as Record<string, unknown>)
-        : undefined;
-      const createdAtFromResponse = response ? extractCreatedTimestamp(response.body as unknown) : undefined;
-      const updatedAtFromResponse = response ? extractUpdatedTimestamp(response.body as unknown) : undefined;
-
-      const isSuccessStatus = status >= 200 && status < 300;
-      const recordWithId = (resolvedAccountId?: number): Cypress.Chainable<void> => {
-        if (isSuccessStatus && typeof resolvedAccountId === 'number') {
-          const resolvedUpdatedAt = isUpdate ? (updatedAtFromResponse ?? new Date().toISOString()) : undefined;
-          return recordCreatedAccount(
-            {
-              source: 'ui',
-              accountType: isUpdate ? 'manualUpdate' : 'manualCreate',
-              status: isUpdate ? 'Updated' : 'Created',
-              accountId: resolvedAccountId,
-              accountNumber: accountNumber ?? null,
-              createdAt: createdAtFromResponse,
-              updatedAt: resolvedUpdatedAt,
-              requestSummary: {
-                endpoint: endpoint || '/opal-fines-service/draft-accounts',
-                method,
-              },
-              scenario,
-            },
-            requestBody,
-          );
-        } else {
-          return recordFailedAccount({
-            source: 'ui',
-            accountType: isUpdate ? 'manualUpdate' : 'manualCreate',
-            httpStatus: status || 0,
-            errorSummary: summarizeErrorPayload(response?.body as unknown),
-            requestSummary: {
-              endpoint: endpoint || '/opal-fines-service/draft-accounts',
-              method,
-            },
-            scenario,
-          });
-        }
-      };
-
-      const assertSuccessResponse = (resolvedAccountId?: number): void => {
-        if (assertSuccess) {
-          expect(response, 'submit response').to.exist;
-          expect(status, 'submit status').to.be.gte(200).and.lt(300);
-          expect(resolvedAccountId, 'draft account id').to.be.a('number');
-        }
-      };
-
-      if (isSuccessStatus && typeof accountId !== 'number') {
-        return cy.get<number>('@lastCreatedDraftId', { log: false }).then((fallbackId) => {
-          assertSuccessResponse(fallbackId);
-          return recordWithId(fallbackId);
-        });
+    return (cy.wait('@manualAccountSubmit') as unknown as Cypress.Chainable<void>).then(() => {
+      if (!assertSuccess) {
+        return;
       }
-
-      assertSuccessResponse(accountId);
-      return recordWithId(accountId);
+      cy.get<Interception>('@manualAccountSubmit').then(({ response }) => {
+        expect(response, 'submit response').to.exist;
+        const status = response?.statusCode ?? 0;
+        expect(status, 'submit status').to.be.gte(200).and.lt(300);
+      });
     });
   }
 

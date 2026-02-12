@@ -7,7 +7,6 @@ import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines
 import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
-import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offence_mock';
 import { DOM_ELEMENTS } from './constants/review_summary_elements';

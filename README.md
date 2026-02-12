@@ -4,7 +4,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 
 - the web server for when the app is deployed in Kubernetes.
 
-- to proxy API requests to internally-facing backend API services, such as the [opal-fines-service](https://github.com/hmcts/opal-fines-service). 
+- to proxy API requests to internally-facing backend API services, such as the [opal-fines-service](https://github.com/hmcts/opal-fines-service).
 
 ## Contents
 
@@ -24,9 +24,9 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 
 Running the application requires the following tools to be installed in your environment:
 
-- [Node.js](https://nodejs.org/) v20.9.0 or later.
+- [Node.js](https://nodejs.org/) `^20.19.0` or `^22.12.0` or `>=24.0.0` (use `.nvmrc`, currently `24.13.0`).
 
-- [yarn](https://yarnpkg.com/) v3
+- [yarn](https://yarnpkg.com/) v4
 
 - [Docker](https://www.docker.com)
 
@@ -42,9 +42,24 @@ yarn
 
 ### Local Development Strategy
 
-#### 1. Clone opal-fines-service api
+#### 1. Clone Backend Repositories
 
-Clone the [opal-fines-service](https://github.com/hmcts/opal-fines-service) repository and follow the instructions in there to get it up and running. This is required by the front end to make local API requests.
+**IMPORTANT:** All repositories must be cloned into the same parent directory. For example, if you have a `GitHub` folder in your `Documents` directory, all of the following repositories should be cloned directly inside that `GitHub` folder:
+
+```
+Documents/
+└── GitHub/
+  ├── opal-shared-infrastructure/
+  ├── opal-fines-service/
+  ├── opal-user-service/
+  ├── opal-logging-service/
+  └── opal-frontend/
+```
+
+Clone the [opal-shared-infrastructure](https://github.com/hmcts/opal-shared-infrastructure) repository and follow the instructions in there to get it up and running. This is required for the below repositories:
+Clone the [opal-fines-service](https://github.com/hmcts/opal-fines-service) repository and follow the instructions in there to get it up and running. This is required by the front end to make local Fines API requests.
+Clone the [opal-user-service](https://github.com/hmcts/opal-user-service) repository and follow the instructions in there to get it up and running. This is required by the front end to make local User API requests.
+Clone the [opal-logging-service](https://github.com/hmcts/opal-logging-service) repository and follow the instructions in there to get it up and running. This is required by the opal-fines-service to make local Logging API requests.
 
 #### 2. Clone opal-frontend-common-ui-lib
 
@@ -220,10 +235,12 @@ There is a custom lint rule for member ordering to ensure members in the code ar
 
 ## Running unit tests
 
-Run `yarn test` to execute the unit tests via [karma](https://karma-runner.github.io/latest/index.html).
+Run `yarn test` to execute the unit tests via [Vitest](https://vitest.dev/).
 
-To check code coverage, run `yarn test --code-coverage` to execute the unit tests via [karma](https://karma-runner.github.io/latest/index.html) but with code coverage.
-Code coverage can then be found in the coverage folder of the repository locally.
+Run `yarn test:watch` to execute unit tests in watch mode.
+
+To check code coverage, run `yarn test:coverage`.
+Code coverage can then be found in the `coverage` folder of the repository locally.
 
 ## Running end-to-end tests
 

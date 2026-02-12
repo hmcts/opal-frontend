@@ -7,13 +7,13 @@ export const DOM_ELEMENTS = {
   descriptionText: 'p',
   legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
 
-  cyDocumentRadioLabel: 'label[for="CYDocumentRadioOption"]',
-  enDocumentRadioLabel: 'label[for="ENDocumentRadioOption"]',
-  cyCourtHearingRadioLabel: 'label[for="CYCourtHearingRadioOption"]',
-  enCourtHearingRadioLabel: 'label[for="ENCourtHearingRadioOption"]',
+  cyDocumentRadioLabel: 'label[for="fm_language_preferences_document_language-CYDocumentRadioOption"]',
+  enDocumentRadioLabel: 'label[for="fm_language_preferences_document_language-ENDocumentRadioOption"]',
+  cyCourtHearingRadioLabel: 'label[for="fm_language_preferences_hearing_language-CYCourtHearingRadioOption"]',
+  enCourtHearingRadioLabel: 'label[for="fm_language_preferences_hearing_language-ENCourtHearingRadioOption"]',
 
-  cyDocumentRadioOption: 'input[id="CYDocumentRadioOption"]',
-  enDocumentRadioOption: 'input[id="ENDocumentRadioOption"]',
-  cyCourtHearingRadioOption: 'input[id="CYCourtHearingRadioOption"]',
-  enCourtHearingRadioOption: 'input[id="ENCourtHearingRadioOption"]',
+  cyDocumentRadioOption: 'input[name="fm_language_preferences_document_language"][value="CY"]',
+  enDocumentRadioOption: 'input[name="fm_language_preferences_document_language"][value="EN"]',
+  cyCourtHearingRadioOption: 'input[name="fm_language_preferences_hearing_language"][value="CY"]',
+  enCourtHearingRadioOption: 'input[name="fm_language_preferences_hearing_language"][value="EN"]',
 };

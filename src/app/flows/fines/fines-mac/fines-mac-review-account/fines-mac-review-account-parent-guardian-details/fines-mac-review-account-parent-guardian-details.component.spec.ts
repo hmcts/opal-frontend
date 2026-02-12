@@ -3,16 +3,21 @@ import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../../fines-mac-parent-guardian-details/mocks/fines-mac-parent-guardian-details-state.mock';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
   let component: FinesMacReviewAccountParentGuardianDetailsComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountParentGuardianDetailsComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
+    mockDateService = createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
+    mockUtilsService = createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountParentGuardianDetailsComponent],
@@ -55,7 +60,7 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
   });
 
   it('should format date of birth correctly - adult', () => {
-    mockDateService.getFromFormatToFormat.and.returnValue('01 January 1990');
+    mockDateService.getFromFormatToFormat.mockReturnValue('01 January 1990');
 
     component['getDateOfBirthData']();
 
@@ -64,7 +69,7 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
 
   it('should format address correctly', () => {
     const formattedAddress = ['123 Main St', 'Apt 4B', 'Springfield', '12345'];
-    mockUtilsService.formatAddress.and.returnValue(formattedAddress);
+    mockUtilsService.formatAddress.mockReturnValue(formattedAddress);
 
     component['getAddressData']();
 
@@ -78,7 +83,8 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
   });
 
   it('should emit change parent or guardian details event', () => {
-    spyOn(component.emitChangeParentGuardianDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChangeParentGuardianDetails, 'emit');
 
     component.changeParentGuardianDetails();
 
@@ -87,7 +93,7 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
 
   it('should call getParentGuardianData on init', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getParentGuardianData');
+    vi.spyOn<any, any>(component, 'getParentGuardianData');
 
     component.ngOnInit();
 

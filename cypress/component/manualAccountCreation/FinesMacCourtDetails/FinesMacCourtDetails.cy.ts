@@ -11,8 +11,6 @@ import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_deta
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { FinesMacReviewAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
-import { data } from 'cypress/types/jquery';
 import { of } from 'rxjs';
 
 describe('FinesMacCourtDetailsComponent', () => {

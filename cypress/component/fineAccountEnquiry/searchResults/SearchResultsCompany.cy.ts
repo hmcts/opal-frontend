@@ -120,7 +120,7 @@ describe('FinesSaResultsComponent - Companies', () => {
     setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.paginationElement).should('exist');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 results');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 total results');
     cy.get(DOM_ELEMENTS.table).should('have.length', 25);
 
     cy.get(DOM_ELEMENTS.paginationPageNumber(2)).click();

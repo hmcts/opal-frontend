@@ -6,18 +6,22 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
-import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn } from '@angular/router';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('finesDraftCreateAndManageRejectedCountResolver', () => {
   const executeResolver: ResolveFn<number> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => finesDraftCreateAndManageRejectedCountResolver(...resolverParameters));
 
-  let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let opalFinesServiceMock: any;
   let globalStoreMock: GlobalStoreType;
 
   beforeEach(() => {
-    opalFinesServiceMock = jasmine.createSpyObj('OpalFines', ['getDraftAccounts']);
+    opalFinesServiceMock = {
+      getDraftAccounts: vi.fn().mockName('OpalFines.getDraftAccounts'),
+    };
 
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: opalFinesServiceMock }],
@@ -28,10 +32,11 @@ describe('finesDraftCreateAndManageRejectedCountResolver', () => {
   });
 
   it('should resolve the count of rejected draft accounts', async () => {
-    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+    opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
     const route = {} as ActivatedRouteSnapshot;
-    const mockRouterStateSnapshot = {} as jasmine.SpyObj<RouterStateSnapshot>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockRouterStateSnapshot: any = {} as any;
 
     const result = await lastValueFrom(
       executeResolver(route, mockRouterStateSnapshot) as Observable<number | RedirectCommand>,

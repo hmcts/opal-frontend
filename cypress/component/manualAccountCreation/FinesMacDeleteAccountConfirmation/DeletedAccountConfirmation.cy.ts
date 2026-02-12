@@ -1,11 +1,11 @@
 import { mount } from 'cypress/angular';
-import { FinesMacReviewAccountComponent } from 'src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -27,7 +27,6 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   let finesDraftState = structuredClone(FINES_DRAFT_STATE);
   let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
 
-  let store: any;
   const setupComponent = (
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,
@@ -81,13 +80,19 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
               },
               data: {
                 reviewAccountFetchMap: {
-                  finesMacStore: finesMacState,
-                  finesMacDraft: activatedRouteMock,
+                  finesMacState: finesMacState,
+                  finesMacDraft: activatedRouteMock ?? finesDraftStateMock,
+                  results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                  majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+                  localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                  courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+                  prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
                 },
                 results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
                 majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
                 localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+                prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
               },
               parent: {
                 snapshot: {

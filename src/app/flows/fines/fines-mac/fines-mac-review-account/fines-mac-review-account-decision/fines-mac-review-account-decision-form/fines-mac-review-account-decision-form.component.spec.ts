@@ -4,13 +4,27 @@ import { IFinesMacReviewAccountDecisionForm } from '../interfaces/fines-mac-revi
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FORM_MOCK } from '../mocks/fines-mac-review-account-decision-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacReviewAccountDecisionFormComponent', () => {
   let component: FinesMacReviewAccountDecisionFormComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountDecisionFormComponent>;
   let formSubmit: IFinesMacReviewAccountDecisionForm;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
 
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     formSubmit = structuredClone(FINES_MAC_REVIEW_ACCOUNT_DECISION_FORM_MOCK);
 
     await TestBed.configureTestingModule({
@@ -37,7 +51,8 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
 
   it('should not emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
 
@@ -47,19 +62,18 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
   });
 
   it('should initialize the form with correct controls and validators', () => {
-    expect(component.form.contains('fm_review_account_decision')).toBeTrue();
-    expect(component.form.contains('fm_review_account_decision_reason')).toBeTrue();
+    expect(component.form.contains('fm_review_account_decision')).toBe(true);
+    expect(component.form.get('fm_review_account_decision_reason')).toBeTruthy();
 
     const decisionControl = component.form.get('fm_review_account_decision');
     const rejectionReasonControl = component.form.get('fm_review_account_decision_reason');
 
     decisionControl?.setValue(null);
-    expect(decisionControl?.valid).toBeFalse();
+    expect(decisionControl?.valid).toBe(false);
     decisionControl?.setValue('approve');
-    expect(decisionControl?.valid).toBeTrue();
+    expect(decisionControl?.valid).toBe(true);
 
-    rejectionReasonControl?.setValue('Some reason');
-    expect(rejectionReasonControl?.valid).toBeTrue();
+    expect(rejectionReasonControl?.disabled).toBe(true);
   });
 
   it('should add required validator to rejection reason when decision is reject', () => {
@@ -69,12 +83,13 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     decisionControl?.setValue('reject');
     fixture.detectChanges();
 
+    expect(rejectionReasonControl?.enabled).toBe(true);
     rejectionReasonControl?.setValue('');
     rejectionReasonControl?.markAsTouched();
-    expect(rejectionReasonControl?.hasError('required')).toBeTrue();
+    expect(rejectionReasonControl?.hasError('required')).toBe(true);
 
     rejectionReasonControl?.setValue('Valid reason');
-    expect(rejectionReasonControl?.valid).toBeTrue();
+    expect(rejectionReasonControl?.valid).toBe(true);
   });
 
   it('should remove required validator from rejection reason when decision is not reject', () => {
@@ -84,12 +99,12 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     decisionControl?.setValue('reject');
     fixture.detectChanges();
     rejectionReasonControl?.setValue('');
-    expect(rejectionReasonControl?.hasError('required')).toBeTrue();
+    expect(rejectionReasonControl?.hasError('required')).toBe(true);
 
     decisionControl?.setValue('approve');
     fixture.detectChanges();
-    rejectionReasonControl?.setValue('');
-    expect(rejectionReasonControl?.hasError('required')).toBeFalse();
+    expect(rejectionReasonControl?.disabled).toBe(true);
+    expect(rejectionReasonControl?.hasError('required')).toBe(false);
   });
 
   it('should reset rejection reason control and update validity on decision change', () => {
@@ -100,22 +115,37 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     decisionControl?.setValue('reject');
     fixture.detectChanges();
     expect(rejectionReasonControl?.value).toBeNull();
-    expect(rejectionReasonControl?.valid).toBeFalse();
+    expect(rejectionReasonControl?.valid).toBe(false);
 
     rejectionReasonControl?.setValue('Another value');
     decisionControl?.setValue('approve');
     fixture.detectChanges();
     expect(rejectionReasonControl?.value).toBeNull();
-    expect(rejectionReasonControl?.valid).toBeTrue();
+    expect(rejectionReasonControl?.disabled).toBe(true);
+  });
+
+  it('should show the reject conditional only when reject is selected', async () => {
+    await fixture.whenStable();
+    const conditional = fixture.nativeElement.querySelector(`#${component.decisionRejectConditionalId}`);
+    expect(conditional).toBeTruthy();
+    expect(conditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+
+    const rejectInput = fixture.nativeElement.querySelector(
+      `input[aria-controls="${component.decisionRejectConditionalId}"]`,
+    );
+    rejectInput.click();
+    fixture.detectChanges();
+    expect(component.form.get('fm_review_account_decision_reason')?.enabled).toBe(true);
   });
 
   it('should call initialDecisionFormSetup and super.ngOnInit on ngOnInit', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const initialDecisionFormSetupSpy = spyOn<any>(component, 'initialDecisionFormSetup').and.callThrough();
-    const superNgOnInitSpy = spyOn(
+    const initialDecisionFormSetupSpy = vi.spyOn<any, any>(component, 'initialDecisionFormSetup');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const superNgOnInitSpy = vi.spyOn<any, any>(
       Object.getPrototypeOf(FinesMacReviewAccountDecisionFormComponent.prototype),
       'ngOnInit',
-    ).and.callThrough();
+    );
 
     component.ngOnInit();
 

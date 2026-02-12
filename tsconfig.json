@@ -23,7 +23,6 @@
     "resolveJsonModule": false,
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
-
     "paths": {
       "@app/*": ["./src/app/*"],
       "@constants/*": ["./src/app/constants/*"],
@@ -33,7 +32,6 @@
       "@routing/flows/*": ["./src/app/flows/routing/*"]
     }
   },
-
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
@@ -43,8 +41,8 @@
   "include": ["src", "node_modules/cypress", "src/app/interfaces/**/*.ts"],
   "exclude": [
     "node_modules/cypress",
-    "**/*.mock.ts",
     "**/helpers/*.ts",
+    "src/test-setup.ts",
     "**/interfaces/generated/**",
     "**/types/generated/**"
   ]

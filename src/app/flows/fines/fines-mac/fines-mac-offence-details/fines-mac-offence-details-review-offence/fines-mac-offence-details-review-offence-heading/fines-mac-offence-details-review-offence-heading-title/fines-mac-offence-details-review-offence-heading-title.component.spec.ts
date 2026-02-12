@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fines-mac-offence-details-review-offence-heading-title.component';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent;
@@ -26,7 +27,8 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
 
   it('should emit action when onActionClick is called', () => {
     const action = 'Change';
-    const emitSpy = spyOn(component.actionClicked, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.actionClicked, 'emit');
 
     component.onActionClick(action);
 

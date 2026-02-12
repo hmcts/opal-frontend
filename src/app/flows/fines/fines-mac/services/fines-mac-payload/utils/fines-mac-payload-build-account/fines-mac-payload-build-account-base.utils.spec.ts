@@ -12,6 +12,7 @@ import { IFinesMacOffenceDetailsState } from '../../../../fines-mac-offence-deta
 import { FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK } from '../mocks/fines-mac-payload-account-account-initial.mock';
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadBuildAccountBase', () => {
   let expectedPayload: IFinesMacPayloadAccountAccountInitial | null;
@@ -60,7 +61,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
 
   it('should build the initial payload correctly', () => {
     if (!offenceDetailsState || !expectedPayload || !accountDetailsState || !courtDetailsState || !paymentTermsState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -84,7 +85,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !courtDetailsState ||
       !paymentTermsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -113,7 +114,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !courtDetailsState ||
       !paymentTermsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -144,7 +145,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !courtDetailsState ||
       !paymentTermsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -170,7 +171,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !courtDetailsState ||
       !paymentTermsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -200,7 +201,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !courtDetailsState ||
       !paymentTermsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -230,7 +231,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !courtDetailsState ||
       !paymentTermsState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -250,7 +251,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
 
   it('should set nullable fields to null when undefined in payment terms', () => {
     if (!offenceDetailsState || !expectedPayload || !accountDetailsState || !courtDetailsState || !paymentTermsState) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 

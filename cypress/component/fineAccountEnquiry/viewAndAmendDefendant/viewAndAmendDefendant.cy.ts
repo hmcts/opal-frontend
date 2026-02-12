@@ -9,7 +9,6 @@ import {
   DOM_ELEMENTS,
   getAliasForenamesInput,
   getAliasSurnameInput,
-  getFieldErrorFor,
 } from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
 import {
   ERROR_MESSAGES,

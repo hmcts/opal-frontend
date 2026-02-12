@@ -97,7 +97,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
 
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
 
-      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 results').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 total results').should('exist');
       cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
       cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
       cy.get(DOM_ELEMENTS.nextPageButton).contains('Next').should('exist');

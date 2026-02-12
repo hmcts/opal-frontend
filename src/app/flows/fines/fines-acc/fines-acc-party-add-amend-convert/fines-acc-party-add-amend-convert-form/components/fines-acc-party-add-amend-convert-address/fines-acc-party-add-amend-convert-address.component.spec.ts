@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FinesAccPartyAddAmendConvertAddress } from './fines-acc-party-add-amend-convert-address.component';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertAddress', () => {
   let component: FinesAccPartyAddAmendConvertAddress;

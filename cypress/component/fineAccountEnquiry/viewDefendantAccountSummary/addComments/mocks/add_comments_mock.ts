@@ -88,6 +88,7 @@ export const MOCK_ACCOUNT_STATE = {
   account_number: '123456789',
   account_id: 1001,
   party_id: '2001',
+  pg_party_id: '3001',
   business_unit_user_id: '3001',
   business_unit_id: '100',
   party_name: 'John Doe',

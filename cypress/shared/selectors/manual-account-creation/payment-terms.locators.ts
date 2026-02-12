@@ -9,24 +9,29 @@
 export const ManualPaymentTermsLocators = {
   pageHeader: 'h1.govuk-heading-l',
   collectionOrder: {
-    yes: 'input[id="fm_payment_terms_collection_order_made_true"]',
-    no: 'input[id="fm_payment_terms_collection_order_made_false"]',
+    yes: 'input[name="fm_payment_terms_collection_order_made"][value="true"]',
+    no: 'input[name="fm_payment_terms_collection_order_made"][value="false"]',
     date: 'input[id="fm_payment_terms_collection_order_date"]',
     today: '#fm_payment_terms_collection_order_made_today',
   },
-  payInFull: 'input[id="payInFull"]',
+  payInFull: 'input[name="fm_payment_terms_payment_terms"][value="payInFull"]',
   paymentTerms: {
-    payInFull: '#payInFull',
-    instalmentsOnly: '#instalmentsOnly',
-    lumpSumPlusInstalments: '#lumpSumPlusInstalments',
+    payInFull: 'input[name="fm_payment_terms_payment_terms"][value="payInFull"]',
+    instalmentsOnly: 'input[name="fm_payment_terms_payment_terms"][value="instalmentsOnly"]',
+    lumpSumPlusInstalments: 'input[name="fm_payment_terms_payment_terms"][value="lumpSumPlusInstalments"]',
   },
   payByDate: 'input[id="fm_payment_terms_pay_by_date"]',
   lumpSumAmount: '#fm_payment_terms_lump_sum_amount',
   instalmentAmount: '#fm_payment_terms_instalment_amount',
-  frequency: {
-    weekly: '#W',
-    fortnightly: '#F',
-    monthly: '#M',
+  instalmentsOnlyFrequency: {
+    weekly: 'input[name="instalmentsOnly"][value="W"]',
+    fortnightly: 'input[name="instalmentsOnly"][value="F"]',
+    monthly: 'input[name="instalmentsOnly"][value="M"]',
+  },
+  lumpSumFrequency: {
+    weekly: 'input[name="lumpSumPlusInstalments"][value="W"]',
+    fortnightly: 'input[name="lumpSumPlusInstalments"][value="F"]',
+    monthly: 'input[name="lumpSumPlusInstalments"][value="M"]',
   },
   startDate: '#fm_payment_terms_start_date',
   requestPaymentCard: '#fm_payment_terms_payment_card_request',
@@ -38,8 +43,9 @@ export const ManualPaymentTermsLocators = {
   enforcement: {
     add: '#fm_payment_terms_add_enforcement_action, #fm_payment_terms_hold_enforcement_on_account',
     options: {
-      prison: '#PRIS',
-      holdOnAccount: '#fm_payment_terms_hold_enforcement_on_account, #NOENF',
+      prison: 'input[name="fm_payment_terms_enforcement_action"][value="PRIS"]',
+      holdOnAccount:
+        'input[id="fm_payment_terms_hold_enforcement_on_account"], input[name="fm_payment_terms_enforcement_action"][value="NOENF"]',
     },
     earliestReleaseDate: '#fm_payment_terms_earliest_release_date',
     prisonAndNumber: '#fm_payment_terms_prison_and_prison_number',

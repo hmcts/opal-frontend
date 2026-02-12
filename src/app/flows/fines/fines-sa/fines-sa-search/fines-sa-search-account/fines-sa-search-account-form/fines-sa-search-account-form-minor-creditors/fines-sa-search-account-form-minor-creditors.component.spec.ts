@@ -3,10 +3,13 @@ import { FinesSaSearchAccountFormMinorCreditorsComponent } from './fines-sa-sear
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   let component: FinesSaSearchAccountFormMinorCreditorsComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormMinorCreditorsComponent>;
+  let originalInitOuterRadios: () => void;
 
   const buildForm = () =>
     new FormGroup({
@@ -54,7 +57,18 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     };
   };
 
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
+
   beforeEach(async () => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchAccountFormMinorCreditorsComponent],
       providers: [
@@ -84,9 +98,9 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
 
   it('should not require anything by default', () => {
     const { firstNames, lastName, companyName } = getControls(component.form);
-    expect(firstNames.hasValidator(Validators.required)).toBeFalse();
-    expect(lastName.hasValidator(Validators.required)).toBeFalse();
-    expect(companyName.hasValidator(Validators.required)).toBeFalse();
+    expect(firstNames.hasValidator(Validators.required)).toBe(false);
+    expect(lastName.hasValidator(Validators.required)).toBe(false);
+    expect(companyName.hasValidator(Validators.required)).toBe(false);
   });
 
   it('should install its controls into the provided FormGroup on init', () => {
@@ -95,7 +109,32 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       'fsa_search_account_minor_creditors_individual',
       'fsa_search_account_minor_creditors_company',
     ];
-    names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
+    names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
+  });
+
+  it('should toggle conditional panels and enable the correct group', async () => {
+    await fixture.whenStable();
+    const individualConditional = fixture.nativeElement.querySelector(`#${component.individualConditionalId}`);
+    const companyConditional = fixture.nativeElement.querySelector(`#${component.companyConditionalId}`);
+
+    expect(component.individualGroup.disabled).toBe(true);
+    expect(component.companyGroup.disabled).toBe(true);
+    expect(individualConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+    expect(companyConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+
+    const individualInput = fixture.nativeElement.querySelector('input[value="individual"]');
+    individualInput.click();
+    fixture.detectChanges();
+
+    expect(component.individualGroup.enabled).toBe(true);
+    expect(component.companyGroup.disabled).toBe(true);
+
+    const companyInput = fixture.nativeElement.querySelector('input[value="company"]');
+    companyInput.click();
+    fixture.detectChanges();
+
+    expect(component.companyGroup.enabled).toBe(true);
+    expect(component.individualGroup.disabled).toBe(true);
   });
 
   describe('Individual conditional validation', () => {
@@ -110,16 +149,16 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       const { firstNames, lastName } = getControls(component.form);
       firstNames.setValue('Jane'); // triggers merged subscription
       lastName.setValue(''); // explicit empty
-      expect(lastName.hasValidator(Validators.required)).toBeTrue();
+      expect(lastName.hasValidator(Validators.required)).toBe(true);
       lastName.updateValueAndValidity();
-      expect(lastName.errors?.['required']).toBeTrue();
+      expect(lastName.errors?.['required']).toBe(true);
     });
 
     it('removes LAST NAME requirement when last name is provided', () => {
       const { firstNames, lastName } = getControls(component.form);
       firstNames.setValue('Jane');
       lastName.setValue('Doe');
-      expect(lastName.hasValidator(Validators.required)).toBeFalse();
+      expect(lastName.hasValidator(Validators.required)).toBe(false);
       lastName.updateValueAndValidity();
       expect(lastName.errors).toBeNull();
     });
@@ -128,23 +167,23 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       const { lastName, lastNameExact } = getControls(component.form);
       lastName.setValue('');
       lastNameExact.setValue(true);
-      expect(lastName.hasValidator(Validators.required)).toBeTrue();
+      expect(lastName.hasValidator(Validators.required)).toBe(true);
     });
 
     it('requires FIRST NAMES when first-names exact match is true but first names empty', () => {
       const { firstNames, firstNamesExact } = getControls(component.form);
       firstNames.setValue('');
       firstNamesExact.setValue(true);
-      expect(firstNames.hasValidator(Validators.required)).toBeTrue();
+      expect(firstNames.hasValidator(Validators.required)).toBe(true);
       firstNames.updateValueAndValidity();
-      expect(firstNames.errors?.['required']).toBeTrue();
+      expect(firstNames.errors?.['required']).toBe(true);
     });
 
     it('removes FIRST NAMES requirement when value is provided', () => {
       const { firstNames, firstNamesExact } = getControls(component.form);
       firstNamesExact.setValue(true);
       firstNames.setValue('Alex');
-      expect(firstNames.hasValidator(Validators.required)).toBeFalse();
+      expect(firstNames.hasValidator(Validators.required)).toBe(false);
     });
 
     it('treats non-string FIRST NAMES as present and requires LAST NAME when empty', () => {
@@ -157,7 +196,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       // Subscription will call handleIndividualConditionalValidation
       lastName.updateValueAndValidity();
 
-      expect(lastName.hasValidator(Validators.required)).toBeTrue();
+      expect(lastName.hasValidator(Validators.required)).toBe(true);
     });
   });
 
@@ -172,16 +211,16 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       const { companyName, companyNameExact } = getControls(component.form);
       companyName.setValue('');
       companyNameExact.setValue(true);
-      expect(companyName.hasValidator(Validators.required)).toBeTrue();
+      expect(companyName.hasValidator(Validators.required)).toBe(true);
       companyName.updateValueAndValidity();
-      expect(companyName.errors?.['required']).toBeTrue();
+      expect(companyName.errors?.['required']).toBe(true);
     });
 
     it('removes COMPANY NAME requirement when name is provided', () => {
       const { companyName, companyNameExact } = getControls(component.form);
       companyNameExact.setValue(true);
       companyName.setValue('HM Courts and Tribunals Service');
-      expect(companyName.hasValidator(Validators.required)).toBeFalse();
+      expect(companyName.hasValidator(Validators.required)).toBe(false);
       companyName.updateValueAndValidity();
       expect(companyName.errors).toBeNull();
     });
@@ -194,7 +233,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       companyNameExact.setValue(true);
       companyName.updateValueAndValidity();
 
-      expect(companyName.hasValidator(Validators.required)).toBeFalse();
+      expect(companyName.hasValidator(Validators.required)).toBe(false);
     });
   });
 
@@ -207,17 +246,17 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       type.markAsDirty();
       companyName.setValue('');
       companyNameExact.setValue(true);
-      expect(companyName.hasValidator(Validators.required)).toBeTrue();
+      expect(companyName.hasValidator(Validators.required)).toBe(true);
 
       // Switch to individual
       type.setValue('individual');
 
       // Validators cleared on company controls
-      expect(companyName.hasValidator(Validators.required)).toBeFalse();
+      expect(companyName.hasValidator(Validators.required)).toBe(false);
 
       // Group reset/clean state
-      expect(company.pristine).toBeTrue();
-      expect(company.untouched).toBeTrue();
+      expect(company.pristine).toBe(true);
+      expect(company.untouched).toBe(true);
     });
 
     it('clears individual validators and resets individual group when switching to company', () => {
@@ -230,33 +269,21 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       lastNameExact.setValue(true);
       firstNames.setValue('');
       lastName.setValue('');
-      expect(firstNames.hasValidator(Validators.required)).toBeTrue();
-      expect(lastName.hasValidator(Validators.required)).toBeTrue();
+      expect(firstNames.hasValidator(Validators.required)).toBe(true);
+      expect(lastName.hasValidator(Validators.required)).toBe(true);
 
       // Switch to company
       type.setValue('company');
 
       // Validators cleared on individual controls
-      expect(firstNames.hasValidator(Validators.required)).toBeFalse();
-      expect(lastName.hasValidator(Validators.required)).toBeFalse();
+      expect(firstNames.hasValidator(Validators.required)).toBe(false);
+      expect(lastName.hasValidator(Validators.required)).toBe(false);
 
       // Group reset/clean state
-      expect(individual.pristine).toBeTrue();
-      expect(individual.untouched).toBeTrue();
+      expect(individual.pristine).toBe(true);
+      expect(individual.untouched).toBe(true);
     });
   });
-
-  // Helper to create a fresh component instance with a custom form shape and run detectChanges
-  const createComponentWithForm = (form: FormGroup) => {
-    const fx = TestBed.createComponent(FinesSaSearchAccountFormMinorCreditorsComponent);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cmp = fx.componentInstance as any;
-    cmp.form = form;
-    cmp.formControlErrorMessages = {};
-    cmp.formErrorSummaryMessage = [];
-    fx.detectChanges();
-    return { fx, cmp: fx.componentInstance } as { fx: typeof fx; cmp: FinesSaSearchAccountFormMinorCreditorsComponent };
-  };
 
   // Helper to create a fresh component instance with a custom form shape but DO NOT run detectChanges/ngOnInit
   const createComponentWithFormNoInit = (form: FormGroup) => {
@@ -267,7 +294,10 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     cmp.formControlErrorMessages = {};
     cmp.formErrorSummaryMessage = [];
     // Intentionally DO NOT call detectChanges/ngOnInit
-    return { fx, cmp: fx.componentInstance } as { fx: typeof fx; cmp: FinesSaSearchAccountFormMinorCreditorsComponent };
+    return { fx, cmp: fx.componentInstance } as {
+      fx: typeof fx;
+      cmp: FinesSaSearchAccountFormMinorCreditorsComponent;
+    };
   };
 
   describe('Guard clauses / missing control coverage', () => {
@@ -283,8 +313,8 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       lastName.setValue('');
       lastNameExact.setValue(true);
 
-      expect(firstNames.hasValidator(Validators.required)).toBeFalse();
-      expect(lastName.hasValidator(Validators.required)).toBeFalse();
+      expect(firstNames.hasValidator(Validators.required)).toBe(false);
+      expect(lastName.hasValidator(Validators.required)).toBe(false);
     });
 
     it('does not add company validator when type is individual (early return path)', () => {
@@ -294,7 +324,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       companyName.setValue('');
       companyNameExact.setValue(true);
 
-      expect(companyName.hasValidator(Validators.required)).toBeFalse();
+      expect(companyName.hasValidator(Validators.required)).toBe(false);
     });
 
     it('handles missing INDIVIDUAL controls safely (subscriptions short-circuit)', () => {
@@ -313,18 +343,13 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         }),
       });
 
-      const { cmp } = createComponentWithForm(badForm);
-      const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
-      const individual = cmp.form.get('fsa_search_account_minor_creditors_individual') as FormGroup;
-      const firstNamesExact = individual.get(
-        'fsa_search_account_minor_creditors_first_names_exact_match',
-      ) as FormControl;
+      const { cmp } = createComponentWithFormNoInit(badForm);
 
-      // Move to individual and toggle exact match -> should not throw and should early-return due to missing control
-      typeCtrl.setValue('individual');
-      firstNamesExact.setValue(true);
+      // Should no-op safely when required controls are missing.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).setupIndividualConditionalValidation();
 
-      expect(true).toBeTrue();
+      expect(true).toBe(true);
     });
 
     it('handles missing COMPANY controls safely and clears validators even when control is null', () => {
@@ -343,20 +368,14 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         }),
       });
 
-      const { cmp } = createComponentWithForm(badForm);
+      const { cmp } = createComponentWithFormNoInit(badForm);
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
-      const company = cmp.form.get('fsa_search_account_minor_creditors_company') as FormGroup;
-      const companyNameExact = company.get(
-        'fsa_search_account_minor_creditors_company_name_exact_match',
-      ) as FormControl;
 
-      // Switch away from company to individual, which calls clearCompanyDynamicValidators() internally
-      typeCtrl.setValue('individual');
+      typeCtrl.setValue('company');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).handleCompanyConditionalValidation();
 
-      // Toggle exact match on the company group while the name control is missing
-      companyNameExact.setValue(true);
-
-      expect(true).toBeTrue();
+      expect(true).toBe(true);
     });
 
     it('early-returns in handleCompanyConditionalValidation when company controls are missing (no setValidatorPresence call)', () => {
@@ -373,13 +392,13 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         fsa_search_account_minor_creditors_company: new FormGroup({}),
       });
 
-      const { cmp } = createComponentWithForm(badForm);
+      const { cmp } = createComponentWithFormNoInit(badForm);
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
       typeCtrl.setValue('company');
 
       // Spy on the private helper; if the guard triggers, this must NOT run
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const spy = spyOn<any>(cmp as any, 'setValidatorPresence').and.callThrough();
+      const spy = vi.spyOn<any, any>(cmp as any, 'setValidatorPresence');
 
       // Call the private method directly to exercise the guard branch
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -388,15 +407,40 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
+    it('early-returns in setupCompanyConditionalValidation when company controls are missing', () => {
+      const badForm = new FormGroup({
+        fsa_search_account_minor_creditors_minor_creditor_type: new FormControl<string | null>(null),
+        fsa_search_account_minor_creditors_individual: new FormGroup({
+          fsa_search_account_minor_creditors_first_names: new FormControl<string | null>(null),
+          fsa_search_account_minor_creditors_first_names_exact_match: new FormControl<boolean>(false),
+          fsa_search_account_minor_creditors_last_name: new FormControl<string | null>(null),
+          fsa_search_account_minor_creditors_last_name_exact_match: new FormControl<boolean>(false),
+        }),
+        fsa_search_account_minor_creditors_company: new FormGroup({
+          // company_name missing on purpose
+          fsa_search_account_minor_creditors_company_name_exact_match: new FormControl<boolean>(false),
+        }),
+      });
+
+      const { cmp } = createComponentWithFormNoInit(badForm);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const spy = vi.spyOn<any, any>(cmp as any, 'subscribeValidation');
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).setupCompanyConditionalValidation();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
     it('early-returns in handleIndividualConditionalValidation when type is not individual (no setValidatorPresence call)', () => {
-      const { cmp } = createComponentWithForm(buildForm());
+      const { cmp } = createComponentWithFormNoInit(buildForm());
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
       // Set an explicit non-individual type
       typeCtrl.setValue('company');
 
       // Spy on the private helper; should NOT be invoked if early-return triggers
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const spy = spyOn<any>(cmp as any, 'setValidatorPresence').and.callThrough();
+      const spy = vi.spyOn<any, any>(cmp as any, 'setValidatorPresence');
 
       // Invoke the private method directly
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -421,12 +465,12 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         }),
       });
 
-      const { cmp } = createComponentWithForm(badForm);
+      const { cmp } = createComponentWithFormNoInit(badForm);
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
       typeCtrl.setValue('individual');
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const spy = spyOn<any>(cmp as any, 'setValidatorPresence').and.callThrough();
+      const spy = vi.spyOn<any, any>(cmp as any, 'setValidatorPresence');
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (cmp as any).handleIndividualConditionalValidation();
@@ -450,7 +494,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       typeCtrl.setValue('individual');
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const spy = spyOn<any>(cmp as any, 'setValidatorPresence').and.callThrough();
+      const spy = vi.spyOn<any, any>(cmp as any, 'setValidatorPresence');
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (cmp as any).handleIndividualConditionalValidation();
@@ -520,7 +564,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       // Put an error and a value on a company control
       companyName.setValue('ACME');
       companyName.setErrors({ custom: true });
-      expect(companyName.errors?.['custom']).toBeTrue();
+      expect(companyName.errors?.['custom']).toBe(true);
 
       // Switching to individual triggers reset of company controls via resetAndValidateControls
       type.setValue('individual');
@@ -530,8 +574,8 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(companyName.errors).toBeNull();
 
       // Group also reset
-      expect(company.pristine).toBeTrue();
-      expect(company.untouched).toBeTrue();
+      expect(company.pristine).toBe(true);
+      expect(company.untouched).toBe(true);
     });
   });
 
@@ -553,7 +597,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     // Destroy and ensure controls are removed from the child group
     cmp.ngOnDestroy();
 
-    expect(Object.keys(child.controls)).withContext('expected no controls after destroy').toEqual([]);
+    expect(Object.keys(child.controls), 'expected no controls after destroy').toEqual([]);
     // parent still holds the (now empty) child group reference
     expect(parent.get('fsa_search_account_minor_creditors_search_criteria')).toBe(child);
   });

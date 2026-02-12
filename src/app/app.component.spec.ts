@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NavigationEnd, RouterModule, provideRouter } from '@angular/router';
@@ -18,6 +18,8 @@ import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/services/sessio
 import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createSpyObj } from './testing/create-spy-obj.helper';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -28,10 +30,11 @@ describe('AppComponent - browser', () => {
     },
   };
   let globalStore: GlobalStoreType;
-  let dateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let dateService: any;
 
   beforeEach(() => {
-    const dateServiceSpy = jasmine.createSpyObj(DateService, [
+    const dateServiceSpy = createSpyObj(DateService, [
       'convertMillisecondsToMinutes',
       'calculateMinutesDifference',
       'getFromIso',
@@ -56,7 +59,8 @@ describe('AppComponent - browser', () => {
       ],
     });
 
-    dateService = TestBed.inject(DateService) as jasmine.SpyObj<DateService>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dateService = TestBed.inject(DateService) as any;
     globalStore = TestBed.inject(GlobalStore);
   });
 
@@ -74,7 +78,8 @@ describe('AppComponent - browser', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
-    spyOn(app['launchDarklyService'], 'initializeLaunchDarklyFlags').and.returnValue(Promise.resolve());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(app['launchDarklyService'], 'initializeLaunchDarklyFlags').mockReturnValue(Promise.resolve());
 
     fixture.detectChanges();
 
@@ -86,7 +91,8 @@ describe('AppComponent - browser', () => {
 
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const spy = vi.spyOn<any, any>(component, 'handleRedirect').mockImplementation(() => {
       mockDocumentLocation.location.href = SSO_ENDPOINTS.login;
     });
 
@@ -101,7 +107,8 @@ describe('AppComponent - browser', () => {
 
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const spy = vi.spyOn<any, any>(component, 'handleRedirect').mockImplementation(() => {
       mockDocumentLocation.location.href = SSO_ENDPOINTS.logout;
     });
 
@@ -114,8 +121,10 @@ describe('AppComponent - browser', () => {
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    spyOn(component['ngUnsubscribe'], 'next');
-    spyOn(component['ngUnsubscribe'], 'complete');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['ngUnsubscribe'], 'next');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['ngUnsubscribe'], 'complete');
 
     component.ngOnDestroy();
 
@@ -123,37 +132,43 @@ describe('AppComponent - browser', () => {
     expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
   });
 
-  it('should show expired warning when remaining minutes is zero', fakeAsync(() => {
+  it('should show expired warning when remaining minutes is zero', () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().toISO();
     globalStore.setTokenExpiry({ expiry: expiryTime, warningThresholdInMilliseconds: 300000 }); // 5 minutes
-    dateService.convertMillisecondsToMinutes.and.returnValue(5);
-    dateService.calculateMinutesDifference.and.returnValue(0);
+    dateService.convertMillisecondsToMinutes.mockReturnValue(5);
+    dateService.calculateMinutesDifference.mockReturnValue(0);
 
     component.ngOnInit();
     component['initializeTimeoutInterval']();
 
     // Simulate timer tick
-    tick(component['POLL_INTERVAL'] * 1000);
+    vi.advanceTimersByTime(component['POLL_INTERVAL'] * 1000);
     fixture.detectChanges();
 
-    expect(component.showExpiredWarning).toBeTrue();
+    expect(component.showExpiredWarning).toBe(true);
 
-    flush();
-  }));
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
+  });
 
-  it('should handle no expiry case correctly', fakeAsync(() => {
+  it('should handle no expiry case correctly', () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
 
     globalStore.setTokenExpiry({ expiry: null, warningThresholdInMilliseconds: 300000 }); // 5 minutes
-    dateService.convertMillisecondsToMinutes.and.returnValue(5);
+    dateService.convertMillisecondsToMinutes.mockReturnValue(5);
 
-    const setupTimerSubSpy = spyOn(
-      component as unknown as { setupTimerSub: (expiry: string) => void },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupTimerSubSpy = vi.spyOn<any, any>(
+      component as unknown as {
+        setupTimerSub: (expiry: string) => void;
+      },
       'setupTimerSub',
-    ).and.callThrough();
+    );
 
     component.ngOnInit();
     component['initializeTimeoutInterval']();
@@ -161,15 +176,17 @@ describe('AppComponent - browser', () => {
     // No timer should be set
     expect(setupTimerSubSpy).not.toHaveBeenCalled();
 
-    flush();
-  }));
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
+  });
 
-  it('should convert warningThresholdInMilliseconds to minutes', fakeAsync(() => {
+  it('should convert warningThresholdInMilliseconds to minutes', () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().plus({ minutes: 10 }).toISO();
     globalStore.setTokenExpiry({ expiry: expiryTime, warningThresholdInMilliseconds: null });
-    dateService.convertMillisecondsToMinutes.and.returnValue(0);
+    dateService.convertMillisecondsToMinutes.mockReturnValue(0);
 
     component.ngOnInit();
     component['initializeTimeoutInterval']();
@@ -178,14 +195,16 @@ describe('AppComponent - browser', () => {
     expect(component.thresholdInMinutes).toBe(0);
 
     // Clean up pending timers
-    tick(component['POLL_INTERVAL'] * 1000);
-    flush();
-  }));
+    vi.advanceTimersByTime(component['POLL_INTERVAL'] * 1000);
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
+  });
 
   it('should set up token expiry and initialize timeout interval', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    spyOn(component['sessionService'], 'getTokenExpiry').and.returnValue(of(SESSION_TOKEN_EXPIRY_MOCK));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['sessionService'], 'getTokenExpiry').mockReturnValue(of(SESSION_TOKEN_EXPIRY_MOCK));
 
     component['setupTokenExpiry']();
 
@@ -195,25 +214,30 @@ describe('AppComponent - browser', () => {
   it('should not set up token expiry if sessionService.getTokenExpiry does not emit', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    spyOn(component['sessionService'], 'getTokenExpiry').and.returnValue(new Observable());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['sessionService'], 'getTokenExpiry').mockReturnValue(new Observable());
 
     component['setupTokenExpiry']();
 
     expect(component['sessionService'].getTokenExpiry).toHaveBeenCalled();
   });
 
-  it('should track page views on navigation end', fakeAsync(() => {
+  it('should track page views on navigation end', () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const mockNavigationEnd = new NavigationEnd(1, '/test', '/test');
-    spyOn(component['router'].events, 'pipe').and.returnValue(of(mockNavigationEnd));
-    spyOn(component['appInsightsService'], 'logPageView');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'].events, 'pipe').mockReturnValue(of(mockNavigationEnd));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['appInsightsService'], 'logPageView');
 
     component.ngOnInit();
-    tick();
+    vi.runOnlyPendingTimers();
 
     expect(component['appInsightsService'].logPageView).toHaveBeenCalledWith('test', '/test');
-  }));
+    vi.useRealTimers();
+  });
 });
 
 describe('AppComponent - server', () => {
@@ -243,21 +267,25 @@ describe('AppComponent - server', () => {
   it('should not call getTokenExpiry as on server ', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    spyOn(component['sessionService'], 'getTokenExpiry').and.returnValue(new Observable());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['sessionService'], 'getTokenExpiry').mockReturnValue(new Observable());
 
     component['setupTokenExpiry']();
 
     expect(component['sessionService'].getTokenExpiry).not.toHaveBeenCalled();
   });
 
-  it('should not track page views on server', fakeAsync(() => {
+  it('should not track page views on server', () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    spyOn(component['appInsightsService'], 'logPageView');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['appInsightsService'], 'logPageView');
 
     component.ngOnInit();
-    tick();
+    vi.runOnlyPendingTimers();
 
     expect(component['appInsightsService'].logPageView).not.toHaveBeenCalled();
-  }));
+    vi.useRealTimers();
+  });
 });
