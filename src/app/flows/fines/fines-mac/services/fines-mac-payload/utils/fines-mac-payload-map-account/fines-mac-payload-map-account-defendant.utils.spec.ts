@@ -14,6 +14,7 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK } from '..
 import { IFinesMacPersonalDetailsState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-personal-details-state.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../../constants/fines-mac-defendant-types-keys';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadMapAccountDefendant', () => {
   let mappedFinesMacState: IFinesMacState | null;
@@ -36,7 +37,7 @@ describe('finesMacPayloadMapAccountDefendant', () => {
 
   it('should map parentOrGuardianToPay defendant type correctly', () => {
     if (!mappedFinesMacState || !parentGuardianDetailsState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
 
@@ -54,7 +55,7 @@ describe('finesMacPayloadMapAccountDefendant', () => {
 
   it('should map company defendant type correctly', () => {
     if (!mappedFinesMacState || !companyDetailsState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
 
@@ -71,7 +72,7 @@ describe('finesMacPayloadMapAccountDefendant', () => {
 
   it('should map individual defendant type correctly by default', () => {
     if (!mappedFinesMacState || !personalDetailsState) {
-      fail('Initial state is not properly initialised');
+      throw new Error('Initial state is not properly initialised');
       return;
     }
 

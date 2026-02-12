@@ -6,16 +6,20 @@ import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/co
 import { FinesDraftStoreType } from './fines-draft/stores/types/fines-draft.type';
 import { FinesDraftStore } from './fines-draft/stores/fines-draft.store';
 import { OpalFines } from './services/opal-fines-service/opal-fines.service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesComponent', () => {
   let component: FinesComponent;
   let fixture: ComponentFixture<FinesComponent>;
   let finesDraftStore: FinesDraftStoreType;
   let globalStore: GlobalStoreType;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['clearAllCaches']);
+    mockOpalFinesService = {
+      clearAllCaches: vi.fn().mockName('OpalFines.clearAllCaches'),
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesComponent],
@@ -37,7 +41,8 @@ describe('FinesComponent', () => {
   });
 
   it('should call on destroy and clear state', () => {
-    spyOn(finesDraftStore, 'resetStore');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'resetStore');
 
     component.ngOnDestroy();
     fixture.detectChanges();

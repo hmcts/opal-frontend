@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FinesAccPartyAddAmendConvertLp } from './fines-acc-party-add-amend-convert-lp.component';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertLp', () => {
   let component: FinesAccPartyAddAmendConvertLp;
@@ -12,7 +13,7 @@ describe('FinesAccPartyAddAmendConvertLp', () => {
   beforeAll(() => {
     originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
   });
 
   afterAll(() => {

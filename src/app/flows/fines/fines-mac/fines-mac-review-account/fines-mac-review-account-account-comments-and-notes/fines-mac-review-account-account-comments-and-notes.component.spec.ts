@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-mac-review-account-account-comments-and-notes.component';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from '../../fines-mac-account-comments-notes/mocks/fines-mac-account-comments-notes-state.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacReviewAccountAccountCommentsAndNotesComponent', () => {
   let component: FinesMacReviewAccountAccountCommentsAndNotesComponent;
@@ -25,7 +26,8 @@ describe('FinesMacReviewAccountAccountCommentsAndNotesComponent', () => {
   });
 
   it('should emit change account comments and notes event', () => {
-    spyOn(component.emitChangeAccountCommentsAndNotesDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChangeAccountCommentsAndNotesDetails, 'emit');
 
     component.changeAccountCommentsAndNotesDetails();
 

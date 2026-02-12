@@ -9,6 +9,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
   let component: FinesMacParentGuardianDetailsComponent;
@@ -45,7 +46,8 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = false;
     component.handleParentGuardianDetailsSubmit(formSubmit);
@@ -57,7 +59,8 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
 
     formSubmit.nestedFlow = true;
