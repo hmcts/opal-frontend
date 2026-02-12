@@ -10,7 +10,6 @@ import {
   INDIVIDUAL_SEARCH_RESULTS_MOCK,
   COMPANY_SEARCH_RESULTS_MOCK,
   LARGE_SEARCH_RESULTS_MOCK,
-  ORDERING_TEST_MOCK,
   SORTING_MINOR_CREDITORS_MOCK,
 } from './mocks/search_results_minor_creditors_mock';
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_matches_minor_creditors_mock';
@@ -215,7 +214,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
     cy.get(DOM_ELEMENTS.paginationElement).should('exist');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 results');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 total results');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
 
     // Verify pagination shows 4 pages total
@@ -223,7 +222,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
       cy.contains('1').should('exist');
       cy.contains('2').should('exist');
-      cy.contains('…').should('exist');
+      cy.get(DOM_ELEMENTS.paginationListItemElipsises).should('exist');
       cy.contains('4').should('exist');
     });
 

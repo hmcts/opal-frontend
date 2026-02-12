@@ -7,12 +7,29 @@ import { ActivatedRoute } from '@angular/router';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacLanguagePreferencesFormComponent', () => {
   let component: FinesMacLanguagePreferencesFormComponent;
   let fixture: ComponentFixture<FinesMacLanguagePreferencesFormComponent>;
   let formSubmit: IFinesMacLanguagePreferencesForm;
   let finesMacStore: FinesMacStoreType;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
+
+  beforeEach(() => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+  });
 
   beforeEach(async () => {
     formSubmit = structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK);
@@ -43,7 +60,8 @@ describe('FinesMacLanguagePreferencesFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = {} as SubmitEvent;
 
     component['rePopulateForm'](formSubmit.formData);

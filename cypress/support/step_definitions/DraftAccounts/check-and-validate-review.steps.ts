@@ -65,7 +65,7 @@ When('I record the following decision on the draft account:', (table: DataTable)
   const reason = pickValue(reasonRow);
 
   log('step', 'Recording draft decision', { decision, hasReason: Boolean(reason) });
-  draftsFlow().recordDecision(decision, reason);
+  return draftsFlow().recordDecision(decision, reason);
 });
 
 /**
@@ -192,6 +192,8 @@ Given('failed draft accounts are stubbed with one result', () => {
 Given('draft account decision updates fail with status {int}', (statusCode: number) => {
   log('intercept', 'Stubbing PATCH draft decision failure', { statusCode });
   intercepts().stubPatchDraftAccountError(statusCode);
+  Cypress.env('draftDecisionExpectFailure', true);
+  cy.wrap(true, { log: false }).as('draftDecisionExpectFailure');
 });
 
 /**

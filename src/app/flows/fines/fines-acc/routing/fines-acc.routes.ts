@@ -84,7 +84,7 @@ export const routing: Routes = [
           import('../fines-acc-payment-terms-amend/fines-acc-payment-terms-amend.component').then(
             (c) => c.FinesAccPaymentTermsAmendComponent,
           ),
-        canActivate: [routePermissionsGuard],
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['amend-payment-terms']],
@@ -93,6 +93,8 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
+          paymentTermsFormData: defendantAccountPaymentTermsLatestResolver,
+          defendantAccountHeadingData: defendantAccountHeadingResolver,
         },
       },
       {
@@ -138,7 +140,6 @@ export const routing: Routes = [
             (c) => c.FinesAccRequestPaymentCardSubmitComponent,
           ),
         canActivate: [routePermissionsGuard],
-        canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['amend-payment-terms']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-card'],

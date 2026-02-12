@@ -10,6 +10,7 @@ import { FINES_MAC_CONTACT_DETAILS_STATE } from './constants/fines-mac-contact-d
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacContactDetailsComponent', () => {
   let component: FinesMacContactDetailsComponent;
@@ -48,7 +49,8 @@ describe('FinesMacContactDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = false;
 
@@ -61,7 +63,8 @@ describe('FinesMacContactDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to next route', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
 
@@ -74,7 +77,8 @@ describe('FinesMacContactDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to next route - form empty', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     const form: IFinesMacContactDetailsForm = {
       formData: FINES_MAC_CONTACT_DETAILS_STATE,

@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesSaResultsMinorCreditorTableWrapperComponent } from './fines-sa-results-minor-creditor-table-wrapper.component';
 import { GENERATE_FINES_SA_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_MOCKS } from './mocks/fines-sa-result-minor-creditor-table-wrapper-table-data.mock';
 import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './constants/fines-sa-result-minor-creditor-table-wrapper-table-sort-default.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaResultsMinorCreditorTableWrapperComponent', () => {
   let component: FinesSaResultsMinorCreditorTableWrapperComponent;
@@ -42,7 +43,8 @@ describe('FinesSaResultsMinorCreditorTableWrapperComponent', () => {
   });
 
   it('should emit account number when goToAccount is called', () => {
-    spyOn(component.accountIdClicked, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.accountIdClicked, 'emit');
 
     component.goToAccount(123);
 

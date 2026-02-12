@@ -129,7 +129,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      for (const [key, value] of Object.entries(MAIN_PERSONAL_DETAILS)) {
+      for (const [, value] of Object.entries(MAIN_PERSONAL_DETAILS)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
     },
@@ -163,7 +163,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      for (const [key, value] of Object.entries(LENGTH_VALIDATION)) {
+      for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
     },
@@ -196,25 +196,25 @@ describe('FinesMacPersonalDetailsComponent', () => {
       cy.get(getAliasFirstName(1)).should('exist');
       cy.get(getAliasLastName(1)).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 2');
-      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist').and('not.have.attr', 'aria-label');
 
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
       cy.get(getAliasFirstName(2)).should('exist');
       cy.get(getAliasLastName(2)).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 3');
-      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist').and('not.have.attr', 'aria-label');
 
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
       cy.get(getAliasFirstName(3)).should('exist');
       cy.get(getAliasLastName(3)).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 4');
-      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist').and('not.have.attr', 'aria-label');
 
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
       cy.get(getAliasFirstName(4)).should('exist');
       cy.get(getAliasLastName(4)).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 5');
-      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist').and('not.have.attr', 'aria-label');
 
       cy.get(DOM_ELEMENTS.aliasRemoveButton).click();
       cy.get(getAliasFirstName(4)).should('not.exist');

@@ -7,17 +7,21 @@ import { firstValueFrom, Observable, of } from 'rxjs';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FinesSaStoreType } from '../../../../stores/types/fines-sa.type';
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('finesSaSearchFetchMajorCreditorsResolver', () => {
   const executeResolver: ResolveFn<IOpalFinesMajorCreditorRefData> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => finesSaSearchFetchMajorCreditorsResolver(...resolverParameters));
 
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
   let mockFinesSaStore: FinesSaStoreType;
 
   beforeEach(() => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getMajorCreditors']);
-    mockOpalFinesService.getMajorCreditors.and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
+    mockOpalFinesService = {
+      getMajorCreditors: vi.fn().mockName('OpalFines.getMajorCreditors'),
+    };
+    mockOpalFinesService.getMajorCreditors.mockReturnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
 
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],

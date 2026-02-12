@@ -180,7 +180,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.paginationElement).should('exist');
 
     // Verify pagination text shows correct total results
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 results');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 total results');
 
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
 
@@ -188,7 +188,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
       cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
       cy.contains('1').should('exist');
       cy.contains('2').should('exist');
-      cy.contains('…').should('exist');
+      cy.get(DOM_ELEMENTS.paginationListItemElipsises).should('exist');
       cy.contains('4').should('exist');
     });
 

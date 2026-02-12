@@ -1,7 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesMacCreateAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-create-account/fines-mac-create-account.component';
 import { of } from 'rxjs';
-import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { ActivatedRoute } from '@angular/router';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { DOM_ELEMENTS } from './constants/fines_mac_create_account_elements';
@@ -11,6 +10,7 @@ import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.st
 import { FINES_CREATE_ACCOUNT_MOCK } from './mocks/fines_mac_create_account_mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { ManualCreateAccountLocators as DOM } from '../../../../cypress/shared/selectors/manual-account-creation/create-account.locators';
 
 describe('FinesMacCreateAccountComponent', () => {
   const setupComponent = (formSubmit?: any) => {
@@ -214,4 +214,49 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
+  it('Should be accessible with forward keyboard navigation', { tags: ['@PO-2715'] }, () => {
+    setupComponent(null);
+
+    // Ensure the page is loaded
+    cy.get(DOM.pageHeader).should('contain', 'Create account');
+    cy.get(DOM.businessUnit.input).should('be.visible');
+
+    // Start from the top of the page
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(DOM.businessUnit.container).should('have.focus');
+
+    // Move to business unit input
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(DOM.businessUnit.input).should('have.focus');
+    // Move to account type radio buttons
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(DOM.accountType.fine).should('have.focus');
+
+    // Navigate through account type radio buttons
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(DOM.accountType.fixedPenalty).should('have.focus');
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(DOM.accountType.conditionalCaution).should('have.focus');
+
+    // Loop back to first account type
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(DOM.accountType.fine).should('have.focus');
+    // Select fine account type to reveal defendant type options
+    // Move through defendant type radio buttons
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(DOM.defendantType.adultOrYouth).should('have.focus');
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(DOM.defendantType.parentOrGuardianToPay).should('have.focus');
+
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(DOM.defendantType.company).should('have.focus');
+
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(DOM.defendantType.adultOrYouth).should('have.focus');
+
+    // Move to continue button
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(DOM.continueButton).should('have.focus');
+    // Cypress cannot yet handle SHIFT+TAB keypresses for reverse tabbing
+  });
 });

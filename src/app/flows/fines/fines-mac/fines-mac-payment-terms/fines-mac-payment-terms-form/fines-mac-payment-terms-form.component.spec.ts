@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form.component';
 import { ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
@@ -17,18 +18,44 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
   let fixture: ComponentFixture<FinesMacPaymentTermsFormComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
 
   let formSubmit: IFinesMacPaymentTermsForm;
   let globalStore: GlobalStoreType;
   let finesMacStore: FinesMacStoreType;
+  let originalConfigureDatePicker: () => void;
+  let originalInitOuterRadios: () => void;
+
+  beforeAll(() => {
+    originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(MojDatePickerComponent.prototype, 'configureDatePicker').mockImplementation(() => {});
+    originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    MojDatePickerComponent.prototype.configureDatePicker = originalConfigureDatePicker;
+    GovukRadioComponent.prototype['initOuterRadios'] = originalInitOuterRadios;
+  });
+
+  beforeEach(() => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+  });
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj(DateService, [
+    mockDateService = createSpyObj(DateService, [
       'getPreviousDate',
       'calculateAge',
       'isValidDate',
@@ -79,7 +106,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
 
@@ -91,7 +119,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
 
@@ -102,26 +131,26 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should call initialPaymentTermsSetup method', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupPermissions');
+    vi.spyOn<any, any>(component, 'setupPermissions');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupPaymentTermsForm');
+    vi.spyOn<any, any>(component, 'setupPaymentTermsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'paymentTermsListener');
+    vi.spyOn<any, any>(component, 'paymentTermsListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'determineAccess');
+    vi.spyOn<any, any>(component, 'determineAccess');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addCollectionOrderFormControls');
+    vi.spyOn<any, any>(component, 'addCollectionOrderFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addDefaultDatesFormControls');
+    vi.spyOn<any, any>(component, 'addDefaultDatesFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addEnforcementFields');
+    vi.spyOn<any, any>(component, 'addEnforcementFields');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
-    mockDateService.getPreviousDate.and.returnValue('30/08/2024');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
+    mockDateService.getPreviousDate.mockReturnValue('30/08/2024');
     component.accessDefaultDates = true;
-    mockDateService.toFormat.and.returnValue('31/08/2024');
+    mockDateService.toFormat.mockReturnValue('31/08/2024');
     component.accessCollectionOrder = true;
     component.accessDefaultDates = true;
     component['initialPaymentTermsSetup']();
@@ -158,29 +187,29 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       },
     ]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupPermissions');
+    vi.spyOn<any, any>(component, 'setupPermissions');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupPaymentTermsForm');
+    vi.spyOn<any, any>(component, 'setupPaymentTermsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'paymentTermsListener');
+    vi.spyOn<any, any>(component, 'paymentTermsListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'determineAccess');
+    vi.spyOn<any, any>(component, 'determineAccess');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addCollectionOrderFormControls');
+    vi.spyOn<any, any>(component, 'addCollectionOrderFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addDefaultDatesFormControls');
+    vi.spyOn<any, any>(component, 'addDefaultDatesFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addEnforcementFields');
+    vi.spyOn<any, any>(component, 'addEnforcementFields');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
+    vi.spyOn<any, any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
+    vi.spyOn<any, any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'handleErrorMessages');
-    mockDateService.getPreviousDate.and.returnValue('30/08/2024');
+    vi.spyOn<any, any>(component, 'handleErrorMessages');
+    mockDateService.getPreviousDate.mockReturnValue('30/08/2024');
     component.accessDefaultDates = true;
-    mockDateService.toFormat.and.returnValue('31/08/2024');
-    mockDateService.getDateFromFormat.and.returnValue(new Date('01/09/2024'));
+    mockDateService.toFormat.mockReturnValue('31/08/2024');
+    mockDateService.getDateFromFormat.mockReturnValue(new Date('01/09/2024'));
     component.accessCollectionOrder = true;
     component.accessDefaultDates = true;
     component['initialPaymentTermsSetup']();
@@ -208,10 +237,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(true);
 
-    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
-    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(true);
-    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
-    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(true);
+    expect(component.form.get('fm_payment_terms_suspended_committal_date')?.enabled).toBe(true);
+    expect(component.form.get('fm_payment_terms_default_days_in_jail')?.enabled).toBe(true);
   });
 
   it('should remove controls when has days in default is false', () => {
@@ -222,17 +249,15 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(false);
 
-    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
-    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(false);
-    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
-    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(false);
+    expect(component.form.get('fm_payment_terms_suspended_committal_date')?.disabled).toBe(true);
+    expect(component.form.get('fm_payment_terms_default_days_in_jail')?.disabled).toBe(true);
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
     const dateValue = DateTime.now().plus({ years: 4 }).toFormat('dd/MM/yyyy');
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.isDateInTheFuture.and.returnValue(true);
-    mockDateService.isDateInThePast.and.returnValue(false);
+    mockDateService.isValidDate.mockReturnValue(true);
+    mockDateService.isDateInTheFuture.mockReturnValue(true);
+    mockDateService.isDateInThePast.mockReturnValue(false);
 
     component['dateChecker'](dateValue);
 
@@ -242,9 +267,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the past', () => {
     const dateValue = DateTime.now().minus({ years: 4 }).toFormat('dd/MM/yyyy');
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.isDateInTheFuture.and.returnValue(false);
-    mockDateService.isDateInThePast.and.returnValue(true);
+    mockDateService.isValidDate.mockReturnValue(true);
+    mockDateService.isDateInTheFuture.mockReturnValue(false);
+    mockDateService.isDateInThePast.mockReturnValue(true);
 
     component['dateChecker'](dateValue);
 
@@ -254,7 +279,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should set dateInFuture and dateInPast to false when dateValue is not a valid date', () => {
     const dateValue = 'invalid-date';
-    mockDateService.isValidDate.and.returnValue(false);
+    mockDateService.isValidDate.mockReturnValue(false);
 
     component['dateChecker'](dateValue);
 
@@ -267,7 +292,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const selectedTerm = 'payInFull';
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const removeControlsSpy = spyOn<any>(component, 'removeControls');
+    const removeControlsSpy = vi.spyOn<any, any>(component, 'removeControls');
 
     paymentTermsControl.setValue(selectedTerm);
 
@@ -279,7 +304,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const selectedTerm = 'instalmentsOnly';
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const removeControlsSpy = spyOn<any>(component, 'removeControls');
+    const removeControlsSpy = vi.spyOn<any, any>(component, 'removeControls');
 
     paymentTermsControl.setValue(selectedTerm);
 
@@ -296,7 +321,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
         fm_personal_details_dob: dob,
       },
     });
-    mockDateService.calculateAge.and.returnValue(30);
+    mockDateService.calculateAge.mockReturnValue(30);
 
     component['determineAccess']();
 
@@ -314,7 +339,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
         fm_personal_details_dob: dob,
       },
     });
-    mockDateService.calculateAge.and.returnValue(10);
+    mockDateService.calculateAge.mockReturnValue(10);
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     component['determineAccess']();
@@ -345,9 +370,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should create enforcement fields for company defendant type', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addControlsSpy = spyOn<any>(component, 'addControls');
+    const addControlsSpy = vi.spyOn<any, any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const holdEnforcementListener = spyOn<any>(component, 'noEnfListener');
+    const holdEnforcementListener = vi.spyOn<any, any>(component, 'noEnfListener');
 
     component['addEnforcementFields']();
 
@@ -360,9 +385,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should create enforcement fields for non-company defendant type', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addControlsSpy = spyOn<any>(component, 'addControls');
+    const addControlsSpy = vi.spyOn<any, any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addEnforcementActionSpy = spyOn<any>(component, 'addEnforcementActionListener');
+    const addEnforcementActionSpy = vi.spyOn<any, any>(component, 'addEnforcementActionListener');
 
     component['addEnforcementFields']();
 
@@ -380,7 +405,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['noEnfListener']();
 
-    expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(true);
+    expect(component.form.get('fm_payment_terms_reason_account_is_on_noenf')?.enabled).toBe(true);
   });
 
   it('should remove control when hold enforcement on account is false', () => {
@@ -391,7 +416,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['noEnfListener']();
 
-    expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(false);
+    expect(component.form.get('fm_payment_terms_reason_account_is_on_noenf')?.disabled).toBe(true);
   });
 
   it('should reset and create collection order date when has collection order value is "yes"', () => {
@@ -401,9 +426,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addControls');
+    vi.spyOn<any, any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeControls');
+    vi.spyOn<any, any>(component, 'removeControls');
 
     component['hasCollectionOrderListener']();
     hasCollectionOrderControl.setValue(true);
@@ -413,10 +438,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should reset and create collection order date when has collection order value is "yes" with offence date', () => {
-    mockDateService.toDateStringFormat.and.returnValue(
+    mockDateService.toDateStringFormat.mockReturnValue(
       FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_sentence!,
     );
-    mockDateService.getDateFromFormat.and.returnValue(
+    mockDateService.getDateFromFormat.mockReturnValue(
       new Date(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_sentence!),
     );
     finesMacStore.setOffenceDetails([structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)]);
@@ -441,9 +466,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addControls');
+    vi.spyOn<any, any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeControls');
+    vi.spyOn<any, any>(component, 'removeControls');
 
     component['hasCollectionOrderListener']();
     hasCollectionOrderControl.setValue(false);
@@ -488,7 +513,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+    vi.spyOn<any, any>(component, 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
 
     component['setupPermissions']();
 
@@ -505,9 +530,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const enforcementActionsControl = component.form.controls['fm_payment_terms_enforcement_action'];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addControlsSpy = spyOn<any>(component, 'addControls');
+    const addControlsSpy = vi.spyOn<any, any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const removeControlsSpy = spyOn<any>(component, 'removeControls');
+    const removeControlsSpy = vi.spyOn<any, any>(component, 'removeControls');
 
     component['enforcementActionsListener']();
     enforcementActionsControl.setValue('PRIS');
@@ -525,9 +550,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const enforcementActionsControl = component.form.controls['fm_payment_terms_enforcement_action'];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addControlsSpy = spyOn<any>(component, 'addControls');
+    const addControlsSpy = vi.spyOn<any, any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const removeControlsSpy = spyOn<any>(component, 'removeControls');
+    const removeControlsSpy = vi.spyOn<any, any>(component, 'removeControls');
 
     component['enforcementActionsListener']();
     enforcementActionsControl.setValue('NOENF');
@@ -550,6 +575,31 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     });
   });
 
+  it('should toggle payment term conditional panels and enable controls', async () => {
+    await fixture.whenStable();
+    const payInFullConditionalId = `${component.paymentTermsConditionalIdPrefix}payInFull`;
+    const instalmentsConditionalId = `${component.paymentTermsConditionalIdPrefix}instalmentsOnly`;
+
+    const payInFullConditional = fixture.nativeElement.querySelector(`#${payInFullConditionalId}`);
+    const instalmentsConditional = fixture.nativeElement.querySelector(`#${instalmentsConditionalId}`);
+
+    expect(payInFullConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+    expect(instalmentsConditional.classList.contains('govuk-radios__conditional--hidden')).toBe(true);
+
+    const payInFullInput = fixture.nativeElement.querySelector(`input[aria-controls="${payInFullConditionalId}"]`);
+    payInFullInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_payment_terms_pay_by_date')?.enabled).toBe(true);
+
+    const instalmentsInput = fixture.nativeElement.querySelector(`input[aria-controls="${instalmentsConditionalId}"]`);
+    instalmentsInput.click();
+    fixture.detectChanges();
+
+    expect(component.form.get('fm_payment_terms_pay_by_date')?.disabled).toBe(true);
+    expect(component.form.get('fm_payment_terms_instalment_amount')?.enabled).toBe(true);
+  });
+
   it('should remove controls', () => {
     const controlsToRemove: IAbstractFormArrayControlValidation[] = [
       { controlName: 'control1', validators: [] },
@@ -557,14 +607,15 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       { controlName: 'control3', validators: [] },
     ];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeControl');
+    controlsToRemove.forEach((control) => {
+      component.form.addControl(control.controlName, new FormControl('value'));
+    });
 
     component['removeControls'](controlsToRemove);
 
-    expect(component['removeControl']).toHaveBeenCalledTimes(3);
-    expect(component['removeControl']).toHaveBeenCalledWith('control1');
-    expect(component['removeControl']).toHaveBeenCalledWith('control2');
-    expect(component['removeControl']).toHaveBeenCalledWith('control3');
+    controlsToRemove.forEach((control) => {
+      const formControl = component.form.get(control.controlName);
+      expect(formControl?.disabled).toBe(true);
+    });
   });
 });

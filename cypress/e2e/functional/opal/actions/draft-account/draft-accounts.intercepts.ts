@@ -169,6 +169,10 @@ export class DraftAccountsInterceptActions {
       statusCode,
       body: { error: 'Bad Request', message: 'Invalid request data' },
     }).as('patchDraftAccountError');
+    cy.intercept('PUT', '/opal-fines-service/draft-accounts/*', {
+      statusCode,
+      body: { error: 'Bad Request', message: 'Invalid request data' },
+    }).as('patchDraftAccountError');
   }
 
   /**

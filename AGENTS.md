@@ -1,15 +1,21 @@
 # Repository Guidelines
 
-This file is the entrypoint. It stays brief and points to skills for detailed guidance.
+OPAL Frontend is an Angular SSR web app and Node server that proxies internal APIs for the OPAL platform.
 
-## Skills Map
-- `skills/opal-frontend/opal-frontend-repo-guidelines` for repo structure, build/test commands, style rules, and local tooling.
-- `skills/opal-frontend/opal-frontend-review-guidelines` for code review severity rules and comment format.
-- `skills/opal-frontend/opal-frontend-cypress-component` for Cypress component testing guidance.
-- `skills/opal-frontend/opal-frontend-cypress-e2e` for Cypress E2E and Cucumber guidance.
-- `skills/opal-frontend/opal-flow-lld` for creating low-level design documents for Opal flows.
+Package manager: Yarn 4 (use `corepack` + `yarn`).
 
-## Always-Apply Guardrails
+Always:
 - Do not add secrets, tokens, or PII to code, logs, comments, or tests.
-- Prefer standalone components/routes/providers; avoid creating Angular modules by default.
-- Avoid barrel exports and barrel imports; use direct imports.
+
+For detailed guidance, use skills:
+- `opal-frontend-execplan` (ExecPlan workflow and requirements)
+- `opal-frontend-review-guidelines` (review severity rules and comment format)
+- `opal-flow-lld` (flow LLD template)
+
+For repo conventions and contribution rules, see:
+- `docs/REPO_GUIDELINES.md`
+- `docs/CONTRIBUTING.md`
+
+For testing guidance, see:
+- `docs/CYPRESS_COMPONENT_TESTING.md`
+- `docs/CYPRESS_E2E_TESTING.md`
