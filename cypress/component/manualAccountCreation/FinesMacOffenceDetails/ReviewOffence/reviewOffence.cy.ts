@@ -34,6 +34,9 @@ describe('ReviewOffenceComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
+            snapshot: {
+              data: {},
+            },
             parent: of('manual-account-creation'),
           },
         },

@@ -7,6 +7,7 @@ import { IFinesMacPayloadAccountSnapshot } from '../../fines-mac/services/fines-
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FINES_DRAFT_STATE } from '../constants/fines-draft-state.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../fines-mac/constants/fines-mac-defendant-types-keys';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesDraftStore', () => {
   let store: FinesDraftStoreType;

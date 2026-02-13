@@ -15,58 +15,61 @@ import { FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK } from './mocks/fines-acc-pa
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-map-transform-items-config.constant';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM } from './constants/fines-acc-payment-terms-amend-form.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesAccPaymentTermsAmendComponent', () => {
   let component: FinesAccPaymentTermsAmendComponent;
   let fixture: ComponentFixture<FinesAccPaymentTermsAmendComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
+  let mockRouter: ReturnType<typeof createSpyObj>;
+  let mockActivatedRoute: ActivatedRoute;
+  let mockOpalFinesService: ReturnType<typeof createSpyObj>;
+  let mockPayloadService: ReturnType<typeof createSpyObj>;
   let mockFinesAccountStore: {
-    account_id: jasmine.Spy;
-    business_unit_id: jasmine.Spy;
-    base_version: jasmine.Spy;
-    account_number: jasmine.Spy;
-    party_name: jasmine.Spy;
-    defendantType: jasmine.Spy;
-    accountDetails: jasmine.Spy;
-    paymentTerms: jasmine.Spy;
+    account_id: ReturnType<typeof vi.fn>;
+    business_unit_id: ReturnType<typeof vi.fn>;
+    base_version: ReturnType<typeof vi.fn>;
+    account_number: ReturnType<typeof vi.fn>;
+    party_name: ReturnType<typeof vi.fn>;
+    defendantType: ReturnType<typeof vi.fn>;
+    accountDetails: ReturnType<typeof vi.fn>;
+    paymentTerms: ReturnType<typeof vi.fn>;
   };
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  let mockUtilsService: ReturnType<typeof createSpyObj>;
+  let mockDateService: ReturnType<typeof createSpyObj>;
 
   beforeEach(async () => {
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
+    mockRouter = createSpyObj('Router', ['navigate']);
+    mockActivatedRoute = {
       snapshot: { data: {} },
       params: of({}),
       queryParams: of({}),
       data: of({}),
-    });
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', [
+    } as unknown as ActivatedRoute;
+    mockOpalFinesService = createSpyObj('OpalFines', [
       'postDefendantAccountPaymentTerms',
       'clearCache',
       'getBusinessUnitById',
       'getConfigurationItemValue',
     ]);
-    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
+    mockPayloadService = createSpyObj('FinesAccPayloadService', [
       'buildPaymentTermsAmendPayload',
       'transformPaymentTermsPayload',
       'transformPayload',
     ]);
     mockFinesAccountStore = {
-      account_id: jasmine.createSpy('account_id').and.returnValue(123456),
-      business_unit_id: jasmine.createSpy('business_unit_id').and.returnValue('TEST_UNIT'),
-      base_version: jasmine.createSpy('base_version').and.returnValue('version123'),
-      account_number: jasmine.createSpy('account_number').and.returnValue('TEST123456'),
-      party_name: jasmine.createSpy('party_name').and.returnValue('John Doe'),
-      defendantType: jasmine.createSpy('defendantType').and.returnValue('individual'),
-      accountDetails: jasmine.createSpy('accountDetails').and.returnValue({}),
-      paymentTerms: jasmine.createSpy('paymentTerms').and.returnValue({}),
+      account_id: vi.fn().mockReturnValue(123456),
+      business_unit_id: vi.fn().mockReturnValue('TEST_UNIT'),
+      base_version: vi.fn().mockReturnValue('version123'),
+      account_number: vi.fn().mockReturnValue('TEST123456'),
+      party_name: vi.fn().mockReturnValue('John Doe'),
+      defendantType: vi.fn().mockReturnValue('individual'),
+      accountDetails: vi.fn().mockReturnValue({}),
+      paymentTerms: vi.fn().mockReturnValue({}),
     };
-    mockUtilsService = jasmine.createSpyObj('UtilsService', ['scrollToTop']);
-    mockDateService = jasmine.createSpyObj('DateService', [
+    mockUtilsService = createSpyObj('UtilsService', ['scrollToTop']);
+    mockDateService = createSpyObj('DateService', [
       'isValidDate',
       'isDateInThePast',
       'isDateInTheFuture',
@@ -76,22 +79,22 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     ]);
 
     // Setup default return values
-    mockPayloadService.buildPaymentTermsAmendPayload.and.returnValue(FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
-    mockPayloadService.transformPaymentTermsPayload.and.returnValue(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
-    mockPayloadService.transformPayload.and.returnValue({});
-    mockOpalFinesService.postDefendantAccountPaymentTerms.and.returnValue(
+    mockPayloadService['buildPaymentTermsAmendPayload'].mockReturnValue(FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
+    mockPayloadService['transformPaymentTermsPayload'].mockReturnValue(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
+    mockPayloadService['transformPayload'].mockReturnValue({});
+    mockOpalFinesService['postDefendantAccountPaymentTerms'].mockReturnValue(
       of(FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK),
     );
-    mockOpalFinesService.getBusinessUnitById.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK));
-    mockOpalFinesService.getConfigurationItemValue.and.returnValue('Y');
+    mockOpalFinesService['getBusinessUnitById'].mockReturnValue(of(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK));
+    mockOpalFinesService['getConfigurationItemValue'].mockReturnValue('Y');
 
     // Setup DateService mock return values
-    mockDateService.getDateNow.and.returnValue(DateTime.fromISO('2024-01-02'));
-    mockDateService.toFormat.and.returnValue('02/01/2024');
-    mockDateService.getPreviousDate.and.returnValue('01/01/2024');
-    mockDateService.isValidDate.and.returnValue(true);
-    mockDateService.isDateInThePast.and.returnValue(false);
-    mockDateService.isDateInTheFuture.and.returnValue(false);
+    mockDateService['getDateNow'].mockReturnValue(DateTime.fromISO('2024-01-02'));
+    mockDateService['toFormat'].mockReturnValue('02/01/2024');
+    mockDateService['getPreviousDate'].mockReturnValue('01/01/2024');
+    mockDateService['isValidDate'].mockReturnValue(true);
+    mockDateService['isDateInThePast'].mockReturnValue(false);
+    mockDateService['isDateInTheFuture'].mockReturnValue(false);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccPaymentTermsAmendComponent, HttpClientTestingModule],
@@ -124,13 +127,13 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
 
       const result = component['transformResolvedData']();
 
-      expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+      expect(mockPayloadService['transformPayload']).toHaveBeenCalledWith(
         mockResolvedData.paymentTermsData,
         FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
       );
-      expect(mockPayloadService.transformPaymentTermsPayload).toHaveBeenCalledWith(
-        jasmine.any(Object),
-        jasmine.any(Object),
+      expect(mockPayloadService['transformPaymentTermsPayload']).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.any(Object),
       );
       expect(result).toEqual(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
     });
@@ -140,8 +143,8 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
 
       const result = component['transformResolvedData']();
 
-      expect(mockPayloadService.transformPayload).not.toHaveBeenCalled();
-      expect(mockPayloadService.transformPaymentTermsPayload).not.toHaveBeenCalled();
+      expect(mockPayloadService['transformPayload']).not.toHaveBeenCalled();
+      expect(mockPayloadService['transformPaymentTermsPayload']).not.toHaveBeenCalled();
       expect(result).toEqual(FINES_ACC_PAYMENT_TERMS_AMEND_FORM);
     });
   });
@@ -150,10 +153,10 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     it('should successfully submit payment terms amendment when validation passes', () => {
       component.handlePaymentTermsSubmit(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
 
-      expect(mockPayloadService.buildPaymentTermsAmendPayload).toHaveBeenCalledWith(
+      expect(mockPayloadService['buildPaymentTermsAmendPayload']).toHaveBeenCalledWith(
         FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK.formData,
       );
-      expect(mockOpalFinesService.postDefendantAccountPaymentTerms).toHaveBeenCalledWith(
+      expect(mockOpalFinesService['postDefendantAccountPaymentTerms']).toHaveBeenCalledWith(
         123456,
         FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK,
         'TEST_UNIT',
@@ -162,18 +165,18 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     });
 
     it('should navigate when validation fails (missing account data)', () => {
-      mockFinesAccountStore.account_id.and.returnValue(null);
+      mockFinesAccountStore.account_id.mockReturnValue(null);
 
       component.handlePaymentTermsSubmit(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
 
       // Should not call the API when validation fails
-      expect(mockOpalFinesService.postDefendantAccountPaymentTerms).not.toHaveBeenCalled();
+      expect(mockOpalFinesService['postDefendantAccountPaymentTerms']).not.toHaveBeenCalled();
     });
 
     it('should build payload with correct form data', () => {
       component.handlePaymentTermsSubmit(FINES_ACC_PAYMENT_TERMS_AMEND_FORM_MOCK);
 
-      expect(mockPayloadService.buildPaymentTermsAmendPayload).toHaveBeenCalledWith({
+      expect(mockPayloadService['buildPaymentTermsAmendPayload']).toHaveBeenCalledWith({
         facc_payment_terms_payment_terms: 'payInFull',
         facc_payment_terms_pay_by_date: '2025-01-15',
         facc_payment_terms_lump_sum_amount: null,
@@ -202,7 +205,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     });
 
     it('should return false when defendantAccountId is missing', () => {
-      mockFinesAccountStore.account_id.and.returnValue(null);
+      mockFinesAccountStore.account_id.mockReturnValue(null);
 
       const result = component['validateRequiredData']();
 
@@ -210,7 +213,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     });
 
     it('should return false when businessUnitId is missing', () => {
-      mockFinesAccountStore.business_unit_id.and.returnValue(null);
+      mockFinesAccountStore.business_unit_id.mockReturnValue(null);
 
       const result = component['validateRequiredData']();
 
@@ -218,7 +221,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     });
 
     it('should return false when ifMatch is missing', () => {
-      mockFinesAccountStore.base_version.and.returnValue(null);
+      mockFinesAccountStore.base_version.mockReturnValue(null);
 
       const result = component['validateRequiredData']();
 
@@ -226,8 +229,8 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     });
 
     it('should return false when multiple values are missing', () => {
-      mockFinesAccountStore.account_id.and.returnValue(null);
-      mockFinesAccountStore.business_unit_id.and.returnValue(null);
+      mockFinesAccountStore.account_id.mockReturnValue(null);
+      mockFinesAccountStore.business_unit_id.mockReturnValue(null);
 
       const result = component['validateRequiredData']();
 
@@ -239,23 +242,25 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     it('should call API with correct parameters and handle success', () => {
       component['submitPaymentTermsAmendment'](FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
 
-      expect(mockOpalFinesService.postDefendantAccountPaymentTerms).toHaveBeenCalledWith(
+      expect(mockOpalFinesService['postDefendantAccountPaymentTerms']).toHaveBeenCalledWith(
         123456,
         FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK,
         'TEST_UNIT',
         'version123',
       );
-      expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPaymentTermsLatestCache$');
+      expect(mockOpalFinesService['clearCache']).toHaveBeenCalledWith('defendantAccountPaymentTermsLatestCache$');
     });
 
     it('should handle API errors gracefully', () => {
-      mockOpalFinesService.postDefendantAccountPaymentTerms.and.returnValue(throwError(() => new Error('API Error')));
+      mockOpalFinesService['postDefendantAccountPaymentTerms'].mockReturnValue(
+        throwError(() => new Error('API Error')),
+      );
 
       component['submitPaymentTermsAmendment'](FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK);
 
-      expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+      expect(mockUtilsService['scrollToTop']).toHaveBeenCalled();
       expect(component.stateUnsavedChanges).toBe(true);
-      expect(mockOpalFinesService.clearCache).not.toHaveBeenCalled();
+      expect(mockOpalFinesService['clearCache']).not.toHaveBeenCalled();
     });
 
     it('should retrieve account data for API call', () => {
@@ -269,7 +274,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
 
   describe('navigateToDetails', () => {
     it('should call routerNavigate with correct parameters', () => {
-      spyOn(component, 'routerNavigate' as never);
+      vi.spyOn(component, 'routerNavigate' as never);
 
       component['navigateToDetails']();
 

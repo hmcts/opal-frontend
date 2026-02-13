@@ -25,6 +25,9 @@ import {
 
 console.log('*** Cypress e2e support file loaded ***');
 
+export const isLegacy: boolean = Cypress.env('LEGACY_ENABLED');
+console.log(`Legacy mode is ${isLegacy ? 'ENABLED' : 'DISABLED'}`);
+
 // When running in Cypress open mode, reset evidence at the start of a spec run so only the latest
 // run's JSON/screenshots are kept if the runner "refresh" button is used.
 before(() => {

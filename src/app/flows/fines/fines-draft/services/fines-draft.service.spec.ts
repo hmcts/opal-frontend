@@ -2,13 +2,17 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-servi
 import { FinesDraftService } from './fines-draft.service';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesDraftService', () => {
   let service: FinesDraftService;
-  let mockRouter: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRouter: any;
 
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    mockRouter = {
+      navigate: vi.fn().mockName('Router.navigate'),
+    };
 
     TestBed.configureTestingModule({
       providers: [{ provide: Router, useValue: mockRouter }],
@@ -22,7 +26,7 @@ describe('FinesDraftService', () => {
 
   it('should handle defendant click', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'navigateToReviewAccount');
+    vi.spyOn<any, any>(service, 'navigateToReviewAccount');
 
     service.onDefendantClick(1, 'test');
 

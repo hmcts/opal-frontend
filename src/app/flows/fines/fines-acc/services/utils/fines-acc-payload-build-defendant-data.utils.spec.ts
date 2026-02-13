@@ -7,6 +7,7 @@ import { IFinesAccPartyAddAmendConvertState } from '../../fines-acc-party-add-am
 import { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
 import { IFinesAccPartyAddAmendConvertIndividualAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-individual-alias-state.interface';
 import { IFinesAccPartyAddAmendConvertOrganisationAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-organisation-alias-state.interface';
+import { describe, expect, it } from 'vitest';
 
 describe('fines-acc-payload-build-defendant-data.utils', () => {
   describe('buildIndividualAliases', () => {

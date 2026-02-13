@@ -8,6 +8,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacLanguagePreferencesFormComponent', () => {
   let component: FinesMacLanguagePreferencesFormComponent;
@@ -19,7 +20,7 @@ describe('FinesMacLanguagePreferencesFormComponent', () => {
   beforeAll(() => {
     originalInitOuterRadios = GovukRadioComponent.prototype['initOuterRadios'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(GovukRadioComponent.prototype, 'initOuterRadios').and.stub();
+    vi.spyOn<any, any>(GovukRadioComponent.prototype, 'initOuterRadios').mockImplementation(() => {});
   });
 
   afterAll(() => {
@@ -59,7 +60,8 @@ describe('FinesMacLanguagePreferencesFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    spyOn(component['formSubmit'], 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = {} as SubmitEvent;
 
     component['rePopulateForm'](formSubmit.formData);

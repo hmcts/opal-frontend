@@ -16,36 +16,44 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let component: FinesDraftCheckAndValidateTabsComponent;
   let fixture: ComponentFixture<FinesDraftCheckAndValidateTabsComponent>;
   let globalStore: GlobalStoreType;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let finesDraftService: jasmine.SpyObj<FinesDraftService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockOpalFinesService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let finesDraftService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockFinesMacPayloadService: any;
   let finesDraftStore: FinesDraftStoreType;
 
   beforeEach(async () => {
-    mockFinesMacPayloadService = jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', [
-      'mapAccountPayload',
-    ]);
+    mockFinesMacPayloadService = {
+      mapAccountPayload: vi.fn().mockName('FinesMacPayloadService.mapAccountPayload'),
+    };
 
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'clearCache']);
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+    mockOpalFinesService = {
+      getDraftAccounts: vi.fn().mockName('OpalFines.getDraftAccounts'),
+      clearCache: vi.fn().mockName('OpalFines.clearCache'),
+    };
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
-    finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
-      'onDefendantClick',
-      'populateTableData',
-    ]);
+    finesDraftService = {
+      onDefendantClick: vi.fn().mockName('FinesDraftService.onDefendantClick'),
+      populateTableData: vi.fn().mockName('FinesDraftService.populateTableData'),
+    };
 
-    mockDateService = jasmine.createSpyObj<DateService>('DateService', [
-      'getDaysAgo',
-      'getFromFormatToFormat',
-      'getDateRange',
-    ]);
-    mockDateService.getDateRange.and.returnValue({
+    mockDateService = {
+      getDaysAgo: vi.fn().mockName('DateService.getDaysAgo'),
+      getFromFormatToFormat: vi.fn().mockName('DateService.getFromFormatToFormat'),
+      getDateRange: vi.fn().mockName('DateService.getDateRange'),
+    };
+    mockDateService.getDateRange.mockReturnValue({
       from: '2023-01-01',
       to: '2023-01-07',
     });
@@ -82,9 +90,9 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch and populate tabData$ based on the current fragment', (done) => {
-    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+  it('should fetch and populate tabData$ based on the current fragment', async () => {
+    finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
     fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
     component = fixture.componentInstance;
@@ -94,19 +102,18 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
       expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
       expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
       expect(data).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-      done();
     });
   });
 
   it('should pass additional params for historicWindowInDays if set on this tab', async () => {
-    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     component.activatedRoute.fragment = of('deleted');
     component.activatedRoute.snapshot.data = {
       draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
       deletedCount: 2,
     };
 
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
     fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
     component = fixture.componentInstance;
@@ -140,8 +147,8 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   });
 
   it('should show "0" when getDraftAccounts returns count 0', async () => {
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of({ count: 0, summaries: [] }));
-    finesDraftService.populateTableData.and.returnValue([]);
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of({ count: 0, summaries: [] }));
+    finesDraftService.populateTableData.mockReturnValue([]);
 
     component.ngOnInit();
 
@@ -153,7 +160,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   });
 
   it('should display "99+" when getDraftAccounts returns count >= 100', async () => {
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of({ count: 100, summaries: [] }));
+    mockOpalFinesService.getDraftAccounts.mockReturnValue(of({ count: 100, summaries: [] }));
 
     component.ngOnInit();
 
@@ -162,7 +169,8 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   });
 
   it('should route to account details page onAccountClick', () => {
-    spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
     const accountId = 77;
     component.onAccountClick(accountId);
     expect(component['router'].navigate).toHaveBeenCalledWith([

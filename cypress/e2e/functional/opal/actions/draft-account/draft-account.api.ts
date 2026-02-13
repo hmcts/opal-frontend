@@ -17,7 +17,7 @@ import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 
 import { convertDataTableToNestedObject } from '../../../../../support/utils/table';
 import { getDraftPayloadFile, type DraftPayloadType } from '../../../../../support/utils/payloads';
-import { readDraftIdFromBody } from '../../../../../support/draftAccounts';
+import { readDraftIdFromBody, recordCreatedId } from '../../../../../support/draftAccounts';
 import {
   extractAccountNumber,
   extractCreatedTimestamp,
@@ -362,6 +362,7 @@ export function createDraftAndSetStatus(
             expect(postResp.status, 'POST /draft-accounts').to.eq(201);
 
             createdId = readDraftIdFromBody(postResp.body);
+            recordCreatedId(createdId);
             postAccountNumber = extractAccountNumber(postResp.body as unknown);
             log('done', 'Draft account created', { createdId });
             cy.wrap(createdId, { log: false }).as('lastCreatedDraftId');
