@@ -62,7 +62,7 @@ export const AccountNavDetailsLocators = {
   // ──────────────────────────────
 
   /** Button for adding a new account note (secondary GOV.UK style). */
-  addAccountNoteButton: 'button#addAccountNote.govuk-button--secondary',
+  addAccountNoteButton: 'button[id$="addAccountNote"].govuk-button--secondary',
 
   /** Toggle button for the “More options” menu in the header. */
   moreOptionsToggleButton: '.moj-button-menu > button.moj-button-menu__toggle-button.govuk-button--secondary',
