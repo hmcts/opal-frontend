@@ -33,7 +33,7 @@ export const ERROR_MESSAGES = {
   enforcementActionReason: 'Select reason for enforcement action',
 };
 
-export const INSTALLMENT_ERRORS = {
+export const INSTALMENT_ERRORS = {
   startDate: 'Enter start date',
   instalmentAmount: 'Enter instalment amount',
   paymentFrequency: 'Select frequency of payment',

@@ -12,6 +12,9 @@
  *   cy.get(DashboardLocators.manualAccountCreationLink).click();
  */
 export const DashboardLocators = {
+  /** Root app container for dashboard content. */
+  app: 'div.govuk-grid-column-two-thirds',
+
   /** Page title element at the top of the dashboard. */
   dashboardPageTitle: 'h1.govuk-heading-m',
 
