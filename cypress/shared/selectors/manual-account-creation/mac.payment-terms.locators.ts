@@ -147,6 +147,11 @@ export const MacPaymentTermsLocators = {
   daysLabel: 'label[for="days"]',
   weeksLabel: 'label[for="weeks"]',
 
+  // enforcement action fieldset
+  enforcementActionFieldset: 'fieldset#fm_payment_terms_enforcement_action',
+  enforcementActionLegend: 'legend.govuk-fieldset__legend',
+  enforcementActionRadios: 'input[type="radio"]',
+
   returnToAccountDetailsButton: 'button[type="submit"]:contains("Return to account details")',
   addAccountCommentsButton: 'button[type="submit"]:contains("Add account comments and notes")',
   cancelLink: 'a.govuk-link:contains("Cancel")',

@@ -446,4 +446,30 @@ describe('FinesMacAccountDetailsComponent', () => {
     cy.get(L.languagePreferences).should('exist');
     cy.get(L.languagePreferences).should('contain', 'Welsh and English');
   });
+
+  it(
+    'should give each "Change" action a unique accessible name (via visually hidden context)',
+    { tags: ['@PO-2787'] },
+    () => {
+      setupComponent(null);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+      finesMacState.businessUnit.welsh_language = true;
+
+      // Document language row -> Change link -> visually hidden context
+      cy.contains('.govuk-summary-list__row', 'Document language')
+        .find('a.govuk-link')
+        .should('contain.text', 'Change')
+        .within(() => {
+          cy.get('span.govuk-visually-hidden').should('exist').and('contain.text', 'document language');
+        });
+
+      // Hearing language row -> Change link -> visually hidden context
+      cy.contains('.govuk-summary-list__row', 'Hearing language')
+        .find('a.govuk-link')
+        .should('contain.text', 'Change')
+        .within(() => {
+          cy.get('span.govuk-visually-hidden').should('exist').and('contain.text', 'hearing language');
+        });
+    },
+  );
 });
