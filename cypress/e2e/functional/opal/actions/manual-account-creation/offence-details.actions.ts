@@ -431,7 +431,7 @@ export class ManualOffenceDetailsActions {
         if (!value) return;
 
         if (label === 'Minor creditor') {
-          cy.get('h5.govuk-summary-card__title', this.common.getTimeoutOptions()).should('contain.text', value);
+          cy.get('h2.govuk-summary-card__title', this.common.getTimeoutOptions()).should('contain.text', value);
           return;
         }
 
@@ -472,7 +472,7 @@ export class ManualOffenceDetailsActions {
       if (!value) return;
 
       if (label === 'Minor creditor') {
-        summary.find('h5.govuk-summary-card__title').should('contain.text', value);
+        summary.find('h2.govuk-summary-card__title').should('contain.text', value);
         return;
       }
 
