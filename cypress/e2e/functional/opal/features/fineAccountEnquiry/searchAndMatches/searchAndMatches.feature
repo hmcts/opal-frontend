@@ -379,7 +379,7 @@ Feature: Account Search and Matches
       | account.collection_order_made_today | false          |
       | account.payment_card_request        | false          |
     When I search using the following inputs:
-      | reference or case number | PCRAUTO010 |
+      | reference or case number | PCRUNIQ010 |
     # --- Step 3: Verify results show only exact match ---
     Then I see the Companies search results:
       | Ref | PCRUNIQ010 |
