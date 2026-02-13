@@ -47,7 +47,7 @@ export const AccountDefendantDetailsLocators = {
   /** Primary page-level actions next to the header. */
   headerActions: {
     /** Button: Add account note. */
-    addAccountNote: '#addAccountNote',
+    addAccountNote: 'button[id$="addAccountNote"]',
     /** “More options” menu toggle (button). */
     moreOptionsToggle: '.moj-button-menu__toggle-button',
   },

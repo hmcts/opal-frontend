@@ -6,7 +6,7 @@
  *
  * @remarks
  * - Scoped to `<app-fines-acc-defendant-details-at-a-glance-tab>` for tab content.
- * - Uses visible headings/labels and stable IDs where available (`#addAccountNote`,
+ * - Uses visible headings/labels and stable IDs where available (`button[id$="addAccountNote"]`,
  *   `#enforcement_status`, `#badge1`) to keep selectors resilient.
  * - Intended for use by `AccountAtAGlanceActions` and read-only summary flows.
  *
@@ -34,7 +34,7 @@ export const AccountAtAGlanceLocators = {
     accountIdCaption: 'opal-lib-govuk-heading-with-caption .govuk-caption-l',
 
     /** Primary header action: Add account note button. */
-    addAccountNoteButton: 'button#addAccountNote',
+    addAccountNoteButton: 'button[id$="addAccountNote"]',
 
     /** “More options” menu toggle button in the header. */
     moreOptionsToggle: '.moj-button-menu__toggle-button',
