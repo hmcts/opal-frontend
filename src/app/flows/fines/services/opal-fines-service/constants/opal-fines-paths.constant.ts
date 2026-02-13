@@ -29,4 +29,5 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   notes: `${baseUrl}${notes}`,
   searchDefendantAccounts: `${baseUrl}${defendantAccounts}${searchAccounts}`,
   searchMinorCreditorAccounts: `${baseUrl}${minorCreditorAccounts}${searchAccounts}`,
+  minorCreditorAccounts: `${baseUrl}${minorCreditorAccounts}`,
 };
