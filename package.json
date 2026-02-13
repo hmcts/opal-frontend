@@ -188,16 +188,16 @@
     "brace-expansion": "^4.0.0",
     "tmp": "^0.2.4",
     "esbuild": "^0.27.0",
-    "@badeball/cypress-cucumber-preprocessor/glob": "13.0.2",
-    "@cucumber/cucumber/glob": "13.0.2",
-    "cypress-parallel/glob": "13.0.2",
-    "@npmcli/package-json/glob": "13.0.2",
-    "cacache/glob": "13.0.2",
-    "mocha/glob": "13.0.2",
-    "mochawesome-merge/glob": "13.0.2",
-    "module-lookup-amd/glob": "13.0.2",
-    "node-gyp/glob": "13.0.2",
-    "rimraf/glob": "13.0.2",
-    "shelljs/glob": "13.0.2"
+    "@badeball/cypress-cucumber-preprocessor/glob": "13.0.3",
+    "@cucumber/cucumber/glob": "13.0.3",
+    "cypress-parallel/glob": "13.0.3",
+    "@npmcli/package-json/glob": "13.0.3",
+    "cacache/glob": "13.0.3",
+    "mocha/glob": "13.0.3",
+    "mochawesome-merge/glob": "13.0.3",
+    "module-lookup-amd/glob": "13.0.3",
+    "node-gyp/glob": "13.0.3",
+    "rimraf/glob": "13.0.3",
+    "shelljs/glob": "13.0.3"
   }
 }
