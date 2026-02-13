@@ -3,8 +3,8 @@
  * @description Cypress actions and assertions for editing company details within the Opal application.
  */
 
-import { CompanyDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.company-details.locators';
-import { AccountCompanyDetailsLocators as SummaryL } from '../../../../../shared/selectors/account-details/account.company-details.locators';
+import { CompanyDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.company.details.locators';
+import { AccountCompanyDetailsLocators as SummaryL } from '../../../../../shared/selectors/account-details/account.company.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 

@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { INVALID_DETAILS } from './constants/fines_mac_contact_details_errors';
-import { DOM_ELEMENTS } from './constants/fines_mac_contact_details_elements';
+import { MacContactDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.contact-details.locators';
 import { of } from 'rxjs';
 
 describe('FinesMacContactDetailsComponent', () => {
@@ -61,35 +61,35 @@ describe('FinesMacContactDetailsComponent', () => {
     setupComponent(null);
 
     // Verify the component is rendered
-    cy.get(DOM_ELEMENTS.primaryEmailInput).should('exist');
+    cy.get(L.primaryEmailInput).should('exist');
   });
 
   it('(AC.1) should load all elements on the screen correctly', { tags: ['@PO-272', '@PO-419'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant contact details');
+    cy.get(L.pageHeader).should('contain', 'Defendant contact details');
 
-    cy.get(DOM_ELEMENTS.primaryEmailInput).should('exist');
-    cy.get(DOM_ELEMENTS.secondaryEmailInput).should('exist');
-    cy.get(DOM_ELEMENTS.mobileTelephoneInput).should('exist');
-    cy.get(DOM_ELEMENTS.homeTelephoneInput).should('exist');
-    cy.get(DOM_ELEMENTS.workTelephoneInput).should('exist');
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).should('exist');
+    cy.get(L.primaryEmailInput).should('exist');
+    cy.get(L.secondaryEmailInput).should('exist');
+    cy.get(L.mobileTelephoneInput).should('exist');
+    cy.get(L.homeTelephoneInput).should('exist');
+    cy.get(L.workTelephoneInput).should('exist');
+    cy.get(L.returnToAccountDetailsButton).should('exist');
 
-    cy.get(DOM_ELEMENTS.primaryEmailSubheading).should('contain', 'Primary email address');
-    cy.get(DOM_ELEMENTS.secondaryEmailSubheading).should('contain', 'Secondary email address');
-    cy.get(DOM_ELEMENTS.mobileTelephoneSubheading).should('contain', 'Mobile telephone number');
-    cy.get(DOM_ELEMENTS.homeTelephoneSubheading).should('contain', 'Home telephone number');
-    cy.get(DOM_ELEMENTS.workTelephoneSubheading).should('contain', 'Work telephone number');
+    cy.get(L.primaryEmailLabel).should('contain', 'Primary email address');
+    cy.get(L.secondaryEmailLabel).should('contain', 'Secondary email address');
+    cy.get(L.mobileTelephoneLabel).should('contain', 'Mobile telephone number');
+    cy.get(L.homeTelephoneLabel).should('contain', 'Home telephone number');
+    cy.get(L.workTelephoneLabel).should('contain', 'Work telephone number');
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).should('contain', 'Return to account details');
-    cy.get(DOM_ELEMENTS.cancelLink).should('contain', 'Cancel');
+    cy.get(L.returnToAccountDetailsButton).should('contain', 'Return to account details');
+    cy.get(L.cancelLink).should('contain', 'Cancel');
   });
 
   it('(AC.1) should load button for next page for adultOrYouthOnly Defendant', { tags: ['@PO-272', '@PO-419'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.addEmployerDetailsButton).should('contain', 'Add employer details');
+    cy.get(L.addEmployerDetailsButton).should('contain', 'Add employer details');
   });
 
   it(
@@ -100,7 +100,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
-      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(L.returnToAccountDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
     },
@@ -111,7 +111,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
     setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+    cy.get(L.addEmployerDetailsButton).click();
 
     cy.wrap(formSubmitSpy).should('have.been.called');
   });
@@ -119,13 +119,13 @@ describe('FinesMacContactDetailsComponent', () => {
   it('(AC.3) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-370'] }, () => {
     setupComponent(null, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.addEmployerDetailsButton).should('contain', 'Add employer details');
+    cy.get(L.addEmployerDetailsButton).should('contain', 'Add employer details');
   });
 
   it('(AC.3) should load button for next page for Company Defendant', { tags: ['@PO-345', '@PO-371'] }, () => {
     setupComponent(null, 'company');
 
-    cy.get(DOM_ELEMENTS.addOffenceDetailsButton).should('contain', 'Add offence details');
+    cy.get(L.addOffenceDetailsButton).should('contain', 'Add offence details');
   });
 
   it(
@@ -144,11 +144,11 @@ describe('FinesMacContactDetailsComponent', () => {
         fm_contact_details_telephone_number_business: '',
       };
 
-      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(L.returnToAccountDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
 
-      cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+      cy.get(L.addEmployerDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
     },
@@ -170,11 +170,11 @@ describe('FinesMacContactDetailsComponent', () => {
         fm_contact_details_telephone_number_business: '01234 567890',
       };
 
-      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(L.returnToAccountDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
 
-      cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+      cy.get(L.addEmployerDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
     },
@@ -196,11 +196,11 @@ describe('FinesMacContactDetailsComponent', () => {
         fm_contact_details_telephone_number_business: '01234 567890',
       };
 
-      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(L.returnToAccountDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
 
-      cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+      cy.get(L.addEmployerDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
     },
@@ -215,10 +215,10 @@ describe('FinesMacContactDetailsComponent', () => {
         cy.then(() => {
           finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = email;
           setupComponent(null, 'adultOrYouthOnly');
-          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
-          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
+          cy.get(L.returnToAccountDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
+          cy.get(L.addEmployerDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
         });
       });
     },
@@ -233,10 +233,10 @@ describe('FinesMacContactDetailsComponent', () => {
         cy.then(() => {
           finesMacState.contactDetails.formData.fm_contact_details_email_address_2 = email;
           setupComponent(null, 'adultOrYouthOnly');
-          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
-          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
+          cy.get(L.returnToAccountDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
+          cy.get(L.addEmployerDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
         });
       });
     },
@@ -251,10 +251,10 @@ describe('FinesMacContactDetailsComponent', () => {
         cy.then(() => {
           finesMacState.contactDetails.formData.fm_contact_details_telephone_number_home = number;
           setupComponent(null, 'adultOrYouthOnly');
-          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
-          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
+          cy.get(L.returnToAccountDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
+          cy.get(L.addEmployerDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
         });
       });
     },
@@ -269,10 +269,10 @@ describe('FinesMacContactDetailsComponent', () => {
         cy.then(() => {
           finesMacState.contactDetails.formData.fm_contact_details_telephone_number_business = number;
           setupComponent(null, 'adultOrYouthOnly');
-          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
-          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
+          cy.get(L.returnToAccountDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
+          cy.get(L.addEmployerDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
         });
       });
     },
@@ -287,10 +287,10 @@ describe('FinesMacContactDetailsComponent', () => {
         cy.then(() => {
           finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile = number;
           setupComponent(null, 'adultOrYouthOnly');
-          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
-          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
+          cy.get(L.returnToAccountDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
+          cy.get(L.addEmployerDetailsButton).click();
+          cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
         });
       });
     },
@@ -310,10 +310,10 @@ describe('FinesMacContactDetailsComponent', () => {
         fm_contact_details_telephone_number_home: 'bad-data',
         fm_contact_details_telephone_number_business: 'bad-data',
       };
-      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(L.returnToAccountDetailsButton).click();
+      cy.get(L.errorSummary).should('exist');
+      cy.get(L.addEmployerDetailsButton).click();
+      cy.get(L.errorSummary).should('exist');
 
       cy.then(() => {
         setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -324,9 +324,9 @@ describe('FinesMacContactDetailsComponent', () => {
           fm_contact_details_telephone_number_home: '01234 567890',
           fm_contact_details_telephone_number_business: '01234 567890',
         };
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+        cy.get(L.returnToAccountDetailsButton).click();
         cy.wrap(formSubmitSpy).should('have.been.called');
-        cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+        cy.get(L.addEmployerDetailsButton).click();
         cy.wrap(formSubmitSpy).should('have.been.called');
       });
     },
