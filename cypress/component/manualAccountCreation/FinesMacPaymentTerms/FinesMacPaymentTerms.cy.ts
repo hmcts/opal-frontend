@@ -211,7 +211,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       .and('have.class', 'govuk-visually-hidden')
       .and('have.class', 'govuk-fieldset__legend--s');
 
-    //No aria-label applied to individual radio buttons
+    //No aria-label applied to the individual radio buttons
     cy.get(DOM_ELEMENTS.enforcementActionFieldset)
       .find(DOM_ELEMENTS.enforcementActionRadios)
       .should('have.length.greaterThan', 0)
