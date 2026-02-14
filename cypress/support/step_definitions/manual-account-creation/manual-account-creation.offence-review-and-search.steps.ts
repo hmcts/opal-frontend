@@ -3,7 +3,7 @@
  * @description Offence review, navigation, and search step definitions for Manual Account Creation.
  */
 import { When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { ManualOffenceDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { MacOffenceDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { calculateWeeksInFuture, calculateWeeksInPast, formatDateString, parseWeeksValue } from '../../utils/dateUtils';
 import { normalizeTableRows } from '../../utils/cucumberHelpers';
 import { log } from '../../utils/log.helper';

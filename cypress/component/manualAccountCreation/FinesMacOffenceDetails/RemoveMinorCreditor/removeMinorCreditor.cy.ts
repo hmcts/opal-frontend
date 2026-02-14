@@ -8,7 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { DOM_ELEMENTS } from './constants/remove_minor_creditor_elements';
+import { MacOffenceDetailsRemoveMinorCreditorLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { of } from 'rxjs';
 
 describe('FinesMacRemoveMinorCreditor', () => {

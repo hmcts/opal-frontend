@@ -6,5 +6,6 @@ export interface IFinesRoutingPaths extends IParentRoutingPaths {
     draft: IChildRoutingPaths;
     acc: IChildRoutingPaths;
     sa: IChildRoutingPaths;
+    con: IChildRoutingPaths;
   };
 }

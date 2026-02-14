@@ -6,7 +6,7 @@ import { FinesMacCourtDetailsComponent } from '../../../../src/app/flows/fines/f
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
-import { DOM_ELEMENTS } from './constants/fines_mac_court_details_elements';
+import { MacCourtDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.court-details.locators';
 import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_details_errors';
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -76,21 +76,18 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it('should render the component correctly for AY', { tags: ['@PO-272', '@PO-389'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
-    cy.get('app-fines-mac-court-details-form').should('exist');
-
-    cy.get('button[type="submit"]').should('contain', 'Add personal details');
+    cy.get(L.componentRoot).should('exist');
+    cy.get(L.nestedFlowButton).should('contain', 'Add personal details');
   });
   it('should render the component correctly for AYPG', { tags: ['@PO-344', '@PO-527', '@PO-1449'] }, () => {
     setupComponent(null, 'pgToPay');
-    cy.get('app-fines-mac-court-details-form').should('exist');
-
-    cy.get('button[type="submit"]').should('contain', 'Add parent or guardian details');
+    cy.get(L.componentRoot).should('exist');
+    cy.get(L.nestedFlowButton).should('contain', 'Add parent or guardian details');
   });
   it('should render the component correctly for COMP', { tags: ['@PO-345', '@PO-529'] }, () => {
     setupComponent(null, 'company');
-    cy.get('app-fines-mac-court-details-form').should('exist');
-
-    cy.get('button[type="submit"]').should('contain', 'Add company details');
+    cy.get(L.componentRoot).should('exist');
+    cy.get(L.nestedFlowButton).should('contain', 'Add company details');
   });
 
   it('(AC.1, AC.4) should be created as per the design artifacts', { tags: ['@PO-272', '@PO-389'] }, () => {
@@ -99,97 +96,87 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     // Verify the page text
     //title
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Court details');
+    cy.get(L.pageHeader).should('contain', 'Court details');
     //Lja
-    cy.get(DOM_ELEMENTS.ljaInputTitle).should('contain', 'Sending area or Local Justice Area (LJA)');
-    cy.get(DOM_ELEMENTS.ljaInputHint).should(
-      'contain',
-      'Search using the code or name of the area that sent the transfer',
-    );
-    cy.get(DOM_ELEMENTS.ljaInput).should('exist');
+    cy.get(L.ljaLabel).should('contain', 'Sending area or Local Justice Area (LJA)');
+    cy.get(L.ljaHint).should('contain', 'Search using the code or name of the area that sent the transfer');
+    cy.get(L.ljaInput).should('exist');
     //Pcr
-    cy.get(DOM_ELEMENTS.pcrInputTitle).should('contain', 'Prosecutor Case Reference (PCR)');
-    cy.get(DOM_ELEMENTS.pcrInputHint).should(
-      'contain',
-      "Enter the prosecutor's reference number or original account number",
-    );
-    cy.get(DOM_ELEMENTS.pcrInput).should('exist');
+    cy.get(L.pcrLabel).should('contain', 'Prosecutor Case Reference (PCR)');
+    cy.get(L.pcrHint).should('contain', "Enter the prosecutor's reference number or original account number");
+    cy.get(L.pcrInput).should('exist');
     //Enforcement Court
-    cy.get(DOM_ELEMENTS.enforcementCourtTitle).should('contain', 'Enforcement court');
-    cy.get(DOM_ELEMENTS.enforcementCourtHint).should('contain', 'Search using enforcement court or code');
-    cy.get(DOM_ELEMENTS.enforcementCourt).should('exist');
+    cy.get(L.enforcementCourtLabel).should('contain', 'Enforcement court');
+    cy.get(L.enforcementCourtHint).should('contain', 'Search using enforcement court or code');
+    cy.get(L.enforcementCourtInput).should('exist');
   });
   it('(AC.2) should dynamically filter LJA field', { tags: ['@PO-272', '@PO-389'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     //Verify working input fields
-    cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();
-    cy.get(DOM_ELEMENTS.ljaInput).should('have.value', 'Asylum & Immigration Tribunal (9985)');
+    cy.get(L.ljaInput).focus().type('Asylum', { delay: 0 });
+    cy.get(L.ljaListbox).find('li').first().click();
+    cy.get(L.ljaInput).should('have.value', 'Asylum & Immigration Tribunal (9985)');
 
-    cy.get(DOM_ELEMENTS.ljaInput).focus().clear().type('court', { delay: 0 });
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
-    cy.get(DOM_ELEMENTS.ljaAutocomplete)
-      .find('li')
-      .should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
+    cy.get(L.ljaInput).focus().clear().type('court', { delay: 0 });
+    cy.get(L.ljaListbox).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
+    cy.get(L.ljaListbox).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
+    cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
+    cy.get(L.ljaListbox).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
+    cy.get(L.ljaListbox).find('li').should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
   });
   it('(AC.3) should dynamically filter Enforcement court field', { tags: ['@PO-272', '@PO-389'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
     //Verify working input fields
-    cy.get(DOM_ELEMENTS.enforcementCourt).focus().type('Port', { delay: 0 });
-    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
-    cy.get(DOM_ELEMENTS.enforcementCourt).should('have.value', 'Port Talbot Justice Centre (999)');
+    cy.get(L.enforcementCourtInput).focus().type('Port', { delay: 0 });
+    cy.get(L.enforcementCourtListbox).find('li').first().click();
+    cy.get(L.enforcementCourtInput).should('have.value', 'Port Talbot Justice Centre (999)');
 
-    cy.get(DOM_ELEMENTS.enforcementCourt).focus().clear().type('historic', { delay: 0 });
-    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete)
-      .find('li')
-      .should('not.contain', 'Port Talbot Justice Centre (999)');
-    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'Historic Debt Database (101)');
-    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'Historic Debt Database (998)');
-    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
+    cy.get(L.enforcementCourtInput).focus().clear().type('historic', { delay: 0 });
+    cy.get(L.enforcementCourtListbox).find('li').should('not.contain', 'Port Talbot Justice Centre (999)');
+    cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (101)');
+    cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (998)');
+    cy.get(L.enforcementCourtListbox).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
   });
 
   it('(AC.5) should validate mandatory fields', { tags: ['@PO-272', '@PO-389'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     //Submit without input
-    cy.get(DOM_ELEMENTS.returnToACDetails).click();
+    cy.get(L.returnToAccountDetailsButton).click();
 
     //Verify page did not change
-    cy.get(DOM_ELEMENTS.pageTitle).should('have.text', 'Court details');
+    cy.get(L.pageHeader).should('have.text', 'Court details');
 
     //Verify error summary
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(L.errorSummary).should('exist');
 
     Object.values(MISSING_ERRORS).forEach((key) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', key);
+      cy.get(L.errorSummary).should('contain', key);
     });
 
     //Verify input field error messages
-    cy.get(DOM_ELEMENTS.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-    cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
-    cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+    cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+    cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
+    cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
 
     //Submit without input
-    cy.get(DOM_ELEMENTS.addPersonalDetails).click();
+    cy.get(L.nestedFlowButton).click();
 
     //Verify page did not change
-    cy.get(DOM_ELEMENTS.pageTitle).should('have.text', 'Court details');
+    cy.get(L.pageHeader).should('have.text', 'Court details');
 
     //Verify error summary
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(L.errorSummary).should('exist');
 
     Object.values(MISSING_ERRORS).forEach((key) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', key);
+      cy.get(L.errorSummary).should('contain', key);
     });
 
     //Verify input field error messages
-    cy.get(DOM_ELEMENTS.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-    cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
-    cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+    cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+    cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
+    cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
   });
 
   it(
@@ -200,40 +187,40 @@ describe('FinesMacCourtDetailsComponent', () => {
       finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = '1234';
 
       //Submit without input
-      cy.get(DOM_ELEMENTS.returnToACDetails).click();
+      cy.get(L.returnToAccountDetailsButton).click();
 
       //Verify page did not change
-      cy.get(DOM_ELEMENTS.pageTitle).should('have.text', 'Court details');
+      cy.get(L.pageHeader).should('have.text', 'Court details');
 
       //Verify error summary
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(L.errorSummary).should('exist');
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', MISSING_ERRORS.missingLJA);
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', MISSING_ERRORS.missingEnforcementCourt);
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', MISSING_ERRORS.missingPCR);
+      cy.get(L.errorSummary).should('contain', MISSING_ERRORS.missingLJA);
+      cy.get(L.errorSummary).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+      cy.get(L.errorSummary).should('not.contain', MISSING_ERRORS.missingPCR);
 
       //Verify input field error messages
-      cy.get(DOM_ELEMENTS.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-      cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
-      cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
+      cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+      cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+      cy.get(L.pcrErrorMessage).should('not.exist');
 
       //Submit without input
-      cy.get(DOM_ELEMENTS.addPersonalDetails).click();
+      cy.get(L.nestedFlowButton).click();
 
       //Verify page did not change
-      cy.get(DOM_ELEMENTS.pageTitle).should('have.text', 'Court details');
+      cy.get(L.pageHeader).should('have.text', 'Court details');
 
       //Verify error summary
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(L.errorSummary).should('exist');
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', MISSING_ERRORS.missingLJA);
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', MISSING_ERRORS.missingEnforcementCourt);
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', MISSING_ERRORS.missingPCR);
+      cy.get(L.errorSummary).should('contain', MISSING_ERRORS.missingLJA);
+      cy.get(L.errorSummary).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+      cy.get(L.errorSummary).should('not.contain', MISSING_ERRORS.missingPCR);
 
       //Verify input field error messages
-      cy.get(DOM_ELEMENTS.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-      cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
-      cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
+      cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+      cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+      cy.get(L.pcrErrorMessage).should('not.exist');
     },
   );
 
@@ -243,10 +230,10 @@ describe('FinesMacCourtDetailsComponent', () => {
     setupComponent(null);
 
     //Submit with invalid input
-    cy.get(DOM_ELEMENTS.returnToACDetails).click();
+    cy.get(L.returnToAccountDetailsButton).click();
 
     //Verify error message
-    cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', INVALID_ERRORS.tooLongPCR);
+    cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.tooLongPCR);
   });
 
   it('(AC.7) should validate PCR field allowed characters', { tags: ['@PO-272', '@PO-389'] }, () => {
@@ -255,8 +242,8 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.then(() => {
         setupComponent(null);
         finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = input;
-        cy.get(DOM_ELEMENTS.returnToACDetails).click();
-        cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', INVALID_ERRORS.invalidPCR);
+        cy.get(L.returnToAccountDetailsButton).click();
+        cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.invalidPCR);
       });
     });
   });
@@ -266,30 +253,30 @@ describe('FinesMacCourtDetailsComponent', () => {
     setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     //Submit without input
-    cy.get(DOM_ELEMENTS.returnToACDetails).click();
+    cy.get(L.returnToAccountDetailsButton).click();
 
     //Verify error summary
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(L.errorSummary).should('exist');
 
     //Verify input field error messages
-    cy.get(DOM_ELEMENTS.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-    cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
-    cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+    cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+    cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
+    cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
 
     //Verify error summary is cleared
-    cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();
+    cy.get(L.ljaInput).focus().type('Asylum', { delay: 0 });
+    cy.get(L.ljaListbox).find('li').first().click();
 
-    cy.get(DOM_ELEMENTS.pcrInput).focus().type('1234', { delay: 0 });
+    cy.get(L.pcrInput).focus().type('1234', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.enforcementCourt).focus().type('Port', { delay: 0 });
-    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
+    cy.get(L.enforcementCourtInput).focus().type('Port', { delay: 0 });
+    cy.get(L.enforcementCourtListbox).find('li').first().click();
 
-    cy.get(DOM_ELEMENTS.returnToACDetails).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    cy.get(DOM_ELEMENTS.ljaErrorMessage).should('not.exist');
-    cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
-    cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('not.exist');
+    cy.get(L.returnToAccountDetailsButton).click();
+    cy.get(L.errorSummary).should('not.exist');
+    cy.get(L.ljaErrorMessage).should('not.exist');
+    cy.get(L.pcrErrorMessage).should('not.exist');
+    cy.get(L.enforcementCourtErrorMessage).should('not.exist');
   });
 
   it('(AC.9) should clear errors when validation is passed', { tags: ['@PO-272', '@PO-389'] }, () => {
@@ -297,63 +284,63 @@ describe('FinesMacCourtDetailsComponent', () => {
     setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     //Submit without input
-    cy.get(DOM_ELEMENTS.addPersonalDetails).click();
+    cy.get(L.nestedFlowButton).click();
 
     //Verify error summary
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-    cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
-    cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+    cy.get(L.errorSummary).should('exist');
+    cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+    cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
+    cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
 
     //Input data
-    cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();
+    cy.get(L.ljaInput).focus().type('Asylum', { delay: 0 });
+    cy.get(L.ljaListbox).find('li').first().click();
 
-    cy.get(DOM_ELEMENTS.pcrInput).focus().type('1234', { delay: 0 });
+    cy.get(L.pcrInput).focus().type('1234', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.enforcementCourt).focus().type('Port', { delay: 0 });
-    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
+    cy.get(L.enforcementCourtInput).focus().type('Port', { delay: 0 });
+    cy.get(L.enforcementCourtListbox).find('li').first().click();
 
     //Verify error summary is cleared
-    cy.get(DOM_ELEMENTS.addPersonalDetails).click();
+    cy.get(L.nestedFlowButton).click();
 
-    cy.get(DOM_ELEMENTS.addPersonalDetails).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    cy.get(DOM_ELEMENTS.ljaErrorMessage).should('not.exist');
-    cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('not.exist');
-    cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
+    cy.get(L.nestedFlowButton).click();
+    cy.get(L.errorSummary).should('not.exist');
+    cy.get(L.ljaErrorMessage).should('not.exist');
+    cy.get(L.enforcementCourtErrorMessage).should('not.exist');
+    cy.get(L.pcrErrorMessage).should('not.exist');
   });
 
   it('(AC.1) should convert PCR input to uppercase', { tags: ['@PO-345', '@PO-1450'] }, () => {
     setupComponent(null, 'company');
 
-    cy.get(DOM_ELEMENTS.pcrInput).focus().type('abcd1234a', { delay: 0 });
+    cy.get(L.pcrInput).focus().type('abcd1234a', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234A');
+    cy.get(L.pcrInput).should('have.value', 'ABCD1234A');
   });
 
   it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();
-    cy.get(DOM_ELEMENTS.pcrInput).type('testpcr', { delay: 0 });
-    cy.get(DOM_ELEMENTS.pcrInput).blur();
-    cy.get(DOM_ELEMENTS.enforcementCourt).focus().type('Port', { delay: 0 });
-    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
+    cy.get(L.ljaInput).focus().type('Asylum', { delay: 0 });
+    cy.get(L.ljaListbox).find('li').first().click();
+    cy.get(L.pcrInput).type('testpcr', { delay: 0 });
+    cy.get(L.pcrInput).blur();
+    cy.get(L.enforcementCourtInput).focus().type('Port', { delay: 0 });
+    cy.get(L.enforcementCourtListbox).find('li').first().click();
 
-    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'TESTPCR');
+    cy.get(L.pcrInput).should('have.value', 'TESTPCR');
 
-    cy.get(DOM_ELEMENTS.returnToACDetails).click();
+    cy.get(L.returnToAccountDetailsButton).click();
   });
 
   it('(AC.1) should convert PCR input to uppercase', { tags: ['@PO-272', '@PO-1448'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.pcrInput).focus().type('abcd1234', { delay: 0 });
+    cy.get(L.pcrInput).focus().type('abcd1234', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234');
+    cy.get(L.pcrInput).should('have.value', 'ABCD1234');
   });
 
   it(
@@ -363,27 +350,20 @@ describe('FinesMacCourtDetailsComponent', () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       //Verify autocomplete fields display all values when selected
-      cy.get(DOM_ELEMENTS.ljaInput).focus().click();
-      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', 'Asylum & Immigration Tribunal (9985)');
-      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
-      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
-      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
-      cy.get(DOM_ELEMENTS.ljaAutocomplete)
-        .find('li')
-        .should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
-      cy.get(DOM_ELEMENTS.ljaAutocomplete)
-        .find('li')
-        .contains("Birmingham and Solihull Magistrates' Court (5004)")
-        .click();
+      cy.get(L.ljaInput).focus().click();
+      cy.get(L.ljaListbox).find('li').should('contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(L.ljaListbox).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
+      cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
+      cy.get(L.ljaListbox).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
+      cy.get(L.ljaListbox).find('li').should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
+      cy.get(L.ljaListbox).find('li').contains("Birmingham and Solihull Magistrates' Court (5004)").click();
 
-      cy.get(DOM_ELEMENTS.enforcementCourt).focus().click();
-      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete)
-        .find('li')
-        .should('contain', 'Port Talbot Justice Centre (999)');
-      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'Historic Debt Database (101)');
-      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'Historic Debt Database (998)');
-      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
-      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
+      cy.get(L.enforcementCourtInput).focus().click();
+      cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Port Talbot Justice Centre (999)');
+      cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (101)');
+      cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (998)');
+      cy.get(L.enforcementCourtListbox).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
+      cy.get(L.enforcementCourtListbox).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
     },
   );
 });

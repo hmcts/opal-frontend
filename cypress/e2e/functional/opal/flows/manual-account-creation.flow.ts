@@ -3,7 +3,7 @@ import { ManualCreateAccountActions, DefendantType } from '../actions/manual-acc
 import { AccountType } from '../../../../support/utils/payloads';
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
-import { ManualAccountTaskName } from '../../../../shared/selectors/manual-account-creation/account-details.locators';
+import { MacAccountTaskName } from '../../../../shared/selectors/manual-account-creation/mac.account-details.locators';
 import { ManualAccountTaskNavigationActions } from '../actions/manual-account-creation/task-navigation.actions';
 import {
   ManualContactDetailsActions,
@@ -59,7 +59,7 @@ import {
   resolveSearchFieldKey,
   resolveSearchResultColumn,
 } from '../../../../support/utils/macFieldResolvers';
-import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { MacOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 import {
   ManualCreateOrTransferInActions,
@@ -988,11 +988,7 @@ export class ManualAccountCreationFlow {
    * @param defendantType - Defendant type option to choose.
    * @param taskName - Task to open after creation.
    */
-  startFineAccountAndOpenTask(
-    businessUnit: string,
-    defendantType: DefendantType,
-    taskName: ManualAccountTaskName,
-  ): void {
+  startFineAccountAndOpenTask(businessUnit: string, defendantType: DefendantType, taskName: MacAccountTaskName): void {
     log('flow', 'Start fine account and open task', { businessUnit, defendantType, taskName });
     this.startFineAccount(businessUnit, defendantType, 'New');
     this.openTaskFromAccountDetails(taskName);
@@ -1124,8 +1120,8 @@ export class ManualAccountCreationFlow {
    * @param taskName - Task list entry to open.
    * @param expectedHeader - Optional header text to assert on the Account details page.
    */
-  openTaskFromAccountDetails(taskName: ManualAccountTaskName, expectedHeader?: string): void {
-    const normalizedTask = (taskName ?? '').trim() as ManualAccountTaskName;
+  openTaskFromAccountDetails(taskName: MacAccountTaskName, expectedHeader?: string): void {
+    const normalizedTask = (taskName ?? '').trim() as MacAccountTaskName;
     this.accountDetails.assertOnAccountDetailsPage(expectedHeader);
     this.accountDetails.openTask(normalizedTask);
 
@@ -1409,7 +1405,7 @@ export class ManualAccountCreationFlow {
    * @param taskName - Task to check.
    * @param expectedStatus - Expected status string.
    */
-  returnToAccountDetailsAndAssertStatus(taskName: ManualAccountTaskName, expectedStatus: string): void {
+  returnToAccountDetailsAndAssertStatus(taskName: MacAccountTaskName, expectedStatus: string): void {
     log('flow', 'Return to account details and assert task status', { taskName, expectedStatus });
     this.taskNavigation.returnToAccountDetails();
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
@@ -2391,7 +2387,7 @@ export class ManualAccountCreationFlow {
    * @param accountDetailsHeader - Optional Account details header to assert before checking statuses.
    */
   assertTaskStatuses(
-    statuses: Array<{ task: ManualAccountTaskName; status: string }>,
+    statuses: Array<{ task: MacAccountTaskName; status: string }>,
     accountDetailsHeader?: string,
   ): void {
     log('flow', 'Asserting multiple task statuses', { statuses, accountDetailsHeader });

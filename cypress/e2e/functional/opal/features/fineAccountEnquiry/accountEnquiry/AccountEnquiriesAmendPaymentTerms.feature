@@ -16,7 +16,7 @@ Feature: Account Enquiries - Amend Payment Terms
         | account.defendant.email_address_1        | john.amend{uniq}@test.com |
         | account.defendant.telephone_number_home  | 02078250001         |
         | account.account_type                     | Fine                |
-        | account.prosecutor_case_reference        | PCR-AUTO-010        |
+        | account.prosecutor_case_reference        | PCR-AUTO-020        |
         | account.collection_order_made            | false               |
         | account.collection_order_made_today      | false               |
         | account.payment_card_request             | false               |
@@ -58,7 +58,7 @@ Feature: Account Enquiries - Amend Payment Terms
         | account.defendant.email_address_1        | amend.co{uniq}@test.com   |
         | account.defendant.post_code              | AB23 4RN                  |
         | account.account_type                     | Fine                      |
-        | account.prosecutor_case_reference        | PCR-AUTO-011              |
+        | account.prosecutor_case_reference        | PCR-AUTO-021              |
         | account.collection_order_made            | false                     |
         | account.collection_order_made_today      | false                     |
         | account.payment_card_request             | false                     |
@@ -100,7 +100,7 @@ Feature: Account Enquiries - Amend Payment Terms
         | account.defendant.email_address_1        | alex.pg{uniq}@test.com    |
         | account.defendant.telephone_number_home  | 02078250011               |
         | account.account_type                     | Fine                      |
-        | account.prosecutor_case_reference        | PCR-AUTO-012              |
+        | account.prosecutor_case_reference        | PCR-AUTO-022              |
         | account.collection_order_made            | false                     |
         | account.collection_order_made_today      | false                     |
         | account.payment_card_request             | false                     |

@@ -227,8 +227,8 @@ export class SearchFilterByBUFlow {
         // - replace non-breaking spaces
         // - remove trailing commas or weird spacing
         const normalised = text
-          .replaceAll('\u00A0', ' ')
-          .replaceAll(/\s+/g, ' ') // collapse whitespace
+          .replace(/\u00A0/g, ' ')
+          .replace(/\s+/g, ' ') // collapse whitespace
           .trim();
 
         log('debug', `Normalised summary text: "${normalised}"`);
@@ -276,8 +276,8 @@ export class SearchFilterByBUFlow {
       .invoke('text')
       .then((text) => {
         const normalised = text
-          .replaceAll('\u00A0', ' ')
-          .replaceAll(/\s+/g, ' ') // collapse whitespace/newlines
+          .replace(/\u00A0/g, ' ')
+          .replace(/\s+/g, ' ') // collapse whitespace/newlines
           .trim();
 
         log('debug', `Normalised filter summary text: "${normalised}"`);

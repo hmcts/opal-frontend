@@ -54,7 +54,10 @@ beforeEach(function () {
   }
 
   const featureKey = specRelative || featureTitle || featureFile || 'unknown-feature';
-  const retryCount = typeof runnable?.currentRetry === 'function' ? runnable.currentRetry() : 0;
+  const retryCount =
+    typeof (runnable as unknown as { currentRetry?: () => number })?.currentRetry === 'function'
+      ? (runnable as unknown as { currentRetry?: () => number }).currentRetry!()
+      : 0;
   const existingIndex = retryCount > 0 ? getScenarioIndex(featureKey, baseTitle) : 0;
   const occurrenceIndex =
     retryCount > 0 && existingIndex > 0 ? existingIndex : getNextScenarioIndex(featureKey, baseTitle);

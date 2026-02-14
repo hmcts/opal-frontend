@@ -2,7 +2,7 @@
  * @file Actions for Manual Account Creation - Language preferences page.
  * @description Encapsulates radio selection, assertions, and cancel/save handling.
  */
-import { ManualLanguagePreferencesLocators as L } from '../../../../../shared/selectors/manual-account-creation/language-preferences.locators';
+import { MacLanguagePreferencesLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.language-preferences.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 
