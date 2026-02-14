@@ -5,10 +5,15 @@
 import { When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { GlobalApiInterceptorFlow } from '../../e2e/functional/opal/flows/global-api-interceptor.flow';
 import { GlobalApiInterceptorActions } from '../../e2e/functional/opal/actions/global-api-interceptor.actions';
+import { ManualCreateOrTransferInActions } from '../../e2e/functional/opal/actions/manual-account-creation/create-transfer.actions';
+import { DashboardActions } from '../../e2e/functional/opal/actions/dashboard.actions';
+import { accessibilityActions } from '../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 import { log } from '../utils/log.helper';
 
 const flow = () => new GlobalApiInterceptorFlow();
 const actions = () => new GlobalApiInterceptorActions();
+const originatorType = () => new ManualCreateOrTransferInActions();
+const dashboard = () => new DashboardActions();
 
 When(
   'I attempt to open Manual Account Creation and the business units request fails with {int}',
@@ -29,6 +34,17 @@ When(
 When('I attempt to open Manual Account Creation and the business units request fails due to a network error', () => {
   log('step', 'Attempting Manual Account Creation with business units network error');
   flow().openManualAccountCreationWithBusinessUnitsNetworkFailure();
+});
+
+When('I click the Cancel button and the Cancel confirmation popup is displayed with:', (table: DataTable) => {
+  log('step', 'Clicking Cancel and asserting Cancel confirmation popup', { rows: table.raw() });
+  actions().clickCancelAndAssertConfirmationPopupFromTable(table);
+});
+
+When('I click Cancel without having entered anything, I am returned to the Inputter Dashboard', () => {
+  log('step', 'Clicking Cancel without entering data and asserting return to Inputter Dashboard');
+  originatorType().clickCancel();
+  dashboard().assertDashboard();
 });
 
 When(
@@ -73,4 +89,9 @@ Then('the global banner clears after refresh on the {string} page', (expectedHea
 Then('the error page shows:', (table: DataTable) => {
   log('assert', 'Asserting error page content', { rows: table.raw() });
   actions().assertErrorPageContent(table);
+});
+
+Then('the Global API Interceptor page passes accessibility checks', () => {
+  log('assert', 'Running accessibility checks for Global API Interceptor page');
+  accessibilityActions().checkAccessibilityOnly();
 });

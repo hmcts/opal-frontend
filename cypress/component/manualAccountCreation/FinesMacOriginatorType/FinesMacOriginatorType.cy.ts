@@ -39,4 +39,79 @@ describe('Manual account creation - Originator Type', () => {
     cy.get(DOM.continueButton).click({ force: true });
     cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
   });
+
+  it(
+    'AC2: routes to Create account view when "New account" is selected and Continue is clicked',
+    { tags: ['@PO-2763'] },
+    () => {
+      const props: IFinesComponentProperties = {
+        draftAccountId: '100',
+        fragments: undefined,
+        componentUrl: `${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
+        interceptedRoutes: ['create-account', 'dashboard'],
+        isCheckerUser: false,
+      };
+      setupFinesMacComponent(props);
+
+      cy.get(DOM.originatorType.createNew).check({ force: true }).should('be.checked');
+      cy.get(DOM.continueButton).click({ force: true });
+
+      cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
+    },
+  );
+
+  it(
+    'AC2: routes to Create account view when "Transfer in from England or Wales" is selected and Continue is clicked',
+    { tags: ['@PO-2763'] },
+    () => {
+      const props: IFinesComponentProperties = {
+        draftAccountId: '100',
+        fragments: undefined,
+        componentUrl: `${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
+        interceptedRoutes: ['create-account', 'dashboard'],
+        isCheckerUser: false,
+      };
+      setupFinesMacComponent(props);
+
+      cy.get(DOM.originatorType.transferIn).check({ force: true }).should('be.checked');
+      cy.get(DOM.continueButton).click({ force: true });
+
+      cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
+    },
+  );
+
+  it(
+    'AC4: clicking Continue without making a selection shows error "Select an option" and does not navigate',
+    { tags: ['@PO-2763'] },
+    () => {
+      const props: IFinesComponentProperties = {
+        draftAccountId: '100',
+        fragments: undefined,
+        componentUrl: `${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
+        interceptedRoutes: ['create-account', 'dashboard'],
+        isCheckerUser: false,
+      };
+      setupFinesMacComponent(props);
+
+      cy.get(DOM.continueButton).click({ force: true });
+      cy.contains('Select an option').should('be.visible');
+
+      cy.get('@routerNavigate').should('not.have.been.calledWith', ['create-account']);
+    },
+  );
+
+  it('AC5: clicking Cancel without entering anything returns to the Inputter Dashboard', { tags: ['@PO-2763'] }, () => {
+    const props: IFinesComponentProperties = {
+      draftAccountId: '100',
+      fragments: undefined,
+      componentUrl: `${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
+      interceptedRoutes: ['create-account', 'dashboard'],
+      isCheckerUser: false,
+    };
+    setupFinesMacComponent(props);
+
+    cy.get(DOM.cancelLink).click({ force: true });
+
+    cy.get('@routerNavigate').should('have.been.called');
+  });
 });
