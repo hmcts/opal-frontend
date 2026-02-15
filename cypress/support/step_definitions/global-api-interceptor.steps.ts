@@ -41,6 +41,18 @@ When('I click the Cancel button and the Cancel confirmation popup is displayed w
   actions().clickCancelAndAssertConfirmationPopupFromTable(table);
 });
 
+When('I open Manual Account Creation without triggering business units errors', () => {
+  log('step', 'Opening Manual Account Creation without stubbing business units errors');
+  dashboard().assertDashboard();
+  dashboard().goToManualAccountCreation();
+  originatorType().assertOnCreateOrTransferInPage();
+});
+
+When('I begin entering details on the Originator Type page', () => {
+  log('step', 'Beginning to enter details on Originator Type page');
+  originatorType().selectOriginatorType('New');
+});
+
 When('I click Cancel without having entered anything, I am returned to the Inputter Dashboard', () => {
   log('step', 'Clicking Cancel without entering data and asserting return to Inputter Dashboard');
   originatorType().clickCancel();
@@ -79,6 +91,11 @@ Then('the global error banner is displayed', () => {
 Then('the global warning banner is displayed with:', (table: DataTable) => {
   log('assert', 'Asserting global warning banner', { rows: table.raw() });
   actions().assertGlobalWarningBannerFromTable(table);
+});
+
+Then('the global banner is not displayed', () => {
+  log('assert', 'Asserting global banner is not displayed');
+  actions().assertGlobalBannerNotVisible();
 });
 
 Then('the global banner clears after refresh on the {string} page', (expectedHeader: string) => {
