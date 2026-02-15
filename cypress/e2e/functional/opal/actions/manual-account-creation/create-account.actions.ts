@@ -25,7 +25,7 @@ export class ManualCreateAccountActions {
    *
    * @param expectedHeader Optional header text to assert.
    */
-  assertOnCreateAccountPage(expectedHeader: string = 'Business unit and defendant type'): void {
+  assertOnCreateAccountPage(expectedHeader: string = 'Create account'): void {
     log('assert', 'Asserting manual account creation landing page', { expectedHeader });
     cy.get(L.pageHeader, { timeout: 15_000 }).should('contain.text', expectedHeader);
   }

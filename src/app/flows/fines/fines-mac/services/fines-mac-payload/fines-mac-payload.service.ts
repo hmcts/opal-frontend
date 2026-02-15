@@ -71,6 +71,7 @@ export class FinesMacPayloadService {
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
     const { formData: fixedPenaltyDetails } = finesMacState.fixedPenaltyDetails;
+    const { formData: originatorTypeState } = finesMacState.originatorType;
 
     const offenceDetailsForms = finesMacState.offenceDetails;
     const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
@@ -78,6 +79,7 @@ export class FinesMacPayloadService {
 
     // Build the parts of our payload...
     const initialPayload = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,

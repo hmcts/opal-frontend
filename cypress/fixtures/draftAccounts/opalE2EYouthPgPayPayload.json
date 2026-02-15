@@ -7,6 +7,7 @@
   "submitted_by": "L077JG",
   "submitted_by_name": "opal-test",
   "account": {
+    "originator_type": "TFO",
     "account_type": "Fine",
     "defendant_type": "pgToPay",
     "originator_name": "North East Wales Magistrates' Court",

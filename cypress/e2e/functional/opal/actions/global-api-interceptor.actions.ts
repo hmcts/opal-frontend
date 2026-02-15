@@ -314,6 +314,42 @@ export class GlobalApiInterceptorActions {
   }
 
   /**
+   * Clicks the Cancel control and asserts the confirmation popup text.
+   * @param table - DataTable containing expected popup text values.
+   * @remarks Dismisses the popup after assertion so the scenario can choose to confirm/dismiss later.
+   * @example
+   * actions.clickCancelAndAssertConfirmationPopupFromTable(table);
+   */
+  public clickCancelAndAssertConfirmationPopupFromTable(table: DataTable): void {
+    const rows = this.readKeyValueRows(table).filter((row) => !this.isHeaderRow(row));
+    const expectedValues = rows.map((row) => row.value.trim()).filter(Boolean);
+    let confirmationPopupShown = false;
+
+    log('action', 'Clicking Cancel and asserting confirmation popup text', { expectedValues });
+
+    cy.once('window:confirm', (message) => {
+      confirmationPopupShown = true;
+      const normalizedMessage = String(message).replace(/\s+/g, ' ').trim().toLowerCase();
+
+      expectedValues.forEach((value) => {
+        const expected = value.replace(/\s+/g, ' ').trim().toLowerCase();
+        expect(normalizedMessage).to.include(expected);
+      });
+
+      return false;
+    });
+
+    cy.contains('a.govuk-link, button, [role="button"]', /^cancel$/i, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+
+    cy.then(() => {
+      expect(confirmationPopupShown, 'Cancel confirmation popup should be displayed').to.be.true;
+    });
+  }
+
+  /**
    * Reads key/value rows from a DataTable for shared parsing.
    * @param table - DataTable containing key/value pairs.
    * @returns Parsed key/value rows with trimmed values.

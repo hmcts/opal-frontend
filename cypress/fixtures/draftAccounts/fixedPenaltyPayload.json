@@ -1,4 +1,3 @@
-
 {
   "draft_account_id": null,
   "created_at": null,
@@ -8,6 +7,7 @@
   "submitted_by": "L077JG",
   "submitted_by_name": "opal-test",
   "account": {
+    "originator_type": "FP",
     "account_type": "Fixed Penalty",
     "defendant_type": "adultOrYouthOnly",
     "originator_name": "Fixed Penalty Office",

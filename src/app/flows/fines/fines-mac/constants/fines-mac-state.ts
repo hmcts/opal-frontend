@@ -13,8 +13,10 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-prefe
 import { FINES_MAC_OFFENCE_DETAILS_FORM_EMPTY } from '../fines-mac-offence-details/constants/fines-mac-offence-details-form-empty.constant';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-form';
 import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-account-confirmation/constants/fines-mac-delete-account-confirmation-form';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM } from '../fines-mac-originator-type/constants/fines-mac-originator-type-form.constant';
 
 export const FINES_MAC_STATE: IFinesMacState = {
+  originatorType: FINES_MAC_ORIGINATOR_TYPE_FORM,
   accountDetails: FINES_MAC_ACCOUNT_DETAILS_FORM,
   employerDetails: FINES_MAC_EMPLOYER_DETAILS_FORM,
   contactDetails: FINES_MAC_CONTACT_DETAILS_FORM,

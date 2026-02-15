@@ -12,7 +12,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
 
       When I attempt to open Manual Account Creation and the business units request fails with <errorCode>
       Then the global error banner is displayed
-      And the global banner clears after refresh on the "Dashboard" page
+      And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
       Examples:
         | errorCode |
@@ -34,15 +34,15 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | title        | Temporary System Issue                         |
         | message      | Please try again later or contact the help desk. |
         | operation id | OP12345                                        |
-      And the global banner clears after refresh on the "Dashboard" page
+      And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
-    @PO-2109
+    @PO-2109 
     Scenario: Global warning banner appears for business units network failures
       When I attempt to open Manual Account Creation and the business units request fails due to a network error
       Then the global warning banner is displayed with:
         | field   | value                                                             |
         | message | You can try again. If the problem persists, contact the service desk. |
-      And the global banner clears after refresh on the "Dashboard" page
+      And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
     @PO-2108
     Scenario: Internal Server Error page is displayed for non-retriable business units errors
@@ -69,7 +69,32 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | header  | You do not have permission for this                                         |
         | message | the account is outside your business unit and some features are restricted |
         | message | you are not permitted to use this feature                                   |
-        | message | If you think this is incorrect, contact your line manager.                  |
+        | message | If you think this is incorrect, contact your line manager.  |
+        
+    
+    @PO-2763 
+    #AC-6 click cancel
+    Scenario: Clicking Cancel after beginning to enter information, display the Cancel pop-up before navigating away
+      When I open Manual Account Creation without triggering business units errors
+      Then the global banner is not displayed
+      And I begin entering details on the Originator Type page
+      And I click the Cancel button and the Cancel confirmation popup is displayed with:
+        | field   | value                                         |
+        | message | WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes. |
+
+    @PO-2763
+    #AC-5 click cancel without entering details
+    Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
+      When I open Manual Account Creation without triggering business units errors
+      Then the global banner is not displayed
+      And I click Cancel without having entered anything, I am returned to the Inputter Dashboard
+
+    @PO-2763
+    #AC-7 Originator type page with warning banner passes accessibility checks
+    Scenario: Originator type page passes accessibility checks without global banner
+      When I open Manual Account Creation without triggering business units errors
+      Then the global banner is not displayed
+      And the Global API Interceptor page passes accessibility checks
 
   Rule: Account search entrypoint
 
@@ -93,3 +118,4 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message      | Please try again later or contact the help desk. |
         | operation id | OP12345                                        |
       And the global banner clears after refresh on the "Search for an account" page
+ 
