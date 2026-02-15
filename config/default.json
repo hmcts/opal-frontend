@@ -25,6 +25,9 @@
     },
     "app-insights": {
       "enabled": false
+    },
+    "ip-logging": {
+      "enabled": false
     }
   },
   "session": {
