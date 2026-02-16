@@ -1,4 +1,5 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { describe, it, expect } from 'vitest';
 import { createExactlyOneCriteriaValidator } from './exactly-one-criteria.validator';
 
 describe('createExactlyOneCriteriaValidator', () => {
