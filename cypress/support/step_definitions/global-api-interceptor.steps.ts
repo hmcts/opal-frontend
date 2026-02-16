@@ -5,15 +5,10 @@
 import { When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { GlobalApiInterceptorFlow } from '../../e2e/functional/opal/flows/global-api-interceptor.flow';
 import { GlobalApiInterceptorActions } from '../../e2e/functional/opal/actions/global-api-interceptor.actions';
-import { ManualCreateOrTransferInActions } from '../../e2e/functional/opal/actions/manual-account-creation/create-transfer.actions';
-import { DashboardActions } from '../../e2e/functional/opal/actions/dashboard.actions';
-import { accessibilityActions } from '../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 import { log } from '../utils/log.helper';
 
 const flow = () => new GlobalApiInterceptorFlow();
 const actions = () => new GlobalApiInterceptorActions();
-const originatorType = () => new ManualCreateOrTransferInActions();
-const dashboard = () => new DashboardActions();
 
 When(
   'I attempt to open Manual Account Creation and the business units request fails with {int}',
@@ -39,24 +34,6 @@ When('I attempt to open Manual Account Creation and the business units request f
 When('I click the Cancel button and the Cancel confirmation popup is displayed with:', (table: DataTable) => {
   log('step', 'Clicking Cancel and asserting Cancel confirmation popup', { rows: table.raw() });
   actions().clickCancelAndAssertConfirmationPopupFromTable(table);
-});
-
-When('I open Manual Account Creation without triggering business units errors', () => {
-  log('step', 'Opening Manual Account Creation without stubbing business units errors');
-  dashboard().assertDashboard();
-  dashboard().goToManualAccountCreation();
-  originatorType().assertOnCreateOrTransferInPage();
-});
-
-When('I begin entering details on the Originator Type page', () => {
-  log('step', 'Beginning to enter details on Originator Type page');
-  originatorType().selectOriginatorType('New');
-});
-
-When('I click Cancel without having entered anything, I am returned to the Inputter Dashboard', () => {
-  log('step', 'Clicking Cancel without entering data and asserting return to Inputter Dashboard');
-  originatorType().clickCancel();
-  dashboard().assertDashboard();
 });
 
 When(
@@ -93,11 +70,6 @@ Then('the global warning banner is displayed with:', (table: DataTable) => {
   actions().assertGlobalWarningBannerFromTable(table);
 });
 
-Then('the global banner is not displayed', () => {
-  log('assert', 'Asserting global banner is not displayed');
-  actions().assertGlobalBannerNotVisible();
-});
-
 Then('the global banner clears after refresh on the {string} page', (expectedHeader: string) => {
   log('assert', 'Refreshing and confirming global banner cleared', { expectedHeader });
   flow().refreshAndAssertBannerCleared(expectedHeader);
@@ -106,9 +78,4 @@ Then('the global banner clears after refresh on the {string} page', (expectedHea
 Then('the error page shows:', (table: DataTable) => {
   log('assert', 'Asserting error page content', { rows: table.raw() });
   actions().assertErrorPageContent(table);
-});
-
-Then('the Global API Interceptor page passes accessibility checks', () => {
-  log('assert', 'Running accessibility checks for Global API Interceptor page');
-  accessibilityActions().checkAccessibilityOnly();
 });

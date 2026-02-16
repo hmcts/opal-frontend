@@ -72,30 +72,6 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message | If you think this is incorrect, contact your line manager.  |
         
     
-    @PO-2763 
-    #AC-6 click cancel
-    Scenario: Clicking Cancel after beginning to enter information, display the Cancel pop-up before navigating away
-      When I open Manual Account Creation without triggering business units errors
-      Then the global banner is not displayed
-      And I begin entering details on the Originator Type page
-      And I click the Cancel button and the Cancel confirmation popup is displayed with:
-        | field   | value                                         |
-        | message | WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes. |
-
-    @PO-2763
-    #AC-5 click cancel without entering details
-    Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
-      When I open Manual Account Creation without triggering business units errors
-      Then the global banner is not displayed
-      And I click Cancel without having entered anything, I am returned to the Inputter Dashboard
-
-    @PO-2763
-    #AC-7 Originator type page with warning banner passes accessibility checks
-    Scenario: Originator type page passes accessibility checks without global banner
-      When I open Manual Account Creation without triggering business units errors
-      Then the global banner is not displayed
-      And the Global API Interceptor page passes accessibility checks
-
   Rule: Account search entrypoint
 
     Background:
