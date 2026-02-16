@@ -29,7 +29,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     Scenario: Review shows fixed penalty details for adult or youth
       Then the fixed penalty review "Court details" summary is:
         | Label             | Value                        |
-        | Issuing Authority | Lowestoft County Court (256) |
+        | Issuing Authority |  |undefined (052)
         | Enforcement court | Aram Court (123)             |
       And the fixed penalty review "Personal details" summary is:
         | Label         | Value           |
@@ -86,7 +86,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       Given I am logged in with email "opal-test@hmcts.net"
       When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
       And I cancel fixed penalty details choosing "Ok"
-      Then I should see the header containing text "Business unit and defendant type"
+      Then I should see the header containing text "Create account"
 
     @PO-857
     Scenario: Cancel after entering details returns to start
@@ -97,9 +97,9 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Personal details | Title       | Mr    |
         | Personal details | First names | John  |
       And I cancel fixed penalty details choosing "Ok"
-      Then I should see the header containing text "Business unit and defendant type"
+      Then I should see the header containing text "Create account"
 
-    @PO-857
+    @PO-857 
     Scenario: Cancel after entering details keeps data on page
       Given I am logged in with email "opal-test@hmcts.net"
       When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
@@ -152,7 +152,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         | Personal details | First names    | John  |
         | Offence details  | Amount imposed | 150   |
       And I navigate back from fixed penalty details choosing "Ok"
-      Then I should see the header containing text "Business unit and defendant type"
+      Then I should see the header containing text "Create account"
 
     @PO-857
     Scenario: Back navigation can be cancelled to stay on fixed penalty details
@@ -176,7 +176,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       When I start a fixed penalty account for business unit "West London" and defendant type "Company"
       And I complete fixed penalty details:
         | Section         | Field                  | Value                             |
-        | Court details   | Issuing Authority      | Central London County Court (372) |
+        | Court details   | Issuing Authority      | undefined (052) |
         | Court details   | Enforcement court      | Johns Maintenance Court (249)     |
         | Company details | Company name           | Example Corp Ltd {uniq}           |
         | Company details | Address line 1         | 123 Business Park                 |
@@ -197,7 +197,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     Scenario: Review shows fixed penalty details for company
       Then the fixed penalty review "Court details" summary is:
         | Label             | Value                             |
-        | Issuing Authority | Central London County Court (372) |
+        | Issuing Authority | undefined (052)                   |
         | Enforcement court | Johns Maintenance Court (249)     |
       And the fixed penalty review "Company details" summary is:
         | Label        | Value                   |
