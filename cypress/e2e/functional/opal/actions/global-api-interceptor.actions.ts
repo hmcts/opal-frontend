@@ -10,7 +10,7 @@
  */
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
-import { FixedPenaltyReviewLocators as FixedPenaltyLocators } from '../../../../shared/selectors/manual-account-creation/fixed-penalty.locators';
+import { MacFixedPenaltyReviewLocators as FixedPenaltyLocators } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 import { CommonActions } from './common/common.actions';
 
 const log = createScopedLogger('GlobalApiInterceptorActions');

@@ -60,7 +60,7 @@ export const DOM_ELEMENTS = {
   nextPageButton: '.govuk-pagination__next',
   paginationList: '.govuk-pagination__list',
   paginationListItem: '.govuk-pagination__item',
-  paginationListItemElipsises: '.govuk-pagination__item--ellipses',
+  paginationListItemEllipses: '.govuk-pagination__item--ellipses',
   paginationCurrentPage: '.govuk-pagination__item--current',
   paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
 };

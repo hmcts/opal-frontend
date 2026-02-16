@@ -2,8 +2,8 @@
  * @file details.payment-terms.actions.ts
  * @description Actions for the Account Details "Payment terms" tab and amend form.
  */
-import { AccountPaymentTermsDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.paymen-terms.details.locators';
-import { PAYMENT_TERMS_AMEND_ELEMENTS as A } from '../../../../../shared/selectors/account-enquiries-payment-terms-amend.locators';
+import { AccountPaymentTermsDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.payment-terms.details.locators';
+import { PAYMENT_TERMS_AMEND_ELEMENTS as A } from '../../../../../shared/selectors/account-enquiry/account.enquiry.payment-terms-amend.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 

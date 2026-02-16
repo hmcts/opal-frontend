@@ -16,7 +16,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/fines_mac_review_account_mocks';
-import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
+import { MacReviewAccountLocators as DOM_ELEMENTS } from '../../../shared/selectors/manual-account-creation/mac.review-account.locators';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
