@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import {
@@ -13,6 +13,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { LETTERS_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
+import { FinesConStore } from '../../../../stores/fines-con.store';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 // Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
@@ -51,6 +52,7 @@ const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesConSearchAccountFormIndividualsComponent extends AbstractNestedFormBaseComponent {
+  private readonly finesConStore = inject(FinesConStore);
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
 
@@ -104,15 +106,28 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
     lastNameExactMatchControl: FormControl | null;
     includeAliasesControl: FormControl | null;
   } {
+    const individualsGroup = this.getIndividualsGroup();
+    if (!individualsGroup) {
+      return {
+        firstNamesControl: null,
+        dobControl: null,
+        lastNameControl: null,
+        firstNamesExactMatchControl: null,
+        lastNameExactMatchControl: null,
+        includeAliasesControl: null,
+      };
+    }
     return {
-      firstNamesControl: this.form.get('fcon_search_account_individuals_first_names') as FormControl,
-      dobControl: this.form.get('fcon_search_account_individuals_date_of_birth') as FormControl,
-      lastNameControl: this.form.get('fcon_search_account_individuals_last_name') as FormControl,
-      firstNamesExactMatchControl: this.form.get(
+      firstNamesControl: individualsGroup.get('fcon_search_account_individuals_first_names') as FormControl,
+      dobControl: individualsGroup.get('fcon_search_account_individuals_date_of_birth') as FormControl,
+      lastNameControl: individualsGroup.get('fcon_search_account_individuals_last_name') as FormControl,
+      firstNamesExactMatchControl: individualsGroup.get(
         'fcon_search_account_individuals_first_names_exact_match',
       ) as FormControl,
-      lastNameExactMatchControl: this.form.get('fcon_search_account_individuals_last_name_exact_match') as FormControl,
-      includeAliasesControl: this.form.get('fcon_search_account_individuals_include_aliases') as FormControl,
+      lastNameExactMatchControl: individualsGroup.get(
+        'fcon_search_account_individuals_last_name_exact_match',
+      ) as FormControl,
+      includeAliasesControl: individualsGroup.get('fcon_search_account_individuals_include_aliases') as FormControl,
     };
   }
 
@@ -204,6 +219,11 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
     );
   }
 
+  private getIndividualsGroup(): FormGroup | null {
+    const group = this.form.get('fcon_search_account_individuals_search_criteria');
+    return group instanceof FormGroup ? group : null;
+  }
+
   /**
    * Installs this sub-form's controls, sets up conditional validation, and syncs validators once.
    * This is the main setup orchestrator for the individuals sub-form.
@@ -212,7 +232,14 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
    */
   private setupIndividualForm(): void {
     const controlsGroup = this.buildIndividualFormControls();
-    this.addControlsToNestedFormGroup(controlsGroup);
+    const individualsGroup = this.getIndividualsGroup();
+    if (!individualsGroup) {
+      return;
+    }
+    this.addControlsToNestedFormGroup(controlsGroup, individualsGroup);
+    individualsGroup.patchValue(
+      this.finesConStore.searchAccountForm().fcon_search_account_individuals_search_criteria ?? {},
+    );
     this.setupConditionalValidation();
     this.handleConditionalValidation();
   }

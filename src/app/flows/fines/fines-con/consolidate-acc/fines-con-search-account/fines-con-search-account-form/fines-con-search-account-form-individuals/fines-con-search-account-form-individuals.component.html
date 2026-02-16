@@ -7,7 +7,7 @@
     inputId="fcon_search_account_individuals_last_name"
     inputName="fcon_search_account_individuals_last_name"
     inputClasses="govuk-input--width-20"
-    [control]="form.get('fcon_search_account_individuals_last_name')"
+    [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')"
     [errors]="formControlErrorMessages['fcon_search_account_individuals_last_name']"
   ></opal-lib-govuk-text-input>
 </div>
@@ -19,7 +19,9 @@
     inputId="fcon_search_account_individuals_last_name_exact_match"
     inputName="fcon_search_account_individuals_last_name_exact_match"
     class="govuk-checkboxes--small"
-    [control]="form.get('fcon_search_account_individuals_last_name_exact_match')"
+    [control]="
+      form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name_exact_match')
+    "
   ></div>
 </opal-lib-govuk-checkboxes>
 
@@ -30,7 +32,7 @@
     inputId="fcon_search_account_individuals_first_names"
     inputName="fcon_search_account_individuals_first_names"
     inputClasses="govuk-input--width-20"
-    [control]="form.get('fcon_search_account_individuals_first_names')"
+    [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names')"
     [errors]="formControlErrorMessages['fcon_search_account_individuals_first_names']"
   ></opal-lib-govuk-text-input>
 </div>
@@ -42,7 +44,11 @@
     inputId="fcon_search_account_individuals_first_names_exact_match"
     inputName="fcon_search_account_individuals_first_names_exact_match"
     class="govuk-checkboxes--small"
-    [control]="form.get('fcon_search_account_individuals_first_names_exact_match')"
+    [control]="
+      form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names_exact_match'
+      )
+    "
   ></div>
 </opal-lib-govuk-checkboxes>
 
@@ -53,7 +59,7 @@
     inputId="fcon_search_account_individuals_include_aliases"
     inputName="fcon_search_account_individuals_include_aliases"
     class="govuk-checkboxes--small"
-    [control]="form.get('fcon_search_account_individuals_include_aliases')"
+    [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_include_aliases')"
   ></div>
 </opal-lib-govuk-checkboxes>
 
@@ -64,9 +70,11 @@
   inputName="fcon_search_account_individuals_date_of_birth"
   inputClasses="govuk-input--width-10"
   hintText="For example, 31/01/2023"
-  [control]="form.get('fcon_search_account_individuals_date_of_birth')!"
+  [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth')!"
   [errors]="formControlErrorMessages['fcon_search_account_individuals_date_of_birth']"
-  (dateChange)="setInputValue($event, 'fcon_search_account_individuals_date_of_birth')"
+  (dateChange)="
+    setInputValue($event, 'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth')
+  "
 ></opal-lib-moj-date-picker>
 
 <opal-lib-govuk-text-input
@@ -75,7 +83,9 @@
   inputId="fcon_search_account_individuals_address_line_1"
   inputName="fcon_search_account_individuals_address_line_1"
   inputClasses="govuk-!-width-three-quarters"
-  [control]="form.get('fcon_search_account_individuals_address_line_1')"
+  [control]="
+    form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1')
+  "
   [errors]="formControlErrorMessages['fcon_search_account_individuals_address_line_1']"
 ></opal-lib-govuk-text-input>
 
@@ -85,6 +95,6 @@
   inputId="fcon_search_account_individuals_post_code"
   inputName="fcon_search_account_individuals_post_code"
   inputClasses="govuk-input--width-10"
-  [control]="form.get('fcon_search_account_individuals_post_code')"
+  [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code')"
   [errors]="formControlErrorMessages['fcon_search_account_individuals_post_code']"
 ></opal-lib-govuk-text-input>

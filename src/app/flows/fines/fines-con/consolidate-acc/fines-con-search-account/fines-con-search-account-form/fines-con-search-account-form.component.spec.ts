@@ -47,11 +47,9 @@ describe('FinesConSearchAccountFormComponent', () => {
     expect(component.form.get('fcon_search_account_number')).toBeTruthy();
   });
 
-  it('should have individual search form controls when defendantType is individual', () => {
+  it('should have individuals nested search group when defendantType is individual', () => {
     component.defendantType = 'individual';
-    expect(component.form.get('fcon_search_account_individuals_last_name')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_first_names')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_date_of_birth')).toBeTruthy();
+    expect(component.form.get('fcon_search_account_individuals_search_criteria')).toBeTruthy();
   });
 
   it('should have company search form controls when defendantType is company', () => {

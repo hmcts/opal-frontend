@@ -97,6 +97,7 @@ export const FinesConStore = signalStore(
         selectBuForm: FINES_CON_SELECT_BU_FORM,
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
         stateChanges: false,
+        activeTab: 'search',
         unsavedChanges: false,
       });
     },

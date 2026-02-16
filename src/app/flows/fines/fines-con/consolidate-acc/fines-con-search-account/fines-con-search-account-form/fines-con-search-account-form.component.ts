@@ -14,6 +14,7 @@ import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
 import { consolidateSearchAccountFormValidator } from './validators/fines-con-search-account-form.validator';
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-con-search-account-form-individuals/constants/fines-con-search-account-form-individuals-field-errors.constant';
+import { exclusiveSearchFieldValidator } from '../validators/fines-con-search-account.validator';
 
 // Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
 const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_PATTERN = /^[a-zA-Z0-9\s'-]*$/;
@@ -75,7 +76,9 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
           ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
           Validators.maxLength(9),
         ]),
-        fcon_search_account_individuals_search_criteria: new FormGroup({}),
+        fcon_search_account_individuals_search_criteria: new FormGroup({}, {
+          validators: exclusiveSearchFieldValidator(),
+        }),
       },
       { validators: consolidateSearchAccountFormValidator },
     );
