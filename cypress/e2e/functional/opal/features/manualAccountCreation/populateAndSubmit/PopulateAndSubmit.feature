@@ -9,13 +9,13 @@ Feature: Manual account creation - Create Draft Account
     When I open Manual Account Creation
     And I begin entering details on the Originator Type page
     And I cancel without entering data
-      
-   @PO-2763 
-    #AC-5 click cancel without entering details
-    Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
-      When I open Manual Account Creation
-      Then I cancel without entering data
-      Then I should be on the dashboard
+
+  @PO-2763
+  #AC-5 click cancel without entering details
+  Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
+    When I open Manual Account Creation
+    Then I cancel without entering data
+    Then I should be on the dashboard
 
   @PO-1448 @PO-1638 @PO-1872
   Scenario: Mixed creditors offence review shows correct totals and summary
