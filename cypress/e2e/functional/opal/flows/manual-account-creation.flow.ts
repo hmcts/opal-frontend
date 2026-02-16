@@ -1372,6 +1372,9 @@ export class ManualAccountCreationFlow {
   goToManualAccountCreationFromDashboard(): void {
     log('flow', 'Navigate to Manual Account Creation from dashboard');
     this.dashboard.assertDashboard();
+    this.ensureOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.ensureOnCreateAccountPage();
   }
 
