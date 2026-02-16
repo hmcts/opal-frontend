@@ -106,32 +106,45 @@ describe('FinesConStore', () => {
     expect(store.unsavedChanges()).toBe(false);
   });
 
-  it('should compute business unit name correctly', () => {
-    store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
-
-    expect(store.getBusinessUnitName()).toBe(
-      FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData.fcon_select_bu_business_unit_name,
-    );
-  });
-
   it('should update search account form temporarily', () => {
     const testData: IFinesConSearchAccountState = {
-      ...FINES_CON_SEARCH_ACCOUNT_STATE,
       fcon_search_account_number: '12345678',
-      fcon_search_account_individuals_last_name: 'Smith',
+      fcon_search_account_national_insurance_number: null,
+      fcon_search_account_individuals_search_criteria: {
+        fcon_search_account_individuals_last_name: 'Smith',
+        fcon_search_account_individuals_last_name_exact_match: null,
+        fcon_search_account_individuals_first_names: null,
+        fcon_search_account_individuals_first_names_exact_match: null,
+        fcon_search_account_individuals_include_aliases: null,
+        fcon_search_account_individuals_date_of_birth: null,
+        fcon_search_account_individuals_address_line_1: null,
+        fcon_search_account_individuals_post_code: null,
+      },
     };
 
     store.updateSearchAccountFormTemporary(testData);
 
     expect(store.searchAccountForm().fcon_search_account_number).toBe('12345678');
-    expect(store.searchAccountForm().fcon_search_account_individuals_last_name).toBe('Smith');
+    expect(
+      store.searchAccountForm().fcon_search_account_individuals_search_criteria
+        ?.fcon_search_account_individuals_last_name,
+    ).toBe('Smith');
   });
 
   it('should reset search account form to initial state', () => {
     const testData: IFinesConSearchAccountState = {
-      ...FINES_CON_SEARCH_ACCOUNT_STATE,
       fcon_search_account_number: '12345678',
-      fcon_search_account_individuals_last_name: 'Smith',
+      fcon_search_account_national_insurance_number: null,
+      fcon_search_account_individuals_search_criteria: {
+        fcon_search_account_individuals_last_name: 'Smith',
+        fcon_search_account_individuals_last_name_exact_match: null,
+        fcon_search_account_individuals_first_names: null,
+        fcon_search_account_individuals_first_names_exact_match: null,
+        fcon_search_account_individuals_include_aliases: null,
+        fcon_search_account_individuals_date_of_birth: null,
+        fcon_search_account_individuals_address_line_1: null,
+        fcon_search_account_individuals_post_code: null,
+      },
     };
 
     store.updateSearchAccountFormTemporary(testData);
@@ -141,25 +154,96 @@ describe('FinesConStore', () => {
 
     expect(store.searchAccountForm()).toEqual(FINES_CON_SEARCH_ACCOUNT_STATE);
     expect(store.searchAccountForm().fcon_search_account_number).toBeNull();
-    expect(store.searchAccountForm().fcon_search_account_individuals_last_name).toBeNull();
+    expect(
+      store.searchAccountForm().fcon_search_account_individuals_search_criteria
+        ?.fcon_search_account_individuals_last_name,
+    ).toBeNull();
   });
 
   it('should preserve search account form data when updating', () => {
     const initialData: IFinesConSearchAccountState = {
-      ...FINES_CON_SEARCH_ACCOUNT_STATE,
       fcon_search_account_number: '12345678',
+      fcon_search_account_national_insurance_number: null,
+      fcon_search_account_individuals_search_criteria: {
+        fcon_search_account_individuals_last_name: null,
+        fcon_search_account_individuals_last_name_exact_match: null,
+        fcon_search_account_individuals_first_names: null,
+        fcon_search_account_individuals_first_names_exact_match: null,
+        fcon_search_account_individuals_include_aliases: null,
+        fcon_search_account_individuals_date_of_birth: null,
+        fcon_search_account_individuals_address_line_1: null,
+        fcon_search_account_individuals_post_code: null,
+      },
     };
 
     store.updateSearchAccountFormTemporary(initialData);
 
     const updatedData: IFinesConSearchAccountState = {
-      ...store.searchAccountForm(),
-      fcon_search_account_individuals_last_name: 'Smith',
+      fcon_search_account_number: '12345678',
+      fcon_search_account_national_insurance_number: null,
+      fcon_search_account_individuals_search_criteria: {
+        fcon_search_account_individuals_last_name: 'Smith',
+        fcon_search_account_individuals_last_name_exact_match: null,
+        fcon_search_account_individuals_first_names: null,
+        fcon_search_account_individuals_first_names_exact_match: null,
+        fcon_search_account_individuals_include_aliases: null,
+        fcon_search_account_individuals_date_of_birth: null,
+        fcon_search_account_individuals_address_line_1: null,
+        fcon_search_account_individuals_post_code: null,
+      },
     };
 
     store.updateSearchAccountFormTemporary(updatedData);
 
     expect(store.searchAccountForm().fcon_search_account_number).toBe('12345678');
-    expect(store.searchAccountForm().fcon_search_account_individuals_last_name).toBe('Smith');
+    expect(
+      store.searchAccountForm().fcon_search_account_individuals_search_criteria
+        ?.fcon_search_account_individuals_last_name,
+    ).toBe('Smith');
+  });
+
+  describe('resetStateChangesUnsavedChanges', () => {
+    it('should reset both stateChanges and unsavedChanges flags to false', () => {
+      store.setStateChanges(true);
+      store.setUnsavedChanges(true);
+
+      expect(store.stateChanges()).toBe(true);
+      expect(store.unsavedChanges()).toBe(true);
+
+      store.resetStateChangesUnsavedChanges();
+
+      expect(store.stateChanges()).toBe(false);
+      expect(store.unsavedChanges()).toBe(false);
+    });
+
+    it('should reset stateChanges flag when only stateChanges is true', () => {
+      store.setStateChanges(true);
+
+      expect(store.stateChanges()).toBe(true);
+
+      store.resetStateChangesUnsavedChanges();
+
+      expect(store.stateChanges()).toBe(false);
+    });
+
+    it('should reset unsavedChanges flag when only unsavedChanges is true', () => {
+      store.setUnsavedChanges(true);
+
+      expect(store.unsavedChanges()).toBe(true);
+
+      store.resetStateChangesUnsavedChanges();
+
+      expect(store.unsavedChanges()).toBe(false);
+    });
+
+    it('should keep both flags false when already false', () => {
+      expect(store.stateChanges()).toBe(false);
+      expect(store.unsavedChanges()).toBe(false);
+
+      store.resetStateChangesUnsavedChanges();
+
+      expect(store.stateChanges()).toBe(false);
+      expect(store.unsavedChanges()).toBe(false);
+    });
   });
 });

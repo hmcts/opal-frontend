@@ -1,11 +1,15 @@
-import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import {
+  IAbstractFormBaseFieldError,
+  IAbstractFormBaseFieldErrors,
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
-/**
- * Field-specific error messages for the Individuals search form.
- * These errors override the base errors for this tab.
- */
-export interface IFinesConSearchAccountFormIndividualsFieldErrors {
-  fcon_search_account_individuals_last_name: IAbstractFormControlErrorMessage;
-  fcon_search_account_individuals_first_names: IAbstractFormControlErrorMessage;
-  fcon_search_account_individuals_date_of_birth: IAbstractFormControlErrorMessage;
+export interface IFinesConSearchAccountFormIndividualsFieldErrors extends IAbstractFormBaseFieldErrors {
+  fcon_search_account_individuals_last_name: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_last_name_exact_match: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_first_names: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_first_names_exact_match: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_include_aliases: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_date_of_birth: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_address_line_1: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_post_code: IAbstractFormBaseFieldError;
 }

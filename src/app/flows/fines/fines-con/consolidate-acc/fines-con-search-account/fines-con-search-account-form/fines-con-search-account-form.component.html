@@ -32,11 +32,11 @@
         <opal-lib-govuk-text-input
           labelText="National Insurance number"
           labelClasses="govuk-label--s"
-          inputId="fcon_search_account_individuals_national_insurance_number"
-          inputName="fcon_search_account_individuals_national_insurance_number"
+          inputId="fcon_search_account_national_insurance_number"
+          inputName="fcon_search_account_national_insurance_number"
           inputClasses="govuk-input--width-10"
-          [control]="form.get('fcon_search_account_individuals_national_insurance_number')"
-          [errors]="formControlErrorMessages['fcon_search_account_individuals_national_insurance_number']"
+          [control]="form.get('fcon_search_account_national_insurance_number')"
+          [errors]="formControlErrorMessages['fcon_search_account_national_insurance_number']"
         ></opal-lib-govuk-text-input>
       </div>
     }
@@ -56,9 +56,7 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
         <opal-lib-govuk-button buttonId="submitForm" type="submit">Search</opal-lib-govuk-button>
-        <a href="#" class="govuk-link govuk-!-margin-left-3" (click)="clearSearchForm(); $event.preventDefault()">
-          Clear search
-        </a>
+        <a href="#" class="govuk-link govuk-!-margin-left-3" (click)="clearSearchForm($event)"> Clear search </a>
       </div>
     </div>
   </form>

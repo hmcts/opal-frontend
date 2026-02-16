@@ -39,20 +39,22 @@ describe('finesConFlowStateGuard', () => {
       providers: [FinesConStore, { provide: Router, useValue: mockRouter }],
     });
 
-    (mockRouter.createUrlTree as ReturnType<typeof vi.fn>).mockReturnValue(new UrlTree());
+    mockRouter.createUrlTree.mockReturnValue(new UrlTree());
 
     mockFinesConStore = TestBed.inject(FinesConStore);
   });
 
-  it('should return true if business unit ID and defendant type are present (individual)', async () => {
+  it('should return true if stateChanges is true and BU ID and defendant type are present (individual)', async () => {
     mockFinesConStore.updateSelectBuFormComplete(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
+    mockFinesConStore.setStateChanges(true);
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
     expect(result).toBe(true);
   });
 
-  it('should return true if business unit ID and defendant type are present (company)', async () => {
+  it('should return true if stateChanges is true and BU ID and defendant type are present (company)', async () => {
     mockFinesConStore.updateSelectBuFormComplete(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK);
+    mockFinesConStore.setStateChanges(true);
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
     expect(result).toBe(true);
@@ -61,7 +63,6 @@ describe('finesConFlowStateGuard', () => {
   it('should return false and redirect if business unit ID is missing', async () => {
     mockFinesConStore.updateSelectBuForm({
       fcon_select_bu_business_unit_id: null,
-      fcon_select_bu_business_unit_name: 'Test BU',
       fcon_select_bu_defendant_type: 'individual',
     });
 
@@ -76,9 +77,20 @@ describe('finesConFlowStateGuard', () => {
   it('should return false and redirect if defendant type is missing', async () => {
     mockFinesConStore.updateSelectBuForm({
       fcon_select_bu_business_unit_id: 123,
-      fcon_select_bu_business_unit_name: 'Test BU',
       fcon_select_bu_defendant_type: null,
     });
+
+    const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
+      queryParams: undefined,
+      fragment: undefined,
+    });
+  });
+
+  it('should return false and redirect if stateChanges is false', async () => {
+    mockFinesConStore.updateSelectBuFormComplete(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK);
+    mockFinesConStore.setStateChanges(false);
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
     expect(result).toBeInstanceOf(UrlTree);
@@ -91,8 +103,21 @@ describe('finesConFlowStateGuard', () => {
   it('should return false and redirect if both business unit ID and defendant type are missing', async () => {
     mockFinesConStore.updateSelectBuForm({
       fcon_select_bu_business_unit_id: null,
-      fcon_select_bu_business_unit_name: 'Test BU',
       fcon_select_bu_defendant_type: null,
+    });
+
+    const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
+      queryParams: undefined,
+      fragment: undefined,
+    });
+  });
+
+  it('should return false and redirect even with stateChanges true if BU ID is missing', async () => {
+    mockFinesConStore.updateSelectBuForm({
+      fcon_select_bu_business_unit_id: null,
+      fcon_select_bu_defendant_type: 'individual',
     });
 
     const result = await runFinesConFlowStateGuardWithContext(getGuardWithDummyUrl(finesConFlowStateGuard, urlPath));

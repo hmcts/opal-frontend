@@ -11,6 +11,8 @@ export const FinesConStore = signalStore(
   withState(() => ({
     selectBuForm: FINES_CON_SELECT_BU_FORM,
     searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+    activeTab: 'search',
+    stateChanges: false,
     unsavedChanges: false,
   })),
   withHooks((store) => {
@@ -19,6 +21,8 @@ export const FinesConStore = signalStore(
         patchState(store, {
           selectBuForm: FINES_CON_SELECT_BU_FORM,
           searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+          activeTab: 'search',
+          stateChanges: false,
           unsavedChanges: false,
         });
       },
@@ -31,13 +35,6 @@ export const FinesConStore = signalStore(
        */
       getBusinessUnitId: computed(() => {
         return store.selectBuForm().formData.fcon_select_bu_business_unit_id;
-      }),
-
-      /**
-       * Gets the selected business unit name
-       */
-      getBusinessUnitName: computed(() => {
-        return store.selectBuForm().formData.fcon_select_bu_business_unit_name;
       }),
 
       /**
@@ -58,6 +55,7 @@ export const FinesConStore = signalStore(
           ...store.selectBuForm(),
           formData,
         },
+        stateChanges: true,
       });
     },
 
@@ -98,7 +96,26 @@ export const FinesConStore = signalStore(
       patchState(store, {
         selectBuForm: FINES_CON_SELECT_BU_FORM,
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+        stateChanges: false,
         unsavedChanges: false,
+      });
+    },
+
+    /**
+     * Sets the active tab in consolidation page
+     */
+    setActiveTab: (activeTab: string) => {
+      patchState(store, {
+        activeTab,
+      });
+    },
+
+    /**
+     * Updates the state changes flag
+     */
+    setStateChanges: (stateChanges: boolean) => {
+      patchState(store, {
+        stateChanges,
       });
     },
 
@@ -109,6 +126,13 @@ export const FinesConStore = signalStore(
       patchState(store, {
         unsavedChanges,
       });
+    },
+
+    /**
+     * Resets both state changes and unsaved changes flags
+     */
+    resetStateChangesUnsavedChanges: () => {
+      patchState(store, { stateChanges: false, unsavedChanges: false });
     },
   })),
 );

@@ -10,9 +10,10 @@ import { FinesConSearchAccountFormIndividualsComponent } from './fines-con-searc
 import { IFinesConSearchAccountFieldErrors } from '../interfaces/fines-con-search-account-field-errors.interface';
 import { FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-con-search-account-field-errors.constant';
 import { CommonModule } from '@angular/common';
-import { IFinesConDefendantType } from '../../../interfaces/fines-con-defendant-type.interface';
-import { exclusiveSearchFieldValidator } from './validators/fines-con-search-account-form-exclusive-field.validator';
+import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
+import { consolidateSearchAccountFormValidator } from './validators/fines-con-search-account-form.validator';
 import { FinesConStore } from '../../../stores/fines-con.store';
+import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-con-search-account-form-individuals/constants/fines-con-search-account-form-individuals-field-errors.constant';
 
 // Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
 const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_PATTERN = /^[a-zA-Z0-9\s'-]*$/;
@@ -54,8 +55,11 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
   private readonly finesConStore = inject(FinesConStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesConSearchAccountForm>();
-  override fieldErrors: IFinesConSearchAccountFieldErrors = FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS;
-  @Input({ required: true }) defendantType: IFinesConDefendantType = 'individual';
+  override fieldErrors: IFinesConSearchAccountFieldErrors = {
+    ...FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS,
+    ...FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
+  };
+  @Input({ required: true }) defendantType: FinesConDefendant = 'individual';
 
   /**
    * Creates the form with quick search fields and detail search fields.
@@ -67,12 +71,13 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
           patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
           Validators.maxLength(9),
         ]),
-        fcon_search_account_individuals_national_insurance_number: new FormControl<string | null>(null, [
+        fcon_search_account_national_insurance_number: new FormControl<string | null>(null, [
           ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
           Validators.maxLength(9),
         ]),
+        fcon_search_account_individuals_search_criteria: new FormGroup({}),
       },
-      { validators: exclusiveSearchFieldValidator },
+      { validators: consolidateSearchAccountFormValidator },
     );
   }
 
@@ -100,8 +105,11 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
    *
    * Resets the form to its initial state, clearing all search criteria.
    * The Results and For consolidation tabs are not affected.
+   *
+   * @param event The click event from the clear link
    */
-  public clearSearchForm(): void {
+  public clearSearchForm(event: Event): void {
+    event.preventDefault();
     this.form.reset();
     this.clearAllErrorMessages();
     this.setInitialErrorMessages();

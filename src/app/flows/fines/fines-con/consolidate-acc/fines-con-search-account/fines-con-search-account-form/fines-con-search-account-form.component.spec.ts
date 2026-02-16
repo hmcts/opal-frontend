@@ -58,7 +58,7 @@ describe('FinesConSearchAccountFormComponent', () => {
     component.defendantType = 'company';
     // Verify that the component has the basic controls created by setupSearchAccountForm
     expect(component.form.get('fcon_search_account_number')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_national_insurance_number')).toBeTruthy();
+    expect(component.form.get('fcon_search_account_national_insurance_number')).toBeTruthy();
   });
 
   it('should call store.updateSearchAccountFormTemporary with form value when setSearchAccountTemporary is called', () => {
@@ -76,7 +76,7 @@ describe('FinesConSearchAccountFormComponent', () => {
     component.form.patchValue(formValue);
     expect(component.form.get('fcon_search_account_number')?.value).toBe('12345678');
 
-    component.clearSearchForm();
+    component.clearSearchForm(new Event('click'));
 
     expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
   });

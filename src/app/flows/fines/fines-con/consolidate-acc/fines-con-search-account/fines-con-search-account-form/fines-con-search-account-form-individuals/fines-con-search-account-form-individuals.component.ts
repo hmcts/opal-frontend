@@ -237,7 +237,7 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
    * Angular lifecycle hook: initialise the Individuals sub-form.
    * Orchestrates the setup of all individual search controls and validation logic.
    */
-  override ngOnInit(): void {
+  public override ngOnInit(): void {
     super.ngOnInit();
     this.setupIndividualForm();
   }

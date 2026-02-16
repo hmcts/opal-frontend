@@ -1,66 +1,56 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import { describe, it, expect } from 'vitest';
-import { activeTabCriteriaValidator } from './fines-con-search-account.validator';
+import { exclusiveSearchFieldValidator } from './fines-con-search-account.validator';
 
-describe('fines-con-search-account.validator', () => {
-  describe('activeTabCriteriaValidator', () => {
-    it('should return null when individual tab has exactly one criterion', () => {
-      const formGroup = new FormGroup({
-        fcon_search_account_individuals_last_name: new FormControl('Smith'),
-        fcon_search_account_individuals_first_names: new FormControl(null),
-        fcon_search_account_individuals_date_of_birth: new FormControl(null),
-        fcon_search_account_companies_name: new FormControl(null),
-        fcon_search_account_companies_reference_number: new FormControl(null),
-      });
-
-      const validator = activeTabCriteriaValidator('individual');
-      expect(validator(formGroup)).toBeNull();
+describe('exclusiveSearchFieldValidator', () => {
+  it('should return null when exactly one individuals criterion is provided', () => {
+    const formGroup = new FormGroup({
+      fcon_search_account_individuals_last_name: new FormControl('Smith'),
+      fcon_search_account_individuals_first_names: new FormControl(null),
+      fcon_search_account_individuals_date_of_birth: new FormControl(null),
     });
 
-    it('should return error when individual tab has no criteria', () => {
-      const formGroup = new FormGroup({
-        fcon_search_account_individuals_last_name: new FormControl(null),
-        fcon_search_account_individuals_first_names: new FormControl(null),
-        fcon_search_account_individuals_date_of_birth: new FormControl(null),
-        fcon_search_account_companies_name: new FormControl(null),
-        fcon_search_account_companies_reference_number: new FormControl(null),
-      });
+    const validator = exclusiveSearchFieldValidator();
+    expect(validator(formGroup)).toBeNull();
+  });
 
-      const validator = activeTabCriteriaValidator('individual');
-      expect(validator(formGroup)).toEqual({ formEmpty: true });
+  it('should return error when no criteria are provided', () => {
+    const formGroup = new FormGroup({
+      fcon_search_account_individuals_last_name: new FormControl(null),
+      fcon_search_account_individuals_first_names: new FormControl(null),
+      fcon_search_account_individuals_date_of_birth: new FormControl(null),
     });
 
-    it('should return null when company tab has exactly one criterion', () => {
-      const formGroup = new FormGroup({
-        fcon_search_account_individuals_last_name: new FormControl(null),
-        fcon_search_account_individuals_first_names: new FormControl(null),
-        fcon_search_account_individuals_date_of_birth: new FormControl(null),
-        fcon_search_account_companies_name: new FormControl('Acme Corp'),
-        fcon_search_account_companies_reference_number: new FormControl(null),
-      });
+    const validator = exclusiveSearchFieldValidator();
+    expect(validator(formGroup)).toEqual({ formEmpty: true });
+  });
 
-      const validator = activeTabCriteriaValidator('company');
-      expect(validator(formGroup)).toBeNull();
+  it('should return null when first names criterion is provided', () => {
+    const formGroup = new FormGroup({
+      fcon_search_account_individuals_last_name: new FormControl(null),
+      fcon_search_account_individuals_first_names: new FormControl('John'),
+      fcon_search_account_individuals_date_of_birth: new FormControl(null),
     });
 
-    it('should return error when company tab has no criteria', () => {
-      const formGroup = new FormGroup({
-        fcon_search_account_individuals_last_name: new FormControl(null),
-        fcon_search_account_individuals_first_names: new FormControl(null),
-        fcon_search_account_individuals_date_of_birth: new FormControl(null),
-        fcon_search_account_companies_name: new FormControl(null),
-        fcon_search_account_companies_reference_number: new FormControl(null),
-      });
+    const validator = exclusiveSearchFieldValidator();
+    expect(validator(formGroup)).toBeNull();
+  });
 
-      const validator = activeTabCriteriaValidator('company');
-      expect(validator(formGroup)).toEqual({ formEmpty: true });
+  it('should return null when date of birth criterion is provided', () => {
+    const formGroup = new FormGroup({
+      fcon_search_account_individuals_last_name: new FormControl(null),
+      fcon_search_account_individuals_first_names: new FormControl(null),
+      fcon_search_account_individuals_date_of_birth: new FormControl('01/01/1990'),
     });
 
-    it('should return null when control is not a FormGroup', () => {
-      const formControl = new FormControl('test');
+    const validator = exclusiveSearchFieldValidator();
+    expect(validator(formGroup)).toBeNull();
+  });
 
-      const validator = activeTabCriteriaValidator('individual');
-      expect(validator(formControl)).toBeNull();
-    });
+  it('should return null when control is not a FormGroup', () => {
+    const formControl = new FormControl('test');
+
+    const validator = exclusiveSearchFieldValidator();
+    expect(validator(formControl)).toBeNull();
   });
 });

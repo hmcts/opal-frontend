@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { FinesConSearchAccountFormComponent } from './fines-con-search-account-form/fines-con-search-account-form.component';
 import { IFinesConSearchAccountForm } from './interfaces/fines-con-search-account-form.interface';
-import { IFinesConDefendantType } from '../../interfaces/fines-con-defendant-type.interface';
+import { FinesConDefendant } from '../../types/fines-con-defendant.type';
 import { FinesConStore } from '../../stores/fines-con.store';
 
 /**
@@ -18,7 +18,7 @@ import { FinesConStore } from '../../stores/fines-con.store';
 })
 export class FinesConSearchAccountComponent {
   private readonly finesConStore = inject(FinesConStore);
-  @Input({ required: true }) defendantType: IFinesConDefendantType = 'individual';
+  @Input({ required: true }) defendantType: FinesConDefendant = 'individual';
 
   /**
    * Handles the search account form submission.
@@ -27,7 +27,7 @@ export class FinesConSearchAccountComponent {
    *
    * @param form - The submitted search form data
    */
-  handleSearchAccountSubmit(form: IFinesConSearchAccountForm): void {
+  public handleSearchAccountSubmit(form: IFinesConSearchAccountForm): void {
     this.finesConStore.updateSearchAccountFormTemporary(form.formData);
     this.finesConStore.setUnsavedChanges(false);
   }
@@ -36,7 +36,7 @@ export class FinesConSearchAccountComponent {
    * Updates the internal and store state to track unsaved changes.
    * @param unsavedChanges - Boolean flag indicating if the form has unsaved changes.
    */
-  handleUnsavedChanges(unsavedChanges: boolean): void {
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.finesConStore.setUnsavedChanges(unsavedChanges);
   }
 }

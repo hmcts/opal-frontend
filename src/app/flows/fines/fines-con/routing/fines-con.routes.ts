@@ -46,8 +46,9 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [consolidationRootPermissionIds['consolidate']],
+      permission: 'CONSOLIDATE',
       title: FINES_CON_ROUTING_TITLES.children.consolidateAcc,
     },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
 ];

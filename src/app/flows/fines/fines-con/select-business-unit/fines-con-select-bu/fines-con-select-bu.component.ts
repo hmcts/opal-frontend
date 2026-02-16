@@ -33,7 +33,6 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
     if (result.refData.length === 1 && !formData.fcon_select_bu_business_unit_id) {
       this.finesConStore.updateSelectBuForm({
         fcon_select_bu_business_unit_id: result.refData[0].business_unit_id,
-        fcon_select_bu_business_unit_name: result.refData[0].business_unit_name,
         fcon_select_bu_defendant_type: formData.fcon_select_bu_defendant_type,
       });
     }
@@ -65,14 +64,8 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
    * Stores the data in the consolidation store for use across the flow
    */
   public handleFormSubmit(formData: IFinesConSelectBuForm): void {
-    const selectedBusinessUnitId = formData.formData.fcon_select_bu_business_unit_id;
-    const selectedBusinessUnit = this.businessUnitsRefData.refData.find(
-      (bu) => bu.business_unit_id === selectedBusinessUnitId,
-    );
-
     this.finesConStore.updateSelectBuForm({
       fcon_select_bu_business_unit_id: formData.formData.fcon_select_bu_business_unit_id,
-      fcon_select_bu_business_unit_name: selectedBusinessUnit?.business_unit_name || null,
       fcon_select_bu_defendant_type: formData.formData.fcon_select_bu_defendant_type,
     });
     this.routerNavigate(FINES_CON_ROUTING_PATHS.children.consolidateAcc);

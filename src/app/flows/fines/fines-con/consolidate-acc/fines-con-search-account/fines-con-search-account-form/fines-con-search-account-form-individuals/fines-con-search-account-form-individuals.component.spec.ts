@@ -35,16 +35,8 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
       fcon_search_account_individuals_postcode: new FormControl(null),
     });
 
-    const errorMessages: IAbstractFormControlErrorMessage = {
-      fcon_search_account_individuals_last_name: 'Last name',
-      fcon_search_account_individuals_first_names: 'First names',
-      fcon_search_account_individuals_date_of_birth: 'Date of birth',
-      fcon_search_account_individuals_aliases: 'Aliases',
-      fcon_search_account_individuals_address_line_1: 'Address line 1',
-      fcon_search_account_individuals_postcode: 'Postcode',
-    };
-
-    component.formControlErrorMessages = errorMessages;
+    // Provide empty error messages to prevent template errors
+    component.formControlErrorMessages = {} as IAbstractFormControlErrorMessage;
 
     fixture.detectChanges();
   });
