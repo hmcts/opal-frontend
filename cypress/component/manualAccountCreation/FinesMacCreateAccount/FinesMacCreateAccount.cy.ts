@@ -64,7 +64,6 @@ describe('FinesMacCreateAccountComponent', () => {
   it('(AC.1)should render all elements on the page correctly and have correct text', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
-    cy.get(L.createAccountCaption).should('exist');
     cy.get(L.heading).should('exist');
 
     cy.get(L.businessUnitHint).should('exist');
@@ -79,8 +78,7 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(L.conditionalCautionInput).should('exist');
     cy.get(L.conditionalCautionLabel).should('exist');
 
-    cy.get(L.createAccountCaption).should('contain', 'Create account');
-    cy.get(L.heading).should('contain', 'Business unit and defendant type');
+    cy.get(L.heading).should('contain', 'Create account');
 
     cy.get(L.businessUnitHint).should('contain', 'Enter area where the account is to be created');
     cy.get(L.businessUnitLabel).should('contain', 'Business unit');
