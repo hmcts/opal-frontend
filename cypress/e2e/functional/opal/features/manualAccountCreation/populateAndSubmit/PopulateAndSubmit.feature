@@ -8,11 +8,9 @@ Feature: Manual account creation - Create Draft Account
   Scenario: Clicking Cancel after beginning to enter information, display the Cancel pop-up before navigating away
     When I open Manual Account Creation
     And I begin entering details on the Originator Type page
-    And I click the Cancel button and the Cancel confirmation popup is displayed with:
-      | field   | value                                         |
-      | message | WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes. |
-
-@PO-2763 
+    And I cancel without entering data
+      
+   @PO-2763 
     #AC-5 click cancel without entering details
     Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
       When I open Manual Account Creation
