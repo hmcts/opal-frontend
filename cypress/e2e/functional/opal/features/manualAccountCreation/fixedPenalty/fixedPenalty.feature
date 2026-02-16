@@ -5,32 +5,32 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       Given I am logged in with email "opal-test@hmcts.net"
       When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
       And I complete fixed penalty details:
-        | Section          | Field                  | Value                        |
-        | Court details    | Issuing Authority      | Lowestoft County Court (256) |
-        | Court details    | Enforcement court      | Aram Court (123)             |
-        | Personal details | Title                  | Mr                           |
-        | Personal details | First names            | John                         |
-        | Personal details | Last name              | Smith{uniq}                  |
-        | Personal details | Date of birth          | 01/01/1980                   |
-        | Personal details | Address line 1         | 123 High Street              |
-        | Personal details | Postcode               | SW1A 1AA                     |
-        | Offence details  | Notice number          | FPN1234                      |
-        | Offence details  | Offence type           | Vehicle                      |
-        | Offence details  | Date of offence        | 01/01/2023                   |
-        | Offence details  | Offence code           | HY35014                      |
-        | Offence details  | Time of offence        | 14:30                        |
-        | Offence details  | Place of offence       | Oxford Street - London       |
-        | Offence details  | Amount imposed         | 150                          |
-        | Vehicle details  | Registration number    | AB12CDE                      |
-        | Vehicle details  | Driving licence number | SMITH010123JS9AB             |
+        | Section          | Field                  | Value                                 |
+        | Court details    | Issuing Authority      | West London Magistrates' Court (2578) |
+        | Court details    | Enforcement court      | Aram Court (123)                      |
+        | Personal details | Title                  | Mr                                    |
+        | Personal details | First names            | John                                  |
+        | Personal details | Last name              | Smith{uniq}                           |
+        | Personal details | Date of birth          | 01/01/1980                            |
+        | Personal details | Address line 1         | 123 High Street                       |
+        | Personal details | Postcode               | SW1A 1AA                              |
+        | Offence details  | Notice number          | FPN1234                               |
+        | Offence details  | Offence type           | Vehicle                               |
+        | Offence details  | Date of offence        | 01/01/2023                            |
+        | Offence details  | Offence code           | HY35014                               |
+        | Offence details  | Time of offence        | 14:30                                 |
+        | Offence details  | Place of offence       | Oxford Street - London                |
+        | Offence details  | Amount imposed         | 150                                   |
+        | Vehicle details  | Registration number    | AB12CDE                               |
+        | Vehicle details  | Driving licence number | SMITH010123JS9AB                      |
       And I review the fixed penalty account
 
     @PO-857 @PO-861
     Scenario: Review shows fixed penalty details for adult or youth
       Then the fixed penalty review "Court details" summary is:
-        | Label             | Value                        |
-        | Issuing Authority |  |undefined (052)
-        | Enforcement court | Aram Court (123)             |
+        | Label             | Value                                 |
+        | Issuing Authority | West London Magistrates' Court (2578) |
+        | Enforcement court | Aram Court (123)                      |
       And the fixed penalty review "Personal details" summary is:
         | Label         | Value           |
         | Title         | Mr              |
@@ -99,7 +99,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       And I cancel fixed penalty details choosing "Ok"
       Then I should see the header containing text "Create account"
 
-    @PO-857 
+    @PO-857
     Scenario: Cancel after entering details keeps data on page
       Given I am logged in with email "opal-test@hmcts.net"
       When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
@@ -175,30 +175,30 @@ Feature: Manual fixed penalty account creation - Create Draft Account
       Given I am logged in with email "opal-test@hmcts.net"
       When I start a fixed penalty account for business unit "West London" and defendant type "Company"
       And I complete fixed penalty details:
-        | Section         | Field                  | Value                             |
-        | Court details   | Issuing Authority      | undefined (052) |
-        | Court details   | Enforcement court      | Johns Maintenance Court (249)     |
-        | Company details | Company name           | Example Corp Ltd {uniq}           |
-        | Company details | Address line 1         | 123 Business Park                 |
-        | Company details | Address line 2         | Commerce Way                      |
-        | Company details | Postcode               | EC1A 1BB                          |
-        | Offence details | Notice number          | CORP2025                          |
-        | Offence details | Offence type           | Vehicle                           |
-        | Offence details | Date of offence        | 05/07/2025                        |
-        | Offence details | Offence code           | HY35014                           |
-        | Offence details | Time of offence        | 10:15                             |
-        | Offence details | Place of offence       | London Borough of Westminster     |
-        | Offence details | Amount imposed         | 500                               |
-        | Vehicle details | Registration number    | CP12COR                           |
-        | Vehicle details | Driving licence number | SMITH010123JS9AB                  |
+        | Section         | Field                  | Value                         |
+        | Court details   | Issuing Authority      | undefined (052)               |
+        | Court details   | Enforcement court      | Johns Maintenance Court (249) |
+        | Company details | Company name           | Example Corp Ltd {uniq}       |
+        | Company details | Address line 1         | 123 Business Park             |
+        | Company details | Address line 2         | Commerce Way                  |
+        | Company details | Postcode               | EC1A 1BB                      |
+        | Offence details | Notice number          | CORP2025                      |
+        | Offence details | Offence type           | Vehicle                       |
+        | Offence details | Date of offence        | 05/07/2025                    |
+        | Offence details | Offence code           | HY35014                       |
+        | Offence details | Time of offence        | 10:15                         |
+        | Offence details | Place of offence       | London Borough of Westminster |
+        | Offence details | Amount imposed         | 500                           |
+        | Vehicle details | Registration number    | CP12COR                       |
+        | Vehicle details | Driving licence number | SMITH010123JS9AB              |
       And I review the fixed penalty account
 
     @PO-861
     Scenario: Review shows fixed penalty details for company
       Then the fixed penalty review "Court details" summary is:
-        | Label             | Value                             |
-        | Issuing Authority | undefined (052)                   |
-        | Enforcement court | Johns Maintenance Court (249)     |
+        | Label             | Value                         |
+        | Issuing Authority | undefined (052)               |
+        | Enforcement court | Johns Maintenance Court (249) |
       And the fixed penalty review "Company details" summary is:
         | Label        | Value                   |
         | Company name | Example Corp Ltd {uniq} |
