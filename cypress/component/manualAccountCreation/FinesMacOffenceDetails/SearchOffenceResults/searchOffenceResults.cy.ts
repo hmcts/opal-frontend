@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { ActivatedRoute } from '@angular/router';
-import { DOM_ELEMENTS } from './constants/search_offence_results_elements_mock';
+import { MacOffenceDetailsSearchOffenceResultsLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { provideHttpClient } from '@angular/common/http';
 import { NO_SEARCH_RESULTS_MOCK, TEST_CASES_MOCK, FULL_SEARCH_RESULTS_MOCK } from './mocks/offence_search_results_mock';
 import { FinesMacOffenceDetailsSearchOffencesStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-search-offences/stores/fines-mac-offence-details-search-offences.store';
