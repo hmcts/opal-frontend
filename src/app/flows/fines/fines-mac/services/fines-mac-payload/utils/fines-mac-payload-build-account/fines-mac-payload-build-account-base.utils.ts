@@ -5,6 +5,7 @@ import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fi
 import { IFinesMacOffenceDetailsState } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-state.interface';
 import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { IFinesMacPayloadAccountAccountInitial } from '../../interfaces/fines-mac-payload-account-initial.interface';
+import { IFinesMacOriginatorTypeState } from '@app/flows/fines/fines-mac/fines-mac-originator-type/interfaces/fines-mac-originator-type-state.interface';
 
 /**
  * Sorts an array of offence details by the date of sentence.
@@ -52,6 +53,7 @@ const sortOffenceDetailsByDate = (
  * @returns The initial payload for fines MAC.
  */
 export const finesMacPayloadBuildAccountBase = (
+  originatorTypeState: IFinesMacOriginatorTypeState,
   accountDetailsState: IFinesMacAccountDetailsState,
   courtDetailsState: IFinesMacCourtDetailsState,
   paymentTermsState: IFinesMacPaymentTermsState,
@@ -59,10 +61,14 @@ export const finesMacPayloadBuildAccountBase = (
   fixedPenaltyDetails: IFinesMacFixedPenaltyDetailsStoreState,
 ): IFinesMacPayloadAccountAccountInitial => {
   let earliestDateOfSentence = null;
+  let originator_type = null;
   if (accountDetailsState.fm_create_account_account_type === FINES_ACCOUNT_TYPES['Fixed Penalty']) {
     earliestDateOfSentence = fixedPenaltyDetails.fm_offence_details_date_of_offence;
+    // For fixed penalty accounts, the originator type is always 'FP', regardless of the value in the originator type state
+    originator_type = 'FP';
   } else {
     earliestDateOfSentence = sortOffenceDetailsByDate(offenceDetailsState)[0].fm_offence_details_date_of_sentence;
+    originator_type = originatorTypeState.fm_originator_type_originator_type;
   }
 
   const { fm_create_account_account_type: account_type, fm_create_account_defendant_type: defendant_type } =
@@ -88,6 +94,7 @@ export const finesMacPayloadBuildAccountBase = (
     defendant_type,
     originator_name,
     originator_id,
+    originator_type,
     prosecutor_case_reference,
     enforcement_court_id,
     collection_order_made: collection_order_made ?? null,

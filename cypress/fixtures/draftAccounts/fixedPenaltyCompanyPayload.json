@@ -1,4 +1,3 @@
-
 {
   "draft_account_id": null,
   "created_at": null,
@@ -8,6 +7,7 @@
   "submitted_by": "L077JG",
   "submitted_by_name": "opal-test",
   "account": {
+    "originator_type": "FP",
     "account_type": "Fixed Penalty",
     "defendant_type": "company",
     "originator_name": "Fixed Penalty Office",
@@ -91,7 +91,7 @@
       "notice_to_hirer_number": "NTH987654",
       "date_notice_to_owner_issued": "2025-05-12",
       "time_of_offence": "09:45",
-      "driving_licence_number": null    
+      "driving_licence_number": null
     },
     "payment_terms": {
       "payment_terms_type_code": "I",

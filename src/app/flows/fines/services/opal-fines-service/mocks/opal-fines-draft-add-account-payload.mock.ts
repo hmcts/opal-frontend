@@ -11,6 +11,7 @@ export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IFinesMacAddAccountPaylo
     defendant_type: 'adultOrYouthOnly',
     originator_name: 'Asylum & Immigration Tribunal',
     originator_id: '3865',
+    originator_type: 'NEW',
     prosecutor_case_reference: 'a',
     enforcement_court_id: '6246',
     collection_order_made: false,

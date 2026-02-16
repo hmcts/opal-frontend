@@ -8,6 +8,7 @@ import { DefendantType, ManualCreateAccountActions } from '../actions/manual-acc
 import { FixedPenaltyDetailsActions } from '../actions/manual-account-creation/fixed-penalty-details.actions';
 import { FixedPenaltyReviewActions } from '../actions/manual-account-creation/fixed-penalty-review.actions';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
+import { ManualCreateOrTransferInActions } from '../actions/manual-account-creation/create-transfer.actions';
 
 const log = createScopedLogger('FixedPenaltyFlow');
 
@@ -16,10 +17,10 @@ const log = createScopedLogger('FixedPenaltyFlow');
  */
 export class FixedPenaltyFlow {
   private readonly dashboard = new DashboardActions();
+  private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly details = new FixedPenaltyDetailsActions();
   private readonly review = new FixedPenaltyReviewActions();
-
   /**
    * Starts a Fixed Penalty account from the dashboard.
    * @param businessUnit - Business unit to select.
@@ -29,6 +30,9 @@ export class FixedPenaltyFlow {
     log('flow', 'Starting Fixed Penalty account', { businessUnit, defendantType });
     this.dashboard.assertDashboard();
     this.dashboard.goToManualAccountCreation();
+    this.originatorType.assertOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.createAccount.selectBusinessUnit(businessUnit);
     this.createAccount.selectAccountType('Fixed Penalty');
     this.createAccount.selectDefendantType(defendantType);
