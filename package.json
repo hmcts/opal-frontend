@@ -187,6 +187,7 @@
     "on-headers": "^1.1.0",
     "brace-expansion": "^4.0.0",
     "tmp": "^0.2.4",
+    "tar": "^7.5.8",
     "esbuild": "^0.27.0",
     "@badeball/cypress-cucumber-preprocessor/glob": "13.0.3",
     "@cucumber/cucumber/glob": "13.0.3",
