@@ -2,6 +2,7 @@ import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/in
 
 export interface IFinesMacRoutingPaths extends IChildRoutingPaths {
   children: {
+    originatorType: string;
     accountDetails: string;
     createAccount: string;
     employerDetails: string;

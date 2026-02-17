@@ -82,6 +82,28 @@ const extractSafeErrorDetails = (payload: unknown): Record<string, unknown> => {
   return details;
 };
 
+/**
+ * Removes any account-status override coming from DataTable payload overrides.
+ *
+ * Status is controlled by `newStatus` via `resolveTargetStatus()` and, when required,
+ * the subsequent PATCH request. Keeping `account_status` in the POST body can cause
+ * environment-specific validation failures (e.g. 400 in CI), so we strip it here to
+ * keep create-and-update behavior deterministic.
+ * @param overrides - Object containing overrides from the DataTable payload.
+ * @returns A sanitized object with any account_status keys removed.
+ */
+const stripAccountStatusOverride = (overrides: Record<string, unknown>): Record<string, unknown> => {
+  const sanitized = { ...overrides };
+  const removedKeys = Object.keys(sanitized).filter((key) => key.trim().toLowerCase() === 'account_status');
+  removedKeys.forEach((key) => {
+    delete sanitized[key];
+  });
+  if (removedKeys.length) {
+    log('warn', 'Ignoring account_status override from table for POST payload', { removedKeys });
+  }
+  return sanitized;
+};
+
 const readNumericId = (body: Record<string, unknown>): number | undefined => {
   const raw = body['draft_account_id'] ?? body['id'] ?? body['account_id'];
   if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
@@ -283,7 +305,7 @@ export function createDraftAndSetStatus(
    * Convert the Cucumber DataTable into a nested object structure
    * used to override fields in the draft payload
    */
-  const overrides = convertDataTableToNestedObject(table);
+  const overrides = stripAccountStatusOverride(convertDataTableToNestedObject(table));
 
   /** Load the base draft payload fixture for the specified draft type */
   const draftFixture = getDraftPayloadFile(draftType);

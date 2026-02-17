@@ -41,5 +41,8 @@
 
   "files.associations": {
     "yarn-audit-known-issues": "plaintext"
+  },
+  "[feature]": {
+    "editor.defaultFormatter": "alexkrechik.cucumberautocomplete"
   }
 }
