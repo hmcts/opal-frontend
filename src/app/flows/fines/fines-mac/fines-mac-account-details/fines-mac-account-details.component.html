@@ -96,8 +96,13 @@
       </div>
     }
   </opal-lib-govuk-summary-list>
-  <h2 class="govuk-heading-m">Court details</h2>
-  <ng-container *ngTemplateOutlet="courtDetails"></ng-container>
+  @if (finesMacStore.isConditionalCaution()) {
+    <h2 class="govuk-heading-m">Police and court details</h2>
+    <ng-container *ngTemplateOutlet="courtDetails; context: { isConditionalCaution: true }"></ng-container>
+  } @else {
+    <h2 class="govuk-heading-m">Court details</h2>
+    <ng-container *ngTemplateOutlet="courtDetails; context: { isConditionalCaution: false }"></ng-container>
+  }
   @switch (defendantType) {
     @case (defendantTypes[defendantTypesKeys.adultOrYouthOnly]) {
       <h2 class="govuk-heading-m">Defendant details</h2>
@@ -287,7 +292,7 @@
   </opal-lib-govuk-task-list-item>
 </ng-template>
 
-<ng-template #courtDetails>
+<ng-template #courtDetails let-isConditionalCaution="isConditionalCaution">
   <opal-lib-govuk-task-list taskListId="courtDetails" taskListClasses="govuk-!-margin-left-0 ">
     <opal-lib-govuk-task-list-item
       taskListItemId="courtDetailsItem"
@@ -302,7 +307,7 @@
           tabindex="0"
           aria-describedby="courtDetailsStatus"
         >
-          Court details
+          {{ isConditionalCaution ? 'Police and court details' : 'Court details' }}
         </a>
       </ng-container>
       <ng-container status>

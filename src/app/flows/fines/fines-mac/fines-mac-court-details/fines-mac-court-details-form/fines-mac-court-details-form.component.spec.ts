@@ -12,6 +12,11 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACCOUNT_TYPES } from '@app/flows/fines/constants/fines-account-types.constant';
+import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../../fines-mac-create-account/mocks/fines-mac-create-account-form.mock';
+import { FINES_MAC_CREATE_ACCOUNT_STATE_MOCK } from '../../fines-mac-create-account/mocks/fines-mac-create-account-state.mock';
+import { FINES_MAC_BUSINESS_UNIT_STATE } from '../../constants/fines-mac-business-unit-state';
+import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 
 describe('FinesMacCourtDetailsFormComponent', () => {
   let component: FinesMacCourtDetailsFormComponent;
@@ -103,5 +108,81 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     component.form.get('fm_court_details_originator_id')?.setValue('9985');
     component['setOriginatorName']();
     expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Asylum & Immigration Tribunal');
+  });
+
+  it('should validate the label text and hint text for conditional caution and fines', () => {
+    finesMacStore.setAccountDetails(
+      {
+        ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_CREATE_ACCOUNT_STATE_MOCK,
+          fm_create_account_account_type: FINES_ACCOUNT_TYPES['Conditional Caution'],
+        },
+      },
+      FINES_MAC_BUSINESS_UNIT_STATE,
+      FINES_MAC_LANGUAGE_PREFERENCES_FORM,
+    );
+    expect(component.originatorIdLabelText).toBe('Sending police force');
+    expect(component.originatorHintText).toBe(
+      'Search using the code or name of the sending police force that sent the caution',
+    );
+
+    finesMacStore.setAccountDetails(
+      {
+        ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_CREATE_ACCOUNT_STATE_MOCK,
+          fm_create_account_account_type: FINES_ACCOUNT_TYPES['Fine'],
+        },
+      },
+      FINES_MAC_BUSINESS_UNIT_STATE,
+      FINES_MAC_LANGUAGE_PREFERENCES_FORM,
+    );
+    expect(component.originatorIdLabelText).toBe('Sending area or Local Justice Area (LJA)');
+    expect(component.originatorHintText).toBe('Search using the code or name of the area that sent the transfer');
+  });
+
+  it('should set field errors with conditional caution message', () => {
+    finesMacStore.setAccountDetails(
+      {
+        ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_CREATE_ACCOUNT_STATE_MOCK,
+          fm_create_account_account_type: FINES_ACCOUNT_TYPES['Conditional Caution'],
+        },
+      },
+      FINES_MAC_BUSINESS_UNIT_STATE,
+      FINES_MAC_LANGUAGE_PREFERENCES_FORM,
+    );
+    component['setFieldErrors']();
+    expect(component['fieldErrors']['fm_court_details_originator_id']['required']['message']).toBe(
+      'Enter a sending police force',
+    );
+  });
+
+  it('should set field errors with fine message', () => {
+    finesMacStore.setAccountDetails(
+      {
+        ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_CREATE_ACCOUNT_STATE_MOCK,
+          fm_create_account_account_type: FINES_ACCOUNT_TYPES['Fine'],
+        },
+      },
+      FINES_MAC_BUSINESS_UNIT_STATE,
+      FINES_MAC_LANGUAGE_PREFERENCES_FORM,
+    );
+    component['setFieldErrors']();
+    expect(component['fieldErrors']['fm_court_details_originator_id']['required']['message']).toBe(
+      'Enter a sending area or Local Justice Area',
+    );
+  });
+
+  it('should setup court details form with all required controls', () => {
+    component['setupCourtDetailsForm']();
+    expect(component.form.get('fm_court_details_originator_id')).toBeTruthy();
+    expect(component.form.get('fm_court_details_prosecutor_case_reference')).toBeTruthy();
+    expect(component.form.get('fm_court_details_imposing_court_id')).toBeTruthy();
+    expect(component.form.get('fm_court_details_originator_name')).toBeTruthy();
   });
 });

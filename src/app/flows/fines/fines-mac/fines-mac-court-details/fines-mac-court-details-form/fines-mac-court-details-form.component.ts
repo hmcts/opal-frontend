@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
-import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
@@ -48,8 +47,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  private readonly finesMacStore = inject(FinesMacStore);
-
+  protected readonly finesMacStore = inject(FinesMacStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
@@ -58,7 +56,41 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   @Input({ required: true }) public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-  override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
+
+  public get originatorIdLabelText(): string {
+    return this.finesMacStore.isConditionalCaution()
+      ? 'Sending police force'
+      : 'Sending area or Local Justice Area (LJA)';
+  }
+
+  public get originatorHintText(): string {
+    return this.finesMacStore.isConditionalCaution()
+      ? 'Search using the code or name of the sending police force that sent the caution'
+      : 'Search using the code or name of the area that sent the transfer';
+  }
+
+  /**
+   * Sets field-specific error messages for the court details form.
+   * Merges default field error definitions with dynamic error messages,
+   * particularly for the originator ID field which varies based on whether
+   * a conditional caution is active.
+   *
+   * @private
+   */
+  private setFieldErrors(): void {
+    this.fieldErrors = {
+      ...FINES_MAC_COURT_DETAILS_FIELD_ERRORS,
+      fm_court_details_originator_id: {
+        ...FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_originator_id,
+        required: {
+          ...FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_originator_id['required'],
+          message: this.finesMacStore.isConditionalCaution()
+            ? 'Enter a sending police force'
+            : 'Enter a sending area or Local Justice Area',
+        },
+      },
+    };
+  }
 
   /**
    * Sets up the court details form with the necessary form controls.
@@ -115,6 +147,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   private initialCourtDetailsSetup(): void {
     const { formData } = this.finesMacStore.courtDetails();
     this.setupCourtDetailsForm();
+    this.setFieldErrors();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
   }

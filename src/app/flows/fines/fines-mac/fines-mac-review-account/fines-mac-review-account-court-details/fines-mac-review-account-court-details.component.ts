@@ -41,7 +41,16 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   public prosecutor!: string | null;
   public issuingAuthority!: string | null;
   public accountTypesKeys = FINES_ACCOUNT_TYPES;
-  public cardTitle = 'Court Details';
+
+  public get cardTitle(): string {
+    if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
+      return 'Issuing authority and court details';
+    } else if (this.accountType === this.accountTypesKeys['Conditional Caution']) {
+      return 'Police and court details';
+    } else {
+      return 'Court details';
+    }
+  }
 
   /**
    * Retrieves the enforcement court details based on the court ID from the court details.
@@ -115,21 +124,6 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
-   * Sets the card title based on the account type.
-   * If the account type is a fixed penalty, it sets the title to 'Issuing authority and court details',
-   * otherwise it sets it to 'Court details'.
-   *
-   * @private
-   */
-  private setCardTitle(): void {
-    if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      this.cardTitle = 'Issuing authority and court details';
-    } else {
-      this.cardTitle = 'Court details';
-    }
-  }
-
-  /**
    * Emits an event to indicate that court details needs changed.
    * This method triggers the `emitChangeCourtDetails` event emitter.
    */
@@ -139,6 +133,5 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getCourtDetailsData();
-    this.setCardTitle();
   }
 }

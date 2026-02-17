@@ -35,6 +35,7 @@ import { IFinesMacFixedPenaltyDetailsStoreForm } from '../fines-mac-fixed-penalt
 import { IFinesMacDeleteAccountConfirmationForm } from '../fines-mac-delete-account-confirmation/interfaces/fines-mac-delete-account-confirmation-form.interface';
 import { FINES_MAC_ORIGINATOR_TYPE_FORM } from '../fines-mac-originator-type/constants/fines-mac-originator-type-form.constant';
 import { IFinesMacOriginatorTypeForm } from '../fines-mac-originator-type/interfaces/fines-mac-originator-type-form.interface';
+import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 
 export const FinesMacStore = signalStore(
   { providedIn: 'root' },
@@ -70,6 +71,11 @@ export const FinesMacStore = signalStore(
     const utilsService = inject(UtilsService);
 
     return {
+      isConditionalCaution: computed(() => {
+        return (
+          store.accountDetails().formData.fm_create_account_account_type === FINES_ACCOUNT_TYPES['Conditional Caution']
+        );
+      }),
       getAccountType: computed(() => {
         return store.accountDetails().formData.fm_create_account_account_type!;
       }),
