@@ -39,6 +39,7 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor.interface';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MAJOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-major-creditors/constants/fines-sa-search-account-form-major-creditors-field-errors.constants';
+import { ACCOUNT_NUMBER_PATTERN } from '@app/flows/fines/constants/fines-regex-patterns.constant';
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -145,7 +146,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       {
         fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
         fsa_search_account_number: new FormControl<string | null>(null, [
-          patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
+          patternValidator(ACCOUNT_NUMBER_PATTERN, 'invalidFormat'),
           ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(9),
         ]),
