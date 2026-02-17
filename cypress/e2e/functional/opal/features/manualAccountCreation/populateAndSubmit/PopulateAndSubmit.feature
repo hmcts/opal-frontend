@@ -3,6 +3,20 @@ Feature: Manual account creation - Create Draft Account
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
 
+  @PO-2763
+  #AC-6 click cancel
+  Scenario: Clicking Cancel after beginning to enter information, display the Cancel pop-up before navigating away
+    When I open Manual Account Creation
+    And I begin entering details on the Originator Type page
+    And I cancel without entering data
+
+  @PO-2763
+  #AC-5 click cancel without entering details
+  Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
+    When I open Manual Account Creation
+    Then I cancel without entering data
+    Then I should be on the dashboard
+
   @PO-1448 @PO-1638 @PO-1872
   Scenario: Mixed creditors offence review shows correct totals and summary
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and I view the "Offence details" task

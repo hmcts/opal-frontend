@@ -7,6 +7,7 @@
  * - Used by Cypress actions/flows to keep feature steps selector-free.
  */
 export const MacCreateAccountLocators = {
+  backLink: '.govuk-back-link',
   createAccountCaption: 'span.govuk-caption-l',
   heading: 'h1.govuk-heading-l',
   app: 'div.govuk-grid-column-two-thirds',

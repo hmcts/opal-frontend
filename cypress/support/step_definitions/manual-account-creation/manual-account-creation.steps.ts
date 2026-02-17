@@ -14,6 +14,7 @@ import {
   ManualCreateAccountActions,
   DefendantType,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
+import { ManualCreateOrTransferInActions } from '../../../e2e/functional/opal/actions/manual-account-creation/create-transfer.actions';
 import { ManualAccountCommentsNotesActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
 import { ManualCourtFieldKey } from '../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import {
@@ -62,6 +63,7 @@ const companyDetails = () => new ManualCompanyDetailsActions();
 const contactDetails = () => new ManualContactDetailsActions();
 const common = () => new CommonActions();
 const createAccount = () => new ManualCreateAccountActions();
+const originatorType = () => new ManualCreateOrTransferInActions();
 const languagePreferences = () => new ManualLanguagePreferencesActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
@@ -88,7 +90,7 @@ When(
   'I start a fine manual account for business unit {string} with defendant type {string}',
   (businessUnit: string, defendantType: DefendantType) => {
     log('step', 'Starting manual account creation', { businessUnit, defendantType });
-    flow().startFineAccount(businessUnit, defendantType);
+    flow().startFineAccount(businessUnit, defendantType, 'New');
   },
 );
 /**
@@ -100,7 +102,7 @@ When(
   'I start a fine manual account using the default business unit with defendant type {string}',
   (defendantType: DefendantType) => {
     log('step', 'Starting manual account creation with default business unit (no BU provided)', { defendantType });
-    flow().startFineAccount('default business unit', defendantType);
+    flow().startFineAccount('default business unit', defendantType, 'New');
   },
 );
 /**
@@ -129,6 +131,14 @@ When(
 When('I open Manual Account Creation from the dashboard', () => {
   log('step', 'Opening Manual Account Creation from dashboard');
   flow().goToManualAccountCreationFromDashboard();
+});
+/**
+ * @step Selects "New" on the create-or-transfer-in page.
+ * @description Begins entering details on the Originator Type page by selecting the New radio option.
+ */
+When('I begin entering details on the Originator Type page', () => {
+  log('step', 'Beginning to enter details on Originator Type page');
+  originatorType().selectOriginatorType('New');
 });
 /**
  * @step Selects a business unit on the create account page.
@@ -226,7 +236,7 @@ When('I continue to manual account details', () => {
  */
 Given('I am viewing account details for a manual account', () => {
   log('step', 'Starting default manual account (West London, Adult or youth)');
-  flow().startFineAccount('West London', 'Adult or youth');
+  flow().startFineAccount('West London', 'Adult or youth', 'New');
 });
 
 /**
