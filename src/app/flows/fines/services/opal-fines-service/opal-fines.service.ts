@@ -48,6 +48,7 @@ import { OPAL_FINES_CACHE_DEFAULTS } from './constants/opal-fines-cache-defaults
 import { IOpalFinesCache } from './interfaces/opal-fines-cache.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
+import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IOpalFinesAccountRequestPaymentCardResponse } from './interfaces/opal-fines-account-request-payment-card-response.interface';
 
 @Injectable({
@@ -925,6 +926,29 @@ export class OpalFines {
     }
 
     return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
+  }
+
+  /**
+   * Retrieves the minor creditor account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified minor creditor account.
+   *
+   * @param accountId - The unique identifier of the minor creditor account.
+   * @returns An Observable that emits the minor creditor account header data.
+   */
+  public getMinorCreditorAccountHeadingData(
+    accountId: number,
+  ): Observable<IOpalFinesAccountMinorCreditorDetailsHeader> {
+    const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}/header-summary`;
+    return this.http.get<IOpalFinesAccountMinorCreditorDetailsHeader>(url, { observe: 'response' }).pipe(
+      map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHeader>) => {
+        const payload = response.body as IOpalFinesAccountMinorCreditorDetailsHeader;
+        const version = this.extractEtagVersion(response.headers);
+        return {
+          ...payload,
+          version,
+        };
+      }),
+    );
   }
 
   /**

@@ -443,7 +443,7 @@ export class AccountSearchCommonActions {
     const rawClass = String.raw`[.*+?^\${}()|[\]\\]`;
     const specialChars = new RegExp(rawClass, 'g');
     const replacement = String.raw`\$&`;
-    return value.replaceAll(specialChars, replacement);
+    return value.replace(specialChars, replacement);
   }
 
   /**

@@ -2,7 +2,7 @@
  * @file Actions for the Manual Account Creation **Minor creditor** form.
  * @description Encapsulates field entry, radio/checkbox selection, and cancel/save handling.
  */
-import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { MacOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 

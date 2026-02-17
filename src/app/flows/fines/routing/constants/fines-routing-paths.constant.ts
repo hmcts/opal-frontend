@@ -3,6 +3,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../fines-mac/routing/constants/fines
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { IFinesRoutingPaths } from '@routing/fines/interfaces/fines-routing-paths.interface';
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
+import { FINES_CON_ROUTING_PATHS } from '../../fines-con/routing/constants/fines-con-routing-paths.constant';
 
 export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
   root: 'fines',
@@ -11,5 +12,6 @@ export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
     draft: FINES_DRAFT_ROUTING_PATHS,
     acc: FINES_ACC_ROUTING_PATHS,
     sa: FINES_SA_ROUTING_PATHS,
+    con: FINES_CON_ROUTING_PATHS,
   },
 };
