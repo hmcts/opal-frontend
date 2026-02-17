@@ -12,8 +12,10 @@ import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments
 import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
 import { IFinesMacFixedPenaltyDetailsStoreForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-form.interface';
 import { IFinesMacDeleteAccountConfirmationForm } from '../fines-mac-delete-account-confirmation/interfaces/fines-mac-delete-account-confirmation-form.interface';
+import { IFinesMacOriginatorTypeForm } from '../fines-mac-originator-type/interfaces/fines-mac-originator-type-form.interface';
 
 export interface IFinesMacState {
+  originatorType: IFinesMacOriginatorTypeForm;
   employerDetails: IFinesMacEmployerDetailsForm;
   accountDetails: IFinesMacAccountDetailsForm;
   contactDetails: IFinesMacContactDetailsForm;

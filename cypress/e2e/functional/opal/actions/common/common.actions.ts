@@ -100,7 +100,7 @@ export class CommonActions {
     log('cancel', 'Handling Cancel click', { confirmLeave });
 
     cy.once('window:confirm', (msg) => {
-      const normalized = msg.replaceAll(/\s+/g, ' ');
+      const normalized = msg.replace(/\s+/g, ' ');
       expect(normalized, 'Confirm prompt message').to.match(/unsaved changes/i);
       return confirmLeave;
     });
@@ -119,7 +119,7 @@ export class CommonActions {
    */
   public confirmNextUnsavedChanges(accept: boolean, expected: RegExp | string = /unsaved changes/i): void {
     cy.once('window:confirm', (msg) => {
-      const normalized = String(msg).replaceAll(/\s+/g, ' ');
+      const normalized = String(msg).replace(/\s+/g, ' ');
       if (expected instanceof RegExp) {
         expect(normalized).to.match(expected);
       } else {

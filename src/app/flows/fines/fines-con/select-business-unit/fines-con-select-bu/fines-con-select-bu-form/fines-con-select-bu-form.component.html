@@ -1,0 +1,54 @@
+<h1 class="govuk-heading-l">Consolidate accounts</h1>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+  @if (autoCompleteItems.length === 1) {
+    <p class="govuk-body">The consolidation will be processed in {{ autoCompleteItems[0].name }}</p>
+  } @else {
+    <opal-lib-alphagov-accessible-autocomplete
+      [control]="form.get('fcon_select_bu_business_unit_id')"
+      labelText="Business unit"
+      labelClasses="govuk-fieldset__legend--m"
+      inputId="fcon_select_bu_business_unit_id"
+      inputName="fcon_select_bu_business_unit_id"
+      label="Search for a business unit"
+      hintText="Enter the area where the consolidation will be processed"
+      [autoCompleteItems]="autoCompleteItems"
+      [errors]="formControlErrorMessages['fcon_select_bu_business_unit_id']"
+      [tabIndex]="0"
+    ></opal-lib-alphagov-accessible-autocomplete>
+  }
+
+  <opal-lib-govuk-radio
+    fieldSetId="fcon_select_bu_defendant_type"
+    legendText="Defendant type"
+    legendClasses="govuk-fieldset__legend--m"
+    [errors]="formControlErrorMessages['fcon_select_bu_defendant_type']"
+  >
+    @for (defendantType of defendantTypes; track defendantType.key) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="defendantType.value"
+        [inputId]="'fcon_select_bu_defendant_type-' + defendantType.key"
+        inputName="fcon_select_bu_defendant_type"
+        [inputValue]="defendantType.key"
+        [control]="form.get('fcon_select_bu_defendant_type')"
+      ></div>
+    }
+  </opal-lib-govuk-radio>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Continue</opal-lib-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(routingPath.children.dashboard, { nonRelative: true })"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</form>

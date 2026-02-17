@@ -364,7 +364,7 @@ Feature: Account Search and Matches
       | account.defendant.email_address_1   | testA@test.com |
       | account.defendant.post_code         | AB23 4RN       |
       | account.account_type                | Fine           |
-      | account.prosecutor_case_reference   | PCRAUTO010     |
+      | account.prosecutor_case_reference   | PCRUNIQ010     |
       | account.collection_order_made       | false          |
       | account.collection_order_made_today | false          |
       | account.payment_card_request        | false          |
@@ -374,17 +374,17 @@ Feature: Account Search and Matches
       | account.defendant.email_address_1   | testB@test.com |
       | account.defendant.post_code         | AB23 4RN       |
       | account.account_type                | Fine           |
-      | account.prosecutor_case_reference   | PCRAUTO010A    |
+      | account.prosecutor_case_reference   | PCRUNIQ010A    |
       | account.collection_order_made       | false          |
       | account.collection_order_made_today | false          |
       | account.payment_card_request        | false          |
     When I search using the following inputs:
-      | reference or case number | PCRAUTO010 |
+      | reference or case number | PCRUNIQ010 |
     # --- Step 3: Verify results show only exact match ---
     Then I see the Companies search results:
-      | Ref | PCRAUTO010 |
+      | Ref | PCRUNIQ010 |
     And I see the Companies search results exclude:
-      | Ref | PCRAUTO010A |
+      | Ref | PCRUNIQ010A |
 
 
   @PO-709

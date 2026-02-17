@@ -27,7 +27,6 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
   GovukRadioComponent,
   GovukRadiosConditionalComponent,
@@ -37,6 +36,7 @@ import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk
 import { IFinesMacAccountTypeDefendantTypes } from '../../interfaces/fines-mac-account-type-defendant-types.interface';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 @Component({
   selector: 'app-fines-mac-create-account-form',
   imports: [
@@ -47,10 +47,10 @@ import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.inte
     GovukRadioComponent,
     GovukRadiosItemComponent,
     GovukRadiosConditionalComponent,
-    GovukHeadingWithCaptionComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     AlphagovAccessibleAutocompleteComponent,
+    GovukBackLinkComponent,
   ],
   templateUrl: './fines-mac-create-account-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
