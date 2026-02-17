@@ -9,7 +9,7 @@ import {
   DOM_ELEMENTS,
   getAliasForenamesInput,
   getAliasSurnameInput,
-} from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
+} from '../../../shared/selectors/account-enquiry/account.enquiry.view-details.locators';
 import {
   ERROR_MESSAGES,
   INDIVIDUAL_REQUIRED_MESSAGES,

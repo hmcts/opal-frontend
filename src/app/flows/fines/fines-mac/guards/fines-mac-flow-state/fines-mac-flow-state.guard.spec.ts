@@ -10,7 +10,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { getGuardWithDummyUrl } from '@hmcts/opal-frontend-common/guards/helpers';
-import { describe } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
@@ -20,7 +20,7 @@ describe('finesMacFlowStateGuard', () => {
   let finesMacStore: FinesMacStoreType;
 
   const urlPath = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
-  const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`;
+  const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.originatorType}`;
 
   beforeEach(() => {
     mockRouter = createSpyObj(finesMacFlowStateGuard, ['navigate', 'createUrlTree', 'parseUrl']);
@@ -45,8 +45,10 @@ describe('finesMacFlowStateGuard', () => {
     window.onbeforeunload = () => 'Oh no!';
   });
 
-  it('should return true if AccountType and DefendantType are populated', async () => {
-    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
+  it('should return true if AccountType and DefendantType are populated when OriginatorType is not', async () => {
+    const finesMacStateMock = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacStateMock.originatorType.formData.fm_originator_type_originator_type = null;
+    finesMacStore.setFinesMacStore(finesMacStateMock);
 
     const result = await runFinesMacEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesMacFlowStateGuard, urlPath));
 
@@ -54,7 +56,19 @@ describe('finesMacFlowStateGuard', () => {
     expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
   });
 
-  it('should navigate to create account page if AccountType and DefendantType are not populated', async () => {
+  it('should return true if OriginatorType is populated when AccountType and DefendantType are not', async () => {
+    const finesMacStateMock = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacStateMock.accountDetails.formData.fm_create_account_account_type = null;
+    finesMacStateMock.accountDetails.formData.fm_create_account_defendant_type = null;
+    finesMacStore.setFinesMacStore(finesMacStateMock);
+
+    const result = await runFinesMacEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesMacFlowStateGuard, urlPath));
+
+    expect(result).toBe(true);
+    expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
+  });
+
+  it('should navigate to originator type page if neither AccountType/DefendantType nor OriginatorType are populated', async () => {
     finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE));
 
     const result = await runFinesMacEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesMacFlowStateGuard, urlPath));
