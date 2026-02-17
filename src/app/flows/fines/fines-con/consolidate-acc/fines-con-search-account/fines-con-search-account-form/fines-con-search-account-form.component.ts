@@ -8,6 +8,7 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
 import { FinesConSearchAccountFormIndividualsComponent } from './fines-con-search-account-form-individuals/fines-con-search-account-form-individuals.component';
+import { FinesConSearchAccountFormCompaniesComponent } from './fines-con-search-account-form-companies/fines-con-search-account-form-companies.component';
 import { IFinesConSearchAccountFieldErrors } from '../interfaces/fines-con-search-account-field-errors.interface';
 import { FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-con-search-account-field-errors.constant';
 import { CommonModule } from '@angular/common';
@@ -15,6 +16,7 @@ import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
 import { consolidateSearchAccountFormValidator } from './validators/fines-con-search-account-form.validator';
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-con-search-account-form-individuals/constants/fines-con-search-account-form-individuals-field-errors.constant';
+import { FINES_CON_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-con-search-account-form-companies/constants/fines-con-search-account-form-companies-field-errors.constant';
 import { exclusiveSearchFieldValidator } from '../validators/fines-con-search-account.validator';
 
 // Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
@@ -49,6 +51,7 @@ const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
     GovukButtonComponent,
     GovukErrorSummaryComponent,
     FinesConSearchAccountFormIndividualsComponent,
+    FinesConSearchAccountFormCompaniesComponent,
   ],
   templateUrl: './fines-con-search-account-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,6 +63,7 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
   override fieldErrors: IFinesConSearchAccountFieldErrors = {
     ...FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS,
     ...FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
+    ...FINES_CON_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
   };
   @Input({ required: true }) defendantType: FinesConDefendant = 'individual';
 
@@ -80,6 +84,12 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
           Validators.maxLength(9),
         ]),
         fcon_search_account_individuals_search_criteria: new FormGroup(
+          {},
+          {
+            validators: exclusiveSearchFieldValidator(),
+          },
+        ),
+        fcon_search_account_companies_search_criteria: new FormGroup(
           {},
           {
             validators: exclusiveSearchFieldValidator(),

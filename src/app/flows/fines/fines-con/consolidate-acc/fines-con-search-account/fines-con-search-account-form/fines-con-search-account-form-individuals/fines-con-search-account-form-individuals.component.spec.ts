@@ -7,6 +7,7 @@ import { FinesConSearchAccountFormIndividualsComponent } from './fines-con-searc
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { FinesConStore } from '../../../../stores/fines-con.store';
 import { FinesConStoreType } from '../../../../stores/types/fines-con-store.type';
+import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_MOCK } from '../../mocks/fines-con-search-account-form-individuals.mock';
 
 describe('FinesConSearchAccountFormIndividualsComponent', () => {
   let component: FinesConSearchAccountFormIndividualsComponent;
@@ -29,20 +30,7 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
     component = fixture.componentInstance;
     finesConStore = TestBed.inject(FinesConStore);
 
-    finesConStore.updateSearchAccountFormTemporary({
-      fcon_search_account_number: null,
-      fcon_search_account_national_insurance_number: null,
-      fcon_search_account_individuals_search_criteria: {
-        fcon_search_account_individuals_last_name: 'Smith',
-        fcon_search_account_individuals_last_name_exact_match: true,
-        fcon_search_account_individuals_first_names: 'John',
-        fcon_search_account_individuals_first_names_exact_match: false,
-        fcon_search_account_individuals_include_aliases: false,
-        fcon_search_account_individuals_date_of_birth: '01/01/1990',
-        fcon_search_account_individuals_address_line_1: '123 Main Street',
-        fcon_search_account_individuals_post_code: 'SW1A 1AA',
-      },
-    });
+    finesConStore.updateSearchAccountFormTemporary(FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_MOCK.formData);
 
     component.form = new FormGroup({
       fcon_search_account_individuals_search_criteria: new FormGroup({}),
@@ -94,19 +82,21 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
   });
 
   it('should rehydrate individuals criteria values from store after control setup', () => {
+    const mockData =
+      FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_MOCK.formData.fcon_search_account_individuals_search_criteria!;
     expect(
       component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')
         ?.value,
-    ).toBe('Smith');
+    ).toBe(mockData.fcon_search_account_individuals_last_name);
     expect(
       component.form.get(
         'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth',
       )?.value,
-    ).toBe('01/01/1990');
+    ).toBe(mockData.fcon_search_account_individuals_date_of_birth);
     expect(
       component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code')
         ?.value,
-    ).toBe('SW1A 1AA');
+    ).toBe(mockData.fcon_search_account_individuals_post_code);
   });
 
   it('should require last name when first names are provided', () => {
