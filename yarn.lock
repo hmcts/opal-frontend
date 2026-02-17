@@ -8459,11 +8459,11 @@ __metadata:
   linkType: hard
 
 "config@npm:^4.0.0":
-  version: 4.2.1
-  resolution: "config@npm:4.2.1"
+  version: 4.3.0
+  resolution: "config@npm:4.3.0"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/92b8f9082ddcffc9603ed50a5fe98b43e46afaae1f69529c72e58b72ce04b65b97951fac46e3e448fea1a970d129ee34993889d224230805973fe1ea7539a014
+  checksum: 10/e62b05aa9dc0e44de40d4027d36fd15e5dabaf933d58446bfed2045a0fb56860af246c67fb1057a5956592399497ff0c5b41010b1ac1c6a86077a38930ea33b3
   languageName: node
   linkType: hard
 
