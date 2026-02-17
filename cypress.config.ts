@@ -3,7 +3,6 @@
  * @description Cypress configuration, plugin wiring, and reporting setup for Opal.
  */
 import { defineConfig } from 'cypress';
-import webpack from '@cypress/webpack-preprocessor';
 import {
   addCucumberPreprocessorPlugin,
   beforeRunHandler,
@@ -11,6 +10,8 @@ import {
   afterSpecHandler,
   afterScreenshotHandler,
 } from '@badeball/cypress-cucumber-preprocessor';
+import createBundler from '@bahmutov/cypress-esbuild-preprocessor';
+import { createEsbuildPlugin } from '@badeball/cypress-cucumber-preprocessor/esbuild';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import * as path from 'node:path';
 import {
@@ -111,55 +112,10 @@ async function setupNodeEvents(
 
   on(
     'file:preprocessor',
-    webpack({
-      webpackOptions: {
-        // IMPORTANT: use a valid sourcemap mode, not false,
-        // to avoid broken Base64 / "length must be multiple of 4" errors.
-        devtool: 'eval',
-        resolve: {
-          extensions: ['.ts', '.js'],
-          plugins: [
-            new TsconfigPathsPlugin({
-              configFile: path.resolve(__dirname, 'e2e.tsconfig.json'),
-            }),
-          ],
-        },
-        module: {
-          rules: [
-            {
-              test: /\.ts$/,
-              exclude: [/node_modules/, /src/],
-              use: [
-                {
-                  loader: 'ts-loader',
-                  options: {
-                    configFile: 'e2e.tsconfig.json',
-                    // keep transpileOnly to speed up bundling for Cypress
-                    transpileOnly: true,
-                    compilerOptions: {
-                      // TS sourcemaps are optional; Webpack devtool handles
-                      // bundle-level sourcemaps for Cucumber.
-                      sourceMap: false,
-                      inlineSourceMap: false,
-                      inlineSources: false,
-                    },
-                  },
-                },
-              ],
-            },
-            {
-              test: /\.feature$/,
-              include: [/cypress\/e2e/],
-              use: [
-                {
-                  loader: '@badeball/cypress-cucumber-preprocessor/webpack',
-                  options: config,
-                },
-              ],
-            },
-          ],
-        },
-      },
+    createBundler({
+      sourcemap: 'inline',
+      tsconfig: path.resolve(__dirname, 'e2e.tsconfig.json'),
+      plugins: [createEsbuildPlugin(config)],
     }),
   );
 
