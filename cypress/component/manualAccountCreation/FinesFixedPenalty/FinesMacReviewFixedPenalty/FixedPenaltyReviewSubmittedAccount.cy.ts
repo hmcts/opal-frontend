@@ -14,7 +14,7 @@ import { interceptGetDraftAccountById } from 'cypress/component/manualAccountCre
 import { FIXED_PENALTY_AY_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fixedPenalty.api.mock';
 import { FIXED_PENALTY_DEFENDANT_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fixedPenaltyDefendant.api.mock';
 import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/CommonIntercept.mocks';
-import { DOM_ELEMENTS } from './constants/fixed_penalty_review_submitted';
+import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 
 describe('Fixed Penalty - Review Account Details', () => {
   beforeEach(() => {

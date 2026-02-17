@@ -2,7 +2,7 @@
  * @file Actions for Manual Account Creation - Company details task.
  * @description Handles field entry, aliases, navigation, and inline error assertions.
  */
-import { ManualCompanyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/company-details.locators';
+import { MacCompanyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.company-details.locators';
 import { CommonActions } from '../common/common.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
