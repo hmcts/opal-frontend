@@ -59,7 +59,9 @@
     inputId="fcon_search_account_individuals_include_aliases"
     inputName="fcon_search_account_individuals_include_aliases"
     class="govuk-checkboxes--small"
-    [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_include_aliases')"
+    [control]="
+      form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_include_aliases')
+    "
   ></div>
 </opal-lib-govuk-checkboxes>
 
@@ -73,7 +75,10 @@
   [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth')!"
   [errors]="formControlErrorMessages['fcon_search_account_individuals_date_of_birth']"
   (dateChange)="
-    setInputValue($event, 'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth')
+    setInputValue(
+      $event,
+      'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth'
+    )
   "
 ></opal-lib-moj-date-picker>
 
@@ -83,9 +88,7 @@
   inputId="fcon_search_account_individuals_address_line_1"
   inputName="fcon_search_account_individuals_address_line_1"
   inputClasses="govuk-!-width-three-quarters"
-  [control]="
-    form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1')
-  "
+  [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1')"
   [errors]="formControlErrorMessages['fcon_search_account_individuals_address_line_1']"
 ></opal-lib-govuk-text-input>
 

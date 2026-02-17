@@ -57,23 +57,51 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
   });
 
   it('should initialize all individuals nested form controls', () => {
-    expect(component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name_exact_match')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names_exact_match')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_include_aliases')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1')).toBeTruthy();
-    expect(component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code')).toBeTruthy();
+    expect(
+      component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name'),
+    ).toBeTruthy();
+    expect(
+      component.form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name_exact_match',
+      ),
+    ).toBeTruthy();
+    expect(
+      component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names'),
+    ).toBeTruthy();
+    expect(
+      component.form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names_exact_match',
+      ),
+    ).toBeTruthy();
+    expect(
+      component.form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_include_aliases',
+      ),
+    ).toBeTruthy();
+    expect(
+      component.form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth',
+      ),
+    ).toBeTruthy();
+    expect(
+      component.form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1',
+      ),
+    ).toBeTruthy();
+    expect(
+      component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code'),
+    ).toBeTruthy();
   });
 
   it('should rehydrate individuals criteria values from store after control setup', () => {
     expect(
-      component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')?.value,
+      component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')
+        ?.value,
     ).toBe('Smith');
     expect(
-      component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth')
-        ?.value,
+      component.form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth',
+      )?.value,
     ).toBe('01/01/1990');
     expect(
       component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code')
@@ -82,11 +110,11 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
   });
 
   it('should require last name when first names are provided', () => {
-    component
-      .form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')
+    component.form
+      .get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')
       ?.setValue(null);
-    component
-      .form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names')
+    component.form
+      .get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names')
       ?.setValue('Jane');
 
     expect(
@@ -103,9 +131,9 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
     );
 
     expect(
-      component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth')
-        ?.value,
+      component.form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth',
+      )?.value,
     ).toBe('02/02/1992');
   });
-
 });
