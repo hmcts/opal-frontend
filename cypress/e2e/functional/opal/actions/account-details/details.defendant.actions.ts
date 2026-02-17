@@ -3,7 +3,7 @@
  * @description Provides reusable UI interactions and assertions for the Defendant Details page.
  * Supports both individual and company account contexts.
  */
-import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant-details.locators';
+import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant.details.locators';
 import { CommonActions } from '../common/common.actions';
 
 /** Actions and assertions for the Defendant tab on Account Details. */

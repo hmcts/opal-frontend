@@ -15,6 +15,12 @@ Feature: Accessibility Tests for Populate and Submit Screens
     And I choose manual defendant type "Adult or youth only"
     Then I check the page for accessibility
 
+  @PO-2763
+  #AC-7 Originator type page with warning banner passes accessibility checks
+  Scenario: Originator type page passes accessibility checks
+    When I open Manual Account Creation
+    Then I check the page for accessibility
+
   Scenario: Account details task list is accessible for fine accounts
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
     Then I check the page for accessibility

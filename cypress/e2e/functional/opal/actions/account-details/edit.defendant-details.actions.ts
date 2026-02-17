@@ -3,7 +3,7 @@
  * Provides Cypress actions and assertions for editing defendant details within the Opal application.
  */
 
-import { DefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.defendant-details.locators';
+import { DefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.defendant.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('EditDefendantDetailsActions');

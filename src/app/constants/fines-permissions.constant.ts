@@ -11,4 +11,5 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'add-account-activity-notes': 8,
   'amend-payment-terms': 9,
   'enter-enforcement': 10,
+  consolidate: 13,
 };
