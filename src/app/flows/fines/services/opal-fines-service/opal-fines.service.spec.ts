@@ -232,18 +232,39 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
-  it('should send a GET request to local justice area ref data API with lja type filter', () => {
-    const ljaType = 'Type1';
+  it('should send a GET request to local justice area ref data API with lja type filters', () => {
+    const ljaTypes = ['Type1', 'Type2'];
     const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}?lja_type=${ljaType}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}?lja_type=${ljaTypes[0]}&lja_type=${ljaTypes[1]}`;
 
-    service.getLocalJusticeAreas(ljaType).subscribe((response) => {
+    service.getLocalJusticeAreas(ljaTypes).subscribe((response) => {
       expect(response).toEqual(mockLocalJusticeArea);
     });
 
     const req = httpMock.expectOne(expectedUrl);
     expect(req.request.method).toBe('GET');
     req.flush(mockLocalJusticeArea);
+  });
+
+  it('should return cached response for the same lja type filters regardless of order', () => {
+    const initialLjaTypes = ['Type2', 'Type1'];
+    const subsequentLjaTypes = ['Type1', 'Type2'];
+    const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}?lja_type=${subsequentLjaTypes[0]}&lja_type=${subsequentLjaTypes[1]}`;
+
+    service.getLocalJusticeAreas(initialLjaTypes).subscribe((response) => {
+      expect(response).toEqual(mockLocalJusticeArea);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockLocalJusticeArea);
+
+    service.getLocalJusticeAreas(subsequentLjaTypes).subscribe((response) => {
+      expect(response).toEqual(mockLocalJusticeArea);
+    });
+
+    httpMock.expectNone(expectedUrl);
   });
 
   it('should return the local justice area name and code in a pretty format', () => {

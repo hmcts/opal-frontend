@@ -243,8 +243,8 @@ export class OpalFines {
    * Retrieves local justice areas reference data from the API.
    * Results are cached to avoid redundant HTTP requests.
    *
-   * @param lja_type - Optional filter parameter to retrieve local justice areas by type.
-   *                  When provided, results are cached separately per type.
+   * @param lja_type - Optional filter parameters to retrieve local justice areas by type.
+   *                  When provided, results are cached separately per type combination.
    *                  When omitted, returns all local justice areas.
    *
    * @returns An Observable that emits the local justice areas reference data.
@@ -258,28 +258,35 @@ export class OpalFines {
    * });
    *
    * @example
-   * // Get local justice areas filtered by type
-   * this.opalFinesService.getLocalJusticeAreas('type1').subscribe(data => {
+   * // Get local justice areas filtered by type list
+   * this.opalFinesService.getLocalJusticeAreas(['type1', 'type2']).subscribe(data => {
    *   console.log(data);
    * });
    */
-  public getLocalJusticeAreas(lja_type?: string): Observable<IOpalFinesLocalJusticeAreaRefData> {
-    if (lja_type) {
-      if (!this.cache.localJusticeAreasLjaTypeCache$[lja_type]) {
-        this.cache.localJusticeAreasLjaTypeCache$[lja_type] = this.http
-          .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData, { params: { lja_type } })
-          .pipe(shareReplay(1));
-      }
-      return this.cache.localJusticeAreasLjaTypeCache$[lja_type];
-    } else {
-      if (!this.cache.localJusticeAreasCache$) {
-        this.cache.localJusticeAreasCache$ = this.http
-          .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
+  public getLocalJusticeAreas(lja_type?: string[]): Observable<IOpalFinesLocalJusticeAreaRefData> {
+    const ljaTypes = [...new Set((lja_type ?? []).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+
+    if (ljaTypes.length) {
+      const cacheKey = JSON.stringify(ljaTypes);
+
+      if (!this.cache.localJusticeAreasLjaTypeCache$[cacheKey]) {
+        this.cache.localJusticeAreasLjaTypeCache$[cacheKey] = this.http
+          .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData, {
+            params: { lja_type: ljaTypes },
+          })
           .pipe(shareReplay(1));
       }
 
-      return this.cache.localJusticeAreasCache$;
+      return this.cache.localJusticeAreasLjaTypeCache$[cacheKey];
     }
+
+    if (!this.cache.localJusticeAreasCache$) {
+      this.cache.localJusticeAreasCache$ = this.http
+        .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.localJusticeAreasCache$;
   }
 
   /**
