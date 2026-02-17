@@ -131,6 +131,16 @@ export class OpalFines {
   }
 
   /**
+   * Clears multiple cache items.
+   *
+   * @param cacheKeys - The cache keys to clear.
+   * @param nestedKey - An optional specific key within each cache item to be deleted.
+   */
+  private clearCaches(cacheKeys: (keyof IOpalFinesCache)[], nestedKey?: string): void {
+    cacheKeys.forEach((cacheKey) => this.clearCache(cacheKey, nestedKey));
+  }
+
+  /**
    * Clears reference data caches to force fresh fetches.
    */
   private clearReferenceDataCaches(): void {
@@ -139,6 +149,7 @@ export class OpalFines {
       'businessUnitsCache$',
       'businessUnitsPermissionCache$',
       'localJusticeAreasCache$',
+      'localJusticeAreasLjaTypeCache$',
       'resultsCache$',
       'resultCache$',
       'offenceCodesCache$',
@@ -146,7 +157,7 @@ export class OpalFines {
       'prosecutorDataCache$',
     ];
 
-    referenceCaches.forEach((cacheKey) => this.clearCache(cacheKey));
+    this.clearCaches(referenceCaches);
   }
 
   /**
@@ -229,19 +240,46 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the local justice areas.
-   * If the local justice areas are not already cached, it makes an HTTP request to fetch them and caches the result.
-   * Subsequent calls to this method will return the cached data.
-   * @returns An Observable that emits the local justice areas.
+   * Retrieves local justice areas reference data from the API.
+   * Results are cached to avoid redundant HTTP requests.
+   *
+   * @param lja_type - Optional filter parameter to retrieve local justice areas by type.
+   *                  When provided, results are cached separately per type.
+   *                  When omitted, returns all local justice areas.
+   *
+   * @returns An Observable that emits the local justice areas reference data.
+   *          The observable is shared and replayed to ensure cached data is reused
+   *          across multiple subscriptions.
+   *
+   * @example
+   * // Get all local justice areas
+   * this.opalFinesService.getLocalJusticeAreas().subscribe(data => {
+   *   console.log(data);
+   * });
+   *
+   * @example
+   * // Get local justice areas filtered by type
+   * this.opalFinesService.getLocalJusticeAreas('type1').subscribe(data => {
+   *   console.log(data);
+   * });
    */
-  public getLocalJusticeAreas(): Observable<IOpalFinesLocalJusticeAreaRefData> {
-    if (!this.cache.localJusticeAreasCache$) {
-      this.cache.localJusticeAreasCache$ = this.http
-        .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
-        .pipe(shareReplay(1));
-    }
+  public getLocalJusticeAreas(lja_type?: string): Observable<IOpalFinesLocalJusticeAreaRefData> {
+    if (lja_type) {
+      if (!this.cache.localJusticeAreasLjaTypeCache$[lja_type]) {
+        this.cache.localJusticeAreasLjaTypeCache$[lja_type] = this.http
+          .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData, { params: { lja_type } })
+          .pipe(shareReplay(1));
+      }
+      return this.cache.localJusticeAreasLjaTypeCache$[lja_type];
+    } else {
+      if (!this.cache.localJusticeAreasCache$) {
+        this.cache.localJusticeAreasCache$ = this.http
+          .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
+          .pipe(shareReplay(1));
+      }
 
-    return this.cache.localJusticeAreasCache$;
+      return this.cache.localJusticeAreasCache$;
+    }
   }
 
   /**
@@ -440,14 +478,14 @@ export class OpalFines {
       'defendantAccountFixedPenaltyCache$',
     ];
 
-    accountCaches.forEach((cacheKey) => this.clearCache(cacheKey));
+    this.clearCaches(accountCaches);
   }
 
   /**
    * Clears all cached draft account responses.
    */
   public clearDraftAccountsCache(): void {
-    this.clearCache('draftAccountsCache$');
+    this.clearCaches(['draftAccountsCache$']);
   }
 
   /**

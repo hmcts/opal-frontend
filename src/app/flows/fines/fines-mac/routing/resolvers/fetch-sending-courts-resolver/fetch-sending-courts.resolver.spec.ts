@@ -7,6 +7,10 @@ import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-se
 import { firstValueFrom } from 'rxjs';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK } from '../../../fines-mac-originator-type/mocks/fines-mac-originator-type-form.mock';
+import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM } from '../../../fines-mac-originator-type/constants/fines-mac-originator-type-form.constant';
 
 describe('fetchSendingCourtsResolver', () => {
   const executeResolver: ResolveFn<IOpalFinesLocalJusticeAreaRefData> = (...resolverParameters) =>
@@ -14,6 +18,7 @@ describe('fetchSendingCourtsResolver', () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(() => {
     mockOpalFinesService = {
@@ -24,6 +29,9 @@ describe('fetchSendingCourtsResolver', () => {
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],
     });
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setOriginatorType(FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK);
   });
 
   it('should resolve local justice areas from the service', async () => {
@@ -34,6 +42,23 @@ describe('fetchSendingCourtsResolver', () => {
 
     const result = await firstValueFrom(executeResolver(route, state) as Observable<IOpalFinesLocalJusticeAreaRefData>);
     expect(result).toEqual(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
-    expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalled();
+    expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalledWith(
+      FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK.formData.fm_originator_type_originator_type,
+    );
+  });
+
+  it('should resolve local justice areas from the service with empty form state', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = { data: {} };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const state: any = {};
+
+    finesMacStore.setOriginatorType(FINES_MAC_ORIGINATOR_TYPE_FORM);
+
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IOpalFinesLocalJusticeAreaRefData>);
+    expect(result).toEqual(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
+    expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalledWith(
+      FINES_MAC_ORIGINATOR_TYPE_FORM.formData.fm_originator_type_originator_type,
+    );
   });
 });
