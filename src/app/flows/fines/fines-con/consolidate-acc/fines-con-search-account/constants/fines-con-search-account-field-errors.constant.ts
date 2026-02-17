@@ -20,13 +20,17 @@ export const FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS: IFinesConSearchAccountFieldE
     },
   },
   fcon_search_account_national_insurance_number: {
+    nationalInsuranceNumberPattern: {
+      message: 'Enter a National Insurance number in the format AANNNNNNA',
+      priority: 1,
+    },
     alphanumericTextPattern: {
       message: 'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 1,
+      priority: 2,
     },
     maxlength: {
       message: 'National Insurance number must be 9 characters or fewer',
-      priority: 2,
+      priority: 3,
     },
   },
   fcon_search_account_individuals_search_criteria: {},

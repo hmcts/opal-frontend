@@ -6,6 +6,7 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
 import { FinesConSearchAccountFormIndividualsComponent } from './fines-con-search-account-form-individuals/fines-con-search-account-form-individuals.component';
 import { IFinesConSearchAccountFieldErrors } from '../interfaces/fines-con-search-account-field-errors.interface';
 import { FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-con-search-account-field-errors.constant';
@@ -70,15 +71,20 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
       {
         fcon_search_account_number: new FormControl<string | null>(null, [
           patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
-          Validators.maxLength(9),
-        ]),
-        fcon_search_account_national_insurance_number: new FormControl<string | null>(null, [
           ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
           Validators.maxLength(9),
         ]),
-        fcon_search_account_individuals_search_criteria: new FormGroup({}, {
-          validators: exclusiveSearchFieldValidator(),
-        }),
+        fcon_search_account_national_insurance_number: new FormControl<string | null>(null, [
+          nationalInsuranceNumberValidator(),
+          ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
+          Validators.maxLength(9),
+        ]),
+        fcon_search_account_individuals_search_criteria: new FormGroup(
+          {},
+          {
+            validators: exclusiveSearchFieldValidator(),
+          },
+        ),
       },
       { validators: consolidateSearchAccountFormValidator },
     );
