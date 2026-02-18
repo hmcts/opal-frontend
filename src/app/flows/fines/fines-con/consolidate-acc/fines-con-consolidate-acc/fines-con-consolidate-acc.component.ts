@@ -10,6 +10,7 @@ import {
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { FINES_CON_CONSOLIDATE_ACC_TABS } from './constants/fines-con-consolidate-acc-tabs.constant';
 import { FINES_CON_ROUTING_PATHS } from '../../routing/constants/fines-con-routing-paths.constant';
@@ -30,6 +31,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukBackLinkComponent,
+    GovukCancelLinkComponent,
     FinesConSearchAccountComponent,
   ],
   templateUrl: './fines-con-consolidate-acc.component.html',
