@@ -116,6 +116,7 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
     this.form.reset();
     this.clearAllErrorMessages();
     this.setInitialErrorMessages();
+    this.finesConStore.resetSearchAccountForm();
   }
 
   /**

@@ -77,7 +77,8 @@
 </div>
 
 <div class="govuk-grid-column-full govuk-!-padding-bottom-4">
-  <a class="govuk-link" (click)="cancelConsolidation()" (keydown.enter)="cancelConsolidation()" tabindex="0"
-    >Cancel account consolidation</a
-  >
+  <opal-lib-govuk-cancel-link
+    cancelLinkText="Cancel account consolidation"
+    (linkClickEvent)="cancelConsolidation()"
+  ></opal-lib-govuk-cancel-link>
 </div>
