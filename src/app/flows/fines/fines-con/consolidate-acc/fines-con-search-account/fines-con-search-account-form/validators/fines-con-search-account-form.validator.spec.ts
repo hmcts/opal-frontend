@@ -1,318 +1,86 @@
-import { FormGroup, FormControl } from '@angular/forms';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { consolidateSearchAccountFormValidator } from './fines-con-search-account-form.validator';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { consolidateSearchAccountFormValidator } from '@app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/fines-con-search-account-form/validators/fines-con-search-account-form.validator';
+import { describe, expect, it } from 'vitest';
+
+function createForm({
+  accountNumber,
+  nationalInsuranceNumber,
+  individuals,
+  nestedValid = true,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  accountNumber?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  nationalInsuranceNumber?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  individuals?: any;
+  nestedValid?: boolean;
+}) {
+  return new FormGroup(
+    {
+      fcon_search_account_number: new FormControl(accountNumber),
+      fcon_search_account_national_insurance_number: new FormControl(nationalInsuranceNumber),
+      fcon_search_account_individuals_search_criteria: new FormGroup({
+        field: new FormControl(individuals, nestedValid ? [] : [Validators.required]),
+      }),
+    },
+    { validators: consolidateSearchAccountFormValidator },
+  );
+}
 
 describe('consolidateSearchAccountFormValidator', () => {
-  let formGroup: FormGroup;
-
-  beforeEach(() => {
-    formGroup = new FormGroup({
-      fcon_search_account_number: new FormControl(null),
-      fcon_search_account_national_insurance_number: new FormControl(null),
-      fcon_search_account_individuals_search_criteria: new FormGroup({
-        fcon_search_account_individuals_last_name: new FormControl(null),
-        fcon_search_account_individuals_first_names: new FormControl(null),
-        fcon_search_account_individuals_date_of_birth: new FormControl(null),
-        fcon_search_account_individuals_address_line_1: new FormControl(null),
-        fcon_search_account_individuals_post_code: new FormControl(null),
-      }),
-    });
+  it('should return null if the control is not a FormGroup', () => {
+    const control = new FormControl('some value');
+    expect(consolidateSearchAccountFormValidator(control)).toBeNull();
   });
 
-  describe('Account number exclusivity (AC6a)', () => {
-    it('should return null when only account number is provided', () => {
-      formGroup.get('fcon_search_account_number')?.setValue('12345678');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toBeNull();
-    });
-
-    it('should return error when account number is provided with last name', () => {
-      formGroup.get('fcon_search_account_number')?.setValue('12345678');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_last_name')
-        ?.setValue('Smith');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ accountNumberMustBeExclusive: true });
-    });
-
-    it('should return error when account number is provided with first names', () => {
-      formGroup.get('fcon_search_account_number')?.setValue('12345678');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_first_names')
-        ?.setValue('John');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ accountNumberMustBeExclusive: true });
-    });
-
-    it('should return error when account number is provided with date of birth', () => {
-      formGroup.get('fcon_search_account_number')?.setValue('12345678');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_date_of_birth')
-        ?.setValue('01/01/1990');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ accountNumberMustBeExclusive: true });
-    });
-
-    it('should return error when account number is provided with address', () => {
-      formGroup.get('fcon_search_account_number')?.setValue('12345678');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_address_line_1')
-        ?.setValue('123 Main Street');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ accountNumberMustBeExclusive: true });
-    });
-
-    it('should return error when account number is provided with postcode', () => {
-      formGroup.get('fcon_search_account_number')?.setValue('12345678');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_post_code')
-        ?.setValue('SW1A 1AA');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ accountNumberMustBeExclusive: true });
-    });
-
-    it('should return error when account number is provided with national insurance number', () => {
-      formGroup.get('fcon_search_account_number')?.setValue('12345678');
-      formGroup.get('fcon_search_account_national_insurance_number')?.setValue('AB123456C');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ accountNumberMustBeExclusive: true });
-    });
-
-    it('should return error when account number is provided with multiple other fields', () => {
-      formGroup.get('fcon_search_account_number')?.setValue('12345678');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_last_name')
-        ?.setValue('Smith');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_first_names')
-        ?.setValue('John');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ accountNumberMustBeExclusive: true });
-    });
+  it('should return { formEmpty: true } if all criteria are empty', () => {
+    const form = createForm({});
+    expect(consolidateSearchAccountFormValidator(form)).toEqual({ formEmpty: true });
   });
 
-  describe('National Insurance number exclusivity (AC6b)', () => {
-    it('should return null when only national insurance number is provided', () => {
-      formGroup.get('fcon_search_account_national_insurance_number')?.setValue('AB123456C');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toBeNull();
-    });
-
-    it('should return error when national insurance number is provided with last name', () => {
-      formGroup.get('fcon_search_account_national_insurance_number')?.setValue('AB123456C');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_last_name')
-        ?.setValue('Smith');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ nationalInsuranceNumberMustBeExclusive: true });
-    });
-
-    it('should return error when national insurance number is provided with first names', () => {
-      formGroup.get('fcon_search_account_national_insurance_number')?.setValue('AB123456C');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_first_names')
-        ?.setValue('John');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ nationalInsuranceNumberMustBeExclusive: true });
-    });
-
-    it('should return error when national insurance number is provided with date of birth', () => {
-      formGroup.get('fcon_search_account_national_insurance_number')?.setValue('AB123456C');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_date_of_birth')
-        ?.setValue('01/01/1990');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ nationalInsuranceNumberMustBeExclusive: true });
-    });
-
-    it('should return error when national insurance number is provided with address', () => {
-      formGroup.get('fcon_search_account_national_insurance_number')?.setValue('AB123456C');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_address_line_1')
-        ?.setValue('123 Main Street');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ nationalInsuranceNumberMustBeExclusive: true });
-    });
-
-    it('should return error when national insurance number is provided with postcode', () => {
-      formGroup.get('fcon_search_account_national_insurance_number')?.setValue('AB123456C');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_post_code')
-        ?.setValue('SW1A 1AA');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ nationalInsuranceNumberMustBeExclusive: true });
-    });
-
-    it('should return error when national insurance number is provided with multiple other fields', () => {
-      formGroup.get('fcon_search_account_national_insurance_number')?.setValue('AB123456C');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_last_name')
-        ?.setValue('Smith');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_date_of_birth')
-        ?.setValue('01/01/1990');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toEqual({ nationalInsuranceNumberMustBeExclusive: true });
-    });
+  it('should return null if only account number is populated', () => {
+    const form = createForm({ accountNumber: '123456789' });
+    expect(consolidateSearchAccountFormValidator(form)).toBeNull();
   });
 
-  describe('No conflicts', () => {
-    it('should return null when no fields are provided', () => {
-      const result = consolidateSearchAccountFormValidator(formGroup);
+  it('should return null if only national insurance number is populated', () => {
+    const form = createForm({ nationalInsuranceNumber: 'AB123456C' });
+    expect(consolidateSearchAccountFormValidator(form)).toBeNull();
+  });
 
-      expect(result).toBeNull();
-    });
+  it('should return null if only individuals group is populated', () => {
+    const form = createForm({ individuals: 'John Smith' });
+    expect(consolidateSearchAccountFormValidator(form)).toBeNull();
+  });
 
-    it('should return null when only last name is provided', () => {
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_last_name')
-        ?.setValue('Smith');
+  it('should return { atLeastOneCriteriaRequired: true } if account number and national insurance are populated', () => {
+    const form = createForm({ accountNumber: '123456789', nationalInsuranceNumber: 'AB123456C' });
+    expect(consolidateSearchAccountFormValidator(form)).toEqual({ atLeastOneCriteriaRequired: true });
+  });
 
-      const result = consolidateSearchAccountFormValidator(formGroup);
+  it('should return { atLeastOneCriteriaRequired: true } if account number and individuals group are populated', () => {
+    const form = createForm({ accountNumber: '123456789', individuals: 'John Smith' });
+    expect(consolidateSearchAccountFormValidator(form)).toEqual({ atLeastOneCriteriaRequired: true });
+  });
 
-      expect(result).toBeNull();
-    });
+  it('should return { atLeastOneCriteriaRequired: true } if national insurance and individuals group are populated', () => {
+    const form = createForm({ nationalInsuranceNumber: 'AB123456C', individuals: 'John Smith' });
+    expect(consolidateSearchAccountFormValidator(form)).toEqual({ atLeastOneCriteriaRequired: true });
+  });
 
-    it('should return null when only first names is provided', () => {
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_first_names')
-        ?.setValue('John');
+  it('should treat whitespace-only values as empty', () => {
+    const form = createForm({ accountNumber: '   ', nationalInsuranceNumber: '   ' });
+    expect(consolidateSearchAccountFormValidator(form)).toEqual({ formEmpty: true });
+  });
 
-      const result = consolidateSearchAccountFormValidator(formGroup);
+  it('should handle null and undefined values as empty', () => {
+    const form = createForm({ accountNumber: null, nationalInsuranceNumber: undefined });
+    expect(consolidateSearchAccountFormValidator(form)).toEqual({ formEmpty: true });
+  });
 
-      expect(result).toBeNull();
-    });
-
-    it('should return null when only date of birth is provided', () => {
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_date_of_birth')
-        ?.setValue('01/01/1990');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when only address is provided', () => {
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_address_line_1')
-        ?.setValue('123 Main Street');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when only postcode is provided', () => {
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_post_code')
-        ?.setValue('SW1A 1AA');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when non-exclusive fields are combined (last name and first names)', () => {
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_last_name')
-        ?.setValue('Smith');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_first_names')
-        ?.setValue('John');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when non-exclusive fields are combined (last name, first names, and DOB)', () => {
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_last_name')
-        ?.setValue('Smith');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_first_names')
-        ?.setValue('John');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_date_of_birth')
-        ?.setValue('01/01/1990');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when non-exclusive fields are combined with address and postcode', () => {
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_last_name')
-        ?.setValue('Smith');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_address_line_1')
-        ?.setValue('123 Main Street');
-      formGroup
-        .get('fcon_search_account_individuals_search_criteria')
-        ?.get('fcon_search_account_individuals_post_code')
-        ?.setValue('SW1A 1AA');
-
-      const result = consolidateSearchAccountFormValidator(formGroup);
-
-      expect(result).toBeNull();
-    });
+  it('should still count populated criteria when nested group is invalid', () => {
+    const form = createForm({ accountNumber: '123456789', individuals: 'John Smith', nestedValid: false });
+    expect(consolidateSearchAccountFormValidator(form)).toEqual({ atLeastOneCriteriaRequired: true });
   });
 });

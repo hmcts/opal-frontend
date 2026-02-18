@@ -17,7 +17,6 @@ import { consolidateSearchAccountFormValidator } from './validators/fines-con-se
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-con-search-account-form-individuals/constants/fines-con-search-account-form-individuals-field-errors.constant';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-con-search-account-form-companies/constants/fines-con-search-account-form-companies-field-errors.constant';
-import { exclusiveSearchFieldValidator } from '../validators/fines-con-search-account.validator';
 import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { ACCOUNT_NUMBER_PATTERN } from '@app/flows/fines/constants/fines-regex-patterns.constant';
 // Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
@@ -83,18 +82,8 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
           ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
           Validators.maxLength(9),
         ]),
-        fcon_search_account_individuals_search_criteria: new FormGroup(
-          {},
-          {
-            validators: exclusiveSearchFieldValidator(),
-          },
-        ),
-        fcon_search_account_companies_search_criteria: new FormGroup(
-          {},
-          {
-            validators: exclusiveSearchFieldValidator(),
-          },
-        ),
+        fcon_search_account_individuals_search_criteria: new FormGroup({}),
+        fcon_search_account_companies_search_criteria: new FormGroup({}),
       },
       { validators: consolidateSearchAccountFormValidator },
     );

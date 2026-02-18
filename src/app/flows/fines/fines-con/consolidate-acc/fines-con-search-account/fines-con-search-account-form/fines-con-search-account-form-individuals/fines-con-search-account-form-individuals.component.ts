@@ -17,6 +17,7 @@ import {
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { FinesConStore } from '../../../../stores/fines-con.store';
+import { finesConSearchAccountFormIndividualsValidator } from './validators/fines-con-search-account-form-individuals.validator';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
@@ -92,134 +93,6 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
     });
   }
 
-  /**
-   * Convenience accessor for this sub-form's controls from the installed parent group.
-   * Returns `null` for any control that is missing to keep callers defensive.
-   *
-   * @returns An object containing references to all individual form controls
-   * @private
-   */
-  private getIndividualFormControls(): {
-    firstNamesControl: FormControl | null;
-    dobControl: FormControl | null;
-    lastNameControl: FormControl | null;
-    firstNamesExactMatchControl: FormControl | null;
-    lastNameExactMatchControl: FormControl | null;
-    includeAliasesControl: FormControl | null;
-  } {
-    const individualsGroup = this.getIndividualsGroup();
-    if (!individualsGroup) {
-      return {
-        firstNamesControl: null,
-        dobControl: null,
-        lastNameControl: null,
-        firstNamesExactMatchControl: null,
-        lastNameExactMatchControl: null,
-        includeAliasesControl: null,
-      };
-    }
-    return {
-      firstNamesControl: individualsGroup.get('fcon_search_account_individuals_first_names') as FormControl,
-      dobControl: individualsGroup.get('fcon_search_account_individuals_date_of_birth') as FormControl,
-      lastNameControl: individualsGroup.get('fcon_search_account_individuals_last_name') as FormControl,
-      firstNamesExactMatchControl: individualsGroup.get(
-        'fcon_search_account_individuals_first_names_exact_match',
-      ) as FormControl,
-      lastNameExactMatchControl: individualsGroup.get(
-        'fcon_search_account_individuals_last_name_exact_match',
-      ) as FormControl,
-      includeAliasesControl: individualsGroup.get('fcon_search_account_individuals_include_aliases') as FormControl,
-    };
-  }
-
-  /**
-   * Applies conditional `required` rules based on current values/toggles.
-   * - Last name becomes required when first names or DOB are provided, or when exact-match/aliases flags are set.
-   * - First names become required when the first-names exact-match flag is set.
-   *
-   * Uses the base helper `setValidatorPresence` to add/remove `Validators.required` and update validity quietly.
-   *
-   * @private
-   */
-  private handleConditionalValidation(): void {
-    const {
-      firstNamesControl,
-      dobControl,
-      lastNameControl,
-      firstNamesExactMatchControl,
-      lastNameExactMatchControl,
-      includeAliasesControl,
-    } = this.getIndividualFormControls();
-
-    if (
-      !firstNamesControl ||
-      !dobControl ||
-      !lastNameControl ||
-      !firstNamesExactMatchControl ||
-      !lastNameExactMatchControl ||
-      !includeAliasesControl
-    ) {
-      return;
-    }
-
-    const firstNamesHasValue = this.hasValue(firstNamesControl.value);
-    const dobHasValue = this.hasValue(dobControl.value);
-    const lastNameHasValue = this.hasValue(lastNameControl.value);
-    const firstNamesExactMatchHasValue = !!firstNamesExactMatchControl.value;
-    const lastNameExactMatchHasValue = !!lastNameExactMatchControl.value;
-    const includeAliasesHasValue = !!includeAliasesControl.value;
-
-    // Last name validation rules - required if:
-    // - First names are provided (AC5a)
-    // - DOB is provided (AC5b)
-    // - Include aliases is checked (AC5c)
-    // - Last name exact match is checked (AC5d)
-    const requireByNameOrDob = firstNamesHasValue || dobHasValue;
-    const requireByOtherFlags = lastNameExactMatchHasValue || includeAliasesHasValue;
-    const shouldRequireLastName = (requireByNameOrDob || requireByOtherFlags) && !lastNameHasValue;
-
-    // First names validation rules - required if first names exact match is set (AC5d)
-    const requireFirstName = firstNamesExactMatchHasValue && !firstNamesHasValue;
-
-    this.setValidatorPresence(lastNameControl, Validators.required, shouldRequireLastName);
-    this.setValidatorPresence(firstNamesControl, Validators.required, requireFirstName);
-  }
-
-  /**
-   * Wires the conditional validation handler to relevant controls' `valueChanges` with auto-unsubscribe.
-   * No-ops if any required control is missing (defensive in case the group is not yet fully installed).
-   *
-   * @private
-   */
-  private setupConditionalValidation(): void {
-    const {
-      firstNamesControl,
-      dobControl,
-      firstNamesExactMatchControl,
-      lastNameExactMatchControl,
-      includeAliasesControl,
-    } = this.getIndividualFormControls();
-
-    if (
-      !firstNamesControl ||
-      !dobControl ||
-      !firstNamesExactMatchControl ||
-      !lastNameExactMatchControl ||
-      !includeAliasesControl
-    ) {
-      return;
-    }
-
-    this.subscribeValidation(
-      () => this.handleConditionalValidation(),
-      firstNamesControl,
-      dobControl,
-      firstNamesExactMatchControl,
-      lastNameExactMatchControl,
-      includeAliasesControl,
-    );
-  }
-
   private getIndividualsGroup(): FormGroup | null {
     const group = this.form.get('fcon_search_account_individuals_search_criteria');
     return group instanceof FormGroup ? group : null;
@@ -238,11 +111,11 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
       return;
     }
     this.addControlsToNestedFormGroup(controlsGroup, individualsGroup);
+    individualsGroup.addValidators(finesConSearchAccountFormIndividualsValidator);
     individualsGroup.patchValue(
       this.finesConStore.searchAccountForm().fcon_search_account_individuals_search_criteria ?? {},
     );
-    this.setupConditionalValidation();
-    this.handleConditionalValidation();
+    individualsGroup.updateValueAndValidity({ emitEvent: false });
   }
 
   /**
@@ -257,7 +130,6 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
     const control = this.form.get(controlName);
     if (control) {
       control.setValue(event);
-      this.handleConditionalValidation();
     }
   }
 

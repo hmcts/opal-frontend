@@ -2,6 +2,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { isFormGroup } from './utils/is-form-group.util';
 import { hasNestedValue } from './utils/has-nested-value.util';
 import { ExclusiveFieldRuleConfig } from './interfaces/exclusive-field-rule-config.interface';
+import { ExclusiveFieldValidatorOptions } from './interfaces/exclusive-field-validator-options.interface';
 
 /**
  * Creates a validator that enforces exclusive-use rules between form fields.
@@ -22,9 +23,31 @@ import { ExclusiveFieldRuleConfig } from './interfaces/exclusive-field-rule-conf
  * ];
  * createExclusiveFieldValidator(rules)
  */
-export function createExclusiveFieldValidator(rules: ExclusiveFieldRuleConfig[]) {
+export function createExclusiveFieldValidator(
+  rules: ExclusiveFieldRuleConfig[],
+  options?: ExclusiveFieldValidatorOptions,
+) {
   return (control: AbstractControl): ValidationErrors | null => {
     if (!isFormGroup(control)) return null;
+
+    const criteriaPaths = options?.criteriaPaths ?? [];
+    const emptyErrorKey = options?.emptyErrorKey;
+    const multipleErrorKey = options?.multipleErrorKey;
+
+    if (criteriaPaths.length > 0) {
+      const populatedCount = criteriaPaths.reduce((count, path) => {
+        const criteriaControl = control.get(path);
+        return criteriaControl && hasNestedValue(criteriaControl) ? count + 1 : count;
+      }, 0);
+
+      if (populatedCount === 0 && emptyErrorKey) {
+        return { [emptyErrorKey]: true };
+      }
+
+      if (populatedCount > 1 && multipleErrorKey) {
+        return { [multipleErrorKey]: true };
+      }
+    }
 
     for (const rule of rules) {
       const primaryControl = control.get(rule.primaryField);
