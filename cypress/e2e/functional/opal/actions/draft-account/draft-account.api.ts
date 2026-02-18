@@ -249,7 +249,7 @@ export interface EtagConflictResult {
  *
  * @param draftType - Draft account type from payloads.ts (e.g., company, pgToPay, fixedPenalty).
  * @param newStatus - Target status after creation (e.g., "Submitted", "In review", "Rejected").
- *  @param table - Cucumber DataTable of overrides (values can include Account_status).
+ * @param table - Cucumber DataTable of overrides (values can include Account_status).
  * @param user - Identifier for the user performing the publishing action (for logging/evidence).
  * @param returnToUser - Identifier for the user to return to after status update (for logging/evidence).
  * @returns A Cypress chainable that resolves when the draft is created and updated
