@@ -7,7 +7,7 @@ import { FINES_FIXED_PENALTY_MOCK } from './mocks/fines_mac_fixed_penalty_mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
-import { DOM_ELEMENTS } from './constants/fines_mac_manual_fixed_penalty_elements';
+import { MacFixedPenaltyDetailsLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.details.locators';
 import { provideHttpClient } from '@angular/common/http';
 import { calculateWeeksInFuture } from '../../../../support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';

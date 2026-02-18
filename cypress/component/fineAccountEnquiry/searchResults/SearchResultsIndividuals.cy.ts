@@ -188,7 +188,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
       cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
       cy.contains('1').should('exist');
       cy.contains('2').should('exist');
-      cy.get(DOM_ELEMENTS.paginationListItemElipsises).should('exist');
+      cy.get(DOM_ELEMENTS.paginationListItemEllipses).should('exist');
       cy.contains('4').should('exist');
     });
 

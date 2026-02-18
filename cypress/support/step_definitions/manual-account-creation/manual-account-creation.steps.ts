@@ -9,11 +9,12 @@
  */
 import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { ManualAccountCreationFlow } from '../../../e2e/functional/opal/flows/manual-account-creation.flow';
-import { ManualAccountTaskName } from '../../../shared/selectors/manual-account-creation/account-details.locators';
+import { MacAccountTaskName } from '../../../shared/selectors/manual-account-creation/mac.account-details.locators';
 import {
   ManualCreateAccountActions,
   DefendantType,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
+import { ManualCreateOrTransferInActions } from '../../../e2e/functional/opal/actions/manual-account-creation/create-transfer.actions';
 import { ManualAccountCommentsNotesActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
 import { ManualCourtFieldKey } from '../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import {
@@ -50,6 +51,7 @@ import { accessibilityActions } from '../../../e2e/functional/opal/actions/acces
 import { AccountType, ApprovedAccountType } from '../../utils/payloads';
 import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { installDraftAccountCleanup } from 'cypress/support/draftAccounts';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
@@ -61,9 +63,12 @@ const companyDetails = () => new ManualCompanyDetailsActions();
 const contactDetails = () => new ManualContactDetailsActions();
 const common = () => new CommonActions();
 const createAccount = () => new ManualCreateAccountActions();
+const originatorType = () => new ManualCreateOrTransferInActions();
 const languagePreferences = () => new ManualLanguagePreferencesActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
+
+installDraftAccountCleanup();
 /**
  * @step Confirms the user is on the dashboard.
  * @description Asserts the dashboard is visible to ensure navigation is in a known state.
@@ -85,7 +90,7 @@ When(
   'I start a fine manual account for business unit {string} with defendant type {string}',
   (businessUnit: string, defendantType: DefendantType) => {
     log('step', 'Starting manual account creation', { businessUnit, defendantType });
-    flow().startFineAccount(businessUnit, defendantType);
+    flow().startFineAccount(businessUnit, defendantType, 'New');
   },
 );
 /**
@@ -97,7 +102,7 @@ When(
   'I start a fine manual account using the default business unit with defendant type {string}',
   (defendantType: DefendantType) => {
     log('step', 'Starting manual account creation with default business unit (no BU provided)', { defendantType });
-    flow().startFineAccount('default business unit', defendantType);
+    flow().startFineAccount('default business unit', defendantType, 'New');
   },
 );
 /**
@@ -112,7 +117,7 @@ When(
  */
 When(
   'I start a fine manual account for business unit {string} with defendant type {string} and I view the {string} task',
-  (businessUnit: string, defendantType: DefendantType, taskName: ManualAccountTaskName) => {
+  (businessUnit: string, defendantType: DefendantType, taskName: MacAccountTaskName) => {
     log('step', 'Starting manual account creation and opening task', { businessUnit, defendantType, taskName });
     flow().startFineAccountAndOpenTask(businessUnit, defendantType, taskName);
   },
@@ -126,6 +131,14 @@ When(
 When('I open Manual Account Creation from the dashboard', () => {
   log('step', 'Opening Manual Account Creation from dashboard');
   flow().goToManualAccountCreationFromDashboard();
+});
+/**
+ * @step Selects "New" on the create-or-transfer-in page.
+ * @description Begins entering details on the Originator Type page by selecting the New radio option.
+ */
+When('I begin entering details on the Originator Type page', () => {
+  log('step', 'Beginning to enter details on Originator Type page');
+  originatorType().selectOriginatorType('New');
 });
 /**
  * @step Selects a business unit on the create account page.
@@ -223,7 +236,7 @@ When('I continue to manual account details', () => {
  */
 Given('I am viewing account details for a manual account', () => {
   log('step', 'Starting default manual account (West London, Adult or youth)');
-  flow().startFineAccount('West London', 'Adult or youth');
+  flow().startFineAccount('West London', 'Adult or youth', 'New');
 });
 
 /**
@@ -248,7 +261,7 @@ Given(
  * @remarks Delegates to the flow to assert navigation is correct.
  * @example When I view the "Court details" task
  */
-When('I view the {string} task', (taskName: ManualAccountTaskName) => {
+When('I view the {string} task', (taskName: MacAccountTaskName) => {
   log('navigate', 'Opening task', { taskName });
   flow().openTaskFromAccountDetails(taskName);
 });
@@ -264,7 +277,7 @@ When('I view the {string} task', (taskName: ManualAccountTaskName) => {
  * @example
  *   When I view the "Court details" task for "TEST COMPANY LTD"
  */
-When('I view the {string} task for {string}', (taskName: ManualAccountTaskName, header: string) => {
+When('I view the {string} task for {string}', (taskName: MacAccountTaskName, header: string) => {
   const normalizedHeader = withUniq(header);
   log('navigate', 'Opening task with custom header', { taskName, header: normalizedHeader });
   flow().openTaskFromAccountDetails(taskName, normalizedHeader);
@@ -279,7 +292,7 @@ When('I view the {string} task for {string}', (taskName: ManualAccountTaskName, 
  */
 Then(
   'returning to account details the {string} task the status is {string}',
-  (taskName: ManualAccountTaskName, expectedStatus: string) => {
+  (taskName: MacAccountTaskName, expectedStatus: string) => {
     log('assert', 'Returning to Account details and checking task status', { taskName, expectedStatus });
     flow().returnToAccountDetailsAndAssertStatus(taskName, expectedStatus);
   },
@@ -792,7 +805,7 @@ When(
  */
 Then('the task statuses are:', (table: DataTable) => {
   const statuses = table.rows().map(([task, status]) => ({
-    task: task as ManualAccountTaskName,
+    task: task as MacAccountTaskName,
     status,
   }));
   log('assert', 'Checking task status from table', { statuses });
@@ -811,7 +824,7 @@ Then('the task statuses are:', (table: DataTable) => {
  */
 Then('the task statuses for account header {string} are:', (header: string, table: DataTable) => {
   const statuses = table.rows().map(([task, status]) => ({
-    task: task as ManualAccountTaskName,
+    task: task as MacAccountTaskName,
     status,
   }));
   const normalizedHeader = withUniq(header);
@@ -825,7 +838,7 @@ Then('the task statuses for account header {string} are:', (header: string, tabl
  * @param expectedStatus - Expected status text (e.g., "Provided").
  * @example Then the "Offence details" task status is "Provided"
  */
-Then('the {string} task status is {string}', (taskName: ManualAccountTaskName, expectedStatus: string) => {
+Then('the {string} task status is {string}', (taskName: MacAccountTaskName, expectedStatus: string) => {
   log('assert', 'Checking single task status', { taskName, expectedStatus });
   details().assertTaskStatus(taskName, expectedStatus);
 });
