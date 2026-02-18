@@ -12,6 +12,7 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesMacCreateAccountComponent', () => {
+  let buinessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   let accountMock = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
   const setupComponent = (formSubmit?: any) => {
     return mount(FinesMacCreateAccountComponent, {
@@ -32,7 +33,7 @@ describe('FinesMacCreateAccountComponent', () => {
             parent: of('manual-account-creation'),
             snapshot: {
               data: {
-                businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+                businessUnits: buinessUnitMock,
               },
             },
           },
@@ -58,6 +59,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   afterEach(() => {
     accountMock = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
+    buinessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });
 
   it('should render the component', { tags: ['@PO-523'] }, () => {
@@ -70,7 +72,7 @@ describe('FinesMacCreateAccountComponent', () => {
     setupComponent(null);
 
     cy.get(L.heading).should('exist');
-    cy.get(DOM_ELEMENTS.heading).should('exist');
+    cy.get(L.heading).should('exist');
 
     cy.get(L.businessUnitHint).should('exist');
     cy.get(L.businessUnitInput).should('exist');
@@ -85,7 +87,7 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(L.conditionalCautionLabel).should('exist');
 
     cy.get(L.heading).should('contain', 'Create account');
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Create account');
+    cy.get(L.heading).should('contain', 'Create account');
 
     cy.get(L.businessUnitHint).should('contain', 'Enter area where the account is to be created');
     cy.get(L.businessUnitLabel).should('contain', 'Business unit');
@@ -288,26 +290,26 @@ describe('FinesMacCreateAccountComponent', () => {
 
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.heading).should('exist');
+      cy.get(L.heading).should('exist');
 
-      cy.get(DOM_ELEMENTS.businessUnitHint).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnitInput).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnitLabel).should('exist');
+      cy.get(L.businessUnitHint).should('exist');
+      cy.get(L.businessUnitInput).should('exist');
+      cy.get(L.businessUnitLabel).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountTypeHeading).should('exist');
-      cy.get(DOM_ELEMENTS.fineInput).should('exist');
-      cy.get(DOM_ELEMENTS.fineLabel).should('exist');
-      cy.get(DOM_ELEMENTS.fixedPenaltyInput).should('exist');
-      cy.get(DOM_ELEMENTS.fixedPenaltyLabel).should('exist');
+      cy.get(L.accountTypeHeading).should('exist');
+      cy.get(L.fineInput).should('exist');
+      cy.get(L.fineLabel).should('exist');
+      cy.get(L.fixedPenaltyInput).should('exist');
+      cy.get(L.fixedPenaltyLabel).should('exist');
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Transfer in');
+      cy.get(L.heading).should('contain', 'Transfer in');
 
-      cy.get(DOM_ELEMENTS.businessUnitHint).should('contain', 'Enter area where the account is to be created');
-      cy.get(DOM_ELEMENTS.businessUnitLabel).should('contain', 'Business unit');
+      cy.get(L.businessUnitHint).should('contain', 'Enter area where the account is to be created');
+      cy.get(L.businessUnitLabel).should('contain', 'Business unit');
 
-      cy.get(DOM_ELEMENTS.accountTypeHeading).should('contain', 'Account type');
-      cy.get(DOM_ELEMENTS.fineLabel).should('contain', FINES_ACCOUNT_TYPES.Fine);
-      cy.get(DOM_ELEMENTS.fixedPenaltyLabel).should('contain', FINES_ACCOUNT_TYPES['Fixed Penalty']);
+      cy.get(L.accountTypeHeading).should('contain', 'Account type');
+      cy.get(L.fineLabel).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(L.fixedPenaltyLabel).should('contain', FINES_ACCOUNT_TYPES['Fixed Penalty']);
     },
   );
 
@@ -319,24 +321,21 @@ describe('FinesMacCreateAccountComponent', () => {
 
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.fineInput).click();
-      cy.get(DOM_ELEMENTS.defendantTypeTitle).should('exist');
-      cy.get(DOM_ELEMENTS.defendantTypeHint).should('exist');
-      cy.get(DOM_ELEMENTS.adultOrYouthInput).should('exist');
-      cy.get(DOM_ELEMENTS.adultOrYouthLabel).should('exist');
-      cy.get(DOM_ELEMENTS.parentOrGuardianToPayInput).should('exist');
-      cy.get(DOM_ELEMENTS.parentOrGuardianToPayLabel).should('exist');
-      cy.get(DOM_ELEMENTS.companyInput).should('exist');
-      cy.get(DOM_ELEMENTS.companyLabel).should('exist');
+      cy.get(L.fineInput).click();
+      cy.get(L.defendantTypeTitle).should('exist');
+      cy.get(L.defendantTypeHint).should('exist');
+      cy.get(L.adultOrYouthInput).should('exist');
+      cy.get(L.adultOrYouthLabel).should('exist');
+      cy.get(L.parentOrGuardianToPayInput).should('exist');
+      cy.get(L.parentOrGuardianToPayLabel).should('exist');
+      cy.get(L.companyInput).should('exist');
+      cy.get(L.companyLabel).should('exist');
 
-      cy.get(DOM_ELEMENTS.defendantTypeTitle).should('contain', 'Defendant type');
-      cy.get(DOM_ELEMENTS.defendantTypeHint).should('contain', "If sole trader, choose 'Adult or youth only'");
-      cy.get(DOM_ELEMENTS.adultOrYouthLabel).should('contain', 'Adult or youth only');
-      cy.get(DOM_ELEMENTS.parentOrGuardianToPayLabel).should(
-        'contain',
-        'Adult or youth with parent or guardian to pay',
-      );
-      cy.get(DOM_ELEMENTS.companyLabel).should('contain', 'Company');
+      cy.get(L.defendantTypeTitle).should('contain', 'Defendant type');
+      cy.get(L.defendantTypeHint).should('contain', "If sole trader, choose 'Adult or youth only'");
+      cy.get(L.adultOrYouthLabel).should('contain', 'Adult or youth only');
+      cy.get(L.parentOrGuardianToPayLabel).should('contain', 'Adult or youth with parent or guardian to pay');
+      cy.get(L.companyLabel).should('contain', 'Company');
     },
   );
 
@@ -348,13 +347,13 @@ describe('FinesMacCreateAccountComponent', () => {
 
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.fixedPenaltyInput).click();
-      cy.get(DOM_ELEMENTS.defendantTypeTitle).should('exist');
-      cy.get(DOM_ELEMENTS.FPdefendantTypeHint).should('exist');
-      cy.get(DOM_ELEMENTS.FPAdultOrYouthInput).should('exist');
-      cy.get(DOM_ELEMENTS.FPAdultOrYouthLabel).should('exist');
-      cy.get(DOM_ELEMENTS.FPCompany).should('exist');
-      cy.get(DOM_ELEMENTS.FPCompanyLabel).should('exist');
+      cy.get(L.fixedPenaltyInput).click();
+      cy.get(L.defendantTypeTitle).should('exist');
+      cy.get(L.FPdefendantTypeHint).should('exist');
+      cy.get(L.FPAdultOrYouthInput).should('exist');
+      cy.get(L.FPAdultOrYouthLabel).should('exist');
+      cy.get(L.FPCompany).should('exist');
+      cy.get(L.FPCompanyLabel).should('exist');
     },
   );
 
@@ -363,9 +362,9 @@ describe('FinesMacCreateAccountComponent', () => {
 
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.fineInput).click();
-    cy.get(DOM_ELEMENTS.continueButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ERROR_MESSAGES.businessUnit);
+    cy.get(L.fineInput).click();
+    cy.get(L.continueButton).click();
+    cy.get(L.errorSummary).should('contain', ERROR_MESSAGES.businessUnit);
   });
 
   it(
@@ -376,21 +375,19 @@ describe('FinesMacCreateAccountComponent', () => {
 
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
-      cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
-      cy.get(DOM_ELEMENTS.continueButton).click();
+      cy.get(L.businessUnitInput).type('Lo');
+      cy.get(L.businessUnitAutoComplete).find('li').first().click();
+      cy.get(L.continueButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', ERROR_MESSAGES.accountType);
+      cy.get(L.errorSummary).should('contain', ERROR_MESSAGES.accountType);
     },
   );
 
   it('(AC.3) should have validation if both business unit and account type are empty', { tags: ['@PO-2766'] }, () => {
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.continueButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('contain', ERROR_MESSAGES.businessUnit)
-      .should('contain', ERROR_MESSAGES.accountType);
+    cy.get(L.continueButton).click();
+    cy.get(L.errorSummary).should('contain', ERROR_MESSAGES.businessUnit).should('contain', ERROR_MESSAGES.accountType);
   });
 
   it('(AC.3) should check only 1 account type can be selected', { tags: ['@PO-2766'] }, () => {
@@ -398,10 +395,10 @@ describe('FinesMacCreateAccountComponent', () => {
 
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.fineInput).click();
-    cy.get(DOM_ELEMENTS.fixedPenaltyInput).click();
-    cy.get(DOM_ELEMENTS.fineInput).should('not.be.checked');
-    cy.get(DOM_ELEMENTS.fixedPenaltyInput).should('be.checked');
+    cy.get(L.fineInput).click();
+    cy.get(L.fixedPenaltyInput).click();
+    cy.get(L.fineInput).should('not.be.checked');
+    cy.get(L.fixedPenaltyInput).should('be.checked');
   });
 
   it(
@@ -413,14 +410,25 @@ describe('FinesMacCreateAccountComponent', () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
 
-      cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
-      cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
-      cy.get(DOM_ELEMENTS.fineInput).click();
-      cy.get(DOM_ELEMENTS.adultOrYouthInput).click();
-      cy.get(DOM_ELEMENTS.continueButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+      cy.get(L.businessUnitInput).type('Lo');
+      cy.get(L.businessUnitAutoComplete).find('li').first().click();
+      cy.get(L.fineInput).click();
+      cy.get(L.adultOrYouthInput).click();
+      cy.get(L.continueButton).click();
+      cy.get(L.errorSummary).should('not.exist');
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
+
+  it.only('(AC4) should auto select a single business unit', { tags: ['@PO-2766'] }, () => {
+    accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
+    buinessUnitMock.refData = buinessUnitMock.refData.slice(0, 1);
+    buinessUnitMock.count = buinessUnitMock.refData.length;
+
+    setupComponent(buinessUnitMock);
+
+    cy.get(L.businessUnitLabel).should('have.text', `The consolidation will be processed in Historical Debt`);
+    cy.get(L.businessUnitInput).should('not.exist');
+  });
 });
