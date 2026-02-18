@@ -48,6 +48,7 @@ import { DraftPayloadType } from '../../../support/utils/payloads';
 import { log } from '../../utils/log.helper';
 import { DraftAccountsFlow } from '../../../e2e/functional/opal/flows/draft-accounts.flow';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { captureSignedInUserEmail } from 'cypress/e2e/functional/opal/actions/login.actions';
 
 type AccountType = DraftPayloadType;
 const inputter = () => new CreateManageDraftsActions();
@@ -64,7 +65,8 @@ const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
  * @param accountType - Draft payload type (e.g., company, pgToPay).
  * @param table - A Cucumber DataTable defining the account fields and values.
  * @param status - The target status after creation (defaults to "Publishing Pending").
- *
+ * @param switchToUser - User to perform the status update (for logging/evidence).
+ * @param returnToUser - User to return to after status update (for logging/evidence).
  * @returns Cypress.Chainable
  *
  * @remarks
@@ -75,18 +77,26 @@ function createDraftAndPrepareForPublishing(
   accountType: AccountType,
   table: DataTable,
   status: string = 'Publishing Pending',
+  switchToUser: string = 'opal-test-10@hmct.net',
+  returnToUser: string = '',
 ) {
   const tableWithUniq = applyUniqToDataTable(table);
   const details = tableWithUniq.hashes?.() ?? [];
 
-  log('step', `Creating ${accountType} draft → ${status}`, {
-    accountType,
-    status,
-    fields: details,
-    rowCount: details.length,
-  });
+  log(
+    'step',
+    `Creating ${accountType} draft → ${status} using user ${switchToUser}, returning to user ${returnToUser}`,
+    {
+      accountType,
+      status,
+      user: switchToUser,
+      returnToUser,
+      fields: details,
+      rowCount: details.length,
+    },
+  );
 
-  return createDraftAndSetStatus(accountType, status, tableWithUniq);
+  return createDraftAndSetStatus(accountType, status, tableWithUniq, switchToUser, returnToUser);
 }
 
 /**
@@ -159,7 +169,25 @@ Given(
   (accountType: AccountType, status: string, table: DataTable) => {
     const data = table.rows();
     log('step', `Create ${accountType} draft, status ${status}`, { accountType, status, data });
-    return createDraftAndPrepareForPublishing(accountType, table, status);
+    return captureSignedInUserEmail().then((existingUser: string) => {
+      return createDraftAndPrepareForPublishing(accountType, table, status, existingUser, existingUser);
+    });
+  },
+);
+
+Given(
+  'I create a {string} draft account with the following details and set status {string} using user {string}:',
+  (accountType: AccountType, status: string, user: string, table: DataTable) => {
+    const data = table.rows();
+    log('step', `Create ${accountType} draft, status ${status}, submitting user ${user}`, {
+      accountType,
+      status,
+      user,
+      data,
+    });
+    return captureSignedInUserEmail().then((existingUser: string) => {
+      return createDraftAndPrepareForPublishing(accountType, table, status, user, existingUser);
+    });
   },
 );
 
@@ -176,7 +204,9 @@ Given(
 Given('a {string} draft account exists with:', (accountType: AccountType, table: DataTable) => {
   const { status, filteredTable } = extractStatusAndTable(table);
   log('step', 'Create draft with table-provided status', { accountType, status });
-  return createDraftAndPrepareForPublishing(accountType, filteredTable, status);
+  return captureSignedInUserEmail().then((existingUser: string) => {
+    return createDraftAndPrepareForPublishing(accountType, filteredTable, status, existingUser, existingUser);
+  });
 });
 
 /**
