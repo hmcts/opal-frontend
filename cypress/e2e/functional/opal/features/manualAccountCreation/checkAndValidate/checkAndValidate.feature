@@ -16,6 +16,11 @@ Feature: Navigate and edit sections from task list
     When I return to the rejected accounts tab
     Then I should see the header containing text "Create accounts"
 
+  @PO-2762
+  Scenario: Inputter can start a new account from Create accounts screen
+    When I click the Create account button on Create and Manage Draft Accounts
+    Then I should see the header containing text "Do you want to create a new account or transfer in?"
+
   @PO-640 @PO-618
   Scenario: Rejected company account can be edited and resubmitted
     Given I create a "company" draft account with the following details and set status "Rejected":
