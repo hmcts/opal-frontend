@@ -71,11 +71,6 @@ export const FinesMacStore = signalStore(
     const utilsService = inject(UtilsService);
 
     return {
-      isConditionalCaution: computed(() => {
-        return (
-          store.accountDetails().formData.fm_create_account_account_type === FINES_ACCOUNT_TYPES['Conditional Caution']
-        );
-      }),
       getAccountType: computed(() => {
         return store.accountDetails().formData.fm_create_account_account_type!;
       }),

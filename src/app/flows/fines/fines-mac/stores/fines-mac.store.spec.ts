@@ -283,27 +283,4 @@ describe('FinesMacStore', () => {
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);
   });
-
-  it('should return isConditionalCaution true when account type is Conditional Caution', () => {
-    const accountDetails = structuredClone(FINES_MAC_ACCOUNT_DETAILS_FORM);
-    accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
-    store.setAccountDetails(
-      accountDetails,
-      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
-      FINES_MAC_LANGUAGE_PREFERENCES_FORM,
-    );
-    expect(store.isConditionalCaution()).toBe(true);
-  });
-
-  it('should return isConditionalCaution false when account type is not Conditional Caution', () => {
-    const accountDetails = structuredClone(FINES_MAC_ACCOUNT_DETAILS_FORM);
-
-    accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fine'];
-    store.setAccountDetails(
-      accountDetails,
-      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
-      FINES_MAC_LANGUAGE_PREFERENCES_FORM,
-    );
-    expect(store.isConditionalCaution()).toBe(false);
-  });
 });
