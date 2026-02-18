@@ -415,3 +415,10 @@ Feature: Manual account creation - Create Draft Account
 
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
+
+@PO-2766
+  Scenario: User moves from through create account page links depending on selected options
+    When I open Manual Account Creation
+    Then I select Transfer in from England or Wales where screen is titled Transfer in (sort of already covered)
+
+
