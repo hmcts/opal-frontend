@@ -8,18 +8,19 @@ Feature: View Defendant Account Summary - Add Comments
   @PO-777
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality
     # AC1 - Create → set Publishing Pending → search → open → verify header
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
-      | Account_status                          | Submitted                      |
-      | account.defendant.forenames             | John                           |
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                          | Submitted                            |
+      | account.defendant.forenames             | John                                 |
       | account.defendant.surname               | AccDetailSurname{uniq}               |
       | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
-      | account.defendant.telephone_number_home | 02078259314                    |
-      | account.account_type                    | Fine                           |
-      | account.prosecutor_case_reference       | PCR-AUTO-002                   |
-      | account.collection_order_made           | false                          |
-      | account.collection_order_made_today     | false                          |
-      | account.payment_card_request            | false                          |
-      | account.defendant.dob                   | 2002-05-15                     |
+      | account.defendant.telephone_number_home | 02078259314                          |
+      | account.account_type                    | Fine                                 |
+      | account.prosecutor_case_reference       | PCR-AUTO-002                         |
+      | account.collection_order_made           | false                                |
+      | account.collection_order_made_today     | false                                |
+      | account.payment_card_request            | false                                |
+      | account.defendant.dob                   | 2002-05-15                           |
+
     And I search for the account by last name "AccDetailSurname{uniq}" and verify the page header is "Mr John ACCDETAILSURNAME{uniqUpper}"
 
     # AC2 / AC3 – Form checks
@@ -54,16 +55,16 @@ Feature: View Defendant Account Summary - Add Comments
   @PO-777
   Scenario: Complete View Defendant Company Account Summary and Comments functionality
     # AC4 - Create & publish a company account then view header summary
-    Given I create a "company" draft account with the following details and set status "Publishing Pending":
-      | Account_status                      | Submitted              |
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                      | Submitted                    |
       | account.defendant.company_name      | Accdetail comp{uniq}         |
       | account.defendant.email_address_1   | Accdetailcomp{uniq}@test.com |
-      | account.defendant.post_code         | AB23 4RN               |
-      | account.account_type                | Fine                   |
-      | account.prosecutor_case_reference   | PCR-AUTO-003           |
-      | account.collection_order_made       | false                  |
-      | account.collection_order_made_today | false                  |
-      | account.payment_card_request        | false                  |
+      | account.defendant.post_code         | AB23 4RN                     |
+      | account.account_type                | Fine                         |
+      | account.prosecutor_case_reference   | PCR-AUTO-003                 |
+      | account.collection_order_made       | false                        |
+      | account.collection_order_made_today | false                        |
+      | account.payment_card_request        | false                        |
     When I open the company account details for "Accdetail comp{uniq}"
 
     # AC9a - Test route guard with unsaved changes
@@ -95,18 +96,18 @@ Feature: View Defendant Account Summary - Add Comments
   @PO-777
   Scenario: Complete View Defendant Adult or Youth with Parent Guardian to Pay Account Summary and Comments functionality
     # Create & publish a pgToPay account then view header summary
-    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
-      | Account_status                          | Submitted                       |
-      | account.defendant.forenames             | Michael                         |
+    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                          | Submitted                             |
+      | account.defendant.forenames             | Michael                               |
       | account.defendant.surname               | ParentGuardianSurname{uniq}           |
       | account.defendant.email_address_1       | Michael.ParentGuardian{uniq}@test.com |
-      | account.defendant.telephone_number_home | 02078259318                     |
-      | account.account_type                    | Fine                            |
-      | account.prosecutor_case_reference       | PCR-AUTO-007                    |
-      | account.collection_order_made           | false                           |
-      | account.collection_order_made_today     | false                           |
-      | account.payment_card_request            | false                           |
-      | account.defendant.dob                   | 2010-05-15                      |
+      | account.defendant.telephone_number_home | 02078259318                           |
+      | account.account_type                    | Fine                                  |
+      | account.prosecutor_case_reference       | PCR-AUTO-007                          |
+      | account.collection_order_made           | false                                 |
+      | account.collection_order_made_today     | false                                 |
+      | account.payment_card_request            | false                                 |
+      | account.defendant.dob                   | 2010-05-15                            |
 
     When I search for the account by last name "ParentGuardianSurname{uniq}" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}"
 
@@ -136,18 +137,18 @@ Feature: View Defendant Account Summary - Add Comments
 
   @PO-1112
   Scenario: As a user I can view account details of a Parent/Guardian account
-    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
-      | Account_status                          | Submitted                |
-      | account.defendant.forenames             | Catherine                |
+    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                          | Submitted                      |
+      | account.defendant.forenames             | Catherine                      |
       | account.defendant.surname               | Green{uniq}                    |
       | account.defendant.email_address_1       | Catherine.Green{uniq}@test.com |
-      | account.defendant.telephone_number_home | 02078217943              |
-      | account.account_type                    | Fine                     |
-      | account.prosecutor_case_reference       | PCR-AUTO-008             |
-      | account.collection_order_made           | false                    |
-      | account.collection_order_made_today     | false                    |
-      | account.payment_card_request            | false                    |
-      | account.defendant.dob                   | 2010-05-15               |
+      | account.defendant.telephone_number_home | 02078217943                    |
+      | account.account_type                    | Fine                           |
+      | account.prosecutor_case_reference       | PCR-AUTO-008                   |
+      | account.collection_order_made           | false                          |
+      | account.collection_order_made_today     | false                          |
+      | account.payment_card_request            | false                          |
+      | account.defendant.dob                   | 2010-05-15                     |
 
     When I search for the account by last name "Green{uniq}" and verify the page header is "Miss Catherine GREEN{uniqUpper}"
 

@@ -93,9 +93,9 @@ Feature: Account Search and Matches
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, selected tab"
     Examples:
-      | accountNumber | reference | lastName    |
-      | 12345678      | REF-123   |             |
-      |               | REF-123   | Smith       |
+      | accountNumber | reference | lastName |
+      | 12345678      | REF-123   |          |
+      |               | REF-123   | Smith    |
 
 
   @PO-712
@@ -131,9 +131,9 @@ Feature: Account Search and Matches
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
     Examples:
-      | accountNumber | reference | companyName     |
-      |               | REF-123   | CompanyOne      |
-      | 2345678       | REF-123   |                 |
+      | accountNumber | reference | companyName |
+      |               | REF-123   | CompanyOne  |
+      | 2345678       | REF-123   |             |
 
   @PO-715
   #- AC5i.
@@ -173,10 +173,10 @@ Feature: Account Search and Matches
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
     Examples:
-      | accountNumber | reference | companyName     |
-      | 12345678      | REF-123   | CompanyOne      |
-      | 12345678      |           | CompanyOne      |
-      |               | REF-123   | CompanyOne      |
+      | accountNumber | reference | companyName |
+      | 12345678      | REF-123   | CompanyOne  |
+      | 12345678      |           | CompanyOne  |
+      |               | REF-123   | CompanyOne  |
 
 
   Scenario: Minor creditors - company type displays validation message when name, address and postcode are missing
@@ -286,7 +286,7 @@ Feature: Account Search and Matches
   @PO-709
   Scenario: Verify API call parameters for Defenders and Creditors search using Reference or case number
     # AC1a, AC1b, AC1c
-    Given I create a "company" draft account with the following details and set status "Publishing Pending":
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status                      | Submitted              |
       | account.defendant.company_name      | Test CGI Comp 1{uniq}  |
       | account.defendant.email_address_1   | Accdetailcomp@test.com |
@@ -296,18 +296,20 @@ Feature: Account Search and Matches
       | account.collection_order_made       | false                  |
       | account.collection_order_made_today | false                  |
       | account.payment_card_request        | false                  |
-    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
-      | Account_status                          | Submitted                      |
-      | account.defendant.forenames             | John                           |
+    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                          | Submitted                            |
+      | account.defendant.forenames             | John                                 |
       | account.defendant.surname               | AccWithComp{uniq}                    |
       | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
-      | account.defendant.telephone_number_home | 02078259314                    |
-      | account.account_type                    | Fine                           |
-      | account.prosecutor_case_reference       | PCRAUTO008                     |
-      | account.collection_order_made           | false                          |
-      | account.collection_order_made_today     | false                          |
-      | account.payment_card_request            | false                          |
-      | account.defendant.dob                   | 2002-05-15                     |
+      | account.defendant.telephone_number_home | 02078259314                          |
+      | account.account_type                    | Fine                                 |
+      | account.prosecutor_case_reference       | PCRAUTO008                           |
+      | account.collection_order_made           | false                                |
+      | account.collection_order_made_today     | false                                |
+      | account.payment_card_request            | false                                |
+      | account.defendant.dob                   | 2002-05-15                           |
+    And I am on the Account Search page - Individuals form displayed by default
+
     When I intercept the "reference" account search API
     And I view the Companies search form
     When I search using the following inputs:
@@ -334,9 +336,9 @@ Feature: Account Search and Matches
   @PO-709
   Scenario: Verify search works for all reference types
     #AC6
-    Given I create a "company" draft account with the following details and set status "Publishing Pending":
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status                      | Submitted         |
-      | account.defendant.company_name      | Test CGI Co{uniq}       |
+      | account.defendant.company_name      | Test CGI Co{uniq} |
       | account.defendant.email_address_1   | test@test.com     |
       | account.defendant.post_code         | AB23 4RN          |
       | account.account_type                | Fine              |
@@ -344,6 +346,8 @@ Feature: Account Search and Matches
       | account.collection_order_made       | false             |
       | account.collection_order_made_today | false             |
       | account.payment_card_request        | false             |
+    And I am on the Account Search page - Individuals form displayed by default
+
     And I view the Companies search form
     When I search using the following inputs:
       | reference or case number | <reference_value> |
@@ -358,26 +362,28 @@ Feature: Account Search and Matches
   @PO-709
   Scenario: Verify that the Reference or Case Number search only returns exact matches
     #AC6a - Return only exact match
-    Given I create a "company" draft account with the following details and set status "Publishing Pending":
-      | Account_status                      | Submitted      |
-      | account.defendant.company_name      | Test CGI Co A{uniq}  |
-      | account.defendant.email_address_1   | testA@test.com |
-      | account.defendant.post_code         | AB23 4RN       |
-      | account.account_type                | Fine           |
-      | account.prosecutor_case_reference   | PCRUNIQ010     |
-      | account.collection_order_made       | false          |
-      | account.collection_order_made_today | false          |
-      | account.payment_card_request        | false          |
-    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
-      | Account_status                      | Submitted      |
-      | account.defendant.company_name      | Test CGI Co B{uniq}  |
-      | account.defendant.email_address_1   | testB@test.com |
-      | account.defendant.post_code         | AB23 4RN       |
-      | account.account_type                | Fine           |
-      | account.prosecutor_case_reference   | PCRUNIQ010A    |
-      | account.collection_order_made       | false          |
-      | account.collection_order_made_today | false          |
-      | account.payment_card_request        | false          |
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                      | Submitted           |
+      | account.defendant.company_name      | Test CGI Co A{uniq} |
+      | account.defendant.email_address_1   | testA@test.com      |
+      | account.defendant.post_code         | AB23 4RN            |
+      | account.account_type                | Fine                |
+      | account.prosecutor_case_reference   | PCRUNIQ010          |
+      | account.collection_order_made       | false               |
+      | account.collection_order_made_today | false               |
+      | account.payment_card_request        | false               |
+    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                      | Submitted           |
+      | account.defendant.company_name      | Test CGI Co B{uniq} |
+      | account.defendant.email_address_1   | testB@test.com      |
+      | account.defendant.post_code         | AB23 4RN            |
+      | account.account_type                | Fine                |
+      | account.prosecutor_case_reference   | PCRUNIQ010A         |
+      | account.collection_order_made       | false               |
+      | account.collection_order_made_today | false               |
+      | account.payment_card_request        | false               |
+    And I am on the Account Search page - Individuals form displayed by default
+
     When I search using the following inputs:
       | reference or case number | PCRUNIQ010 |
     # --- Step 3: Verify results show only exact match ---

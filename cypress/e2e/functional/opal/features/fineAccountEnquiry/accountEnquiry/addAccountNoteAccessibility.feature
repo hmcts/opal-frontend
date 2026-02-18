@@ -6,18 +6,18 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
 
   Scenario: Check Add Account Note Accessibility with Axe-Core for Individual Account
 
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
-      | Account_status                          | Submitted                           |
-      | account.defendant.forenames             | James                               |
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                          | Submitted                                 |
+      | account.defendant.forenames             | James                                     |
       | account.defendant.surname               | GrahamAddNoteSurname{uniq}                |
       | account.defendant.email_address_1       | James.GrahamAddNoteSurname{uniq}@test.com |
-      | account.defendant.telephone_number_home | 02078259314                         |
-      | account.account_type                    | Fine                                |
-      | account.prosecutor_case_reference       | PCR-AUTO-002                        |
-      | account.collection_order_made           | false                               |
-      | account.collection_order_made_today     | false                               |
-      | account.payment_card_request            | false                               |
-      | account.defendant.dob                   | 2002-05-15                          |
+      | account.defendant.telephone_number_home | 02078259314                               |
+      | account.account_type                    | Fine                                      |
+      | account.prosecutor_case_reference       | PCR-AUTO-002                              |
+      | account.collection_order_made           | false                                     |
+      | account.collection_order_made_today     | false                                     |
+      | account.payment_card_request            | false                                     |
+      | account.defendant.dob                   | 2002-05-15                                |
     When I search for the account by last name "GrahamAddNoteSurname{uniq}" and verify the page header is "Mr James GRAHAMADDNOTESURNAME{uniqUpper}"
 
     ## Check Accessibility on Add Account Note Page
@@ -30,16 +30,16 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
     Then I check the page for accessibility
 
   Scenario: Check Add Account Note Accessibility with Axe-Core for Company Account
-    Given I create a "company" draft account with the following details and set status "Publishing Pending":
-      | Account_status                      | Submitted             |
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                      | Submitted                   |
       | account.defendant.company_name      | AccNote comp{uniq}          |
       | account.defendant.email_address_1   | AAccNotecomp{uniq}@test.com |
-      | account.defendant.post_code         | AB23 4RN              |
-      | account.account_type                | Fine                  |
-      | account.prosecutor_case_reference   | PCR-AUTO-003          |
-      | account.collection_order_made       | false                 |
-      | account.collection_order_made_today | false                 |
-      | account.payment_card_request        | false                 |
+      | account.defendant.post_code         | AB23 4RN                    |
+      | account.account_type                | Fine                        |
+      | account.prosecutor_case_reference   | PCR-AUTO-003                |
+      | account.collection_order_made       | false                       |
+      | account.collection_order_made_today | false                       |
+      | account.payment_card_request        | false                       |
     When I open the company account details for "AccNote comp{uniq}"
 
     ## Check Accessibility on Add Account Note Page for Company
