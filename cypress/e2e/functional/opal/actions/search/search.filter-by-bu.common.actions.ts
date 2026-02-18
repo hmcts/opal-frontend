@@ -86,7 +86,7 @@ export class SearchFilterByBUCommonActions {
         cy.get('.govuk-summary-list__value')
           .should('be.visible')
           .invoke('text')
-          .then((text) => text.replaceAll(/\s+/g, ' ').trim())
+          .then((text) => text.replace(/\s+/g, ' ').trim())
           .should('eq', expectedSummary);
       });
   }

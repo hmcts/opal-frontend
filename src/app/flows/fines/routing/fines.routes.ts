@@ -3,6 +3,7 @@ import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
 import { routing as draftRouting } from '../fines-draft/routing/fines-draft.routes';
 import { routing as accRouting } from '../fines-acc/routing/fines-acc.routes';
 import { routing as saRouting } from '../fines-sa/routing/fines-sa.routes';
+import { routing as consolidationRouting } from '../fines-con/routing/fines-con.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
@@ -43,6 +44,12 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.sa.root,
         loadComponent: () => import('../fines-sa/fines-sa.component').then((c) => c.FinesSaComponent),
         children: saRouting,
+        canActivate: [authGuard],
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.con.root,
+        loadComponent: () => import('../fines-con/fines-con.component').then((c) => c.FinesConComponent),
+        children: consolidationRouting,
         canActivate: [authGuard],
       },
     ],

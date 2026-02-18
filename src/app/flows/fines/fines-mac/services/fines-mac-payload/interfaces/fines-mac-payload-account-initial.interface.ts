@@ -3,6 +3,7 @@ export interface IFinesMacPayloadAccountAccountInitial {
   defendant_type: string | null;
   originator_name: string | null;
   originator_id: string | null;
+  originator_type: string | null;
   prosecutor_case_reference: string | null;
   enforcement_court_id: string | null;
   collection_order_made: boolean | null;

@@ -171,7 +171,7 @@ describe('Search Account Component - Major Creditors', () => {
       .and('contain', 'Enter a major creditor name or code');
   });
 
-  it('AC6. Validation passes nagivated to problem screen', { tags: ['PO-716'] }, () => {
+  it('AC6. Validation passes navigated to problem screen', { tags: ['PO-716'] }, () => {
     setupComponent();
     majorCreditorsSearchMock.fsa_search_account_number = '12345678';
     majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';

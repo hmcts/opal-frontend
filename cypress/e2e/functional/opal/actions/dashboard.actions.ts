@@ -87,6 +87,31 @@ export class DashboardActions {
   }
 
   /**
+   * Navigates from the Dashboard to the "Consolidate accounts" page.
+   *
+   * Steps performed:
+   *  1. Clicks the Consolidate accounts link in the dashboard.
+   *  2. Waits for the URL to include `/fines/consolidation/select-business-unit`.
+   *  3. Asserts that the consolidation heading is rendered.
+   *
+   * @example
+   *   dashboard.goToConsolidation();
+   */
+  public goToConsolidation(): void {
+    log('navigate', 'Navigating to Consolidate accounts');
+
+    cy.get(L.consolidateAccountsLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+
+    log('assert', 'Verifying Consolidate accounts page URL');
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/select-business-unit');
+
+    log('assert', 'Ensuring consolidation heading is visible');
+    cy.get('h1.govuk-heading-l', { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');
+
+    log('done', 'Successfully navigated to Consolidate accounts page');
+  }
+
+  /**
    * Navigates to the Create and Manage Draft Accounts area for inputters.
    *
    * @example
