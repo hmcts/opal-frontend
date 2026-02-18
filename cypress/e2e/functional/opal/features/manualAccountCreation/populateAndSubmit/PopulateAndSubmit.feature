@@ -430,9 +430,14 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
-@PO-2766
+  @PO-2766 @only
   Scenario: User moves from through create account page links depending on selected options
     When I open Manual Account Creation
-    Then I select Transfer in from England or Wales where screen is titled Transfer in (sort of already covered)
+    Then I choose 'Transfer in' and continue to create account page
+    Then I should see the header containing text 'Transfer in'
+
+
+    # AC6 Back link is on screening
+    When I click the back link on create account page I return to Create or Transfer In page
 
 

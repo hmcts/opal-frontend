@@ -421,7 +421,7 @@ describe('FinesMacCreateAccountComponent', () => {
     },
   );
 
-  it.only('(AC4) should auto select a single business unit', { tags: ['@PO-2766'] }, () => {
+  it('(AC4) should auto select a single business unit', { tags: ['@PO-2766'] }, () => {
     accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
     buinessUnitMock.refData = buinessUnitMock.refData.slice(0, 1);
     buinessUnitMock.count = buinessUnitMock.refData.length;

@@ -1270,3 +1270,24 @@ When('I continue to offence details from employer details', () => {
   log('navigate', 'Continuing to offence details from Employer details');
   flow().continueToOffenceDetailsFromEmployer();
 });
+
+/**
+ * @step Choose a radio button type and go to Create account page
+ * @description Supports both 'Create a new account' and 'Transfer in from England or Wales' options, asserting the Create account page after selection.
+ * @param selectedType - The type of account creation to select ('New' or 'Transfer in').
+ */
+When('I choose {string} and continue to create account page', (selectedType: 'New' | 'Transfer in') => {
+  log('navigate', 'Selecting account creation type and continuing to Create account page', { selectedType });
+  originatorType().selectOriginatorType(selectedType);
+  originatorType().continueToCreateAccount();
+});
+
+/**
+ * @step Selecting back link on create account page
+ * @description Clicks the back link on the Create account page and asserts we return to the Originator type selection page.
+ */
+When('I click the back link on create account page I return to Create or Transfer In page', () => {
+  log('navigate', 'Clicking back link on Create account page');
+  createAccount().selectBackLink();
+  originatorType().assertOnCreateOrTransferInPage();
+});
