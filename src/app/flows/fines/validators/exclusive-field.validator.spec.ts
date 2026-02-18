@@ -1,6 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { describe, it, expect } from 'vitest';
-import { createExclusiveFieldValidator, ExclusiveFieldRuleConfig } from './exclusive-field.validator';
+import { createExclusiveFieldValidator } from './exclusive-field.validator';
+import { ExclusiveFieldRuleConfig } from './interfaces/exclusive-field-rule-config.interface';
 
 function createForm(config: {
   accountNumber?: string | null;

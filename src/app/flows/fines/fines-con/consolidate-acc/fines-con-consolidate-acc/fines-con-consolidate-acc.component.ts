@@ -71,9 +71,6 @@ export class FinesConConsolidateAccComponent implements OnInit {
    */
   public get businessUnitText(): string | null {
     const selectedBusinessUnitId = this.finesConStore.getBusinessUnitId();
-    if (!selectedBusinessUnitId || !this.businessUnitRefData) {
-      return null;
-    }
     const businessUnit = this.businessUnitRefData.find((bu) => bu.business_unit_id === selectedBusinessUnitId);
     return businessUnit?.business_unit_name ?? null;
   }
@@ -109,7 +106,11 @@ export class FinesConConsolidateAccComponent implements OnInit {
    * @returns boolean
    */
   public canDeactivate(): CanDeactivateTypes {
-    return !this.finesConStore.unsavedChanges();
+    if (this.finesConStore.unsavedChanges()) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   /**

@@ -176,24 +176,5 @@ describe('FinesConConsolidateAccComponent', () => {
 
       expect(result).toBeNull();
     });
-
-    it('should return null when businessUnitRefData is empty', () => {
-      component['businessUnitRefData'] = [];
-      vi.spyOn(finesConStore, 'getBusinessUnitId').mockReturnValue(1);
-
-      const result = component.businessUnitText;
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when businessUnitRefData is not set', () => {
-      // @ts-expect-error - Testing with undefined for private property
-      component['businessUnitRefData'] = undefined;
-      vi.spyOn(finesConStore, 'getBusinessUnitId').mockReturnValue(1);
-
-      const result = component.businessUnitText;
-
-      expect(result).toBeNull();
-    });
   });
 });

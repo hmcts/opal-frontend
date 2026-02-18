@@ -64,10 +64,7 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
    * Stores the data in the consolidation store for use across the flow
    */
   public handleFormSubmit(formData: IFinesConSelectBuForm): void {
-    this.finesConStore.updateSelectBuForm({
-      fcon_select_bu_business_unit_id: formData.formData.fcon_select_bu_business_unit_id,
-      fcon_select_bu_defendant_type: formData.formData.fcon_select_bu_defendant_type,
-    });
+    this.finesConStore.updateSelectBuForm(formData.formData);
     this.routerNavigate(FINES_CON_ROUTING_PATHS.children.consolidateAcc);
   }
 

@@ -10,16 +10,17 @@ import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/com
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { CommonModule } from '@angular/common';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { LETTERS_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import {
+  LETTERS_WITH_SPACES_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { FinesConStore } from '../../../../stores/fines-con.store';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
-// Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
-const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_PATTERN = /^[a-zA-Z0-9\s'-]*$/;
-const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_PATTERN,
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'alphanumericTextPattern',
 );
 
@@ -81,11 +82,11 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
         dateOfBirthValidator(),
       ]),
       fcon_search_account_individuals_address_line_1: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
         Validators.maxLength(30),
       ]),
       fcon_search_account_individuals_post_code: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
         Validators.maxLength(8),
       ]),
     });

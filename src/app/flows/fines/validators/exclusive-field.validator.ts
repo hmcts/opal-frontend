@@ -1,18 +1,7 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { isFormGroup } from './utils/is-form-group.util';
 import { hasNestedValue } from './utils/has-nested-value.util';
-
-/**
- * Configuration for exclusive field validation rules.
- */
-export interface ExclusiveFieldRuleConfig {
-  /** Primary field that must be used alone */
-  primaryField: string;
-  /** Fields that cannot be used with the primary field */
-  conflictingFields: string[];
-  /** Error key returned when validation fails */
-  errorKey: string;
-}
+import { ExclusiveFieldRuleConfig } from './interfaces/exclusive-field-rule-config.interface';
 
 /**
  * Creates a validator that enforces exclusive-use rules between form fields.

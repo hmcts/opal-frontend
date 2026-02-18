@@ -18,11 +18,11 @@ import { FinesConStore } from '../../../stores/fines-con.store';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-con-search-account-form-individuals/constants/fines-con-search-account-form-individuals-field-errors.constant';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-con-search-account-form-companies/constants/fines-con-search-account-form-companies-field-errors.constant';
 import { exclusiveSearchFieldValidator } from '../validators/fines-con-search-account.validator';
-
+import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ACCOUNT_NUMBER_PATTERN } from '@app/flows/fines/constants/fines-regex-patterns.constant';
 // Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
-const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_PATTERN = /^[a-zA-Z0-9\s'-]*$/;
-const ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_PATTERN,
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'alphanumericTextPattern',
 );
 
@@ -74,13 +74,13 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
     this.form = new FormGroup(
       {
         fcon_search_account_number: new FormControl<string | null>(null, [
-          patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
-          ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
+          patternValidator(ACCOUNT_NUMBER_PATTERN, 'invalidFormat'),
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
           Validators.maxLength(9),
         ]),
         fcon_search_account_national_insurance_number: new FormControl<string | null>(null, [
           nationalInsuranceNumberValidator(),
-          ALPHANUMERIC_WITH_HYPHENS_APOSTROPHES_VALIDATOR,
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
           Validators.maxLength(9),
         ]),
         fcon_search_account_individuals_search_criteria: new FormGroup(
