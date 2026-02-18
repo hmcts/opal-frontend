@@ -428,7 +428,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
     setupComponent(buinessUnitMock);
 
-    cy.get(L.businessUnitLabel).should('have.text', `The consolidation will be processed in Historical Debt`);
+    cy.get(L.businessUnitDefault).should('have.text', `The account will be created in Historical Debt`);
     cy.get(L.businessUnitInput).should('not.exist');
   });
 });
