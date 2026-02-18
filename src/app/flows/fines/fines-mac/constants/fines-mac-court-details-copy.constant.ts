@@ -1,25 +1,23 @@
 import { IFinesAccountTypes } from '../../interfaces/fines-account-types.interface';
 import { IFinesMacCourtDetailsCopy } from '../interfaces/fines-mac-court-details-copy.interface';
 
+const FINES_MAC_COURT_DETAILS_COPY_FINES: IFinesMacCourtDetailsCopy = {
+  sectionHeading: 'Court details',
+  taskListLabel: 'Court details',
+  reviewCardTitle: 'Court details',
+  changeLinkHiddenText: 'Court details',
+  originatorLabel: 'Sending area or Local Justice Area (LJA)',
+  originatorHint: 'Search using the code or name of the area that sent the transfer',
+  originatorRequiredError: 'Enter a sending area or Local Justice Area',
+};
+
 export const FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE: Record<keyof IFinesAccountTypes, IFinesMacCourtDetailsCopy> =
   {
-    Fine: {
-      sectionHeading: 'Court details',
-      taskListLabel: 'Court details',
-      reviewCardTitle: 'Court details',
-      changeLinkHiddenText: 'Court details',
-      originatorLabel: 'Sending area or Local Justice Area (LJA)',
-      originatorHint: 'Search using the code or name of the area that sent the transfer',
-      originatorRequiredError: 'Enter a sending area or Local Justice Area',
-    },
+    Fine: FINES_MAC_COURT_DETAILS_COPY_FINES,
     'Fixed Penalty': {
-      sectionHeading: 'Court details',
-      taskListLabel: 'Court details',
+      ...FINES_MAC_COURT_DETAILS_COPY_FINES,
       reviewCardTitle: 'Issuing authority and court details',
       changeLinkHiddenText: 'Issuing authority and court details',
-      originatorLabel: 'Sending area or Local Justice Area (LJA)',
-      originatorHint: 'Search using the code or name of the area that sent the transfer',
-      originatorRequiredError: 'Enter a sending area or Local Justice Area',
     },
     'Conditional Caution': {
       sectionHeading: 'Police and court details',
