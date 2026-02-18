@@ -91,6 +91,7 @@ export class FinesConConsolidateAccComponent implements OnInit {
     this.router.navigate([FINES_CON_ROUTING_PATHS.children.selectBusinessUnit], {
       relativeTo: this.activatedRoute.parent,
     });
+    this.finesConStore.resetSearchAccountForm();
   }
 
   /**
