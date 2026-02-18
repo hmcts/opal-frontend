@@ -14,6 +14,7 @@ import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
+import { finesConSearchAccountFormCompaniesValidator } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/fines-con-search-account-form/fines-con-search-account-form-companies/validators/fines-con-search-account-form-companies.validator';
 
 const LETTERS_WITH_SPACES_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
@@ -95,70 +96,6 @@ export class FinesConSearchAccountFormCompaniesComponent extends AbstractNestedF
   }
 
   /**
-   * Convenience accessor for this sub-form's controls from the installed parent group.
-   * Returns `null` for any control that is missing to keep callers defensive.
-   *
-   * @returns An object containing references to all company form controls
-   * @private
-   */
-  private getCompanyNameControls() {
-    const companiesGroup = this.getCompaniesGroup();
-    if (!companiesGroup) {
-      return {
-        companyNameControl: null,
-        companyNameExactMatchControl: null,
-        includeAliasesControl: null,
-      };
-    }
-
-    return {
-      companyNameControl: companiesGroup.get('fcon_search_account_companies_company_name'),
-      companyNameExactMatchControl: companiesGroup.get('fcon_search_account_companies_company_name_exact_match'),
-      includeAliasesControl: companiesGroup.get('fcon_search_account_companies_include_aliases'),
-    };
-  }
-
-  /**
-   * Applies conditional `required` rules based on current values/toggles.
-   * - Company name becomes required when exact-match or include-aliases flags are set.
-   *
-   * Uses the base helper `setValidatorPresence` to add/remove `Validators.required` and update validity quietly.
-   *
-   * @private
-   */
-  private handleConditionalValidation(): void {
-    const { companyNameControl, companyNameExactMatchControl, includeAliasesControl } = this.getCompanyNameControls();
-
-    if (!companyNameControl || !companyNameExactMatchControl || !includeAliasesControl) return;
-
-    const companyNameHasValue = this.hasValue(companyNameControl.value);
-    const companyNameExactMatchHasValue = !!companyNameExactMatchControl.value;
-    const includeAliasesHasValue = !!includeAliasesControl.value;
-
-    const shouldRequireCompanyName = (companyNameExactMatchHasValue || includeAliasesHasValue) && !companyNameHasValue;
-
-    this.setValidatorPresence(companyNameControl, Validators.required, shouldRequireCompanyName);
-  }
-
-  /**
-   * Wires the conditional validation handler to relevant controls' `valueChanges` with auto-unsubscribe.
-   * No-ops if any required control is missing (defensive in case the group is not yet fully installed).
-   *
-   * @private
-   */
-  private setupConditionalValidation(): void {
-    const { companyNameControl, companyNameExactMatchControl, includeAliasesControl } = this.getCompanyNameControls();
-    if (!companyNameControl || !companyNameExactMatchControl || !includeAliasesControl) return;
-
-    this.subscribeValidation(
-      () => this.handleConditionalValidation(),
-      companyNameControl,
-      companyNameExactMatchControl,
-      includeAliasesControl,
-    );
-  }
-
-  /**
    * Installs this sub-form's controls, sets up conditional validation,
    * rehydrates values from the store, and runs a one-off validator sync.
    *
@@ -171,11 +108,11 @@ export class FinesConSearchAccountFormCompaniesComponent extends AbstractNestedF
       return;
     }
     this.addControlsToNestedFormGroup(controlsGroup, companiesGroup);
+    companiesGroup.addValidators(finesConSearchAccountFormCompaniesValidator);
     companiesGroup.patchValue(
       this.finesConStore.searchAccountForm().fcon_search_account_companies_search_criteria ?? {},
     );
-    this.setupConditionalValidation();
-    this.handleConditionalValidation();
+    companiesGroup.updateValueAndValidity({ emitEvent: false });
   }
 
   /**

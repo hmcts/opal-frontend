@@ -4,7 +4,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinesConSearchAccountComponent } from './fines-con-search-account.component';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
-import { FINES_CON_SEARCH_ACCOUNT_FORM_MOCK } from './mocks/fines-con-search-account-form.mock';
+import { FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK } from './mocks/fines-con-search-account-form-account-number.mock';
 
 describe('FinesConSearchAccountComponent', () => {
   let component: FinesConSearchAccountComponent;
@@ -45,8 +45,8 @@ describe('FinesConSearchAccountComponent', () => {
     const updateSpy = vi.spyOn(finesConStore, 'updateSearchAccountFormTemporary');
     const setSpy = vi.spyOn(finesConStore, 'setUnsavedChanges');
 
-    component.handleSearchAccountSubmit(FINES_CON_SEARCH_ACCOUNT_FORM_MOCK);
-    expect(updateSpy).toHaveBeenCalledWith(FINES_CON_SEARCH_ACCOUNT_FORM_MOCK.formData);
+    component.handleSearchAccountSubmit(FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK);
+    expect(updateSpy).toHaveBeenCalledWith(FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData);
     expect(setSpy).toHaveBeenCalledWith(false);
   });
 
