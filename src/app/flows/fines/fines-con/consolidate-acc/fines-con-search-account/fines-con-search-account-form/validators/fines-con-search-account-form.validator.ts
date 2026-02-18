@@ -1,7 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import {
-  createExclusiveFieldValidator,
-} from 'src/app/flows/fines/validators/exclusive-field.validator';
+import { createExclusiveFieldValidator } from 'src/app/flows/fines/validators/exclusive-field.validator';
 import { ExclusiveFieldRuleConfig } from 'src/app/flows/fines/validators/interfaces/exclusive-field-rule-config.interface';
 
 /**
