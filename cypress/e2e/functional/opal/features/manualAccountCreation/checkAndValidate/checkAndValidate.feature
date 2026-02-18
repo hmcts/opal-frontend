@@ -189,7 +189,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @PO-640 @only
+  @PO-640
   Scenario: Rejected parent or guardian to pay account can be edited and resubmitted
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}              |
