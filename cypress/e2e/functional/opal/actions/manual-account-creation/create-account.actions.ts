@@ -133,4 +133,12 @@ export class ManualCreateAccountActions {
     log('navigate', 'Continuing to account details task list');
     cy.get(L.continueButton, this.common.getTimeoutOptions()).should('be.visible').click();
   }
+
+  /**
+   * Clicks the back link to return to the previous page.
+   */
+  selectBackLink(): void {
+    log('navigate', 'Clicking back link');
+    cy.get(L.backLink, this.common.getTimeoutOptions()).should('be.visible').click();
+  }
 }
