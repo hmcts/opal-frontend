@@ -27,6 +27,7 @@ import {
   summarizeErrorPayload,
 } from '../../../../../support/utils/accountCapture';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { performLogin } from '../login.actions';
 
 const log = createScopedLogger('DraftAccountApiActions');
 const createDraftEndpoint = '/opal-fines-service/draft-accounts';
@@ -248,6 +249,8 @@ export interface EtagConflictResult {
  *
  * @param draftType - Draft account type from payloads.ts (e.g., company, pgToPay, fixedPenalty).
  * @param newStatus - Target status after creation (e.g., "Submitted", "In review", "Rejected").
+ * @param user - Identifier for the user performing the publishing action (for logging/evidence).
+ * @param returnToUser - Identifier for the user to return to after status update (for logging/evidence).
  * @param table - Cucumber DataTable of overrides (values can include Account_status).
  * @returns A Cypress chainable that resolves when the draft is created and updated
  *
@@ -260,6 +263,8 @@ export function createDraftAndSetStatus(
   draftType: DraftPayloadType,
   newStatus: string,
   table: DataTable,
+  user: string,
+  returnToUser: string,
 ): Cypress.Chainable<void> {
   /**
    * Normalizes a requested status into an API-compatible value and determines
@@ -315,6 +320,8 @@ export function createDraftAndSetStatus(
     newStatus,
     canonicalStatus,
     overrides,
+    user,
+    returnToUser,
   });
 
   // Local state accumulated across steps (used for evidence + ETag tracking).
@@ -426,6 +433,9 @@ export function createDraftAndSetStatus(
               validated_by,
             });
 
+            log('info', `Switching to user ${user} for status update`, { user });
+            performLogin(user);
+
             return cy.wait(DRAFT_PREPATCH_WAIT_MS, { log: false }).then(() =>
               cy
                 .request({
@@ -509,6 +519,9 @@ export function createDraftAndSetStatus(
               } as EtagUpdate,
               { log: false },
             ).as('etagUpdate');
+
+            performLogin(returnToUser);
+            log('info', `Returned to user ${returnToUser} after status update`, { returnToUser });
           });
       })
 

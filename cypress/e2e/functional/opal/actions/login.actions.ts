@@ -89,3 +89,22 @@ export function assertSignOutLinkVisible(): void {
   cy.get(L.signOutLink, { timeout: 10_000 }).should('be.visible');
   log('done', 'Sign out link is visible');
 }
+
+/**
+ * Captures the signed-in user's email from the global header via API.
+ *
+ * @returns Cypress.Chainable<string> - The email of the currently signed-in user.
+ */
+export function captureSignedInUserEmail(): Cypress.Chainable<string> {
+  log('action', 'Capturing signed-in user email from global header');
+  return cy
+    .request({
+      method: 'GET',
+      url: '/opal-user-service/users/0/state',
+    })
+    .as('userState')
+    .then(({ body }) => {
+      const email = body.username as string;
+      return email;
+    });
+}
