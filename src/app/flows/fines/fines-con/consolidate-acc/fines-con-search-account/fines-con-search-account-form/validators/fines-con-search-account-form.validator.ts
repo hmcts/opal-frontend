@@ -1,6 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { createExclusiveFieldValidator } from 'src/app/flows/fines/validators/exclusive-field.validator';
-import { ExclusiveFieldRuleConfig } from 'src/app/flows/fines/validators/interfaces/exclusive-field-rule-config.interface';
+import { createExclusiveFieldValidator } from '../../../../../validators/exclusive-field.validator';
 
 /**
  * Cross-field validator for exclusive search field validation (AC6).
@@ -16,31 +15,31 @@ import { ExclusiveFieldRuleConfig } from 'src/app/flows/fines/validators/interfa
 export const consolidateSearchAccountFormValidator: ValidatorFn = ((
   control: AbstractControl,
 ): ValidationErrors | null => {
-  const rules: ExclusiveFieldRuleConfig[] = [
+  const criteriaPaths = [
+    'fcon_search_account_number',
+    'fcon_search_account_national_insurance_number',
+    'fcon_search_account_individuals_search_criteria',
+  ];
+
+  const rules = [
     {
       primaryField: 'fcon_search_account_number',
       conflictingFields: [
         'fcon_search_account_national_insurance_number',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code',
+        'fcon_search_account_individuals_search_criteria',
       ],
-      errorKey: 'accountNumberMustBeExclusive',
+      errorKey: 'atLeastOneCriteriaRequired',
     },
     {
       primaryField: 'fcon_search_account_national_insurance_number',
-      conflictingFields: [
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1',
-        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code',
-      ],
-      errorKey: 'nationalInsuranceNumberMustBeExclusive',
+      conflictingFields: ['fcon_search_account_number', 'fcon_search_account_individuals_search_criteria'],
+      errorKey: 'atLeastOneCriteriaRequired',
     },
   ];
 
-  return createExclusiveFieldValidator(rules)(control);
+  return createExclusiveFieldValidator(rules, {
+    criteriaPaths,
+    emptyErrorKey: 'formEmpty',
+    multipleErrorKey: 'atLeastOneCriteriaRequired',
+  })(control);
 }) as ValidatorFn;

@@ -14,5 +14,17 @@ export function hasNestedValue(control: AbstractControl): boolean {
     return Object.values(control.controls).some(hasNestedValue);
   }
   const value = control.value;
-  return value !== null && value !== undefined && String(value).trim() !== '';
+  if (value === null || value === undefined) {
+    return false;
+  }
+
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  return String(value).trim() !== '';
 }
