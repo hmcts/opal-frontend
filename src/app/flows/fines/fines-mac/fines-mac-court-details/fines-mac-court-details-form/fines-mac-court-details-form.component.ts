@@ -14,6 +14,7 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';
+import { FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE } from '../../constants/fines-mac-court-details-copy.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
@@ -25,6 +26,8 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { IFinesAccountTypes } from '@app/flows/fines/interfaces/fines-account-types.interface';
+import { IFinesMacCourtDetailsCopy } from '../../interfaces/fines-mac-court-details-copy.interface';
 
 //regex pattern validators for the form controls
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -57,23 +60,31 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
+  private get currentCourtDetailsCopy(): IFinesMacCourtDetailsCopy {
+    const accountType = this.finesMacStore.accountDetails().formData.fm_create_account_account_type;
+    const accountTypeKey = accountType as keyof IFinesAccountTypes;
+
+    return (
+      FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE[accountTypeKey] ?? FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE.Fine
+    );
+  }
+
+  public get sectionHeading(): string {
+    return this.currentCourtDetailsCopy.sectionHeading;
+  }
+
   public get originatorIdLabelText(): string {
-    return this.finesMacStore.isConditionalCaution()
-      ? 'Sending police force'
-      : 'Sending area or Local Justice Area (LJA)';
+    return this.currentCourtDetailsCopy.originatorLabel;
   }
 
   public get originatorHintText(): string {
-    return this.finesMacStore.isConditionalCaution()
-      ? 'Search using the code or name of the sending police force that sent the caution'
-      : 'Search using the code or name of the area that sent the transfer';
+    return this.currentCourtDetailsCopy.originatorHint;
   }
 
   /**
    * Sets field-specific error messages for the court details form.
-   * Merges default field error definitions with dynamic error messages,
-   * particularly for the originator ID field which varies based on whether
-   * a conditional caution is active.
+   * Merges default field error definitions with account-type specific copy
+   * for the originator ID field.
    *
    * @private
    */
@@ -84,9 +95,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
         ...FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_originator_id,
         required: {
           ...FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_originator_id['required'],
-          message: this.finesMacStore.isConditionalCaution()
-            ? 'Enter a sending police force'
-            : 'Enter a sending area or Local Justice Area',
+          message: this.currentCourtDetailsCopy.originatorRequiredError,
         },
       },
     };

@@ -14,6 +14,9 @@ import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-se
 import { IOpalFinesProsecutor } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor.interface';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE } from '../../constants/fines-mac-court-details-copy.constant';
+import { IFinesMacCourtDetailsCopy } from '../../interfaces/fines-mac-court-details-copy.interface';
+import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account-court-details',
@@ -42,14 +45,16 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   public issuingAuthority!: string | null;
   public accountTypesKeys = FINES_ACCOUNT_TYPES;
 
+  public get courtDetailsCopy(): IFinesMacCourtDetailsCopy {
+    const accountTypeKey = this.accountType as keyof IFinesAccountTypes;
+
+    return (
+      FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE[accountTypeKey] ?? FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE.Fine
+    );
+  }
+
   public get cardTitle(): string {
-    if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      return 'Issuing authority and court details';
-    } else if (this.accountType === this.accountTypesKeys['Conditional Caution']) {
-      return 'Police and court details';
-    } else {
-      return 'Court details';
-    }
+    return this.courtDetailsCopy.reviewCardTitle;
   }
 
   /**

@@ -17,6 +17,7 @@ import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../../fines-mac-create-accou
 import { FINES_MAC_CREATE_ACCOUNT_STATE_MOCK } from '../../fines-mac-create-account/mocks/fines-mac-create-account-state.mock';
 import { FINES_MAC_BUSINESS_UNIT_STATE } from '../../constants/fines-mac-business-unit-state';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
+import { FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE } from '../../constants/fines-mac-court-details-copy.constant';
 
 describe('FinesMacCourtDetailsFormComponent', () => {
   let component: FinesMacCourtDetailsFormComponent;
@@ -122,6 +123,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
       FINES_MAC_BUSINESS_UNIT_STATE,
       FINES_MAC_LANGUAGE_PREFERENCES_FORM,
     );
+    expect(component.sectionHeading).toBe('Police and court details');
     expect(component.originatorIdLabelText).toBe('Sending police force');
     expect(component.originatorHintText).toBe(
       'Search using the code or name of the sending police force that sent the caution',
@@ -138,6 +140,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
       FINES_MAC_BUSINESS_UNIT_STATE,
       FINES_MAC_LANGUAGE_PREFERENCES_FORM,
     );
+    expect(component.sectionHeading).toBe('Court details');
     expect(component.originatorIdLabelText).toBe('Sending area or Local Justice Area (LJA)');
     expect(component.originatorHintText).toBe('Search using the code or name of the area that sent the transfer');
   });
@@ -184,5 +187,23 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     expect(component.form.get('fm_court_details_prosecutor_case_reference')).toBeTruthy();
     expect(component.form.get('fm_court_details_imposing_court_id')).toBeTruthy();
     expect(component.form.get('fm_court_details_originator_name')).toBeTruthy();
+  });
+
+  it('should test currentCourtDetailsCopy getter for non-existent account type', () => {
+    finesMacStore.setAccountDetails(
+      {
+        ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_CREATE_ACCOUNT_STATE_MOCK,
+          fm_create_account_account_type: 'NonExistentAccountType',
+        },
+      },
+      FINES_MAC_BUSINESS_UNIT_STATE,
+      FINES_MAC_LANGUAGE_PREFERENCES_FORM,
+    );
+    const copy = component['currentCourtDetailsCopy'];
+    expect(copy).toEqual(
+      FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE[FINES_ACCOUNT_TYPES['Fine'] as keyof typeof FINES_ACCOUNT_TYPES],
+    );
   });
 });

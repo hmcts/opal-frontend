@@ -1,8 +1,4 @@
-@if (finesMacStore.isConditionalCaution()) {
-  <h1 class="govuk-heading-l">Police and court details</h1>
-} @else {
-  <h1 class="govuk-heading-l">Court details</h1>
-}
+<h1 class="govuk-heading-l">{{ sectionHeading }}</h1>
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
