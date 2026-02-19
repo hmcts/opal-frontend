@@ -4663,12 +4663,12 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@ministryofjustice/frontend@npm:8.0.0"
+  version: 8.0.1
+  resolution: "@ministryofjustice/frontend@npm:8.0.1"
   peerDependencies:
     govuk-frontend: ^5.11.2
     moment: 2.30.1
-  checksum: 10/578c41c9442e42e2e9fc86c0b5fe51f203aa042dea357eaf9d43550de6cc737d29e732e7201b75a40b1c5a7775bb0e49655c1e543bc02ad0882ddb696442e992
+  checksum: 10/412d29fbde8b903a7db992ab7a9eeeb5d31bd8355b26f47e0d3e9974a1a1ea3fbd12e2d082d21edc2a052c5aa0bda93929a73a1f820a602279f0fda6e71efe56
   languageName: node
   linkType: hard
 
