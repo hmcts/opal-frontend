@@ -430,7 +430,7 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
-  @PO-2766 @only
+  @PO-2766
   Scenario: User moves from through create account page links depending on selected options - Fine
     When I open Manual Account Creation
     Then I choose 'Transfer in' and continue to create account page
@@ -449,7 +449,7 @@ Feature: Manual account creation - Create Draft Account
     Then I start a fine manual account via transfer for business unit 'Camberwell Green' with defendant type 'Adult or youth only' and originator type "Transfer in"
 
 
-  @PO-2766 @only
+  @PO-2766
   Scenario: User moves from through create account page links depending on selected options - Fixed Penalty
     # AC7
     When I open Manual Account Creation
