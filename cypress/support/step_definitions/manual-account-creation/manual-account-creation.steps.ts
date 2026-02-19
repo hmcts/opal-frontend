@@ -15,6 +15,7 @@ import {
   DefendantType,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { ManualCreateOrTransferInActions } from '../../../e2e/functional/opal/actions/manual-account-creation/create-transfer.actions';
+import { CreateNewOrTransferInLocators } from '../../../shared/selectors/manual-account-creation/create-transfer.locators';
 import { ManualAccountCommentsNotesActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
 import { ManualCourtFieldKey } from '../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import {
@@ -87,12 +88,30 @@ Then('I should be on the dashboard', () => {
  *   When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
  */
 When(
-  'I start a fine manual account for business unit {string} with defendant type {string}',
-  (businessUnit: string, defendantType: DefendantType) => {
-    log('step', 'Starting manual account creation', { businessUnit, defendantType });
-    flow().startFineAccount(businessUnit, defendantType, 'New');
+  'I start a fine manual account for business unit {string} with defendant type {string} and originator type {string}',
+  (businessUnit: string, defendantType: DefendantType, originatorType: 'New' | 'Transfer in') => {
+    log('step', 'Starting manual account creation', { businessUnit, defendantType, originatorType });
+    flow().startFineAccount(businessUnit, defendantType, originatorType);
   },
 );
+
+/**
+ * @step Starts a fine manual account with a specific business unit and defendant type.
+ * @description Selects business unit, chooses Fine + defendant type, and continues to Account details.
+ * @param businessUnit - Business unit to search for and select.
+ * @param defendantType - Defendant type option to select.
+ * @remarks Uses the flow layer to keep Gherkin steps intent-driven.
+ * @example
+ *   When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only and originator type New"
+ */
+When(
+  'I start a fine manual account via transfer for business unit {string} with defendant type {string} and originator type {string}',
+  (businessUnit: string, defendantType: DefendantType, originatorType: 'New' | 'Transfer in') => {
+    log('step', 'Starting manual account creation', { businessUnit, defendantType, originatorType });
+    flow().startFineAccountFromTransferPage(businessUnit, defendantType, originatorType);
+  },
+);
+
 /**
  * @step Starts a fine manual account relying on the default/only business unit.
  * @description For single-BU users where the business unit is preselected; skips explicit BU entry.
@@ -1286,8 +1305,35 @@ When('I choose {string} and continue to create account page', (selectedType: 'Ne
  * @step Selecting back link on create account page
  * @description Clicks the back link on the Create account page and asserts we return to the Originator type selection page.
  */
-When('I click the back link on create account page I return to Create or Transfer In page', () => {
+When('I click the back link on create account page I return to Create or Transfer In page - No data retained', () => {
   log('navigate', 'Clicking back link on Create account page');
   createAccount().selectBackLink();
   originatorType().assertOnCreateOrTransferInPage();
+  cy.get(CreateNewOrTransferInLocators.originatorType.transferIn, { timeout: 15_000 })
+    .first()
+    .should('exist')
+    .and('not.be.checked');
+});
+
+/**
+ * @step Handles Cancel on Transfer in with a given choice.
+ * @description Triggers the unsaved changes prompt and responds with choice.
+ * @param choice - Cancel/Ok selection.
+ * @remarks Ok choices will leave the page; Cancel choices keep the user on Create Account page.
+ * @example When I cancel create account choosing "Cancel"
+ */
+When('I cancel create account choosing {string}', (choice: 'Cancel' | 'Ok') => {
+  log('cancel', 'Cancelling create account details', { choice });
+  flow().cancelCreateAccount(choice);
+});
+
+/**
+ * @step Handles Cancel on Transfer in with a given choice.
+ * @description Triggers the unsaved changes prompt and responds with choice.
+ * @remarks Ok choices will leave the page; Cancel choices keep the user on Create Account page.
+ * @example When I cancel create account choosing "Cancel"
+ */
+When('I cancel create account', () => {
+  log('cancel', 'Cancelling create account details');
+  flow().cancelEditing();
 });
