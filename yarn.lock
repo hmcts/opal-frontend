@@ -4663,12 +4663,12 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@ministryofjustice/frontend@npm:8.0.0"
+  version: 8.0.1
+  resolution: "@ministryofjustice/frontend@npm:8.0.1"
   peerDependencies:
     govuk-frontend: ^5.11.2
     moment: 2.30.1
-  checksum: 10/578c41c9442e42e2e9fc86c0b5fe51f203aa042dea357eaf9d43550de6cc737d29e732e7201b75a40b1c5a7775bb0e49655c1e543bc02ad0882ddb696442e992
+  checksum: 10/412d29fbde8b903a7db992ab7a9eeeb5d31bd8355b26f47e0d3e9974a1a1ea3fbd12e2d082d21edc2a052c5aa0bda93929a73a1f820a602279f0fda6e71efe56
   languageName: node
   linkType: hard
 
@@ -7511,10 +7511,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"balanced-match@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "balanced-match@npm:3.0.1"
-  checksum: 10/0abdcc7862a8295f10e1d8b743b41481996b9064e695da039787666a81d6940f70c0e9a21bca8c163fced6ebcc263d60a773075ffb03fb30343663f21e60fb79
+"balanced-match@npm:^4.0.2":
+  version: 4.0.3
+  resolution: "balanced-match@npm:4.0.3"
+  checksum: 10/e9e2177f1eb7db0af2375715e6f992f15d41518921e14f5029de50766ff1b3da824e47e1d5492493e9bb7c743b827e42546cbc260a055b7086e45f54b2b152b9
   languageName: node
   linkType: hard
 
@@ -7678,12 +7678,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"brace-expansion@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "brace-expansion@npm:4.0.1"
+"brace-expansion@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "brace-expansion@npm:5.0.2"
   dependencies:
-    balanced-match: "npm:^3.0.0"
-  checksum: 10/774daa3c686cc237e64dc1de52053f2355130bab7c1e246d243798f6698389d39d3ff878405546b4ab4fa4718613ea4748dc951059d6d21543d5f38ed30ac15b
+    balanced-match: "npm:^4.0.2"
+  checksum: 10/18d382c0919c68f8bb56fbe4a9cb1181a0bf10e6786b5683e586493dfbb517bdcf972f4a3a8d560486627fd9c9c6ecef0a2b8fd454eb6082780307ffd5586251
   languageName: node
   linkType: hard
 
@@ -11160,14 +11160,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:13.0.4":
-  version: 13.0.4
-  resolution: "glob@npm:13.0.4"
+"glob@npm:13.0.5":
+  version: 13.0.5
+  resolution: "glob@npm:13.0.5"
   dependencies:
     minimatch: "npm:^10.2.1"
     minipass: "npm:^7.1.2"
     path-scurry: "npm:^2.0.0"
-  checksum: 10/a320e2116cd503ff54d8fefd84a2c07fa8ad821ac81356778a8547f83ac86432584f3956e26eaa521874249c24f9f7f73b9adf2379f6024753e9e069d3809826
+  checksum: 10/c86a2a2ab12382d9afcf04d0b59e665a93db6c394ea9632be9f4192c2f946f414590c244290bca8e2a5ba41a2f3fb0c93ea6a6674d0344e3fdb3e7dd570eae05
   languageName: node
   linkType: hard
 
