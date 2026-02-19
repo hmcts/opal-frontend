@@ -201,6 +201,8 @@
     "module-lookup-amd/glob": "13.0.5",
     "node-gyp/glob": "13.0.5",
     "rimraf/glob": "13.0.5",
-    "shelljs/glob": "13.0.5"
+    "shelljs/glob": "13.0.5",
+    "minimatch": "10.2.1",
+    "ajv": "8.18"
   }
 }
