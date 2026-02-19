@@ -8,6 +8,7 @@ Feature: Navigate and edit sections from task list
   Scenario: View all rejected accounts navigation
     Given I create a "company" draft account with the following details and set status "Rejected":
       | account.defendant.company_name | TEST Rejected-PO-640-company-{uniq} |
+    And I open Create and Manage Draft Accounts
 
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
     And I view all rejected draft accounts
@@ -25,6 +26,7 @@ Feature: Navigate and edit sections from task list
   Scenario: Rejected company account can be edited and resubmitted
     Given I create a "company" draft account with the following details and set status "Rejected":
       | account.defendant.company_name | TEST Rejected-PO-640-company-{uniq} |
+    And I open Create and Manage Draft Accounts
 
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
     And I open the draft account for defendant "TEST Rejected-PO-640-company-{uniq}"
@@ -96,6 +98,7 @@ Feature: Navigate and edit sections from task list
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}                       |
       | account.defendant.forenames | Rejected-PO-640-AdultOrYouthOnly |
+    And I open Create and Manage Draft Accounts
 
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
     And I open the draft account for defendant "TEST{uniq}, Rejected-PO-640-AdultOrYouthOnly"
@@ -196,62 +199,63 @@ Feature: Navigate and edit sections from task list
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}              |
       | account.defendant.forenames | Rejected-PO-640-pgToPay |
+    And I open Create and Manage Draft Accounts
 
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
     And I open the draft account for defendant "TEST{uniq}, Rejected-PO-640-pgToPay"
     Then I should see the header containing text "Miss Rejected-PO-640-pgToPay TEST{uniq}"
 
     When I complete manual account creation with the following fields and defaults for account header "Miss Rejected-PO-640-pgToPay TEST{uniq}":
-      | Section                    | Field                                    | Value                     |
-      | Court details              | Sending area or Local Justice Area (LJA) | Avon                      |
-      | Court details              | Prosecutor Case Reference (PCR)          | abcd1234a                 |
-      | Court details              | Enforcement court                        | Aram Court (123)          |
-      | Personal details           | Title                                    | Miss                      |
-      | Personal details           | First names                              | fname                     |
-      | Personal details           | Last name                                | lname{uniq}               |
-      | Personal details           | Address line 1                           | Addr1                     |
-      | Personal details           | Postcode                                 | rg12 8eu                  |
-      | Personal details           | Date of birth                            | 01/01/2010                |
-      | Personal details           | National insurance number                | AB122398B                 |
-      | Parent or guardian         | First names                              | parent fname              |
-      | Parent or guardian         | Last name                                | parent lname{uniq}        |
-      | Parent or guardian         | Date of birth                            | 01/01/1980                |
-      | Parent or guardian         | National Insurance number                | QW123456C                 |
-      | Parent or guardian         | Address line 1                           | Addr1                     |
-      | Parent or guardian         | Address line 2                           | Addr2                     |
-      | Parent or guardian         | Address line 3                           | Addr3                     |
-      | Parent or guardian         | Postcode                                 | AB12 3CD                  |
-      | Parent or guardian         | Vehicle make                             | Ford Focus                |
-      | Parent or guardian         | Registration number                      | AB12 CDE                  |
-      | Parent or guardian         | addAliases                               | true                      |
-      | Parent or guardian         | alias1.firstNames                        | alias fname               |
-      | Parent or guardian         | alias1.lastName                          | alias lname{uniq}         |
-      | Contact details            | Primary email address                    | P@EMAIL.COM               |
-      | Contact details            | Secondary email address                  | S@EMAIL.COM               |
-      | Contact details            | Mobile telephone number                  | 07123 456 789             |
-      | Contact details            | Home telephone number                    | 07123 456 789             |
-      | Contact details            | Work telephone number                    | 07123 456 789             |
-      | Employer details           | Employer name                            | XYZ Company               |
-      | Employer details           | Employee reference                       | ab123456c                 |
-      | Employer details           | Employer email address                   | employer@example.com      |
-      | Employer details           | Employer telephone                       | 01234567890               |
-      | Employer details           | Address line 1                           | Employer Addr1            |
-      | Employer details           | Address line 2                           | Employer Addr2            |
-      | Employer details           | Address line 3                           | Employer Addr3            |
-      | Employer details           | Postcode                                 | TE12 3ST                  |
-      | Payment terms              | Payment term                             | Lump sum plus instalments |
-      | Payment terms              | Lump sum amount                          | 150                       |
-      | Payment terms              | Instalment amount                        | 50                        |
-      | Payment terms              | Payment frequency                        | Monthly                   |
-      | Payment terms              | Start date                               | 2 weeks in the future     |
-      | Account comments and notes | Comment                                  | This is a test comment    |
-      | Account comments and notes | Note                                     |                           |
+      | Section                    | Field                                    | Value                           |
+      | Court details              | Sending area or Local Justice Area (LJA) | Avon                            |
+      | Court details              | Prosecutor Case Reference (PCR)          | abcd1234a                       |
+      | Court details              | Enforcement court                        | Court 777 Camberwell CH09 (777) |
+      | Personal details           | Title                                    | Miss                            |
+      | Personal details           | First names                              | fname                           |
+      | Personal details           | Last name                                | lname{uniq}                     |
+      | Personal details           | Address line 1                           | Addr1                           |
+      | Personal details           | Postcode                                 | rg12 8eu                        |
+      | Personal details           | Date of birth                            | 01/01/2010                      |
+      | Personal details           | National insurance number                | AB122398B                       |
+      | Parent or guardian         | First names                              | parent fname                    |
+      | Parent or guardian         | Last name                                | parent lname{uniq}              |
+      | Parent or guardian         | Date of birth                            | 01/01/1980                      |
+      | Parent or guardian         | National Insurance number                | QW123456C                       |
+      | Parent or guardian         | Address line 1                           | Addr1                           |
+      | Parent or guardian         | Address line 2                           | Addr2                           |
+      | Parent or guardian         | Address line 3                           | Addr3                           |
+      | Parent or guardian         | Postcode                                 | AB12 3CD                        |
+      | Parent or guardian         | Vehicle make                             | Ford Focus                      |
+      | Parent or guardian         | Registration number                      | AB12 CDE                        |
+      | Parent or guardian         | addAliases                               | true                            |
+      | Parent or guardian         | alias1.firstNames                        | alias fname                     |
+      | Parent or guardian         | alias1.lastName                          | alias lname{uniq}               |
+      | Contact details            | Primary email address                    | P@EMAIL.COM                     |
+      | Contact details            | Secondary email address                  | S@EMAIL.COM                     |
+      | Contact details            | Mobile telephone number                  | 07123 456 789                   |
+      | Contact details            | Home telephone number                    | 07123 456 789                   |
+      | Contact details            | Work telephone number                    | 07123 456 789                   |
+      | Employer details           | Employer name                            | XYZ Company                     |
+      | Employer details           | Employee reference                       | ab123456c                       |
+      | Employer details           | Employer email address                   | employer@example.com            |
+      | Employer details           | Employer telephone                       | 01234567890                     |
+      | Employer details           | Address line 1                           | Employer Addr1                  |
+      | Employer details           | Address line 2                           | Employer Addr2                  |
+      | Employer details           | Address line 3                           | Employer Addr3                  |
+      | Employer details           | Postcode                                 | TE12 3ST                        |
+      | Payment terms              | Payment term                             | Lump sum plus instalments       |
+      | Payment terms              | Lump sum amount                          | 150                             |
+      | Payment terms              | Instalment amount                        | 50                              |
+      | Payment terms              | Payment frequency                        | Monthly                         |
+      | Payment terms              | Start date                               | 2 weeks in the future           |
+      | Account comments and notes | Comment                                  | This is a test comment          |
+      | Account comments and notes | Note                                     |                                 |
 
     When I check the manual account details for account header "fname lname{uniq}"
     Then I see the manual review "Court details" summary:
       | Sending area or Local Justice Area (LJA) | Avon & Somerset Magistrates' Court (1450) |
       | Prosecutor Case Reference (PCR)          | ABCD1234A                                 |
-      | Enforcement court                        | Aram Court (123)                          |
+      | Enforcement court                        | Court 777 Camberwell CH09 (777)           |
     And I see the manual review "Defendant details" summary:
       | Title                     | Miss                    |
       | First names               | fname                   |
@@ -298,6 +302,7 @@ Feature: Navigate and edit sections from task list
   Scenario: Back navigation confirms before leaving a rejected account
     Given I create a "company" draft account with the following details and set status "Rejected":
       | account.defendant.company_name | TEST Rejected-PO-640-BackButton-{uniq} |
+    And I open Create and Manage Draft Accounts
 
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
     And I open the draft account for defendant "TEST Rejected-PO-640-BackButton-{uniq}"

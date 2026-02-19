@@ -8,18 +8,18 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
   @PO-777
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
-      | Account_status                          | Submitted                      |
-      | account.defendant.forenames             | John                           |
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                          | Submitted                            |
+      | account.defendant.forenames             | John                                 |
       | account.defendant.surname               | AccDetailSurname{uniq}               |
       | account.defendant.email_address_1       | John.AccDetailSurname{uniq}@test.com |
-      | account.defendant.telephone_number_home | 02078259314                    |
-      | account.account_type                    | Fine                           |
-      | account.prosecutor_case_reference       | PCR-AUTO-002                   |
-      | account.collection_order_made           | false                          |
-      | account.collection_order_made_today     | false                          |
-      | account.payment_card_request            | false                          |
-      | account.defendant.dob                   | 2002-05-15                     |
+      | account.defendant.telephone_number_home | 02078259314                          |
+      | account.account_type                    | Fine                                 |
+      | account.prosecutor_case_reference       | PCR-AUTO-002                         |
+      | account.collection_order_made           | false                                |
+      | account.collection_order_made_today     | false                                |
+      | account.payment_card_request            | false                                |
+      | account.defendant.dob                   | 2002-05-15                           |
     And I search for the account by last name "AccDetailSurname{uniq}" and verify the page header is "Mr John ACCDETAILSURNAME{uniqUpper}"
 
     #  Check Accessibility on Add Comments Page
@@ -37,16 +37,16 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
 
   Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a company account then check accessibility
-    Given I create a "company" draft account with the following details and set status "Publishing Pending":
-      | Account_status                      | Submitted              |
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                      | Submitted                    |
       | account.defendant.company_name      | Accdetail comp{uniq}         |
       | account.defendant.email_address_1   | Accdetailcomp{uniq}@test.com |
-      | account.defendant.post_code         | AB23 4RN               |
-      | account.account_type                | Fine                   |
-      | account.prosecutor_case_reference   | PCR-AUTO-003           |
-      | account.collection_order_made       | false                  |
-      | account.collection_order_made_today | false                  |
-      | account.payment_card_request        | false                  |
+      | account.defendant.post_code         | AB23 4RN                     |
+      | account.account_type                | Fine                         |
+      | account.prosecutor_case_reference   | PCR-AUTO-003                 |
+      | account.collection_order_made       | false                        |
+      | account.collection_order_made_today | false                        |
+      | account.payment_card_request        | false                        |
     When I open the company account details for "Accdetail comp{uniq}"
 
     # Check Accessibility on Add Comments Page for Company
@@ -64,18 +64,18 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
 
   Scenario: Check View Defendant Parent Guardian Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a pgToPay account then check accessibility
-    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
-      | Account_status                          | Submitted                       |
-      | account.defendant.forenames             | Michael                         |
+    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      | Account_status                          | Submitted                             |
+      | account.defendant.forenames             | Michael                               |
       | account.defendant.surname               | ParentGuardianSurname{uniq}           |
       | account.defendant.email_address_1       | Michael.ParentGuardian{uniq}@test.com |
-      | account.defendant.telephone_number_home | 02078259318                     |
-      | account.account_type                    | Fine                            |
-      | account.prosecutor_case_reference       | PCR-AUTO-007                    |
-      | account.collection_order_made           | false                           |
-      | account.collection_order_made_today     | false                           |
-      | account.payment_card_request            | false                           |
-      | account.defendant.dob                   | 2010-05-15                      |
+      | account.defendant.telephone_number_home | 02078259318                           |
+      | account.account_type                    | Fine                                  |
+      | account.prosecutor_case_reference       | PCR-AUTO-007                          |
+      | account.collection_order_made           | false                                 |
+      | account.collection_order_made_today     | false                                 |
+      | account.payment_card_request            | false                                 |
+      | account.defendant.dob                   | 2010-05-15                            |
     When I search for the account by last name "ParentGuardianSurname{uniq}" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}"
 
     # Check Accessibility on Add Comments Page for Parent Guardian Account
