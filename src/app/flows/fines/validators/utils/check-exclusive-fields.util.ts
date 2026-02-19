@@ -18,8 +18,10 @@ export function checkExclusiveFields(
   const errors: { [key: string]: boolean } = {};
 
   for (const [field1, field2] of fieldPairs) {
-    const value1 = hasNestedValue(control.get(field1)!);
-    const value2 = hasNestedValue(control.get(field2)!);
+    const firstControl = control.get(field1);
+    const secondControl = control.get(field2);
+    const value1 = firstControl ? hasNestedValue(firstControl) : false;
+    const value2 = secondControl ? hasNestedValue(secondControl) : false;
 
     if (value1 && value2) {
       errors[`${field1}Exclusive`] = true;
