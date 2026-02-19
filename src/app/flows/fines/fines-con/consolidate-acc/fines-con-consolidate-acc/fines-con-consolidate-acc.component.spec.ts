@@ -19,6 +19,7 @@ describe('FinesConConsolidateAccComponent', () => {
 
   beforeEach(async () => {
     mockRouter = { navigate: vi.fn() };
+    mockRouter.navigate.mockResolvedValue(true);
     const parentActivatedRoute = {};
     mockActivatedRoute = {
       parent: parentActivatedRoute,
@@ -100,12 +101,28 @@ describe('FinesConConsolidateAccComponent', () => {
     expect(result).toBe(false);
   });
 
-  it('should reset consolidation state and navigate to dashboard on cancelConsolidation', () => {
+  it('should reset consolidation state after successful navigation on cancelConsolidation', async () => {
     const resetSpy = vi.spyOn(finesConStore, 'resetConsolidationState');
+    mockRouter.navigate.mockResolvedValue(true);
+
     component.cancelConsolidation();
 
-    expect(resetSpy).toHaveBeenCalled();
+    await Promise.resolve();
+
     expect(mockRouter.navigate).toHaveBeenCalledWith(['dashboard']);
+    expect(resetSpy).toHaveBeenCalled();
+  });
+
+  it('should not reset consolidation state when navigation is blocked', async () => {
+    const resetSpy = vi.spyOn(finesConStore, 'resetConsolidationState');
+    mockRouter.navigate.mockResolvedValue(false);
+
+    component.cancelConsolidation();
+
+    await Promise.resolve();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['dashboard']);
+    expect(resetSpy).not.toHaveBeenCalled();
   });
 
   it('should call getBusinessUnits on ngOnInit', () => {
