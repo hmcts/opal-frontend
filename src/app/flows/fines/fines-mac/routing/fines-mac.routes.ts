@@ -46,7 +46,6 @@ export const routing: Routes = [
         (c) => c.FinesMacCreateAccountComponent,
       ),
     canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
-    canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.createAccount,
       permission: 'CREATE_MANAGE_DRAFT_ACCOUNTS',
