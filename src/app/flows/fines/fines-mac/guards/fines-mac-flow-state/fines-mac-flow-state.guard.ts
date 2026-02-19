@@ -1,25 +1,26 @@
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { computed, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { hasFlowStateGuard } from '@hmcts/opal-frontend-common/guards/has-flow-state';
 
-// TODO: Refactor to check only originatorType after Fines Draft Accounts refactoring is complete
-// (PO-2762, PO-2766, PO-2767, PO-2761, PO-2793, PO-2790)
-// Currently checks both accountDetails and originatorType to avoid breaking draft account features
-// (amending and viewing). Once draft accounts are updated, simplify this guard.
+/**
+ * Guard for the fines MAC flow state that validates the originator type selection.
+ *
+ * Checks if the originator type form data has been populated before allowing
+ * navigation to subsequent steps in the fines MAC flow. If validation fails,
+ * redirects to the originator type selection page.
+ *
+ * @returns {boolean} True if originator type is selected, false otherwise
+ */
 export const finesMacFlowStateGuard = hasFlowStateGuard(
   () => {
     const store = inject(FinesMacStore);
-    return computed(() => ({
-      accountDetails: store.accountDetails(),
+    return {
       originatorType: store.originatorType(),
-    }))();
+    };
   },
-  (state) =>
-    (!!state.accountDetails.formData.fm_create_account_account_type &&
-      !!state.accountDetails.formData.fm_create_account_defendant_type) ||
-    !!state.originatorType.formData.fm_originator_type_originator_type,
+  (state) => !!state.originatorType.formData.fm_originator_type_originator_type,
   () =>
     `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
 );
