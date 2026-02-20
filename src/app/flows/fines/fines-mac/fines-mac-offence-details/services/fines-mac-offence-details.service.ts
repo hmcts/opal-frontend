@@ -1,16 +1,43 @@
 import { inject, Injectable } from '@angular/core';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
-import { FormGroup } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil, tap, catchError, EMPTY } from 'rxjs';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class FinesMacOffenceDetailsService {
   public utilsService = inject(UtilsService);
+
+  /**
+   * Adds or removes a single custom error key while preserving any other control errors.
+   *
+   * @param control - The control to update.
+   * @param errorKey - The custom error key to add or remove.
+   * @param hasError - True to set the error key, false to clear it.
+   */
+  private setControlError(control: FormControl, errorKey: string, hasError: boolean): void {
+    const currentErrors = control.errors ?? {};
+
+    if (hasError) {
+      if (!currentErrors[errorKey]) {
+        control.setErrors({ ...currentErrors, [errorKey]: true }, { emitEvent: false });
+      }
+      return;
+    }
+
+    if (!currentErrors[errorKey]) {
+      return;
+    }
+
+    const remainingErrors = { ...currentErrors };
+    delete remainingErrors[errorKey];
+    control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null, { emitEvent: false });
+  }
+
   /**
    * Reorders the imposition keys to maintain correct numbering.
    *
@@ -135,48 +162,88 @@ export class FinesMacOffenceDetailsService {
     onResult: (result: any) => void,
     onConfirmChange?: (confirmed: boolean) => void,
   ): void {
-    const codeControl = form.controls[codeControlName];
-    const idControl = form.controls[idControlName];
+    const codeControl = form.controls[codeControlName] as FormControl;
+    const idControl = form.controls[idControlName] as FormControl;
+    let latestLookupRequest = 0;
 
     const populateHint = (code: string) => {
-      idControl.setValue(null);
+      const lookupRequest = ++latestLookupRequest;
+      idControl.setValue(null, { emitEvent: false });
+      this.setControlError(codeControl, 'invalidOffenceCode', false);
+      this.setControlError(codeControl, 'offenceCodeLookupFailed', false);
 
       if (code?.length >= 7 && code?.length <= 8) {
+        this.setControlError(codeControl, 'offenceCodeValidationPending', true);
+        if (onConfirmChange) onConfirmChange(false);
+
         const result$ = getOffenceByCjsCode(code).pipe(
           tap((response) => {
-            codeControl.setErrors(response.count === 0 ? { invalidOffenceCode: true } : null, { emitEvent: false });
+            // Ignore stale responses that return after the user has changed the code.
+            if (lookupRequest !== latestLookupRequest || codeControl.value !== code) {
+              return;
+            }
+
+            this.setControlError(codeControl, 'offenceCodeValidationPending', false);
+            this.setControlError(codeControl, 'offenceCodeLookupFailed', false);
+            this.setControlError(codeControl, 'invalidOffenceCode', response.count !== 1);
             idControl.setValue(response.count === 1 ? response.refData[0].offence_id : null, { emitEvent: false });
 
             if (typeof onResult === 'function') {
               onResult(response);
             }
+
+            if (onConfirmChange) onConfirmChange(true);
+          }),
+          catchError(() => {
+            // Ignore stale failures for previous lookups.
+            if (lookupRequest !== latestLookupRequest || codeControl.value !== code) {
+              return EMPTY;
+            }
+
+            this.setControlError(codeControl, 'offenceCodeValidationPending', false);
+            this.setControlError(codeControl, 'invalidOffenceCode', false);
+            this.setControlError(codeControl, 'offenceCodeLookupFailed', true);
+            idControl.setValue(null, { emitEvent: false });
+            if (onConfirmChange) onConfirmChange(false);
+            return EMPTY;
           }),
           takeUntil(destroy$),
         );
 
         result$.subscribe();
-        if (onConfirmChange) onConfirmChange(true);
-      } else if (onConfirmChange) {
-        onConfirmChange(false);
+      } else {
+        this.setControlError(codeControl, 'offenceCodeValidationPending', false);
+        this.setControlError(codeControl, 'offenceCodeLookupFailed', false);
+        if (onConfirmChange) onConfirmChange(false);
       }
     };
 
     if (codeControl.value) {
-      populateHint(codeControl.value);
+      const upperCasedCode = this.utilsService.upperCaseAllLetters(codeControl.value);
+      codeControl.setValue(upperCasedCode, { emitEvent: false });
+      populateHint(upperCasedCode);
     }
 
     codeControl.valueChanges
       .pipe(
         distinctUntilChanged(),
         tap((code: string) => {
-          code = this.utilsService.upperCaseAllLetters(code);
-          codeControl.setValue(code, { emitEvent: false });
+          const upperCasedCode = this.utilsService.upperCaseAllLetters(code);
+          const isLookupLength = upperCasedCode?.length >= 7 && upperCasedCode?.length <= 8;
+          codeControl.setValue(upperCasedCode, { emitEvent: false });
+          // Invalidate any in-flight lookup as soon as the input changes.
+          latestLookupRequest++;
+          idControl.setValue(null, { emitEvent: false });
+          this.setControlError(codeControl, 'offenceCodeValidationPending', isLookupLength);
+          this.setControlError(codeControl, 'invalidOffenceCode', false);
+          this.setControlError(codeControl, 'offenceCodeLookupFailed', false);
+          if (onConfirmChange) onConfirmChange(false);
         }),
         debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime),
         takeUntil(destroy$),
       )
       .subscribe((code: string) => {
-        populateHint(code);
+        populateHint(this.utilsService.upperCaseAllLetters(code));
       });
   }
 }

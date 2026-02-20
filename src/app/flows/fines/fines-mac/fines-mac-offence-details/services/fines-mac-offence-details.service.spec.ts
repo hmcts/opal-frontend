@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsService } from './fines-mac-offence-details.service';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, throwError } from 'rxjs';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { provideHttpClient } from '@angular/common/http';
@@ -100,6 +100,31 @@ describe('FinesMacOffenceDetailsService', () => {
     expect(result[0].formData.fm_offence_details_impositions[0]).toEqual(expected);
   });
 
+  it('setControlError - should remove one error key and keep remaining errors', () => {
+    const control = new FormControl('code');
+    control.setErrors({
+      invalidOffenceCode: true,
+      customError: true,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (service as any).setControlError(control, 'invalidOffenceCode', false);
+
+    expect(control.errors).toEqual({ customError: true });
+  });
+
+  it('setControlError - should clear all errors when removing the final error key', () => {
+    const control = new FormControl('code');
+    control.setErrors({
+      invalidOffenceCode: true,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (service as any).setControlError(control, 'invalidOffenceCode', false);
+
+    expect(control.errors).toBeNull();
+  });
+
   describe('initOffenceListener', () => {
     let form: FormGroup;
     let destroy$: Subject<void>;
@@ -178,6 +203,93 @@ describe('FinesMacOffenceDetailsService', () => {
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
     });
 
+    it('should clear offence id and set confirmation to false immediately when code changes', () => {
+      vi.useFakeTimers();
+      form.get('id')?.setValue(314441);
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('xy98765');
+
+      expect(form.get('id')?.value).toBeNull();
+      expect(form.get('code')?.errors).toEqual({ offenceCodeValidationPending: true });
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(false);
+    });
+
+    it('should not set pending validation error immediately for short codes', () => {
+      vi.useFakeTimers();
+      form.get('id')?.setValue(314441);
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('xy98');
+
+      expect(form.get('id')?.value).toBeNull();
+      expect(form.get('code')?.errors).toBeNull();
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(false);
+    });
+
+    it('should ignore stale offence lookup responses when code changes quickly', () => {
+      vi.useFakeTimers();
+
+      const firstLookup$ = new Subject<IOpalFinesOffencesRefData>();
+      const secondLookup$ = new Subject<IOpalFinesOffencesRefData>();
+      getOffenceByCjsCode = vi.fn((code: string) => {
+        return code === 'AB12345' ? firstLookup$.asObservable() : secondLookup$.asObservable();
+      });
+
+      const staleResponse: IOpalFinesOffencesRefData = {
+        ...offenceMockResponse,
+        refData: [{ ...offenceMockResponse.refData[0], offence_id: 111111, get_cjs_code: 'AB12345' }],
+      };
+      const latestResponse: IOpalFinesOffencesRefData = {
+        ...offenceMockResponse,
+        refData: [{ ...offenceMockResponse.refData[0], offence_id: 222222, get_cjs_code: 'CD12345' }],
+      };
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('ab12345');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      form.get('code')?.setValue('cd12345');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      firstLookup$.next(staleResponse);
+      expect(form.get('id')?.value).toBeNull();
+      expect(onResultSpy).not.toHaveBeenCalled();
+
+      secondLookup$.next(latestResponse);
+      expect(form.get('id')?.value).toBe(222222);
+      expect(onResultSpy).toHaveBeenCalledTimes(1);
+      expect(onResultSpy).toHaveBeenCalledWith(latestResponse);
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+    });
+
     it('should mark code as invalid when response count is 0', () => {
       vi.useFakeTimers();
       const invalidResponse = { count: 0, refData: [] };
@@ -199,6 +311,91 @@ describe('FinesMacOffenceDetailsService', () => {
       expect(form.get('code')?.errors).toEqual({ invalidOffenceCode: true });
       expect(form.get('id')?.value).toBeNull();
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should mark code as invalid when response count is greater than 1', () => {
+      vi.useFakeTimers();
+      const multipleResponse: IOpalFinesOffencesRefData = {
+        count: 2,
+        refData: [offenceMockResponse.refData[0], { ...offenceMockResponse.refData[0], offence_id: 123456 }],
+      };
+      getOffenceByCjsCode = () => of(multipleResponse);
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('zz99999');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(form.get('code')?.errors).toEqual({ invalidOffenceCode: true });
+      expect(form.get('id')?.value).toBeNull();
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should clear pending error and set lookup failed error when offence lookup request fails', () => {
+      vi.useFakeTimers();
+      getOffenceByCjsCode = () => throwError(() => new Error('request failed'));
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('zz99999');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(form.get('code')?.errors).toEqual({ offenceCodeLookupFailed: true });
+      expect(form.get('id')?.value).toBeNull();
+      expect(onResultSpy).not.toHaveBeenCalled();
+      expect(onConfirmChangeSpy).toHaveBeenLastCalledWith(false);
+    });
+
+    it('should ignore stale lookup failures from previous offence code values', () => {
+      vi.useFakeTimers();
+
+      const firstLookup$ = new Subject<IOpalFinesOffencesRefData>();
+      const secondLookup$ = new Subject<IOpalFinesOffencesRefData>();
+      getOffenceByCjsCode = vi.fn((code: string) => {
+        return code === 'AB12345' ? firstLookup$.asObservable() : secondLookup$.asObservable();
+      });
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('ab12345');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      form.get('code')?.setValue('cd12345');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      firstLookup$.error(new Error('stale failure'));
+
+      expect(form.get('code')?.errors).toEqual({ offenceCodeValidationPending: true });
+      expect(onConfirmChangeSpy).toHaveBeenCalledTimes(4);
+      expect(onResultSpy).not.toHaveBeenCalled();
+
+      secondLookup$.next(offenceMockResponse);
+      expect(form.get('id')?.value).toBe(314441);
+      expect(form.get('code')?.errors).toBeNull();
     });
 
     it('should not call populateHint for short code', () => {

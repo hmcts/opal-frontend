@@ -36,9 +36,17 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       message: 'Offence code must be 7 or 8 characters',
       priority: 4,
     },
+    offenceCodeLookupFailed: {
+      message: 'We could not validate the offence code. Try again',
+      priority: 5,
+    },
+    offenceCodeValidationPending: {
+      message: 'Wait for offence code validation to complete',
+      priority: 6,
+    },
     invalidOffenceCode: {
       message: 'Offence not found',
-      priority: 5,
+      priority: 7,
     },
   },
 };
