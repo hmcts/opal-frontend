@@ -6,7 +6,6 @@ import { defineConfig } from 'cypress';
 import webpack from '@cypress/webpack-preprocessor';
 import { mergeZephyrReports, cleanZephyrReports } from '@hmcts/zephyr-automation-nodejs/cypress';
 
-// yarn remove @hmcts/zephyr-automation-nodejs && rm -rf .angular/cache && yarn add @hmcts/zephyr-automation-nodejs@file:/Users/benedwards/Desktop/Projects/opal/github/zephyr-automation-nodejs/dist
 import {
   addCucumberPreprocessorPlugin,
   beforeRunHandler,
@@ -173,17 +172,10 @@ async function setupNodeEvents(
     await beforeRunHandler(config);
     await resetEvidenceForRun();
     await initializeAccountCapture();
-    cleanZephyrReports({
-      rootDir: 'functional-output'
-    });
   });
 
   // Flush the artifact to disk once the entire run completes.
   on('after:run', async (results) => {
-    mergeZephyrReports({
-      rootDir: 'functional-output',
-      dedupe: true
-    });
     await ensureAccountCaptureFile();
     try {
       await afterRunHandler(config, results);
