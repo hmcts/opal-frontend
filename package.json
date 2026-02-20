@@ -79,14 +79,16 @@
     "check:steps": "cypress run --env cucumberOnlyMissingSteps=true",
     "test:functional:tags": "node scripts/run-functional.js --tags",
     "find:duplicate:scenarios": "FEATURE_GLOB=\"cypress/e2e/functional/opal/features\" node scripts/find-duplicate-scenarios.js",
-    "clear-test-outputs": "tsx ./scripts/clear-test-outputs.ts",
+    "reset-test-outputs": "tsx ./scripts/reset-test-outputs.ts",
     "zephyr:cypress:jira-create": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_TICKETS --process-type=CYPRESS_JSON_REPORT --report-path=functional-output/zephyr/cypress-report-1.json",
     "zephyr:cypress:jira-update": "tsx ./scripts/run-zephyr.ts --action-type=UPDATE_TICKETS --process-type=CYPRESS_JSON_REPORT --report-path=functional-output/zephyr/cypress-report-1.json",
     "zephyr:cypress:jira-execute": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_EXECUTION --process-type=CYPRESS_JSON_REPORT --report-path=functional-output/zephyr/cypress-report-1.json",
-    "zephyr:cucumber:jira-create": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_TICKETS --process-type=CYPRESS_JSON_REPORT --report-path=functional-output/zephyr/cucumber-report.json",
-    "zephyr:cucumber:jira-update": "tsx ./scripts/run-zephyr.ts --action-type=UPDATE_TICKETS --process-type=CYPRESS_JSON_REPORT --report-path=functional-output/zephyr/cucumber-report.json",
-    "zephyr:cucumber:jira-execute": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_EXECUTION --process-type=CYPRESS_JSON_REPORT --report-path=functional-output/zephyr/cucumber-report.json",
-    "zephyr:test:opalComponent": "yarn clear-test-outputs; yarn test:opalComponent; yarn zephyr:cypress:jira-execute"
+    "zephyr:cucumber:jira-create": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_TICKETS --process-type=CUCUMBER_JSON_REPORT --report-path=functional-output/zephyr/cucumber-report.json",
+    "zephyr:cucumber:jira-update": "tsx ./scripts/run-zephyr.ts --action-type=UPDATE_TICKETS --process-type=CUCUMBER_JSON_REPORT --report-path=functional-output/zephyr/cucumber-report.json",
+    "zephyr:cucumber:jira-execute": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_EXECUTION --process-type=CUCUMBER_JSON_REPORT --report-path=functional-output/zephyr/cucumber-report.json",
+    "zephyr:test:opalComponent": "yarn reset-test-outputs; yarn test:opalComponent; yarn zephyr:cypress:jira-execute",
+
+    "zephyr:test:functional": "yarn reset-test-outputs; yarn test:functional; yarn zephyr:cucumber:jira-execute"
   },
   "private": true,
   "dependencies": {
