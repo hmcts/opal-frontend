@@ -10,11 +10,12 @@ import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.st
 import { FINES_CREATE_ACCOUNT_MOCK } from './mocks/fines_mac_create_account_mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { FINES_MAC_ROUTING_PATHS } from 'src/app/flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
 describe('FinesMacCreateAccountComponent', () => {
   let buinessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   let accountMock = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
-  const setupComponent = (formSubmit?: any) => {
+  const setupComponent = (formSubmit?: any, onComponentReady?: (component: any) => void) => {
     return mount(FinesMacCreateAccountComponent, {
       providers: [
         OpalFines,
@@ -41,11 +42,18 @@ describe('FinesMacCreateAccountComponent', () => {
       ],
       componentProperties: {},
     }).then(({ fixture }) => {
-      if (!formSubmit) {
-        return;
+      const comp: any = fixture.componentInstance as any;
+
+      if (onComponentReady) {
+        onComponentReady(comp);
       }
 
-      const comp: any = fixture.componentInstance as any;
+      if (!formSubmit) {
+        if (onComponentReady) {
+          fixture.detectChanges();
+        }
+        return;
+      }
 
       if (comp?.handleAccountDetailsSubmit?.subscribe) {
         comp.handleAccountDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
@@ -72,7 +80,6 @@ describe('FinesMacCreateAccountComponent', () => {
     setupComponent(null);
 
     cy.get(L.heading).should('exist');
-    cy.get(L.heading).should('exist');
 
     cy.get(L.businessUnitHint).should('exist');
     cy.get(L.businessUnitInput).should('exist');
@@ -87,7 +94,6 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(L.conditionalCautionLabel).should('exist');
 
     cy.get(L.heading).should('contain', 'Create account');
-    cy.get(L.heading).should('contain', 'Create account');
 
     cy.get(L.businessUnitHint).should('contain', 'Enter area where the account is to be created');
     cy.get(L.businessUnitLabel).should('contain', 'Business unit');
@@ -100,11 +106,9 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it(
-    '(AC.2c)should render all elements for fine account type correctly and have correct text',
-    { tags: ['@PO-2766'] },
+    '(AC.1,AC.2)should render all elements for fine account type correctly and have correct text',
+    { tags: ['@PO-523'] },
     () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-
       setupComponent(null);
 
       cy.get(L.fineInput).click();
@@ -126,11 +130,9 @@ describe('FinesMacCreateAccountComponent', () => {
   );
 
   it(
-    '(AC2c) should render all elements for fixed penalty account type correctly and have correct text',
-    { tags: ['@PO-2766'] },
+    '(AC.1,AC.2) should render all elements for fixed penalty account type correctly and have correct text',
+    { tags: ['@PO-523'] },
     () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-
       setupComponent(null);
 
       cy.get(L.fixedPenaltyInput).click();
@@ -143,9 +145,7 @@ describe('FinesMacCreateAccountComponent', () => {
     },
   );
 
-  it('(AC.3) should have validation if empty business unit but valid account type', { tags: ['@PO-2766'] }, () => {
-    accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-
+  it('(AC.4a) should have validation if empty business unit but valid account type', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
     cy.get(L.fineInput).click();
@@ -154,11 +154,9 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it(
-    '(AC.3) should have validation in place if empty account type but valid business unit',
-    { tags: ['@PO-2766'] },
+    '(AC.4b) should have validation in place if empty account type but valid business unit',
+    { tags: ['@PO-523'] },
     () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-
       setupComponent(null);
 
       cy.get(L.businessUnitInput).type('Lo');
@@ -169,16 +167,14 @@ describe('FinesMacCreateAccountComponent', () => {
     },
   );
 
-  it('(AC.3) should have validation if both business unit and account type are empty', { tags: ['@PO-2766'] }, () => {
+  it('(AC.4d) should have validation if both business unit and account type are empty', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
     cy.get(L.continueButton).click();
     cy.get(L.errorSummary).should('contain', ERROR_MESSAGES.businessUnit).should('contain', ERROR_MESSAGES.accountType);
   });
 
-  it('(AC.3) should check only 1 account type can be selected', { tags: ['@PO-2766'] }, () => {
-    accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-
+  it('(AC.2b) should check only 1 account type can be selected', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
     cy.get(L.fineInput).click();
@@ -187,25 +183,19 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(L.fixedPenaltyInput).should('be.checked');
   });
 
-  it(
-    '(AC3) should pass validation if both business unit and account type are filled in',
-    { tags: ['@PO-2766'] },
-    () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
+  it('(AC5) should pass validation if both business unit and account type are filled in', { tags: ['@PO-523'] }, () => {
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy);
 
-      const formSubmitSpy = Cypress.sinon.spy();
-      setupComponent(formSubmitSpy);
+    cy.get(L.businessUnitInput).type('Lo');
+    cy.get(L.businessUnitAutoComplete).find('li').first().click();
+    cy.get(L.fineInput).click();
+    cy.get(L.adultOrYouthInput).click();
+    cy.get(L.continueButton).click();
+    cy.get(L.errorSummary).should('not.exist');
 
-      cy.get(L.businessUnitInput).type('Lo');
-      cy.get(L.businessUnitAutoComplete).find('li').first().click();
-      cy.get(L.fineInput).click();
-      cy.get(L.adultOrYouthInput).click();
-      cy.get(L.continueButton).click();
-      cy.get(L.errorSummary).should('not.exist');
-
-      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+  });
 
   it(
     '(AC.4c)should check through each account type to ensure that error is given when a defendant type is not selected except conditional caution',
@@ -418,6 +408,45 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.errorSummary).should('not.exist');
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+    },
+  );
+
+  it('(AC5a) should navigate to account details for a valid Fine transfer in account', { tags: ['@PO-2766'] }, () => {
+    accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
+
+    setupComponent(null, (component) => {
+      cy.spy(component, 'routerNavigate').as('routerNavigate');
+    });
+
+    cy.get(L.businessUnitInput).type('Lo');
+    cy.get(L.businessUnitAutoComplete).find('li').first().click();
+    cy.get(L.fineInput).click();
+    cy.get(L.adultOrYouthInput).click();
+    cy.get(L.continueButton).click();
+
+    cy.get('@routerNavigate').should('have.been.calledOnceWith', FINES_MAC_ROUTING_PATHS.children.accountDetails);
+  });
+
+  it(
+    '(AC5b) should navigate to fixed penalty details for a valid Fixed Penalty transfer in account',
+    { tags: ['@PO-2766'] },
+    () => {
+      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
+
+      setupComponent(null, (component) => {
+        cy.spy(component, 'routerNavigate').as('routerNavigate');
+      });
+
+      cy.get(L.businessUnitInput).type('Lo');
+      cy.get(L.businessUnitAutoComplete).find('li').first().click();
+      cy.get(L.fixedPenaltyInput).click();
+      cy.get(L.FPAdultOrYouthInput).click();
+      cy.get(L.continueButton).click();
+
+      cy.get('@routerNavigate').should(
+        'have.been.calledOnceWith',
+        FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails,
+      );
     },
   );
 

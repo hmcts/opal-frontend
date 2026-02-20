@@ -431,40 +431,26 @@ Feature: Manual account creation - Create Draft Account
     Then I see the following text on the page "You've submitted this account for review"
 
   @PO-2766
-  Scenario: User moves from through create account page links depending on selected options - Fine
+  Scenario Outline: User can navigate to create account page and return via back link for each originator option
     When I open Manual Account Creation
-    Then I choose 'Transfer in' and continue to create account page
-    # AC1 Transfer in screen naviagated to & confirmed.
-    Then I should see the header containing text 'Transfer in'
-
-    # AC6 Back link is on screening
+    Then I choose '<Originator type>' and continue to create account page
+    Then I should see the header containing text '<Create account header>'
     When I click the back link on create account page I return to Create or Transfer In page - No data retained
 
-    Then I choose 'New' and continue to create account page
-    Then I should see the header containing text 'Create account'
-    # AC6a Back link is on screening
-    When I click the back link on create account page I return to Create or Transfer In page - No data retained
-
-    # AC5a Navigates via transfer in to create account then fine penalty page and confirms page is correct
-    Then I start a fine manual account via transfer for business unit "Camberwell Green" with defendant type "Adult or youth only" and originator type "Transfer in"
-
+    Examples:
+      | Originator type | Create account header |
+      | Transfer in     | Transfer in           |
+      | New             | Create account        |
 
   @PO-2766
-  Scenario: User moves from through create account page links depending on selected options - Fixed Penalty
-    # AC7
+  Scenario Outline: User can cancel create account from transfer in
     When I open Manual Account Creation
     Then I choose 'Transfer in' and continue to create account page
-    Then I cancel create account
-    Then I should be on the dashboard
-
-    # AC7a
-    When I open Manual Account Creation
-    Then I choose 'Transfer in' and continue to create account page
-    Then I choose manual account type 'Fine'
+    And I prepare create account page '<Cancel journey state>' before cancelling
     Then I cancel create account choosing 'Ok'
     Then I should be on the dashboard
 
-    # AC5b Navigates via transfer in to create account then fixed penalty page and confirms page is correct
-    Then I start a fixed penalty account for business unit "Camberwell Green", defendant type "Adult or youth only" and originator type "Transfer in"
-
-
+    Examples:
+      | Cancel journey state |
+      | without changes      |
+      | with changes         |

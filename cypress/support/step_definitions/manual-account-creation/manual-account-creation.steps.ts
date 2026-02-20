@@ -83,6 +83,7 @@ Then('I should be on the dashboard', () => {
  * @description Selects business unit, chooses Fine + defendant type, and continues to Account details.
  * @param businessUnit - Business unit to search for and select.
  * @param defendantType - Defendant type option to select.
+ * @param originatorType - Whether to select "New" or "Transfer in" on the create-or-transfer page.
  * @remarks Uses the flow layer to keep Gherkin steps intent-driven.
  * @example
  *   When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
@@ -92,23 +93,6 @@ When(
   (businessUnit: string, defendantType: DefendantType, originatorType: 'New' | 'Transfer in') => {
     log('step', 'Starting manual account creation', { businessUnit, defendantType, originatorType });
     flow().startFineAccount(businessUnit, defendantType, originatorType);
-  },
-);
-
-/**
- * @step Starts a fine manual account with a specific business unit and defendant type.
- * @description Selects business unit, chooses Fine + defendant type, and continues to Account details.
- * @param businessUnit - Business unit to search for and select.
- * @param defendantType - Defendant type option to select.
- * @remarks Uses the flow layer to keep Gherkin steps intent-driven.
- * @example
- *   When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only and originator type New"
- */
-When(
-  'I start a fine manual account via transfer for business unit {string} with defendant type {string} and originator type {string}',
-  (businessUnit: string, defendantType: DefendantType, originatorType: 'New' | 'Transfer in') => {
-    log('step', 'Starting manual account creation', { businessUnit, defendantType, originatorType });
-    flow().startFineAccountFromTransferPage(businessUnit, defendantType, originatorType);
   },
 );
 
@@ -180,6 +164,26 @@ When('I select manual account business unit {string}', (businessUnit: string) =>
 When('I choose manual account type {string}', (accountType: AccountType) => {
   log('click', 'Selecting manual account type', { accountType });
   createAccount().selectAccountType(accountType);
+});
+/**
+ * @step Prepares create account page state before cancelling.
+ * @description Supports cancel journeys with and without unsaved changes from the create account page.
+ * @param state - Either "with changes" or "without changes".
+ */
+When('I prepare create account page {string} before cancelling', (state: string) => {
+  const normalized = state.trim().toLowerCase();
+  log('step', 'Preparing create account page before cancel', { state: normalized });
+
+  if (normalized === 'without changes') {
+    return;
+  }
+
+  if (normalized === 'with changes') {
+    createAccount().selectAccountType('Fine');
+    return;
+  }
+
+  throw new Error(`Unsupported cancel journey state "${state}". Use "with changes" or "without changes".`);
 });
 /**
  * @step Chooses a manual defendant type.
@@ -1325,15 +1329,4 @@ When('I click the back link on create account page I return to Create or Transfe
 When('I cancel create account choosing {string}', (choice: 'Cancel' | 'Ok') => {
   log('cancel', 'Cancelling create account details', { choice });
   flow().cancelCreateAccount(choice);
-});
-
-/**
- * @step Handles Cancel on Transfer in with a given choice.
- * @description Triggers the unsaved changes prompt and responds with choice.
- * @remarks Ok choices will leave the page; Cancel choices keep the user on Create Account page.
- * @example When I cancel create account choosing "Cancel"
- */
-When('I cancel create account', () => {
-  log('cancel', 'Cancelling create account details');
-  flow().cancelEditing();
 });

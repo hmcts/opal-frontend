@@ -184,33 +184,6 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * Starts a Fine manual account and lands on the task list.
-   * @param businessUnit - Business unit to select.
-   * @param defendantType - Defendant type option to choose.
-   * @param originatorType - Whether the account is a new creation or transfer in, which determines the entry point.
-   */
-  startFineAccountFromTransferPage(
-    businessUnit: string,
-    defendantType: DefendantType,
-    originatorType: OriginatorType,
-  ): void {
-    log('flow', 'Start manual fine account', { businessUnit, originatorType, defendantType });
-    this.originatorType.assertOnCreateOrTransferInPage();
-    this.originatorType.selectOriginatorType(originatorType);
-    this.originatorType.continueToCreateAccount();
-
-    this.createAccount.assertOnCreateAccountPage('Transfer in');
-    if (!this.isDefaultBusinessUnit(businessUnit)) {
-      this.createAccount.selectBusinessUnit(businessUnit);
-    }
-    this.createAccount.selectAccountType('Fine');
-    this.createAccount.selectDefendantType(defendantType);
-    this.createAccount.continueToAccountDetails();
-    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
-    this.accountDetails.assertOnAccountDetailsPage();
-  }
-
-  /**
    * Completes Court, Offence (single imposition), and Minor Creditor details from one table.
    * @param rows - Raw DataTable rows including headers.
    */
@@ -2827,13 +2800,5 @@ export class ManualAccountCreationFlow {
     log('flow', 'Cancel Create Account', { choice });
     this.createAccount.assertOnTransferInPage();
     this.createAccount.cancelAndChoose(choice);
-  }
-
-  /**
-   * Cancels out of Transfer in page.
-   */
-  cancelEditing(): void {
-    log('cancel', 'Handling Cancel click');
-    cy.get(L.cancelLink, this.common.getTimeoutOptions()).should('exist').scrollIntoView().click({ force: true });
   }
 }
