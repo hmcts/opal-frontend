@@ -4,6 +4,9 @@
  */
 import { defineConfig } from 'cypress';
 import webpack from '@cypress/webpack-preprocessor';
+import { mergeZephyrReports, cleanZephyrReports } from '@hmcts/zephyr-automation-nodejs/cypress';
+
+// yarn remove @hmcts/zephyr-automation-nodejs && rm -rf .angular/cache && yarn add @hmcts/zephyr-automation-nodejs@file:/Users/benedwards/Desktop/Projects/opal/github/zephyr-automation-nodejs/dist
 import {
   addCucumberPreprocessorPlugin,
   beforeRunHandler,
@@ -170,10 +173,17 @@ async function setupNodeEvents(
     await beforeRunHandler(config);
     await resetEvidenceForRun();
     await initializeAccountCapture();
+    cleanZephyrReports({
+      rootDir: 'functional-output'
+    });
   });
 
   // Flush the artifact to disk once the entire run completes.
   on('after:run', async (results) => {
+    mergeZephyrReports({
+      rootDir: 'functional-output',
+      dedupe: true
+    });
     await ensureAccountCaptureFile();
     try {
       await afterRunHandler(config, results);
@@ -270,7 +280,7 @@ export default defineConfig({
     specPattern: 'cypress/component/**/*.cy.ts',
     reporter: 'cypress-multi-reporters',
     reporterOptions: {
-      reporterEnabled: 'cypress-mochawesome-reporter, mocha-junit-reporter',
+      reporterEnabled: 'cypress-mochawesome-reporter, mocha-junit-reporter, @hmcts/zephyr-automation-nodejs/cypress/ZephyrReporter',
       mochaJunitReporterReporterOptions: {
         mochaFile: 'functional-output/prod/component-test-output-[hash].xml',
         toConsole: false,
@@ -296,6 +306,17 @@ export default defineConfig({
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       require('cypress-mochawesome-reporter/plugin')(on);
 
+      on('before:run', () => {
+        cleanZephyrReports({
+          rootDir: 'functional-output'
+        });
+      });
+      on('after:run', () => {
+        mergeZephyrReports({
+          rootDir: 'functional-output',
+          dedupe: true
+        });
+      });
       config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
       return config;
     },
