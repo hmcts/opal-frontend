@@ -113,7 +113,7 @@ Feature: Manual account creation - Create Draft Account
 
   @PO-1450 @PO-1638
   Scenario: Capitalisation is applied when submitting a company manual account with a minor creditor
-    When I start a fine manual account for business unit "West London" with defendant type "Company"
+    When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I view the "Court details" task
     And I complete manual court details:
       | Sending area or Local Justice Area (LJA) | Avon             |
@@ -154,7 +154,7 @@ Feature: Manual account creation - Create Draft Account
 
   @PO-1450 @PO-1638
   Scenario: Submitting a company manual account with a minor creditor shows the correct review summaries
-    When I start a fine manual account for business unit "West London" with defendant type "Company"
+    When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
       | Section        | Field                     | Value                               | Imposition |
       | Court          | Prosecutor Case Reference | ABCD1234A                           |            |
@@ -210,7 +210,7 @@ Feature: Manual account creation - Create Draft Account
 
   @PO-1449 @PO-1638
   Scenario: Capitalisation is applied for parent or guardian, defendant and employer details
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay" and originator type "New"
 
     When I view the "Court details" task
     And I complete manual court details:
@@ -295,7 +295,7 @@ Feature: Manual account creation - Create Draft Account
     And returning to account details the "Personal details" task the status is "Provided"
 
   Scenario: Capitalisation is applied for defendant and employer details without parent or guardian
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
 
     When I view the "Court details" task
     And I complete manual court details:
@@ -344,7 +344,7 @@ Feature: Manual account creation - Create Draft Account
 
   @PO-1449 @PO-1638
   Scenario: Submitting an adult or youth with parent or guardian to pay account with a minor creditor shows the correct review summaries
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
       | Section            | Field                                    | Value                | Imposition |
       | Court              | Sending area or Local Justice Area (LJA) | Bedfordshire         |            |
@@ -430,7 +430,7 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
-  @PO-2766
+  @PO-2766 @only
   Scenario: User moves from through create account page links depending on selected options - Fine
     When I open Manual Account Creation
     Then I choose 'Transfer in' and continue to create account page
@@ -449,7 +449,7 @@ Feature: Manual account creation - Create Draft Account
     Then I start a fine manual account via transfer for business unit 'Camberwell Green' with defendant type 'Adult or youth only' and originator type "Transfer in"
 
 
-  @PO-2766
+  @PO-2766 @only
   Scenario: User moves from through create account page links depending on selected options - Fixed Penalty
     # AC7
     When I open Manual Account Creation
