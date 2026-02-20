@@ -229,6 +229,21 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     vi.useRealTimers();
   });
 
+  it('should set offenceCodeValidationPending immediately when lookup-length offence code changes', () => {
+    vi.useFakeTimers();
+    component['setupFixedPenaltyDetailsForm']();
+    component['setupOffenceCodeListener']();
+    component.form.get('fm_fp_offence_details_offence_id')?.setValue(314441);
+
+    component.form.get('fm_fp_offence_details_offence_cjs_code')?.setValue('AK12345');
+
+    expect(component.form.get('fm_fp_offence_details_offence_id')?.value).toBeNull();
+    expect(component.form.get('fm_fp_offence_details_offence_cjs_code')?.errors).toEqual({
+      offenceCodeValidationPending: true,
+    });
+    vi.useRealTimers();
+  });
+
   it('should set initial value if dob value already exists', () => {
     component['setupFixedPenaltyDetailsForm']();
     component.form.get('fm_fp_personal_details_dob')?.setValue('01-01-1979');
