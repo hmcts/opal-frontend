@@ -446,7 +446,7 @@ Feature: Manual account creation - Create Draft Account
     When I click the back link on create account page I return to Create or Transfer In page - No data retained
 
     # AC5a Navigates via transfer in to create account then fine penalty page and confirms page is correct
-    Then I start a fine manual account via transfer for business unit 'Camberwell Green' with defendant type 'Adult or youth only' and originator type "Transfer in"
+    Then I start a fine manual account via transfer for business unit "Camberwell Green" with defendant type "Adult or youth only" and originator type "Transfer in"
 
 
   @PO-2766
@@ -465,5 +465,6 @@ Feature: Manual account creation - Create Draft Account
     Then I should be on the dashboard
 
     # AC5b Navigates via transfer in to create account then fixed penalty page and confirms page is correct
-    Then I start a fixed penalty account for business unit 'Camberwell Green', defendant type 'Adult or youth only' and originator type "Transfer in"
+    Then I start a fixed penalty account for business unit "Camberwell Green", defendant type "Adult or youth only" and originator type "Transfer in"
+
 
