@@ -3787,12 +3787,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/zephyr-automation-nodejs@npm:0.0.3":
-  version: 0.0.3
-  resolution: "@hmcts/zephyr-automation-nodejs@npm:0.0.3"
+"@hmcts/zephyr-automation-nodejs@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@hmcts/zephyr-automation-nodejs@npm:0.0.4"
   dependencies:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-  checksum: 10/ca1b898b030dcb761644d5c8ebefb08ba9ffd6b9b3a1aab6429fb5453b323ad6e04ed03a0f9b370c29cf725ad31cc5a27c6a745f31e221f782684404759c460d
+  checksum: 10/7d047e6366eb1e348955a93803d3a3eb1b4262a07dc511a656e9efaaf4264d507a70e0767f48b2138990c080c2b29f307d1fcadf73772f98f8d8373f2add10a0
   languageName: node
   linkType: hard
 
@@ -14486,7 +14486,7 @@ __metadata:
     "@hmcts/opal-frontend-common": "npm:^0.0.62"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.22"
     "@hmcts/properties-volume": "npm:^1.1.0"
-    "@hmcts/zephyr-automation-nodejs": "npm:0.0.3"
+    "@hmcts/zephyr-automation-nodejs": "npm:0.0.4"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^8.0.0"
     "@ngrx/signals": "npm:^21.0.0"
