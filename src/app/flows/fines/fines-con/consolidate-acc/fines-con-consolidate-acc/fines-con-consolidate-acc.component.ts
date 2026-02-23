@@ -120,8 +120,11 @@ export class FinesConConsolidateAccComponent implements OnInit {
    * Cancels the consolidation process by resetting the store and navigating to the dashboard
    */
   public cancelConsolidation(): void {
-    this.finesConStore.resetConsolidationState();
-    this.router.navigate([PAGES_ROUTING_PATHS.children.dashboard]);
+    void this.router.navigate([PAGES_ROUTING_PATHS.children.dashboard]).then((navigated) => {
+      if (navigated) {
+        this.finesConStore.resetConsolidationState();
+      }
+    });
   }
 
   public ngOnInit(): void {

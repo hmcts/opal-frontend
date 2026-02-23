@@ -55,9 +55,11 @@
     }
 
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        <opal-lib-govuk-button buttonId="submitForm" type="submit">Search</opal-lib-govuk-button>
-        <a href="#" class="govuk-link govuk-!-margin-left-3" (click)="clearSearchForm($event)"> Clear search </a>
+      <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
+        <div class="govuk-button-group govuk-!-margin-bottom-0">
+          <button class="govuk-button" type="submit" buttonId="submitForm">Search</button>
+          <a href="#" class="govuk-link govuk-!-margin-left-2" (click)="clearSearchForm($event)"> Clear search </a>
+        </div>
       </div>
     </div>
   </form>

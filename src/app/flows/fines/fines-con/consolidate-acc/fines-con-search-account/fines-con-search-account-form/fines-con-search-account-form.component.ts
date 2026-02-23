@@ -3,7 +3,6 @@ import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/component
 import { IFinesConSearchAccountForm } from '../interfaces/fines-con-search-account-form.interface';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
@@ -47,7 +46,6 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValida
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
-    GovukButtonComponent,
     GovukErrorSummaryComponent,
     FinesConSearchAccountFormIndividualsComponent,
     FinesConSearchAccountFormCompaniesComponent,
@@ -116,8 +114,10 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
    *
    * @param event The click event from the clear link
    */
-  public clearSearchForm(event: Event): void {
-    event.preventDefault();
+  public clearSearchForm(event?: Event | boolean): void {
+    if (event instanceof Event) {
+      event.preventDefault();
+    }
     this.form.reset();
     this.clearAllErrorMessages();
     this.setInitialErrorMessages();
