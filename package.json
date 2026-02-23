@@ -189,7 +189,7 @@
     "tmp": "^0.2.4",
     "tar": "^7.5.8",
     "diff": "^8.0.3",
-    "@actions/http-client/undici": "^6.23.0",
+    "@actions/http-client/undici": "^7.0.0",
     "esbuild": "^0.27.0",
     "@badeball/cypress-cucumber-preprocessor/glob": "13.0.6",
     "@cucumber/cucumber/glob": "13.0.6",
