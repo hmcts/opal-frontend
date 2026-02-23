@@ -92,6 +92,7 @@ export const MOCK_FINES_DRAFT_STATE: IFinesMacAddAccountPayload = {
       ],
     },
     account_notes: null,
+    originator_type: null,
   },
   account_type: null,
   account_status: 'Rejected',

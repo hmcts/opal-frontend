@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesMacStore } from '../stores/fines-mac.store';
@@ -12,7 +12,7 @@ import { FinesMacOriginatorTypeFormComponent } from './fines-mac-originator-type
   templateUrl: './fines-mac-originator-type.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOriginatorTypeComponent extends AbstractFormParentBaseComponent {
+export class FinesMacOriginatorTypeComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly finesMacStore = inject(FinesMacStore);
 
   public handleOriginatorTypeSubmit(form: IFinesMacOriginatorTypeForm): void {
@@ -29,5 +29,9 @@ export class FinesMacOriginatorTypeComponent extends AbstractFormParentBaseCompo
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  public ngOnInit(): void {
+    this.finesMacStore.resetStore();
   }
 }

@@ -75,4 +75,12 @@ export class CreateManageDraftsActions extends DraftAccountsCommonActions {
     log('navigate', 'Clicking back link on Create and Manage Draft Accounts');
     cy.get(L.backLink, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
   }
+
+  /**
+   * Clicks the Create account button and navigates to the originator type page.
+   */
+  clickCreateAccount(): void {
+    log('navigate', 'Clicking Create account button from Create and Manage Draft Accounts');
+    cy.get(L.createAccountButton, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
+  }
 }
