@@ -18,6 +18,7 @@ export const MacCreateAccountLocators = {
   businessUnitLabel:
     'label[for="fm_create_account_business_unit_id-autocomplete"], label[for="fm_create_account_business_unit_id"]',
   businessUnitAutoComplete: 'ul[id="fm_create_account_business_unit_id-autocomplete__listbox"], ul[role="listbox"]',
+  businessUnitDefault: 'p',
   businessUnit: {
     container: 'opal-lib-alphagov-accessible-autocomplete[inputname="fm_create_account_business_unit_id"]',
     // The accessible autocomplete renders a text input with the provided id/name; older renders append "-autocomplete".

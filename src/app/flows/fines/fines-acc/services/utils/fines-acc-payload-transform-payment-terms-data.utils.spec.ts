@@ -14,6 +14,7 @@ import { PAYMENT_TERMS_COMPLETE_INSTALMENTS_MOCK } from './mocks/fines-acc-payme
 import { PAYMENT_TERMS_COMPLETE_LUMP_SUM_PLUS_INSTALMENTS_MOCK } from './mocks/fines-acc-payment-terms-complete-lump-sum-plus-instalments.mock';
 import { MOCK_RESULT_DATA } from './mocks/fines-acc-result-data.mock';
 import { MOCK_RESULT_DATA_WITH_PREVENT_PAYMENT_CARD } from './mocks/fines-acc-result-data-with-prevent-payment-card.mock';
+import { describe, it, expect } from 'vitest';
 
 describe('transformPaymentTermsData', () => {
   it('should map type P (paid) to null', () => {
