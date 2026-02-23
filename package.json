@@ -87,7 +87,6 @@
     "zephyr:cucumber:jira-update": "tsx ./scripts/run-zephyr.ts --action-type=UPDATE_TICKETS --process-type=CUCUMBER_JSON_REPORT --report-path=functional-output/zephyr/cucumber-report.json",
     "zephyr:cucumber:jira-execute": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_EXECUTION --process-type=CUCUMBER_JSON_REPORT --report-path=functional-output/zephyr/cucumber-report.json",
     "zephyr:test:opalComponent": "yarn reset-test-outputs; yarn test:opalComponent; yarn zephyr:cypress:jira-execute",
-
     "zephyr:test:functional": "yarn reset-test-outputs; yarn test:functional; yarn zephyr:cucumber:jira-execute"
   },
   "private": true,
@@ -110,7 +109,7 @@
     "@hmcts/opal-frontend-common": "^0.0.62",
     "@hmcts/opal-frontend-common-node": "^0.0.22",
     "@hmcts/properties-volume": "^1.1.0",
-    "@hmcts/zephyr-automation-nodejs": "file:/Users/benedwards/Desktop/Projects/opal/github/zephyr-automation-nodejs",
+    "@hmcts/zephyr-automation-nodejs": "0.0.2",
     "@microsoft/applicationinsights-web": "^3.3.5",
     "@ministryofjustice/frontend": "^8.0.0",
     "@ngrx/signals": "^21.0.0",
