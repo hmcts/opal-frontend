@@ -20,7 +20,7 @@ export function createZephyrOptions(actionType: string, processType: string, rep
     jiraProjectId: '33305',
     jiraDefaultUser: 'Ben.Edwards',
     jiraEpicLinkCustomFieldId: 'customfield_10008',
-    jiraDefaultComponents: 'opal-fines-service',
+    jiraDefaultComponents: 'opal-frontend',
     jiraAuthToken: jiraToken,
     jarLocation: jiraLocation,
   };
