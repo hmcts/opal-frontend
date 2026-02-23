@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "confidenceThreshold": 0.9,
+  "maxUnresolved": 2,
+  "fullFunctionalSpec": "cypress/e2e/functional/opal/**/*.feature",
+  "fullComponentSpec": "cypress/component/**/**.cy.ts",
+  "manualLabelToFunctionalSpec": {
+    "test_authorisation": "cypress/e2e/functional/opal/features/authorisation/**/*.feature",
+    "test_enq": "cypress/e2e/functional/opal/features/fineAccountEnquiry/**/*.feature",
+    "test_remo": "cypress/e2e/functional/opal/features/reciprocalMaintenance/**/*.feature",
+    "test_mac": "cypress/e2e/functional/opal/features/manualAccountCreation/**/*.feature"
+  },
+  "domains": [
+    {
+      "name": "manualAccountCreation",
+      "appPrefixes": ["src/app/flows/fines/fines-mac/"],
+      "cypressTokens": ["manualaccountcreation", "manual-account-creation", "finesmac", "fines-mac"],
+      "functionalSpec": "cypress/e2e/functional/opal/features/manualAccountCreation/**/*.feature",
+      "componentSpec": "cypress/component/manualAccountCreation/**/*.cy.ts"
+    },
+    {
+      "name": "fineAccountEnquiry",
+      "appPrefixes": ["src/app/flows/fines/fines-sa/", "src/app/flows/fines/fines-acc/"],
+      "cypressTokens": ["fineaccountenquiry", "accountenquiry", "account-enquiry", "searchforaccount", "search-and-matches", "fines-sa", "fines-acc"],
+      "functionalSpec": "cypress/e2e/functional/opal/features/fineAccountEnquiry/**/*.feature",
+      "componentSpec": "cypress/component/fineAccountEnquiry/**/*.cy.ts"
+    },
+    {
+      "name": "consolidation",
+      "appPrefixes": ["src/app/flows/fines/fines-con/"],
+      "cypressTokens": ["consolidation", "fines-con"],
+      "functionalSpec": "cypress/e2e/functional/opal/features/consolidation/**/*.feature",
+      "componentSpec": "cypress/component/fines/consolidation/**/*.cy.ts"
+    },
+    {
+      "name": "dashboard",
+      "appPrefixes": ["src/app/pages/dashboard/"],
+      "cypressTokens": ["dashboard"],
+      "functionalSpec": "",
+      "componentSpec": "cypress/component/pages/Dashboard/**/*.cy.ts"
+    }
+  ],
+  "globalRiskPaths": [
+    "cypress.config.ts",
+    "package.json",
+    "Jenkinsfile_CNP",
+    "Jenkinsfile_nightly",
+    "cypress/support/e2e.ts",
+    "cypress/support/component.ts",
+    "src/app/flows/routing/",
+    "src/app/pages/routing/",
+    "server.ts",
+    "server-setup.ts"
+  ],
+  "dependencyMappedPrefixes": [
+    "cypress/shared/",
+    "cypress/support/",
+    "cypress/e2e/functional/opal/actions/"
+  ],
+  "docsPrefixes": ["docs/"],
+  "docsExtensions": [".md", ".mdx"]
+}

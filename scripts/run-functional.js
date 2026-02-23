@@ -21,6 +21,7 @@ const resolveBrowser = () => {
 
 const browser = resolveBrowser();
 process.env.BROWSER_TO_RUN = browser;
+const runFunctional = (process.env.RUN_FUNCTIONAL || 'true').trim().toLowerCase() !== 'false';
 
 if (withTags) {
   if (!process.env.CYPRESS_TAGS && process.env.TAGS) {
@@ -44,6 +45,12 @@ const runYarn = (scriptName) => {
   }
   return result.error ? 1 : 0;
 };
+
+if (!runFunctional) {
+  // Resolver scoped this build away from full functional tests.
+  console.log('RUN_FUNCTIONAL=false, skipping full functional suite.');
+  process.exit(0);
+}
 
 const testExitCode = runYarn('test:functionalOpalParallel');
 runYarn('test:functional:combine:reports');

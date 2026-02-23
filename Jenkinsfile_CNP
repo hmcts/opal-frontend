@@ -20,6 +20,8 @@ String stageTest = 'test'
 String stageFunctionalDev = 'functionalTest:dev'
 String stageFunctionalStg = 'functionalTest:stg'
 String skipLabelComponent = 'skip_opal_component'
+String forceFullFunctionalLabel = 'force_full_functional'
+String defaultChangeAwareMode = 'observe'
 @Field String weightsRoot = 'cypress/parallel/weights'
 @Field String pipelineWeightsDir = "${weightsRoot}/pipeline"
 @Field String smokeWeights = 'smoke-parallel-weights.json'
@@ -112,14 +114,13 @@ String getProjectName() {
 // Collect test/skip labels for routing
 List<String> getProjectLabels() {
     GithubAPI githubApi = new GithubAPI(this)
-    List<String> testLabels = []
-    for (String label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'test_')) {
-        testLabels.add(label)
+    List<String> allLabels = githubApi.getLabels(env.BRANCH_NAME)
+    return allLabels.findAll { String label ->
+      label.startsWith('test_') ||
+      label.startsWith('skip_') ||
+      label.startsWith(runTagPrefix) ||
+      label == forceFullFunctionalLabel
     }
-    for (String label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'skip_')) {
-        testLabels.add(label)
-    }
-    return testLabels
 }
 // Restore weight files from last successful build
 void performArtifactOperations() {
@@ -205,34 +206,81 @@ void setupTestSpecifications() {
     script {
         String projectNameValue = projectName
         List<String> labels = projectLabels
-        sh "echo 'Test Labels: ${labels}'"
+        sh "echo 'Project Labels: ${labels}'"
 
-        List<String> directories = []
+        env.CHANGE_AWARE_MODE = (env.CHANGE_AWARE_MODE ?: defaultChangeAwareMode).trim().toLowerCase()
+        if (!(env.CHANGE_AWARE_MODE in ['observe', 'enforce'])) {
+            echo "Invalid CHANGE_AWARE_MODE='${env.CHANGE_AWARE_MODE}', defaulting to '${defaultChangeAwareMode}'"
+            env.CHANGE_AWARE_MODE = defaultChangeAwareMode
+        }
 
-        // Add additional labels as needed
-        if (labels.contains('test_authorisation')) {
-            directories.add('authorisation')
-        }
-        if (labels.contains('test_enq')) {
-            directories.add('accountEnquiry')
-        }
-        if (labels.contains('test_remo')) {
-            directories.add('reciprocalMaintenance')
-        }
-        if (labels.contains('test_mac')) {
-            directories.add('manualAccountCreation')
-        }
-        sh "echo 'Directories: ${directories}'"
+        env.FORCE_FULL_FUNCTIONAL = (env.FORCE_FULL_FUNCTIONAL ?: 'false').trim().toLowerCase()
+        env.FORCE_FULL_FUNCTIONAL_LABEL = labels.contains(forceFullFunctionalLabel).toString()
+        env.PROJECT_LABELS = labels.join(',')
 
-        if (directories.empty || projectNameValue == masterProjectName) {
-            // No specific test labels, include all directories
+        sh """
+        mkdir -p .ci
+        yarn node scripts/resolve-functional-test-scope.js \\
+          --base origin/master \\
+          --head HEAD \\
+          --mode ${env.CHANGE_AWARE_MODE} \\
+          --write-env .ci/test-scope.env \\
+          --force-full-functional ${env.FORCE_FULL_FUNCTIONAL} \\
+          --force-full-functional-label ${env.FORCE_FULL_FUNCTIONAL_LABEL}
+        """
+
+        Map<String, String> scope = readProperties file: '.ci/test-scope.env'
+        env.RUN_FUNCTIONAL = scope.RUN_FUNCTIONAL ?: 'true'
+        env.RUN_COMPONENT = scope.RUN_COMPONENT ?: 'true'
+        env.TEST_SPECS = scope.TEST_SPECS ?: 'cypress/e2e/functional/opal/**/*.feature'
+        env.COMPONENT_SPECS = scope.COMPONENT_SPECS ?: 'cypress/component/**/**.cy.ts'
+        env.PROPOSED_RUN_FUNCTIONAL = scope.PROPOSED_RUN_FUNCTIONAL ?: env.RUN_FUNCTIONAL
+        env.PROPOSED_RUN_COMPONENT = scope.PROPOSED_RUN_COMPONENT ?: env.RUN_COMPONENT
+        env.PROPOSED_TEST_SPECS = scope.PROPOSED_TEST_SPECS ?: env.TEST_SPECS
+        env.PROPOSED_COMPONENT_SPECS = scope.PROPOSED_COMPONENT_SPECS ?: env.COMPONENT_SPECS
+        env.SCOPE_REASON = scope.SCOPE_REASON ?: ''
+        env.MATCHED_DOMAINS = scope.MATCHED_DOMAINS ?: ''
+        env.UNRESOLVED_PATHS = scope.UNRESOLVED_PATHS ?: ''
+        env.CONFIDENCE = scope.CONFIDENCE ?: '1.000'
+
+        Map<String, String> manualLabelSpecs = [
+          'test_authorisation': 'cypress/e2e/functional/opal/features/authorisation/**/*.feature',
+          'test_enq': 'cypress/e2e/functional/opal/features/fineAccountEnquiry/**/*.feature',
+          'test_remo': 'cypress/e2e/functional/opal/features/reciprocalMaintenance/**/*.feature',
+          'test_mac': 'cypress/e2e/functional/opal/features/manualAccountCreation/**/*.feature'
+        ]
+        List<String> manualSpecs = labels
+          .findAll { String label -> manualLabelSpecs.containsKey(label) }
+          .collect { String label -> manualLabelSpecs[label] }
+          .unique()
+
+        if (!manualSpecs.empty && projectNameValue != masterProjectName) {
+            env.RUN_FUNCTIONAL = 'true'
+            env.TEST_SPECS = manualSpecs.join(',')
+            env.SCOPE_REASON = "${env.SCOPE_REASON};manual-label-override:${env.TEST_SPECS}"
+        }
+
+        if (env.FORCE_FULL_FUNCTIONAL_LABEL == 'true') {
+            env.RUN_FUNCTIONAL = 'true'
             env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
-        } else {
-            // Build the glob pattern using curly braces
-            String dirList = directories.join(',')
-            env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
+            env.SCOPE_REASON = "${env.SCOPE_REASON};force-full-functional-label"
         }
-        sh "echo 'Test Specs: ${env.TEST_SPECS}'"
+
+        sh """
+        echo 'CHANGE_AWARE_MODE=${env.CHANGE_AWARE_MODE}'
+        echo 'FORCE_FULL_FUNCTIONAL=${env.FORCE_FULL_FUNCTIONAL}'
+        echo 'FORCE_FULL_FUNCTIONAL_LABEL=${env.FORCE_FULL_FUNCTIONAL_LABEL}'
+        echo 'RUN_FUNCTIONAL=${env.RUN_FUNCTIONAL}'
+        echo 'RUN_COMPONENT=${env.RUN_COMPONENT}'
+        echo 'TEST_SPECS=${env.TEST_SPECS}'
+        echo 'COMPONENT_SPECS=${env.COMPONENT_SPECS}'
+        echo 'PROPOSED_TEST_SPECS=${env.PROPOSED_TEST_SPECS}'
+        echo 'PROPOSED_COMPONENT_SPECS=${env.PROPOSED_COMPONENT_SPECS}'
+        echo 'CONFIDENCE=${env.CONFIDENCE}'
+        echo 'MATCHED_DOMAINS=${env.MATCHED_DOMAINS}'
+        echo 'UNRESOLVED_PATHS=${env.UNRESOLVED_PATHS}'
+        echo 'SCOPE_REASON=${env.SCOPE_REASON}'
+        """
     }
 }
 
@@ -403,7 +451,9 @@ withPipeline(type, product, component) {
             List<String> labels = projectLabels
             if (labels.contains(skipLabelComponent)) {
                 echo "Skipping opal component tests due to label: ${skipLabelComponent}"
-      } else {
+            } else if ((env.RUN_COMPONENT ?: 'true').toBoolean() == false) {
+                echo "Skipping opal component tests due to resolver scope (RUN_COMPONENT=${env.RUN_COMPONENT})"
+            } else {
                 echo 'Running opal component tests (no skip label present)'
                 try {
                     yarnBuilder.yarn('test:opalComponent')

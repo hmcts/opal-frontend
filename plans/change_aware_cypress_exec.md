@@ -78,6 +78,30 @@ Today, pull request builds can run the full Cypress functional and component sui
   Rationale: Prevents mapping drift as the test estate evolves.
   Date/Author: 2026-02-18 / Codex
 
+- Decision: Add a dedicated GitHub label override to force full functional execution (for example `force_full_functional`), with higher priority than automatic resolver output.
+  Rationale: Gives reviewers and release managers a fast operational escape hatch without pipeline code changes.
+  Date/Author: 2026-02-18 / Codex
+
+- Decision: Track flake-rate impact during observe and enforce phases to ensure selective execution does not mask instability.
+  Rationale: Reduced scope can hide intermittently failing tests until nightly runs; this must be measured.
+  Date/Author: 2026-02-18 / Codex
+
+- Decision: Preserve downstream CI expectations by emitting consistent report/artifact structure even when suites are skipped.
+  Rationale: Jenkins publish/archive steps should remain stable regardless of selected scope.
+  Date/Author: 2026-02-18 / Codex
+
+- Decision: Add a CI guard that warns when new app/test domains are present but unmapped in the impact map.
+  Rationale: Prevents silent coverage erosion from mapping drift.
+  Date/Author: 2026-02-18 / Codex
+
+- Decision: Add contract tests for resolver output keys and value formats consumed by Jenkins.
+  Rationale: Prevents integration breakage when resolver internals evolve.
+  Date/Author: 2026-02-18 / Codex
+
+- Decision: Make resolver decisions highly visible in PR pipeline logs (and optionally PR summary/comment).
+  Rationale: Developers need immediate clarity on why specific suites ran or were skipped.
+  Date/Author: 2026-02-18 / Codex
+
 ## Outcomes & Retrospective
 
 Initial planning outcome: the repo already has good primitives (`TEST_SPECS`, `TAGS`, parallel weights, modular test folder structure), so the best implementation is to add a deterministic resolver and connect it to those primitives. Main remaining risk is mapping completeness between `src/app` paths and Cypress suites; rollout must include an observe-only phase to tune mappings before strict enforcement.
@@ -113,7 +137,7 @@ The resolver algorithm is:
    In this repository, use `<base>=origin/master` for PR pipelines.
    Treat renames/moves as both old and new paths for mapping purposes.
 2. Apply override precedence:
-   explicit `run_tag:*` / `test_*` / skip labels > auto selection.
+   explicit `run_tag:*` / `test_*` / skip labels / `force_full_functional` label > auto selection.
 3. Match changed files to domain rules from impact map.
 4. For `cypress/support/**`, `cypress/shared/**`, and `cypress/e2e/functional/opal/actions/**`, resolve impact using a dependency graph:
    changed helper/support/action file -> importing step definitions/actions/flows/specs -> impacted feature/component spec globs.
@@ -125,7 +149,7 @@ The resolver algorithm is:
 9. Independently of resolver output, run a minimum PR smoke floor (small fixed set of smoke scenarios).
 10. If classification is ambiguous, force full suites and log why.
 
-Milestone 2 wires resolver output into CI and scripts. In `Jenkinsfile_CNP`, run resolver after checkout and before test stages, export its output to environment variables, and use those variables when invoking Cypress commands. Update `package.json` scripts so component test command uses a variableized spec glob with safe default:
+Milestone 2 wires resolver output into CI and scripts. In `Jenkinsfile_CNP`, run resolver after checkout and before test stages, export its output to environment variables, and use those variables when invoking Cypress commands. Include label handling so `force_full_functional` bypasses targeted selection. Update `package.json` scripts so component test command uses a variableized spec glob with safe default:
 
     COMPONENT_SPECS=${COMPONENT_SPECS:-cypress/component/**/**.cy.ts}
 
@@ -135,9 +159,9 @@ and functional default stays:
 
 Keep nightly behavior unchanged in `Jenkinsfile_nightly` except for optional logging of what resolver would have selected (informational only).
 
-Milestone 3 adds confidence and rollout controls. Add automated tests for resolver mapping cases (positive, dependency-mapped support/shared change, rename/move handling, global-fallback, below-threshold confidence fallback, ambiguous-fallback, no-functional-change). Add an `observe-only` flag in CI that logs selected subsets while still running full suites. Track false negatives explicitly: cases where selected run passes but full run fails due to tests outside selected scope. Only switch PR pipeline to enforce subset execution after at least two weeks of observe-mode data with acceptable false-negative rate (target zero). Keep a manual override (`FORCE_FULL_FUNCTIONAL=true` or label) for incident response.
+Milestone 3 adds confidence and rollout controls. Add automated tests for resolver mapping cases (positive, dependency-mapped support/shared change, rename/move handling, global-fallback, below-threshold confidence fallback, ambiguous-fallback, no-functional-change). Add an `observe-only` flag in CI that logs selected subsets while still running full suites. Track false negatives explicitly: cases where selected run passes but full run fails due to tests outside selected scope. Track flake-rate trends for selected versus full runs. Only switch PR pipeline to enforce subset execution after at least two weeks of observe-mode data with acceptable false-negative rate (target zero). Keep a manual override (`FORCE_FULL_FUNCTIONAL=true` or `force_full_functional` label) for incident response.
 
-Milestone 4 operationalizes ownership and drift prevention. Define ownership for `config/test-impact-map.json` (or equivalent mapping source), add CODEOWNERS coverage if available, and add a PR rule: any new functional domain, renamed folder, or shared helper path change that affects mapping must include corresponding map updates and resolver test updates in the same pull request.
+Milestone 4 operationalizes ownership, contracts, and drift prevention. Define ownership for `config/test-impact-map.json` (or equivalent mapping source), add CODEOWNERS coverage if available, and add a PR rule: any new functional domain, renamed folder, or shared helper path change that affects mapping must include corresponding map updates and resolver test updates in the same pull request. Add a guard check that warns/fails when new candidate domain paths are detected without mapping coverage. Add contract tests for resolver output (`RUN_FUNCTIONAL`, `RUN_COMPONENT`, `TEST_SPECS`, `COMPONENT_SPECS`, `SCOPE_REASON`, confidence fields) to keep Jenkins integration stable.
 
 ## Concrete Steps
 
@@ -163,6 +187,11 @@ Run from repository root `/Users/cadefaulkner/opal/opal-frontend`.
     set +a
     echo "$RUN_FUNCTIONAL $RUN_COMPONENT $TEST_SPECS $COMPONENT_SPECS"
 
+   Include forced-full visibility when override label/env is present:
+
+    echo "FORCE_FULL_FUNCTIONAL=${FORCE_FULL_FUNCTIONAL:-false}"
+    echo "FORCE_FULL_FUNCTIONAL_LABEL=${FORCE_FULL_FUNCTIONAL_LABEL:-false}"
+
 3. Execute minimum smoke floor in every PR build.
 
     yarn test:smoke
@@ -176,7 +205,7 @@ Run from repository root `/Users/cadefaulkner/opal/opal-frontend`.
 
     yarn vitest scripts/resolve-functional-test-scope.spec.ts --run
 
-6. During observe-only rollout, compare selected subset versus full run outcomes in CI logs and publish mismatch and false-negative counts.
+6. During observe-only rollout, compare selected subset versus full run outcomes in CI logs and publish mismatch, false-negative, and flake-rate trend metrics.
 
 ## Validation and Acceptance
 
@@ -189,8 +218,12 @@ Acceptance is behavioral and must be verified in CI:
 - Every PR still runs a minimum smoke floor regardless of resolver decision.
 - Nightly pipeline still runs full regression based on existing booleans and remains unchanged in coverage.
 - Manual labels/tags still override automatic selection when explicitly provided.
+- Applying GitHub label `force_full_functional` forces full functional execution regardless of resolver output.
 - Renamed/moved files are classified correctly and do not silently reduce coverage due to path-change ambiguity.
 - Enforce mode is only enabled after observe-mode KPI evidence shows acceptable false-negative rate (target zero).
+- Skipped suites still leave expected artifact/report structure so archive/publish steps do not fail.
+- Resolver output contract tests pass and Jenkins consumes all required keys.
+- CI warns (or fails, per policy) when new feature/domain folders are introduced without corresponding impact-map entries.
 
 Validation commands for implementer:
 
@@ -213,6 +246,8 @@ Use these CI artifacts/log lines as evidence:
 - Jenkins console lines showing selected `TEST_SPECS` and `COMPONENT_SPECS`.
 - Runtime comparison report between observe-only mode and enforced mode.
 - False-negative KPI report with per-build trend (selected-vs-full comparison).
+- Flake-rate trend report comparing selected-scope executions with full-suite baseline.
+- Resolver decision summary artifact/log block showing matched domains, unresolved paths, confidence, and force-full override status.
 
 Current anchor points from repository analysis:
 
@@ -251,6 +286,11 @@ Resolver output should include confidence telemetry fields for CI/reporting, for
     confidence: number;
     unresolvedPaths: string[];
 
+The resolver should also emit override telemetry fields:
+
+    forceFullFunctionalEnv: boolean;
+    forceFullFunctionalLabel: boolean;
+
 Initial domain mapping to encode:
 
 - `src/app/flows/fines/fines-mac/**` -> `cypress/e2e/functional/opal/features/manualAccountCreation/**/*.feature` and `cypress/component/manualAccountCreation/**/*.cy.ts`
@@ -263,3 +303,5 @@ Initial domain mapping to encode:
 Revision note: Created this initial ExecPlan to move from full-suite Cypress execution on every build to change-aware functional/component execution while preserving safety fallbacks and nightly full regression coverage.
 
 Revision note (2026-02-18): Updated plan to include five implementation safeguards requested during review: mandatory PR smoke safety floor, rename-aware diffing via `--name-status`, confidence-threshold fallback rules, false-negative KPI rollout gate, and explicit ownership/update policy for the impact map.
+
+Revision note (2026-02-18): Extended the plan with additional operational safeguards: explicit GitHub label override (`force_full_functional`), flake-rate monitoring, artifact/report consistency requirements for skipped suites, mapping-drift detection for new domains, resolver output contract testing, and higher visibility of resolver decisions in PR pipeline output.
