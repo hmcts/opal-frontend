@@ -272,7 +272,8 @@ export default defineConfig({
     specPattern: 'cypress/component/**/*.cy.ts',
     reporter: 'cypress-multi-reporters',
     reporterOptions: {
-      reporterEnabled: 'cypress-mochawesome-reporter, mocha-junit-reporter, @hmcts/zephyr-automation-nodejs/cypress/ZephyrReporter',
+      reporterEnabled:
+        'cypress-mochawesome-reporter, mocha-junit-reporter, @hmcts/zephyr-automation-nodejs/cypress/ZephyrReporter',
       mochaJunitReporterReporterOptions: {
         mochaFile: 'functional-output/prod/component-test-output-[hash].xml',
         toConsole: false,
@@ -300,13 +301,13 @@ export default defineConfig({
 
       on('before:run', () => {
         cleanZephyrReports({
-          rootDir: 'functional-output'
+          rootDir: 'functional-output',
         });
       });
       on('after:run', () => {
         mergeZephyrReports({
           rootDir: 'functional-output',
-          dedupe: true
+          dedupe: true,
         });
       });
       config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
