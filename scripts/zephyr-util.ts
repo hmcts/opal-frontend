@@ -22,6 +22,6 @@ export function createZephyrOptions(actionType: string, processType: string, rep
     jiraEpicLinkCustomFieldId: 'customfield_10008',
     jiraDefaultComponents: 'opal-fines-service',
     jiraAuthToken: jiraToken,
-    jarLocation: jiraLocation
+    jarLocation: jiraLocation,
   };
 }
