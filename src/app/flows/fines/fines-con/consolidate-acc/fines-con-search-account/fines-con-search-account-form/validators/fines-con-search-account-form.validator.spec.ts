@@ -8,12 +8,9 @@ function createForm({
   individuals,
   nestedValid = true,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  accountNumber?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nationalInsuranceNumber?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  individuals?: any;
+  accountNumber?: string | null;
+  nationalInsuranceNumber?: string | null;
+  individuals?: string | null;
   nestedValid?: boolean;
 }) {
   return new FormGroup(

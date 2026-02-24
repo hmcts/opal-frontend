@@ -39,18 +39,18 @@ const mapFieldExpectations = (table: DataTable) => {
 };
 
 /**
- * @step Starts a Fixed Penalty account with the provided business unit and defendant type.
+ * @step Starts a Fixed Penalty account selecting originator type with the provided business unit, defendant type.
  * @description Navigates from the dashboard into Manual Account Creation and selects Fixed Penalty + defendant type.
  * @param businessUnit - Business unit option to pick.
  * @param defendantType - Defendant type option to pick.
  * @example
- *   When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
+ *   When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
  */
 When(
-  'I start a fixed penalty account for business unit {string} and defendant type {string}',
-  (businessUnit: string, defendantType: DefendantType) => {
-    log('step', 'Starting fixed penalty account', { businessUnit, defendantType });
-    flow().startFixedPenaltyAccount(businessUnit, defendantType);
+  'I start a fixed penalty account for business unit {string}, defendant type {string} and originator type {string}',
+  (businessUnit: string, defendantType: DefendantType, originatorType: 'New' | 'Transfer in') => {
+    log('step', 'Starting fixed penalty account', { businessUnit, defendantType, originatorType });
+    flow().startFixedPenaltyAccount(businessUnit, defendantType, originatorType);
   },
 );
 

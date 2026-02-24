@@ -5,7 +5,7 @@ Feature: Manual account creation - Offence Details
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     And I view the "Offence details" task
 
   Scenario: The User can add an offence with multiple impositions with different creditor types [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-668, @PO-669, @PO-413, @PO-817, @PO-818]
@@ -864,14 +864,14 @@ Feature: Manual account creation - Offence Details
     When I reset the offence search to exclude inactive offence codes
     Then I am viewing offence results with active offences only
 
-@PO-2432 
-    Scenario: Minor creditor details persist after repeated offence review and change [PO-2432]
+  @PO-2432
+  Scenario: Minor creditor details persist after repeated offence review and change [PO-2432]
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
     When I record impositions with creditor types:
       | Imposition | Result code          | Amount imposed | Amount paid | Creditor type | Creditor search           |
       | 1          | Compensation (FCOMP) | 200            | 100         | Minor         |                           |
-      | 2          | Costs (FCOST) | 300            | 100         | Major         | Temporary Creditor (TEMP) |
+      | 2          | Costs (FCOST)        | 300            | 100         | Major         | Temporary Creditor (TEMP) |
 
     And I maintain individual minor creditor with BACS details for imposition 1:
       | Title | First name | Last name | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
@@ -884,11 +884,11 @@ Feature: Manual account creation - Offence Details
       | Costs        | Temporary Creditor (TEMP) | £300.00        | £100.00     | £200.00           |
       | Totals       |                           | £500.00        | £200.00     | £300.00           |
 
-   When I choose to amend offence with offence code "TP11003"
-   Then I see the offence details page with header "Add an offence" and text "Offence details"
+    When I choose to amend offence with offence code "TP11003"
+    Then I see the offence details page with header "Add an offence" and text "Offence details"
 
-  When I view minor creditor details for imposition 1
-  Then the minor creditor summary for imposition 1 is:
+    When I view minor creditor details for imposition 1
+    Then the minor creditor summary for imposition 1 is:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -896,18 +896,18 @@ Feature: Manual account creation - Offence Details
       | Sort code         | 12-34-56                |
       | Account number    | 12345678                |
       | Payment reference | REF                     |
-  When I review the offence
-  Then the offence review table for offence code "TP11003" contains:
+    When I review the offence
+    Then the offence review table for offence code "TP11003" contains:
       | Imposition   | Creditor                  | Amount imposed | Amount paid | Balance remaining |
       | Compensation | FNAME LNAME               | £200.00        | £100.00     | £100.00           |
       | Costs        | Temporary Creditor (TEMP) | £300.00        | £100.00     | £200.00           |
       | Totals       |                           | £500.00        | £200.00     | £300.00           |
 
-  When I choose to amend offence with offence code "TP11003"
-  Then I see the offence details page with header "Add an offence" and text "Offence details"
+    When I choose to amend offence with offence code "TP11003"
+    Then I see the offence details page with header "Add an offence" and text "Offence details"
 
-  When I view minor creditor details for imposition 1
-  Then the minor creditor summary for imposition 1 is:
+    When I view minor creditor details for imposition 1
+    Then the minor creditor summary for imposition 1 is:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |

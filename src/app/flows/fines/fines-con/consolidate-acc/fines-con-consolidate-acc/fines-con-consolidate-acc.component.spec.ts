@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinesConConsolidateAccComponent } from './fines-con-consolidate-acc.component';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -49,7 +48,6 @@ describe('FinesConConsolidateAccComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
-      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesConConsolidateAccComponent);
@@ -125,12 +123,13 @@ describe('FinesConConsolidateAccComponent', () => {
     expect(resetSpy).not.toHaveBeenCalled();
   });
 
-  it('should call getBusinessUnits on ngOnInit', () => {
-    // @ts-expect-error - Testing private method
-    const getBusinessUnitsSpy = vi.spyOn(component, 'getBusinessUnits');
+  it('should populate business units on ngOnInit', () => {
     component.ngOnInit();
 
-    expect(getBusinessUnitsSpy).toHaveBeenCalled();
+    expect(component['businessUnitRefData']).toBeDefined();
+    expect(component['businessUnitRefData'].length).toBe(2);
+    expect(component['businessUnitRefData'][0].business_unit_name).toBe('Business Unit 1');
+    expect(component['businessUnitRefData'][1].business_unit_name).toBe('Business Unit 2');
   });
 
   describe('getBusinessUnits', () => {
