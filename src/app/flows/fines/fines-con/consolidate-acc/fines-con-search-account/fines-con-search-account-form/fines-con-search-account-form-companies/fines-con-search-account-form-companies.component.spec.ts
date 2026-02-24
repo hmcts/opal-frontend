@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -23,7 +22,6 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FinesConSearchAccountFormCompaniesComponent],
       providers: [{ provide: ActivatedRoute, useValue: activatedRouteSpy }],
-      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesConSearchAccountFormCompaniesComponent);

@@ -14,7 +14,7 @@ import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
-import { finesConSearchAccountFormCompaniesValidator } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/fines-con-search-account-form/fines-con-search-account-form-companies/validators/fines-con-search-account-form-companies.validator';
+import { finesConSearchAccountFormCompaniesValidator } from './validators/fines-con-search-account-form-companies.validator';
 
 const LETTERS_WITH_SPACES_HYPHENS_APOSTROPHES_VALIDATOR = patternValidator(
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
