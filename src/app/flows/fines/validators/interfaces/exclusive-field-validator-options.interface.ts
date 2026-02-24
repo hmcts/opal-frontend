@@ -4,5 +4,5 @@
 export interface ExclusiveFieldValidatorOptions {
   criteriaPaths: string[] | null;
   emptyErrorKey: string | null;
-  multipleErrorKey?: string;
+  multipleErrorKey: string | null;
 }
