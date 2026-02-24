@@ -430,14 +430,59 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
-  @PO-2766 @only
+  @PO-2766
   Scenario: User moves from through create account page links depending on selected options
     When I open Manual Account Creation
     Then I choose 'Transfer in' and continue to create account page
     Then I should see the header containing text 'Transfer in'
-
-
     # AC6 Back link is on screening
     When I click the back link on create account page I return to Create or Transfer In page
 
+  @PO-2790
+  Scenario: Conditional Caution shows Police and court details across task list, court details and check account details
+    When I open Manual Account Creation from the dashboard
+    And I select manual account business unit "West London"
+    And I choose manual account type "Conditional Caution"
+    And I continue to manual account details
+    Then I see the following text on the page "Police and court details"
 
+    When I view the "Court details" task
+    Then I see the following text on the page "Police and court details"
+    And I see the following text on the page "Sending police force"
+    And I see the following text on the page "Search using the code or name of the sending police force that sent the caution"
+
+    When I complete manual court details:
+      | Sending police force            | Avon              |
+      | Prosecutor Case Reference (PCR) | 1234              |
+      | Enforcement court               | West London VPFPO |
+    And I return to account details
+    Then the "Court details" task status is "Provided"
+    And I complete manual account creation with the following fields and defaults:
+      | Section       | Field                       | Value                 | Imposition |
+      | Personal      | Title                       | Mr                    |            |
+      | Personal      | First names                 | FNAME                 |            |
+      | Personal      | Last name                   | LNAME                 |            |
+      | Personal      | Address line 1              | Addr Line 1           |            |
+      | Personal      | Address line 2              | Addr Line 2           |            |
+      | Personal      | Address line 3              | Addr Line 3           |            |
+      | Personal      | Postcode                    | TE1 1ST               |            |
+      | Personal      | Date of birth               | 01/01/1990            |            |
+      | Offence       | Offence code                | HY35014               | 1          |
+      | Offence       | Date of sentence            | 8 weeks in the past   | 1          |
+      | Offence       | Result code                 | Compensation (FCOMP)  | 1          |
+      | Offence       | Amount imposed              | 300                   | 1          |
+      | Offence       | Amount paid                 | 100                   | 1          |
+      | Offence       | Creditor type               | Major                 | 1          |
+      | Offence       | Creditor search             | Temporary Creditor    | 1          |
+      | Payment terms | Collection order            | No                    |            |
+      | Payment terms | Make collection order today | Yes                   |            |
+      | Payment terms | Payment term                | Pay in full           |            |
+      | Payment terms | Pay in full by              | 2 weeks in the future |            |
+
+    When I check the manual account details
+    Then I see the following text on the page "Check account details"
+    And I see the following text on the page "Police and court details"
+    And I see the manual review "Court details" summary:
+      | Sending police force            | Avon & Somerset Magistrates' Court (1450) |
+      | Prosecutor Case Reference (PCR) | 1234                                      |
+      | Enforcement court               | West London VPFPO (101)                   |

@@ -151,6 +151,17 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
+  it('(AC.1c) should show Police and court details card for Conditional Caution', { tags: ['@PO-2790'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
+
+    setupComponent();
+    cy.wait('@getOffenceByCjsCode');
+
+    cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
+    cy.contains('.govuk-summary-card__title', 'Police and court details').should('exist');
+    cy.get(DOM_ELEMENTS.originatorName).should('contain', 'Sending police force');
+  });
+
   it(
     '(AC.1a)should render court details and offence details for all defendant types',
     { tags: ['@PO-560', '@PO-662', '@PO-663', '@PO-545', '@PO-657'] },
