@@ -9,6 +9,7 @@ nodejs:
     OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
     FEATURES_LAUNCH_DARKLY_ENABLED: false
     FEATURES_SSO_ENABLED: true
+    FEATURES_IP_LOGGING_ENABLED: true
     SESSION_SAME_SITE: 'none'
     SESSION_DOMAIN: '.hmcts.net'
     CSRF_SAME_SITE: 'lax'
