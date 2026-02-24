@@ -96,7 +96,7 @@
       </div>
     }
   </opal-lib-govuk-summary-list>
-  <h2 class="govuk-heading-m">Court details</h2>
+  <h2 class="govuk-heading-m">{{ courtDetailsCopy.sectionHeading }}</h2>
   <ng-container *ngTemplateOutlet="courtDetails"></ng-container>
   @switch (defendantType) {
     @case (defendantTypes[defendantTypesKeys.adultOrYouthOnly]) {
@@ -302,7 +302,7 @@
           tabindex="0"
           aria-describedby="courtDetailsStatus"
         >
-          Court details
+          {{ courtDetailsCopy.taskListLabel }}
         </a>
       </ng-container>
       <ng-container status>

@@ -12,6 +12,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
@@ -72,6 +73,7 @@ describe('FinesMacCourtDetailsComponent', () => {
       fm_court_details_prosecutor_case_reference: '',
       fm_court_details_imposing_court_id: '',
     };
+    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
   });
 
   it('should render the component correctly for AY', { tags: ['@PO-272', '@PO-389'] }, () => {
@@ -366,4 +368,17 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.enforcementCourtListbox).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
     },
   );
+
+  it('(AC.1b) should show conditional caution police and court copy', { tags: ['@PO-2790'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
+
+    setupComponent(null, 'adultOrYouthOnly');
+
+    cy.get(L.pageHeader).should('have.text', 'Police and court details');
+    cy.get(L.ljaLabel).should('contain', 'Sending police force');
+    cy.get(L.ljaHint).should(
+      'contain',
+      'Search using the code or name of the sending police force that sent the caution',
+    );
+  });
 });

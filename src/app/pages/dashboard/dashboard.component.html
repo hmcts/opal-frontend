@@ -4,21 +4,6 @@
     <li>
       <span>{{ globalStore.userState().username }}</span>
     </li>
-    <li>
-      <a
-        class="govuk-link"
-        [routerLink]="
-          '/' +
-          finesRoutingPaths.root +
-          '/' +
-          finesRoutingPaths.children.mac.root +
-          '/' +
-          finesRoutingPaths.children.mac.children['originatorType']
-        "
-        id="finesMacLink"
-        >Manual Account Creation</a
-      >
-    </li>
     @if (permissionIds.includes(dashboardPermissions['check-and-validate-draft-accounts'])) {
       <li>
         <a

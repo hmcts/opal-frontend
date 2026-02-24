@@ -65,9 +65,19 @@ Feature: Manual account creation - Court Details
     And I cancel manual court details choosing "Cancel"
     Then the manual court details fields are:
       | Prosecutor Case Reference (PCR) | 4321 |
-
+  @PO-2790
   Scenario: Court Details - Axe Core
     Then I check the page for accessibility
+
+  @PO-2790
+  Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core
+    Given I am logged in with email "opal-test@hmcts.net"
+    When I open Manual Account Creation from the dashboard
+    And I select manual account business unit "West London"
+    And I choose manual account type "Conditional Caution"
+    And I continue to manual account details
+    Then I see the following text on the page "Police and court details"
+    And I check the page for accessibility
 
   Scenario: (AC.6) Grey navigation links routes correctly [@PO-272, @PO-389]
     When I complete manual court details:

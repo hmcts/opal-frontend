@@ -1011,7 +1011,12 @@ export class ManualAccountCreationFlow {
       this.createAccount.selectBusinessUnit(businessUnit);
     }
     this.createAccount.selectAccountType(accountType);
-    this.createAccount.selectDefendantType(defendantType);
+    // Defendant type radios are only rendered for Fine/Fixed Penalty, not Conditional Caution.
+    const normalizedAccountType = accountType.toLowerCase();
+    const requiresDefendantType = normalizedAccountType === 'fine' || normalizedAccountType.startsWith('fixed penalty');
+    if (requiresDefendantType) {
+      this.createAccount.selectDefendantType(defendantType);
+    }
     this.goToAccountDetails();
   }
 

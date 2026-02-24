@@ -85,6 +85,48 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it(
+    '(AC.1a) should show Police and court details for Conditional Caution and pass accessibility checks',
+    { tags: ['@PO-2790'] },
+    () => {
+      const conditionalCautionState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
+      conditionalCautionState.accountDetails.formData.fm_create_account_account_type =
+        FINES_ACCOUNT_TYPES['Conditional Caution'];
+      conditionalCautionState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+
+      setupComponent(null, 'adultOrYouthOnly', conditionalCautionState);
+
+      cy.contains('h2.govuk-heading-m', 'Police and court details').should('exist');
+      cy.get(L.taskList.itemByName('Court details'))
+        .find(L.taskList.link)
+        .should('contain', 'Police and court details');
+    },
+  );
+
+  it('(AC.2) should keep Court details label for Fine accounts', { tags: ['@PO-2790'] }, () => {
+    const fineState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
+    fineState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
+    fineState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+
+    setupComponent(null, 'adultOrYouthOnly', fineState);
+
+    cy.contains('h2.govuk-heading-m', 'Court details').should('exist');
+    cy.get(L.taskList.itemByName('Court details')).find(L.taskList.link).should('contain', 'Court details');
+    cy.get(L.taskList.itemByName('Court details')).find(L.taskList.link).should('not.contain', 'Police and court');
+  });
+
+  it('(AC.2) should keep Court details label for Fixed Penalty accounts', { tags: ['@PO-2790'] }, () => {
+    const fineState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
+    fineState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+    fineState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+
+    setupComponent(null, 'adultOrYouthOnly', fineState);
+
+    cy.contains('h2.govuk-heading-m', 'Court details').should('exist');
+    cy.get(L.taskList.itemByName('Court details')).find(L.taskList.link).should('contain', 'Court details');
+    cy.get(L.taskList.itemByName('Court details')).find(L.taskList.link).should('not.contain', 'Police and court');
+  });
+
+  it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
     { tags: ['@PO-366', '@PO-272', '@PO-468', 'PO-524'] },
     () => {

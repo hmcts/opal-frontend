@@ -45,15 +45,18 @@ describe('finesMacFlowStateGuard', () => {
     window.onbeforeunload = () => 'Oh no!';
   });
 
-  it('should return true if AccountType and DefendantType are populated when OriginatorType is not', async () => {
+  it('should navigate to originator type page if OriginatorType is not populated', async () => {
     const finesMacStateMock = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacStateMock.originatorType.formData.fm_originator_type_originator_type = null;
     finesMacStore.setFinesMacStore(finesMacStateMock);
 
     const result = await runFinesMacEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesMacFlowStateGuard, urlPath));
 
-    expect(result).toBe(true);
-    expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
+    expect(result).toEqual(expect.any(UrlTree));
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
+      queryParams: undefined,
+      fragment: undefined,
+    });
   });
 
   it('should return true if OriginatorType is populated when AccountType and DefendantType are not', async () => {

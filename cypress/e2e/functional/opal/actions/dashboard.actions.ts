@@ -6,6 +6,7 @@
  */
 
 import { DashboardLocators as L } from '../../../../shared/selectors/dashboard.locators';
+import { CreateManageDraftsLocators as CAM } from '../../../../shared/selectors/create-manage-drafts.locators';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 
 const log = createScopedLogger('DashboardActions');
@@ -55,7 +56,18 @@ export class DashboardActions {
   public goToManualAccountCreation(): void {
     log('navigate', 'Clicking Manual Account Creation link');
 
-    cy.get(L.manualAccountCreationLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+    cy.get('body', { timeout: 10_000 }).then(($body) => {
+      const hasDirectMacLink = $body.find(L.manualAccountCreationLink).length > 0;
+
+      if (hasDirectMacLink) {
+        cy.get(L.manualAccountCreationLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+        return;
+      }
+
+      log('navigate', 'Direct Manual Account Creation link not present, using Create and Manage Draft Accounts path');
+      cy.get(L.createAndManageDraftAccountsLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+      cy.get(CAM.createAccountButton, { timeout: 10_000 }).should('be.visible').click({ force: true });
+    });
 
     log('done', 'Navigated to Manual Account Creation page');
   }
