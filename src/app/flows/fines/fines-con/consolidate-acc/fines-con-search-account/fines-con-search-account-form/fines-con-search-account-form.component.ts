@@ -14,8 +14,10 @@ import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
 import { consolidateSearchAccountFormValidator } from './validators/fines-con-search-account-form.validator';
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-con-search-account-form-individuals/constants/fines-con-search-account-form-individuals-field-errors.constant';
-import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
-import { ACCOUNT_NUMBER_PATTERN } from '@app/flows/fines/constants/fines-regex-patterns.constant';
+import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ACCOUNT_NUMBER_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
 // Custom pattern that allows letters, numbers, hyphens, spaces, and apostrophes
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
