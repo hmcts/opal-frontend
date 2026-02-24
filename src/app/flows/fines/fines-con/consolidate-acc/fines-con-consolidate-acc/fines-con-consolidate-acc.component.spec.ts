@@ -4,7 +4,7 @@ import { FinesConConsolidateAccComponent } from './fines-con-consolidate-acc.com
 import { Router, ActivatedRoute } from '@angular/router';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
 describe('FinesConConsolidateAccComponent', () => {
   let component: FinesConConsolidateAccComponent;
@@ -24,20 +24,7 @@ describe('FinesConConsolidateAccComponent', () => {
       parent: parentActivatedRoute,
       snapshot: {
         data: {
-          businessUnits: {
-            refData: [
-              {
-                business_unit_id: 1,
-                business_unit_name: 'Business Unit 1',
-                business_unit_type: 'Accounting Division',
-              } as IOpalFinesBusinessUnit,
-              {
-                business_unit_id: 2,
-                business_unit_name: 'Business Unit 2',
-                business_unit_type: 'Accounting Division',
-              } as IOpalFinesBusinessUnit,
-            ],
-          },
+          businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
         },
       },
     };
@@ -127,9 +114,13 @@ describe('FinesConConsolidateAccComponent', () => {
     component.ngOnInit();
 
     expect(component['businessUnitRefData']).toBeDefined();
-    expect(component['businessUnitRefData'].length).toBe(2);
-    expect(component['businessUnitRefData'][0].business_unit_name).toBe('Business Unit 1');
-    expect(component['businessUnitRefData'][1].business_unit_name).toBe('Business Unit 2');
+    expect(component['businessUnitRefData'].length).toBe(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.length);
+    expect(component['businessUnitRefData'][0].business_unit_name).toBe(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name,
+    );
+    expect(component['businessUnitRefData'][1].business_unit_name).toBe(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_name,
+    );
   });
 
   describe('getBusinessUnits', () => {
@@ -137,9 +128,13 @@ describe('FinesConConsolidateAccComponent', () => {
       component['getBusinessUnits']();
 
       expect(component['businessUnitRefData']).toBeDefined();
-      expect(component['businessUnitRefData'].length).toBe(2);
-      expect(component['businessUnitRefData'][0].business_unit_name).toBe('Business Unit 1');
-      expect(component['businessUnitRefData'][1].business_unit_name).toBe('Business Unit 2');
+      expect(component['businessUnitRefData'].length).toBe(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.length);
+      expect(component['businessUnitRefData'][0].business_unit_name).toBe(
+        OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name,
+      );
+      expect(component['businessUnitRefData'][1].business_unit_name).toBe(
+        OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_name,
+      );
     });
 
     it('should initialize businessUnitRefData as empty array when resolver data is missing', () => {
@@ -170,11 +165,13 @@ describe('FinesConConsolidateAccComponent', () => {
     });
 
     it('should return business unit name when business unit id is found', () => {
-      vi.spyOn(finesConStore, 'getBusinessUnitId').mockReturnValue(1);
+      vi.spyOn(finesConStore, 'getBusinessUnitId').mockReturnValue(
+        OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id,
+      );
 
       const result = component.businessUnitText;
 
-      expect(result).toBe('Business Unit 1');
+      expect(result).toBe(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     });
 
     it('should return null when business unit id is not selected', () => {
