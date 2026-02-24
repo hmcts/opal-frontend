@@ -109,7 +109,7 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
    *
    * @param event The click event from the clear link
    */
-  public clearSearchForm(event?: Event | boolean): void {
+  public clearSearchForm(event?: Event): void {
     if (event instanceof Event) {
       event.preventDefault();
     }
