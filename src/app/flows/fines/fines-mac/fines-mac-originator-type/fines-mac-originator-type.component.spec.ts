@@ -70,4 +70,12 @@ describe('FinesMacOriginatorTypeComponent', () => {
     expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
+
+  it('should reset the store on init', () => {
+    const resetStoreSpy = vi.spyOn(finesMacStore, 'resetStore');
+
+    component.ngOnInit();
+
+    expect(resetStoreSpy).toHaveBeenCalled();
+  });
 });

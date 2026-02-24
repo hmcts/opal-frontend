@@ -93,6 +93,12 @@ export class FinesConSearchAccountFormIndividualsComponent extends AbstractNeste
     });
   }
 
+  /**
+   * Retrieves the individuals search criteria form group from the parent form.
+   *
+   * @returns The `FormGroup` for individuals search criteria when present and correctly typed;
+   * otherwise, `null`.
+   */
   private getIndividualsGroup(): FormGroup | null {
     const group = this.form.get('fcon_search_account_individuals_search_criteria');
     return group instanceof FormGroup ? group : null;
