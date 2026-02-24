@@ -18,7 +18,7 @@ export function createZephyrOptions(actionType: string, processType: string, rep
     githubRepoBaseSrcDir: 'https://github.com/hmcts/opal-frontend/tree/master',
     jiraBaseUrl: 'https://tools.hmcts.net/jira/rest/api/latest',
     jiraProjectId: '33305',
-    jiraDefaultUser: 'Ben.Edwards',
+    jiraDefaultUser: 'OPAL.Zephyr.automation',
     jiraEpicLinkCustomFieldId: 'customfield_10008',
     jiraDefaultComponents: 'opal-frontend',
     jiraAuthToken: jiraToken,
