@@ -3761,9 +3761,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.62.tgz::locator=opal-frontend%40workspace%3A.":
-  version: 0.0.62
-  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.62.tgz#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.62.tgz::hash=591d99&locator=opal-frontend%40workspace%3A."
+"@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.64
+  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz::hash=6ba6d1&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^8.0.0"
@@ -3785,7 +3785,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/440d3382a3ac6795b86b290417542fee911f392e4544f96a29d4f9865987691d76b5c9644535869c971056106d484e99ca86229a5cc34fcf6515be57d8784111
+  checksum: 10/85c6f3b8a957dc1b8ec1025aac5ef1ea84c21a6be130eefd0552db4e79533f6e5edef3d29090d5d80ecc7584b33847a3a535f11969545c74d17cc15e14fd5016
   languageName: node
   linkType: hard
 
@@ -14503,7 +14503,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.62.tgz"
+    "@hmcts/opal-frontend-common": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz"
     "@hmcts/opal-frontend-common-node": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/hmcts-opal-frontend-common-node-0.0.26.tgz"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
