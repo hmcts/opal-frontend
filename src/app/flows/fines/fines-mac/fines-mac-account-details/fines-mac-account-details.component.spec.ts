@@ -27,31 +27,37 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
   let fixture: ComponentFixture<FinesMacAccountDetailsComponent>;
   let finesMacStore: FinesMacStoreType;
   let finesDraftStore: FinesDraftStoreType;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockFinesMacPayloadService: any;
 
   beforeEach(async () => {
-    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+    mockUtilsService = createSpyObj(UtilsService, [
       'checkFormValues',
       'checkFormArrayValues',
       'upperCaseFirstLetter',
       'getFormStatus',
       'getFormArrayStatus',
     ]);
-    mockDateService = jasmine.createSpyObj(DateService, [
+    mockDateService = createSpyObj(DateService, [
       'getFromFormatToFormat',
       'calculateAge',
       'getFromFormat',
       'isValidDate',
     ]);
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, ['mapAccountPayload']);
+    mockFinesMacPayloadService = createSpyObj(FinesMacPayloadService, ['mapAccountPayload']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
@@ -88,7 +94,8 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate back on navigateBack', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     finesDraftStore.setAmend(true);
     finesDraftStore.setFragment('rejected');
@@ -103,7 +110,8 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate back on navigateBack when fragment is empty', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     finesDraftStore.setAmend(true);
     finesDraftStore.setFragment('');
@@ -189,21 +197,21 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'accountDetailsFetchedMappedPayload');
+    vi.spyOn<any, any>(component, 'accountDetailsFetchedMappedPayload');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'fetchTimelineData');
+    vi.spyOn<any, any>(component, 'fetchTimelineData');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setAccountDetailsStatus');
+    vi.spyOn<any, any>(component, 'setAccountDetailsStatus');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setDefendantType');
+    vi.spyOn<any, any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setAccountType');
+    vi.spyOn<any, any>(component, 'setAccountType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setLanguage');
+    vi.spyOn<any, any>(component, 'setLanguage');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'checkMandatorySections');
+    vi.spyOn<any, any>(component, 'checkMandatorySections');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'routerListener');
+    vi.spyOn<any, any>(component, 'routerListener');
 
     component['initialAccountDetailsSetup']();
 
@@ -218,12 +226,12 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate back on navigateBack', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.pageNavigation = true;
 
     component.navigateBack();
 
-    expect(component.pageNavigation).toBe(false);
     expect(routerSpy).toHaveBeenCalledWith([component['fineMacRoutes'].children.createAccount], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -233,13 +241,14 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['routerListener']();
     component.navigateBack();
 
-    expect(component.pageNavigation).toBeTrue();
+    expect(component.pageNavigation).toBe(true);
   });
 
   it('should set pageNavigation to false if URL includes createAccount', () => {
     component['routerListener']();
     // Simulate navigating to a route that includes createAccount
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.navigateBack();
 
     expect(routerSpy).toHaveBeenCalled();
@@ -264,7 +273,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     finesMacState.personalDetails = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);
     finesMacStore.setFinesMacStore(finesMacState);
 
-    mockUtilsService.getFormStatus.and.returnValue(FINES_MAC_STATUS.PROVIDED);
+    mockUtilsService.getFormStatus.mockReturnValue(FINES_MAC_STATUS.PROVIDED);
 
     const result = component['canAccessPaymentTerms']();
 
@@ -305,7 +314,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     };
     finesMacStore.setFinesMacStore(adultOrYouthOnly);
     component['checkMandatorySections']();
-    expect(component.mandatorySectionsCompleted).toBeFalse();
+    expect(component.mandatorySectionsCompleted).toBe(false);
 
     const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
     parentOrGuardianToPay.accountDetails.formData = {
@@ -314,7 +323,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     };
     finesMacStore.setFinesMacStore(parentOrGuardianToPay);
     component['checkMandatorySections']();
-    expect(component.mandatorySectionsCompleted).toBeFalse();
+    expect(component.mandatorySectionsCompleted).toBe(false);
 
     const company = structuredClone(parentOrGuardianToPay);
     company.accountDetails.formData = {
@@ -323,7 +332,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     };
     finesMacStore.setFinesMacStore(company);
     component['checkMandatorySections']();
-    expect(component.mandatorySectionsCompleted).toBeFalse();
+    expect(component.mandatorySectionsCompleted).toBe(false);
 
     const defaultCase = structuredClone(company);
     defaultCase.accountDetails.formData = {
@@ -332,12 +341,12 @@ describe('FinesMacAccountDetailsComponent', () => {
     };
     finesMacStore.setFinesMacStore(defaultCase);
     component['checkMandatorySections']();
-    expect(component.mandatorySectionsCompleted).toBeFalse();
+    expect(component.mandatorySectionsCompleted).toBe(false);
   });
 
   it('should test accountDetailsFetchedMappedPayload', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setAccountDetailsStatus');
+    vi.spyOn<any, any>(component, 'setAccountDetailsStatus');
     const snapshotData: IFetchMapFinesMacPayload = {
       finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
       finesMacDraft: { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT), account_status: 'Rejected' },
@@ -363,7 +372,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should test accountDetailsFetchedMappedPayload', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setAccountDetailsStatus');
+    vi.spyOn<any, any>(component, 'setAccountDetailsStatus');
     finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE));
     finesDraftStore.setFinesDraftState(structuredClone(FINES_DRAFT_STATE));
     const snapshotData: IFetchMapFinesMacPayload = {

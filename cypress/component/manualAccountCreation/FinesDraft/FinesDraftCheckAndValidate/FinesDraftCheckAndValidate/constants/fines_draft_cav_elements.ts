@@ -20,8 +20,10 @@ export const DOM_ELEMENTS = {
   submittedBy: 'td[id = "submittedBy"]',
   deleted: 'td[id = "changedDate"]',
 
-  paginationLinks: '.moj-pagination__list',
-  paginationPageNumber: (pageNum: number | string) => `.moj-pagination__item:contains("${pageNum}")`,
+  paginationLinks: '.govuk-pagination__list',
+  paginationLinksNext: '.govuk-pagination__next',
+  paginationLinksPrevious: '.govuk-pagination__prev',
+  paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
 
   accountStatus: 'strong[id="status"]',
   reviewHistory: 'h3.govuk-heading-m govuk-!-margin-top-4',

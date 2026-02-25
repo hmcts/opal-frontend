@@ -11,8 +11,15 @@ import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../utils/mocks/sta
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-personal-details-state.mock';
 import { FINES_MAC_PAYLOAD_DELETE_ACCOUNT_CONFIRMATION_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-delete-account-confirmation-state.mock';
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
+import { FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK } from '../../../fines-mac-originator-type/mocks/fines-mac-originator-type-state.mock';
 
 export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
+  originatorType: {
+    formData: {
+      ...FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK,
+    },
+    nestedFlow: false,
+  },
   accountDetails: {
     formData: {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,

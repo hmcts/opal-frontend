@@ -1,6 +1,8 @@
 export const DOM_ELEMENTS = {
   app: 'div.govuk-grid-column-full',
   heading: 'h1.govuk-heading-l',
+  pageHeader: 'opal-lib-custom-page-header',
+  createAccountButton: '#create-account-button, button[buttonid="create-account-button"]',
   navigationLinks: 'a.moj-sub-navigation__link',
 
   rejectedIcon: 'span[id = "inputter-rejected-tab-rejected-count"]',
@@ -17,9 +19,9 @@ export const DOM_ELEMENTS = {
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
 
-  previousPageButton: '.moj-pagination__item--prev',
-  nextPageButton: '.moj-pagination__item--next',
+  previousPageButton: '.govuk-pagination__prev',
+  nextPageButton: '.govuk-pagination__next',
   //Added as Page Number is now dynamic
-  paginationPageNumber: (pageNum: number | string) => `.moj-pagination__item:contains("${pageNum}")`,
+  paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
   rejectedAccounts: 'a.govuk-link',
 };

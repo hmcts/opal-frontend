@@ -12,6 +12,7 @@ import { IFinesMacEmployerDetailsState } from '../../../../fines-mac-employer-de
 import { IFinesMacLanguagePreferencesState } from '../../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
 import { FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-employer-details-state.mock';
 import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/state/fines-mac-payload-language-preferences-state.mock';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
   let initialState: IFinesMacState | null;
@@ -44,7 +45,7 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
       !employerDetailsState ||
       !languagePreferencesState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -71,7 +72,7 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
       !employerDetailsState ||
       !languagePreferencesState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -112,7 +113,7 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
       !employerDetailsState ||
       !languagePreferencesState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -133,7 +134,7 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
       !employerDetailsState ||
       !languagePreferencesState
     ) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 

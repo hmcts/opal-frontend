@@ -35,6 +35,7 @@ import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-
 import { IOpalFinesAccountPartyDetails } from './interfaces/opal-fines-account-party-details.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note-response.interface';
@@ -47,6 +48,7 @@ import { OPAL_FINES_CACHE_DEFAULTS } from './constants/opal-fines-cache-defaults
 import { IOpalFinesCache } from './interfaces/opal-fines-cache.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
+import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IOpalFinesAccountRequestPaymentCardResponse } from './interfaces/opal-fines-account-request-payment-card-response.interface';
 
 @Injectable({
@@ -257,8 +259,14 @@ export class OpalFines {
    * @param itemName - The name of the configuration item.
    * @returns The value of the configuration item, or null if the item is not found.
    */
-  public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
-    return businessUnit.configuration_items.find((item) => item.item_name === itemName)?.item_value ?? null;
+  public getConfigurationItemValue(
+    businessUnit: IOpalFinesBusinessUnit | IOpalFinesBusinessUnitNonSnakeCase,
+    itemName: string,
+  ): string | null {
+    if ('configurationItems' in businessUnit === false) {
+      return businessUnit.configuration_items.find((item) => item.item_name === itemName)?.item_value ?? null;
+    }
+    return businessUnit.configurationItems.find((item) => item.itemName === itemName)?.itemValue ?? null;
   }
 
   /**
@@ -770,6 +778,34 @@ export class OpalFines {
   }
 
   /**
+   * Sends a PUT request to add payment terms to a defendant account.
+   *
+   * @param defendantAccountId - The ID of the defendant account to add payment terms to.
+   * @param payload - The payment terms payload containing the payment terms data.
+   * @param businessUnitId - Optional Business Unit ID header.
+   * @param ifMatch - Optional If-Match header for optimistic locking.
+   * @returns An Observable of the payment terms response.
+   */
+  public postDefendantAccountPaymentTerms(
+    defendantAccountId: number,
+    payload: IOpalFinesAmendPaymentTermsPayload,
+    businessUnitId?: string,
+    ifMatch?: string,
+  ): Observable<IOpalFinesAmendPaymentTermsPayload> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-terms`;
+
+    const headers: Record<string, string> = {};
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+    if (ifMatch) {
+      headers['If-Match'] = ifMatch;
+    }
+
+    return this.http.post<IOpalFinesAmendPaymentTermsPayload>(url, payload, { headers });
+  }
+
+  /**
    * Retrieves the defendant account header data for a specific account ID.
    * This method makes an HTTP GET request to fetch the header summary for the specified defendant account.
    *
@@ -890,6 +926,29 @@ export class OpalFines {
     }
 
     return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
+  }
+
+  /**
+   * Retrieves the minor creditor account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified minor creditor account.
+   *
+   * @param accountId - The unique identifier of the minor creditor account.
+   * @returns An Observable that emits the minor creditor account header data.
+   */
+  public getMinorCreditorAccountHeadingData(
+    accountId: number,
+  ): Observable<IOpalFinesAccountMinorCreditorDetailsHeader> {
+    const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}/header-summary`;
+    return this.http.get<IOpalFinesAccountMinorCreditorDetailsHeader>(url, { observe: 'response' }).pipe(
+      map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHeader>) => {
+        const payload = response.body as IOpalFinesAccountMinorCreditorDetailsHeader;
+        const version = this.extractEtagVersion(response.headers);
+        return {
+          ...payload,
+          version,
+        };
+      }),
+    );
   }
 
   /**

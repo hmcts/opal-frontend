@@ -4,16 +4,21 @@ import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../fines-mac-personal-
 import { DateTime } from 'luxon';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
 describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   let component: FinesMacReviewAccountPersonalDetailsComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountPersonalDetailsComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
+    mockDateService = createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
+    mockUtilsService = createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountPersonalDetailsComponent],
@@ -56,8 +61,8 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should format date of birth correctly - adult', () => {
-    mockDateService.calculateAge.and.returnValue(34);
-    mockDateService.getFromFormatToFormat.and.returnValue('01 January 1990');
+    mockDateService.calculateAge.mockReturnValue(34);
+    mockDateService.getFromFormatToFormat.mockReturnValue('01 January 1990');
 
     component['getDateOfBirthData']();
 
@@ -72,8 +77,8 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
       fm_personal_details_dob: mockDob.toFormat('dd/MM/yyyy'),
     };
 
-    mockDateService.calculateAge.and.returnValue(10);
-    mockDateService.getFromFormatToFormat.and.returnValue(mockDob.toFormat('dd MMMM yyyy'));
+    mockDateService.calculateAge.mockReturnValue(10);
+    mockDateService.getFromFormatToFormat.mockReturnValue(mockDob.toFormat('dd MMMM yyyy'));
 
     component['getDateOfBirthData']();
 
@@ -82,7 +87,7 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
 
   it('should format address correctly', () => {
     const formattedAddress = ['123 Main St', 'Apt 4B', 'Springfield', '12345'];
-    mockUtilsService.formatAddress.and.returnValue(formattedAddress);
+    mockUtilsService.formatAddress.mockReturnValue(formattedAddress);
 
     component['getAddressData']();
 
@@ -96,7 +101,8 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should emit change personal details event', () => {
-    spyOn(component.emitChangePersonalDetails, 'emit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.emitChangePersonalDetails, 'emit');
 
     component.changePersonalDetails();
 
@@ -105,7 +111,7 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
 
   it('should call getPersonalDetailsData on init', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getPersonalDetailsData');
+    vi.spyOn<any, any>(component, 'getPersonalDetailsData');
 
     component.ngOnInit();
 

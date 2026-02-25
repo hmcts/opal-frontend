@@ -181,6 +181,37 @@
             </div>
           }
 
+          @if (tabData.last_enforcement_action.result_responses) {
+            @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
+              @if (param.parameter_name === 'hearing_date' && param.response) {
+                <div
+                  opal-lib-govuk-summary-list-row
+                  class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+                  summaryListId="lastEnforcementActionDetails"
+                  summaryListRowId="hearing_date"
+                >
+                  <ng-container name>Hearing date</ng-container>
+                  <ng-container value>{{ param.response | date: 'dd MMMM yyyy' }}</ng-container>
+                </div>
+              }
+            }
+          }
+          @if (tabData.last_enforcement_action.result_responses) {
+            @for (param of tabData.last_enforcement_action.result_responses; track param.parameter_name) {
+              @if (param.parameter_name === 'court' && param.response) {
+                <div
+                  opal-lib-govuk-summary-list-row
+                  class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+                  summaryListId="lastEnforcementActionDetails"
+                  summaryListRowId="court"
+                >
+                  <ng-container name>Court</ng-container>
+                  <ng-container value>{{ param.response }}</ng-container>
+                </div>
+              }
+            }
+          }
+
           <div
             opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -229,6 +260,67 @@
       <ng-container content> There is no outstanding enforcement action. </ng-container>
     }
   </opal-lib-govuk-summary-card-list>
+
+  @if (tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id) {
+    <opal-lib-govuk-summary-card-list cardTitle="Enforcement override" summaryCardListId="enforcement-override">
+      @if (hasAccountMaintenancePermission) {
+        <ng-container actions>
+          <opal-lib-govuk-summary-card-action actionText="Remove" actionRoute="#"></opal-lib-govuk-summary-card-action>
+        </ng-container>
+      }
+      <ng-container content>
+        <opal-lib-govuk-summary-list summaryListId="enforcementOverrideDetails">
+          <div
+            opal-lib-govuk-summary-list-row
+            [class]="
+              hasAccountMaintenancePermission
+                ? 'govuk-summary-list__row'
+                : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
+            "
+            summaryListId="enforcementOverrideDetails"
+            summaryListRowId="enforcement_override"
+            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+          >
+            <ng-container name>Enforcement override</ng-container>
+            <ng-container value>
+              {{ tabData.enforcement_override.enforcement_override_result.enforcement_override_result_name }}({{
+                tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+              }})
+            </ng-container>
+            @if (hasAccountMaintenancePermission) {
+              <ng-container action>Change</ng-container>
+            }
+          </div>
+
+          @if (tabData.enforcement_override.enforcer && tabData.enforcement_override.enforcer.enforcer_name) {
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="enforcementOverrideDetails"
+              summaryListRowId="enforcer"
+            >
+              <ng-container name>Enforcer</ng-container>
+              <ng-container value>{{ tabData.enforcement_override.enforcer.enforcer_name }}</ng-container>
+            </div>
+          }
+
+          @if (tabData.enforcement_override.lja && tabData.enforcement_override.lja.lja_name) {
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="enforcementOverrideDetails"
+              summaryListRowId="local_justice_area"
+            >
+              <ng-container name>Local Justice Area (LJA)</ng-container>
+              <ng-container value>
+                {{ tabData.enforcement_override.lja.lja_name }}({{ tabData.enforcement_override.lja.lja_id }})
+              </ng-container>
+            </div>
+          }
+        </opal-lib-govuk-summary-list>
+      </ng-container>
+    </opal-lib-govuk-summary-card-list>
+  }
 </div>
 @if (hasAccountMaintenancePermission || hasEnterEnforcementPermission) {
   <div class="govuk-grid-column-one-third">

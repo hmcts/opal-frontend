@@ -7,6 +7,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-search-offences.mock';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsComponent;
@@ -49,16 +50,17 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it('should return false from canDeactivate if there are unsaved changes', () => {
     finesMacOffenceDetailsSearchOffencesStore.setUnsavedChanges(true);
-    expect(component.canDeactivate()).toBeFalse();
+    expect(component.canDeactivate()).toBe(false);
   });
 
   it('should return true from canDeactivate if there are no unsaved changes', () => {
     finesMacOffenceDetailsSearchOffencesStore.setUnsavedChanges(false);
-    expect(component.canDeactivate()).toBeTrue();
+    expect(component.canDeactivate()).toBe(true);
   });
 
   it('should navigate back one level up on navigateBack', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.navigateBack();
     expect(routerSpy).toHaveBeenCalledWith(['..'], { relativeTo: component['activatedRoute'] });
   });

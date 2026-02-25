@@ -22,9 +22,9 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 
 Running the application requires the following tools to be installed in your environment:
 
-- [Node.js](https://nodejs.org/) v20.9.0 or later.
+- [Node.js](https://nodejs.org/) `^20.19.0` or `^22.12.0` or `>=24.0.0` (use `.nvmrc`, currently `24.13.0`).
 
-- [yarn](https://yarnpkg.com/) v3
+- [yarn](https://yarnpkg.com/) v4
 
 - [Docker](https://www.docker.com)
 
@@ -233,10 +233,12 @@ There is a custom lint rule for member ordering to ensure members in the code ar
 
 ## Running unit tests
 
-Run `yarn test` to execute the unit tests via [karma](https://karma-runner.github.io/latest/index.html).
+Run `yarn test` to execute the unit tests via [Vitest](https://vitest.dev/).
 
-To check code coverage, run `yarn test --code-coverage` to execute the unit tests via [karma](https://karma-runner.github.io/latest/index.html) but with code coverage.
-Code coverage can then be found in the coverage folder of the repository locally.
+Run `yarn test:watch` to execute unit tests in watch mode.
+
+To check code coverage, run `yarn test:coverage`.
+Code coverage can then be found in the `coverage` folder of the repository locally.
 
 ## Running end-to-end tests
 

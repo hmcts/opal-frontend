@@ -5,10 +5,10 @@ import { FINES_PAYMENT_TERMS_MOCK } from './mocks/fines-payment-terms-mock';
 import {
   ERROR_MESSAGES,
   LUMPSUM_ERRORS,
-  INSTALLMENT_ERRORS,
+  INSTALMENT_ERRORS,
   ENFORCEMENT_ERRORS,
 } from './constants/fines_mac_payment_terms_errors';
-import { DOM_ELEMENTS } from './constants/fines_mac_payment_terms_elements';
+import { MacPaymentTermsLocators as DOM_ELEMENTS } from '../../../shared/selectors/manual-account-creation/mac.payment-terms.locators';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -126,12 +126,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
@@ -150,12 +150,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
@@ -201,6 +201,25 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
 
+  it('has legend text for enforcement action fieldset', { tags: ['@PO-2783'] }, () => {
+    setupComponent('adultOrYouthOnly');
+    cy.get(DOM_ELEMENTS.addEnforcementAction).click();
+
+    cy.get(DOM_ELEMENTS.enforcementActionFieldset)
+      .find(DOM_ELEMENTS.enforcementActionLegend)
+      .should('contain.text', 'Select enforcement action')
+      .and('have.class', 'govuk-visually-hidden')
+      .and('have.class', 'govuk-fieldset__legend--s');
+
+    //No aria-label applied to the individual radio buttons
+    cy.get(DOM_ELEMENTS.enforcementActionFieldset)
+      .find(DOM_ELEMENTS.enforcementActionRadios)
+      .should('have.length.greaterThan', 0)
+      .each(($radio) => {
+        cy.wrap($radio).should('not.have.attr', 'aria-label');
+      });
+  });
+
   it(
     '(AC.1,AC.3,AC.4)Should load all elements on the screen correctly for AYPG defendant types',
     { tags: ['@PO-566', '@PO-587', '@PO-649', '@PO-344'] },
@@ -235,12 +254,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
@@ -259,12 +278,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
@@ -321,12 +340,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
@@ -345,12 +364,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentAmountLabel).should('contain', 'Instalment');
       cy.get(DOM_ELEMENTS.instalmentAmount).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Frequency');
-      cy.get(DOM_ELEMENTS.frequencyWeeklyLabel).should('contain', 'Weekly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightlyLabel).should('contain', 'Fortnightly');
-      cy.get(DOM_ELEMENTS.frequencyMonthlyLabel).should('contain', 'Monthly');
-      cy.get(DOM_ELEMENTS.frequencyFortnightly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyMonthly).should('exist');
-      cy.get(DOM_ELEMENTS.frequencyWeekly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeeklyLabel).should('contain', 'Weekly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightlyLabel).should('contain', 'Fortnightly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthlyLabel).should('contain', 'Monthly');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyFortnightly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyMonthly).should('exist');
+      cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
@@ -451,7 +470,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
-    '(AC.5)If a yser selects yes to collection order and does not enter a date, an error should be thrown',
+    '(AC.5)If a user selects yes to collection order and does not enter a date, an error should be thrown',
     { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344'] },
     () => {
       for (let i = 0; i < 2; i++) {
@@ -500,7 +519,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
 
-  //Checking pay by date, installment option and lump sum flow checks and error handling
+  //Checking pay by date, instalment option and lump sum flow checks and error handling
   it(
     '(AC.2a) should allow payByDate to be entered via date picker for all defendant types',
     { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
@@ -741,7 +760,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
 
-  it('(AC.9)should handle errors for Installment', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] }, () => {
+  it('(AC.9)should handle errors for Instalment', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] }, () => {
     defendantTypes.forEach((defendantType) => {
       cy.then(() => {
         setupComponent(defendantType);
@@ -750,7 +769,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
         cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
 
-        for (const [, value] of Object.entries(INSTALLMENT_ERRORS)) {
+        for (const [, value] of Object.entries(INSTALMENT_ERRORS)) {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', value);
         }
       });
@@ -758,7 +777,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it(
-    '(AC.13)should handle valid instalmentAmount error for installment',
+    '(AC.13)should handle valid instalmentAmount error for instalment',
     { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -775,7 +794,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
-    '(AC.12) should handle valid InstalmentDateFormat error for installment',
+    '(AC.12) should handle valid InstalmentDateFormat error for instalment',
     { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -792,7 +811,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
-    '(AC.12) should handle valid date error for installment',
+    '(AC.12) should handle valid date error for instalment',
     { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -809,7 +828,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
-    '(AC.10)should handle errors for Lump sum plus Installment',
+    '(AC.10)should handle errors for Lump sum plus Instalment',
     { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -845,7 +864,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
-    '(AC.14) should have validations in place for validLumpSuminstallmentAmount',
+    '(AC.14) should have validations in place for validLumpSumInstalmentAmount',
     { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -931,7 +950,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it(
-    '(AC.4) Validation check to ensure only 5 integers can be inputed to the days in default field Adult or youth, AYPG',
+    '(AC.4) Validation check to ensure only 5 integers can be inputted to the days in default field Adult or youth, AYPG',
     { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344'] },
     () => {
       for (let i = 0; i < 2; i++) {
@@ -994,9 +1013,9 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
           cy.get(DOM_ELEMENTS.suspendedCommittalDate).type('01/01/2022', { delay: 0 });
           cy.get(DOM_ELEMENTS.defaultDaysInJail).type('10', { delay: 0 });
-          cy.get(DOM_ELEMENTS.caculateLink).first().click();
+          cy.get(DOM_ELEMENTS.calculateLink).first().click();
           cy.get(DOM_ELEMENTS.panel).should('exist');
-          cy.get(DOM_ELEMENTS.caculateHeading).should('contain', 'Calculate days in default');
+          cy.get(DOM_ELEMENTS.calculateHeading).should('contain', 'Calculate days in default');
           cy.get(DOM_ELEMENTS.days).should('exist');
           cy.get(DOM_ELEMENTS.weeks).should('exist');
           cy.get(DOM_ELEMENTS.months).should('exist');
@@ -1026,7 +1045,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
-          cy.get(DOM_ELEMENTS.caculateLink).first().click();
+          cy.get(DOM_ELEMENTS.calculateLink).first().click();
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'Cannot calculate total time in days');
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'You must enter a date days in default were imposed');
 

@@ -23,9 +23,9 @@ export const CommonLocators = {
   serviceNameLink: 'a.moj-header__link--service-name',
 
   /** Pagination "Next" link used in tables/lists that paginate. */
-  paginationNext: '.moj-pagination__item--next a',
+  paginationNext: '.govuk-pagination__item--next a',
   /** Disabled pagination item (used to detect end of pagination). */
-  paginationDisabledItem: '.moj-pagination__item--disabled',
+  paginationDisabledItem: '.govuk-pagination__item--disabled',
 } as const;
 
 export type CommonLocatorKey = keyof typeof CommonLocators;

@@ -34,20 +34,25 @@ import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM_MOCK } from '../fines-mac-fixed-penalty-details/mocks/fines-mac-fixed-penalty-details-store-form.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK } from '../fines-mac-originator-type/mocks/fines-mac-originator-type-form.mock';
 
 describe('FinesMacStore', () => {
   let store: FinesMacStoreType;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockUtilsService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockDateService: any;
   beforeEach(() => {
-    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+    mockUtilsService = createSpyObj(UtilsService, [
       'checkFormValues',
       'checkFormArrayValues',
       'getFormStatus',
       'getArrayFormStatus',
       'upperCaseAllLetters',
     ]);
-    mockDateService = jasmine.createSpyObj(DateService, ['getDateFromFormat']);
+    mockDateService = createSpyObj(DateService, ['getDateFromFormat']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -176,10 +181,10 @@ describe('FinesMacStore', () => {
       FINES_MAC_STATE_MOCK.accountDetails.formData.fm_create_account_defendant_type!,
     );
 
-    mockUtilsService.getFormStatus.and.returnValue(FINES_MAC_STATUS.PROVIDED);
-    mockUtilsService.getArrayFormStatus.and.returnValue(FINES_MAC_STATUS.PROVIDED);
-    mockUtilsService.checkFormValues.and.returnValue(true);
-    mockUtilsService.checkFormArrayValues.and.returnValue(true);
+    mockUtilsService.getFormStatus.mockReturnValue(FINES_MAC_STATUS.PROVIDED);
+    mockUtilsService.getArrayFormStatus.mockReturnValue(FINES_MAC_STATUS.PROVIDED);
+    mockUtilsService.checkFormValues.mockReturnValue(true);
+    mockUtilsService.checkFormArrayValues.mockReturnValue(true);
 
     expect(store.getBusinessUnitId()).toEqual(FINES_MAC_STATE_MOCK.businessUnit.business_unit_id);
     expect(store.employerDetailsStatus()).toEqual(FINES_MAC_STATUS.PROVIDED);
@@ -219,7 +224,7 @@ describe('FinesMacStore', () => {
     store.setFinesMacStore(finesMacState);
 
     const offenceDate = new Date('2024-09-01');
-    mockDateService.getDateFromFormat.and.returnValue(offenceDate);
+    mockDateService.getDateFromFormat.mockReturnValue(offenceDate);
 
     expect(store.getEarliestDateOfSentence()).toEqual(offenceDate);
   });
@@ -262,7 +267,7 @@ describe('FinesMacStore', () => {
       fm_personal_details_forenames: forenames,
       fm_personal_details_surname: surname,
     } = personalDetails.formData;
-    mockUtilsService.upperCaseAllLetters.and.returnValue(surname!.toUpperCase());
+    mockUtilsService.upperCaseAllLetters.mockReturnValue(surname!.toUpperCase());
     const expectedName = `${title} ${forenames} ${surname!.toUpperCase()}`;
     store.setPersonalDetails(personalDetails);
     expect(store.getPersonalDetailsName()).toEqual(expectedName);
@@ -277,5 +282,14 @@ describe('FinesMacStore', () => {
     store.resetStateChangesUnsavedChanges();
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should setOriginatorType', () => {
+    store.setOriginatorType(FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK);
+    expect(store.originatorType()).toBe(FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK);
+    expect(store.stateChanges()).toBe(true);
+
+    store.setOriginatorType(FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK, false);
+    expect(store.stateChanges()).toBe(false);
   });
 });

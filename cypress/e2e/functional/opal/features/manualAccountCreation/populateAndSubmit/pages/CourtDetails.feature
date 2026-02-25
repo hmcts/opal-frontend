@@ -6,7 +6,7 @@ Feature: Manual account creation - Court Details
 
   Background:
     Given I am logged in with email "opal-test@hmcts.net"
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Court details" task
 
   Scenario: (AC.8, AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]

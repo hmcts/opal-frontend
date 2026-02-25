@@ -44,10 +44,11 @@ export const DOM_ELEMENTS = {
 
   paginationElement: 'opal-lib-moj-pagination',
   paginationText: '.moj-pagination__results',
-  previousPageButton: '.moj-pagination__item--prev',
-  nextPageButton: '.moj-pagination__item--next',
-  paginationList: '.moj-pagination__list',
-  paginationListItem: '.moj-pagination__item',
-  paginationCurrentPage: '.moj-pagination__item--active',
-  paginationPageNumber: (pageNum: number | string) => `.moj-pagination__item:contains("${pageNum}")`,
+  previousPageButton: '.govuk-pagination__prev',
+  nextPageButton: '.govuk-pagination__next',
+  paginationList: '.govuk-pagination__list',
+  paginationListItem: '.govuk-pagination__item',
+  paginationListItemEllipses: '.govuk-pagination__item--ellipses',
+  paginationCurrentPage: '.govuk-pagination__item--current',
+  paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
 };

@@ -4,10 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { FinesMacParentGuardianDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component';
 import {
-  DOM_ELEMENTS,
+  MacParentGuardianDetailsLocators as DOM_ELEMENTS,
   getAliasFirstName,
   getAliasLastName,
-} from './constants/fines_mac_parent_guardian_details_elements';
+} from '../../../shared/selectors/manual-account-creation/mac.parent-guardian-details.locators';
 import {
   MAIN_PERSONAL_DETAILS,
   ALIAS_PERSONAL_DETAILS,
@@ -166,14 +166,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     });
   });
 
-  it('(AC.2) should reqiure first name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
+  it('(AC.2) should require first name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingFirstName);
   });
 
-  it('(AC.2) should reqiure last name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
+  it('(AC.2) should require last name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -208,25 +208,25 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.get(getAliasFirstName(1)).should('exist');
       cy.get(getAliasLastName(1)).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 2');
-      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist').and('not.have.attr', 'aria-label');
 
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
       cy.get(getAliasFirstName(2)).should('exist');
       cy.get(getAliasLastName(2)).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 3');
-      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist').and('not.have.attr', 'aria-label');
 
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
       cy.get(getAliasFirstName(3)).should('exist');
       cy.get(getAliasLastName(3)).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 4');
-      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist').and('not.have.attr', 'aria-label');
 
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
       cy.get(getAliasFirstName(4)).should('exist');
       cy.get(getAliasLastName(4)).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 5');
-      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('exist').and('not.have.attr', 'aria-label');
 
       cy.get(DOM_ELEMENTS.aliasRemoveButton).click();
       cy.get(getAliasFirstName(4)).should('not.exist');

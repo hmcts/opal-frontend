@@ -16,6 +16,7 @@ import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interf
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;
@@ -26,7 +27,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getConfigurationItemValue: jasmine.createSpy('getConfigurationItemValue').and.returnValue(of('welshEnglish')),
+      getConfigurationItemValue: vi.fn().mockReturnValue(of('welshEnglish')),
     };
     formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
@@ -65,7 +66,8 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should handle form submission and navigate', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.handleAccountDetailsSubmit(formSubmit);
 
@@ -77,7 +79,8 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should handle form submission and navigate to an alternative page when account type is fixed penalty', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     formSubmit.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
     component.handleAccountDetailsSubmit(formSubmit);
@@ -153,9 +156,16 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should initialise but capture business unit id', () => {
-    spyOn(finesMacStore, 'setBusinessUnitId');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setBusinessUnitId');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setOriginatorType');
     finesMacStore.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    finesMacStore.setOriginatorType(FINES_MAC_STATE_MOCK.originatorType);
     component.ngOnInit();
-    expect(finesMacStore.setBusinessUnitId).toHaveBeenCalled();
+    expect(finesMacStore.setBusinessUnitId).toHaveBeenCalledWith(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id,
+    );
+    expect(finesMacStore.setOriginatorType).toHaveBeenCalledWith(FINES_MAC_STATE_MOCK.originatorType, false);
   });
 });

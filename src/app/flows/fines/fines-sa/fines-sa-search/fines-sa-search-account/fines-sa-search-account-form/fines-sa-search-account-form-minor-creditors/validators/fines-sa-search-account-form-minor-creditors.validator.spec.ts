@@ -1,5 +1,6 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { requiredMinorCreditorDataValidator } from './fines-sa-search-account-form-minor-creditors.validator';
+import { describe, expect, it } from 'vitest';
 
 describe('requiredMinorCreditorDataValidator', () => {
   function createForm({

@@ -5,7 +5,7 @@
 import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { normalizeHash } from '../../utils/cucumberHelpers';
 import { log } from '../../utils/log.helper';
-import { ManualOffenceDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { MacOffenceDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import {
   flow,
   getCurrentOffenceCode,

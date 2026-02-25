@@ -10,13 +10,21 @@ import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account.interface';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
-import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
+import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-transform-items-config.constant';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
 import { IFinesAccPartyAddAmendConvertState } from '../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { transformDefendantAccountPartyPayload } from './utils/fines-acc-payload-transform-defendant-data.utils';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
+import { IFinesAccPaymentTermsAmendState } from '../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
+import { IFinesAccPaymentTermsAmendForm } from '../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-form.interface';
+import { transformPaymentTermsData } from './utils/fines-acc-payload-transform-payment-terms-data.utils';
+import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms-payload.interface';
+import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-build-payment-terms-amend.utils';
 import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
+import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -49,36 +57,78 @@ export class FinesAccPayloadService {
   }
 
   /**
-   * Transforms the given IOpalFinesDefendantAccountHeader into IFinesAccountState for the Account Store
    *
-   * @param headingData - The payload object to be transformed.
-   * @returns The transformed payload object.
+   * @param account_id
+   * @param headingData
+   * @param partyType
    */
   public transformAccountHeaderForStore(
     account_id: number,
     headingData: IOpalFinesAccountDefendantDetailsHeader,
+    partyType: 'defendant',
+  ): IFinesAccountState;
+
+  public transformAccountHeaderForStore(
+    account_id: number,
+    headingData: IOpalFinesAccountMinorCreditorDetailsHeader,
+    partyType: 'minorCreditor',
+  ): IFinesAccountState;
+
+  /**
+   *
+   * @param account_id The account ID for which the header data was fetched. This is needed to set the account_id in the store state, as the header data does not contain the account_id field.
+   * @param headingData The heading data as either IOpalFinesAccountDefendantDetailsHeader or IOpalFinesAccountMinorCreditorDetailsHeader
+   * @param partyType The party type, either 'defendant' or 'minorCreditor', needed to determine how to extract party_id and party_type for the store state.
+   * @returns The transformed account state to be set in the store, containing the common fields as well as correctly mapped party_id and party_type based on the partyType parameter.
+   */
+  public transformAccountHeaderForStore(
+    account_id: number,
+    headingData: IOpalFinesAccountDefendantDetailsHeader | IOpalFinesAccountMinorCreditorDetailsHeader,
+    partyType: 'defendant' | 'minorCreditor',
   ): IFinesAccountState {
-    let party_name = '';
-    if (headingData.party_details.organisation_flag) {
-      party_name = headingData.party_details.organisation_details?.organisation_name ?? '';
-    } else {
-      party_name = `${headingData.party_details.individual_details?.title} ${headingData.party_details.individual_details?.forenames} ${headingData.party_details.individual_details?.surname?.toUpperCase()}`;
-    }
+    // Build party_name safely
+    const party_name = headingData.party_details.organisation_flag
+      ? (headingData.party_details.organisation_details?.organisation_name ?? '')
+      : [
+          headingData.party_details.individual_details?.title,
+          headingData.party_details.individual_details?.forenames,
+          headingData.party_details.individual_details?.surname
+            ? headingData.party_details.individual_details.surname.toUpperCase()
+            : undefined,
+        ]
+          .filter(Boolean)
+          .join(' ');
+
     const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
       Number(headingData.business_unit_summary.business_unit_id),
       this.globalStore.userState(),
     );
 
+    let pg_party_id: string | null = null;
+    let party_type: string;
+    let party_id: string;
+
+    if (partyType === 'defendant') {
+      const h = headingData as IOpalFinesAccountDefendantDetailsHeader;
+      pg_party_id = h.parent_guardian_party_id;
+      party_type = h.debtor_type;
+      party_id = h.defendant_account_party_id;
+    } else {
+      const h = headingData as IOpalFinesAccountMinorCreditorDetailsHeader;
+      party_type = 'Minor Creditor';
+      party_id = h.party_details.party_id;
+    }
+
     return {
       account_number: headingData.account_number,
       account_id: Number(account_id),
-      pg_party_id: headingData.parent_guardian_party_id,
-      party_id: headingData.defendant_account_party_id,
-      party_type: headingData.debtor_type,
-      party_name: party_name,
+      pg_party_id,
+      party_id,
+      party_type,
+      party_name,
       base_version: headingData.version,
       business_unit_id: headingData.business_unit_summary.business_unit_id,
-      business_unit_user_id: business_unit_user_id,
+      business_unit_user_id,
       welsh_speaking: headingData.business_unit_summary.welsh_speaking,
     };
   }
@@ -152,7 +202,36 @@ export class FinesAccPayloadService {
   }
 
   /**
-   * Builds a party payload from the form state for updating defendant account party details.
+   * Transforms payment terms data from API response format to form data format.
+   * Combines payment terms latest data with enforcement action result data.
+   *
+   * @param paymentTermsData - The payment terms latest data from the API
+   * @param resultData - The enforcement action result data from the API (optional)
+   * @returns Transformed data in the form structure format
+   */
+  public transformPaymentTermsPayload(
+    paymentTermsData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest,
+    resultData: IOpalFinesResultRefData | null,
+  ): IFinesAccPaymentTermsAmendForm {
+    const formData = transformPaymentTermsData(paymentTermsData, resultData);
+    return {
+      formData,
+      nestedFlow: false,
+    };
+  }
+
+  /**
+   * Builds the payload for amending payment terms on a defendant account.
+   * Transforms form data into the API payload format required for payment terms amendment.
+   *
+   * @param formData - The payment terms form data from the component
+   * @returns The payload object conforming to the IOpalFinesAmendPaymentTermsPayload interface
+   */
+  public buildPaymentTermsAmendPayload(formData: IFinesAccPaymentTermsAmendState): IOpalFinesAmendPaymentTermsPayload {
+    return this.transformPayload(buildPaymentTermsAmendPayloadUtil(formData), FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  /**
    * This is the reverse transformation of mapDebtorAccountPartyPayload.
    *
    * @param formState - The form state containing party add/amend/convert data

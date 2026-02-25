@@ -22,9 +22,9 @@ export const DraftAccountsTableLocators = {
   viewAllRejectedLink: 'a.govuk-link:contains("view all rejected accounts")',
   pagination: {
     container: '#fines-draft-table-pagination',
-    next: '.moj-pagination__item--next a',
-    disabledItem: '.moj-pagination__item--disabled',
-    pages: '.moj-pagination__item a',
+    next: '.govuk-pagination__next a',
+    disabledItem: '.govuk-pagination__item--disabled',
+    pages: '.govuk-pagination__item a',
   },
   cells: {
     accountLink: 'td#account a',

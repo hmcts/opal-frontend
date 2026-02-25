@@ -5,6 +5,7 @@ import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../mocks/state/fin
 import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK } from '../mocks/state/fines-mac-payload-payment-terms-instalments.mock';
 import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK } from '../mocks/state/fines-mac-payload-payment-terms-lump-sum-plus-instalments.mock';
 import { FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_NULL_MOCK } from '../mocks/state/fines-mac-payload-payment-terms-null.mock';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('finesMacPayloadBuildAccountPaymentTerms', () => {
   let paymentTermsStateInFull: IFinesMacPaymentTermsState | null;
@@ -29,7 +30,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
 
   it('should build payment terms payload for payInFull, collection order made, payment card request, default days in jail, PRIS Enforcement', () => {
     if (!paymentTermsStateInFull) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -67,7 +68,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
 
   it('should build payment terms payload for instalments, card request, hold enforcement on account', () => {
     if (!paymentTermsStateInstallments) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -100,7 +101,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
 
   it('should build payment terms payload for lump sum plus instalments, collection order made, requested payment card, days in default, enforcement action', () => {
     if (!paymentTermsStateLumpSumPlusInstallments) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -138,7 +139,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
 
   it('should build payment terms payload but the response payload should be null', () => {
     if (!paymentTermsStateNull) {
-      fail('Required mock states are not properly initialised');
+      throw new Error('Required mock states are not properly initialised');
       return;
     }
 
@@ -180,7 +181,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
         expect(result.enforcements?.[1]?.result_id).toEqual('NOENF');
         expect(result.enforcements?.[1]?.enforcement_result_responses?.[0]?.response).toBeNull();
       } else {
-        fail('Failed to clone or prepare mock state for undefined reason test');
+        throw new Error('Failed to clone or prepare mock state for undefined reason test');
       }
     }
   });

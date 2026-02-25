@@ -117,7 +117,9 @@
             Options for Instalments Only
           </span>
           <opal-lib-govuk-radios-conditional [conditionalId]="paymentTermsConditionalIdPrefix + paymentTerm.key">
-            <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
+            <ng-container
+              *ngTemplateOutlet="instalmentsFrequencyStartDate; context: { selectedFrequency: paymentTerm.key }"
+            ></ng-container>
           </opal-lib-govuk-radios-conditional>
         }
         @case ('lumpSumPlusInstalments') {
@@ -139,7 +141,9 @@
               >
               </opal-lib-govuk-text-input-prefix-suffix>
             </div>
-            <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
+            <ng-container
+              *ngTemplateOutlet="instalmentsFrequencyStartDate; context: { selectedFrequency: paymentTerm.key }"
+            ></ng-container>
           </opal-lib-govuk-radios-conditional>
         }
       }
@@ -258,7 +262,8 @@
           <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_add_enforcement_action">
             <opal-lib-govuk-radio
               fieldSetId="fm_payment_terms_enforcement_action"
-              legendClasses="govuk-fieldset__legend--s"
+              legendText="Select enforcement action"
+              legendClasses="govuk-fieldset__legend--s govuk-visually-hidden"
               [errors]="formControlErrorMessages['fm_payment_terms_enforcement_action']"
             >
               @for (enforcementAction of enforcementActions; track enforcementAction.key) {
@@ -356,7 +361,7 @@
   </div>
 </form>
 
-<ng-template #instalmentsFrequencyStartDate>
+<ng-template #instalmentsFrequencyStartDate let-selectedFrequency="selectedFrequency">
   <div class="govuk-form-group">
     <opal-lib-govuk-text-input-prefix-suffix
       labelText="Instalment"
@@ -382,8 +387,8 @@
         <div
           opal-lib-govuk-radios-item
           [labelText]="frequency.value"
-          [inputId]="frequency.key"
-          inputName="fm_payment_terms_instalment_period"
+          [inputId]="selectedFrequency + '-' + frequency.key"
+          [inputName]="selectedFrequency"
           [inputValue]="frequency.key"
           [control]="form.get('fm_payment_terms_instalment_period')"
         ></div>
