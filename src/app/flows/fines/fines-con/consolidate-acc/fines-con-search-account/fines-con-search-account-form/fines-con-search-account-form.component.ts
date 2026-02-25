@@ -15,6 +15,7 @@ import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
 import { consolidateSearchAccountFormValidator } from './validators/fines-con-search-account-form.validator';
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-con-search-account-form-individuals/constants/fines-con-search-account-form-individuals-field-errors.constant';
+import { FINES_CON_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-con-search-account-form-companies/constants/fines-con-search-account-form-companies-field-errors.constant';
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   ACCOUNT_NUMBER_PATTERN,
