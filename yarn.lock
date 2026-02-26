@@ -3763,10 +3763,10 @@ __metadata:
 
 "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz::locator=opal-frontend%40workspace%3A.":
   version: 0.0.64
-  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz::hash=6ba6d1&locator=opal-frontend%40workspace%3A."
+  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.64.tgz::hash=6676c0&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
-    "@ministryofjustice/frontend": "npm:^8.0.0"
+    "@ministryofjustice/frontend": "npm:^9.0.0"
     accessible-autocomplete: "npm:^3.0.1"
     fast-sort: "npm:^3.4.1"
     govuk-frontend: "npm:^6.0.0"
@@ -3785,7 +3785,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/85c6f3b8a957dc1b8ec1025aac5ef1ea84c21a6be130eefd0552db4e79533f6e5edef3d29090d5d80ecc7584b33847a3a535f11969545c74d17cc15e14fd5016
+  checksum: 10/98db6e301776b235ca9b93a3c1f30338e140d4b382723c5ce82a378e6d9c164e3cfbb3e2ba020a4964f12030c95c189cc9d77b1fe2dec0332cd1c2f035f75003
   languageName: node
   linkType: hard
 
@@ -4732,13 +4732,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ministryofjustice/frontend@npm:^8.0.0":
-  version: 8.0.1
-  resolution: "@ministryofjustice/frontend@npm:8.0.1"
+"@ministryofjustice/frontend@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@ministryofjustice/frontend@npm:9.0.0"
   peerDependencies:
-    govuk-frontend: ^5.11.2
+    govuk-frontend: ^6.0.0
     moment: 2.30.1
-  checksum: 10/412d29fbde8b903a7db992ab7a9eeeb5d31bd8355b26f47e0d3e9974a1a1ea3fbd12e2d082d21edc2a052c5aa0bda93929a73a1f820a602279f0fda6e71efe56
+  checksum: 10/91402390dcbf26558684be9200c9b2ae47c77267fd074ae889bd907ec94e3c29072f40d1aebed8aae3cd2ae771806f8e90d57f03dcaf7de0f4fb470f3219a9a1
   languageName: node
   linkType: hard
 
@@ -11305,13 +11305,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^5.0.0":
-  version: 5.14.0
-  resolution: "govuk-frontend@npm:5.14.0"
-  checksum: 10/be321340f49306e3dada63c67888b7947e36d60dce839c9d7f0c97932cda26a848c1fc664d48bb1d85494b7d28a3e99b2df6391dfc1bcbab905f529a2faa6788
-  languageName: node
-  linkType: hard
-
 "govuk-frontend@npm:^6.0.0":
   version: 6.0.0
   resolution: "govuk-frontend@npm:6.0.0"
@@ -14507,7 +14500,7 @@ __metadata:
     "@hmcts/opal-frontend-common-node": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/hmcts-opal-frontend-common-node-0.0.26.tgz"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
-    "@ministryofjustice/frontend": "npm:^8.0.0"
+    "@ministryofjustice/frontend": "npm:^9.0.0"
     "@ngrx/signals": "npm:^21.0.0"
     "@types/config": "npm:^3.3.3"
     "@types/cookie-parser": "npm:^1.4.6"
@@ -14541,7 +14534,7 @@ __metadata:
     express: "npm:^5.0.0"
     express-session: "npm:^1.17.3"
     fast-sort: "npm:^3.4.1"
-    govuk-frontend: "npm:^5.0.0"
+    govuk-frontend: "npm:^6.0.0"
     helmet: "npm:^8.0.0"
     home-office-kit: "npm:^1.2.0"
     http-proxy-middleware: "npm:^3.0.0"
