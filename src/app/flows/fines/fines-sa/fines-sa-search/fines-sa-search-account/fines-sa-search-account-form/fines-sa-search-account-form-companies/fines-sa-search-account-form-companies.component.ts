@@ -56,7 +56,7 @@ export class FinesSaSearchAccountFormCompaniesComponent extends AbstractNestedFo
     return new FormGroup({
       fsa_search_account_companies_company_name: new FormControl<string | null>(null, [
         LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-        Validators.maxLength(30),
+        Validators.maxLength(50),
       ]),
       fsa_search_account_companies_company_name_exact_match: new FormControl<boolean | null>(null),
       fsa_search_account_companies_include_aliases: new FormControl<boolean | null>(null),
