@@ -52,6 +52,7 @@ import { AccountType, ApprovedAccountType } from '../../utils/payloads';
 import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { installDraftAccountCleanup } from 'cypress/support/draftAccounts';
+import type { Interception } from 'cypress/types/net-stubbing';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
@@ -229,6 +230,15 @@ When(
 When('I continue to manual account details', () => {
   log('navigate', 'Continuing to manual account details');
   flow().goToAccountDetails();
+});
+
+/**
+ * @step Continues from Create account without asserting destination path.
+ * @description Useful for journeys (e.g. Fixed Penalty) that do not land on Account details.
+ */
+When('I continue from create account', () => {
+  log('navigate', 'Continuing from create account');
+  createAccount().continueToAccountDetails();
 });
 /**
  * @step Creates a default fine manual account and confirms the task list is visible.
@@ -1290,4 +1300,97 @@ When('I click the back link on create account page I return to Create or Transfe
   log('navigate', 'Clicking back link on Create account page');
   createAccount().selectBackLink();
   originatorType().assertOnCreateOrTransferInPage();
+});
+
+/**
+ * @step Ensures the originator type page is visible before selecting New/Transfer in.
+ * @description Handles cases where the journey re-enters on Create account and navigates back when needed.
+ */
+When('I ensure I am on the create or transfer in page', () => {
+  const originatorHeader = 'Do you want to create a new account or transfer in?';
+  const createAccountHeader = 'Create account';
+
+  cy.get('h1.govuk-heading-l')
+    .invoke('text')
+    .then((text) => text.trim())
+    .then((headerText) => {
+      if (headerText.includes(originatorHeader)) {
+        originatorType().assertOnCreateOrTransferInPage();
+        return;
+      }
+
+      if (headerText.includes(createAccountHeader)) {
+        createAccount().selectBackLink();
+        originatorType().assertOnCreateOrTransferInPage();
+        return;
+      }
+
+      flow().goToManualAccountCreationFromDashboard();
+      originatorType().assertOnCreateOrTransferInPage();
+    });
+});
+
+/**
+ * @step Starts intercepting local justice area lookup requests.
+ * @description Captures GET local-justice-areas calls so query params can be asserted later.
+ */
+When('I monitor local justice areas requests', () => {
+  log('intercept', 'Monitoring local justice area requests');
+  cy.intercept({ method: 'GET', url: '**/local-justice-areas*' }).as('getLocalJusticeAreas');
+});
+
+/**
+ * @step Asserts lja_type query params on the latest local justice area request.
+ * @description Validates the request contains the expected lja_type values, order-insensitive.
+ * @param table - DataTable containing one lja_type per row.
+ */
+Then('the latest local justice areas request should include lja types:', (table: DataTable) => {
+  const expectedLjaTypes = table
+    .raw()
+    .flat()
+    .map((value) => value?.trim())
+    .filter(Boolean)
+    .filter((value, index, arr) => arr.indexOf(value) === index)
+    .sort();
+
+  cy.get('@getLocalJusticeAreas.all').then((requests: unknown) => {
+    const interceptedRequests: Interception[] = Array.isArray(requests) ? (requests as Interception[]) : [];
+    expect(interceptedRequests, 'captured local justice area requests').to.have.length.greaterThan(0);
+
+    const latestRequest = interceptedRequests[interceptedRequests.length - 1];
+    const url = new URL(latestRequest.request.url);
+    const actualLjaTypes = [...new Set(url.searchParams.getAll('lja_type'))].sort();
+
+    expect(actualLjaTypes).to.deep.equal(expectedLjaTypes);
+  });
+});
+
+/**
+ * @step Asserts excluded lja_type query params on the latest local justice area request.
+ * @description Validates the request does not contain any of the supplied lja_type values.
+ * @param table - DataTable containing one excluded lja_type per row.
+ */
+Then('the latest local justice areas request should not include lja types:', (table: DataTable) => {
+  const excludedLjaTypes = table
+    .raw()
+    .flat()
+    .map((value) => value?.trim())
+    .filter(Boolean)
+    .filter((value, index, arr) => arr.indexOf(value) === index);
+
+  cy.get('@getLocalJusticeAreas.all').then((requests: unknown) => {
+    const interceptedRequests: Interception[] = Array.isArray(requests) ? (requests as Interception[]) : [];
+    expect(interceptedRequests, 'captured local justice area requests').to.have.length.greaterThan(0);
+
+    const latestRequest = interceptedRequests[interceptedRequests.length - 1];
+    const url = new URL(latestRequest.request.url);
+    const actualLjaTypes = [...new Set(url.searchParams.getAll('lja_type'))];
+
+    excludedLjaTypes.forEach((excludedType) => {
+      expect(
+        actualLjaTypes,
+        `latest local justice area request should not include lja_type=${excludedType}`,
+      ).to.not.include(excludedType);
+    });
+  });
 });
