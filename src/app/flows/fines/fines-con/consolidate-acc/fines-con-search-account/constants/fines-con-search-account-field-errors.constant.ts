@@ -10,12 +10,12 @@ export const FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS: IFinesConSearchAccountFieldE
       message: 'Enter an account number',
       priority: 1,
     },
-    invalidFormat: {
-      message: 'Enter account number in the correct format such as 12345678 or 12345678A',
-      priority: 2,
-    },
     maxlength: {
       message: 'Account number must be 9 characters or fewer',
+      priority: 2,
+    },
+    invalidFormat: {
+      message: 'Enter account number in the correct format such as 12345678 or 12345678A',
       priority: 3,
     },
   },
@@ -24,12 +24,12 @@ export const FINES_CON_SEARCH_ACCOUNT_FIELD_ERRORS: IFinesConSearchAccountFieldE
       message: 'Enter a National Insurance number in the format AANNNNNNA',
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 2,
-    },
     maxlength: {
       message: 'National Insurance number must be 9 characters or fewer',
+      priority: 2,
+    },
+    alphanumericTextPattern: {
+      message: 'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 3,
     },
   },
