@@ -202,6 +202,34 @@ export const routing: Routes = [
         },
         resolve: { title: TitleResolver },
       },
+      {
+        path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`,
+
+        loadComponent: () =>
+          import('../fines-acc-payment-hold-add/fines-acc-payment-hold-add.component').then(
+            (c) => c.FinesAccPaymentHoldAddComponent,
+          ),
+        canActivate: [authGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
+        },
+        resolve: { title: TitleResolver },
+      },
+      {
+        path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`,
+
+        loadComponent: () =>
+          import('../fines-acc-payment-hold-remove/fines-acc-payment-hold-remove.component').then(
+            (c) => c.FinesAccPaymentHoldRemoveComponent,
+          ),
+        canActivate: [authGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
+        },
+        resolve: { title: TitleResolver },
+      },
     ],
   },
 ];
