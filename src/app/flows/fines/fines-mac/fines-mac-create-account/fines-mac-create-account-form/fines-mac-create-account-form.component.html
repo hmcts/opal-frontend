@@ -1,5 +1,11 @@
-<opal-lib-govuk-heading-with-caption captionText="Create account" headingText="Business unit and defendant type">
-</opal-lib-govuk-heading-with-caption>
+<opal-lib-govuk-back-link
+  (clickEvent)="handleRoute(fineMacRoutingPaths.children.originatorType, { nonRelative: false })"
+></opal-lib-govuk-back-link>
+@if (!isTFO) {
+  <h1 class="govuk-heading-l">Create account</h1>
+} @else {
+  <h1 class="govuk-heading-l">Transfer in</h1>
+}
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"

@@ -13,9 +13,12 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK } from '../mocks/fines-m
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK } from '@app/flows/fines/fines-mac/fines-mac-originator-type/mocks/fines-mac-originator-type-state.mock';
+import { IFinesMacOriginatorTypeState } from '@app/flows/fines/fines-mac/fines-mac-originator-type/interfaces/fines-mac-originator-type-state.interface';
 
 describe('finesMacPayloadBuildAccountBase', () => {
   let expectedPayload: IFinesMacPayloadAccountAccountInitial | null;
+  let originatorTypeState: IFinesMacOriginatorTypeState | null;
   let offenceMock: IFinesMacOffenceDetailsState | null;
   let courtDetailsState: IFinesMacCourtDetailsState | null;
   let accountDetailsState: IFinesMacAccountDetailsState | null;
@@ -25,6 +28,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
 
   beforeEach(() => {
     expectedPayload = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK);
+    originatorTypeState = structuredClone(FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK);
     courtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
     accountDetailsState = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK);
     paymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
@@ -57,15 +61,23 @@ describe('finesMacPayloadBuildAccountBase', () => {
     paymentTermsState = null;
     offenceDetailsState = null;
     offenceMock = null;
+    originatorTypeState = null;
   });
 
   it('should build the initial payload correctly', () => {
-    if (!offenceDetailsState || !expectedPayload || !accountDetailsState || !courtDetailsState || !paymentTermsState) {
+    if (
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState ||
+      !originatorTypeState
+    ) {
       throw new Error('Required mock states are not properly initialised');
-      return;
     }
 
     const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -83,10 +95,10 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !expectedPayload ||
       !accountDetailsState ||
       !courtDetailsState ||
-      !paymentTermsState
+      !paymentTermsState ||
+      !originatorTypeState
     ) {
       throw new Error('Required mock states are not properly initialised');
-      return;
     }
 
     const mostRecentOffenceDate = '01/07/2024';
@@ -95,6 +107,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
     expectedPayload.account_sentence_date = mostRecentOffenceDate;
 
     const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -112,10 +125,10 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !expectedPayload ||
       !accountDetailsState ||
       !courtDetailsState ||
-      !paymentTermsState
+      !paymentTermsState ||
+      !originatorTypeState
     ) {
       throw new Error('Required mock states are not properly initialised');
-      return;
     }
 
     offenceMock.fm_offence_details_date_of_sentence = 'Hello World';
@@ -126,6 +139,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
     expectedPayload.account_sentence_date = 'Hello World';
 
     const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -143,15 +157,16 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !expectedPayload ||
       !accountDetailsState ||
       !courtDetailsState ||
-      !paymentTermsState
+      !paymentTermsState ||
+      !originatorTypeState
     ) {
       throw new Error('Required mock states are not properly initialised');
-      return;
     }
 
     offenceDetailsState.push(offenceMock);
 
     const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -169,10 +184,10 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !expectedPayload ||
       !accountDetailsState ||
       !courtDetailsState ||
-      !paymentTermsState
+      !paymentTermsState ||
+      !originatorTypeState
     ) {
       throw new Error('Required mock states are not properly initialised');
-      return;
     }
 
     offenceDetailsState[0].fm_offence_details_date_of_sentence = null;
@@ -182,6 +197,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
 
     expectedPayload.account_sentence_date = '01/07/2024';
     const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -199,10 +215,10 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !expectedPayload ||
       !accountDetailsState ||
       !courtDetailsState ||
-      !paymentTermsState
+      !paymentTermsState ||
+      !originatorTypeState
     ) {
       throw new Error('Required mock states are not properly initialised');
-      return;
     }
 
     offenceDetailsState[0].fm_offence_details_date_of_sentence = 'Hello';
@@ -212,6 +228,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
 
     expectedPayload.account_sentence_date = '01/07/2024';
     const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -229,16 +246,17 @@ describe('finesMacPayloadBuildAccountBase', () => {
       !expectedPayload ||
       !accountDetailsState ||
       !courtDetailsState ||
-      !paymentTermsState
+      !paymentTermsState ||
+      !originatorTypeState
     ) {
       throw new Error('Required mock states are not properly initialised');
-      return;
     }
 
     offenceMock.fm_offence_details_date_of_sentence = 'Hello';
     offenceDetailsState.push(offenceMock);
 
     const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -250,9 +268,15 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should set nullable fields to null when undefined in payment terms', () => {
-    if (!offenceDetailsState || !expectedPayload || !accountDetailsState || !courtDetailsState || !paymentTermsState) {
+    if (
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState ||
+      !originatorTypeState
+    ) {
       throw new Error('Required mock states are not properly initialised');
-      return;
     }
 
     paymentTermsState.fm_payment_terms_collection_order_made = undefined as unknown as boolean;
@@ -268,6 +292,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
     expectedPayload.payment_card_request = null;
 
     const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,

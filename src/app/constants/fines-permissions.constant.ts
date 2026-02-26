@@ -12,4 +12,5 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'amend-payment-terms': 9,
   'enter-enforcement': 10,
   'add-remove-payment-hold': 12,
+  consolidate: 13,
 };

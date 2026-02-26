@@ -35,8 +35,8 @@ import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM_MOCK } from '../fines-mac-fi
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { beforeEach, describe, expect, it } from 'vitest';
-
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK } from '../fines-mac-originator-type/mocks/fines-mac-originator-type-form.mock';
 
 describe('FinesMacStore', () => {
   let store: FinesMacStoreType;
@@ -282,5 +282,14 @@ describe('FinesMacStore', () => {
     store.resetStateChangesUnsavedChanges();
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should setOriginatorType', () => {
+    store.setOriginatorType(FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK);
+    expect(store.originatorType()).toBe(FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK);
+    expect(store.stateChanges()).toBe(true);
+
+    store.setOriginatorType(FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK, false);
+    expect(store.stateChanges()).toBe(false);
   });
 });

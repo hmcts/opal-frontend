@@ -158,8 +158,14 @@ describe('FinesMacCreateAccountComponent', () => {
   it('should initialise but capture business unit id', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(finesMacStore, 'setBusinessUnitId');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setOriginatorType');
     finesMacStore.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    finesMacStore.setOriginatorType(FINES_MAC_STATE_MOCK.originatorType);
     component.ngOnInit();
-    expect(finesMacStore.setBusinessUnitId).toHaveBeenCalled();
+    expect(finesMacStore.setBusinessUnitId).toHaveBeenCalledWith(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id,
+    );
+    expect(finesMacStore.setOriginatorType).toHaveBeenCalledWith(FINES_MAC_STATE_MOCK.originatorType, false);
   });
 });

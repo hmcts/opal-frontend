@@ -33,10 +33,13 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-form';
 import { IFinesMacFixedPenaltyDetailsStoreForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-form.interface';
 import { IFinesMacDeleteAccountConfirmationForm } from '../fines-mac-delete-account-confirmation/interfaces/fines-mac-delete-account-confirmation-form.interface';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM } from '../fines-mac-originator-type/constants/fines-mac-originator-type-form.constant';
+import { IFinesMacOriginatorTypeForm } from '../fines-mac-originator-type/interfaces/fines-mac-originator-type-form.interface';
 
 export const FinesMacStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
+    originatorType: FINES_MAC_ORIGINATOR_TYPE_FORM,
     employerDetails: FINES_MAC_EMPLOYER_DETAILS_FORM,
     accountDetails: FINES_MAC_ACCOUNT_DETAILS_FORM,
     contactDetails: FINES_MAC_CONTACT_DETAILS_FORM,
@@ -248,6 +251,9 @@ export const FinesMacStore = signalStore(
     setAccountCommentsNotes: (accountCommentsNotes: IFinesMacAccountCommentsNotesForm) => {
       patchState(store, { accountCommentsNotes, stateChanges: true, unsavedChanges: false });
     },
+    setOriginatorType: (originatorType: IFinesMacOriginatorTypeForm, stateChanges: boolean = true) => {
+      patchState(store, { originatorType, stateChanges, unsavedChanges: false });
+    },
     setDeleteAccountConfirmation: (deleteAccountConfirmation: IFinesMacDeleteAccountConfirmationForm) => {
       patchState(store, { deleteAccountConfirmation, stateChanges: true, unsavedChanges: false });
     },
@@ -304,6 +310,7 @@ export const FinesMacStore = signalStore(
     },
     getFinesMacStore: () => {
       const finesMacStore: IFinesMacState = {
+        originatorType: store.originatorType(),
         employerDetails: store.employerDetails(),
         accountDetails: store.accountDetails(),
         contactDetails: store.contactDetails(),

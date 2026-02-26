@@ -6,7 +6,7 @@ Feature: Manual account creation - Payment Terms
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I provide manual personal details from account details:
       | title          | Mr    |
       | first names    | FNAME |
