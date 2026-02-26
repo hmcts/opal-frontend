@@ -1,14 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { EMPTY, merge, Observable, Subject } from 'rxjs';
+import { EMPTY, merge, Observable } from 'rxjs';
 import { tap, map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 // Services
-import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 // Stores
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 // Components
-import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
@@ -43,6 +40,7 @@ import { AsyncPipe } from '@angular/common';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { FINES_ACC_MINOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-minor-creditor-account-tabs-cache-map.constant';
 import { IFinesAccMinorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-minor-creditor-account-tabs-cache-map.interface';
+import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -65,28 +63,26 @@ import { IFinesAccMinorCreditorAccountTabsCacheMap } from './interfaces/fines-ac
   templateUrl: './fines-acc-minor-creditor-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccMinorCreditorDetailsComponent extends AbstractTabData implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-  private readonly refreshFragment$ = new Subject<string>();
-  private readonly permissionsService = inject(PermissionsService);
-  private readonly globalStore = inject(GlobalStore);
-  private readonly userState = this.globalStore.userState();
+export class FinesAccMinorCreditorDetailsComponent
+  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountMinorCreditorDetailsHeader>
+  implements OnInit, OnDestroy
+{
   private readonly opalFinesService = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
 
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountMinorCreditorDetailsTabs = FINES_ACC_MINOR_CREDITOR_DETAILS_TABS;
-  public accountData!: IOpalFinesAccountMinorCreditorDetailsHeader;
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public tabAtAGlance$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
+  public finesPermissions = FINES_PERMISSIONS;
 
   /**
    * Fetches the minor creditor account heading data and current tab fragment from the route.
    */
-  private getHeaderDataFromRoute(): void {
+  protected getHeaderDataFromRoute(): void {
     this.accountData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
@@ -112,7 +108,6 @@ export class FinesAccMinorCreditorDetailsComponent extends AbstractTabData imple
       this.refreshFragment$,
     );
 
-    // const { defendant_account_party_id, parent_guardian_party_id } = this.accountData;
     const { account_id } = this.accountStore.getAccountState();
 
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
@@ -139,40 +134,6 @@ export class FinesAccMinorCreditorDetailsComponent extends AbstractTabData imple
       distinctUntilChanged(),
       takeUntil(this.destroy$),
     );
-  }
-
-  /**
-   * Checks if the user has the specified permission in any of their roles.
-   * @param permissionKey The key of the permission to check.
-   * @returns True if the user has the permission, false otherwise.
-   */
-  public hasPermission(permissionKey: string): boolean {
-    return this.permissionsService.hasPermissionAccess(
-      FINES_PERMISSIONS[permissionKey],
-      this.userState.business_unit_users,
-    );
-  }
-
-  /**
-   * Navigates to the add account note page.
-   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
-   */
-  public navigateToAddAccountNotePage(): void {
-    if (
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['add-account-activity-notes'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(['/access-denied'], {
-        relativeTo: this.activatedRoute,
-      });
-    }
   }
 
   /**
@@ -221,16 +182,36 @@ export class FinesAccMinorCreditorDetailsComponent extends AbstractTabData imple
     });
   }
 
-  public ngOnInit(): void {
-    this.getHeaderDataFromRoute();
+  /**
+   * Navigates to the add account note page.
+   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
+   */
+  public navigateToAddAccountNotePage(): void {
+    if (
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['add-account-activity-notes'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    ) {
+      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
     this.setupTabDataStream();
   }
 
-  public ngOnDestroy(): void {
+  public override ngOnDestroy(): void {
     this.accountStore.clearSuccessMessage();
     this.accountStore.setHasVersionMismatch(false);
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.refreshFragment$.complete();
+    super.ngOnDestroy();
   }
 }
