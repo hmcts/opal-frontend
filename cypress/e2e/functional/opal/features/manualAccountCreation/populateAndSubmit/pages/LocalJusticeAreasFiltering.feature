@@ -1,4 +1,4 @@
-@ManualAccountCreation @CourtDetails
+@ManualAccountCreation @CourtDetails @PO-2761
 Feature: Manual account creation - Local justice area filtering
   Verifies that local justice area requests include the correct lja_type filters by journey.
 
@@ -51,7 +51,7 @@ Feature: Manual account creation - Local justice area filtering
   Scenario: Fixed Penalty + New requests all local justice area types (Prosecutors all remain visible)
     When I create a "New" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"
-    Then the latest local justice areas request should include lja types:
+    And the latest local justice areas request should include lja types:
       | CRWCRT |
       | LJA    |
       | SJCRT  |
@@ -63,7 +63,7 @@ Feature: Manual account creation - Local justice area filtering
   Scenario: Fixed Penalty + Transfer in requests all local justice area types (Prosecutors all remain visible)
     When I create a "Transfer in" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"
-    Then the latest local justice areas request should include lja types:
+    And the latest local justice areas request should include lja types:
       | CRWCRT |
       | LJA    |
       | SJCRT  |

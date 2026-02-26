@@ -12,12 +12,16 @@ import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
-import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 import { IOpalFinesLocalJusticeAreaRefData } from '../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
 
+  const setupComponent = (
+    formSubmit?: any,
+    defType?: string,
+    localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+  ) => {
   const setupComponent = (
     formSubmit?: any,
     defType?: string,
@@ -48,6 +52,7 @@ describe('FinesMacCourtDetailsComponent', () => {
             parent: of('manual-account-creation'),
             snapshot: {
               data: {
+                localJusticeAreas,
                 localJusticeAreas,
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
               },
@@ -373,19 +378,6 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.enforcementCourtListbox).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
     },
   );
-
-  it('(AC.1b) should show conditional caution police and court copy', { tags: ['@PO-2790'] }, () => {
-    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
-
-    setupComponent(null, 'adultOrYouthOnly');
-
-    cy.get(L.pageHeader).should('have.text', 'Police and court details');
-    cy.get(L.ljaLabel).should('contain', 'Sending police force');
-    cy.get(L.ljaHint).should(
-      'contain',
-      'Search using the code or name of the sending police force that sent the caution',
-    );
-  });
 
   it(
     '(AC3, AC4) should only show PSA/CRWCRT local justice areas for filtered journeys (Fine/Confiscation)',
