@@ -37,15 +37,15 @@ export const FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesConSe
     fcon_search_account_individuals_first_names_exact_match: {},
     fcon_search_account_individuals_include_aliases: {},
     fcon_search_account_individuals_date_of_birth: {
-      invalidDate: {
-        message: 'Enter a valid birth date',
+      invalidDateFormat: {
+        message: 'Date of birth must be in the format DD/MM/YYYY',
         priority: 1,
       },
-      dateFormatPattern: {
-        message: 'Date of birth must be in the format DD/MM/YYYY',
+      invalidDate: {
+        message: 'Enter a valid birth date',
         priority: 2,
       },
-      dateOfBirthInvalid: {
+      invalidDateOfBirth: {
         message: 'Date of birth must be in the past',
         priority: 3,
       },
