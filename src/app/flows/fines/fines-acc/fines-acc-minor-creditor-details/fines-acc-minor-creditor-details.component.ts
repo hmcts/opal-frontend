@@ -80,14 +80,6 @@ export class FinesAccMinorCreditorDetailsComponent
   public finesPermissions = FINES_PERMISSIONS;
 
   /**
-   * Fetches the minor creditor account heading data and current tab fragment from the route.
-   */
-  protected getHeaderDataFromRoute(): void {
-    this.accountData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
-    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
-  }
-
-  /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
    * This method listens to changes in either the route fragment (representing the active tab)
@@ -134,6 +126,14 @@ export class FinesAccMinorCreditorDetailsComponent
       distinctUntilChanged(),
       takeUntil(this.destroy$),
     );
+  }
+
+  /**
+   * Fetches the minor creditor account heading data and current tab fragment from the route.
+   */
+  protected getHeaderDataFromRoute(): void {
+    this.accountData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
+    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 
   /**

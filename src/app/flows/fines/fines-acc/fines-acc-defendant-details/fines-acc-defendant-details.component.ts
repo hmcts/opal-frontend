@@ -110,21 +110,6 @@ export class FinesAccDefendantDetailsComponent
   public finesPermissions = FINES_PERMISSIONS;
 
   /**
-   * Fetches the defendant account heading data and current tab fragment from the route.
-   */
-  protected getHeaderDataFromRoute(): void {
-    this.accountData = this.payloadService.transformPayload(
-      this.activatedRoute.snapshot.data['defendantAccountHeadingData'],
-      FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
-    );
-    this.accountStore.setAccountState(
-      this.payloadService.transformAccountHeaderForStore(this.accountId, this.accountData, 'defendant'),
-    );
-
-    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
-  }
-
-  /**
    *
    * Calculates if the user can amend payment terms based on account status and permissions.
    * @returns boolean indicating if the user can amend payment terms
@@ -266,6 +251,21 @@ export class FinesAccDefendantDetailsComponent
       distinctUntilChanged(),
       takeUntil(this.destroy$),
     );
+  }
+
+  /**
+   * Fetches the defendant account heading data and current tab fragment from the route.
+   */
+  protected getHeaderDataFromRoute(): void {
+    this.accountData = this.payloadService.transformPayload(
+      this.activatedRoute.snapshot.data['defendantAccountHeadingData'],
+      FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
+    );
+    this.accountStore.setAccountState(
+      this.payloadService.transformAccountHeaderForStore(this.accountId, this.accountData, 'defendant'),
+    );
+
+    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 
   /**
