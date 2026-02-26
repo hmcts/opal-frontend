@@ -1,63 +1,110 @@
 #!groovy
+import groovy.transform.Field
+
+@Field String legacyUrlDevChoice = 'DEV'
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
     pipelineTriggers([cron('H 07 * * 1-5')]),
     copyArtifactPermission('*'),
     parameters([
-    booleanParam(name: 'Component', defaultValue: true, description: 'Run component tests'),
-    booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
-    booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
-    booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
-    booleanParam(name: 'RunEdge', defaultValue: false, description: 'Run Edge tests'),
-    booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
-    choice(
-      name: 'LEGACY_URL',
-      choices: ['PRE-PROD', 'DEV'],
-      description: 'Determines the URL to use for legacy tests.'
-    ),
-  ])
+        booleanParam(name: 'Component', defaultValue: true, description: 'Run component tests'),
+        booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
+        booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
+        booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
+        booleanParam(name: 'RunEdge', defaultValue: false, description: 'Run Edge tests'),
+        booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
+        booleanParam(
+            name: 'RunUatTech',
+            defaultValue: false,
+            description: 'Run UAT-Technical stage (staging -> pre-prod legacy checks)'
+        ),
+        choice(
+            name: 'LEGACY_URL',
+            choices: ['PRE-PROD', legacyUrlDevChoice],
+            description: 'Determines the URL to use for legacy tests.'
+        ),
+    ])
 ])
 
 @Library('Infrastructure')
 
-def type = 'angular'
-def product = 'opal'
-def component = 'frontend'
+// Pipeline identity and reusable literals.
+@Field String type = 'angular'
+@Field String product = 'opal'
+@Field String component = 'frontend'
+@Field String failureResult = 'FAILURE'
+@Field String launchDarklyAdminTokenCredentialId = 'LAUNCHDARKLY_ADMIN_TOKEN'
+@Field String launchDarklyAdminTokenEnvVar = 'LD_ADMIN'
+@Field String launchDarklyAdminTokenEnvVarRef = '$LD_ADMIN'
+@Field String pipelineWeightsDir = 'cypress/parallel/weights/pipeline'
+@Field String pipelineWeightsDirWithSlash = "${pipelineWeightsDir}/"
+@Field String pipelineWeightsArtifactsFilter = '**/cypress/parallel/weights/pipeline/*'
+@Field String createPipelineWeightsDirCommand = "mkdir -p ${pipelineWeightsDir}"
+@Field String functionalProdArtifactsPath = 'functional-output/prod/**'
+@Field String functionalArtifactsGlob = 'functional-output/**'
+@Field String functionalOutputDir = 'functional-output/prod/cucumber/'
+@Field String functionalReportFile = 'functional-report.html'
+@Field String uatTechnicalFunctionalReportName = 'UAT-Technical Functional Test Report'
+@Field String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
+@Field String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
+@Field String legacyGatewayUrlPreProd = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+@Field String legacyGatewayUrlDev = 'https://opal.clouddev.online/opal'
+@Field String uatTechnicalTagExpression = '@UAT-Technical'
+@Field String skipTagExpression = 'not @skip'
+@Field int uatHealthCheckIntervalSeconds = 5
+@Field int uatHealthCheckTimeoutMinutes = 1
+@Field String vaultSecretKey = String.format('opal-%s%s', '$', '{env}')
 
-def secrets = [
-  'opal-${env}': [
-    secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
-    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
-  ],
+// Secrets loaded from Key Vault for nightly test execution.
+@Field Map<String, Object> secrets = [
+    (vaultSecretKey): [
+        secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
+        secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
+    ],
 ]
 
-static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [$class     : 'AzureKeyVaultSecret',
-    secretType : 'Secret',
-    name       : secretName,
-    version    : '',
-    envVariable: envVar
-  ]
+/**
+ * Builds an Azure Key Vault secret descriptor consumed by pipeline secret loading.
+ *
+ * @param secretName Key Vault secret name.
+ * @param envVar Environment variable populated in the build.
+ * @return Secret descriptor map for Azure Key Vault integration.
+ */
+static Map<String, Object> secret(String secretName, String envVar) {
+    return [
+        $class: 'AzureKeyVaultSecret',
+        secretType: 'Secret',
+        name: secretName,
+        version: '',
+        envVariable: envVar
+    ]
 }
 
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+@Field uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
-def performArtifactOperations() {
-  sh 'mkdir -p cypress/parallel/weights/pipeline'
+/**
+ * Restores prior pipeline weight artifacts and places them in expected local paths.
+ */
+void performArtifactOperations() {
+    sh createPipelineWeightsDirCommand
 
-  sh '''
+    sh '''
     echo "Listing all artifacts before copy artifacts:"
     ls -l1a cypress/parallel/weights/
     ls -l1a cypress/parallel/weights/pipeline/
     '''
 
-  script {
-        def projectName = 'HMCTS_Nightly/opal-frontend/master'
+    script {
+        String projectName = 'HMCTS_Nightly/opal-frontend/master'
         try {
-      copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
-        } catch (Exception e) {
-      echo "Error copying artifacts: ${e}"
+            copyArtifacts(
+                projectName: projectName,
+                selector: lastSuccessful(),
+                filter: pipelineWeightsArtifactsFilter
+            )
+        } catch (hudson.AbortException e) {
+            echo "Error copying artifacts: ${e}"
         }
 
         sh '''
@@ -65,206 +112,502 @@ def performArtifactOperations() {
         ls -l1a cypress/parallel/weights/
         ls -l1a cypress/parallel/weights/pipeline/
         '''
-  }
+    }
 
-  try {
-    sh '''
+    try {
+        sh '''
         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json \
+              cypress/parallel/weights/smoke-parallel-weights.json
             echo "Moved smoke-parallel-weights.json"
         else
             echo "smoke-parallel-weights.json not found, skipping move"
         fi
         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+            mv cypress/parallel/weights/pipeline/functional-parallel-weights.json \
+              cypress/parallel/weights/functional-parallel-weights.json
             echo "Moved functional-parallel-weights.json"
         else
             echo "functional-parallel-weights.json not found, skipping move"
         fi
         if [ -f cypress/parallel/weights/pipeline/component-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/component-parallel-weights.json cypress/parallel/weights/component-parallel-weights.json
+            mv cypress/parallel/weights/pipeline/component-parallel-weights.json \
+              cypress/parallel/weights/component-parallel-weights.json
             echo "Moved component-parallel-weights.json"
         else
             echo "component-parallel-weights.json not found, skipping move"
         fi
         '''
-    } catch (Exception e) {
-    echo "Artifacts not found or copy failed: ${e}"
-  }
+    } catch (hudson.AbortException e) {
+        echo "Artifacts not found or copy failed: ${e}"
+    }
 
-  sh '''
+    sh '''
     echo "Listing all copied artifacts:"
     ls -l1a cypress/parallel/weights/
     ls -l1a cypress/parallel/weights/pipeline/
     '''
 }
-def setupTestSpecifications() {
-  script {
-      env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
-  }
+
+/**
+ * Initializes functional test spec glob used by parallel functional execution.
+ */
+void setupTestSpecifications() {
+    script {
+        env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
+    }
 }
 
-withNightlyPipeline(type, product, component) {
-  loadVaultSecrets(secrets)
-  env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
+/**
+ * Archives an artifact path while allowing empty matches.
+ *
+ * @param artifactsPath Artifact glob to archive.
+ */
+void archivePath(String artifactsPath) {
+    archiveArtifacts(
+        artifacts: artifactsPath,
+        allowEmptyArchive: true
+    )
+}
 
-  before('akschartsinstall') {
-    onPR {
-      env.DEV_ENABLE_OPAL_FINES_SERVICE = true
-      env.DEV_OPAL_FINES_SERVICE_URL = 'https://opal-frontend.staging.platform.hmcts.net'
-      env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
-    }
-  }
-  afterSuccess('checkout') {
-    performArtifactOperations()
-    setupTestSpecifications()
-  }
+/**
+ * Publishes an HTML report with Jenkins HTML Publisher.
+ *
+ * @param reportDir Directory containing report files.
+ * @param reportFile Entry report file name.
+ * @param reportName Display name shown in Jenkins.
+ */
+void publishReport(String reportDir, String reportFile, String reportName) {
+    publishHTML target: [
+        allowMissing: true,
+        alwaysLinkToLastBuild: true,
+        keepAll: true,
+        reportDir: reportDir,
+        reportFiles: reportFile,
+        reportName: reportName
+    ]
+}
 
-  afterAlways('DependencyCheckNightly') {
+/**
+ * Logs nightly test parameter flags for traceability.
+ */
+void logNightlyParams() {
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
     echo 'Functional:' + params.Functional
     echo 'Legacy:' + params.Legacy
     echo 'RunEdge:' + params.RunEdge
     echo 'RunFirefox:' + params.RunFirefox
+    echo 'RunUatTech:' + params.RunUatTech
+    echo 'LegacyUrl:' + params.LEGACY_URL
+}
 
-    if (params.Component) {
-      stage('Component Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Component tests failed') {
-          try {
-            yarnBuilder.yarn('test:opalComponent')
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/component/**', allowEmptyArchive: true
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/component-report/',
-              reportFiles          : 'index.html',
-              reportName           : 'Component Test Report'
-            ]
-          }
-        }
-      }
-    }
-    if (params.Smoke) {
-      stage('Smoke Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Smoke tests failed') {
-          try {
-            yarnBuilder.yarn('test:smoke')
-          } finally {
-            archiveArtifacts artifacts: 'smoke-output/prod/cucumber/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'smoke-output/screenshots/smoke/**', allowEmptyArchive: true
+/**
+ * Sets staging legacy gateway URL used by chart templating.
+ */
+void configureStagingLegacyGatewayUrl() {
+    env.STG_OPAL_LEGACY_GATEWAY_URL =
+        params.LEGACY_URL == legacyUrlDevChoice ? legacyGatewayUrlDev : legacyGatewayUrlPreProd
+    echo "STG_OPAL_LEGACY_GATEWAY_URL=${env.STG_OPAL_LEGACY_GATEWAY_URL}"
+}
 
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'smoke-output/prod/cucumber/',
-              reportFiles          : 'smoke-report.html',
-              reportName           : 'Cucumber Smoke Test Report'
-            ]
-          }
-        }
-      }
-    }
-    if (params.Functional) {
-      stage('Functional Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Functional tests failed') {
-          try {
-            yarnBuilder.yarn('test:functional')
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/functional/**', allowEmptyArchive: true
-
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/prod/cucumber/',
-              reportFiles          : 'functional-report.html',
-              reportName           : 'Cucumber Functional Test Report'
-            ]
-
-            script {
-              def sourceJobName = env.JOB_NAME
-              sh' mkdir -p cypress/parallel/weights/pipeline'
-              sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
-              sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
-
-              sh"echo 'Archiving weight files in ${sourceJobName}'"
-              archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
-              archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
-              archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
-              archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
+/**
+ * Executes component tests and publishes artifacts/reports.
+ */
+void runComponentTests() {
+    stage('Component Tests') {
+        catchError(
+            buildResult: failureResult,
+            stageResult: failureResult,
+            message: 'Component tests failed'
+        ) {
+            try {
+                yarnBuilder.yarn('test:opalComponent')
+            } finally {
+                archivePath(functionalProdArtifactsPath)
+                archivePath('functional-output/screenshots/component/**')
+                publishReport(
+                    'functional-output/component-report/',
+                    'index.html',
+                    'Component Test Report'
+                )
             }
-          }
         }
-      }
     }
-    if (params.Legacy) {
-      stage('Legacy Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Legacy tests failed') {
-          try {
-            yarnBuilder.yarn('yarn test:functionalLegacy ; yarn test:functionalLegacy:combine:reports ; yarn test:functionalLegacy:cucumber:combineParallelReport')
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/legacy/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/legacy/**', allowEmptyArchive: true
+}
 
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/prod/legacy/',
-              reportFiles          : 'legacy-report.html',
-              reportName           : 'Legacy Functional Test Report'
-            ]
-          }
+/**
+ * Executes smoke tests and publishes artifacts/reports.
+ */
+void runSmokeTests() {
+    stage('Smoke Tests') {
+        catchError(
+            buildResult: failureResult,
+            stageResult: failureResult,
+            message: 'Smoke tests failed'
+        ) {
+            try {
+                yarnBuilder.yarn('test:smoke')
+            } finally {
+                archivePath('smoke-output/prod/cucumber/**')
+                archivePath('smoke-output/screenshots/smoke/**')
+                publishReport(
+                    'smoke-output/prod/cucumber/',
+                    'smoke-report.html',
+                    'Cucumber Smoke Test Report'
+                )
+            }
         }
-      }
     }
-    if (params.RunEdge) {
-      stage('Edge Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Edge tests failed') {
-          try {
-            yarnBuilder.yarn('test:Edge')
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/edge/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/edge/**', allowEmptyArchive: true
+}
 
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/prod/edge/cucumber/',
-              reportFiles          : 'edge-report.html',
-              reportName           : 'Edge Functional Test Report'
-            ]
-          }
-        }
-      }
+/**
+ * Persists generated functional/smoke weight files for reuse by future runs.
+ */
+void archiveFunctionalWeightFiles() {
+    script {
+        String sourceJobName = env.JOB_NAME
+        sh createPipelineWeightsDirCommand
+        sh(
+            'cp -r cypress/parallel/weights/smoke-parallel-weights.json ' +
+            pipelineWeightsDirWithSlash
+        )
+        sh(
+            'cp -r cypress/parallel/weights/functional-parallel-weights.json ' +
+            pipelineWeightsDirWithSlash
+        )
+        sh "echo 'Archiving weight files in ${sourceJobName}'"
+        archivePath('cypress/parallel/weights/pipeline/smoke-parallel-weights.json')
+        archivePath('cypress/parallel/weights/pipeline/functional-parallel-weights.json')
+        archivePath('cypress/reports/smokeXmlReport.html')
+        archivePath('cypress/reports/functionalXmlReport.html')
     }
-    if (params.RunFirefox) {
-      stage('Firefox Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Firefox tests failed') {
-          try {
-            yarnBuilder.yarn('test:Firefox')
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/firefox/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/firefox/**', allowEmptyArchive: true
+}
 
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/prod/firefox/',
-              reportFiles          : 'opal-mode-test-output-[hash].xml',
-              reportName           : 'Firefox Functional Test Report'
-            ]
-          }
+/**
+ * Executes functional tests and publishes artifacts/reports.
+ */
+void runFunctionalTests() {
+    stage('Functional Tests') {
+        catchError(
+            buildResult: failureResult,
+            stageResult: failureResult,
+            message: 'Functional tests failed'
+        ) {
+            try {
+                yarnBuilder.yarn('test:functional')
+            } finally {
+                archivePath(functionalProdArtifactsPath)
+                archivePath('functional-output/screenshots/functional/**')
+                publishReport(
+                    functionalOutputDir,
+                    functionalReportFile,
+                    'Cucumber Functional Test Report'
+                )
+                archiveFunctionalWeightFiles()
+            }
         }
-      }
     }
-  }
+}
+
+/**
+ * Sets environment variables required for UAT-Technical execution.
+ */
+void setupUatTechnicalEnvironment() {
+    env.with {
+        TEST_CMD = 'yarn test:functionalOpalParallel'
+        HEALTH_ENDPOINT =
+            'https://opal-frontend.staging.platform.hmcts.net/opal?actionType=getGmasTest'
+        LD_PROJECT = 'launch-darkly-sdk-key' // << The LaunchDarkly project key >>
+        LD_ENV = 'Test' // << The LaunchDarkly environment key >>
+        LD_FLAG = 'app-mode' // << The flag key >>
+    }
+    configureUatTechnicalTags()
+}
+
+/**
+ * Sets UAT-Technical tag filters and excludes skipped scenarios.
+ */
+void configureUatTechnicalTags() {
+    env.TAGS = "(${uatTechnicalTagExpression}) and ${skipTagExpression}"
+    env.CYPRESS_TAGS = env.TAGS
+    echo "Running UAT-Technical scenarios with TAGS=${env.TAGS}"
+}
+
+/**
+ * Patches LaunchDarkly flag on/off state for the configured environment.
+ *
+ * @param enabled Whether the flag should be enabled.
+ * @param actionMessage Log message describing the patch action.
+ */
+void patchLaunchDarklyFlagState(boolean enabled, String actionMessage) {
+    String patchPayload =
+        "{\"patch\":[{\"op\":\"replace\",\"path\":\"/environments/${env.LD_ENV}/on\",\"value\":${enabled}}]}"
+    withCredentials([
+        string(
+            credentialsId: launchDarklyAdminTokenCredentialId,
+            variable: launchDarklyAdminTokenEnvVar
+        )
+    ]) {
+        sh """
+      echo '${actionMessage}'
+      LD_URL="https://app.launchdarkly.com/api/v2/flags/${env.LD_PROJECT}/${env.LD_FLAG}"
+      curl -s -X PATCH \\
+        -H "Authorization: Bearer ${launchDarklyAdminTokenEnvVarRef}" \\
+        -H "Content-Type: application/json" \\
+        -d '${patchPayload}' \\
+        "\$LD_URL" || true
+    """
+    }
+}
+
+/**
+ * Applies the LaunchDarkly patch payload that enables legacy mode for staging.
+ */
+void setLaunchDarklyFlagToLegacy() {
+    patchLaunchDarklyFlagState(
+        true,
+        'Setting LaunchDarkly flag to legacy for staging...'
+    )
+}
+
+/**
+ * Performs a single health endpoint probe and returns the HTTP status code.
+ *
+ * @return HTTP status code string (for example, 200 or 503).
+ */
+String getHealthCheckStatus() {
+    return sh(
+        script: "curl -s -o /dev/null -w '%{http_code}' '${env.HEALTH_ENDPOINT}' || echo '000'",
+        returnStdout: true
+    ).trim()
+}
+
+/**
+ * Polls the health endpoint until success or timeout.
+ */
+void waitForUatHealthCheck() {
+    timeout(time: uatHealthCheckTimeoutMinutes, unit: 'MINUTES') {
+        script {
+            boolean healthy = false
+            int maxAttempts = Math.max(
+                1,
+                (int) Math.ceil(
+                    (uatHealthCheckTimeoutMinutes * 60.0d) / uatHealthCheckIntervalSeconds
+                )
+            )
+            for (int i = 0; i < maxAttempts; i++) {
+                String statusCode = healthCheckStatus
+                if (statusCode.startsWith('2')) {
+                    echo "Health check OK (HTTP ${statusCode})"
+                    healthy = true
+                    break
+                }
+                int attemptNumber = i + 1
+                echo "Health check returned ${statusCode}, waiting " +
+                    "${uatHealthCheckIntervalSeconds}s (attempt ${attemptNumber}/${maxAttempts})..."
+                sleep uatHealthCheckIntervalSeconds
+            }
+            if (!healthy) {
+                error 'Health check did not succeed in time'
+            }
+        }
+    }
+}
+
+/**
+ * Runs UAT-Technical tagged tests in legacy mode.
+ */
+void runUatTechnicalTaggedTests() {
+    sh """
+    echo 'Running UAT-Technical tests (legacy mode)...'
+    export TAGS='${env.TAGS}'
+    export CYPRESS_TAGS='${env.CYPRESS_TAGS}'
+    export TEST_MODE='LEGACY'
+    ${env.TEST_CMD} || true
+  """
+}
+
+/**
+ * Archives UAT-Technical artifacts and JUnit XML results.
+ */
+void archiveUatTechnicalArtifacts() {
+    publishReport(
+        functionalOutputDir,
+        functionalReportFile,
+        uatTechnicalFunctionalReportName
+    )
+    archivePath(functionalArtifactsGlob)
+    archivePath(accountArtifactPath)
+    archivePath(accountEvidenceArtifacts)
+    archivePath('functional-output/prod/uat-technical/**')
+    archivePath('functional-output/screenshots/uat-technical/**')
+    archivePath('cypress/reports/uat-technicalXmlReport.html')
+    junit 'functional-output/prod/uat-technical/**/*.xml'
+}
+
+/**
+ * Restores LaunchDarkly flag state to non-legacy.
+ */
+void restoreLaunchDarklyFlag() {
+    patchLaunchDarklyFlagState(
+        false,
+        'Restoring LaunchDarkly flag to non-legacy for staging...'
+    )
+}
+
+/**
+ * Orchestrates full UAT-Technical flow: setup, toggle, verify, test, restore.
+ */
+void runUatTechnicalTests() {
+    stage('UAT-Technical') {
+        catchError(
+            buildResult: failureResult,
+            stageResult: failureResult,
+            message: 'UAT-Technical failed'
+        ) {
+            try {
+                setupUatTechnicalEnvironment()
+                setLaunchDarklyFlagToLegacy()
+                waitForUatHealthCheck()
+                sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
+                runUatTechnicalTaggedTests()
+                archiveUatTechnicalArtifacts()
+            } finally {
+                restoreLaunchDarklyFlag()
+            }
+        }
+    }
+}
+
+/**
+ * Executes legacy functional tests and publishes artifacts/reports.
+ */
+void runLegacyTests() {
+    String legacyCommand =
+        'yarn test:functionalLegacy ; ' +
+        'yarn test:functionalLegacy:combine:reports ; ' +
+        'yarn test:functionalLegacy:cucumber:combineParallelReport'
+
+    stage('Legacy Tests') {
+        catchError(
+            buildResult: failureResult,
+            stageResult: failureResult,
+            message: 'Legacy tests failed'
+        ) {
+            try {
+                yarnBuilder.yarn(legacyCommand)
+            } finally {
+                archivePath('functional-output/prod/legacy/**')
+                archivePath('functional-output/screenshots/legacy/**')
+                publishReport(
+                    'functional-output/prod/legacy/',
+                    'legacy-report.html',
+                    'Legacy Functional Test Report'
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Executes edge-browser functional tests and publishes artifacts/reports.
+ */
+void runEdgeTests() {
+    stage('Edge Tests') {
+        catchError(
+            buildResult: failureResult,
+            stageResult: failureResult,
+            message: 'Edge tests failed'
+        ) {
+            try {
+                yarnBuilder.yarn('test:Edge')
+            } finally {
+                archivePath('functional-output/prod/edge/**')
+                archivePath('functional-output/screenshots/edge/**')
+                publishReport(
+                    'functional-output/prod/edge/cucumber/',
+                    'edge-report.html',
+                    'Edge Functional Test Report'
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Executes firefox-browser functional tests and publishes artifacts/reports.
+ */
+void runFirefoxTests() {
+    stage('Firefox Tests') {
+        catchError(
+            buildResult: failureResult,
+            stageResult: failureResult,
+            message: 'Firefox tests failed'
+        ) {
+            try {
+                yarnBuilder.yarn('test:Firefox')
+            } finally {
+                archivePath('functional-output/prod/firefox/**')
+                archivePath('functional-output/screenshots/firefox/**')
+                publishReport(
+                    'functional-output/prod/firefox/',
+                    'opal-mode-test-output-[hash].xml',
+                    'Firefox Functional Test Report'
+                )
+            }
+        }
+    }
+}
+
+// Main nightly pipeline orchestration hooks.
+withNightlyPipeline(type, product, component) {
+    loadVaultSecrets(secrets)
+    env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
+    configureStagingLegacyGatewayUrl()
+
+    before('akschartsinstall') {
+        onPR {
+            env.DEV_ENABLE_OPAL_FINES_SERVICE = true
+            env.DEV_OPAL_FINES_SERVICE_URL = 'https://opal-frontend.staging.platform.hmcts.net'
+            env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
+        }
+    }
+
+    afterSuccess('checkout') {
+        performArtifactOperations()
+        setupTestSpecifications()
+    }
+
+    afterAlways('DependencyCheckNightly') {
+        logNightlyParams()
+
+        if (params.Component) {
+            runComponentTests()
+        }
+
+        if (params.Smoke) {
+            runSmokeTests()
+        }
+
+        if (params.Functional) {
+            runFunctionalTests()
+        }
+
+        if (params.RunUatTech) {
+            runUatTechnicalTests()
+        }
+
+        if (params.Legacy) {
+            runLegacyTests()
+        }
+
+        if (params.RunEdge) {
+            runEdgeTests()
+        }
+
+        if (params.RunFirefox) {
+            runFirefoxTests()
+        }
+    }
 }
