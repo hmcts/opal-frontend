@@ -1,4 +1,4 @@
-@ManualAccountCreation @CourtDetails @PO-2761
+@ManualAccountCreation @CourtDetails
 Feature: Manual account creation - Local justice area filtering
   Verifies that local justice area requests include the correct lja_type filters by journey.
 

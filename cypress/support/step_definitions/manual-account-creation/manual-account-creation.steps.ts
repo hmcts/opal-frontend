@@ -1455,3 +1455,35 @@ Then('the latest local justice areas request should not include lja types:', (ta
     });
   });
 });
+
+/**
+ * @step Starts intercepting draft account create requests.
+ * @description Captures POST draft-accounts calls so payload can be asserted later.
+ */
+When('I monitor draft account create requests', () => {
+  log('intercept', 'Monitoring draft account create requests');
+  cy.intercept({ method: 'POST', url: '**/opal-fines-service/draft-accounts*' }).as('postDraftAccount');
+});
+
+/**
+ * @step Asserts originator_type on the latest draft account create request.
+ * @description Validates payload.account.originator_type matches the expected journey selection.
+ * @param expectedOriginatorType - Expected originator type (e.g. NEW, TFO).
+ */
+Then(
+  'the latest draft account create request should include originator type {string}',
+  (expectedOriginatorType: string) => {
+    cy.get('@postDraftAccount.all').then((requests: unknown) => {
+      const interceptedRequests: Interception[] = Array.isArray(requests) ? (requests as Interception[]) : [];
+      expect(interceptedRequests, 'captured draft account create requests').to.have.length.greaterThan(0);
+
+      const latestRequest = interceptedRequests[interceptedRequests.length - 1];
+      const requestBody = latestRequest.request.body as {
+        account?: { originator_type?: string };
+      };
+
+      expect(requestBody.account, 'draft account payload.account').to.exist;
+      expect(requestBody.account?.originator_type).to.equal(expectedOriginatorType);
+    });
+  },
+);
