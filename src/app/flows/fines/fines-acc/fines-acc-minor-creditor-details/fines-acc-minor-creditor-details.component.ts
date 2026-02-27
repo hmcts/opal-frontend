@@ -1,14 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { tap, map, takeUntil } from 'rxjs/operators';
+import { EMPTY, merge, Observable } from 'rxjs';
+import { tap, map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 // Services
-import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 // Stores
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 // Components
-import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
@@ -38,6 +35,12 @@ import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/inte
 import { IFinesAccSummaryTabsContentStyles } from '../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
+import { FinesAccMinorCreditorDetailsAtAGlanceTabComponent } from './fines-acc-minor-creditor-details-at-a-glance-tab/fines-acc-minor-creditor-details-at-a-glance-tab.component';
+import { AsyncPipe } from '@angular/common';
+import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { FINES_ACC_MINOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-minor-creditor-account-tabs-cache-map.constant';
+import { IFinesAccMinorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-minor-creditor-account-tabs-cache-map.interface';
+import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -54,67 +57,83 @@ import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fine
     CustomAccountInformationItemValueComponent,
     MonetaryPipe,
     FinesAccSummaryHeaderComponent,
+    FinesAccMinorCreditorDetailsAtAGlanceTabComponent,
+    AsyncPipe,
   ],
   templateUrl: './fines-acc-minor-creditor-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccMinorCreditorDetailsComponent extends AbstractTabData implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-  private readonly refreshFragment$ = new Subject<string>();
-  private readonly permissionsService = inject(PermissionsService);
-  private readonly globalStore = inject(GlobalStore);
-  private readonly userState = this.globalStore.userState();
+export class FinesAccMinorCreditorDetailsComponent
+  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountMinorCreditorDetailsHeader>
+  implements OnInit, OnDestroy
+{
   private readonly opalFinesService = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
 
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountMinorCreditorDetailsTabs = FINES_ACC_MINOR_CREDITOR_DETAILS_TABS;
-  public accountData!: IOpalFinesAccountMinorCreditorDetailsHeader;
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
+  public tabAtAGlance$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
+  public finesPermissions = FINES_PERMISSIONS;
 
   /**
-   * Fetches the minor creditor account heading data and current tab fragment from the route.
+   * Initializes and sets up the observable data stream for the fines draft tab component.
+   *
+   * This method listens to changes in either the route fragment (representing the active tab)
+   * or the refreshFragment (triggered when a user refreshes the current tab),
+   * and updates the tab data stream accordingly. It uses the provided initial tab,
+   * and constructs the necessary parameters for fetching and populating the tab's table data.
+   *
    */
-  private getHeaderDataFromRoute(): void {
-    this.accountData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
-    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
+  private setupTabDataStream(): void {
+    const fragment$ = merge(
+      this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
+        this.opalFinesService.clearCache(
+          FINES_ACC_MINOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP[
+            this.activeTab as keyof IFinesAccMinorCreditorAccountTabsCacheMap
+          ],
+        ),
+      ),
+      this.refreshFragment$,
+    );
+
+    const { account_id } = this.accountStore.getAccountState();
+
+    fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
+      switch (tab) {
+        case 'at-a-glance':
+          this.tabAtAGlance$ = this.fetchTabData(this.opalFinesService.getMinorCreditorAccountAtAGlance(account_id));
+          break;
+      }
+    });
   }
 
   /**
-   * Checks if the user has the specified permission in any of their roles.
-   * @param permissionKey The key of the permission to check.
-   * @returns True if the user has the permission, false otherwise.
+   * Fetches the data for a specific tab by calling the provided service function.
+   * Compares the version of the fetched data with the current version in the store.
+   * @param serviceCall the service function that retrieves the tab data
+   * @returns an observable of the tab data
    */
-  public hasPermission(permissionKey: string): boolean {
-    return this.permissionsService.hasPermissionAccess(
-      FINES_PERMISSIONS[permissionKey],
-      this.userState.business_unit_users,
+  private fetchTabData<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
+    return serviceCall.pipe(
+      map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
+      tap((data) => {
+        this.accountStore.compareVersion(data.version);
+      }),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$),
     );
   }
 
   /**
-   * Navigates to the add account note page.
-   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
+   * Fetches the minor creditor account heading data and current tab fragment from the route.
    */
-  public navigateToAddAccountNotePage(): void {
-    if (
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['add-account-activity-notes'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
-      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`], {
-        relativeTo: this.activatedRoute,
-      });
-    } else {
-      this['router'].navigate(['/access-denied'], {
-        relativeTo: this.activatedRoute,
-      });
-    }
+  protected getHeaderDataFromRoute(): void {
+    this.accountData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
+    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 
   /**
@@ -151,15 +170,48 @@ export class FinesAccMinorCreditorDetailsComponent extends AbstractTabData imple
       });
   }
 
-  public ngOnInit(): void {
-    this.getHeaderDataFromRoute();
+  public navigateToAddPaymentHoldPage(): void {
+    this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
-  public ngOnDestroy(): void {
+  public navigateToRemovePaymentHoldPage(): void {
+    this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  /**
+   * Navigates to the add account note page.
+   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
+   */
+  public navigateToAddAccountNotePage(): void {
+    if (
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['add-account-activity-notes'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    ) {
+      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+    this.setupTabDataStream();
+  }
+
+  public override ngOnDestroy(): void {
     this.accountStore.clearSuccessMessage();
     this.accountStore.setHasVersionMismatch(false);
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.refreshFragment$.complete();
+    super.ngOnDestroy();
   }
 }
