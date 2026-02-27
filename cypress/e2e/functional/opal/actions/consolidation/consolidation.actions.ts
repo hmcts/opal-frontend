@@ -5,6 +5,7 @@
 
 import { SelectBusinessUnitLocators } from '../../../../../shared/selectors/consolidation/SelectBusinessUnit.locators';
 import { AccountSearchLocators } from '../../../../../shared/selectors/consolidation/AccountSearch.locators';
+import { CompanySearchLocators } from 'cypress/shared/selectors/consolidation/CompanySearch.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('ConsolidationActions');
@@ -28,6 +29,17 @@ export class ConsolidationActions {
     'last name exact match': AccountSearchLocators.lastNameExactMatchCheckbox,
     'first names exact match': AccountSearchLocators.firstNamesExactMatchCheckbox,
     'include aliases': AccountSearchLocators.includeAliasesCheckbox,
+  };
+
+  private readonly companyTextFieldSelectorMap: Record<string, string> = {
+    'company name': CompanySearchLocators.companyNameInput,
+    'address line 1': CompanySearchLocators.addressLine1Input,
+    postcode: CompanySearchLocators.postCodeInput,
+  };
+
+  private readonly companyCheckboxSelectorMap: Record<string, string> = {
+    'search exact match': CompanySearchLocators.companyNameExactMatchCheckbox,
+    'include aliases': CompanySearchLocators.includeAliasesCheckbox,
   };
 
   /**
@@ -85,6 +97,12 @@ export class ConsolidationActions {
     cy.get(SelectBusinessUnitLocators.continueButton, { timeout: 10_000 }).should('be.visible').click();
   }
 
+  /** Clicks Search on the consolidation Search tab. */
+  public clickSearch(): void {
+    log('click', 'Clicking Search on consolidation account search page');
+    cy.get(AccountSearchLocators.searchButton, { timeout: 10_000 }).should('be.visible').click();
+  }
+
   /** Asserts the user is on Consolidation account search for Individuals, Search tab active. */
   public assertOnSearchTabForIndividuals(): void {
     log('assert', 'Verifying user is on consolidation Search tab for Individuals');
@@ -95,24 +113,38 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
   }
 
+  /** Asserts the user is on Consolidation account search for Companies, Search tab active. */
+  public assertOnSearchTabForCompanies(): void {
+    log('assert', 'Verifying user is on consolidation Search tab for Companies');
+
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/consolidate-accounts');
+    cy.get(CompanySearchLocators.searchTabLink, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
+    cy.get(CompanySearchLocators.defendantTypeValue).should('contain', 'Company');
+    cy.get(CompanySearchLocators.accountNumberInput).should('be.visible');
+    cy.get(CompanySearchLocators.companyNameInput).should('be.visible');
+  }
+
   /**
    * Populates fields on the consolidation Search tab from key/value details.
    * @param details - Search details keyed by user-facing field labels.
    */
   public enterSearchDetails(details: SearchDetails): void {
     log('input', 'Entering consolidation search details', { details });
+    const isCompanyDetails = Object.keys(details).some((k) => k.trim().toLowerCase() === 'company name');
+    const activeTextMap = isCompanyDetails ? this.companyTextFieldSelectorMap : this.textFieldSelectorMap;
+    const activeCheckboxMap = isCompanyDetails ? this.companyCheckboxSelectorMap : this.checkboxSelectorMap;
 
     Object.entries(details).forEach(([rawKey, value]) => {
       const key = rawKey.trim().toLowerCase();
 
-      if (this.textFieldSelectorMap[key]) {
-        const selector = this.textFieldSelectorMap[key];
+      if (activeTextMap[key]) {
+        const selector = activeTextMap[key];
         cy.get(selector).clear().type(value);
         return;
       }
 
-      if (this.checkboxSelectorMap[key]) {
-        const selector = this.checkboxSelectorMap[key];
+      if (activeCheckboxMap[key]) {
+        const selector = activeCheckboxMap[key];
         const shouldCheck = this.parseCheckboxValue(value);
         if (shouldCheck) {
           cy.get(selector).check({ force: true });
@@ -141,24 +173,42 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
   }
 
+  /** Switches Search -> Results -> For consolidation -> Search. */
+  public switchTabsAndReturnToSearchCompany(): void {
+    log('navigate', 'Switching from Search to Results');
+    cy.get(CompanySearchLocators.resultsTab).click();
+    cy.get(CompanySearchLocators.accountNumberInput).should('not.exist');
+
+    log('navigate', 'Switching from Results to For consolidation');
+    cy.get(CompanySearchLocators.forConsolidationTab).click();
+    cy.get(CompanySearchLocators.accountNumberInput).should('not.exist');
+
+    log('navigate', 'Returning to Search tab');
+    cy.get(CompanySearchLocators.searchTab).click();
+    cy.get(CompanySearchLocators.accountNumberInput).should('be.visible');
+  }
+
   /**
    * Asserts Search tab fields/checkboxes match expected values.
    * @param details - Expected values keyed by user-facing field labels.
    */
   public assertSearchDetails(details: SearchDetails): void {
     log('assert', 'Asserting consolidation search details', { details });
+    const isCompanyDetails = Object.keys(details).some((k) => k.trim().toLowerCase() === 'company name');
+    const activeTextMap = isCompanyDetails ? this.companyTextFieldSelectorMap : this.textFieldSelectorMap;
+    const activeCheckboxMap = isCompanyDetails ? this.companyCheckboxSelectorMap : this.checkboxSelectorMap;
 
     Object.entries(details).forEach(([rawKey, value]) => {
       const key = rawKey.trim().toLowerCase();
 
-      if (this.textFieldSelectorMap[key]) {
-        const selector = this.textFieldSelectorMap[key];
+      if (activeTextMap[key]) {
+        const selector = activeTextMap[key];
         cy.get(selector).should('have.value', value);
         return;
       }
 
-      if (this.checkboxSelectorMap[key]) {
-        const selector = this.checkboxSelectorMap[key];
+      if (activeCheckboxMap[key]) {
+        const selector = activeCheckboxMap[key];
         const shouldCheck = this.parseCheckboxValue(value);
         if (shouldCheck) {
           cy.get(selector).should('be.checked');
