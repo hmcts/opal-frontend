@@ -172,13 +172,54 @@ export class ManualAccountCreationFlow {
     this.originatorType.selectOriginatorType(originatorType);
     this.originatorType.continueToCreateAccount();
 
-    this.ensureOnCreateAccountPage();
+    this.ensureOnCreateAccountPage(originatorType === 'Transfer in' ? 'Transfer in' : 'Create account');
     if (!this.isDefaultBusinessUnit(businessUnit)) {
       this.createAccount.selectBusinessUnit(businessUnit);
     }
     this.createAccount.selectAccountType('Fine');
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Starts a manual account journey for the provided originator and account type.
+   * For Fixed Penalty accounts this lands on the fixed-penalty-details page; for other account types it lands on account-details.
+   * @param businessUnit - Business unit to select.
+   * @param accountType - Account type to create.
+   * @param originatorType - New or Transfer in journey selection.
+   * @param defendantType - Optional defendant type (required for Fine/Fixed Penalty only).
+   */
+  startManualAccount(
+    businessUnit: string,
+    accountType: AccountType,
+    originatorType: OriginatorType,
+    defendantType?: DefendantType,
+  ): void {
+    log('flow', 'Start manual account', { businessUnit, accountType, originatorType, defendantType });
+    this.ensureOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType(originatorType);
+    this.originatorType.continueToCreateAccount();
+
+    this.ensureOnCreateAccountPage(originatorType === 'Transfer in' ? 'Transfer in' : 'Create account');
+    if (!this.isDefaultBusinessUnit(businessUnit)) {
+      this.createAccount.selectBusinessUnit(businessUnit);
+    }
+    this.createAccount.selectAccountType(accountType);
+
+    const requiresDefendantType = accountType === 'Fine' || accountType === 'Fixed Penalty';
+    if (requiresDefendantType && defendantType) {
+      this.createAccount.selectDefendantType(defendantType);
+    }
+
+    this.createAccount.continueToAccountDetails();
+
+    if (accountType === 'Fixed Penalty') {
+      cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/fixed-penalty-details');
+      return;
+    }
+
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
@@ -2757,21 +2798,40 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * Ensures the create or transfer in page is loaded by navigating from the dashboard.
-   * Ensures the originator type page is loaded for Manual Account Creation.
+   * Ensures the create or transfer in page is loaded.
+   * If currently on Create account, navigates back; otherwise navigates from dashboard.
    */
   private ensureOnCreateOrTransferInPage(): void {
-    this.dashboard.goToManualAccountCreation();
-    this.originatorType.assertOnCreateOrTransferInPage();
+    const originatorHeader = 'Do you want to create a new account or transfer in?';
+    const createAccountHeader = 'Create account';
+
+    cy.get('body').then(($body) => {
+      const headerText = $body.find('h1.govuk-heading-l').first().text().trim();
+
+      if (headerText.includes(originatorHeader)) {
+        this.originatorType.assertOnCreateOrTransferInPage();
+        return;
+      }
+
+      if (headerText.includes(createAccountHeader)) {
+        this.createAccount.selectBackLink();
+        this.originatorType.assertOnCreateOrTransferInPage();
+        return;
+      }
+
+      this.dashboard.goToManualAccountCreation();
+      this.originatorType.assertOnCreateOrTransferInPage();
+    });
   }
 
   /**
    * Ensures the Manual Account Creation start page is loaded from the dashboard.
    * Clicks the dashboard entry for Manual Account Creation, asserts the create account
    * header is visible, and should be called before selecting business unit/account/defendant type.
+   * @param expectedHeader - Expected page header text (Create account or Transfer in).
    */
-  private ensureOnCreateAccountPage(): void {
-    this.createAccount.assertOnCreateAccountPage();
+  private ensureOnCreateAccountPage(expectedHeader: string = 'Create account'): void {
+    this.createAccount.assertOnCreateAccountPage(expectedHeader);
   }
 
   /**
