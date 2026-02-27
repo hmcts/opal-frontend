@@ -1293,6 +1293,57 @@ When('I choose {string} and continue to create account page', (selectedType: 'Ne
 });
 
 /**
+ * @step Creates a manual account by selecting journey, business unit, account type and defendant type.
+ * @description Selects the required values and continues from Originator type to the next page in the journey.
+ * @param selectedType - Originator journey option ("New" or "Transfer in").
+ * @param accountType - Manual account type to create.
+ * @param businessUnit - Business unit used for account creation.
+ * @param defendantType - Defendant type to select where required.
+ */
+When(
+  'I create a {string} manual {string} account for business unit {string} with defendant type {string}',
+  (
+    selectedType: 'New' | 'Transfer in',
+    accountType: AccountType,
+    businessUnit: string,
+    defendantType: DefendantType,
+  ) => {
+    log('flow', 'Creating manual account with defendant type', {
+      selectedType,
+      accountType,
+      businessUnit,
+      defendantType,
+    });
+    flow().startManualAccount(businessUnit, accountType, selectedType, defendantType);
+  },
+);
+
+/**
+ * @step Creates a manual account by selecting journey, business unit and account type.
+ * @description For account types without defendant radios, continues from Originator type to Account details.
+ * @param selectedType - Originator journey option ("New" or "Transfer in").
+ * @param accountType - Manual account type to create.
+ * @param businessUnit - Business unit used for account creation.
+ */
+When(
+  'I create a {string} manual {string} account for business unit {string}',
+  (selectedType: 'New' | 'Transfer in', accountType: AccountType, businessUnit: string) => {
+    log('flow', 'Creating manual account without defendant type', { selectedType, accountType, businessUnit });
+    flow().startManualAccount(businessUnit, accountType, selectedType);
+  },
+);
+
+/**
+ * @step Opens a task from account details using declarative wording.
+ * @description Wrapper around task navigation flow helper.
+ * @param taskName - Account details task to open.
+ */
+When('I access the {string} task', (taskName: MacAccountTaskName) => {
+  log('navigate', 'Accessing task from account details', { taskName });
+  flow().openTaskFromAccountDetails(taskName);
+});
+
+/**
  * @step Selecting back link on create account page
  * @description Clicks the back link on the Create account page and asserts we return to the Originator type selection page.
  */
@@ -1394,3 +1445,35 @@ Then('the latest local justice areas request should not include lja types:', (ta
     });
   });
 });
+
+/**
+ * @step Starts intercepting draft account create requests.
+ * @description Captures POST draft-accounts calls so payload can be asserted later.
+ */
+When('I monitor draft account create requests', () => {
+  log('intercept', 'Monitoring draft account create requests');
+  cy.intercept({ method: 'POST', url: '**/opal-fines-service/draft-accounts*' }).as('postDraftAccount');
+});
+
+/**
+ * @step Asserts originator_type on the latest draft account create request.
+ * @description Validates payload.account.originator_type matches the expected journey selection.
+ * @param expectedOriginatorType - Expected originator type (e.g. NEW, TFO).
+ */
+Then(
+  'the latest draft account create request should include originator type {string}',
+  (expectedOriginatorType: string) => {
+    cy.get('@postDraftAccount.all').then((requests: unknown) => {
+      const interceptedRequests: Interception[] = Array.isArray(requests) ? (requests as Interception[]) : [];
+      expect(interceptedRequests, 'captured draft account create requests').to.have.length.greaterThan(0);
+
+      const latestRequest = interceptedRequests[interceptedRequests.length - 1];
+      const requestBody = latestRequest.request.body as {
+        account?: { originator_type?: string };
+      };
+
+      expect(requestBody.account, 'draft account payload.account').to.exist;
+      expect(requestBody.account?.originator_type).to.equal(expectedOriginatorType);
+    });
+  },
+);

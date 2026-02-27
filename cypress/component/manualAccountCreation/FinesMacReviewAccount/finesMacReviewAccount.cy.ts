@@ -1526,4 +1526,40 @@ describe('FinesMacReviewAccountComponent', () => {
         });
     },
   );
+
+  it('should send originator_type as NEW in draft account payload for new journey', { tags: ['@PO-2793'] }, () => {
+    finesMacState.originatorType = {
+      nestedFlow: false,
+      formData: { fm_originator_type_originator_type: 'NEW' },
+    };
+
+    setupComponent(finesDraftState, null, false, false);
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account).to.have.property('originator_type', 'NEW');
+      });
+  });
+
+  it(
+    'should send originator_type as TFO in draft account payload for transfer in journey',
+    { tags: ['@PO-2793'] },
+    () => {
+      finesMacState.originatorType = {
+        nestedFlow: false,
+        formData: { fm_originator_type_originator_type: 'TFO' },
+      };
+
+      setupComponent(finesDraftState, null, false, false);
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+      cy.wait('@postDraftAccount')
+        .its('request.body')
+        .then((body) => {
+          expect(body.account).to.have.property('originator_type', 'TFO');
+        });
+    },
+  );
 });
