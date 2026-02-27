@@ -39,5 +39,11 @@
     "strictTemplates": true
   },
   "include": ["src", "node_modules/cypress", "src/app/interfaces/**/*.ts"],
-  "exclude": ["node_modules/cypress", "**/helpers/*.ts", "src/test-setup.ts"]
+  "exclude": [
+    "node_modules/cypress",
+    "**/helpers/*.ts",
+    "src/test-setup.ts",
+    "**/interfaces/generated/**",
+    "**/types/generated/**"
+  ]
 }
