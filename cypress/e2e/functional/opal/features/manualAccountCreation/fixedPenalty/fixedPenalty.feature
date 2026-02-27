@@ -3,7 +3,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
   Rule: Adult or youth fixed penalty review
     Background:
       Given I am logged in with email "opal-test@hmcts.net"
-      When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field                  | Value                                 |
         | Court details    | Issuing Authority      | West London Magistrates' Court (2578) |
@@ -84,14 +84,14 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     @PO-857
     Scenario: Cancel without entering details returns to start
       Given I am logged in with email "opal-test@hmcts.net"
-      When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I cancel fixed penalty details choosing "Ok"
       Then I should see the header containing text "Create account"
 
     @PO-857
     Scenario: Cancel after entering details returns to start
       Given I am logged in with email "opal-test@hmcts.net"
-      When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field       | Value |
         | Personal details | Title       | Mr    |
@@ -102,7 +102,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     @PO-857
     Scenario: Cancel after entering details keeps data on page
       Given I am logged in with email "opal-test@hmcts.net"
-      When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field       | Value |
         | Personal details | Title       | Mr    |
@@ -116,7 +116,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     @PO-857
     Scenario: Validation error persists after dismissing cancel warning
       Given I am logged in with email "opal-test@hmcts.net"
-      When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field                  | Value                        |
         | Court details    | Issuing Authority      | Lowestoft County Court (256) |
@@ -145,7 +145,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     @PO-857
     Scenario: Back navigation confirms leaving fixed penalty details
       Given I am logged in with email "opal-test@hmcts.net"
-      When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field          | Value |
         | Personal details | Title          | Mr    |
@@ -157,7 +157,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     @PO-857
     Scenario: Back navigation can be cancelled to stay on fixed penalty details
       Given I am logged in with email "opal-test@hmcts.net"
-      When I start a fixed penalty account for business unit "West London" and defendant type "Adult or youth only"
+      When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field          | Value |
         | Personal details | Title          | Mr    |
@@ -173,7 +173,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
   Rule: Company fixed penalty review
     Background:
       Given I am logged in with email "opal-test@hmcts.net"
-      When I start a fixed penalty account for business unit "West London" and defendant type "Company"
+      When I start a fixed penalty account for business unit "West London", defendant type "Company" and originator type "New"
       And I complete fixed penalty details:
         | Section         | Field                  | Value                         |
         | Court details   | Issuing Authority      | undefined (052)               |

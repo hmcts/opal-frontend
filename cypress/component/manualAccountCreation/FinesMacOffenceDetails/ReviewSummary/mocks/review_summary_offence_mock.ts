@@ -17,8 +17,10 @@ import { FINES_MAC_OFFENCE_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/f
 import { FINES_REVIEW_SUMMARY_IMPOSITION_MOCK } from './review_summary_imposition_mock';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from 'src/app/flows/fines/fines-mac/fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-form';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK } from '../../../../../../src/app/flows/fines/fines-mac/fines-mac-originator-type/mocks/fines-mac-originator-type-form.mock';
 
 export const FINES_REVIEW_SUMMARY_OFFENCE_MOCK: IFinesMacState = {
+  originatorType: FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK,
   accountDetails: {
     ...FINES_MAC_ACCOUNT_DETAILS_FORM,
     formData: {

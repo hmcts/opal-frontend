@@ -8,7 +8,7 @@ Feature: Manual account creation - Account Comments and Notes
     Given I am logged in with email "opal-test@HMCTS.NET"
 
   Scenario: Providing account comments and notes updates the task status and persists the data [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
-    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
     When I provide account comments "Test comments" and notes "Test notes"
     And returning to account details the "Account comments and notes" task the status is "Provided"
@@ -16,13 +16,13 @@ Feature: Manual account creation - Account Comments and Notes
     Then the manual account comment and note fields show "Test comments" and "Test notes"
 
   Scenario: A new manual account starts with comments and notes not provided [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
-    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "" and ""
 
   Scenario: Unsaved account comments can be kept or discarded [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
-    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     And I provide account comments "Test comments" and notes "Test notes"
     And I choose "Cancel" on the unsaved changes prompt for account comments
     Then the manual account comment field shows "Test comments"
@@ -33,7 +33,7 @@ Feature: Manual account creation - Account Comments and Notes
     Then the manual account comment and note fields show "" and ""
 
   Scenario: Task navigation allows review after all sections are provided [@PO-272, @PO-469, @PO-499, @PO-500]
-    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
 
     And I view the "Court details" task
@@ -78,6 +78,6 @@ Feature: Manual account creation - Account Comments and Notes
     Then I can proceed to review account details from comments and notes and see the header "Check account details"
 
   Scenario: Account Comments and Notes - Axe Core
-    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     When I view the "Account comments and notes" task
     Then I check the page for accessibility

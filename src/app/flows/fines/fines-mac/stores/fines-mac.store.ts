@@ -251,8 +251,8 @@ export const FinesMacStore = signalStore(
     setAccountCommentsNotes: (accountCommentsNotes: IFinesMacAccountCommentsNotesForm) => {
       patchState(store, { accountCommentsNotes, stateChanges: true, unsavedChanges: false });
     },
-    setOriginatorType: (originatorType: IFinesMacOriginatorTypeForm) => {
-      patchState(store, { originatorType, stateChanges: true, unsavedChanges: false });
+    setOriginatorType: (originatorType: IFinesMacOriginatorTypeForm, stateChanges: boolean = true) => {
+      patchState(store, { originatorType, stateChanges, unsavedChanges: false });
     },
     setDeleteAccountConfirmation: (deleteAccountConfirmation: IFinesMacDeleteAccountConfirmationForm) => {
       patchState(store, { deleteAccountConfirmation, stateChanges: true, unsavedChanges: false });

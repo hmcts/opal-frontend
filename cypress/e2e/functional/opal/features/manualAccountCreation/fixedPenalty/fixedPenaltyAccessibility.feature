@@ -8,7 +8,7 @@ Feature: Accessibility Tests for Fixed Penalty Screens
     Then I should be on the dashboard
 
   Scenario Outline: Fixed Penalty details page is accessible for <defendant_type>
-    When I start a fixed penalty account for business unit "West London" and defendant type "<defendant_type>"
+    When I start a fixed penalty account for business unit "West London", defendant type "<defendant_type>" and originator type "New"
     Then I check the page for accessibility
     Examples:
       | defendant_type      |
