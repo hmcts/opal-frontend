@@ -2,6 +2,8 @@
 import groovy.transform.Field
 
 @Field String legacyUrlDevChoice = 'DEV'
+@Field static final String azureKeyVaultSecretClass = 'AzureKeyVaultSecret'
+@Field static final String azureKeyVaultSecretType = 'Secret'
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -56,32 +58,41 @@ properties([
 @Field int uatHealthCheckTimeoutMinutes = 1
 @Field String vaultSecretKey = String.format('opal-%s%s', '$', '{env}')
 
-// Secrets loaded from Key Vault for nightly test execution.
-@Field Map<String, Object> secrets = [
-    (vaultSecretKey): [
-        secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
-        secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
-    ],
-]
-
 /**
- * Builds an Azure Key Vault secret descriptor consumed by pipeline secret loading.
- *
- * @param secretName Key Vault secret name.
- * @param envVar Environment variable populated in the build.
- * @return Secret descriptor map for Azure Key Vault integration.
+ * Provides Azure Key Vault secret descriptors consumed by loadVaultSecrets.
  */
-static Map<String, Object> secret(String secretName, String envVar) {
+Map<String, Object> vaultSecrets() {
     return [
-        $class: 'AzureKeyVaultSecret',
-        secretType: 'Secret',
-        name: secretName,
-        version: '',
-        envVariable: envVar
+        (vaultSecretKey): [
+            [
+                $class: azureKeyVaultSecretClass,
+                secretType: azureKeyVaultSecretType,
+                name: 'OpalTestUserEmail',
+                version: '',
+                envVariable: 'OPAL_TEST_USER_EMAIL'
+            ],
+            [
+                $class: azureKeyVaultSecretClass,
+                secretType: azureKeyVaultSecretType,
+                name: 'OpalTestUserPassword',
+                version: '',
+                envVariable: 'OPAL_TEST_USER_PASSWORD'
+            ]
+        ]
     ]
 }
 
-@Field uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+@Field uk.gov.hmcts.contino.YarnBuilder yarnBuilder
+
+/**
+ * Lazily creates YarnBuilder to avoid touching Jenkins runtime state during script initialization.
+ */
+uk.gov.hmcts.contino.YarnBuilder getYarnBuilder() {
+    if (this.@yarnBuilder == null) {
+        this.@yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+    }
+    return this.@yarnBuilder
+}
 
 /**
  * Restores prior pipeline weight artifacts and places them in expected local paths.
@@ -562,7 +573,7 @@ void runFirefoxTests() {
 
 // Main nightly pipeline orchestration hooks.
 withNightlyPipeline(type, product, component) {
-    loadVaultSecrets(secrets)
+    loadVaultSecrets(vaultSecrets())
     env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
     configureStagingLegacyGatewayUrl()
 
