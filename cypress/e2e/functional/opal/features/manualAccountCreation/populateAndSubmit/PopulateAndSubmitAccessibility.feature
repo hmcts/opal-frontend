@@ -22,11 +22,11 @@ Feature: Accessibility Tests for Populate and Submit Screens
     Then I check the page for accessibility
 
   Scenario: Account details task list is accessible for fine accounts
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     Then I check the page for accessibility
 
   Scenario: Check account details page accessibility after completing required tasks
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
       | Section       | Field                                    | Value                               | Imposition |
       | Court         | Sending area or Local Justice Area (LJA) | Avon                                |            |
@@ -72,7 +72,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
     Then I check the page for accessibility
 
   Scenario: Submission confirmation page is accessible
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
       | Section       | Field                                    | Value                               | Imposition |
       | Court         | Sending area or Local Justice Area (LJA) | Avon                                |            |
@@ -117,4 +117,10 @@ Feature: Accessibility Tests for Populate and Submit Screens
     When I check the manual account details
     And I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
+    And I check the page for accessibility
+
+  @PO-2766
+  Scenario: Transfer in page is accessible
+    When I open Manual Account Creation
+    Then I choose 'Transfer in' and continue to create account page
     And I check the page for accessibility
