@@ -6,7 +6,7 @@ Feature: Manual account creation - Employer Details
 
   Background:
     Given I am logged in with email "opal-test@hmcts.net"
-    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Employer details" task
 
   Scenario: (AC.7) Entered employer data persists in the session [@PO-272, @PO-280, @PO-368, @PO-434, @PO-435]

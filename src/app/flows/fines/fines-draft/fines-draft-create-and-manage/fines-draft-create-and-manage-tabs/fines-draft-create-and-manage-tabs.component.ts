@@ -35,6 +35,10 @@ import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-reject
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
+import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
+import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
@@ -48,6 +52,8 @@ import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.cons
     MojSubNavigationItemComponent,
     FinesDraftTableWrapperComponent,
     MojNotificationBadgeComponent,
+    CustomPageHeaderComponent,
+    GovukButtonDirective,
   ],
   templateUrl: './fines-draft-create-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,6 +64,7 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   private readonly opalFinesService = inject(OpalFines);
   private readonly dateService = inject(DateService);
   private readonly userState = this.globalStore.userState();
+  private readonly permissionsService = inject(PermissionsService);
   private readonly businessUnitIds = this.userState.business_unit_users.map(
     (business_unit_users) => business_unit_users.business_unit_id,
   );
@@ -191,6 +198,29 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
       FINES_ACC_ROUTING_PATHS.children.defendant,
       accountNumber,
       FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+    ]);
+  }
+
+  /**
+   * Checks if the current user has permission to create and manage draft accounts.
+   * @returns {boolean} True if the user has the 'create-and-manage-draft-accounts' permission, false otherwise.
+   */
+  public hasCreateAndManageDraftAccountPermission(): boolean {
+    return this.permissionsService.hasPermissionAccess(
+      FINES_PERMISSIONS['create-and-manage-draft-accounts'],
+      this.userState.business_unit_users,
+    );
+  }
+
+  /**
+   * Navigates to the create account page for fines MAC (Make Account Changes).
+   * Routes to the originator type selection step in the fines MAC workflow.
+   */
+  public navigateToCreateAccount(): void {
+    this['router'].navigate([
+      FINES_ROUTING_PATHS.root,
+      FINES_MAC_ROUTING_PATHS.root,
+      FINES_MAC_ROUTING_PATHS.children.originatorType,
     ]);
   }
 
