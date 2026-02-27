@@ -230,11 +230,11 @@ describe('FinesAccPayloadService', () => {
     const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'minorCreditor');
 
     expect(result).toEqual({
-      account_number: header.account_number,
+      account_number: header.creditor.account_number,
       account_id: account_id,
       pg_party_id: null,
       party_id: header.party_details.party_id,
-      party_type: header.creditor_account_type.display_name,
+      party_type: header.creditor.account_type.display_name,
       party_name: header.party_details.organisation_details?.organisation_name ?? null,
       base_version: header.version,
       business_unit_id: header.business_unit_summary.business_unit_id,
@@ -268,11 +268,11 @@ describe('FinesAccPayloadService', () => {
     const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'minorCreditor');
 
     expect(result).toEqual({
-      account_number: header.account_number,
+      account_number: header.creditor.account_number,
       account_id: account_id,
       pg_party_id: null,
       party_id: header.party_details.party_id,
-      party_type: header.creditor_account_type.display_name,
+      party_type: header.creditor.account_type.display_name,
       party_name:
         header.party_details.individual_details?.title +
         ' ' +

@@ -11,15 +11,13 @@
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       <h2 opal-lib-custom-account-information-item-label>Account type:</h2>
       <p opal-lib-custom-account-information-item-value id="minor-creditor-account-type">
-        {{ accountData.creditor_account_type.display_name }}
+        {{ accountData.creditor.account_type.display_name }}
       </p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value id="minor-creditor-business-unit">
-        {{ accountData.business_unit_summary.business_unit_name }} ({{
-          accountData.business_unit_summary.business_unit_id
-        }})
+        {{ accountData.business_unit.business_unit_name }} ({{ accountData.business_unit.business_unit_id }})
       </p>
     </opal-lib-custom-account-information-item>
   </opal-lib-custom-account-information>
@@ -29,31 +27,31 @@
   <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3 govuk-!-margin-top-2" />
 
   <opal-lib-custom-summary-metric-bar>
-    @if (accountData.has_associated_defendant) {
+    @if (accountData.financials.awarded > 0 || accountData.financials.outstanding > 0) {
       <opal-lib-custom-summary-metric-bar-item>
         <p opal-lib-custom-summary-metric-bar-item-label>Awarded:</p>
         <p opal-lib-custom-summary-metric-bar-item-value>
-          {{ accountData.awarded_amount | monetary }}
+          {{ accountData.financials.awarded | monetary }}
         </p>
       </opal-lib-custom-summary-metric-bar-item>
     }
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid out:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.paid_out_amount | monetary }}
+        {{ accountData.financials.paid_out | monetary }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Awaiting payout:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.awaiting_payout_amount | monetary }}
+        {{ accountData.financials.awaiting_payout | monetary }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
-    @if (accountData.has_associated_defendant) {
+    @if (accountData.financials.awarded > 0 || accountData.financials.outstanding > 0) {
       <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
         <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Outstanding:</p>
         <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-white-text-colour">
-          {{ accountData.outstanding_amount | monetary }}
+          {{ accountData.financials.outstanding | monetary }}
         </p>
       </opal-lib-custom-summary-metric-bar-item>
     }
