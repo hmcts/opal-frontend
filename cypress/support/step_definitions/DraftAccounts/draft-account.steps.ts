@@ -232,6 +232,15 @@ When('I open Create and Manage Draft Accounts', () => {
 });
 
 /**
+ * @step Click the Create account button on the Create and Manage Draft Accounts page.
+ * @description Navigates from Create accounts to the Create new account or transfer in screen.
+ */
+When('I click the Create account button on Create and Manage Draft Accounts', () => {
+  log('navigate', 'Clicking Create account button on Create and Manage Draft Accounts');
+  inputter().clickCreateAccount();
+});
+
+/**
  * @step Use the back link on Create and Manage Draft Accounts.
  * @description Clicks the GOV.UK back link rendered on the draft listings page.
  * @example When I go back from Create and Manage Draft Accounts
