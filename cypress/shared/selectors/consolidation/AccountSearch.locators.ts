@@ -35,6 +35,8 @@ export const AccountSearchLocators = {
   // Inline field errors
   accountNumberError: '#fcon_search_account_number-error-message',
   nationalInsuranceNumberError: '#fcon_search_account_national_insurance_number-error-message',
+  lastNameError: '#fcon_search_account_individuals_last_name-error-message',
+  firstNamesError: '#fcon_search_account_individuals_first_names-error-message',
   dateOfBirthError: '#fcon_search_account_individuals_date_of_birth-error-message',
   addressLine1Error: '#fcon_search_account_individuals_address_line_1-error-message',
   postCodeError: '#fcon_search_account_individuals_post_code-error-message',
