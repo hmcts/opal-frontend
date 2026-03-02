@@ -69,6 +69,15 @@ describe('FinesConSearchAccountFormComponent', () => {
     expect(updateSpy).toHaveBeenCalledWith(component.form.value);
   });
 
+  it('should persist form state to store on ngOnDestroy', () => {
+    const updateSpy = vi.spyOn(finesConStore, 'updateSearchAccountFormTemporary');
+    component.form.patchValue({ fcon_search_account_number: '12345678' });
+
+    component.ngOnDestroy();
+
+    expect(updateSpy).toHaveBeenCalledWith(component.form.value);
+  });
+
   it('should reset form when clearSearchForm is called', () => {
     const formValue = { fcon_search_account_number: '12345678' };
     component.form.patchValue(formValue);

@@ -135,4 +135,13 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
     this.initialFormSetup();
     super.ngOnInit();
   }
+
+  /**
+   * Persists in-progress search criteria when the search tab is unmounted
+   * (for example when switching to another tab).
+   */
+  public override ngOnDestroy(): void {
+    this.setSearchAccountTemporary();
+    super.ngOnDestroy();
+  }
 }
