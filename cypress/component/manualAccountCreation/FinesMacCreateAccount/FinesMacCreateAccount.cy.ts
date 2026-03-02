@@ -195,19 +195,15 @@ describe('FinesMacCreateAccountComponent', () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy);
 
-      const formSubmitSpy = Cypress.sinon.spy();
-      setupComponent(formSubmitSpy);
+    cy.get(L.businessUnitInput).type('Lo');
+    cy.get(L.businessUnitAutoComplete).find('li').first().click();
+    cy.get(L.fineInput).click();
+    cy.get(L.adultOrYouthInput).click();
+    cy.get(L.continueButton).click();
+    cy.get(L.errorSummary).should('not.exist');
 
-      cy.get(L.businessUnitInput).type('Lo');
-      cy.get(L.businessUnitAutoComplete).find('li').first().click();
-      cy.get(L.fineInput).click();
-      cy.get(L.adultOrYouthInput).click();
-      cy.get(L.continueButton).click();
-      cy.get(L.errorSummary).should('not.exist');
-
-      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+  });
 
   it(
     '(AC.4c)should check through each account type to ensure that error is given when a defendant type is not selected except conditional caution',

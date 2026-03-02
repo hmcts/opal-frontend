@@ -431,17 +431,6 @@ Feature: Manual account creation - Create Draft Account
     Then I see the following text on the page "You've submitted this account for review"
 
   @PO-2766
-  Scenario: User moves from through create account page links depending on selected options
-    When I open Manual Account Creation
-    Then I choose 'Transfer in' and continue to create account page
-    Then I should see the header containing text 'Transfer in'
-
-
-    # AC6 Back link is on screening
-    When I click the back link on create account page I return to Create or Transfer In page
-
-
-  @PO-2766
   Scenario Outline: User can navigate to create account page and return via back link for each originator option
     When I open Manual Account Creation
     Then I choose '<Originator type>' and continue to create account page
