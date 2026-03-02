@@ -239,15 +239,6 @@ When('I continue from create account', () => {
   log('navigate', 'Continuing from create account');
   createAccount().continueToAccountDetails();
 });
-
-/**
- * @step Continues from Create account without asserting destination path.
- * @description Useful for journeys (e.g. Fixed Penalty) that do not land on Account details.
- */
-When('I continue from create account', () => {
-  log('navigate', 'Continuing from create account');
-  createAccount().continueToAccountDetails();
-});
 /**
  * @step Creates a default fine manual account and confirms the task list is visible.
  * @description Starts a Fine account with default unit/type to ensure Account details page is loaded.

@@ -22,11 +22,6 @@ describe('FinesMacCourtDetailsComponent', () => {
     defType?: string,
     localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
   ) => {
-  const setupComponent = (
-    formSubmit?: any,
-    defType?: string,
-    localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-  ) => {
     finesMacState.businessUnit.business_unit_id = 73;
     if (defType) {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = defType;
@@ -52,7 +47,6 @@ describe('FinesMacCourtDetailsComponent', () => {
             parent: of('manual-account-creation'),
             snapshot: {
               data: {
-                localJusticeAreas,
                 localJusticeAreas,
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
               },
