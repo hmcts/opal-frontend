@@ -1,14 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, EMPTY, map, merge, Observable, takeUntil, tap } from 'rxjs';
+import { EMPTY, merge, Observable, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-// import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
-
 // Stores
-// import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 // Components
-// import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 import {
   MojSubNavigationComponent,
@@ -86,7 +82,7 @@ import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsComponent
-  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountDefendantDetailsHeader>
+  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountDefendantDetailsHeader, { version: string | null }>
   implements OnInit, OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
@@ -108,6 +104,9 @@ export class FinesAccDefendantDetailsComponent
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
+  private fetchTabDataTyped<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
+    return this.fetchTabData(serviceCall, (version) => this.accountStore.compareVersion(version)) as Observable<T>;
+  }
 
   /**
    *
@@ -121,7 +120,7 @@ export class FinesAccDefendantDetailsComponent
     return (
       !this.lastEnforcement?.extend_ttp_disallow &&
       !invalidCodes.includes(accountStatusCode) &&
-      this.hasBusinessUnitPermission('amend-payment-terms') &&
+      this.hasBusinessUnitPermissionKey('amend-payment-terms') &&
       this.accountData.payment_state_summary.account_balance! > 0
     );
   }
@@ -132,7 +131,7 @@ export class FinesAccDefendantDetailsComponent
    * @returns boolean indicating if the user can request a payment card
    */
   private canRequestPaymentCard(): boolean {
-    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermission('amend-payment-terms');
+    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermissionKey('amend-payment-terms');
   }
 
   /**
@@ -142,7 +141,7 @@ export class FinesAccDefendantDetailsComponent
   private getAmendPaymentTermsDeniedType(): string {
     if (this.lastEnforcement?.extend_ttp_disallow) {
       return 'enforcement';
-    } else if (!this.hasBusinessUnitPermission('amend-payment-terms')) {
+    } else if (!this.hasBusinessUnitPermissionKey('amend-payment-terms')) {
       return 'permission';
     } else if (this.accountData.payment_state_summary.account_balance! <= 0) {
       return 'balance';
@@ -164,6 +163,18 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
+   * Checks if the user has the specified permission within the business unit related to the account.
+   * @param permissionKey The key of the permission to check.
+   * @returns True if the user has the permission, false otherwise.
+   */
+  private hasBusinessUnitPermissionKey(permissionKey: string): boolean {
+    return super.hasBusinessUnitPermission(
+      FINES_PERMISSIONS[permissionKey],
+      Number(this.accountStore.business_unit_id()!),
+    );
+  }
+
+  /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
    * This method listens to changes in either the route fragment (representing the active tab)
@@ -172,7 +183,7 @@ export class FinesAccDefendantDetailsComponent
    * and constructs the necessary parameters for fetching and populating the tab's table data.
    *
    */
-  private setupTabDataStream(): void {
+  protected override setupTabDataStream(): void {
     const fragment$ = merge(
       this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
         this.opalFinesService.clearCache(
@@ -188,23 +199,25 @@ export class FinesAccDefendantDetailsComponent
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
-          this.tabAtAGlance$ = this.fetchTabData(this.opalFinesService.getDefendantAccountAtAGlance(account_id));
+          this.tabAtAGlance$ = this.fetchTabDataTyped(this.opalFinesService.getDefendantAccountAtAGlance(account_id));
           break;
         case 'defendant':
-          this.tabDefendant$ = this.fetchTabData(
+          this.tabDefendant$ = this.fetchTabDataTyped(
             this.opalFinesService.getDefendantAccountParty(account_id, defendant_account_party_id),
           );
           break;
         case 'parent-or-guardian':
-          this.tabParentOrGuardian$ = this.fetchTabData(
+          this.tabParentOrGuardian$ = this.fetchTabDataTyped(
             this.opalFinesService.getParentOrGuardianAccountParty(account_id, parent_guardian_party_id),
           );
           break;
         case 'fixed-penalty':
-          this.tabFixedPenalty$ = this.fetchTabData(this.opalFinesService.getDefendantAccountFixedPenalty(account_id));
+          this.tabFixedPenalty$ = this.fetchTabDataTyped(
+            this.opalFinesService.getDefendantAccountFixedPenalty(account_id),
+          );
           break;
         case 'payment-terms':
-          this.tabPaymentTerms$ = this.fetchTabData(
+          this.tabPaymentTerms$ = this.fetchTabDataTyped(
             this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id).pipe(
               tap((data) => {
                 if (data.last_enforcement) {
@@ -220,15 +233,15 @@ export class FinesAccDefendantDetailsComponent
           );
           break;
         case 'enforcement':
-          this.tabEnforcement$ = this.fetchTabData(
+          this.tabEnforcement$ = this.fetchTabDataTyped(
             this.opalFinesService.getDefendantAccountEnforcementTabData(account_id),
           );
           break;
         case 'impositions':
-          this.tabImpositions$ = this.fetchTabData(this.opalFinesService.getDefendantAccountImpositionsTabData());
+          this.tabImpositions$ = this.fetchTabDataTyped(this.opalFinesService.getDefendantAccountImpositionsTabData());
           break;
         case 'history-and-notes':
-          this.tabHistoryAndNotes$ = this.fetchTabData(
+          this.tabHistoryAndNotes$ = this.fetchTabDataTyped(
             this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(),
           );
           break;
@@ -237,48 +250,33 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
-   * Fetches the data for a specific tab by calling the provided service function.
-   * Compares the version of the fetched data with the current version in the store.
-   * @param serviceCall the service function that retrieves the tab data
-   * @returns an observable of the tab data
-   */
-  private fetchTabData<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
-    return serviceCall.pipe(
-      map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
-      tap((data) => {
-        this.accountStore.compareVersion(data.version);
-      }),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$),
-    );
-  }
-
-  /**
    * Fetches the defendant account heading data and current tab fragment from the route.
    */
-  protected getHeaderDataFromRoute(): void {
-    this.accountData = this.payloadService.transformPayload(
-      this.activatedRoute.snapshot.data['defendantAccountHeadingData'],
-      FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
-    );
-    this.accountStore.setAccountState(
-      this.payloadService.transformAccountHeaderForStore(this.accountId, this.accountData, 'defendant'),
-    );
-
+  protected override getHeaderDataFromRoute(): void {
+    const headingData = this.activatedRoute.snapshot.data['defendantAccountHeadingData'];
+    this.accountData = this.transformHeaderForView(headingData);
+    this.transformHeaderForStore(this.accountId, this.accountData);
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 
-  /**
-   * Checks if the user has the specified permission within the business unit related to the account.
-   * @param permissionKey The key of the permission to check.
-   * @returns True if the user has the permission, false otherwise.
-   */
-  public hasBusinessUnitPermission(permissionKey: string): boolean {
-    return this.permissionsService.hasBusinessUnitPermissionAccess(
-      FINES_PERMISSIONS[permissionKey],
-      Number(this.accountStore.business_unit_id()!),
-      this.userState.business_unit_users,
+  protected override getHeaderData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
+    return this.opalFinesService.getDefendantAccountHeadingData(accountId);
+  }
+
+  protected override transformHeaderForStore(accountId: number, header: IOpalFinesAccountDefendantDetailsHeader): void {
+    this.accountStore.setAccountState(
+      this.payloadService.transformAccountHeaderForStore(accountId, header, 'defendant'),
     );
+  }
+
+  protected override transformHeaderForView(
+    header: IOpalFinesAccountDefendantDetailsHeader,
+  ): IOpalFinesAccountDefendantDetailsHeader {
+    return this.payloadService.transformPayload(header, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  protected override transformTabData<T extends { version: string | null }>(data: T): T {
+    return this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
   }
 
   /**
@@ -286,13 +284,7 @@ export class FinesAccDefendantDetailsComponent
    * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
   public navigateToAddAccountNotePage(): void {
-    if (
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['add-account-activity-notes'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
+    if (this.hasBusinessUnitPermissionKey('add-account-activity-notes')) {
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
         relativeTo: this.activatedRoute,
       });
@@ -308,13 +300,7 @@ export class FinesAccDefendantDetailsComponent
    * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
   public navigateToAddCommentsPage(): void {
-    if (
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['account-maintenance'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
+    if (this.hasBusinessUnitPermissionKey('account-maintenance')) {
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.comments}/add`], {
         relativeTo: this.activatedRoute,
       });
@@ -332,36 +318,13 @@ export class FinesAccDefendantDetailsComponent
    * Refreshes the page.
    * @param event The user event that triggered the refresh action.
    */
-  public refreshPage(): void {
+  public override refreshPage(): void {
     this.accountStore.setHasVersionMismatch(false);
 
-    this.opalFinesService
-      .getDefendantAccountHeadingData(Number(this.accountStore.account_id()))
-      .pipe(
-        tap((defendantHeadingData) => {
-          this.accountStore.setAccountState(
-            this.payloadService.transformAccountHeaderForStore(
-              Number(this.accountStore.account_id()),
-              defendantHeadingData,
-              'defendant',
-            ),
-          );
-        }),
-        map((defendantHeadingData) =>
-          this.payloadService.transformPayload(defendantHeadingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
-        ),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((res) => {
-        this.accountStore.setSuccessMessage('Information is up to date');
-        this.accountData = res;
-        this.refreshFragment$.next(this.activeTab);
-      });
-  }
-
-  public override ngOnInit(): void {
-    super.ngOnInit();
-    this.setupTabDataStream();
+    super.refreshPage(Number(this.accountStore.account_id()), (header) => {
+      this.accountStore.setSuccessMessage('Information is up to date');
+      this.accountData = header;
+    });
   }
 
   public override ngOnDestroy(): void {
@@ -376,13 +339,7 @@ export class FinesAccDefendantDetailsComponent
    * @param partyType
    */
   public navigateToAmendPartyDetailsPage(partyType: string): void {
-    if (
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['account-maintenance'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
+    if (this.hasBusinessUnitPermissionKey('account-maintenance')) {
       this['router'].navigate([`../party/${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });

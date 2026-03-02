@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { EMPTY, merge, Observable } from 'rxjs';
-import { tap, map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 // Services
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 // Stores
@@ -64,7 +64,7 @@ import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccMinorCreditorDetailsComponent
-  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountMinorCreditorDetailsHeader>
+  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountMinorCreditorDetailsHeader, { version: string | null }>
   implements OnInit, OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
@@ -80,6 +80,27 @@ export class FinesAccMinorCreditorDetailsComponent
   public finesPermissions = FINES_PERMISSIONS;
 
   /**
+   * Fetches the tab data and ensures it is typed correctly.
+   * @param serviceCall The observable service call to fetch the tab data.
+   * @returns An observable of the typed tab data.
+   */
+  private fetchTabDataTyped<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
+    return this.fetchTabData(serviceCall, (version) => this.accountStore.compareVersion(version)) as Observable<T>;
+  }
+
+  /**
+   * Checks if the current user has the specified business unit permission.
+   * @param permissionKey The key of the permission to check.
+   * @returns A boolean indicating whether the user has the permission.
+   */
+  private hasBusinessUnitPermissionKey(permissionKey: string): boolean {
+    return super.hasBusinessUnitPermission(
+      FINES_PERMISSIONS[permissionKey],
+      Number(this.accountStore.business_unit_id()!),
+    );
+  }
+
+  /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
    * This method listens to changes in either the route fragment (representing the active tab)
@@ -88,7 +109,7 @@ export class FinesAccMinorCreditorDetailsComponent
    * and constructs the necessary parameters for fetching and populating the tab's table data.
    *
    */
-  private setupTabDataStream(): void {
+  protected override setupTabDataStream(): void {
     const fragment$ = merge(
       this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
         this.opalFinesService.clearCache(
@@ -105,35 +126,49 @@ export class FinesAccMinorCreditorDetailsComponent
     fragment$.pipe(takeUntil(this.destroy$)).subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
-          this.tabAtAGlance$ = this.fetchTabData(this.opalFinesService.getMinorCreditorAccountAtAGlance(account_id));
+          this.tabAtAGlance$ = this.fetchTabDataTyped(
+            this.opalFinesService.getMinorCreditorAccountAtAGlance(account_id),
+          );
           break;
       }
     });
   }
 
   /**
-   * Fetches the data for a specific tab by calling the provided service function.
-   * Compares the version of the fetched data with the current version in the store.
-   * @param serviceCall the service function that retrieves the tab data
-   * @returns an observable of the tab data
+   * Fetches the minor creditor account heading data and current tab fragment from the route.
    */
-  private fetchTabData<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
-    return serviceCall.pipe(
-      map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
-      tap((data) => {
-        this.accountStore.compareVersion(data.version);
-      }),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$),
-    );
+  protected override getHeaderDataFromRoute(): void {
+    const headingData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
+    this.accountData = this.transformHeaderForView(headingData);
+    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 
   /**
-   * Fetches the minor creditor account heading data and current tab fragment from the route.
+   * Fetches the minor creditor account heading data for the specified account ID.
+   * @param accountId The ID of the account to fetch the heading data for.
+   * @returns An observable of the minor creditor account heading data.
    */
-  protected getHeaderDataFromRoute(): void {
-    this.accountData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
-    this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
+  protected override getHeaderData(accountId: number): Observable<IOpalFinesAccountMinorCreditorDetailsHeader> {
+    return this.opalFinesService.getMinorCreditorAccountHeadingData(accountId);
+  }
+
+  protected override transformHeaderForStore(
+    accountId: number,
+    header: IOpalFinesAccountMinorCreditorDetailsHeader,
+  ): void {
+    this.accountStore.setAccountState(
+      this.payloadService.transformAccountHeaderForStore(accountId, header, 'minorCreditor'),
+    );
+  }
+
+  protected override transformHeaderForView(
+    header: IOpalFinesAccountMinorCreditorDetailsHeader,
+  ): IOpalFinesAccountMinorCreditorDetailsHeader {
+    return this.payloadService.transformPayload(header, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  protected override transformTabData<T extends { version: string | null }>(data: T): T {
+    return this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
   }
 
   /**
@@ -143,31 +178,13 @@ export class FinesAccMinorCreditorDetailsComponent
    * Refreshes the page.
    * @param event The user event that triggered the refresh action.
    */
-  public refreshPage(): void {
+  public override refreshPage(): void {
     this.accountStore.setHasVersionMismatch(false);
 
-    this.opalFinesService
-      .getMinorCreditorAccountHeadingData(Number(this.accountStore.account_id()))
-      .pipe(
-        tap((minorCreditorHeadingData) => {
-          this.accountStore.setAccountState(
-            this.payloadService.transformAccountHeaderForStore(
-              Number(this.accountStore.account_id()),
-              minorCreditorHeadingData,
-              'minorCreditor',
-            ),
-          );
-        }),
-        map((minorCreditorHeadingData) =>
-          this.payloadService.transformPayload(minorCreditorHeadingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
-        ),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((res) => {
-        this.accountStore.setSuccessMessage('Information is up to date');
-        this.accountData = res;
-        this.refreshFragment$.next(this.activeTab);
-      });
+    super.refreshPage(Number(this.accountStore.account_id()), (header) => {
+      this.accountStore.setSuccessMessage('Information is up to date');
+      this.accountData = header;
+    });
   }
 
   public navigateToAddPaymentHoldPage(): void {
@@ -187,13 +204,7 @@ export class FinesAccMinorCreditorDetailsComponent
    * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
   public navigateToAddAccountNotePage(): void {
-    if (
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['add-account-activity-notes'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
+    if (this.hasBusinessUnitPermissionKey('add-account-activity-notes')) {
       this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`], {
         relativeTo: this.activatedRoute,
       });
@@ -202,11 +213,6 @@ export class FinesAccMinorCreditorDetailsComponent
         relativeTo: this.activatedRoute,
       });
     }
-  }
-
-  public override ngOnInit(): void {
-    super.ngOnInit();
-    this.setupTabDataStream();
   }
 
   public override ngOnDestroy(): void {
