@@ -4,8 +4,7 @@ Feature: Manual account creation - Local justice area filtering
 
   Background:
     Given I am logged in with email "opal-test@hmcts.net"
-    When I open Manual Account Creation from the dashboard
-    And I ensure I am on the create or transfer in page
+    When I open Manual Account Creation
     And I monitor local justice areas requests
 
   # AC2, AC3, AC4, AC6
