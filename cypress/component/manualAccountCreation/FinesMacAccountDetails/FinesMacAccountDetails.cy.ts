@@ -127,8 +127,8 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it(
-    '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
-    { tags: ['@PO-366', '@PO-272', '@PO-468', 'PO-524'] },
+    '(AC.1,AC.2,AC.2a,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
+    { tags: ['@PO-366', '@PO-272', '@PO-468', 'PO-524', '@PO-2767'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
@@ -137,6 +137,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(L.dataPage).should('exist');
       cy.get(L.backLink).should('exist');
       cy.get(L.pageTitle).should('exist');
+      cy.get(L.entryType).should('exist');
       cy.get(L.businessUnit).should('exist');
       cy.get(L.accountType).should('exist');
       cy.get(L.defendantType).should('exist');

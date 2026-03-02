@@ -250,6 +250,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.backLink).should('exist');
 
       // Account details
+      cy.get(DOM_ELEMENTS.originatorTypeData).should('exist');
       cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
       cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
       cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');

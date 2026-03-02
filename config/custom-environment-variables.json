@@ -42,6 +42,12 @@
         "__name": "FEATURES_APP_INSIGHTS_ENABLED",
         "__format": "json"
       }
+    },
+    "ip-logging": {
+      "enabled": {
+        "__name": "FEATURES_IP_LOGGING_ENABLED",
+        "__format": "json"
+      }
     }
   },
   "session": {

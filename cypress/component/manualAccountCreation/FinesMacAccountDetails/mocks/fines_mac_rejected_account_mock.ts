@@ -95,6 +95,7 @@ export const FINES_REJECTED_ACCOUNT_MOCK: IFinesMacAddAccountPayload = {
         note_type: 'AA',
       },
     ],
+    originator_type: null,
   },
   account_type: FINES_ACCOUNT_TYPES['Conditional Caution'],
   account_status: 'Rejected',

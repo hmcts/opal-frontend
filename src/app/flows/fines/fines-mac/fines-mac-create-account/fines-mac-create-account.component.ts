@@ -114,7 +114,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
       this.finesMacStore.setBusinessUnitId(businessUnitId);
     }
     if (originatorType) {
-      this.finesMacStore.setOriginatorType(originatorType);
+      this.finesMacStore.setOriginatorType(originatorType, false);
     }
   }
 }
