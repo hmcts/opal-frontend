@@ -10,6 +10,7 @@ Use this template to draft a low-level design for any Opal flow. Replace placeho
 - Related backend service(s): `<service name>` (proxy base path: `<path>`)
 - Routing: `<path to routes file>`
 - Other LLDs: `<links to audit/logging/observability/etc>`
+- TDIA / Tech Design Impact Assessment: `<path or link>`
 
 ## Business Overview
 - Problem statement and where the flow fits in the wider process.
@@ -20,6 +21,35 @@ Use this template to draft a low-level design for any Opal flow. Replace placeho
 - Include variations (roles, defendant types, account types, etc.) if relevant.
 
 ## NFR Details
+
+**TDIA sources used**
+- `<path to TDIA doc 1>`
+- `<path to TDIA doc 2>`
+
+> If TDIA sources are not provided, treat the NFRs below as assumptions and call that out explicitly.
+
+- Managed Data Set Configuration (e.g. `SYS-NFR-036`, `SYS-NFR-099`):
+  - Managed data sets in scope: `<list>`
+  - Notes/approach: `<static vs dynamic, how managed, any exceptions>`
+
+- Response Time Targets (e.g. `SYS-NFR-046`, `SYS-NFR-047`, `SYS-NFR-095`):
+  - Simple operations: `<list>`
+  - Complex operations: `<list + qualifiers (e.g. synchronous publishing)>`
+  - Notes: `<any concurrency notes, classification notes>`
+
+- Concurrency / Error Handling TDIA impact:
+  - `<summary or N/A>`
+
+- Personal Data Processing Operations (e.g. `SYS-NFR-021`):
+  - `<list operations + classification (e.g. Collection)>`
+
+- Availability / Recovery (e.g. `SYS-NFR-011`, `SYS-NFR-042`, `SYS-NFR-043`):
+  - `<Business Critical vs Non-Business Critical designation, or N/A>`
+
+- Specific NFRs:
+  - `<N/A or list>`
+
+### Additional NFR considerations (only if not covered by TDIA)
 - Security: auth/permissions, data handling, concurrency.
 - Accessibility: components, labels, keyboard paths.
 - Performance: caching, change detection, pagination limits.
