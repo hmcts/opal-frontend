@@ -141,4 +141,26 @@ export class ManualCreateAccountActions {
     log('navigate', 'Clicking back link');
     cy.get(L.backLink, this.common.getTimeoutOptions()).should('be.visible').click();
   }
+
+  /**
+   * Confirms the Manual Account Creation Trnsfer In landing page is visible.
+   *
+   * @param expectedHeader Optional header text to assert.
+   */
+  assertOnTransferInPage(expectedHeader: string = 'Transfer in'): void {
+    log('assert', 'Asserting manual account creation landing page', { expectedHeader });
+    cy.get(L.pageHeader, { timeout: 15_000 }).should('contain.text', expectedHeader);
+  }
+
+  /**
+   * Handles Cancel click with the provided confirm choice.
+   * @param choice Confirmation choice (Cancel/Ok).
+   */
+  cancelAndChoose(choice: 'Cancel' | 'Ok'): void {
+    const accept = /ok|leave/i.test(choice);
+    log('cancel', 'Cancelling create account', { choice, accept });
+    this.common.confirmNextUnsavedChanges(accept);
+
+    cy.get(L.cancelLink, this.common.getTimeoutOptions()).should('exist').scrollIntoView().click({ force: true });
+  }
 }

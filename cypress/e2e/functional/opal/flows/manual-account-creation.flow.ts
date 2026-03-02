@@ -2791,4 +2791,14 @@ export class ManualAccountCreationFlow {
       return cy.wrap(count);
     });
   }
+
+  /**
+   * Cancels out of Transfer in page with a given choice.
+   * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
+   */
+  cancelCreateAccount(choice: 'Cancel' | 'Ok'): void {
+    log('flow', 'Cancel Create Account', { choice });
+    this.createAccount.assertOnTransferInPage();
+    this.createAccount.cancelAndChoose(choice);
+  }
 }
