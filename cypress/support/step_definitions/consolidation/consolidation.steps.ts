@@ -19,9 +19,19 @@ When(
   },
 );
 
+When('I click Search on consolidation account search', () => {
+  log('step', 'Clicking Search on consolidation account search');
+  consolidationFlow().clickConsolidationSearch();
+});
+
 Then('I am on the consolidation Search tab for Individuals', () => {
   log('step', 'Verifying consolidation account search defaults for Individuals');
   consolidationFlow().assertSearchTabForIndividuals();
+});
+
+Then('I am on the consolidation Search tab for Companies', () => {
+  log('step', 'Verifying consolidation account search defaults for Companies');
+  consolidationFlow().assertSearchTabForCompanies();
 });
 
 When('I enter the following consolidation search details:', (table: DataTable) => {
@@ -32,6 +42,11 @@ When('I enter the following consolidation search details:', (table: DataTable) =
 When('I switch consolidation tabs and return to Search', () => {
   log('step', 'Switching consolidation tabs and returning to Search');
   consolidationFlow().switchTabsAndReturnToSearch();
+});
+
+When('I switch consolidation tabs and return to Search - Company', () => {
+  log('step', 'Switching consolidation tabs and returning to Search');
+  consolidationFlow().switchTabsAndReturnToSearchCompany();
 });
 
 Then('the consolidation search details are retained:', (table: DataTable) => {

@@ -55,6 +55,7 @@ export const FinesConStore = signalStore(
           ...store.selectBuForm(),
           formData,
         },
+        searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
         stateChanges: true,
       });
     },

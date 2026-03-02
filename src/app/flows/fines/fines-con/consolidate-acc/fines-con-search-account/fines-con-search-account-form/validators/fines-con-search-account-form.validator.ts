@@ -19,6 +19,7 @@ export const consolidateSearchAccountFormValidator: ValidatorFn = ((
     'fcon_search_account_number',
     'fcon_search_account_national_insurance_number',
     'fcon_search_account_individuals_search_criteria',
+    'fcon_search_account_companies_search_criteria',
   ];
 
   const rules = [
@@ -27,6 +28,7 @@ export const consolidateSearchAccountFormValidator: ValidatorFn = ((
       conflictingFields: [
         'fcon_search_account_national_insurance_number',
         'fcon_search_account_individuals_search_criteria',
+        'fcon_search_account_companies_search_criteria',
       ],
       errorKey: 'atLeastOneCriteriaRequired',
     },

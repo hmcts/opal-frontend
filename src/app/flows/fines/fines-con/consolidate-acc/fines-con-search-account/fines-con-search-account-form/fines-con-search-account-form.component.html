@@ -50,7 +50,8 @@
       >
       </app-fines-con-search-account-form-individuals>
     } @else if (defendantType === 'company') {
-      <p class="govuk-body govuk-!-color-grey-1">Companies search is not yet developed.</p>
+      <app-fines-con-search-account-form-companies [form]="form" [formControlErrorMessages]="formControlErrorMessages">
+      </app-fines-con-search-account-form-companies>
     }
 
     <div class="govuk-grid-row">

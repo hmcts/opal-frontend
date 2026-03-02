@@ -33,10 +33,24 @@ export class ConsolidationFlow {
     this.consolidation.continueFromSelectBusinessUnit();
   }
 
+  /**
+   * Completes a click of search on consolidate accounts
+   */
+  public clickConsolidationSearch(): void {
+    log('flow', 'Clicking Search on consolidation account search');
+    this.consolidation.clickSearch();
+  }
+
   /** Asserts consolidation account search lands on Search tab for Individuals. */
   public assertSearchTabForIndividuals(): void {
     log('flow', 'Asserting consolidation account search is on Search tab for Individuals');
     this.consolidation.assertOnSearchTabForIndividuals();
+  }
+
+  /** Asserts consolidation account search lands on Search tab for Companies. */
+  public assertSearchTabForCompanies(): void {
+    log('flow', 'Asserting consolidation account search is on Search tab for Companies');
+    this.consolidation.assertOnSearchTabForCompanies();
   }
 
   /**
@@ -53,6 +67,12 @@ export class ConsolidationFlow {
   public switchTabsAndReturnToSearch(): void {
     log('flow', 'Switching consolidation tabs and returning to Search');
     this.consolidation.switchTabsAndReturnToSearch();
+  }
+
+  /** Switches away from Search and back again to verify tab retention behaviour. */
+  public switchTabsAndReturnToSearchCompany(): void {
+    log('flow', 'Switching consolidation tabs and returning to Search');
+    this.consolidation.switchTabsAndReturnToSearchCompany();
   }
 
   /**
