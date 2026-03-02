@@ -25,13 +25,18 @@ export class FixedPenaltyFlow {
    * Starts a Fixed Penalty account from the dashboard.
    * @param businessUnit - Business unit to select.
    * @param defendantType - Defendant type option to choose.
+   * @param originatorType - Originator type option to choose.
    */
-  startFixedPenaltyAccount(businessUnit: string, defendantType: DefendantType): void {
+  startFixedPenaltyAccount(
+    businessUnit: string,
+    defendantType: DefendantType,
+    originatorType: 'New' | 'Transfer in',
+  ): void {
     log('flow', 'Starting Fixed Penalty account', { businessUnit, defendantType });
     this.dashboard.assertDashboard();
     this.dashboard.goToManualAccountCreation();
     this.originatorType.assertOnCreateOrTransferInPage();
-    this.originatorType.selectOriginatorType('New');
+    this.originatorType.selectOriginatorType(originatorType);
     this.originatorType.continueToCreateAccount();
     this.createAccount.selectBusinessUnit(businessUnit);
     this.createAccount.selectAccountType('Fixed Penalty');

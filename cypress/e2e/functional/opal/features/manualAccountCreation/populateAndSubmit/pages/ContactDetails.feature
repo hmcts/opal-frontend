@@ -6,7 +6,7 @@ Feature: Manual account creation - Contact Details
 
   Background:
     Given I am logged in with email "opal-test@hmcts.net"
-    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Contact details" task
 
   Scenario: (AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-419, @PO-371, @PO-370, @PO-358]

@@ -6,7 +6,7 @@ Feature: Manual account creation - Personal Details
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Personal details" task
     Then I should see the header containing text "Personal details"
 
