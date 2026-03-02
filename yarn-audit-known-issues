@@ -1,1 +1,18 @@
-{"value":"ajv","children":{"ID":1113214,"Issue":"ajv has ReDoS when using `$data` option","URL":"https://github.com/advisories/GHSA-2g4f-4pwh-qvx6","Severity":"moderate","Vulnerable Versions":"<8.18.0","Tree Versions":["8.17.1"],"Dependents":["schema-utils@npm:4.3.3"]}}
+➤ YN0001: RequestError: unable to get local issuer certificate
+    at ClientRequest.<anonymous> (/Users/nipapatel/opal-frontend/.yarn/releases/yarn-4.12.0.cjs:146:14258)
+    at Object.onceWrapper (node:events:633:26)
+    at ClientRequest.emit (node:events:530:35)
+    at c.emit (/Users/nipapatel/opal-frontend/.yarn/releases/yarn-4.12.0.cjs:141:22975)
+    at emitErrorEvent (node:_http_client:104:11)
+    at TLSSocket.socketErrorListener (node:_http_client:518:5)
+    at TLSSocket.emit (node:events:518:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+    at TLSSocket.onConnectSecure (node:_tls_wrap:1679:34)
+    at TLSSocket.emit (node:events:518:28)
+    at TLSSocket._finishInit (node:_tls_wrap:1078:8)
+    at ssl.onhandshakedone (node:_tls_wrap:864:12)
+
+➤ Errors happened when preparing the environment required to run this command.
+➤ This might be caused by packages being missing from the lockfile, in which case running "yarn install" might help.
