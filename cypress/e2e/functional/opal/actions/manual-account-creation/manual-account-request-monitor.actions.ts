@@ -84,9 +84,9 @@ export class ManualAccountRequestMonitorActions {
    * @returns Captured interceptions array.
    */
   private getCapturedRequests(alias: string): Cypress.Chainable<Interception[]> {
-    return cy.get(`@${alias}.all`).then((requests: unknown) =>
-      Array.isArray(requests) ? (requests as Interception[]) : [],
-    );
+    return cy
+      .get(`@${alias}.all`)
+      .then((requests: unknown) => (Array.isArray(requests) ? (requests as Interception[]) : []));
   }
 
   /**
