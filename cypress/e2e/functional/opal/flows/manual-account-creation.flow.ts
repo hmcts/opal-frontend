@@ -179,8 +179,8 @@ export class ManualAccountCreationFlow {
     this.createAccount.selectAccountType('Fine');
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
-    // cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
-    // this.accountDetails.assertOnAccountDetailsPage();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage(undefined, originatorType);
   }
 
   /**
@@ -1375,7 +1375,7 @@ export class ManualAccountCreationFlow {
     this.ensureOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
-    this.ensureOnCreateAccountPage();
+    this.ensureOnCreateAccountPage('New');
   }
 
   /**
