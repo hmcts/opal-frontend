@@ -430,7 +430,29 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
-  @PO-2766 @only
+  @PO-2793
+  Scenario: A checker approves a New account and defendant_accounts.originator_type is NEW
+    When I open Manual Account Creation
+    And I monitor draft account create requests
+    And I create a "New" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
+    And I complete standard manual fine account fields for originator type checks
+    When I check the manual account details
+    And I submit the manual account for review
+    Then the latest draft account create request should include originator type "NEW"
+    And I see the following text on the page "You've submitted this account for review"
+
+  @PO-2793
+  Scenario: A checker approves a Transfer in from England or Wales account and defendant_accounts.originator_type is TFO
+    When I open Manual Account Creation
+    And I monitor draft account create requests
+    And I create a "Transfer in" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
+    And I complete standard manual fine account fields for originator type checks
+    When I check the manual account details
+    And I submit the manual account for review
+    Then the latest draft account create request should include originator type "TFO"
+    And I see the following text on the page "You've submitted this account for review"
+
+  @PO-2766
   Scenario: User moves from through create account page links depending on selected options
     When I open Manual Account Creation
     Then I choose 'Transfer in' and continue to create account page
@@ -439,5 +461,3 @@ Feature: Manual account creation - Create Draft Account
 
     # AC6 Back link is on screening
     When I click the back link on create account page I return to Create or Transfer In page
-
-

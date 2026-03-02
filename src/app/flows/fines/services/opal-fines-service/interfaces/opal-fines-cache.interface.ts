@@ -21,6 +21,7 @@ export interface IOpalFinesCache {
   businessUnitsCache$: Observable<IOpalFinesBusinessUnitRefData> | null;
   businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> };
   localJusticeAreasCache$: Observable<IOpalFinesLocalJusticeAreaRefData> | null;
+  localJusticeAreasLjaTypeCache$: { [key: string]: Observable<IOpalFinesLocalJusticeAreaRefData> };
   resultsCache$: Observable<IOpalFinesResultsRefData> | null;
   resultCache$: { [key: string]: Observable<IOpalFinesResultRefData> };
   offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> };

@@ -12,11 +12,16 @@ import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
+import { IOpalFinesLocalJusticeAreaRefData } from '../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
 
-  const setupComponent = (formSubmit?: any, defType?: string) => {
+  const setupComponent = (
+    formSubmit?: any,
+    defType?: string,
+    localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+  ) => {
     finesMacState.businessUnit.business_unit_id = 73;
     if (defType) {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = defType;
@@ -42,7 +47,7 @@ describe('FinesMacCourtDetailsComponent', () => {
             parent: of('manual-account-creation'),
             snapshot: {
               data: {
-                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                localJusticeAreas,
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
               },
             },
@@ -364,6 +369,25 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (998)');
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
       cy.get(L.enforcementCourtListbox).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
+    },
+  );
+
+  it(
+    '(AC3, AC4) should only show PSA/CRWCRT local justice areas for filtered journeys (Fine/Confiscation)',
+    { tags: ['@PO-2761'] },
+    () => {
+      const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
+        count: 2,
+        refData: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.slice(1, 3),
+      };
+
+      setupComponent(null, 'adultOrYouthOnly', filteredLocalJusticeAreas);
+
+      cy.get(L.ljaInput).focus().click();
+      cy.get(L.ljaListbox).find('li').should('have.length', 2);
+      cy.get(L.ljaListbox).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
+      cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
+      cy.get(L.ljaListbox).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
     },
   );
 });

@@ -65,6 +65,7 @@ import {
   ManualCreateOrTransferInActions,
   OriginatorType,
 } from '../actions/manual-account-creation/create-transfer.actions';
+import { ManualAccountRequestMonitorActions } from '../actions/manual-account-creation/manual-account-request-monitor.actions';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -140,6 +141,7 @@ export class ManualAccountCreationFlow {
   private readonly paymentTerms = new ManualPaymentTermsActions();
   private readonly languagePreferences = new ManualLanguagePreferencesActions();
   private readonly reviewAccount = new ManualReviewAccountActions();
+  private readonly requestMonitor = new ManualAccountRequestMonitorActions();
   private readonly defaultBusinessUnitToken = 'default business unit';
 
   /**
@@ -172,13 +174,54 @@ export class ManualAccountCreationFlow {
     this.originatorType.selectOriginatorType(originatorType);
     this.originatorType.continueToCreateAccount();
 
-    this.ensureOnCreateAccountPage();
+    this.ensureOnCreateAccountPage(originatorType === 'Transfer in' ? 'Transfer in' : 'Create account');
     if (!this.isDefaultBusinessUnit(businessUnit)) {
       this.createAccount.selectBusinessUnit(businessUnit);
     }
     this.createAccount.selectAccountType('Fine');
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Starts a manual account journey for the provided originator and account type.
+   * For Fixed Penalty accounts this lands on the fixed-penalty-details page; for other account types it lands on account-details.
+   * @param businessUnit - Business unit to select.
+   * @param accountType - Account type to create.
+   * @param originatorType - New or Transfer in journey selection.
+   * @param defendantType - Optional defendant type (required for Fine/Fixed Penalty only).
+   */
+  startManualAccount(
+    businessUnit: string,
+    accountType: AccountType,
+    originatorType: OriginatorType,
+    defendantType?: DefendantType,
+  ): void {
+    log('flow', 'Start manual account', { businessUnit, accountType, originatorType, defendantType });
+    this.ensureOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType(originatorType);
+    this.originatorType.continueToCreateAccount();
+
+    this.ensureOnCreateAccountPage(originatorType === 'Transfer in' ? 'Transfer in' : 'Create account');
+    if (!this.isDefaultBusinessUnit(businessUnit)) {
+      this.createAccount.selectBusinessUnit(businessUnit);
+    }
+    this.createAccount.selectAccountType(accountType);
+
+    const requiresDefendantType = accountType === 'Fine' || accountType === 'Fixed Penalty';
+    if (requiresDefendantType && defendantType) {
+      this.createAccount.selectDefendantType(defendantType);
+    }
+
+    this.createAccount.continueToAccountDetails();
+
+    if (accountType === 'Fixed Penalty') {
+      cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/fixed-penalty-details');
+      return;
+    }
+
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
@@ -1376,6 +1419,54 @@ export class ManualAccountCreationFlow {
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
     this.ensureOnCreateAccountPage();
+  }
+
+  /**
+   * Ensures the create-or-transfer-in page is visible before journey selection.
+   */
+  ensureCreateOrTransferInPage(): void {
+    log('flow', 'Ensure create or transfer in page is visible');
+    this.ensureOnCreateOrTransferInPage();
+  }
+
+  /**
+   * Starts intercepting local justice area lookup requests.
+   */
+  monitorLocalJusticeAreasRequests(): void {
+    log('flow', 'Monitor local justice area requests');
+    this.requestMonitor.monitorLocalJusticeAreasRequests();
+  }
+
+  /**
+   * Asserts that the latest local justice area request includes exactly the expected lja_types.
+   * @param expectedLjaTypes - Expected lja_type values (order-insensitive).
+   */
+  assertLatestLocalJusticeAreasRequestIncludes(expectedLjaTypes: string[]): void {
+    this.requestMonitor.assertLatestLocalJusticeAreasRequestIncludes(expectedLjaTypes);
+  }
+
+  /**
+   * Asserts that the latest local justice area request excludes specific lja_types.
+   * @param excludedLjaTypes - lja_type values that must be absent.
+   */
+  assertLatestLocalJusticeAreasRequestExcludes(excludedLjaTypes: string[]): void {
+    this.requestMonitor.assertLatestLocalJusticeAreasRequestExcludes(excludedLjaTypes);
+  }
+
+  /**
+   * Starts intercepting draft account create requests.
+   */
+  monitorDraftAccountCreateRequests(): void {
+    log('flow', 'Monitor draft account create requests');
+    this.requestMonitor.monitorDraftAccountCreateRequests();
+  }
+
+  /**
+   * Asserts originator_type from the latest draft account create request payload.
+   * @param expectedOriginatorType - Expected payload.account.originator_type.
+   */
+  assertLatestDraftAccountCreateOriginatorType(expectedOriginatorType: string): void {
+    this.requestMonitor.assertLatestDraftAccountCreateOriginatorType(expectedOriginatorType);
   }
 
   /**
@@ -2757,21 +2848,35 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * Ensures the create or transfer in page is loaded by navigating from the dashboard.
-   * Ensures the originator type page is loaded for Manual Account Creation.
+   * Ensures the create or transfer in page is loaded.
+   * If currently on Create account, navigates back; otherwise navigates from dashboard.
    */
   private ensureOnCreateOrTransferInPage(): void {
-    this.dashboard.goToManualAccountCreation();
-    this.originatorType.assertOnCreateOrTransferInPage();
+    cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
+      if (pathname.includes('/create-or-transfer-in') || pathname.includes('/originator-type')) {
+        this.originatorType.assertOnCreateOrTransferInPage();
+        return;
+      }
+
+      if (pathname.includes('/create-account')) {
+        this.createAccount.selectBackLink();
+        this.originatorType.assertOnCreateOrTransferInPage();
+        return;
+      }
+
+      this.dashboard.goToManualAccountCreation();
+      this.originatorType.assertOnCreateOrTransferInPage();
+    });
   }
 
   /**
    * Ensures the Manual Account Creation start page is loaded from the dashboard.
    * Clicks the dashboard entry for Manual Account Creation, asserts the create account
    * header is visible, and should be called before selecting business unit/account/defendant type.
+   * @param expectedHeader - Expected page header text (Create account or Transfer in).
    */
-  private ensureOnCreateAccountPage(): void {
-    this.createAccount.assertOnCreateAccountPage();
+  private ensureOnCreateAccountPage(expectedHeader: string = 'Create account'): void {
+    this.createAccount.assertOnCreateAccountPage(expectedHeader);
   }
 
   /**
