@@ -106,6 +106,15 @@ export class ManualAccountDetailsActions {
   }
 
   /**
+   * Asserts the entry type for the account.
+   * @param expectedType Expected entry type ("New account" or "Transfer in from England or Wales").
+   */
+  assertEntryType(expectedType: 'New account' | 'Transfer in from England or Wales'): void {
+    log('assert', 'Asserting entry type contain correct value', { expectedType });
+    cy.get(L.entryType).should('contain.text', expectedType);
+  }
+
+  /**
    * Opens the Change link for a language preference row.
    * @param label - Row label ("Document language" or "Hearing language").
    */
