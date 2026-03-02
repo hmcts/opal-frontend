@@ -481,6 +481,42 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
+   * Ensures the offence code lookup has completed before allowing submission.
+   * If a 7 or 8 character code has no resolved offence id yet, a pending-validation
+   * error is applied so the form remains invalid and the user sees a clear message.
+   */
+  private enforceOffenceCodeValidationBeforeSubmit(): void {
+    const offenceCodeControl = this.form.get('fm_offence_details_offence_cjs_code') as FormControl | null;
+    const offenceIdControl = this.form.get('fm_offence_details_offence_id') as FormControl | null;
+
+    if (!offenceCodeControl || !offenceIdControl) {
+      return;
+    }
+
+    const offenceCode = offenceCodeControl.value ?? '';
+    const isLookupLength = offenceCode.length >= 7 && offenceCode.length <= 8;
+    const hasOffenceId = offenceIdControl.value !== null && offenceIdControl.value !== undefined;
+    const hasInvalidOffenceCodeError = Boolean(offenceCodeControl.errors?.['invalidOffenceCode']);
+    const hasOffenceCodeLookupFailedError = Boolean(offenceCodeControl.errors?.['offenceCodeLookupFailed']);
+
+    if (isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError && !hasOffenceCodeLookupFailedError) {
+      const currentErrors = offenceCodeControl.errors;
+      const updatedErrors = currentErrors
+        ? { ...currentErrors, offenceCodeValidationPending: true }
+        : { offenceCodeValidationPending: true };
+      offenceCodeControl.setErrors(updatedErrors, { emitEvent: false });
+      return;
+    }
+
+    const currentErrors = offenceCodeControl.errors;
+    if (currentErrors?.['offenceCodeValidationPending']) {
+      const remainingErrors = { ...currentErrors };
+      delete remainingErrors['offenceCodeValidationPending'];
+      offenceCodeControl.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null, { emitEvent: false });
+    }
+  }
+
+  /**
    * Navigates to the minor creditor page for the specified row index.
    *
    * @param rowIndex - The index of the row.
@@ -610,6 +646,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   public override handleFormSubmit(event: SubmitEvent): void {
     this.checkImpositionMinorCreditors();
+    this.enforceOffenceCodeValidationBeforeSubmit();
     super.handleFormSubmit(event);
   }
 
