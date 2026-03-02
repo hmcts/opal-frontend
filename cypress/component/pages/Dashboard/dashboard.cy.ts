@@ -68,11 +68,15 @@ describe('DashboardComponent', () => {
     cy.get(L.checkAndValidateDraftAccountsLink).contains('Check and Validate Draft Accounts').should('exist');
   });
 
-  it.skip('should not show CAV and CAM links when user does not have correct permissions', { tags: ['@PO-604'] }, () => {
-    setupComponent(NO_PERMS_DASHBOARD_USER_STATE_MOCK);
-    cy.get('span').contains('noPermissionsTestUser@HMCTS.NET').should('exist');
-    cy.get(L.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
-    cy.get(L.createAndManageDraftAccountsLink).should('not.exist');
-    cy.get(L.checkAndValidateDraftAccountsLink).should('not.exist');
-  });
+  it.skip(
+    'should not show CAV and CAM links when user does not have correct permissions',
+    { tags: ['@PO-604'] },
+    () => {
+      setupComponent(NO_PERMS_DASHBOARD_USER_STATE_MOCK);
+      cy.get('span').contains('noPermissionsTestUser@HMCTS.NET').should('exist');
+      cy.get(L.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
+      cy.get(L.createAndManageDraftAccountsLink).should('not.exist');
+      cy.get(L.checkAndValidateDraftAccountsLink).should('not.exist');
+    },
+  );
 });
