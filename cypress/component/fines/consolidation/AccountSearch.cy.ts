@@ -1,81 +1,31 @@
-import { mount } from 'cypress/angular';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
-import { FinesConConsolidateAccComponent } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-consolidate-acc/fines-con-consolidate-acc.component';
-import { FinesConStore } from 'src/app/flows/fines/fines-con/stores/fines-con.store';
-import { FINES_CON_SELECT_BU_FORM_DATA_MOCK } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-data.mock';
-import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-company.mock';
-import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { AccountSearchLocators } from '../../../shared/selectors/consolidation/AccountSearch.locators';
-import { of } from 'rxjs';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-empty.mock';
 import { IFinesConSearchAccountState } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
+import { setupConsolidationComponent as mountConsolidationComponent } from './setup/SetupComponent';
+import {
+  ConsolidationTabFragment,
+  IComponentProperties,
+} from './setup/setupComponent.interface';
 
 describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
-  type DefendantType = 'individual' | 'company';
-
-  let finesConSelectBuFormData = structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
   let finesConSearchAccountFormData: IFinesConSearchAccountState = structuredClone(
     FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData,
   );
 
-  const setupComponent = (
-    updateSearchSpy?: (formData: IFinesConSearchAccountState) => void,
-    setupRouterSpy: boolean = false,
-    defendantType: DefendantType = 'individual',
-  ) => {
-    finesConSelectBuFormData =
-      defendantType === 'company'
-        ? structuredClone(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData)
-        : structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
+  const defaultComponentProperties: IComponentProperties = {
+    defendantType: 'individual',
+    fragments: 'search',
+  };
 
-    return mount(FinesConConsolidateAccComponent, {
-      providers: [
-        provideRouter([]),
-        {
-          provide: FinesConStore,
-          useFactory: () => {
-            const store = new FinesConStore();
-            store.updateSelectBuForm(finesConSelectBuFormData);
-            store.updateSearchAccountFormTemporary(finesConSearchAccountFormData);
-            if (updateSearchSpy) {
-              const originalUpdate = store.updateSearchAccountFormTemporary.bind(store);
-              store.updateSearchAccountFormTemporary = (formData: IFinesConSearchAccountState) => {
-                updateSearchSpy(formData);
-                originalUpdate(formData);
-              };
-            }
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: {},
-            fragment: of('search'),
-            snapshot: {
-              data: {
-                businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
-              },
-            },
-          },
-        },
-      ],
-    }).then(({ fixture }) => {
-      const store = fixture.componentRef.injector.get(FinesConStore);
-      cy.wrap(store).as('finesConStore');
-      cy.wrap(fixture).as('consolidationFixture');
-
-      if (!setupRouterSpy) {
-        return;
-      }
-
-      const router = fixture.componentRef.injector.get(Router);
-      cy.spy(router, 'navigate').as('routerNavigate');
+  const setupConsolidationComponent = (componentProperties: IComponentProperties = {}) => {
+    return mountConsolidationComponent({
+      ...defaultComponentProperties,
+      ...componentProperties,
+      searchAccountFormData: finesConSearchAccountFormData,
     });
   };
 
   beforeEach(() => {
-    finesConSelectBuFormData = structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
     finesConSearchAccountFormData = structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData);
   });
 
@@ -84,7 +34,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     cy.get(inlineSelector).should('be.visible').and('contain', message);
   };
 
-  const switchToTab = (tab: 'search' | 'results' | 'for-consolidation') => {
+  const switchToTab = (tab: ConsolidationTabFragment) => {
     cy.get('@finesConStore').then((store: any) => {
       store.setActiveTab(tab);
     });
@@ -107,7 +57,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   };
 
   it('AC1. Search screen mirrors expected field types, headings and actions', () => {
-    setupComponent();
+    setupConsolidationComponent();
 
     cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
     cy.get(AccountSearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
@@ -158,7 +108,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it('AC2. Selecting Search with no populated fields triggers no action and user stays on same screen', () => {
     const updateSearchSpy = Cypress.sinon.spy();
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
 
     cy.get(AccountSearchLocators.searchButton).click();
     cy.get(AccountSearchLocators.errorSummary).should('not.exist');
@@ -184,7 +134,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_individuals_post_code: 'SW1A!AA',
       },
     };
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
     cy.get(AccountSearchLocators.searchButton).click();
 
     const expectedValidationErrors = [
@@ -236,7 +186,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_individuals_post_code: 'AB12CDEFG',
       },
     };
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
     cy.get(AccountSearchLocators.searchButton).click();
 
     const expectedValidationErrors = [
@@ -280,7 +230,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     finesConSearchAccountFormData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_first_names =
       'John';
 
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
     cy.get(AccountSearchLocators.searchButton).click();
 
     assertValidationError('Enter last name', AccountSearchLocators.lastNameError);
@@ -293,7 +243,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     const updateSearchSpy = Cypress.sinon.spy();
     finesConSearchAccountFormData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_date_of_birth =
       '01/01/2000';
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
     cy.get(AccountSearchLocators.searchButton).click();
 
     assertValidationError('Enter last name', AccountSearchLocators.lastNameError);
@@ -305,7 +255,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   it('AC5c. User selects Include aliases without Last name and sees Enter last name', () => {
     const updateSearchSpy = Cypress.sinon.spy();
     finesConSearchAccountFormData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_include_aliases = true;
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
     cy.get(AccountSearchLocators.searchButton).click();
 
     assertValidationError('Enter last name', AccountSearchLocators.lastNameError);
@@ -318,7 +268,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     const updateSearchSpy = Cypress.sinon.spy();
     finesConSearchAccountFormData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_last_name_exact_match = true;
 
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
     cy.get(AccountSearchLocators.searchButton).click();
 
     assertValidationError('Enter last name', AccountSearchLocators.lastNameError);
@@ -331,7 +281,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     const updateSearchSpy = Cypress.sinon.spy();
     finesConSearchAccountFormData.fcon_search_account_number = '12345678';
 
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
     cy.get(AccountSearchLocators.searchButton).click();
 
     cy.then(() => {
@@ -357,7 +307,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     const updateSearchSpy = Cypress.sinon.spy();
     finesConSearchAccountFormData.fcon_search_account_national_insurance_number = 'AB123456C';
 
-    setupComponent(updateSearchSpy);
+    setupConsolidationComponent({ updateSearchSpy });
     cy.get(AccountSearchLocators.searchButton).click();
 
     cy.then(() => {
@@ -395,7 +345,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_individuals_post_code: 'SW1A 1AA',
       },
     };
-    setupComponent();
+    setupConsolidationComponent();
 
     cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').click();
 
@@ -418,7 +368,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_individuals_post_code: 'AB1 2CD',
       },
     };
-    setupComponent();
+    setupConsolidationComponent();
 
     cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').click();
     assertSearchFieldsAreCleared();
@@ -439,7 +389,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   // Company search scenarios
 
   it('AC1. Search screen mirrors expected field types, headings and actions', () => {
-    setupComponent(undefined, false, 'company');
+    setupConsolidationComponent({ defendantType: 'company' });
 
     cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
     cy.get(AccountSearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
@@ -494,7 +444,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it('AC2. Selecting Search with no populated fields triggers no action and user stays on same screen', () => {
     const updateSearchSpy = Cypress.sinon.spy();
-    setupComponent(updateSearchSpy, false, 'company');
+    setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
 
     cy.get(AccountSearchLocators.searchButton).click();
     cy.get(AccountSearchLocators.errorSummary).should('not.exist');
@@ -516,7 +466,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_companies_post_code: 'TE5&5TN',
       },
     };
-    setupComponent(updateSearchSpy, false, 'company');
+    setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
     cy.get(AccountSearchLocators.searchButton).click();
 
     const expectedValidationErrors = [
@@ -565,7 +515,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_companies_post_code: '123456789',
       },
     };
-    setupComponent(updateSearchSpy, false, 'company');
+    setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
     cy.get(AccountSearchLocators.searchButton).click();
 
     const expectedValidationErrors = [
@@ -614,7 +564,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_companies_post_code: null,
       },
     };
-    setupComponent(updateSearchSpy, false, 'company');
+    setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
     cy.get(AccountSearchLocators.searchButton).click();
 
     const expectedValidationErrors = [
@@ -648,7 +598,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_companies_post_code: null,
       },
     };
-    setupComponent(updateSearchSpy, false, 'company');
+    setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
     cy.get(AccountSearchLocators.searchButton).click();
 
     //AC6a here. Should confirm page attempts to move to a Search error screen. Cant be covered. Probably remove from this test.
@@ -674,7 +624,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         fcon_search_account_companies_post_code: 'L1 1TS',
       },
     };
-    setupComponent(updateSearchSpy, false, 'company');
+    setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
 
     // Confirming data has been retained after tabbing
     cy.get(AccountSearchLocators.accountNumberInput).should('have.value', '12345678');
