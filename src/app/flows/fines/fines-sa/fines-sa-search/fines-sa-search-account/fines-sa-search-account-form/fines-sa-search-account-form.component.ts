@@ -31,9 +31,9 @@ import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
-import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
+import { finesSaOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, ACCOUNT_NUMBER_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -145,7 +145,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       {
         fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
         fsa_search_account_number: new FormControl<string | null>(null, [
-          patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
+          patternValidator(ACCOUNT_NUMBER_PATTERN, 'invalidFormat'),
           ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(9),
         ]),
@@ -159,7 +159,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
         fsa_search_account_major_creditors_search_criteria: new FormGroup({}),
         fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
       },
-      { validators: atLeastOneCriteriaValidator },
+      { validators: finesSaOneCriteriaValidator },
     );
   }
 

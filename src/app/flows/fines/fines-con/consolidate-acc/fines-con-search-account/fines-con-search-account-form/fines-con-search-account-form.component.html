@@ -1,0 +1,65 @@
+<div class="govuk-grid-column-two-thirds">
+  <opal-lib-govuk-error-summary [errors]="formErrorSummaryMessage"></opal-lib-govuk-error-summary>
+
+  <form [formGroup]="form" (ngSubmit)="handleFormSubmit($event)">
+    @if (defendantType === 'individual') {
+      <p class="govuk-body govuk-dark-grey-text-colour govuk-!-margin-top-0">
+        Use quick search to search for an account using either account number or National Insurance number, or use
+        advanced search
+      </p>
+    } @else {
+      <p class="govuk-body govuk-dark-grey-text-colour govuk-!-margin-top-0">
+        Use quick search to search for an account using account number, or use advanced search
+      </p>
+    }
+    <h2 class="govuk-heading-m govuk-!-margin-top-4">Quick search</h2>
+
+    <div class="govuk-form-group">
+      <opal-lib-govuk-text-input
+        labelText="Account number"
+        labelClasses="govuk-label--s"
+        hintText="For example, 12345678 or 12345678A"
+        inputId="fcon_search_account_number"
+        inputName="fcon_search_account_number"
+        inputClasses="govuk-input--width-10"
+        [control]="form.get('fcon_search_account_number')"
+        [errors]="formControlErrorMessages['fcon_search_account_number']"
+      ></opal-lib-govuk-text-input>
+    </div>
+
+    @if (defendantType === 'individual') {
+      <div class="govuk-form-group">
+        <opal-lib-govuk-text-input
+          labelText="National Insurance number"
+          labelClasses="govuk-label--s"
+          inputId="fcon_search_account_national_insurance_number"
+          inputName="fcon_search_account_national_insurance_number"
+          inputClasses="govuk-input--width-10"
+          [control]="form.get('fcon_search_account_national_insurance_number')"
+          [errors]="formControlErrorMessages['fcon_search_account_national_insurance_number']"
+        ></opal-lib-govuk-text-input>
+      </div>
+    }
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+    @if (defendantType === 'individual') {
+      <app-fines-con-search-account-form-individuals
+        [form]="form"
+        [formControlErrorMessages]="formControlErrorMessages"
+      >
+      </app-fines-con-search-account-form-individuals>
+    } @else if (defendantType === 'company') {
+      <p class="govuk-body govuk-!-color-grey-1">Companies search is not yet developed.</p>
+    }
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
+        <div class="govuk-button-group govuk-!-margin-bottom-0">
+          <button class="govuk-button" type="submit" buttonId="submitForm">Search</button>
+          <a href="#" class="govuk-link govuk-!-margin-left-2" (click)="clearSearchForm($event)"> Clear search </a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,84 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+</div>
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">Consolidate accounts</h1>
+</div>
+
+<div class="govuk-grid-column-three-quarters">
+  <opal-lib-govuk-summary-list summaryListId="consolidateAccSummary">
+    <div
+      opal-lib-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+      summaryListId="consolidateAccSummary"
+      summaryListRowId="businessUnit"
+    >
+      <ng-container name>Business Unit</ng-container>
+      <ng-container value>{{ businessUnitText }}</ng-container>
+    </div>
+    <div
+      opal-lib-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+      summaryListId="consolidateAccSummary"
+      summaryListRowId="defendantType"
+    >
+      <ng-container name>Defendant Type</ng-container>
+      <ng-container value>{{ finesConStore.getDefendantType() | titlecase }}</ng-container>
+    </div>
+  </opal-lib-govuk-summary-list>
+</div>
+
+<div class="govuk-grid-column-full govuk-!-padding-top-2">
+  <opal-lib-moj-sub-navigation subNavId="consolidate-acc-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="search-tab"
+      [activeSubNavItemFragment]="finesConStore.activeTab()"
+      subNavItemFragment="search"
+      [subNavItemText]="tabs.search"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="results-tab"
+      [activeSubNavItemFragment]="finesConStore.activeTab()"
+      subNavItemFragment="results"
+      [subNavItemText]="tabs.results"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="for-consolidation-tab"
+      [activeSubNavItemFragment]="finesConStore.activeTab()"
+      subNavItemFragment="for-consolidation"
+      [subNavItemText]="tabs['for-consolidation']"
+    ></li>
+  </opal-lib-moj-sub-navigation>
+</div>
+
+<div class="govuk-grid-two-thirds">
+  @switch (finesConStore.activeTab()) {
+    @case ('search') {
+      <app-fines-con-search-account [defendantType]="getDefendantType()"></app-fines-con-search-account>
+    }
+    @case ('results') {
+      <div class="tab-content">
+        <!-- Results tab content will be loaded here from routing -->
+      </div>
+    }
+    @case ('for-consolidation') {
+      <div class="tab-content">
+        <!-- For consolidation tab content will be loaded here from routing -->
+      </div>
+    }
+  }
+</div>
+
+<div class="govuk-grid-column-full">
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+</div>
+
+<div class="govuk-grid-column-full govuk-!-margin-bottom-7 govuk-!-margin-top-1">
+  <opal-lib-govuk-cancel-link
+    cancelLinkText="Cancel account consolidation"
+    (linkClickEvent)="cancelConsolidation()"
+  ></opal-lib-govuk-cancel-link>
+</div>
