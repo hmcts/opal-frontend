@@ -6,15 +6,13 @@ Feature: Fines Account Consolidation
     Then I should be on the dashboard
 
   @PO-2412
-  Scenario: AC1 - User is navigated to Search tab for Individuals after selecting BU and Individual
+  Scenario: Consolidation search state persists across tab navigation
+    # AC1: When I open Consolidate accounts
     When I open Consolidate accounts
     And I continue to the consolidation account search as an "Individual" defendant
     Then I am on the consolidation Search tab for Individuals
 
-  @PO-2412
-  Scenario: AC8 - Switching tabs retains entered Search data
-    When I open Consolidate accounts
-    And I continue to the consolidation account search as an "Individual" defendant
+    # AC8: Switching tabs retains entered Search data
     And I enter the following consolidation search details:
       | account number             | 12345678    |
       | national insurance number  | AB123456C   |
