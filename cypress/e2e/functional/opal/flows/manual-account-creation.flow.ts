@@ -65,6 +65,7 @@ import {
   ManualCreateOrTransferInActions,
   OriginatorType,
 } from '../actions/manual-account-creation/create-transfer.actions';
+import { ManualAccountRequestMonitorActions } from '../actions/manual-account-creation/manual-account-request-monitor.actions';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -140,6 +141,7 @@ export class ManualAccountCreationFlow {
   private readonly paymentTerms = new ManualPaymentTermsActions();
   private readonly languagePreferences = new ManualLanguagePreferencesActions();
   private readonly reviewAccount = new ManualReviewAccountActions();
+  private readonly requestMonitor = new ManualAccountRequestMonitorActions();
   private readonly defaultBusinessUnitToken = 'default business unit';
 
   /**
@@ -1417,6 +1419,54 @@ export class ManualAccountCreationFlow {
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
     this.ensureOnCreateAccountPage();
+  }
+
+  /**
+   * Ensures the create-or-transfer-in page is visible before journey selection.
+   */
+  ensureCreateOrTransferInPage(): void {
+    log('flow', 'Ensure create or transfer in page is visible');
+    this.ensureOnCreateOrTransferInPage();
+  }
+
+  /**
+   * Starts intercepting local justice area lookup requests.
+   */
+  monitorLocalJusticeAreasRequests(): void {
+    log('flow', 'Monitor local justice area requests');
+    this.requestMonitor.monitorLocalJusticeAreasRequests();
+  }
+
+  /**
+   * Asserts that the latest local justice area request includes exactly the expected lja_types.
+   * @param expectedLjaTypes - Expected lja_type values (order-insensitive).
+   */
+  assertLatestLocalJusticeAreasRequestIncludes(expectedLjaTypes: string[]): void {
+    this.requestMonitor.assertLatestLocalJusticeAreasRequestIncludes(expectedLjaTypes);
+  }
+
+  /**
+   * Asserts that the latest local justice area request excludes specific lja_types.
+   * @param excludedLjaTypes - lja_type values that must be absent.
+   */
+  assertLatestLocalJusticeAreasRequestExcludes(excludedLjaTypes: string[]): void {
+    this.requestMonitor.assertLatestLocalJusticeAreasRequestExcludes(excludedLjaTypes);
+  }
+
+  /**
+   * Starts intercepting draft account create requests.
+   */
+  monitorDraftAccountCreateRequests(): void {
+    log('flow', 'Monitor draft account create requests');
+    this.requestMonitor.monitorDraftAccountCreateRequests();
+  }
+
+  /**
+   * Asserts originator_type from the latest draft account create request payload.
+   * @param expectedOriginatorType - Expected payload.account.originator_type.
+   */
+  assertLatestDraftAccountCreateOriginatorType(expectedOriginatorType: string): void {
+    this.requestMonitor.assertLatestDraftAccountCreateOriginatorType(expectedOriginatorType);
   }
 
   /**
@@ -2802,18 +2852,13 @@ export class ManualAccountCreationFlow {
    * If currently on Create account, navigates back; otherwise navigates from dashboard.
    */
   private ensureOnCreateOrTransferInPage(): void {
-    const originatorHeader = 'Do you want to create a new account or transfer in?';
-    const createAccountHeader = 'Create account';
-
-    cy.get('body').then(($body) => {
-      const headerText = $body.find('h1.govuk-heading-l').first().text().trim();
-
-      if (headerText.includes(originatorHeader)) {
+    cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
+      if (pathname.includes('/create-or-transfer-in') || pathname.includes('/originator-type')) {
         this.originatorType.assertOnCreateOrTransferInPage();
         return;
       }
 
-      if (headerText.includes(createAccountHeader)) {
+      if (pathname.includes('/create-account')) {
         this.createAccount.selectBackLink();
         this.originatorType.assertOnCreateOrTransferInPage();
         return;

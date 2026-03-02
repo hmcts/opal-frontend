@@ -4,8 +4,7 @@ Feature: Manual account creation - Local justice area filtering
 
   Background:
     Given I am logged in with email "opal-test@hmcts.net"
-    When I open Manual Account Creation from the dashboard
-    And I ensure I am on the create or transfer in page
+    When I open Manual Account Creation
     And I monitor local justice areas requests
 
   # AC2, AC3, AC4, AC6
@@ -51,7 +50,7 @@ Feature: Manual account creation - Local justice area filtering
   Scenario: Fixed Penalty + New requests all local justice area types (Prosecutors all remain visible)
     When I create a "New" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"
-    Then the latest local justice areas request should include lja types:
+    And the latest local justice areas request should include lja types:
       | CRWCRT |
       | LJA    |
       | SJCRT  |
@@ -63,7 +62,7 @@ Feature: Manual account creation - Local justice area filtering
   Scenario: Fixed Penalty + Transfer in requests all local justice area types (Prosecutors all remain visible)
     When I create a "Transfer in" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
     Then I should see the header containing text "Fixed Penalty details"
-    Then the latest local justice areas request should include lja types:
+    And the latest local justice areas request should include lja types:
       | CRWCRT |
       | LJA    |
       | SJCRT  |
