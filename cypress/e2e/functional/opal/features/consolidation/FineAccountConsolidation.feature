@@ -5,13 +5,13 @@ Feature: Fines Account Consolidation
     Given I am logged in with email "opal-test@HMCTS.NET"
     Then I should be on the dashboard
 
-  @PO-2412
+  @PO-2413
   Scenario: AC1 - User is navigated to Search tab for Individuals after selecting BU and Individual
     When I open Consolidate accounts
     And I continue to the consolidation account search as an "Individual" defendant
     Then I am on the consolidation Search tab for Individuals
 
-  @PO-2412
+  @PO-2413
   Scenario: AC8 - Switching tabs retains entered Search data
     When I open Consolidate accounts
     And I continue to the consolidation account search as an "Individual" defendant
@@ -26,8 +26,19 @@ Feature: Fines Account Consolidation
       | last name exact match   | true       |
       | first names exact match | true       |
       | include aliases         | true       |
-    Then I click Search on consolidation account search
     And I switch consolidation tabs and return to Search
+    Then the consolidation search details are retained:
+      # | account number            | 12345678   |
+      # | national insurance number | AB123456C  |
+      | last name               | Smith      |
+      | first names             | John       |
+      | date of birth           | 01/01/1990 |
+      | address line 1          | 1 High St  |
+      | postcode                | SW1A 1AA   |
+      | last name exact match   | true       |
+      | first names exact match | true       |
+      | include aliases         | true       |
+    Then I click Search on consolidation account search
     Then the consolidation search details are retained:
       # | account number            | 12345678   |
       # | national insurance number | AB123456C  |
@@ -57,8 +68,14 @@ Feature: Fines Account Consolidation
       | postcode           | SW1A 1AA     |
       | Search exact match | true         |
       | include aliases    | true         |
-    Then I click Search on consolidation account search
     And I switch consolidation tabs and return to Search
+    Then the consolidation search details are retained:
+      | company name       | Company Name |
+      | address line 1     | 1 High St    |
+      | postcode           | SW1A 1AA     |
+      | Search exact match | true         |
+      | include aliases    | true         |
+    Then I click Search on consolidation account search
     Then the consolidation search details are retained:
       | company name       | Company Name |
       | address line 1     | 1 High St    |
