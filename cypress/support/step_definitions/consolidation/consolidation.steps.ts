@@ -44,11 +44,6 @@ When('I switch consolidation tabs and return to Search', () => {
   consolidationFlow().switchTabsAndReturnToSearch();
 });
 
-When('I switch consolidation tabs and return to Search - Company', () => {
-  log('step', 'Switching consolidation tabs and returning to Search');
-  consolidationFlow().switchTabsAndReturnToSearchCompany();
-});
-
 Then('the consolidation search details are retained:', (table: DataTable) => {
   log('step', 'Asserting consolidation search details are retained');
   consolidationFlow().assertConsolidationSearchDetails(table);

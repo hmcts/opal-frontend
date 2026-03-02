@@ -5,7 +5,6 @@
 
 import { SelectBusinessUnitLocators } from '../../../../../shared/selectors/consolidation/SelectBusinessUnit.locators';
 import { AccountSearchLocators } from '../../../../../shared/selectors/consolidation/AccountSearch.locators';
-import { CompanySearchLocators } from 'cypress/shared/selectors/consolidation/CompanySearch.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('ConsolidationActions');
@@ -32,14 +31,15 @@ export class ConsolidationActions {
   };
 
   private readonly companyTextFieldSelectorMap: Record<string, string> = {
-    'company name': CompanySearchLocators.companyNameInput,
-    'address line 1': CompanySearchLocators.addressLine1Input,
-    postcode: CompanySearchLocators.postCodeInput,
+    'account number': AccountSearchLocators.accountNumberInput,
+    'company name': AccountSearchLocators.companyNameInput,
+    'address line 1': AccountSearchLocators.companyAddressLine1Input,
+    postcode: AccountSearchLocators.companyPostCodeInput,
   };
 
   private readonly companyCheckboxSelectorMap: Record<string, string> = {
-    'search exact match': CompanySearchLocators.companyNameExactMatchCheckbox,
-    'include aliases': CompanySearchLocators.includeAliasesCheckbox,
+    'search exact match': AccountSearchLocators.companyNameExactMatchCheckbox,
+    'include aliases': AccountSearchLocators.companyIncludeAliasesCheckbox,
   };
 
   /**
@@ -118,10 +118,10 @@ export class ConsolidationActions {
     log('assert', 'Verifying user is on consolidation Search tab for Companies');
 
     cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/consolidate-accounts');
-    cy.get(CompanySearchLocators.searchTabLink, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
-    cy.get(CompanySearchLocators.defendantTypeValue).should('contain', 'Company');
-    cy.get(CompanySearchLocators.accountNumberInput).should('be.visible');
-    cy.get(CompanySearchLocators.companyNameInput).should('be.visible');
+    cy.get(AccountSearchLocators.searchTabLink, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
+    cy.get(AccountSearchLocators.defendantTypeValue).should('contain', 'Company');
+    cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
+    cy.get(AccountSearchLocators.companyNameInput).should('be.visible');
   }
 
   /**
@@ -176,16 +176,16 @@ export class ConsolidationActions {
   /** Switches Search -> Results -> For consolidation -> Search. */
   public switchTabsAndReturnToSearchCompany(): void {
     log('navigate', 'Switching from Search to Results');
-    cy.get(CompanySearchLocators.resultsTab).click();
-    cy.get(CompanySearchLocators.accountNumberInput).should('not.exist');
+    cy.get(AccountSearchLocators.resultsTab).click();
+    cy.get(AccountSearchLocators.accountNumberInput).should('not.exist');
 
     log('navigate', 'Switching from Results to For consolidation');
-    cy.get(CompanySearchLocators.forConsolidationTab).click();
-    cy.get(CompanySearchLocators.accountNumberInput).should('not.exist');
+    cy.get(AccountSearchLocators.forConsolidationTab).click();
+    cy.get(AccountSearchLocators.accountNumberInput).should('not.exist');
 
     log('navigate', 'Returning to Search tab');
-    cy.get(CompanySearchLocators.searchTab).click();
-    cy.get(CompanySearchLocators.accountNumberInput).should('be.visible');
+    cy.get(AccountSearchLocators.searchTab).click();
+    cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
   }
 
   /**

@@ -6,12 +6,13 @@ import { FINES_CON_SELECT_BU_FORM_DATA_MOCK } from 'src/app/flows/fines/fines-co
 import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-company.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { AccountSearchLocators } from '../../../shared/selectors/consolidation/AccountSearch.locators';
-import { CompanySearchLocators } from '../../../shared/selectors/consolidation/CompanySearch.locators';
 import { of } from 'rxjs';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-empty.mock';
 import { IFinesConSearchAccountState } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
 
-describe('FinesConConsolidateAccComponent - Account Search', () => {
+describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
+  type DefendantType = 'individual' | 'company';
+
   let finesConSelectBuFormData = structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
   let finesConSearchAccountFormData: IFinesConSearchAccountState = structuredClone(
     FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData,
@@ -20,7 +21,13 @@ describe('FinesConConsolidateAccComponent - Account Search', () => {
   const setupComponent = (
     updateSearchSpy?: (formData: IFinesConSearchAccountState) => void,
     setupRouterSpy: boolean = false,
+    defendantType: DefendantType = 'individual',
   ) => {
+    finesConSelectBuFormData =
+      defendantType === 'company'
+        ? structuredClone(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData)
+        : structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
+
     return mount(FinesConConsolidateAccComponent, {
       providers: [
         provideRouter([]),
@@ -163,6 +170,7 @@ describe('FinesConConsolidateAccComponent - Account Search', () => {
   it('AC3. Invalid search criteria display the expected errors and no search update occurs', () => {
     const updateSearchSpy = Cypress.sinon.spy();
     finesConSearchAccountFormData = {
+      ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
       fcon_search_account_number: '1234567',
       fcon_search_account_national_insurance_number: 'AB12345$C',
       fcon_search_account_individuals_search_criteria: {
@@ -214,6 +222,7 @@ describe('FinesConConsolidateAccComponent - Account Search', () => {
   it('AC4. Max length validation errors display expected messages and no search update occurs', () => {
     const updateSearchSpy = Cypress.sinon.spy();
     finesConSearchAccountFormData = {
+      ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
       fcon_search_account_number: '123456789A',
       fcon_search_account_national_insurance_number: 'AB1234567C',
       fcon_search_account_individuals_search_criteria: {
@@ -232,7 +241,7 @@ describe('FinesConConsolidateAccComponent - Account Search', () => {
 
     const expectedValidationErrors = [
       {
-        message: 'Account number must be 9 characters or fewer.',
+        message: 'Account number must be 9 characters or fewer',
         selector: AccountSearchLocators.accountNumberError,
       },
       {
@@ -244,7 +253,7 @@ describe('FinesConConsolidateAccComponent - Account Search', () => {
         selector: AccountSearchLocators.firstNamesError,
       },
       {
-        message: 'National Insurance number must be 9 characters or fewer.',
+        message: 'Enter a National Insurance number in the format AANNNNNNA',
         selector: AccountSearchLocators.nationalInsuranceNumberError,
       },
       {
@@ -372,6 +381,7 @@ describe('FinesConConsolidateAccComponent - Account Search', () => {
 
   it('AC7. Selecting Clear search clears all entered Search tab data', () => {
     finesConSearchAccountFormData = {
+      ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
       fcon_search_account_number: '12345678',
       fcon_search_account_national_insurance_number: 'AB123456C',
       fcon_search_account_individuals_search_criteria: {
@@ -394,6 +404,7 @@ describe('FinesConConsolidateAccComponent - Account Search', () => {
 
   it('AC7a. Clear search does not clear other tabs; note: Results/For consolidation currently have no data model to assert', () => {
     finesConSearchAccountFormData = {
+      ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
       fcon_search_account_number: '87654321',
       fcon_search_account_national_insurance_number: 'AB123456C',
       fcon_search_account_individuals_search_criteria: {
@@ -425,105 +436,53 @@ describe('FinesConConsolidateAccComponent - Account Search', () => {
     cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
     assertSearchFieldsAreCleared();
   });
-});
-
-describe('FinesConConsolidateCompComponent - Company Search', () => {
-  let finesConSelectBuFormData = structuredClone(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
-  let finesConSearchAccountFormData: IFinesConSearchAccountState = structuredClone(
-    FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData,
-  );
-
-  const setupComponent = (updateSearchSpy?: (formData: IFinesConSearchAccountState) => void) => {
-    return mount(FinesConConsolidateAccComponent, {
-      providers: [
-        provideRouter([]),
-        {
-          provide: FinesConStore,
-          useFactory: () => {
-            const store = new FinesConStore();
-            store.updateSelectBuForm(finesConSelectBuFormData);
-            store.updateSearchAccountFormTemporary(finesConSearchAccountFormData);
-            if (updateSearchSpy) {
-              const originalUpdate = store.updateSearchAccountFormTemporary.bind(store);
-              store.updateSearchAccountFormTemporary = (formData: IFinesConSearchAccountState) => {
-                updateSearchSpy(formData);
-                originalUpdate(formData);
-              };
-            }
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: {},
-            fragment: of('search'),
-            snapshot: {
-              data: {
-                businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
-              },
-            },
-          },
-        },
-      ],
-    });
-  };
-
-  beforeEach(() => {
-    finesConSelectBuFormData = structuredClone(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
-    finesConSearchAccountFormData = structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData);
-  });
-
-  const assertValidationError = (message: string, inlineSelector: string) => {
-    cy.get(CompanySearchLocators.errorSummary).should('be.visible').and('contain', message);
-    cy.get(inlineSelector).should('be.visible').and('contain', message);
-  };
+  // Company search scenarios
 
   it('AC1. Search screen mirrors expected field types, headings and actions', () => {
-    setupComponent();
+    setupComponent(undefined, false, 'company');
 
-    cy.get(CompanySearchLocators.heading).should('contain', 'Consolidate accounts');
-    cy.get(CompanySearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
-    cy.get(CompanySearchLocators.accountNumberInput).should('be.visible');
+    cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
+    cy.get(AccountSearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
+    cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
 
     //AC1 to be covered by doing something TBC by JD. Undecided.
 
     //AC1a. Business unit displays the selected BU and is read-only'
 
-    cy.get(CompanySearchLocators.businessUnitKey).should('contain', 'Business Unit');
-    cy.get(CompanySearchLocators.businessUnitValue)
+    cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business Unit');
+    cy.get(AccountSearchLocators.businessUnitValue)
       .should('contain', 'Historical Debt')
       .find('input, select, textarea')
       .should('not.exist');
 
     //AC1b. Defendant type displays 'Company'
-    cy.get(CompanySearchLocators.defendantTypeKey).should('contain', 'Defendant Type');
-    cy.get(CompanySearchLocators.defendantTypeValue)
+    cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant Type');
+    cy.get(AccountSearchLocators.defendantTypeValue)
       .should('contain', 'Company')
       .find('input, select, textarea')
       .should('not.exist');
 
     //AC1c. Search screen mirrors expected field types, headings and actions
-    cy.get(CompanySearchLocators.tabsNav).should('be.visible');
-    cy.get(CompanySearchLocators.searchTab).should('contain', 'Search');
-    cy.get(CompanySearchLocators.resultsTab).should('contain', 'Results');
-    cy.get(CompanySearchLocators.forConsolidationTab).should('contain', 'For Consolidation');
+    cy.get(AccountSearchLocators.tabsNav).should('be.visible');
+    cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
+    cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
+    cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For Consolidation');
 
-    cy.get(CompanySearchLocators.quickSearchHeading).should('contain', 'Quick search');
-    cy.contains(CompanySearchLocators.advancedSearchHeading, 'Advanced Search').should('be.visible');
+    cy.get(AccountSearchLocators.quickSearchHeading).should('contain', 'Quick search');
+    cy.contains(AccountSearchLocators.advancedSearchHeading, 'Advanced Search').should('be.visible');
 
-    cy.get(CompanySearchLocators.accountNumberInput).should('have.attr', 'type', 'text');
-    cy.get(CompanySearchLocators.companyNameInput).should('have.attr', 'type', 'text');
-    cy.get(CompanySearchLocators.companyNameExactMatchCheckbox).should('have.attr', 'type', 'checkbox');
-    cy.get(CompanySearchLocators.includeAliasesCheckbox).should('have.attr', 'type', 'checkbox');
-    cy.get(CompanySearchLocators.addressLine1Input).should('have.attr', 'type', 'text');
-    cy.get(CompanySearchLocators.postCodeInput).should('have.attr', 'type', 'text');
+    cy.get(AccountSearchLocators.accountNumberInput).should('have.attr', 'type', 'text');
+    cy.get(AccountSearchLocators.companyNameInput).should('have.attr', 'type', 'text');
+    cy.get(AccountSearchLocators.companyNameExactMatchCheckbox).should('have.attr', 'type', 'checkbox');
+    cy.get(AccountSearchLocators.companyIncludeAliasesCheckbox).should('have.attr', 'type', 'checkbox');
+    cy.get(AccountSearchLocators.companyAddressLine1Input).should('have.attr', 'type', 'text');
+    cy.get(AccountSearchLocators.companyPostCodeInput).should('have.attr', 'type', 'text');
 
-    cy.get(CompanySearchLocators.searchButton).should('be.visible').and('contain', 'Search');
-    cy.contains(CompanySearchLocators.clearSearchLink, 'Clear search').should('be.visible');
+    cy.get(AccountSearchLocators.searchButton).should('be.visible').and('contain', 'Search');
+    cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').should('be.visible');
 
     //AC1d. Hint text is present above Quick search heading
-    cy.get(CompanySearchLocators.quickSearchHint)
+    cy.get(AccountSearchLocators.quickSearchHint)
       .invoke('text')
       .then((text) => {
         const normalisedText = text.replace(/\s+/g, ' ').trim();
@@ -535,10 +494,10 @@ describe('FinesConConsolidateCompComponent - Company Search', () => {
 
   it('AC2. Selecting Search with no populated fields triggers no action and user stays on same screen', () => {
     const updateSearchSpy = Cypress.sinon.spy();
-    setupComponent(updateSearchSpy);
+    setupComponent(updateSearchSpy, false, 'company');
 
-    cy.get(CompanySearchLocators.searchButton).click();
-    cy.get(CompanySearchLocators.errorSummary).should('not.exist');
+    cy.get(AccountSearchLocators.searchButton).click();
+    cy.get(AccountSearchLocators.errorSummary).should('not.exist');
     cy.then(() => {
       expect(updateSearchSpy).to.not.have.been.called;
     });
@@ -557,29 +516,29 @@ describe('FinesConConsolidateCompComponent - Company Search', () => {
         fcon_search_account_companies_post_code: 'TE5&5TN',
       },
     };
-    setupComponent(updateSearchSpy);
-    cy.get(CompanySearchLocators.searchButton).click();
+    setupComponent(updateSearchSpy, false, 'company');
+    cy.get(AccountSearchLocators.searchButton).click();
 
     const expectedValidationErrors = [
       {
         //AC3a. User enters value that is not in correct format and the following error is produced
         message: 'Enter account number in the correct format such as 12345678 or 12345678A',
-        selector: CompanySearchLocators.accountNumberError,
+        selector: AccountSearchLocators.accountNumberError,
       },
       {
         //AC3b. User enters non-alphabetical or special characters and the following error is produced
         message: 'Company name must only include letters a to z, hyphens, spaces and apostrophes',
-        selector: CompanySearchLocators.companyNameError,
+        selector: AccountSearchLocators.companyNameError,
       },
       {
         //AC3c. User enters non-alphanumeric and the following error is produced
         message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        selector: CompanySearchLocators.addressLine1Error,
+        selector: AccountSearchLocators.companyAddressLine1Error,
       },
       {
         //AC3d. User enters non-alphanumeric and the following error is produced
         message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        selector: CompanySearchLocators.postCodeError,
+        selector: AccountSearchLocators.companyPostCodeError,
       },
     ];
 
@@ -606,29 +565,29 @@ describe('FinesConConsolidateCompComponent - Company Search', () => {
         fcon_search_account_companies_post_code: '123456789',
       },
     };
-    setupComponent(updateSearchSpy);
-    cy.get(CompanySearchLocators.searchButton).click();
+    setupComponent(updateSearchSpy, false, 'company');
+    cy.get(AccountSearchLocators.searchButton).click();
 
     const expectedValidationErrors = [
       {
         //AC4a. User enters value exceeding the max characters. Error isnt in line with others/conflicts this one first. Confirmed in ..field-errors.constant that it should be 'Account number must be 9 characters or fewer',. Pri 3. How to reach?
         message: 'Account number must be 9 characters or fewer',
-        selector: CompanySearchLocators.accountNumberError,
+        selector: AccountSearchLocators.accountNumberError,
       },
       {
         //AC4b. User enters value exceeding the max characters.
         message: 'Company name must be 50 characters or fewer',
-        selector: CompanySearchLocators.companyNameError,
+        selector: AccountSearchLocators.companyNameError,
       },
       {
         //AC4c. User enters value exceeding the max characters.
         message: 'Address line 1 must be 30 characters or fewer',
-        selector: CompanySearchLocators.addressLine1Error,
+        selector: AccountSearchLocators.companyAddressLine1Error,
       },
       {
         //AC4d. User enters value exceeding the max characters.
         message: 'Postcode must be 8 characters or fewer',
-        selector: CompanySearchLocators.postCodeError,
+        selector: AccountSearchLocators.companyPostCodeError,
       },
     ];
 
@@ -655,14 +614,14 @@ describe('FinesConConsolidateCompComponent - Company Search', () => {
         fcon_search_account_companies_post_code: null,
       },
     };
-    setupComponent(updateSearchSpy);
-    cy.get(CompanySearchLocators.searchButton).click();
+    setupComponent(updateSearchSpy, false, 'company');
+    cy.get(AccountSearchLocators.searchButton).click();
 
     const expectedValidationErrors = [
       {
         //AC5a, AC5b. Exact match & include alias boxes checked without a company name - Below error raised
         message: 'Enter company name',
-        selector: CompanySearchLocators.companyNameError,
+        selector: AccountSearchLocators.companyNameError,
       },
     ];
 
@@ -689,8 +648,8 @@ describe('FinesConConsolidateCompComponent - Company Search', () => {
         fcon_search_account_companies_post_code: null,
       },
     };
-    setupComponent(updateSearchSpy);
-    cy.get(CompanySearchLocators.searchButton).click();
+    setupComponent(updateSearchSpy, false, 'company');
+    cy.get(AccountSearchLocators.searchButton).click();
 
     //AC6a here. Should confirm page attempts to move to a Search error screen. Cant be covered. Probably remove from this test.
     // cy.location('pathname').should('include', '/search-error');
@@ -715,32 +674,32 @@ describe('FinesConConsolidateCompComponent - Company Search', () => {
         fcon_search_account_companies_post_code: 'L1 1TS',
       },
     };
-    setupComponent(updateSearchSpy);
+    setupComponent(updateSearchSpy, false, 'company');
 
     // Confirming data has been retained after tabbing
-    cy.get(CompanySearchLocators.accountNumberInput).should('have.value', '12345678');
-    cy.get(CompanySearchLocators.companyNameInput).should('have.value', 'Test Company');
-    cy.get(CompanySearchLocators.companyNameExactMatchCheckbox).should('be.checked');
-    cy.get(CompanySearchLocators.includeAliasesCheckbox).should('be.checked');
-    cy.get(CompanySearchLocators.addressLine1Input).should('have.value', '1 Test Street');
-    cy.get(CompanySearchLocators.postCodeInput).should('have.value', 'L1 1TS');
+    cy.get(AccountSearchLocators.accountNumberInput).should('have.value', '12345678');
+    cy.get(AccountSearchLocators.companyNameInput).should('have.value', 'Test Company');
+    cy.get(AccountSearchLocators.companyNameExactMatchCheckbox).should('be.checked');
+    cy.get(AccountSearchLocators.companyIncludeAliasesCheckbox).should('be.checked');
+    cy.get(AccountSearchLocators.companyAddressLine1Input).should('have.value', '1 Test Street');
+    cy.get(AccountSearchLocators.companyPostCodeInput).should('have.value', 'L1 1TS');
 
     //AC7 Clicking the clear search
-    cy.contains(CompanySearchLocators.clearSearchLink, 'Clear search').click();
+    cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').click();
 
     //AC7 All fields reset upon clear search click
-    cy.get(CompanySearchLocators.accountNumberInput).should('have.value', '');
-    cy.get(CompanySearchLocators.companyNameInput).should('have.value', '');
-    cy.get(CompanySearchLocators.companyNameExactMatchCheckbox).should('not.be.checked');
-    cy.get(CompanySearchLocators.includeAliasesCheckbox).should('not.be.checked');
-    cy.get(CompanySearchLocators.addressLine1Input).should('have.value', '');
-    cy.get(CompanySearchLocators.postCodeInput).should('have.value', '');
+    cy.get(AccountSearchLocators.accountNumberInput).should('have.value', '');
+    cy.get(AccountSearchLocators.companyNameInput).should('have.value', '');
+    cy.get(AccountSearchLocators.companyNameExactMatchCheckbox).should('not.be.checked');
+    cy.get(AccountSearchLocators.companyIncludeAliasesCheckbox).should('not.be.checked');
+    cy.get(AccountSearchLocators.companyAddressLine1Input).should('have.value', '');
+    cy.get(AccountSearchLocators.companyPostCodeInput).should('have.value', '');
 
     //AC7a here. Should confirm other tabs have existing data remianing. TODO when implemented
-    // cy.get(CompanySearchLocators.resultsTab).click();
-    // cy.get(CompanySearchLocators.resultsTab).should('have.attr', 'aria-current', 'page');
+    // cy.get(AccountSearchLocators.resultsTab).click();
+    // cy.get(AccountSearchLocators.resultsTab).should('have.attr', 'aria-current', 'page');
 
-    // cy.get(CompanySearchLocators.forConsolidationTab).click();
-    // cy.get(CompanySearchLocators.forConsolidationTab).should('have.attr', 'aria-current', 'page');
+    // cy.get(AccountSearchLocators.forConsolidationTab).click();
+    // cy.get(AccountSearchLocators.forConsolidationTab).should('have.attr', 'aria-current', 'page');
   });
 });

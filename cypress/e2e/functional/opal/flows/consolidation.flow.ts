@@ -69,12 +69,6 @@ export class ConsolidationFlow {
     this.consolidation.switchTabsAndReturnToSearch();
   }
 
-  /** Switches away from Search and back again to verify tab retention behaviour. */
-  public switchTabsAndReturnToSearchCompany(): void {
-    log('flow', 'Switching consolidation tabs and returning to Search');
-    this.consolidation.switchTabsAndReturnToSearchCompany();
-  }
-
   /**
    * Asserts consolidation account-search details match expected table values.
    * @param table - Data table in key/value form.

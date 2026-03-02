@@ -4,7 +4,7 @@ import { FinesConConsolidateAccComponent } from 'src/app/flows/fines/fines-con/c
 import { FinesConStore } from 'src/app/flows/fines/fines-con/stores/fines-con.store';
 import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-company.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
-import { CompanySearchLocators } from '../../../shared/selectors/consolidation/CompanySearch.locators';
+import { AccountSearchLocators as CompanySearchLocators } from '../../../shared/selectors/consolidation/AccountSearch.locators';
 import { of } from 'rxjs';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-empty.mock';
 import { IFinesConSearchAccountState } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';

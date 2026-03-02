@@ -4,65 +4,63 @@ Feature: Fines Account Consolidation
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
     Then I should be on the dashboard
+    Then I open Consolidate accounts
 
   @PO-2413
   Scenario: AC1 - User is navigated to Search tab for Individuals after selecting BU and Individual
-    When I open Consolidate accounts
-    And I continue to the consolidation account search as an "Individual" defendant
+    When I continue to the consolidation account search as an "Individual" defendant
     Then I am on the consolidation Search tab for Individuals
 
   @PO-2413
   Scenario: AC8 - Switching tabs retains entered Search data
-    When I open Consolidate accounts
-    And I continue to the consolidation account search as an "Individual" defendant
+    When I continue to the consolidation account search as an "Individual" defendant
     And I enter the following consolidation search details:
-      # | account number            | 12345678   |
-      # | national insurance number | AB123456C  |
-      | last name               | Smith      |
-      | first names             | John       |
-      | date of birth           | 01/01/1990 |
-      | address line 1          | 1 High St  |
-      | postcode                | SW1A 1AA   |
-      | last name exact match   | true       |
-      | first names exact match | true       |
-      | include aliases         | true       |
+      | account number            | 12345678   |
+      | national insurance number | AB123456C  |
+      | last name                 | Smith      |
+      | first names               | John       |
+      | date of birth             | 01/01/1990 |
+      | address line 1            | 1 High St  |
+      | postcode                  | SW1A 1AA   |
+      | last name exact match     | true       |
+      | first names exact match   | true       |
+      | include aliases           | true       |
     And I switch consolidation tabs and return to Search
     Then the consolidation search details are retained:
-      # | account number            | 12345678   |
-      # | national insurance number | AB123456C  |
-      | last name               | Smith      |
-      | first names             | John       |
-      | date of birth           | 01/01/1990 |
-      | address line 1          | 1 High St  |
-      | postcode                | SW1A 1AA   |
-      | last name exact match   | true       |
-      | first names exact match | true       |
-      | include aliases         | true       |
+      | account number            | 12345678   |
+      | national insurance number | AB123456C  |
+      | last name                 | Smith      |
+      | first names               | John       |
+      | date of birth             | 01/01/1990 |
+      | address line 1            | 1 High St  |
+      | postcode                  | SW1A 1AA   |
+      | last name exact match     | true       |
+      | first names exact match   | true       |
+      | include aliases           | true       |
     Then I click Search on consolidation account search
     Then the consolidation search details are retained:
-      # | account number            | 12345678   |
-      # | national insurance number | AB123456C  |
-      | last name               | Smith      |
-      | first names             | John       |
-      | date of birth           | 01/01/1990 |
-      | address line 1          | 1 High St  |
-      | postcode                | SW1A 1AA   |
-      | last name exact match   | true       |
-      | first names exact match | true       |
-      | include aliases         | true       |
+      | account number            | 12345678   |
+      | national insurance number | AB123456C  |
+      | last name                 | Smith      |
+      | first names               | John       |
+      | date of birth             | 01/01/1990 |
+      | address line 1            | 1 High St  |
+      | postcode                  | SW1A 1AA   |
+      | last name exact match     | true       |
+      | first names exact match   | true       |
+      | include aliases           | true       |
 
 
   @PO-2414
   Scenario: AC1 - User is navigated to Search tab for Companies after selecting BU and Company
-    When I open Consolidate accounts
-    And I continue to the consolidation account search as an "Company" defendant
+    When I continue to the consolidation account search as an "Company" defendant
     Then I am on the consolidation Search tab for Companies
 
   @PO-2414
   Scenario: AC8 - Switching tabs retains entered Search data
-    When I open Consolidate accounts
-    And I continue to the consolidation account search as an "Company" defendant
+    When I continue to the consolidation account search as an "Company" defendant
     And I enter the following consolidation search details:
+      | account number     | 12345678     |
       | company name       | Company Name |
       | address line 1     | 1 High St    |
       | postcode           | SW1A 1AA     |
@@ -70,6 +68,7 @@ Feature: Fines Account Consolidation
       | include aliases    | true         |
     And I switch consolidation tabs and return to Search
     Then the consolidation search details are retained:
+      | account number     | 12345678     |
       | company name       | Company Name |
       | address line 1     | 1 High St    |
       | postcode           | SW1A 1AA     |
@@ -77,6 +76,7 @@ Feature: Fines Account Consolidation
       | include aliases    | true         |
     Then I click Search on consolidation account search
     Then the consolidation search details are retained:
+      | account number     | 12345678     |
       | company name       | Company Name |
       | address line 1     | 1 High St    |
       | postcode           | SW1A 1AA     |
