@@ -174,7 +174,7 @@ export class ManualAccountCreationFlow {
     this.originatorType.selectOriginatorType(originatorType);
     this.originatorType.continueToCreateAccount();
 
-    this.ensureOnCreateAccountPage(originatorType === 'Transfer in' ? 'Transfer in' : 'Create account');
+    this.ensureOnCreateAccountPage(originatorType);
     if (!this.isDefaultBusinessUnit(businessUnit)) {
       this.createAccount.selectBusinessUnit(businessUnit);
     }
@@ -182,7 +182,7 @@ export class ManualAccountCreationFlow {
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
-    this.accountDetails.assertOnAccountDetailsPage();
+    this.accountDetails.assertOnAccountDetailsPage(undefined, originatorType);
   }
 
   /**
@@ -204,7 +204,7 @@ export class ManualAccountCreationFlow {
     this.originatorType.selectOriginatorType(originatorType);
     this.originatorType.continueToCreateAccount();
 
-    this.ensureOnCreateAccountPage(originatorType === 'Transfer in' ? 'Transfer in' : 'Create account');
+    this.ensureOnCreateAccountPage(originatorType);
     if (!this.isDefaultBusinessUnit(businessUnit)) {
       this.createAccount.selectBusinessUnit(businessUnit);
     }
@@ -1423,7 +1423,7 @@ export class ManualAccountCreationFlow {
     this.ensureOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
-    this.ensureOnCreateAccountPage();
+    this.ensureOnCreateAccountPage('New');
   }
 
   /**
@@ -2878,10 +2878,11 @@ export class ManualAccountCreationFlow {
    * Ensures the Manual Account Creation start page is loaded from the dashboard.
    * Clicks the dashboard entry for Manual Account Creation, asserts the create account
    * header is visible, and should be called before selecting business unit/account/defendant type.
-   * @param expectedHeader - Expected page header text (Create account or Transfer in).
+   * @param originatorType - Originator journey option ("New" or "Transfer in").
    */
-  private ensureOnCreateAccountPage(expectedHeader: string = 'Create account'): void {
-    this.createAccount.assertOnCreateAccountPage(expectedHeader);
+  private ensureOnCreateAccountPage(originatorType: 'New' | 'Transfer in'): void {
+    const headerAccount = originatorType === 'New' ? 'Create account' : 'Transfer in';
+    this.createAccount.assertOnCreateAccountPage(headerAccount);
   }
 
   /**

@@ -1326,6 +1326,19 @@ When('I choose {string} and continue to create account page', (selectedType: 'Ne
 });
 
 /**
+ * @step Asserts entry type on review account screen
+ * @description
+ * @param expectedType - Expected entry type to assert on the review account screen ("New account" or "Transfer in from England or Wales").
+ */
+When(
+  'I should see the entry type {string} on the review account screen',
+  (expectedType: 'New account' | 'Transfer in from England or Wales') => {
+    log('assert', 'Asserting entry type on review account screen', { expectedType });
+    details().assertEntryType(expectedType);
+  },
+);
+
+/**
  * @step Creates a manual account by selecting journey, business unit, account type and defendant type.
  * @description Selects the required values and continues from Originator type to the next page in the journey.
  * @param selectedType - Originator journey option ("New" or "Transfer in").
@@ -1375,7 +1388,6 @@ When('I access the {string} task', (taskName: MacAccountTaskName) => {
   log('navigate', 'Accessing task from account details', { taskName });
   flow().openTaskFromAccountDetails(taskName);
 });
-
 /**
  * @step Selecting back link on create account page
  * @description Clicks the back link on the Create account page and asserts we return to the Originator type selection page.

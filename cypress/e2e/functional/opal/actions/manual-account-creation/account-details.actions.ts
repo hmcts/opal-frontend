@@ -11,6 +11,8 @@ import { CommonActions } from '../common/common.actions';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 const log = createScopedLogger('ManualAccountDetailsActions');
+type OriginatorType = 'New' | 'Transfer in';
+type EntryType = 'New account' | 'Transfer in from England or Wales';
 const TASK_NAMES: MacAccountTaskName[] = [
   'Account comments and notes',
   'Company details',
@@ -77,14 +79,21 @@ export class ManualAccountDetailsActions {
    * - If `expectedHeader` is provided, asserts the header contains it.
    * - If `expectedHeader` is omitted/undefined, asserts the default header "Account details".
    * - If `expectedHeader` is null, skips header assertion (path guard still applies).
+   * - If `originatorType` is provided, asserts the "Entry type" row for that originator.
    * @param expectedHeader Optional header to assert; null skips header assertion.
+   * @param originatorType Optional originator type ("New" | "Transfer in") to assert via Entry type.
    */
-  assertOnAccountDetailsPage(expectedHeader?: string | null): void {
+  assertOnAccountDetailsPage(expectedHeader?: string | null, originatorType?: OriginatorType): void {
     cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/account-details');
     const headerToAssert = expectedHeader === undefined ? 'Account details' : expectedHeader;
     const normalizedHeader = headerToAssert === null ? null : applyUniqPlaceholder(headerToAssert);
     if (normalizedHeader) {
       this.common.assertHeaderContains(normalizedHeader);
+    }
+    if (originatorType) {
+      const expectedEntryType: EntryType =
+        originatorType === 'Transfer in' ? 'Transfer in from England or Wales' : 'New account';
+      this.assertEntryType(expectedEntryType);
     }
   }
 
@@ -103,6 +112,15 @@ export class ManualAccountDetailsActions {
           .invoke('text')
           .should((text) => expect(text.trim()).to.equal(expectedValue));
       });
+  }
+
+  /**
+   * Asserts the entry type for the account.
+   * @param expectedType Expected entry type ("New account" or "Transfer in from England or Wales").
+   */
+  assertEntryType(expectedType: 'New account' | 'Transfer in from England or Wales'): void {
+    log('assert', 'Asserting entry type contain correct value', { expectedType });
+    cy.get(L.entryType).should('contain.text', expectedType);
   }
 
   /**

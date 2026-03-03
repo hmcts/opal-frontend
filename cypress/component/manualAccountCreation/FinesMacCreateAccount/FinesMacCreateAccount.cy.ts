@@ -80,7 +80,6 @@ describe('FinesMacCreateAccountComponent', () => {
     setupComponent(null);
 
     cy.get(L.heading).should('exist');
-    cy.get(L.heading).should('exist');
 
     cy.get(L.businessUnitHint).should('exist');
     cy.get(L.businessUnitInput).should('exist');
@@ -95,7 +94,6 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(L.conditionalCautionLabel).should('exist');
 
     cy.get(L.heading).should('contain', 'Create account');
-    cy.get(L.heading).should('contain', 'Create account');
 
     cy.get(L.businessUnitHint).should('contain', 'Enter area where the account is to be created');
     cy.get(L.businessUnitLabel).should('contain', 'Business unit');
@@ -108,11 +106,9 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it(
-    '(AC.2c)should render all elements for fine account type correctly and have correct text',
-    { tags: ['@PO-2766'] },
+    '(AC.1,AC.2)should render all elements for fine account type correctly and have correct text',
+    { tags: ['@PO-523'] },
     () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-
       setupComponent(null);
 
       cy.get(L.fineInput).click();
@@ -134,11 +130,9 @@ describe('FinesMacCreateAccountComponent', () => {
   );
 
   it(
-    '(AC2c) should render all elements for fixed penalty account type correctly and have correct text',
-    { tags: ['@PO-2766'] },
+    '(AC.1,AC.2) should render all elements for fixed penalty account type correctly and have correct text',
+    { tags: ['@PO-523'] },
     () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-
       setupComponent(null);
 
       cy.get(L.fixedPenaltyInput).click();
@@ -163,8 +157,6 @@ describe('FinesMacCreateAccountComponent', () => {
     '(AC.4b) should have validation in place if empty account type but valid business unit',
     { tags: ['@PO-523'] },
     () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-
       setupComponent(null);
 
       cy.get(L.businessUnitInput).type('Lo');
