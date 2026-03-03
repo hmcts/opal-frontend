@@ -2873,7 +2873,7 @@ export class ManualAccountCreationFlow {
    * Ensures the Manual Account Creation start page is loaded from the dashboard.
    * Clicks the dashboard entry for Manual Account Creation, asserts the create account
    * header is visible, and should be called before selecting business unit/account/defendant type.
-   * @param expectedHeader - Expected page header text (Create account or Transfer in).
+   * @param originatorType - Originator journey option ("New" or "Transfer in").
    */
   private ensureOnCreateAccountPage(originatorType: 'New' | 'Transfer in'): void {
     const headerAccount = originatorType === 'New' ? 'Create account' : 'Transfer in';
