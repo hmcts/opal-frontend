@@ -36,9 +36,6 @@ properties([
 @Field String product = 'opal'
 @Field String component = 'frontend'
 @Field String failureResult = 'FAILURE'
-@Field String launchDarklyAdminTokenCredentialId = 'LAUNCHDARKLY_ADMIN_TOKEN'
-@Field String launchDarklyAdminTokenEnvVar = 'LD_ADMIN'
-@Field String launchDarklyAdminTokenEnvVarRef = '$LD_ADMIN'
 @Field String pipelineWeightsDir = 'cypress/parallel/weights/pipeline'
 @Field String pipelineWeightsDirWithSlash = "${pipelineWeightsDir}/"
 @Field String pipelineWeightsArtifactsFilter = '**/cypress/parallel/weights/pipeline/*'
@@ -50,10 +47,25 @@ properties([
 @Field String uatTechnicalFunctionalReportName = 'UAT-Technical Functional Test Report'
 @Field String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
 @Field String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
-@Field String legacyGatewayUrlPreProd = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
-@Field String legacyGatewayUrlDev = 'https://opal.clouddev.online/opal'
+@Field String legacyGatewayUrlPreProd = 'https://opal.clouddev.online/opal'
+@Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+@Field String launchDarklyApiTokenSecretName = 'launch-darkly-api-token'
+// Env var name used to expose the LD API token in shell steps.
+@Field String launchDarklyApiTokenEnvVar = 'LD_API_TOKEN'
+// Shell expansion form of the LD token env variable.
+@Field String launchDarklyApiTokenEnvVarRef = '$LD_API_TOKEN'
+// Fixed LaunchDarkly API version for stable request behavior.
+@Field String launchDarklyApiVersion = '20240415'
+@Field String launchDarklyEnvironmentKey = 'test'
+@Field String launchDarklyOpalVariationName = product
+@Field String launchDarklyLegacyVariationName = 'legacy'
+@Field List<String> launchDarklyVariationOrder = [
+    launchDarklyLegacyVariationName,
+    launchDarklyOpalVariationName
+]
 @Field String uatTechnicalTagExpression = '@UAT-Technical'
 @Field String skipTagExpression = 'not @skip'
+@Field int healthCheckFirstAttemptIndex = 0
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
 @Field String vaultSecretKey = String.format('opal-%s%s', '$', '{env}')
@@ -77,6 +89,13 @@ Map<String, Object> vaultSecrets() {
                 name: 'OpalTestUserPassword',
                 version: '',
                 envVariable: 'OPAL_TEST_USER_PASSWORD'
+            ],
+            [
+                $class: azureKeyVaultSecretClass,
+                secretType: azureKeyVaultSecretType,
+                name: launchDarklyApiTokenSecretName,
+                version: '',
+                envVariable: launchDarklyApiTokenEnvVar
             ]
         ]
     ]
@@ -325,14 +344,12 @@ void runFunctionalTests() {
  * Sets environment variables required for UAT-Technical execution.
  */
 void setupUatTechnicalEnvironment() {
-    env.with {
-        TEST_CMD = 'yarn test:functionalOpalParallel'
-        HEALTH_ENDPOINT =
-            'https://opal-frontend.staging.platform.hmcts.net/opal?actionType=getGmasTest'
-        LD_PROJECT = 'launch-darkly-sdk-key' // << The LaunchDarkly project key >>
-        LD_ENV = 'Test' // << The LaunchDarkly environment key >>
-        LD_FLAG = 'app-mode' // << The flag key >>
-    }
+    env.TEST_CMD = 'yarn test:functionalOpalParallel'
+    env.HEALTH_ENDPOINT =
+        'https://opal-frontend.staging.platform.hmcts.net/opal?actionType=getGmasTest'
+    env.LD_PROJECT = product
+    env.LD_ENV = launchDarklyEnvironmentKey
+    env.LD_FLAG = 'app-mode'
     configureUatTechnicalTags()
 }
 
@@ -346,38 +363,77 @@ void configureUatTechnicalTags() {
 }
 
 /**
- * Patches LaunchDarkly flag on/off state for the configured environment.
+ * Resolves LaunchDarkly variation index from configured variation name order.
  *
- * @param enabled Whether the flag should be enabled.
- * @param actionMessage Log message describing the patch action.
+ * @param variationName Variation name as defined in LaunchDarkly (for example, opal or legacy).
+ * @return Zero-based variation index.
  */
-void patchLaunchDarklyFlagState(boolean enabled, String actionMessage) {
-    String patchPayload =
-        "{\"patch\":[{\"op\":\"replace\",\"path\":\"/environments/${env.LD_ENV}/on\",\"value\":${enabled}}]}"
-    withCredentials([
-        string(
-            credentialsId: launchDarklyAdminTokenCredentialId,
-            variable: launchDarklyAdminTokenEnvVar
-        )
-    ]) {
-        sh """
-      echo '${actionMessage}'
-      LD_URL="https://app.launchdarkly.com/api/v2/flags/${env.LD_PROJECT}/${env.LD_FLAG}"
-      curl -s -X PATCH \\
-        -H "Authorization: Bearer ${launchDarklyAdminTokenEnvVarRef}" \\
-        -H "Content-Type: application/json" \\
-        -d '${patchPayload}' \\
-        "\$LD_URL" || true
-    """
+int resolveLaunchDarklyVariationIndex(String variationName) {
+    int variationIndex = launchDarklyVariationOrder.indexOf(variationName)
+    if (variationIndex < healthCheckFirstAttemptIndex) {
+        error "Unsupported LaunchDarkly variation name '${variationName}'. " +
+            "Expected one of ${launchDarklyVariationOrder}."
     }
+    return variationIndex
 }
 
 /**
- * Applies the LaunchDarkly patch payload that enables legacy mode for staging.
+ * Patches LaunchDarkly flag state and variation for the configured environment.
+ *
+ * @param enabled Whether the flag should be enabled.
+ * @param variationName Variation name to serve as fallthrough.
+ * @param actionMessage Log message describing the patch action.
+ */
+void patchLaunchDarklyFlagState(boolean enabled, String variationName, String actionMessage) {
+    int variationIndex = resolveLaunchDarklyVariationIndex(variationName)
+    String patchPayload =
+        '{"patch":[' +
+        "{\"op\":\"replace\",\"path\":\"/environments/${env.LD_ENV}/on\",\"value\":${enabled}}," +
+        "{\"op\":\"replace\",\"path\":\"/environments/${env.LD_ENV}/fallthrough/variation\"," +
+        "\"value\":${variationIndex}}" +
+        ']}'
+    sh """
+    echo '${actionMessage}'
+    set +x
+    if [ -z "${launchDarklyApiTokenEnvVarRef}" ]; then
+      echo "Missing required LaunchDarkly secret env var: ${launchDarklyApiTokenEnvVar}"
+      exit 1
+    fi
+    LD_URL="https://app.launchdarkly.com/api/v2/flags/${env.LD_PROJECT}/${env.LD_FLAG}"
+    LD_HTTP_CODE=\$(curl -s -o ld_patch_response.json -w '%{http_code}' -X PATCH \\
+      -H "Authorization: ${launchDarklyApiTokenEnvVarRef}" \\
+      -H "LD-API-Version: ${launchDarklyApiVersion}" \\
+      -H "Content-Type: application/json" \\
+      -d '${patchPayload}' \\
+      "\$LD_URL")
+    LD_CURL_EXIT=\$?
+    echo "LaunchDarkly PATCH HTTP status: \$LD_HTTP_CODE"
+    if [ -s ld_patch_response.json ]; then
+      echo 'LaunchDarkly PATCH response body:'
+      cat ld_patch_response.json
+    fi
+    if [ "\$LD_CURL_EXIT" -ne 0 ]; then
+      echo 'LaunchDarkly PATCH request failed to execute.'
+      exit 1
+    fi
+    if ! echo "\$LD_HTTP_CODE" | grep -Eq '^[0-9]{3}\$'; then
+      echo 'LaunchDarkly PATCH returned an invalid status code.'
+      exit 1
+    fi
+    if [ "\$LD_HTTP_CODE" -lt 200 ] || [ "\$LD_HTTP_CODE" -ge 300 ]; then
+      echo 'LaunchDarkly PATCH failed with non-2xx status.'
+      exit 1
+    fi
+    """
+}
+
+/**
+ * Sets LaunchDarkly app-mode variation to legacy for UAT-Technical.
  */
 void setLaunchDarklyFlagToLegacy() {
     patchLaunchDarklyFlagState(
         true,
+        launchDarklyLegacyVariationName,
         'Setting LaunchDarkly flag to legacy for staging...'
     )
 }
@@ -407,7 +463,7 @@ void waitForUatHealthCheck() {
                     (uatHealthCheckTimeoutMinutes * 60.0d) / uatHealthCheckIntervalSeconds
                 )
             )
-            for (int i = 0; i < maxAttempts; i++) {
+            for (int i = healthCheckFirstAttemptIndex; i < maxAttempts; i++) {
                 String statusCode = healthCheckStatus
                 if (statusCode.startsWith('2')) {
                     echo "Health check OK (HTTP ${statusCode})"
@@ -458,17 +514,18 @@ void archiveUatTechnicalArtifacts() {
 }
 
 /**
- * Restores LaunchDarkly flag state to non-legacy.
+ * Restores LaunchDarkly app-mode variation to opal.
  */
 void restoreLaunchDarklyFlag() {
     patchLaunchDarklyFlagState(
-        false,
-        'Restoring LaunchDarkly flag to non-legacy for staging...'
+        true,
+        launchDarklyOpalVariationName,
+        'Restoring LaunchDarkly flag to opal for staging...'
     )
 }
 
 /**
- * Orchestrates full UAT-Technical flow: setup, toggle, verify, test, restore.
+ * Orchestrates UAT-Technical flow: setup, toggle, verify, test, restore.
  */
 void runUatTechnicalTests() {
     stage('UAT-Technical') {
@@ -477,15 +534,19 @@ void runUatTechnicalTests() {
             stageResult: failureResult,
             message: 'UAT-Technical failed'
         ) {
+            boolean launchDarklyFlagPatched = false
             try {
                 setupUatTechnicalEnvironment()
                 setLaunchDarklyFlagToLegacy()
+                launchDarklyFlagPatched = true
                 waitForUatHealthCheck()
                 sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
                 runUatTechnicalTaggedTests()
                 archiveUatTechnicalArtifacts()
             } finally {
-                restoreLaunchDarklyFlag()
+                if (launchDarklyFlagPatched) {
+                    restoreLaunchDarklyFlag()
+                }
             }
         }
     }
