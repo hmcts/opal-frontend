@@ -392,8 +392,6 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     cy.get(AccountSearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
     cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
 
-    //AC1 to be covered by doing something TBC by JD. Undecided.
-
     //AC1a. Business unit displays the selected BU and is read-only'
 
     cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business Unit');

@@ -7,13 +7,13 @@ Feature: Fines Account Consolidation
     Then I open Consolidate accounts
 
   @PO-2413
-  Scenario: AC1 - User is navigated to Search tab for Individuals after selecting BU and Individual
+  Scenario: Consolidation account search for Individuals
     When I continue to the consolidation account search as an "Individual" defendant
+
+    # AC1 - User is navigated to Search tab for Individuals after selecting BU and Individual
     Then I am on the consolidation Search tab for Individuals
 
-  @PO-2413
-  Scenario: AC8 - Switching tabs retains entered Search data
-    When I continue to the consolidation account search as an "Individual" defendant
+    # AC8 - Switching tabs retains entered Search data
     And I enter the following consolidation search details:
       | account number            | 12345678   |
       | national insurance number | AB123456C  |
@@ -50,15 +50,13 @@ Feature: Fines Account Consolidation
       | first names exact match   | true       |
       | include aliases           | true       |
 
-
   @PO-2414
-  Scenario: AC1 - User is navigated to Search tab for Companies after selecting BU and Company
+  Scenario: Consolidation account search for Companies
     When I continue to the consolidation account search as an "Company" defendant
+    # AC1 - User is navigated to Search tab for Companies after selecting BU and Company
     Then I am on the consolidation Search tab for Companies
 
-  @PO-2414
-  Scenario: AC8 - Switching tabs retains entered Search data
-    When I continue to the consolidation account search as an "Company" defendant
+    # AC8 - Switching tabs retains entered Search data
     And I enter the following consolidation search details:
       | account number     | 12345678     |
       | company name       | Company Name |
