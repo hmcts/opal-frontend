@@ -42,6 +42,13 @@ describe('FinesConSearchAccountFormCompaniesComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should return early when companies group is missing', () => {
+    component.form = new FormGroup({});
+
+    expect(() => component['setupCompanyForm']()).not.toThrow();
+    expect(component.form.get('fcon_search_account_companies_search_criteria')).toBeNull();
+  });
+
   it('should initialize all companies nested form controls', () => {
     expect(
       component.form.get('fcon_search_account_companies_search_criteria.fcon_search_account_companies_company_name'),

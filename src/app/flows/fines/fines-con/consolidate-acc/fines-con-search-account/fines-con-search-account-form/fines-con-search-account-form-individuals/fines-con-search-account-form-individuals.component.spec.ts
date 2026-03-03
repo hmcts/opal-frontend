@@ -44,6 +44,13 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should return early when individuals group is missing', () => {
+    component.form = new FormGroup({});
+
+    expect(() => component['setupIndividualForm']()).not.toThrow();
+    expect(component.form.get('fcon_search_account_individuals_search_criteria')).toBeNull();
+  });
+
   it('should initialize all individuals nested form controls', () => {
     expect(
       component.form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name'),
