@@ -2,10 +2,7 @@ import { AccountSearchLocators } from '../../../shared/selectors/consolidation/A
 import { FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-empty.mock';
 import { IFinesConSearchAccountState } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
 import { setupConsolidationComponent as mountConsolidationComponent } from './setup/SetupComponent';
-import {
-  ConsolidationTabFragment,
-  IComponentProperties,
-} from './setup/setupComponent.interface';
+import { ConsolidationTabFragment, IComponentProperties } from './setup/setupComponent.interface';
 
 describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   let finesConSearchAccountFormData: IFinesConSearchAccountState = structuredClone(
