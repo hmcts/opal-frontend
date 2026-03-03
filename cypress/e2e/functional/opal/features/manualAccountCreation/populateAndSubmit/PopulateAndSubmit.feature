@@ -476,3 +476,13 @@ Feature: Manual account creation - Create Draft Account
       | Cancel journey state |
       | without changes      |
       | with changes         |
+
+  @PO-2767
+  Scenario Outline: User selects entry type and is visible on review account screen
+    When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type '<Originator type>'
+    And I should see the entry type '<Entry type>' on the review account screen
+
+    Examples:
+      | Originator type | Entry type                        |
+      | Transfer in     | Transfer in from England or Wales |
+      | New             | New account                       |
