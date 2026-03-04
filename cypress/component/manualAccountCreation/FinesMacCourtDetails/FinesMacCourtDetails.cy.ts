@@ -13,6 +13,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
 import { IOpalFinesLocalJusticeAreaRefData } from '../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
@@ -77,6 +78,7 @@ describe('FinesMacCourtDetailsComponent', () => {
       fm_court_details_prosecutor_case_reference: '',
       fm_court_details_imposing_court_id: '',
     };
+    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
   });
 
   it('should render the component correctly for AY', { tags: ['@PO-272', '@PO-389'] }, () => {

@@ -38,6 +38,8 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesAccountTypes } from '../../interfaces/fines-account-types.interface';
 import { FINES_ORIGINATOR_TYPES } from '../../constants/fines-originator-types.constant';
+import { FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE } from '../constants/fines-mac-court-details-copy.constant';
+import { IFinesMacCourtDetailsCopy } from '../interfaces/fines-mac-court-details-copy.interface';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -88,6 +90,7 @@ export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseCompo
   public timelineData!: IFinesMacAccountTimelineData[];
   public accountDetailsStatus!: string;
   public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
+  public courtDetailsCopy: IFinesMacCourtDetailsCopy = FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE.Fine;
 
   /**
    * Sets the account details status from the fines service state.
@@ -160,7 +163,10 @@ export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseCompo
   private setAccountType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
     const { fm_create_account_account_type: accountType } = this.finesMacStore.accountDetails().formData;
-    this.accountType = this.accountTypes[accountType as keyof IFinesAccountTypes] || '';
+    const accountTypeKey = accountType as keyof IFinesAccountTypes;
+    this.accountType = this.accountTypes[accountTypeKey] || '';
+    this.courtDetailsCopy =
+      FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE[accountTypeKey] || FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE.Fine;
   }
 
   /**
