@@ -18,4 +18,8 @@ const processType = getArg('process-type');
 const reportPath = path.resolve(process.cwd(), getArg('report-path'));
 
 console.log(`Running Zephyr with actionType=${actionType}, processType=${processType}, reportPath=${reportPath}`);
-runZephyr(createZephyrOptions(actionType, processType, reportPath));
+const zephyrOptions = createZephyrOptions(actionType, processType, reportPath);
+//Additional optional environment variables for Zephyr
+zephyrOptions.executionEnvironment = process.env['EXECUTION_ENVIRONMENT'] ?? '';
+zephyrOptions.executionBuild = process.env['EXECUTION_BUILD'] ?? '';
+runZephyr(zephyrOptions);
