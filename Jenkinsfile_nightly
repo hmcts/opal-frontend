@@ -1,4 +1,6 @@
 #!groovy
+import java.time.DayOfWeek
+import java.time.ZonedDateTime
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -11,6 +13,7 @@ properties([
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
     booleanParam(name: 'RunEdge', defaultValue: false, description: 'Run Edge tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
+    booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
     choice(
       name: 'LEGACY_URL',
       choices: ['PRE-PROD', 'DEV'],
@@ -128,11 +131,22 @@ withNightlyPipeline(type, product, component) {
     echo 'RunEdge:' + params.RunEdge
     echo 'RunFirefox:' + params.RunFirefox
 
+    def today = ZonedDateTime.now().getDayOfWeek()
+    def shouldRunWithZephyr = params.ZephyrExecution || today == DayOfWeek.FRIDAY;
+    if (shouldRunWithZephyr) {
+      env.EXECUTION_BUILD = env.GIT_COMMIT
+      env.EXECUTION_ENVIRONMENT = env.ENVIRONMENT_NAME
+    }
+
     if (params.Component) {
       stage('Component Tests') {
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Component tests failed') {
           try {
-            yarnBuilder.yarn('test:opalComponent')
+            if (shouldRunWithZephyr) {
+              yarnBuilder.yarn('zephyr:test:opalComponent')
+            } else {
+              yarnBuilder.yarn('test:opalComponent')
+            }
           } finally {
             archiveArtifacts artifacts: 'functional-output/prod/**', allowEmptyArchive: true
             archiveArtifacts artifacts: 'functional-output/screenshots/component/**', allowEmptyArchive: true
@@ -173,6 +187,11 @@ withNightlyPipeline(type, product, component) {
       stage('Functional Tests') {
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Functional tests failed') {
           try {
+            if (shouldRunWithZephyr) {
+              yarnBuilder.yarn('zephyr:test:functional')
+            } else {
+              yarnBuilder.yarn('test:functional')
+            }
             yarnBuilder.yarn('test:functional')
           } finally {
             archiveArtifacts artifacts: 'functional-output/prod/**', allowEmptyArchive: true
