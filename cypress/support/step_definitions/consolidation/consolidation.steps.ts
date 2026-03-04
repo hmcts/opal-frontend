@@ -19,9 +19,19 @@ When(
   },
 );
 
+When('I click Search on consolidation account search', () => {
+  log('step', 'Clicking Search on consolidation account search');
+  consolidationFlow().clickConsolidationSearch();
+});
+
 Then('I am on the consolidation Search tab for Individuals', () => {
   log('step', 'Verifying consolidation account search defaults for Individuals');
   consolidationFlow().assertSearchTabForIndividuals();
+});
+
+Then('I am on the consolidation Search tab for Companies', () => {
+  log('step', 'Verifying consolidation account search defaults for Companies');
+  consolidationFlow().assertSearchTabForCompanies();
 });
 
 When('I enter the following consolidation search details:', (table: DataTable) => {

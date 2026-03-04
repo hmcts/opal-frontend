@@ -32,6 +32,13 @@ export const AccountSearchLocators = {
   addressLine1Input: '#fcon_search_account_individuals_address_line_1',
   postCodeInput: '#fcon_search_account_individuals_post_code',
 
+  // Companies search fields
+  companyNameInput: '#fcon_search_account_companies_company_name',
+  companyNameExactMatchCheckbox: '#fcon_search_account_companies_company_name_exact_match',
+  companyIncludeAliasesCheckbox: '#fcon_search_account_companies_include_aliases',
+  companyAddressLine1Input: '#fcon_search_account_companies_address_line_1',
+  companyPostCodeInput: '#fcon_search_account_companies_post_code',
+
   // Inline field errors
   accountNumberError: '#fcon_search_account_number-error-message',
   nationalInsuranceNumberError: '#fcon_search_account_national_insurance_number-error-message',
@@ -40,6 +47,9 @@ export const AccountSearchLocators = {
   dateOfBirthError: '#fcon_search_account_individuals_date_of_birth-error-message',
   addressLine1Error: '#fcon_search_account_individuals_address_line_1-error-message',
   postCodeError: '#fcon_search_account_individuals_post_code-error-message',
+  companyNameError: '#fcon_search_account_companies_company_name-error-message',
+  companyAddressLine1Error: '#fcon_search_account_companies_address_line_1-error-message',
+  companyPostCodeError: '#fcon_search_account_companies_post_code-error-message',
 
   // Search actions
   searchButton: 'button[buttonId="submitForm"]',

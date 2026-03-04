@@ -23,7 +23,8 @@ export function createTabBasedAtLeastOneValidator(
     if (!fieldsForTab) return null;
 
     const hasAnyValue = fieldsForTab.some((fieldName) => {
-      return hasNestedValue(control.get(fieldName)!);
+      const fieldControl = control.get(fieldName);
+      return fieldControl ? hasNestedValue(fieldControl) : false;
     });
 
     return hasAnyValue ? null : { [errorKey]: true };
