@@ -2874,7 +2874,7 @@ export class ManualAccountCreationFlow {
    * Clicks the dashboard entry for Manual Account Creation, asserts the create account
    * header is visible, and should be called before selecting business unit/account/defendant type.
    * @param originatorType - Originator journey option ("New" or "Transfer in").
-
+   */
   private ensureOnCreateAccountPage(originatorType: 'New' | 'Transfer in'): void {
     const headerAccount = originatorType === 'New' ? 'Create account' : 'Transfer in';
     this.createAccount.assertOnCreateAccountPage(headerAccount);
