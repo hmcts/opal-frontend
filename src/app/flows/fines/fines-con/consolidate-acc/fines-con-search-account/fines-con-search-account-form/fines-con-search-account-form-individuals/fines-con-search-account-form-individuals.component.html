@@ -1,0 +1,103 @@
+<h2 class="govuk-heading-m">Advanced Search</h2>
+
+<div class="no-margin-bottom">
+  <opal-lib-govuk-text-input
+    labelText="Last name"
+    labelClasses="govuk-label--s"
+    inputId="fcon_search_account_individuals_last_name"
+    inputName="fcon_search_account_individuals_last_name"
+    inputClasses="govuk-input--width-20"
+    [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name')"
+    [errors]="formControlErrorMessages['fcon_search_account_individuals_last_name']"
+  ></opal-lib-govuk-text-input>
+</div>
+
+<opal-lib-govuk-checkboxes fieldSetId="lastNameExactMatch" checkboxClasses="" legendText="">
+  <div
+    opal-lib-govuk-checkboxes-item
+    labelText="Search exact match"
+    inputId="fcon_search_account_individuals_last_name_exact_match"
+    inputName="fcon_search_account_individuals_last_name_exact_match"
+    class="govuk-checkboxes--small"
+    [control]="
+      form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name_exact_match')
+    "
+  ></div>
+</opal-lib-govuk-checkboxes>
+
+<div class="no-margin-bottom">
+  <opal-lib-govuk-text-input
+    labelText="First names"
+    labelClasses="govuk-label--s"
+    inputId="fcon_search_account_individuals_first_names"
+    inputName="fcon_search_account_individuals_first_names"
+    inputClasses="govuk-input--width-20"
+    [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names')"
+    [errors]="formControlErrorMessages['fcon_search_account_individuals_first_names']"
+  ></opal-lib-govuk-text-input>
+</div>
+
+<opal-lib-govuk-checkboxes fieldSetId="firstNamesExactMatch" checkboxClasses="" legendText="">
+  <div
+    opal-lib-govuk-checkboxes-item
+    labelText="Search exact match"
+    inputId="fcon_search_account_individuals_first_names_exact_match"
+    inputName="fcon_search_account_individuals_first_names_exact_match"
+    class="govuk-checkboxes--small"
+    [control]="
+      form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_first_names_exact_match'
+      )
+    "
+  ></div>
+</opal-lib-govuk-checkboxes>
+
+<opal-lib-govuk-checkboxes fieldSetId="includeAliases" checkboxClasses="" legendText="">
+  <div
+    opal-lib-govuk-checkboxes-item
+    labelText="Include aliases"
+    inputId="fcon_search_account_individuals_include_aliases"
+    inputName="fcon_search_account_individuals_include_aliases"
+    class="govuk-checkboxes--small"
+    [control]="
+      form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_include_aliases')
+    "
+  ></div>
+</opal-lib-govuk-checkboxes>
+
+<opal-lib-moj-date-picker
+  labelText="Date of birth"
+  labelClasses="govuk-label--s"
+  inputId="fcon_search_account_individuals_date_of_birth"
+  inputName="fcon_search_account_individuals_date_of_birth"
+  inputClasses="govuk-input--width-10"
+  hintText="For example, 31/01/2023"
+  [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth')!"
+  [errors]="formControlErrorMessages['fcon_search_account_individuals_date_of_birth']"
+  (dateChange)="
+    setInputValue(
+      $event,
+      'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth'
+    )
+  "
+></opal-lib-moj-date-picker>
+
+<opal-lib-govuk-text-input
+  labelText="Address line 1"
+  labelClasses="govuk-label--s"
+  inputId="fcon_search_account_individuals_address_line_1"
+  inputName="fcon_search_account_individuals_address_line_1"
+  inputClasses="govuk-!-width-three-quarters"
+  [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_address_line_1')"
+  [errors]="formControlErrorMessages['fcon_search_account_individuals_address_line_1']"
+></opal-lib-govuk-text-input>
+
+<opal-lib-govuk-text-input
+  labelText="Postcode"
+  labelClasses="govuk-label--s"
+  inputId="fcon_search_account_individuals_post_code"
+  inputName="fcon_search_account_individuals_post_code"
+  inputClasses="govuk-input--width-10"
+  [control]="form.get('fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_post_code')"
+  [errors]="formControlErrorMessages['fcon_search_account_individuals_post_code']"
+></opal-lib-govuk-text-input>
