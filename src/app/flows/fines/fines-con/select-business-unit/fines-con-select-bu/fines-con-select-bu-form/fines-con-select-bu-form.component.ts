@@ -63,6 +63,14 @@ export class FinesConSelectBuFormComponent extends AbstractFormBaseComponent imp
   }
 
   /**
+   * Resets consolidation store state and navigates back to dashboard.
+   */
+  public handleCancelConsolidation(): void {
+    this.finesConStore.resetConsolidationState();
+    this.handleRoute(this.routingPath.children.dashboard, { nonRelative: true });
+  }
+
+  /**
    * Initialize the form component following standard patterns
    */
   public override ngOnInit(): void {

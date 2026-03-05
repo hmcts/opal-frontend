@@ -8,6 +8,7 @@ import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.cons
 import { FINES_CON_ROUTING_TITLES } from './constants/fines-con-routing-titles.constant';
 import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
+import { finesConFlowStateGuard } from '../guards/fines-con-flow-state.guard';
 
 const consolidationRootPermissionIds = FINES_PERMISSIONS;
 export const routing: Routes = [
@@ -32,6 +33,21 @@ export const routing: Routes = [
       routePermissionId: [consolidationRootPermissionIds['consolidate']],
       permission: 'CONSOLIDATE',
       title: FINES_CON_ROUTING_TITLES.children.selectBusinessUnit,
+    },
+    resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
+  },
+  {
+    path: FINES_CON_ROUTING_PATHS.children.consolidateAcc,
+    loadComponent: () =>
+      import('../consolidate-acc/fines-con-consolidate-acc/fines-con-consolidate-acc.component').then(
+        (c) => c.FinesConConsolidateAccComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard, finesConFlowStateGuard],
+    canDeactivate: [canDeactivateGuard],
+    data: {
+      routePermissionId: [consolidationRootPermissionIds['consolidate']],
+      permission: 'CONSOLIDATE',
+      title: FINES_CON_ROUTING_TITLES.children.consolidateAcc,
     },
     resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
