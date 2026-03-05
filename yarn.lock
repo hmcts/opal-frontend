@@ -3207,12 +3207,12 @@ __metadata:
   linkType: hard
 
 "@cucumber/messages@npm:^32.0.0":
-  version: 32.0.1
-  resolution: "@cucumber/messages@npm:32.0.1"
+  version: 32.2.0
+  resolution: "@cucumber/messages@npm:32.2.0"
   dependencies:
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-  checksum: 10/697fcf221797977693ebedc24e245408082e65ccc691780b02664893166a235bd39ad4c3499a55d13d531cacaa3bd882aad9b135ff982d8a7ba66bccfdb90814
+  checksum: 10/b041c144977caee48be45c1418923db7ec80395701f0d91c6c6b0491889980941dcbfd82b184e5b3678a8726ca4ab91b77aff19d1ee2b718b4c2d20d597cc5d3
   languageName: node
   linkType: hard
 
