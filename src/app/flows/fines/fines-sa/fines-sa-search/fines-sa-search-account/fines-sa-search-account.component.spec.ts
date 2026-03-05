@@ -62,7 +62,7 @@ describe('FinesSaSearchAccountComponent', () => {
     component.handleSearchAccountSubmit(mockForm);
     expect(mockFinesSaStore.searchAccount()).toEqual(mockForm.formData);
     expect(routerSpy).toHaveBeenCalledWith(
-      [`${FINES_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.children.results}`],
+      [`${FINES_ROUTING_PATHS.root}/dashboard/search/${FINES_SA_ROUTING_PATHS.children.results}`],
       {},
     );
   });

@@ -34,7 +34,7 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * @returns {string} The constructed URL path for the fines SA search results.
    */
   private getResultsUrl(): string {
-    return `${this.finesRoutingPaths.root}/${this.finesSaRoutingPaths.root}/${this.finesSaRoutingPaths.children.results}`;
+    return `${this.finesRoutingPaths.root}/dashboard/search/${this.finesSaRoutingPaths.children.results}`;
   }
 
   /**
