@@ -12,7 +12,6 @@ import { FinesSaResultsDefendantTableWrapperComponent } from './fines-sa-results
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-results-defendant-table-wrapper-table-sort-default.constant';
 import { IFinesSaResultsDefendantTableWrapperTableData } from './fines-sa-results-defendant-table-wrapper/interfaces/fines-sa-results-defendant-table-wrapper-table-data.interface';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
-import { FINES_SA_SEARCH_ROUTING_PATHS } from '../fines-sa-search/routing/constants/fines-sa-search-routing-paths.constant';
 import { Subject, takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 import { FinesSaResultsTabsType } from './types/fines-sa-results-tabs.type';
@@ -28,6 +27,7 @@ import { FinesSaResultsMinorCreditorTableWrapperComponent } from './fines-sa-res
 import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-sort-default.constant';
 import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-data-empty.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-sa-results',
@@ -46,7 +46,6 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/
 export class FinesSaResultsComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly router = inject(Router);
-  private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
   public readonly activatedRoute = inject(ActivatedRoute);
   public readonly finesSaStore = inject(FinesSaStore);
   public resultView!: FinesSaResultsTabsType;
@@ -366,15 +365,21 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   /**
    * Navigates the user back to the fines search page.
    *
-   * This method uses the Angular Router to navigate to the root path defined in `finesSaSearchRoutingPaths`.
-   * The navigation is performed relative to the parent of the current activated route.
-   * Additionally, it sets the URL fragment to the currently active tab as determined by `finesSaStore.activeTab()`.
+   * This method uses the Angular Router to navigate to the dashboard search route.
+   * It also sets the URL fragment to the currently active tab as determined by `finesSaStore.activeTab()`.
    */
   public navigateBackToSearch() {
-    this['router'].navigate([this.finesSaSearchRoutingPaths.root], {
-      relativeTo: this['activatedRoute'].parent,
-      fragment: this.finesSaStore.activeTab(),
-    });
+    this['router'].navigate(
+      [
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.children.search,
+      ],
+      {
+        fragment: this.finesSaStore.activeTab(),
+      },
+    );
   }
 
   /**
