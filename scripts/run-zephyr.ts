@@ -23,5 +23,7 @@ const zephyrOptions = createZephyrOptions(actionType, processType, reportPath);
 zephyrOptions.executionEnvironment = process.env['EXECUTION_ENVIRONMENT'] ?? undefined;
 zephyrOptions.executionBuild = process.env['EXECUTION_BUILD'] ?? undefined;
 zephyrOptions.executionTestCycleName = process.env['EXECUTION_TEST_CYCLE_NAME'] ?? undefined;
+zephyrOptions.executionTestCycleDescription = process.env['EXECUTION_TEST_CYCLE_DESCRIPTION'] ?? undefined;
+zephyrOptions.executionTestCycleVersion = process.env['EXECUTION_TEST_CYCLE_VERSION'] ?? undefined;
 zephyrOptions.executionAttachEvidence = process.env['EXECUTION_ATTACH_EVIDENCE'] === 'true';
 runZephyr(zephyrOptions);
