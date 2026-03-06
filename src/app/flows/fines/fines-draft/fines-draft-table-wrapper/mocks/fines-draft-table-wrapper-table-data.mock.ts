@@ -3,6 +3,7 @@ import { IFinesDraftTableWrapperTableData } from '../interfaces/fines-draft-tabl
 export const FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK: IFinesDraftTableWrapperTableData[] = [
   {
     Account: 'ACC1234567890',
+    'Account id': 123,
     'Defendant id': 101,
     Defendant: 'John Doe',
     'Date of birth': '1985-06-15',
@@ -16,6 +17,7 @@ export const FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK: IFinesDraftTableWrapperT
   },
   {
     Account: 'ACC0987654321',
+    'Account id': 456,
     'Defendant id': 202,
     Defendant: 'Jane Smith',
     'Date of birth': '1990-09-25',
