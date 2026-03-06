@@ -1,0 +1,17 @@
+<div class="govuk-grid-column-two-thirds">
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="`${partyName} - ${accountNumber}`"
+    [headingText]="pageTitle"
+    headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+  >
+  </opal-lib-govuk-heading-with-caption>
+</div>
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-enf-override-add-change-form
+    [enforcementActionOptions]="enforcementActionOptions"
+    [enforcerOptions]="enforcerOptions"
+    [localJusticeAreaOptions]="localJusticeAreaOptions"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    (formSubmit)="handleFinesEnfOverrideAddChangeSubmit($event)"
+  ></app-fines-enf-override-add-change-form>
+</div>

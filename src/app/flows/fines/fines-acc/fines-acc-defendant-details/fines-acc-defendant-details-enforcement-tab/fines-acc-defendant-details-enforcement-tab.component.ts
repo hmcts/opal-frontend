@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import {
@@ -38,4 +38,9 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
+  @Output() addEnforcementOverride = new EventEmitter<void>();
+
+  handleAddEnforcementOverride(): void {
+    this.addEnforcementOverride.emit();
+  }
 }

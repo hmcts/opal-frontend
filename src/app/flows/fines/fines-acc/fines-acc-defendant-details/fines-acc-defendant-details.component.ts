@@ -237,7 +237,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           break;
         case 'enforcement':
           this.tabEnforcement$ = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountEnforcementTabData(account_id),
+            this.opalFinesService.getDefendantAccountEnforcementStatus(account_id),
           );
           break;
         case 'impositions':
@@ -446,5 +446,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         },
       );
     }
+  }
+
+  /**
+   * Navigates to the add enforcement override page or access denied page based on user permissions.
+   */
+  public navigateToAddEnforcementOverridePage(): void {
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/add`], {
+      relativeTo: this.activatedRoute,
+    });
   }
 }
