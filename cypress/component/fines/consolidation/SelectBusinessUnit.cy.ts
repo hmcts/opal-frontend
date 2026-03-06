@@ -104,6 +104,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it('(AC2) should list available business units in the autocomplete', { tags: ['@PO-2412'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    finesConFormData.fcon_select_bu_business_unit_id = null;
     setupComponent();
 
     cy.get(SelectBusinessUnitLocators.businessUnitInput).click();
