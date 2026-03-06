@@ -120,7 +120,26 @@ export class ManualAccountDetailsActions {
    */
   assertEntryType(expectedType: 'New account' | 'Transfer in from England or Wales'): void {
     log('assert', 'Asserting entry type contain correct value', { expectedType });
-    cy.get(L.entryType).should('contain.text', expectedType);
+    cy.get(L.entryType)
+      .invoke('text')
+      .then((text) =>
+        text
+          .replace(/\u00a0/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .toLowerCase(),
+      )
+      .should((actualText) => {
+        if (expectedType === 'New account') {
+          // UI copy differs by journey/version; both labels map to the same originator type.
+          expect(actualText, 'entry type should contain either "New account" or "Create new account"').to.satisfy(
+            (value: string) => value.includes('new account') || value.includes('create new account'),
+          );
+          return;
+        }
+
+        expect(actualText).to.contain('transfer in from england or wales');
+      });
   }
 
   /**
