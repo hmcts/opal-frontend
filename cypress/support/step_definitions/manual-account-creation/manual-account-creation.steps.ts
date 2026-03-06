@@ -253,6 +253,15 @@ When('I continue to manual account details', () => {
   log('navigate', 'Continuing to manual account details');
   flow().goToAccountDetails();
 });
+
+/**
+ * @step Continues from Create account without asserting destination path.
+ * @description Useful for journeys (e.g. Fixed Penalty) that do not land on Account details.
+ */
+When('I continue from create account', () => {
+  log('navigate', 'Continuing from create account');
+  createAccount().continueToAccountDetails();
+});
 /**
  * @step Creates a default fine manual account and confirms the task list is visible.
  * @description Starts a Fine account with default unit/type to ensure Account details page is loaded.
@@ -428,6 +437,17 @@ When('I refresh the application', () => {
 When('I complete manual account creation with the following fields and defaults:', (table: DataTable) => {
   log('flow', 'Completing full manual account creation from composite table');
   flow().completeManualAccountWithDefaults(table.raw());
+});
+
+/**
+ * @step Completes manual account creation using shared fixture table data.
+ * @description Loads reusable Section/Field/Value rows from fixture to keep step definition thin.
+ */
+When('I complete standard manual fine account fields for originator type checks', () => {
+  cy.fixture('manualAccountCreation/originatorTypeFineAccountFields.json').then((rows: string[][]) => {
+    log('flow', 'Completing full manual account creation from shared manual account fixture');
+    flow().completeManualAccountWithDefaults(rows);
+  });
 });
 
 /**
@@ -1306,6 +1326,69 @@ When('I choose {string} and continue to create account page', (selectedType: 'Ne
 });
 
 /**
+ * @step Asserts entry type on review account screen
+ * @description
+ * @param expectedType - Expected entry type to assert on the review account screen ("New account" or "Transfer in from England or Wales").
+ */
+When(
+  'I should see the entry type {string} on the review account screen',
+  (expectedType: 'New account' | 'Transfer in from England or Wales') => {
+    log('assert', 'Asserting entry type on review account screen', { expectedType });
+    details().assertEntryType(expectedType);
+  },
+);
+
+/**
+ * @step Creates a manual account by selecting journey, business unit, account type and defendant type.
+ * @description Selects the required values and continues from Originator type to the next page in the journey.
+ * @param selectedType - Originator journey option ("New" or "Transfer in").
+ * @param accountType - Manual account type to create.
+ * @param businessUnit - Business unit used for account creation.
+ * @param defendantType - Defendant type to select where required.
+ */
+When(
+  'I create a {string} manual {string} account for business unit {string} with defendant type {string}',
+  (
+    selectedType: 'New' | 'Transfer in',
+    accountType: AccountType,
+    businessUnit: string,
+    defendantType: DefendantType,
+  ) => {
+    log('flow', 'Creating manual account with defendant type', {
+      selectedType,
+      accountType,
+      businessUnit,
+      defendantType,
+    });
+    flow().startManualAccount(businessUnit, accountType, selectedType, defendantType);
+  },
+);
+
+/**
+ * @step Creates a manual account by selecting journey, business unit and account type.
+ * @description For account types without defendant radios, continues from Originator type to Account details.
+ * @param selectedType - Originator journey option ("New" or "Transfer in").
+ * @param accountType - Manual account type to create.
+ * @param businessUnit - Business unit used for account creation.
+ */
+When(
+  'I create a {string} manual {string} account for business unit {string}',
+  (selectedType: 'New' | 'Transfer in', accountType: AccountType, businessUnit: string) => {
+    log('flow', 'Creating manual account without defendant type', { selectedType, accountType, businessUnit });
+    flow().startManualAccount(businessUnit, accountType, selectedType);
+  },
+);
+
+/**
+ * @step Opens a task from account details using declarative wording.
+ * @description Wrapper around task navigation flow helper.
+ * @param taskName - Account details task to open.
+ */
+When('I access the {string} task', (taskName: MacAccountTaskName) => {
+  log('navigate', 'Accessing task from account details', { taskName });
+  flow().openTaskFromAccountDetails(taskName);
+});
+/**
  * @step Selecting back link on create account page
  * @description Clicks the back link on the Create account page and asserts we return to the Originator type selection page.
  */
@@ -1330,3 +1413,72 @@ When('I cancel create account choosing {string}', (choice: 'Cancel' | 'Ok') => {
   log('cancel', 'Cancelling create account details', { choice });
   flow().cancelCreateAccount(choice);
 });
+
+/**
+ * @step Ensures the originator type page is visible before selecting New/Transfer in.
+ * @description Handles cases where the journey re-enters on Create account and navigates back when needed.
+ */
+When('I ensure I am on the create or transfer in page', () => {
+  log('navigate', 'Ensuring create or transfer in page is visible');
+  flow().ensureCreateOrTransferInPage();
+});
+
+/**
+ * @step Starts intercepting local justice area lookup requests.
+ * @description Captures GET local-justice-areas calls so query params can be asserted later.
+ */
+When('I monitor local justice areas requests', () => {
+  flow().monitorLocalJusticeAreasRequests();
+});
+
+/**
+ * @step Asserts lja_type query params on the latest local justice area request.
+ * @description Validates the request contains the expected lja_type values, order-insensitive.
+ * @param table - DataTable containing one lja_type per row.
+ */
+Then('the latest local justice areas request should include lja types:', (table: DataTable) => {
+  const expectedLjaTypes = table
+    .raw()
+    .flat()
+    .map((value) => value?.trim())
+    .filter(Boolean)
+    .filter((value, index, arr) => arr.indexOf(value) === index);
+
+  flow().assertLatestLocalJusticeAreasRequestIncludes(expectedLjaTypes);
+});
+
+/**
+ * @step Asserts excluded lja_type query params on the latest local justice area request.
+ * @description Validates the request does not contain any of the supplied lja_type values.
+ * @param table - DataTable containing one excluded lja_type per row.
+ */
+Then('the latest local justice areas request should not include lja types:', (table: DataTable) => {
+  const excludedLjaTypes = table
+    .raw()
+    .flat()
+    .map((value) => value?.trim())
+    .filter(Boolean)
+    .filter((value, index, arr) => arr.indexOf(value) === index);
+
+  flow().assertLatestLocalJusticeAreasRequestExcludes(excludedLjaTypes);
+});
+
+/**
+ * @step Starts intercepting draft account create requests.
+ * @description Captures POST draft-accounts calls so payload can be asserted later.
+ */
+When('I monitor draft account create requests', () => {
+  flow().monitorDraftAccountCreateRequests();
+});
+
+/**
+ * @step Asserts originator_type on the latest draft account create request.
+ * @description Validates payload.account.originator_type matches the expected journey selection.
+ * @param expectedOriginatorType - Expected originator type (e.g. NEW, TFO).
+ */
+Then(
+  'the latest draft account create request should include originator type {string}',
+  (expectedOriginatorType: string) => {
+    flow().assertLatestDraftAccountCreateOriginatorType(expectedOriginatorType);
+  },
+);
