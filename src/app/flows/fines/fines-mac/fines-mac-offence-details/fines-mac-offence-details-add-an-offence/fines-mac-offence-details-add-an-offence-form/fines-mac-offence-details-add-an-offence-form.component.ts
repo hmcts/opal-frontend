@@ -27,7 +27,6 @@ import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../../validators/fines-ma
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-impositions-field-errors.constant';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
-import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -78,7 +77,6 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     GovukErrorSummaryComponent,
     MojDatePickerComponent,
     AlphagovAccessibleAutocompleteComponent,
-    MojTicketPanelComponent,
     GovukButtonComponent,
     GovukTextInputPrefixSuffixComponent,
     GovukRadioComponent,
@@ -94,6 +92,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     FinesMacOffenceCodeHintComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
+  styleUrl: './fines-mac-offence-details-add-an-offence-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceFormComponent
