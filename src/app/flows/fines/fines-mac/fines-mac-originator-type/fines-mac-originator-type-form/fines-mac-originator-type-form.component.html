@@ -1,0 +1,36 @@
+<h1 class="govuk-heading-l">Do you want to create a new account or transfer in?</h1>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)">
+  <opal-lib-govuk-radio
+    fieldSetId="fm_originator_type_originator_type"
+    legendText="Do you want to create a new account or transfer in?"
+    legendClasses="govuk-visually-hidden"
+    [errors]="formControlErrorMessages['fm_originator_type_originator_type']"
+  >
+    @for (originatorType of originatorTypes; track originatorType.key) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="originatorType.value"
+        [inputId]="'fm_originator_type_originator_type-' + originatorType.key"
+        inputName="fm_originator_type_originator_type"
+        [inputValue]="originatorType.key"
+        [control]="form.get('fm_originator_type_originator_type')"
+      ></div>
+    }
+  </opal-lib-govuk-radio>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Continue</opal-lib-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(routingPath.children.dashboard, { nonRelative: true })"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</form>

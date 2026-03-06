@@ -61,3 +61,18 @@ When('I open Manual Account Creation', () => {
 When('I open Search for an Account', () => {
   dashboard().goToAccountSearch();
 });
+
+/**
+ * @step Opens the **Consolidate accounts** page via the dashboard.
+ *
+ * @details
+ * - Calls {@link DashboardActions.goToConsolidation} internally.
+ *
+ * @example
+ * ```gherkin
+ * When I open Consolidate accounts
+ * ```
+ */
+When('I open Consolidate accounts', () => {
+  dashboard().goToConsolidation();
+});

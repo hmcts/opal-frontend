@@ -12,7 +12,10 @@ import { ADD_OFFENCE_OFFENCE_MOCK } from './mocks/add-offence-draft-state-mock';
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { DOM_ELEMENTS, impostitionSelectors } from './constants/fines_mac_offence_details_elements';
+import {
+  MacOffenceDetailsAddOffenceLocators as DOM_ELEMENTS,
+  impositionSelectors,
+} from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { IMPOSITION_ERROR_MESSAGES, OFFENCE_ERROR_MESSAGES } from './constants/fines_mac_offence_details_errors';
 import { impositionResultCodelist } from './constants/fines_mac_offence_details_results_codes';
 import {
@@ -130,7 +133,7 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const imposition_1 = impostitionSelectors(0);
+      const imposition_1 = impositionSelectors(0);
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Add an offence');
       cy.get(DOM_ELEMENTS.legend).should('contain', 'Offence details');
@@ -218,7 +221,7 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const imposition_1 = impostitionSelectors(0);
+      const imposition_1 = impositionSelectors(0);
 
       impositionResultCodelist.forEach((resultCode) => {
         if (resultCode === 'Compensation (FCOMP)' || resultCode === 'Costs (FCOST)') {
@@ -250,7 +253,7 @@ describe('FinesMacAddOffenceComponent', () => {
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition_1 = structuredClone(IMPOSITION_MOCK_1);
 
@@ -283,7 +286,7 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition_1 = structuredClone(IMPOSITION_MOCK_1);
       Imposition_1[0].fm_offence_details_major_creditor_id = null;
@@ -310,7 +313,7 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition_1 = structuredClone(IMPOSITION_MOCK_1);
       Imposition_1[0].fm_offence_details_major_creditor_id = null;
@@ -334,7 +337,7 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_2);
 
@@ -404,7 +407,7 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_1);
       Imposition[0].fm_offence_details_amount_imposed = null;
@@ -429,7 +432,7 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_1);
       Imposition[0].fm_offence_details_amount_paid = null;
@@ -545,7 +548,7 @@ describe('FinesMacAddOffenceComponent', () => {
     { tags: ['@PO-1060'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition_1 = structuredClone(IMPOSITION_MOCK_4);
 
@@ -570,7 +573,7 @@ describe('FinesMacAddOffenceComponent', () => {
     { tags: ['@PO-1060'] },
     () => {
       setupComponent(null, 'pgToPay');
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition_1 = structuredClone(IMPOSITION_MOCK_4);
 
@@ -595,7 +598,7 @@ describe('FinesMacAddOffenceComponent', () => {
     { tags: ['@PO-1060'] },
     () => {
       setupComponent(null, 'company');
-      const SELECTOR = impostitionSelectors(0);
+      const SELECTOR = impositionSelectors(0);
 
       let Imposition_1 = structuredClone(IMPOSITION_MOCK_4);
 

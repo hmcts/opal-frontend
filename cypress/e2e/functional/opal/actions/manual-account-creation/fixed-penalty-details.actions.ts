@@ -2,7 +2,7 @@
  * @file Actions for Manual Account Creation - Fixed Penalty details page.
  * @description Handles form filling, assertions, validation checks, and navigation.
  */
-import { FixedPenaltyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/fixed-penalty.locators';
+import { MacFixedPenaltyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 

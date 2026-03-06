@@ -15,7 +15,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { MOCK_FINES_DRAFT_STATE } from './mocks/mock_fines_draft_state';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
-import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
+import { MacReviewAccountLocators as DOM_ELEMENTS } from '../../../shared/selectors/manual-account-creation/mac.review-account.locators';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';

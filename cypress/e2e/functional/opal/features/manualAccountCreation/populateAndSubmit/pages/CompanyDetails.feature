@@ -5,7 +5,7 @@ Feature: Manual account creation - Company Details
 
   Background:
     Given I am logged in with email "opal-test@hmcts.net"
-    When I start a fine manual account for business unit "West London" with defendant type "Company"
+    When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I view the "Company details" task
 
   Scenario: (AC.12) Entered data persists in the session [@PO-345, @PO-365]

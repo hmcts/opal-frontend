@@ -63,10 +63,12 @@ export const setupAccountEnquiryComponent = (componentProperties: IComponentProp
           return originalNavigate(commands, extras);
         });
 
-      // Attempt to navigate to the defendant details page using the router.
+      const routeRoot = componentProperties.routeRoot ?? 'defendant';
+
+      // Attempt to navigate to the account details page using the router.
       // This triggers the stub above, which will allow this navigation to proceed normally.
       return router
-        .navigate(['defendant', componentProperties.accountId, 'details'], { fragment: componentProperties.fragments })
+        .navigate([routeRoot, componentProperties.accountId, 'details'], { fragment: componentProperties.fragments })
         .then((success) => {
           // Assert that navigation was successful.
           expect(success).to.be.true;

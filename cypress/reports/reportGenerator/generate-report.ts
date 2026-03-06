@@ -1,4 +1,5 @@
 #!/usr/bin/env ts-node
+/// <reference path="../../types/xml2js.d.ts" />
 
 import fs from 'fs';
 import path from 'path';

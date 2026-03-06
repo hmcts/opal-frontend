@@ -4,7 +4,7 @@ import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../fines-mac-personal-
 import { DateTime } from 'luxon';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 

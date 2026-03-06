@@ -16,7 +16,7 @@ import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-se
 import { MOCK_FINES_DRAFT_STATE_DELETE } from './mocks/mock_fines_draft_state_delete';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
+import { MacReviewAccountLocators as DOM_ELEMENTS } from '../../../shared/selectors/manual-account-creation/mac.review-account.locators';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';

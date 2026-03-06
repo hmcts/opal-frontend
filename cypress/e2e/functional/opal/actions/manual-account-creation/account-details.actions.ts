@@ -3,15 +3,15 @@
  * @description Provides helpers to open tasks, assert status, and confirm header presence.
  */
 import {
-  ManualAccountDetailsLocators as L,
-  ManualAccountTaskName,
-} from '../../../../../shared/selectors/manual-account-creation/account-details.locators';
+  MacAccountDetailsLocators as L,
+  MacAccountTaskName,
+} from '../../../../../shared/selectors/manual-account-creation/mac.account-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 const log = createScopedLogger('ManualAccountDetailsActions');
-const TASK_NAMES: ManualAccountTaskName[] = [
+const TASK_NAMES: MacAccountTaskName[] = [
   'Account comments and notes',
   'Company details',
   'Contact details',
@@ -33,8 +33,8 @@ export class ManualAccountDetailsActions {
    * Opens a task list item by its display name.
    * @param taskName Task display name from the account details list.
    */
-  openTask(taskName: ManualAccountTaskName): void {
-    const normalizedTask = (taskName ?? '').trim() as ManualAccountTaskName;
+  openTask(taskName: MacAccountTaskName): void {
+    const normalizedTask = (taskName ?? '').trim() as MacAccountTaskName;
     if (!TASK_NAMES.includes(normalizedTask)) {
       throw new Error(`Unsupported Account details task "${taskName}". Expected one of: ${TASK_NAMES.join(', ')}`);
     }
@@ -55,7 +55,7 @@ export class ManualAccountDetailsActions {
    * @param expectedHeader Expected Account details header (defaults to "Account details").
    */
   assertTaskStatus(
-    taskName: ManualAccountTaskName,
+    taskName: MacAccountTaskName,
     expectedStatus: string,
     expectedHeader: string = 'Account details',
   ): void {

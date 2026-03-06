@@ -13,7 +13,7 @@
           '/' +
           finesRoutingPaths.children.mac.root +
           '/' +
-          finesRoutingPaths.children.mac.children['createAccount']
+          finesRoutingPaths.children.mac.children['originatorType']
         "
         id="finesMacLink"
         >Manual Account Creation</a
@@ -74,6 +74,23 @@
           fragment="individuals"
           id="finesSaSearchLink"
           >Search for an account</a
+        >
+      </li>
+    }
+    @if (permissionIds.includes(dashboardPermissions['consolidate'])) {
+      <li>
+        <a
+          class="govuk-link"
+          [routerLink]="
+            '/' +
+            finesRoutingPaths.root +
+            '/' +
+            finesRoutingPaths.children.con.root +
+            '/' +
+            finesConRoutingPaths.children.selectBusinessUnit
+          "
+          id="finesConsolidationLink"
+          >Consolidate accounts</a
         >
       </li>
     }

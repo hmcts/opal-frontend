@@ -6,7 +6,7 @@
  * character count status, and primary actions.
  *
  * @remarks
- * - All selectors are intentionally scoped from the `<main role="main">` container.
+ * - Selectors are scoped from the component root so they work in both component and e2e tests.
  * - Prefers persistent `id` attributes provided by GOV.UK components.
  * - Safe for use in both Cypress and Playwright tests.
  *
@@ -25,21 +25,28 @@ export const AccountDetailsNotesLocators = {
   /** Root page scope for all queries on this view. */
   pageRoot: 'main[role="main"].govuk-main-wrapper',
 
+  /** Component root for the Add account note view. */
+  componentRoot: 'app-fines-acc-note-add-form',
+
   /** Page heading “Add account note”. */
-  header: 'main[role="main"] h1.govuk-heading-l',
+  header: 'app-fines-acc-note-add-form h1.govuk-heading-l',
 
   /** Caption beneath the header showing account ref and name (e.g., “25000047W - Mr James …”). */
-  headerCaption: 'main[role="main"] h1.govuk-heading-l .govuk-caption-l',
+  headerCaption: 'app-fines-acc-note-add-form h1.govuk-heading-l .govuk-caption-l',
 
   /** Error summary block at the top of the form (renders when there are validation errors). */
-  errorSummary: 'main[role="main"] .govuk-error-summary, main[role="main"] opal-lib-govuk-error-summary',
+  errorSummary:
+    'app-fines-acc-note-add-form .govuk-error-summary, app-fines-acc-note-add-form opal-lib-govuk-error-summary',
+
+  /** Error summary body containing the list of anchor links. */
+  errorSummaryBody: 'app-fines-acc-note-add-form .govuk-error-summary__body',
 
   // ──────────────────────────────
   // Form
   // ──────────────────────────────
 
   /** Root form element for adding an account note. */
-  form: 'main[role="main"] form',
+  form: 'app-fines-acc-note-add-form form',
 
   fields: {
     /** Note textarea input. */
@@ -48,11 +55,15 @@ export const AccountDetailsNotesLocators = {
     /** Hint text under the textarea. */
     noteHint: '#facc_add_notes-hint',
 
+    /** Inline error message for the note textarea. */
+    noteErrorMessage: 'app-fines-acc-note-add-form #facc_add_notes-error-message',
+
     /** Character count message visible to sighted users. */
-    noteCharCountMessage: '#facc_add_notes-with-hint-info.govuk-character-count__message',
+    noteCharCountMessage:
+      'app-fines-acc-note-add-form #facc_add_notes ~ .govuk-character-count__message.govuk-character-count__status',
 
     /** Live region announcing remaining characters for screen readers. */
-    noteCharCountSrStatus: '.govuk-character-count__sr-status',
+    noteCharCountSrStatus: 'app-fines-acc-note-add-form .govuk-character-count__sr-status',
   },
 
   // ──────────────────────────────

@@ -9,7 +9,7 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
-import { DOM_ELEMENTS } from './constants/remove_offences_and_imposition_elements';
+import { MacOffenceDetailsRemoveOffenceAndImpositionsLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/fines-mac-offence-details-form.mock';
 import { FINES_MAC_STATE_MOCK } from 'src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 

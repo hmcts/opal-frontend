@@ -1,6 +1,8 @@
 export const DOM_ELEMENTS = {
   app: 'div.govuk-grid-column-full',
   heading: 'h1.govuk-heading-l',
+  pageHeader: 'opal-lib-custom-page-header',
+  createAccountButton: '#create-account-button, button[buttonid="create-account-button"]',
   navigationLinks: 'a.moj-sub-navigation__link',
 
   rejectedIcon: 'span[id = "inputter-rejected-tab-rejected-count"]',

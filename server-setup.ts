@@ -54,9 +54,15 @@ export function getRoutesConfig(): {
 }
 
 export function configureApiProxyRoutes(app: Express): void {
-  app.use('/api', OpalApiProxy(config.get('opal-api.url')));
-  app.use('/opal-fines-service', OpalApiProxy(config.get('opal-api.opal-fines-service')));
-  app.use('/opal-user-service', OpalApiProxy(config.get('opal-api.opal-user-service')));
+  app.use('/api', OpalApiProxy(config.get('opal-api.url'), config.get('features.ip-logging.enabled')));
+  app.use(
+    '/opal-fines-service',
+    OpalApiProxy(config.get('opal-api.opal-fines-service'), config.get('features.ip-logging.enabled')),
+  );
+  app.use(
+    '/opal-user-service',
+    OpalApiProxy(config.get('opal-api.opal-user-service'), config.get('features.ip-logging.enabled')),
+  );
 }
 
 export function configureSession(server: Express): void {

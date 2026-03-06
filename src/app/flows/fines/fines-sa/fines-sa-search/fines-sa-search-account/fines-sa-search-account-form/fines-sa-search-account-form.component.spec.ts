@@ -114,10 +114,26 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
     tabKeys.forEach((key) => {
       const group = component.form.get(key) as FormGroup;
-      expect(group.get('dummy')?.value).toBeNull();
+      expect(group.get('dummy')).toBeNull();
+      expect(Object.keys(group.controls)).toEqual([]);
     });
 
     expect(component.formControlErrorMessages).toEqual({});
+  });
+
+  it('should allow valid account number submit after switching away from major creditors tab', () => {
+    component['switchTab']('majorCreditors');
+    fixture.detectChanges();
+
+    component['switchTab']('individuals');
+    fixture.detectChanges();
+
+    component.form.get('fsa_search_account_number')?.setValue('12345678');
+    component.form.get('fsa_search_account_reference_case_number')?.setValue('');
+    component.form.updateValueAndValidity({ emitEvent: false });
+
+    expect(component.form.errors).toBeNull();
+    expect(component.form.valid).toBe(true);
   });
 
   it('should trigger setSearchAccountTemporary and navigate to filter business units', () => {

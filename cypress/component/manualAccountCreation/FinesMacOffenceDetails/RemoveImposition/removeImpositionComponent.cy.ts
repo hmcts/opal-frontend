@@ -10,7 +10,7 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { DOM_ELEMENTS } from './constants/remove_imposition_elements';
+import { MacOffenceDetailsRemoveImpositionLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 
 describe('FinesRemoveImpositionComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);

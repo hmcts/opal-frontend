@@ -3,7 +3,7 @@ import { ManualCreateAccountActions, DefendantType } from '../actions/manual-acc
 import { AccountType } from '../../../../support/utils/payloads';
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
-import { ManualAccountTaskName } from '../../../../shared/selectors/manual-account-creation/account-details.locators';
+import { MacAccountTaskName } from '../../../../shared/selectors/manual-account-creation/mac.account-details.locators';
 import { ManualAccountTaskNavigationActions } from '../actions/manual-account-creation/task-navigation.actions';
 import {
   ManualContactDetailsActions,
@@ -59,8 +59,12 @@ import {
   resolveSearchFieldKey,
   resolveSearchResultColumn,
 } from '../../../../support/utils/macFieldResolvers';
-import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { MacOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
+import {
+  ManualCreateOrTransferInActions,
+  OriginatorType,
+} from '../actions/manual-account-creation/create-transfer.actions';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -117,6 +121,7 @@ type CompositeEntry = {
 export class ManualAccountCreationFlow {
   private readonly dashboard = new DashboardActions();
   private readonly createAccount = new ManualCreateAccountActions();
+  private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly accountDetails = new ManualAccountDetailsActions();
   private readonly commentsAndNotes = new ManualAccountCommentsNotesActions();
   private readonly companyDetails = new ManualCompanyDetailsActions();
@@ -159,9 +164,14 @@ export class ManualAccountCreationFlow {
    * Starts a Fine manual account and lands on the task list.
    * @param businessUnit - Business unit to select.
    * @param defendantType - Defendant type option to choose.
+   * @param originatorType - Whether the account is a new creation or transfer in, which determines the entry point.
    */
-  startFineAccount(businessUnit: string, defendantType: DefendantType): void {
-    log('flow', 'Start manual fine account', { businessUnit, defendantType });
+  startFineAccount(businessUnit: string, defendantType: DefendantType, originatorType: OriginatorType): void {
+    log('flow', 'Start manual fine account', { businessUnit, originatorType, defendantType });
+    this.ensureOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType(originatorType);
+    this.originatorType.continueToCreateAccount();
+
     this.ensureOnCreateAccountPage();
     if (!this.isDefaultBusinessUnit(businessUnit)) {
       this.createAccount.selectBusinessUnit(businessUnit);
@@ -978,13 +988,9 @@ export class ManualAccountCreationFlow {
    * @param defendantType - Defendant type option to choose.
    * @param taskName - Task to open after creation.
    */
-  startFineAccountAndOpenTask(
-    businessUnit: string,
-    defendantType: DefendantType,
-    taskName: ManualAccountTaskName,
-  ): void {
+  startFineAccountAndOpenTask(businessUnit: string, defendantType: DefendantType, taskName: MacAccountTaskName): void {
     log('flow', 'Start fine account and open task', { businessUnit, defendantType, taskName });
-    this.startFineAccount(businessUnit, defendantType);
+    this.startFineAccount(businessUnit, defendantType, 'New');
     this.openTaskFromAccountDetails(taskName);
   }
 
@@ -997,6 +1003,9 @@ export class ManualAccountCreationFlow {
   restartManualAccount(businessUnit: string, accountType: AccountType, defendantType: DefendantType): void {
     log('flow', 'Restart manual account after refresh', { businessUnit, accountType, defendantType });
     cy.reload();
+    this.originatorType.assertOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.createAccount.assertOnCreateAccountPage();
     if (!this.isDefaultBusinessUnit(businessUnit)) {
       this.createAccount.selectBusinessUnit(businessUnit);
@@ -1111,8 +1120,8 @@ export class ManualAccountCreationFlow {
    * @param taskName - Task list entry to open.
    * @param expectedHeader - Optional header text to assert on the Account details page.
    */
-  openTaskFromAccountDetails(taskName: ManualAccountTaskName, expectedHeader?: string): void {
-    const normalizedTask = (taskName ?? '').trim() as ManualAccountTaskName;
+  openTaskFromAccountDetails(taskName: MacAccountTaskName, expectedHeader?: string): void {
+    const normalizedTask = (taskName ?? '').trim() as MacAccountTaskName;
     this.accountDetails.assertOnAccountDetailsPage(expectedHeader);
     this.accountDetails.openTask(normalizedTask);
 
@@ -1363,6 +1372,9 @@ export class ManualAccountCreationFlow {
   goToManualAccountCreationFromDashboard(): void {
     log('flow', 'Navigate to Manual Account Creation from dashboard');
     this.dashboard.assertDashboard();
+    this.ensureOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.ensureOnCreateAccountPage();
   }
 
@@ -1396,7 +1408,7 @@ export class ManualAccountCreationFlow {
    * @param taskName - Task to check.
    * @param expectedStatus - Expected status string.
    */
-  returnToAccountDetailsAndAssertStatus(taskName: ManualAccountTaskName, expectedStatus: string): void {
+  returnToAccountDetailsAndAssertStatus(taskName: MacAccountTaskName, expectedStatus: string): void {
     log('flow', 'Return to account details and assert task status', { taskName, expectedStatus });
     this.taskNavigation.returnToAccountDetails();
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
@@ -2378,7 +2390,7 @@ export class ManualAccountCreationFlow {
    * @param accountDetailsHeader - Optional Account details header to assert before checking statuses.
    */
   assertTaskStatuses(
-    statuses: Array<{ task: ManualAccountTaskName; status: string }>,
+    statuses: Array<{ task: MacAccountTaskName; status: string }>,
     accountDetailsHeader?: string,
   ): void {
     log('flow', 'Asserting multiple task statuses', { statuses, accountDetailsHeader });
@@ -2745,12 +2757,20 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Ensures the create or transfer in page is loaded by navigating from the dashboard.
+   * Ensures the originator type page is loaded for Manual Account Creation.
+   */
+  private ensureOnCreateOrTransferInPage(): void {
+    this.dashboard.goToManualAccountCreation();
+    this.originatorType.assertOnCreateOrTransferInPage();
+  }
+
+  /**
    * Ensures the Manual Account Creation start page is loaded from the dashboard.
    * Clicks the dashboard entry for Manual Account Creation, asserts the create account
    * header is visible, and should be called before selecting business unit/account/defendant type.
    */
   private ensureOnCreateAccountPage(): void {
-    this.dashboard.goToManualAccountCreation();
     this.createAccount.assertOnCreateAccountPage();
   }
 
@@ -2770,5 +2790,15 @@ export class ManualAccountCreationFlow {
       }
       return cy.wrap(count);
     });
+  }
+
+  /**
+   * Cancels out of Transfer in page with a given choice.
+   * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
+   */
+  cancelCreateAccount(choice: 'Cancel' | 'Ok'): void {
+    log('flow', 'Cancel Create Account', { choice });
+    this.createAccount.assertOnTransferInPage();
+    this.createAccount.cancelAndChoose(choice);
   }
 }

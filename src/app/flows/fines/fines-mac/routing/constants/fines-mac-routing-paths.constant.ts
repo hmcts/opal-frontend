@@ -3,6 +3,7 @@ import { IFinesMacRoutingPaths } from '../interfaces/fines-mac-routing-paths.int
 export const FINES_MAC_ROUTING_PATHS: IFinesMacRoutingPaths = {
   root: 'manual-account-creation',
   children: {
+    originatorType: 'originator-type',
     accountDetails: 'account-details',
     createAccount: 'create-account',
     employerDetails: 'employer-details',

@@ -5,7 +5,7 @@ Feature: Manual account creation - Parent Guardian Details
 
   Background:
     Given I am logged in with email "opal-test@hmcts.net"
-    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay"
+    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay" and originator type "New"
     And I view the "Parent or guardian details" task
 
   Scenario: (AC.6, AC.5) Entered data persists in the session [@PO-344, @PO-364, @PO-436]

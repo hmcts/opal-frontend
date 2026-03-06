@@ -9,11 +9,13 @@
  */
 import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { ManualAccountCreationFlow } from '../../../e2e/functional/opal/flows/manual-account-creation.flow';
-import { ManualAccountTaskName } from '../../../shared/selectors/manual-account-creation/account-details.locators';
+import { MacAccountTaskName } from '../../../shared/selectors/manual-account-creation/mac.account-details.locators';
 import {
   ManualCreateAccountActions,
   DefendantType,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
+import { ManualCreateOrTransferInActions } from '../../../e2e/functional/opal/actions/manual-account-creation/create-transfer.actions';
+import { CreateNewOrTransferInLocators } from '../../../shared/selectors/manual-account-creation/create-transfer.locators';
 import { ManualAccountCommentsNotesActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
 import { ManualCourtFieldKey } from '../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import {
@@ -50,6 +52,7 @@ import { accessibilityActions } from '../../../e2e/functional/opal/actions/acces
 import { AccountType, ApprovedAccountType } from '../../utils/payloads';
 import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { installDraftAccountCleanup } from 'cypress/support/draftAccounts';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
@@ -61,9 +64,12 @@ const companyDetails = () => new ManualCompanyDetailsActions();
 const contactDetails = () => new ManualContactDetailsActions();
 const common = () => new CommonActions();
 const createAccount = () => new ManualCreateAccountActions();
+const originatorType = () => new ManualCreateOrTransferInActions();
 const languagePreferences = () => new ManualLanguagePreferencesActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
+
+installDraftAccountCleanup();
 /**
  * @step Confirms the user is on the dashboard.
  * @description Asserts the dashboard is visible to ensure navigation is in a known state.
@@ -77,17 +83,19 @@ Then('I should be on the dashboard', () => {
  * @description Selects business unit, chooses Fine + defendant type, and continues to Account details.
  * @param businessUnit - Business unit to search for and select.
  * @param defendantType - Defendant type option to select.
+ * @param originatorType - Whether to select "New" or "Transfer in" on the create-or-transfer page.
  * @remarks Uses the flow layer to keep Gherkin steps intent-driven.
  * @example
  *   When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
  */
 When(
-  'I start a fine manual account for business unit {string} with defendant type {string}',
-  (businessUnit: string, defendantType: DefendantType) => {
-    log('step', 'Starting manual account creation', { businessUnit, defendantType });
-    flow().startFineAccount(businessUnit, defendantType);
+  'I start a fine manual account for business unit {string} with defendant type {string} and originator type {string}',
+  (businessUnit: string, defendantType: DefendantType, originatorType: 'New' | 'Transfer in') => {
+    log('step', 'Starting manual account creation', { businessUnit, defendantType, originatorType });
+    flow().startFineAccount(businessUnit, defendantType, originatorType);
   },
 );
+
 /**
  * @step Starts a fine manual account relying on the default/only business unit.
  * @description For single-BU users where the business unit is preselected; skips explicit BU entry.
@@ -97,7 +105,7 @@ When(
   'I start a fine manual account using the default business unit with defendant type {string}',
   (defendantType: DefendantType) => {
     log('step', 'Starting manual account creation with default business unit (no BU provided)', { defendantType });
-    flow().startFineAccount('default business unit', defendantType);
+    flow().startFineAccount('default business unit', defendantType, 'New');
   },
 );
 /**
@@ -112,7 +120,7 @@ When(
  */
 When(
   'I start a fine manual account for business unit {string} with defendant type {string} and I view the {string} task',
-  (businessUnit: string, defendantType: DefendantType, taskName: ManualAccountTaskName) => {
+  (businessUnit: string, defendantType: DefendantType, taskName: MacAccountTaskName) => {
     log('step', 'Starting manual account creation and opening task', { businessUnit, defendantType, taskName });
     flow().startFineAccountAndOpenTask(businessUnit, defendantType, taskName);
   },
@@ -126,6 +134,14 @@ When(
 When('I open Manual Account Creation from the dashboard', () => {
   log('step', 'Opening Manual Account Creation from dashboard');
   flow().goToManualAccountCreationFromDashboard();
+});
+/**
+ * @step Selects "New" on the create-or-transfer-in page.
+ * @description Begins entering details on the Originator Type page by selecting the New radio option.
+ */
+When('I begin entering details on the Originator Type page', () => {
+  log('step', 'Beginning to enter details on Originator Type page');
+  originatorType().selectOriginatorType('New');
 });
 /**
  * @step Selects a business unit on the create account page.
@@ -148,6 +164,26 @@ When('I select manual account business unit {string}', (businessUnit: string) =>
 When('I choose manual account type {string}', (accountType: AccountType) => {
   log('click', 'Selecting manual account type', { accountType });
   createAccount().selectAccountType(accountType);
+});
+/**
+ * @step Prepares create account page state before cancelling.
+ * @description Supports cancel journeys with and without unsaved changes from the create account page.
+ * @param state - Either "with changes" or "without changes".
+ */
+When('I prepare create account page {string} before cancelling', (state: string) => {
+  const normalized = state.trim().toLowerCase();
+  log('step', 'Preparing create account page before cancel', { state: normalized });
+
+  if (normalized === 'without changes') {
+    return;
+  }
+
+  if (normalized === 'with changes') {
+    createAccount().selectAccountType('Fine');
+    return;
+  }
+
+  throw new Error(`Unsupported cancel journey state "${state}". Use "with changes" or "without changes".`);
 });
 /**
  * @step Chooses a manual defendant type.
@@ -223,7 +259,7 @@ When('I continue to manual account details', () => {
  */
 Given('I am viewing account details for a manual account', () => {
   log('step', 'Starting default manual account (West London, Adult or youth)');
-  flow().startFineAccount('West London', 'Adult or youth');
+  flow().startFineAccount('West London', 'Adult or youth', 'New');
 });
 
 /**
@@ -248,7 +284,7 @@ Given(
  * @remarks Delegates to the flow to assert navigation is correct.
  * @example When I view the "Court details" task
  */
-When('I view the {string} task', (taskName: ManualAccountTaskName) => {
+When('I view the {string} task', (taskName: MacAccountTaskName) => {
   log('navigate', 'Opening task', { taskName });
   flow().openTaskFromAccountDetails(taskName);
 });
@@ -264,7 +300,7 @@ When('I view the {string} task', (taskName: ManualAccountTaskName) => {
  * @example
  *   When I view the "Court details" task for "TEST COMPANY LTD"
  */
-When('I view the {string} task for {string}', (taskName: ManualAccountTaskName, header: string) => {
+When('I view the {string} task for {string}', (taskName: MacAccountTaskName, header: string) => {
   const normalizedHeader = withUniq(header);
   log('navigate', 'Opening task with custom header', { taskName, header: normalizedHeader });
   flow().openTaskFromAccountDetails(taskName, normalizedHeader);
@@ -279,7 +315,7 @@ When('I view the {string} task for {string}', (taskName: ManualAccountTaskName, 
  */
 Then(
   'returning to account details the {string} task the status is {string}',
-  (taskName: ManualAccountTaskName, expectedStatus: string) => {
+  (taskName: MacAccountTaskName, expectedStatus: string) => {
     log('assert', 'Returning to Account details and checking task status', { taskName, expectedStatus });
     flow().returnToAccountDetailsAndAssertStatus(taskName, expectedStatus);
   },
@@ -792,7 +828,7 @@ When(
  */
 Then('the task statuses are:', (table: DataTable) => {
   const statuses = table.rows().map(([task, status]) => ({
-    task: task as ManualAccountTaskName,
+    task: task as MacAccountTaskName,
     status,
   }));
   log('assert', 'Checking task status from table', { statuses });
@@ -811,7 +847,7 @@ Then('the task statuses are:', (table: DataTable) => {
  */
 Then('the task statuses for account header {string} are:', (header: string, table: DataTable) => {
   const statuses = table.rows().map(([task, status]) => ({
-    task: task as ManualAccountTaskName,
+    task: task as MacAccountTaskName,
     status,
   }));
   const normalizedHeader = withUniq(header);
@@ -825,7 +861,7 @@ Then('the task statuses for account header {string} are:', (header: string, tabl
  * @param expectedStatus - Expected status text (e.g., "Provided").
  * @example Then the "Offence details" task status is "Provided"
  */
-Then('the {string} task status is {string}', (taskName: ManualAccountTaskName, expectedStatus: string) => {
+Then('the {string} task status is {string}', (taskName: MacAccountTaskName, expectedStatus: string) => {
   log('assert', 'Checking single task status', { taskName, expectedStatus });
   details().assertTaskStatus(taskName, expectedStatus);
 });
@@ -1256,4 +1292,41 @@ Then('I am viewing employer details', () => {
 When('I continue to offence details from employer details', () => {
   log('navigate', 'Continuing to offence details from Employer details');
   flow().continueToOffenceDetailsFromEmployer();
+});
+
+/**
+ * @step Choose a radio button type and go to Create account page
+ * @description Supports both 'Create a new account' and 'Transfer in from England or Wales' options, asserting the Create account page after selection.
+ * @param selectedType - The type of account creation to select ('New' or 'Transfer in').
+ */
+When('I choose {string} and continue to create account page', (selectedType: 'New' | 'Transfer in') => {
+  log('navigate', 'Selecting account creation type and continuing to Create account page', { selectedType });
+  originatorType().selectOriginatorType(selectedType);
+  originatorType().continueToCreateAccount();
+});
+
+/**
+ * @step Selecting back link on create account page
+ * @description Clicks the back link on the Create account page and asserts we return to the Originator type selection page.
+ */
+When('I click the back link on create account page I return to Create or Transfer In page - No data retained', () => {
+  log('navigate', 'Clicking back link on Create account page');
+  createAccount().selectBackLink();
+  originatorType().assertOnCreateOrTransferInPage();
+  cy.get(CreateNewOrTransferInLocators.originatorType.transferIn, { timeout: 15_000 })
+    .first()
+    .should('exist')
+    .and('not.be.checked');
+});
+
+/**
+ * @step Handles Cancel on Transfer in with a given choice.
+ * @description Triggers the unsaved changes prompt and responds with choice.
+ * @param choice - Cancel/Ok selection.
+ * @remarks Ok choices will leave the page; Cancel choices keep the user on Create Account page.
+ * @example When I cancel create account choosing "Cancel"
+ */
+When('I cancel create account choosing {string}', (choice: 'Cancel' | 'Ok') => {
+  log('cancel', 'Cancelling create account details', { choice });
+  flow().cancelCreateAccount(choice);
 });

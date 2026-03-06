@@ -3,8 +3,8 @@
  * @description Handles navigation, tab switching, and table assertions for the checker view.
  */
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
-import { CheckAndValidateDraftsLocators as L } from '../../../../../shared/selectors/check-and-validate-drafts.locators';
-import { CheckAndValidateReviewLocators } from '../../../../../shared/selectors/check-and-validate-review.locators';
+import { CheckAndValidateDraftsLocators as L } from '../../../../../shared/selectors/manual-account-creation/check-and-validate/check-and-validate.drafts.locators';
+import { CheckAndValidateReviewLocators } from '../../../../../shared/selectors/manual-account-creation/check-and-validate/check-and-validate.review.locators';
 import { DraftAccountsTableLocators } from '../../../../../shared/selectors/draft-accounts-table.locators';
 import { DraftAccountsCommonActions } from './draft-accounts-common.actions';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';

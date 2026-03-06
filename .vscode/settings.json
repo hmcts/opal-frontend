@@ -14,7 +14,11 @@
   },
 
   // Ensure ESLint extension actually validates TS in this workspace
-  "eslint.validate": ["typescript"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.run": "onType",
+
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "javascript.tsserver.experimental.enableProjectDiagnostics": true,
 
   "sonarlint.connectedMode.project": {
     "connectionId": "HMCTS SonarQube",
@@ -37,5 +41,8 @@
 
   "files.associations": {
     "yarn-audit-known-issues": "plaintext"
+  },
+  "[feature]": {
+    "editor.defaultFormatter": "alexkrechik.cucumberautocomplete"
   }
 }

@@ -9,7 +9,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offence_mock';
-import { DOM_ELEMENTS } from './constants/review_summary_elements';
+import { MacOffenceDetailsReviewSummaryLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 

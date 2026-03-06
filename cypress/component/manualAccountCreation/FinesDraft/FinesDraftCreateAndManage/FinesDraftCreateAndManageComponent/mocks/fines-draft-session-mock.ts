@@ -23,3 +23,17 @@ export const DRAFT_SESSION_USER_STATE_MOCK: IOpalUserState = {
     },
   ],
 };
+
+export const DRAFT_SESSION_USER_STATE_INPUTTER_MOCK: IOpalUserState = {
+  ...DRAFT_SESSION_USER_STATE_MOCK,
+  business_unit_users: DRAFT_SESSION_USER_STATE_MOCK.business_unit_users.map((bu) => ({
+    ...bu,
+    permissions: [
+      ...bu.permissions,
+      {
+        permission_id: 1,
+        permission_name: 'Create and Manage Draft Accounts',
+      },
+    ],
+  })),
+};

@@ -22,8 +22,22 @@ const draftRootPermissionIds = FINES_PERMISSIONS;
 export const routing: Routes = [
   {
     path: '',
-    redirectTo: FINES_MAC_ROUTING_PATHS.children.createAccount,
+    redirectTo: FINES_MAC_ROUTING_PATHS.children.originatorType,
     pathMatch: 'full',
+  },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.originatorType,
+    loadComponent: () =>
+      import('../fines-mac-originator-type/fines-mac-originator-type.component').then(
+        (c) => c.FinesMacOriginatorTypeComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    canDeactivate: [canDeactivateGuard],
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.originatorType,
+      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
+    },
+    resolve: { title: TitleResolver },
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.createAccount,
@@ -31,7 +45,7 @@ export const routing: Routes = [
       import('../fines-mac-create-account/fines-mac-create-account.component').then(
         (c) => c.FinesMacCreateAccountComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.createAccount,

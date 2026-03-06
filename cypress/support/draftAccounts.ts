@@ -1,5 +1,7 @@
 // cypress/support/draftAccounts.ts
 
+import { isLegacy } from './e2e';
+
 /** Store created draft account IDs for cleanup. */
 const createdIds: number[] = [];
 
@@ -102,11 +104,15 @@ export function parseNumericId(value: unknown): number {
   if (typeof value === 'string' && /^\d+$/.test(value)) return Number(value);
   throw new Error(`Expected numeric id, got: ${JSON.stringify(value)}`);
 }
-
-/** Read ['draft_account_id'] from an unknown response body */
-export function readDraftIdFromBody(body: unknown): number {
+/** Read ['draft_account_id'] from an unknown response body */ export function readDraftIdFromBody(
+  body: unknown,
+): number | undefined {
   const rec = toRecord(body);
   const raw = rec['draft_account_id'];
+  if (raw === undefined) {
+    cy.log('readDraftIdFromBody', 'draft_account_id not found in response body');
+    return undefined;
+  }
   return parseNumericId(raw);
 }
 
@@ -209,7 +215,8 @@ export function installDraftAccountCleanup(): void {
   afterEach(() => {
     const ids = getAllIds();
     clearAllIds();
-    if (ids.length === 0) return;
+
+    if (ids.length === 0 || isLegacy) return;
 
     // First delete any promoted defendant accounts
     return cy.wrap(ids, { log: false }).each((idNum: number) => {

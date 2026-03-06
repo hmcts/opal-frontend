@@ -2,7 +2,7 @@
  * @file details.comments.actions.ts
  * @description Actions and assertions for the Account Details comments page (add/edit).
  */
-import { AccountCommentsAddLocators as L } from '../../../../../shared/selectors/account-details/account.comments-details.locators';
+import { AccountCommentsAddLocators as L } from '../../../../../shared/selectors/account-details/account.comments.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsCommentsActions');
@@ -17,7 +17,7 @@ export class AccountDetailsCommentsActions {
       .should('be.visible')
       .invoke('text')
       .then((t) => {
-        const normalized = String(t).replaceAll(/\s+/g, ' ').toLowerCase();
+        const normalized = String(t).replace(/\s+/g, ' ').toLowerCase();
         expect(normalized).to.match(/comment/); // matches "comments", "add comments", etc.
       });
   }
@@ -131,7 +131,7 @@ export class AccountDetailsCommentsActions {
   public confirmLeaveAndReturnToSummary(): void {
     // Prepare native confirm: click OK (accept)
     cy.once('window:confirm', (msg) => {
-      const normalized = String(msg).replaceAll(/\s+/g, ' ');
+      const normalized = String(msg).replace(/\s+/g, ' ');
       expect(normalized, 'Confirm prompt message').to.match(/unsaved changes/i);
       return true; // OK = leave
     });

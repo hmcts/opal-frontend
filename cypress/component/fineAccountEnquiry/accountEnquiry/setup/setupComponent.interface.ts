@@ -1,5 +1,6 @@
 export interface IComponentProperties {
   accountId: string | `${number}`;
+  routeRoot?: 'defendant' | 'minor-creditor';
   fragments:
     | 'at-a-glance'
     | 'defendant'

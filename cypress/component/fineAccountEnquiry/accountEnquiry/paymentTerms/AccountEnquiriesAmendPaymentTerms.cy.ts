@@ -14,7 +14,7 @@ import {
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import { setupAccountEnquiryComponent } from '../setup/SetupComponent';
-import { PAYMENT_TERMS_AMEND_ELEMENTS as AMEND_PAYMENT_TERMS } from 'cypress/shared/selectors/account-enquiries-payment-terms-amend.locators';
+import { PAYMENT_TERMS_AMEND_ELEMENTS as AMEND_PAYMENT_TERMS } from 'cypress/shared/selectors/account-enquiry/account.enquiry.payment-terms-amend.locators';
 import { IComponentProperties } from '../setup/setupComponent.interface';
 import { mount } from 'cypress/angular';
 import { provideHttpClient } from '@angular/common/http';

@@ -23,12 +23,8 @@ import { CustomAccountInformationItemComponent } from '@hmcts/opal-frontend-comm
 import { CustomAccountInformationItemLabelComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-label';
 import { CustomAccountInformationItemValueComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-value';
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
-import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
-import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
-import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 // Pipes & Directives
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
-import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
@@ -37,12 +33,6 @@ import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendan
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
-import {
-  MojAlertComponent,
-  MojAlertContentComponent,
-  MojAlertIconComponent,
-  MojAlertTextComponent,
-} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
@@ -64,6 +54,7 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@servic
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
+import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -85,17 +76,10 @@ import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-de
     CustomAccountInformationItemLabelComponent,
     CustomAccountInformationItemValueComponent,
     GovukTagComponent,
-    MojButtonMenuComponent,
-    GovukHeadingWithCaptionComponent,
-    CustomPageHeaderComponent,
     UpperCasePipe,
-    GovukButtonDirective,
-    MojAlertComponent,
-    MojAlertContentComponent,
-    MojAlertTextComponent,
-    MojAlertIconComponent,
     FinesAccDefendantDetailsEnforcementTab,
     MonetaryPipe,
+    FinesAccSummaryHeaderComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -135,7 +119,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
     );
     this.accountStore.setAccountState(
-      this.payloadService.transformAccountHeaderForStore(this.accountId, this.accountData),
+      this.payloadService.transformAccountHeaderForStore(this.accountId, this.accountData, 'defendant'),
     );
 
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
@@ -367,12 +351,18 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.opalFinesService
       .getDefendantAccountHeadingData(Number(this.accountStore.account_id()))
       .pipe(
-        tap((headingData) => {
+        tap((defendantHeadingData) => {
           this.accountStore.setAccountState(
-            this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
+            this.payloadService.transformAccountHeaderForStore(
+              Number(this.accountStore.account_id()),
+              defendantHeadingData,
+              'defendant',
+            ),
           );
         }),
-        map((headingData) => this.payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
+        map((defendantHeadingData) =>
+          this.payloadService.transformPayload(defendantHeadingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
+        ),
         takeUntil(this.destroy$),
       )
       .subscribe((res) => {

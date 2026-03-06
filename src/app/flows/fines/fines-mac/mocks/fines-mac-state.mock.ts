@@ -12,12 +12,14 @@ import { FINES_MAC_EMPLOYER_DETAILS_FORM } from '../fines-mac-employer-details/c
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-form';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../fines-mac-offence-details/constants/fines-mac-offence-details-form.constant';
+import { FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK } from '../fines-mac-originator-type/mocks/fines-mac-originator-type-form.mock';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM } from '../fines-mac-parent-guardian-details/constants/fines-mac-parent-guardian-details-form';
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../fines-mac-personal-details/constants/fines-mac-personal-details-form';
 import { IFinesMacState } from '../interfaces/fines-mac-state.interface';
 
 export const FINES_MAC_STATE_MOCK: IFinesMacState = {
+  originatorType: FINES_MAC_ORIGINATOR_TYPE_FORM_MOCK,
   accountDetails: {
     ...FINES_MAC_ACCOUNT_DETAILS_FORM,
     formData: {

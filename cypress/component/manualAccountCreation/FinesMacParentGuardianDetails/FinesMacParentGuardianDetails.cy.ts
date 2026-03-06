@@ -4,10 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { FinesMacParentGuardianDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component';
 import {
-  DOM_ELEMENTS,
+  MacParentGuardianDetailsLocators as DOM_ELEMENTS,
   getAliasFirstName,
   getAliasLastName,
-} from './constants/fines_mac_parent_guardian_details_elements';
+} from '../../../shared/selectors/manual-account-creation/mac.parent-guardian-details.locators';
 import {
   MAIN_PERSONAL_DETAILS,
   ALIAS_PERSONAL_DETAILS,
@@ -166,14 +166,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     });
   });
 
-  it('(AC.2) should reqiure first name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
+  it('(AC.2) should require first name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingFirstName);
   });
 
-  it('(AC.2) should reqiure last name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
+  it('(AC.2) should require last name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();

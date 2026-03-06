@@ -2,7 +2,7 @@
  * @file Actions for Manual Account Creation - Create account page.
  * @description Encapsulates business unit selection, account type/defendant type selection, and navigation to task list.
  */
-import { ManualCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/create-account.locators';
+import { MacCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.create-account.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { AccountType } from '../../../../../support/utils/payloads';
@@ -25,7 +25,7 @@ export class ManualCreateAccountActions {
    *
    * @param expectedHeader Optional header text to assert.
    */
-  assertOnCreateAccountPage(expectedHeader: string = 'Business unit and defendant type'): void {
+  assertOnCreateAccountPage(expectedHeader: string = 'Create account'): void {
     log('assert', 'Asserting manual account creation landing page', { expectedHeader });
     cy.get(L.pageHeader, { timeout: 15_000 }).should('contain.text', expectedHeader);
   }
@@ -132,5 +132,35 @@ export class ManualCreateAccountActions {
   continueToAccountDetails(): void {
     log('navigate', 'Continuing to account details task list');
     cy.get(L.continueButton, this.common.getTimeoutOptions()).should('be.visible').click();
+  }
+
+  /**
+   * Clicks the back link to return to the previous page.
+   */
+  selectBackLink(): void {
+    log('navigate', 'Clicking back link');
+    cy.get(L.backLink, this.common.getTimeoutOptions()).should('be.visible').click();
+  }
+
+  /**
+   * Confirms the Manual Account Creation Trnsfer In landing page is visible.
+   *
+   * @param expectedHeader Optional header text to assert.
+   */
+  assertOnTransferInPage(expectedHeader: string = 'Transfer in'): void {
+    log('assert', 'Asserting manual account creation landing page', { expectedHeader });
+    cy.get(L.pageHeader, { timeout: 15_000 }).should('contain.text', expectedHeader);
+  }
+
+  /**
+   * Handles Cancel click with the provided confirm choice.
+   * @param choice Confirmation choice (Cancel/Ok).
+   */
+  cancelAndChoose(choice: 'Cancel' | 'Ok'): void {
+    const accept = /ok|leave/i.test(choice);
+    log('cancel', 'Cancelling create account', { choice, accept });
+    this.common.confirmNextUnsavedChanges(accept);
+
+    cy.get(L.cancelLink, this.common.getTimeoutOptions()).should('exist').scrollIntoView().click({ force: true });
   }
 }

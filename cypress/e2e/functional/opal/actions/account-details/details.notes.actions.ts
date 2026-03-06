@@ -16,7 +16,7 @@ export class AccountDetailsNotesActions {
   private static readonly DEFAULT_TIMEOUT = 15000;
   private readonly common = new CommonActions();
 
-  private readonly normalize = (s: string): string => s.replaceAll('  ', ' ').trim().toLowerCase();
+  private readonly normalize = (s: string): string => s.replace(/\s+/g, ' ').trim().toLowerCase();
 
   /**
    * Waits for the Add Note view and asserts the header (caption excluded).

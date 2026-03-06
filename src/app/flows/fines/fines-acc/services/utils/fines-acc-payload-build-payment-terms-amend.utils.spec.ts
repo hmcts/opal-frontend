@@ -1,5 +1,6 @@
 import { buildPaymentTermsAmendPayloadUtil } from './fines-acc-payload-build-payment-terms-amend.utils';
 import { IFinesAccPaymentTermsAmendState } from '../../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
+import { describe, it, expect } from 'vitest';
 
 describe('buildPaymentTermsAmendPayload', () => {
   it('should build payload for pay in full payment type', () => {

@@ -9,18 +9,18 @@ Feature: Account Enquiries – Request Payment Card
 
   Rule: Eligible account baseline
     Background:
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
-        | Account_status                          | Submitted                       |
-        | account.defendant.forenames             | Jamie                           |
-        | account.defendant.surname               | PayCardRequest{uniq}            |
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+        | Account_status                          | Submitted                           |
+        | account.defendant.forenames             | Jamie                               |
+        | account.defendant.surname               | PayCardRequest{uniq}                |
         | account.defendant.email_address_1       | Jamie.PayCardRequest{uniq}@test.com |
-        | account.defendant.telephone_number_home | 02078259314                     |
-        | account.account_type                    | Fine                            |
-        | account.prosecutor_case_reference       | PCR-AUTO-013                    |
-        | account.collection_order_made           | false                           |
-        | account.collection_order_made_today     | false                           |
-        | account.payment_card_request            | false                           |
-        | account.defendant.dob                   | 2002-05-15                      |
+        | account.defendant.telephone_number_home | 02078259314                         |
+        | account.account_type                    | Fine                                |
+        | account.prosecutor_case_reference       | PCR-AUTO-013                        |
+        | account.collection_order_made           | false                               |
+        | account.collection_order_made_today     | false                               |
+        | account.payment_card_request            | false                               |
+        | account.defendant.dob                   | 2002-05-15                          |
       When I search for the account by last name "PayCardRequest{uniq}" and open the latest result
       Then I should see the page header contains "Mr Jamie PAYCARDREQUEST{uniqUpper}"
       When I go to the Payment terms section

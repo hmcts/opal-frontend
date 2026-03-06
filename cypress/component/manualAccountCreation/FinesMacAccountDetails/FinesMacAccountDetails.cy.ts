@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FinesMacAccountDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-account-details/fines-mac-account-details.component';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_check_account_mock';
-import { DOM_ELEMENTS } from './constants/fines_mac_check_account_details_elements';
+import { MacAccountDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.account-details.locators';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IFinesMacState } from '../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
@@ -81,7 +81,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should render the component', () => {
     setupComponent(null);
     // Verify the component is rendered
-    cy.get(DOM_ELEMENTS.dataPage).should('exist');
+    cy.get(L.dataPage).should('exist');
   });
 
   it(
@@ -92,27 +92,27 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
       // Verify all elements are rendered
-      cy.get(DOM_ELEMENTS.dataPage).should('exist');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
-      cy.get(DOM_ELEMENTS.accountType).should('exist');
-      cy.get(DOM_ELEMENTS.defendantType).should('exist');
-      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
-      cy.get(DOM_ELEMENTS.deleteAccountLink).should('exist');
-      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
-      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
-      cy.get(DOM_ELEMENTS.defendantDetails).should('exist');
-      cy.get(DOM_ELEMENTS.personalDetails).should('exist');
-      cy.get(DOM_ELEMENTS.employerDetails).should('exist');
-      cy.get(DOM_ELEMENTS.contactDetails).should('exist');
+      cy.get(L.dataPage).should('exist');
+      cy.get(L.backLink).should('exist');
+      cy.get(L.pageTitle).should('exist');
+      cy.get(L.businessUnit).should('exist');
+      cy.get(L.accountType).should('exist');
+      cy.get(L.defendantType).should('exist');
+      cy.get(L.courtDetails).should('exist');
+      cy.get(L.offenceAndImpositionDetails).should('exist');
+      cy.get(L.accountCommentsAndNotes).should('exist');
+      cy.get(L.deleteAccountLink).should('exist');
+      cy.get(L.offenceDetails).should('exist');
+      cy.get(L.paymentTerms).should('exist');
+      cy.get(L.accountCommentsAndNotesItem).should('exist');
+      cy.get(L.defendantDetails).should('exist');
+      cy.get(L.personalDetails).should('exist');
+      cy.get(L.employerDetails).should('exist');
+      cy.get(L.contactDetails).should('exist');
 
       //verify correct text is displayed
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
-      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
+      cy.get(L.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(L.defendantType).should('contain', 'Adult or youth only');
     },
   );
 
@@ -123,29 +123,29 @@ describe('FinesMacAccountDetailsComponent', () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-      cy.get(DOM_ELEMENTS.dataPage).should('exist');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
-      cy.get(DOM_ELEMENTS.accountType).should('exist');
-      cy.get(DOM_ELEMENTS.defendantType).should('exist');
-      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
-      cy.get(DOM_ELEMENTS.deleteAccountLink).should('exist');
-      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
-      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
-      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
-      cy.get(DOM_ELEMENTS.parentOrGuardianDetails).should('exist');
-      cy.get(DOM_ELEMENTS.personalDetails).should('exist');
-      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-      cy.get(DOM_ELEMENTS.employerDetails).should('exist');
-      cy.get(DOM_ELEMENTS.contactDetails).should('exist');
+      cy.get(L.dataPage).should('exist');
+      cy.get(L.backLink).should('exist');
+      cy.get(L.pageTitle).should('exist');
+      cy.get(L.businessUnit).should('exist');
+      cy.get(L.accountType).should('exist');
+      cy.get(L.defendantType).should('exist');
+      cy.get(L.courtDetails).should('exist');
+      cy.get(L.offenceAndImpositionDetails).should('exist');
+      cy.get(L.accountCommentsAndNotes).should('exist');
+      cy.get(L.deleteAccountLink).should('exist');
+      cy.get(L.offenceDetails).should('exist');
+      cy.get(L.paymentTerms).should('exist');
+      cy.get(L.accountCommentsAndNotesItem).should('exist');
+      cy.get(L.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
+      cy.get(L.parentOrGuardianDetails).should('exist');
+      cy.get(L.personalDetails).should('exist');
+      cy.get(L.paymentTerms).should('exist');
+      cy.get(L.courtDetails).should('exist');
+      cy.get(L.employerDetails).should('exist');
+      cy.get(L.contactDetails).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
-      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
+      cy.get(L.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(L.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
     },
   );
 
@@ -158,24 +158,24 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.businessUnit.welsh_language = false;
 
       // Verify all elements are rendered
-      cy.get(DOM_ELEMENTS.dataPage).should('exist');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
-      cy.get(DOM_ELEMENTS.accountType).should('exist');
-      cy.get(DOM_ELEMENTS.defendantType).should('exist');
-      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
-      cy.get(DOM_ELEMENTS.deleteAccountLink).should('exist');
-      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
-      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
+      cy.get(L.dataPage).should('exist');
+      cy.get(L.backLink).should('exist');
+      cy.get(L.pageTitle).should('exist');
+      cy.get(L.businessUnit).should('exist');
+      cy.get(L.accountType).should('exist');
+      cy.get(L.defendantType).should('exist');
+      cy.get(L.courtDetails).should('exist');
+      cy.get(L.offenceAndImpositionDetails).should('exist');
+      cy.get(L.accountCommentsAndNotes).should('exist');
+      cy.get(L.deleteAccountLink).should('exist');
+      cy.get(L.offenceDetails).should('exist');
+      cy.get(L.paymentTerms).should('exist');
+      cy.get(L.accountCommentsAndNotesItem).should('exist');
 
-      cy.get(DOM_ELEMENTS.languagePreferences).should('not.exist');
+      cy.get(L.languagePreferences).should('not.exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
-      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
+      cy.get(L.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(L.defendantType).should('contain', 'Company');
     },
   );
 
@@ -186,9 +186,9 @@ describe('FinesMacAccountDetailsComponent', () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_AYG_CHECK_ACCOUNT_MOCK);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
-      cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
-      cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
+      cy.get(L.checkAccountButton).should('exist');
+      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
 
@@ -200,9 +200,9 @@ describe('FinesMacAccountDetailsComponent', () => {
 
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
-      cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
-      cy.get(DOM_ELEMENTS.CheckDetailsText).should(
+      cy.get(L.checkAccountButton).should('not.exist');
+      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.CheckDetailsText).should(
         'contain',
         'You cannot proceed until all required sections have been completed.',
       );
@@ -216,9 +216,9 @@ describe('FinesMacAccountDetailsComponent', () => {
       setupComponent(null, 'pgToPay', FINES_AYPG_CHECK_ACCOUNT_MOCK);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-      cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
-      cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
+      cy.get(L.checkAccountButton).should('exist');
+      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
 
@@ -230,9 +230,9 @@ describe('FinesMacAccountDetailsComponent', () => {
 
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-      cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
-      cy.get(DOM_ELEMENTS.CheckDetailsText).should('exist');
+      cy.get(L.checkAccountButton).should('not.exist');
+      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.CheckDetailsText).should('exist');
     },
   );
 
@@ -243,9 +243,9 @@ describe('FinesMacAccountDetailsComponent', () => {
       setupComponent(null, 'company', FINES_COMP_CHECK_ACCOUNT_MOCK);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-      cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
-      cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
+      cy.get(L.checkAccountButton).should('exist');
+      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
 
@@ -257,9 +257,9 @@ describe('FinesMacAccountDetailsComponent', () => {
 
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-      cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
-      cy.get(DOM_ELEMENTS.CheckDetailsText).should(
+      cy.get(L.checkAccountButton).should('not.exist');
+      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.CheckDetailsText).should(
         'contain',
         'You cannot proceed until all required sections have been completed.',
       );
@@ -267,15 +267,15 @@ describe('FinesMacAccountDetailsComponent', () => {
   );
   it('(AC.1,AC.2) should show rejected account when account is rejected', { tags: ['@PO-605', '@PO-640'] }, () => {
     setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
-    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
-    cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
-    cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
-    cy.get(DOM_ELEMENTS.pageTitle).contains('Mr John DOE').should('exist');
-    cy.get(DOM_ELEMENTS.timeLine).should('exist');
-    cy.get(DOM_ELEMENTS.timeLineTitle).contains('Rejected').should('exist');
-    cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
-    cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
-    cy.get(DOM_ELEMENTS.timelineDescription).contains('Account rejected due to incorrect information').should('exist');
+    cy.get(L.reviewComponent).should('exist');
+    cy.get(L.status).contains('Rejected').should('exist');
+    cy.get(L.reviewHistory).contains('Review history').should('exist');
+    cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
+    cy.get(L.timeLine).should('exist');
+    cy.get(L.timeLineTitle).contains('Rejected').should('exist');
+    cy.get(L.timelineAuthor).contains('by Timmy Test').should('exist');
+    cy.get(L.timelineDate).contains('03 July 2023').should('exist');
+    cy.get(L.timelineDescription).contains('Account rejected due to incorrect information').should('exist');
   });
 
   it('(AC.3)should show history of timeline data', { tags: ['@PO-605', '@PO-640'] }, () => {
@@ -294,7 +294,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
 
-    cy.get(DOM_ELEMENTS.timeLine).should('exist');
+    cy.get(L.timeLine).should('exist');
     const timelineEntries = [
       { title: 'Submitted', author: 'by Timmy Test', date: '03 July 2023' },
       { title: 'Rejected', author: 'by Timmy Test', date: '05 July 2023' },
@@ -302,9 +302,9 @@ describe('FinesMacAccountDetailsComponent', () => {
     ];
 
     timelineEntries.forEach((entry) => {
-      cy.get(DOM_ELEMENTS.timeLineTitle).contains(entry.title).should('exist');
-      cy.get(DOM_ELEMENTS.timelineAuthor).contains(entry.author).should('exist');
-      cy.get(DOM_ELEMENTS.timelineDate).contains(entry.date).should('exist');
+      cy.get(L.timeLineTitle).contains(entry.title).should('exist');
+      cy.get(L.timelineAuthor).contains(entry.author).should('exist');
+      cy.get(L.timelineDate).contains(entry.date).should('exist');
     });
   });
 
@@ -313,8 +313,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     { tags: ['@PO-605', '@PO-640'] },
     () => {
       setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, false);
-      cy.get(DOM_ELEMENTS.pageTitle).contains('Account details').should('exist');
-      cy.get(DOM_ELEMENTS.reviewComponent).should('not.exist');
+      cy.get(L.pageTitle).contains('Account details').should('exist');
+      cy.get(L.reviewComponent).should('not.exist');
     },
   );
 
@@ -324,38 +324,36 @@ describe('FinesMacAccountDetailsComponent', () => {
     () => {
       setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
 
-      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
-      cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
-      cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).contains('Mr John DOE').should('exist');
-      cy.get(DOM_ELEMENTS.timeLine).should('exist');
-      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Rejected').should('exist');
-      cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
-      cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
-      cy.get(DOM_ELEMENTS.timelineDescription)
-        .contains('Account rejected due to incorrect information')
-        .should('exist');
+      cy.get(L.reviewComponent).should('exist');
+      cy.get(L.status).contains('Rejected').should('exist');
+      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
+      cy.get(L.timeLine).should('exist');
+      cy.get(L.timeLineTitle).contains('Rejected').should('exist');
+      cy.get(L.timelineAuthor).contains('by Timmy Test').should('exist');
+      cy.get(L.timelineDate).contains('03 July 2023').should('exist');
+      cy.get(L.timelineDescription).contains('Account rejected due to incorrect information').should('exist');
 
       // Verify all elements are rendered
-      cy.get(DOM_ELEMENTS.dataPage).should('exist');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
-      cy.get(DOM_ELEMENTS.accountType).should('exist');
-      cy.get(DOM_ELEMENTS.defendantType).should('exist');
-      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
-      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
-      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
-      cy.get(DOM_ELEMENTS.defendantDetails).should('exist');
-      cy.get(DOM_ELEMENTS.personalDetails).should('exist');
-      cy.get(DOM_ELEMENTS.employerDetails).should('exist');
-      cy.get(DOM_ELEMENTS.contactDetails).should('exist');
+      cy.get(L.dataPage).should('exist');
+      cy.get(L.backLink).should('exist');
+      cy.get(L.pageTitle).should('exist');
+      cy.get(L.businessUnit).should('exist');
+      cy.get(L.accountType).should('exist');
+      cy.get(L.defendantType).should('exist');
+      cy.get(L.courtDetails).should('exist');
+      cy.get(L.offenceAndImpositionDetails).should('exist');
+      cy.get(L.accountCommentsAndNotes).should('exist');
+      cy.get(L.offenceDetails).should('exist');
+      cy.get(L.paymentTerms).should('exist');
+      cy.get(L.accountCommentsAndNotesItem).should('exist');
+      cy.get(L.defendantDetails).should('exist');
+      cy.get(L.personalDetails).should('exist');
+      cy.get(L.employerDetails).should('exist');
+      cy.get(L.contactDetails).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
-      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
+      cy.get(L.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(L.defendantType).should('contain', 'Adult or youth only');
     },
   );
 
@@ -365,41 +363,39 @@ describe('FinesMacAccountDetailsComponent', () => {
     () => {
       setupComponent(null, '', FINES_AYPG_CHECK_ACCOUNT_MOCK, true);
 
-      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
-      cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
-      cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).contains('Mr John DOE').should('exist');
-      cy.get(DOM_ELEMENTS.timeLine).should('exist');
-      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Rejected').should('exist');
-      cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
-      cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
-      cy.get(DOM_ELEMENTS.timelineDescription)
-        .contains('Account rejected due to incorrect information')
-        .should('exist');
+      cy.get(L.reviewComponent).should('exist');
+      cy.get(L.status).contains('Rejected').should('exist');
+      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
+      cy.get(L.timeLine).should('exist');
+      cy.get(L.timeLineTitle).contains('Rejected').should('exist');
+      cy.get(L.timelineAuthor).contains('by Timmy Test').should('exist');
+      cy.get(L.timelineDate).contains('03 July 2023').should('exist');
+      cy.get(L.timelineDescription).contains('Account rejected due to incorrect information').should('exist');
 
       // Verify all elements are rendered
-      cy.get(DOM_ELEMENTS.dataPage).should('exist');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
-      cy.get(DOM_ELEMENTS.accountType).should('exist');
-      cy.get(DOM_ELEMENTS.defendantType).should('exist');
-      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
-      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
-      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
-      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
-      cy.get(DOM_ELEMENTS.parentOrGuardianDetails).should('exist');
-      cy.get(DOM_ELEMENTS.personalDetails).should('exist');
-      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-      cy.get(DOM_ELEMENTS.employerDetails).should('exist');
-      cy.get(DOM_ELEMENTS.contactDetails).should('exist');
+      cy.get(L.dataPage).should('exist');
+      cy.get(L.backLink).should('exist');
+      cy.get(L.pageTitle).should('exist');
+      cy.get(L.businessUnit).should('exist');
+      cy.get(L.accountType).should('exist');
+      cy.get(L.defendantType).should('exist');
+      cy.get(L.courtDetails).should('exist');
+      cy.get(L.offenceAndImpositionDetails).should('exist');
+      cy.get(L.accountCommentsAndNotes).should('exist');
+      cy.get(L.offenceDetails).should('exist');
+      cy.get(L.paymentTerms).should('exist');
+      cy.get(L.accountCommentsAndNotesItem).should('exist');
+      cy.get(L.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
+      cy.get(L.parentOrGuardianDetails).should('exist');
+      cy.get(L.personalDetails).should('exist');
+      cy.get(L.paymentTerms).should('exist');
+      cy.get(L.courtDetails).should('exist');
+      cy.get(L.employerDetails).should('exist');
+      cy.get(L.contactDetails).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
-      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
+      cy.get(L.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(L.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
     },
   );
 
@@ -409,34 +405,32 @@ describe('FinesMacAccountDetailsComponent', () => {
     () => {
       setupComponent(null, '', FINES_COMP_CHECK_ACCOUNT_MOCK, true);
 
-      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
-      cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
-      cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).contains('Company Name').should('exist');
-      cy.get(DOM_ELEMENTS.timeLine).should('exist');
-      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Rejected').should('exist');
-      cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
-      cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
-      cy.get(DOM_ELEMENTS.timelineDescription)
-        .contains('Account rejected due to incorrect information')
-        .should('exist');
+      cy.get(L.reviewComponent).should('exist');
+      cy.get(L.status).contains('Rejected').should('exist');
+      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.pageTitle).contains('Company Name').should('exist');
+      cy.get(L.timeLine).should('exist');
+      cy.get(L.timeLineTitle).contains('Rejected').should('exist');
+      cy.get(L.timelineAuthor).contains('by Timmy Test').should('exist');
+      cy.get(L.timelineDate).contains('03 July 2023').should('exist');
+      cy.get(L.timelineDescription).contains('Account rejected due to incorrect information').should('exist');
 
       // Verify all elements are rendered
-      cy.get(DOM_ELEMENTS.dataPage).should('exist');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
-      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
-      cy.get(DOM_ELEMENTS.accountType).should('exist');
-      cy.get(DOM_ELEMENTS.defendantType).should('exist');
-      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
-      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
-      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
+      cy.get(L.dataPage).should('exist');
+      cy.get(L.backLink).should('exist');
+      cy.get(L.pageTitle).should('exist');
+      cy.get(L.businessUnit).should('exist');
+      cy.get(L.accountType).should('exist');
+      cy.get(L.defendantType).should('exist');
+      cy.get(L.courtDetails).should('exist');
+      cy.get(L.offenceAndImpositionDetails).should('exist');
+      cy.get(L.accountCommentsAndNotes).should('exist');
+      cy.get(L.offenceDetails).should('exist');
+      cy.get(L.paymentTerms).should('exist');
+      cy.get(L.accountCommentsAndNotesItem).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
-      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
+      cy.get(L.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(L.defendantType).should('contain', 'Company');
     },
   );
 
@@ -449,7 +443,33 @@ describe('FinesMacAccountDetailsComponent', () => {
     setupComponent(null, '', FINES_COMP_CHECK_ACCOUNT_MOCK, true);
 
     // Verify Welsh language preferences are displayed
-    cy.get(DOM_ELEMENTS.languagePreferences).should('exist');
-    cy.get(DOM_ELEMENTS.languagePreferences).should('contain', 'Welsh and English');
+    cy.get(L.languagePreferences).should('exist');
+    cy.get(L.languagePreferences).should('contain', 'Welsh and English');
   });
+
+  it(
+    'should give each "Change" action a unique accessible name (via visually hidden context)',
+    { tags: ['@PO-2787'] },
+    () => {
+      setupComponent(null);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+      finesMacState.businessUnit.welsh_language = true;
+
+      // Document language row -> Change link -> visually hidden context
+      cy.contains('.govuk-summary-list__row', 'Document language')
+        .find('a.govuk-link')
+        .should('contain.text', 'Change')
+        .within(() => {
+          cy.get('span.govuk-visually-hidden').should('exist').and('contain.text', 'document language');
+        });
+
+      // Hearing language row -> Change link -> visually hidden context
+      cy.contains('.govuk-summary-list__row', 'Hearing language')
+        .find('a.govuk-link')
+        .should('contain.text', 'Change')
+        .within(() => {
+          cy.get('span.govuk-visually-hidden').should('exist').and('contain.text', 'hearing language');
+        });
+    },
+  );
 });

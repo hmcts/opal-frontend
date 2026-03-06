@@ -17,7 +17,7 @@ import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 
 import { convertDataTableToNestedObject } from '../../../../../support/utils/table';
 import { getDraftPayloadFile, type DraftPayloadType } from '../../../../../support/utils/payloads';
-import { readDraftIdFromBody } from '../../../../../support/draftAccounts';
+import { readDraftIdFromBody, recordCreatedId } from '../../../../../support/draftAccounts';
 import {
   extractAccountNumber,
   extractCreatedTimestamp,
@@ -27,6 +27,7 @@ import {
   summarizeErrorPayload,
 } from '../../../../../support/utils/accountCapture';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { performLogin } from '../login.actions';
 
 const log = createScopedLogger('DraftAccountApiActions');
 const createDraftEndpoint = '/opal-fines-service/draft-accounts';
@@ -80,6 +81,28 @@ const extractSafeErrorDetails = (payload: unknown): Record<string, unknown> => {
     }
   });
   return details;
+};
+
+/**
+ * Removes any account-status override coming from DataTable payload overrides.
+ *
+ * Status is controlled by `newStatus` via `resolveTargetStatus()` and, when required,
+ * the subsequent PATCH request. Keeping `account_status` in the POST body can cause
+ * environment-specific validation failures (e.g. 400 in CI), so we strip it here to
+ * keep create-and-update behavior deterministic.
+ * @param overrides - Object containing overrides from the DataTable payload.
+ * @returns A sanitized object with any account_status keys removed.
+ */
+const stripAccountStatusOverride = (overrides: Record<string, unknown>): Record<string, unknown> => {
+  const sanitized = { ...overrides };
+  const removedKeys = Object.keys(sanitized).filter((key) => key.trim().toLowerCase() === 'account_status');
+  removedKeys.forEach((key) => {
+    delete sanitized[key];
+  });
+  if (removedKeys.length) {
+    log('warn', 'Ignoring account_status override from table for POST payload', { removedKeys });
+  }
+  return sanitized;
 };
 
 const readNumericId = (body: Record<string, unknown>): number | undefined => {
@@ -227,6 +250,8 @@ export interface EtagConflictResult {
  * @param draftType - Draft account type from payloads.ts (e.g., company, pgToPay, fixedPenalty).
  * @param newStatus - Target status after creation (e.g., "Submitted", "In review", "Rejected").
  * @param table - Cucumber DataTable of overrides (values can include Account_status).
+ * @param user - Identifier for the user performing the publishing action (for logging/evidence).
+ * @param returnToUser - Identifier for the user to return to after status update (for logging/evidence).
  * @returns A Cypress chainable that resolves when the draft is created and updated
  *
  * @remarks
@@ -238,6 +263,8 @@ export function createDraftAndSetStatus(
   draftType: DraftPayloadType,
   newStatus: string,
   table: DataTable,
+  user: string,
+  returnToUser: string,
 ): Cypress.Chainable<void> {
   /**
    * Normalizes a requested status into an API-compatible value and determines
@@ -283,7 +310,7 @@ export function createDraftAndSetStatus(
    * Convert the Cucumber DataTable into a nested object structure
    * used to override fields in the draft payload
    */
-  const overrides = convertDataTableToNestedObject(table);
+  const overrides = stripAccountStatusOverride(convertDataTableToNestedObject(table));
 
   /** Load the base draft payload fixture for the specified draft type */
   const draftFixture = getDraftPayloadFile(draftType);
@@ -293,6 +320,8 @@ export function createDraftAndSetStatus(
     newStatus,
     canonicalStatus,
     overrides,
+    user,
+    returnToUser,
   });
 
   // Local state accumulated across steps (used for evidence + ETag tracking).
@@ -362,6 +391,7 @@ export function createDraftAndSetStatus(
             expect(postResp.status, 'POST /draft-accounts').to.eq(201);
 
             createdId = readDraftIdFromBody(postResp.body);
+            recordCreatedId(createdId);
             postAccountNumber = extractAccountNumber(postResp.body as unknown);
             log('done', 'Draft account created', { createdId });
             cy.wrap(createdId, { log: false }).as('lastCreatedDraftId');
@@ -402,6 +432,9 @@ export function createDraftAndSetStatus(
               business_unit_id,
               validated_by,
             });
+
+            log('info', `Switching to user ${user} for status update`, { user });
+            performLogin(user);
 
             return cy.wait(DRAFT_PREPATCH_WAIT_MS, { log: false }).then(() =>
               cy
@@ -486,6 +519,9 @@ export function createDraftAndSetStatus(
               } as EtagUpdate,
               { log: false },
             ).as('etagUpdate');
+
+            performLogin(returnToUser);
+            log('info', `Returned to user ${returnToUser} after status update`, { returnToUser });
           });
       })
 

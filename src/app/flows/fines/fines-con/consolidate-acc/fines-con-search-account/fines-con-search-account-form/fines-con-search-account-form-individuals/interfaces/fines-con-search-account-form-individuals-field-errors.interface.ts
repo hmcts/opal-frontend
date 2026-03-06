@@ -1,0 +1,15 @@
+import {
+  IAbstractFormBaseFieldError,
+  IAbstractFormBaseFieldErrors,
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+
+export interface IFinesConSearchAccountFormIndividualsFieldErrors extends IAbstractFormBaseFieldErrors {
+  fcon_search_account_individuals_last_name: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_last_name_exact_match: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_first_names: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_first_names_exact_match: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_include_aliases: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_date_of_birth: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_address_line_1: IAbstractFormBaseFieldError;
+  fcon_search_account_individuals_post_code: IAbstractFormBaseFieldError;
+}

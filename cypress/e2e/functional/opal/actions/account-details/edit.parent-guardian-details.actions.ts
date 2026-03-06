@@ -1,6 +1,6 @@
 // File: e2e/functional/opal/actions/edit-parent-guardian-details.actions.ts
 
-import { parentGuardianDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.parent-guardian.locators';
+import { parentGuardianDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.parent-guardian.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('EditParentGuardianDetailsActions');

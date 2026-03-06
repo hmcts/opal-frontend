@@ -7,7 +7,18 @@
       </opal-lib-moj-alert-content>
     </div>
   }
-  <h1 class="govuk-heading-l">Create accounts</h1>
+  <opal-lib-custom-page-header>
+    <ng-container pageHeaderHeading>
+      <h1 class="govuk-heading-l">Create accounts</h1>
+    </ng-container>
+    <ng-container pageHeaderButtons>
+      @if (hasCreateAndManageDraftAccountPermission()) {
+        <button buttonId="create-account-button" opalLibGovukButton (click)="navigateToCreateAccount()">
+          Create account
+        </button>
+      }
+    </ng-container>
+  </opal-lib-custom-page-header>
   <opal-lib-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
     <li
       opal-lib-moj-sub-navigation-item

@@ -244,7 +244,7 @@ export default defineConfig({
     TAGS: process.env.TAGS || '',
     DEV_DEFAULT_APP_MODE: process.env.DEV_DEFAULT_APP_MODE || '',
     DEFAULT_APP_MODE: process.env.DEFAULT_APP_MODE || '',
-    LEGACY_ENABLED: process.env.LEGACY_ENABLED || '',
+    LEGACY_ENABLED: process.env.LEGACY_ENABLED || false,
     omitFiltered: true,
     filterSpecs: true,
   },

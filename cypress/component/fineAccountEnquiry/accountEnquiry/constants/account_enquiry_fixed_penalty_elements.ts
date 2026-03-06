@@ -8,7 +8,7 @@ export const ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS = {
   headerValue: '[opal-lib-custom-account-information-item-value]',
 
   // Buttons
-  addNoteButton: 'button#addAccountNote',
+  addNoteButton: 'button[id$="addAccountNote"]',
 
   // Info sections
   summaryMetricBar: 'opal-lib-custom-summary-metric-bar',

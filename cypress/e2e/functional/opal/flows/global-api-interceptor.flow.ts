@@ -15,6 +15,7 @@ import { AccountSearchCommonActions } from '../actions/search/search.common.acti
 import { AccountSearchCompanyActions } from '../actions/search/search.companies.actions';
 import { CommonActions } from '../actions/common/common.actions';
 import { GlobalApiInterceptorActions } from '../actions/global-api-interceptor.actions';
+import { ManualCreateOrTransferInActions } from '../actions/manual-account-creation/create-transfer.actions';
 
 const log = createScopedLogger('GlobalApiInterceptorFlow');
 
@@ -26,6 +27,7 @@ const ACCOUNT_SEARCH_NON_RETRIABLE_HEADER = 'Sorry, there is a problem with the 
 export class GlobalApiInterceptorFlow {
   private readonly actions = new GlobalApiInterceptorActions();
   private readonly dashboard = new DashboardActions();
+  private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly common = new CommonActions();
   private readonly accountSearchFlow = new AccountSearchFlow();
   private readonly accountSearchCommon = new AccountSearchCommonActions();
@@ -43,8 +45,11 @@ export class GlobalApiInterceptorFlow {
     this.dashboard.assertDashboard();
     this.actions.stubBusinessUnitsError(statusCode);
     this.dashboard.goToManualAccountCreation();
+    this.originatorType.assertOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.actions.waitForBusinessUnitsError(statusCode);
-    this.dashboard.assertDashboard();
+    this.originatorType.assertOnCreateOrTransferInPage();
   }
 
   /**
@@ -59,8 +64,11 @@ export class GlobalApiInterceptorFlow {
     this.dashboard.assertDashboard();
     this.actions.stubBusinessUnitsRetriableError(statusCode);
     this.dashboard.goToManualAccountCreation();
+    this.originatorType.assertOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.actions.waitForBusinessUnitsRetriableError(statusCode);
-    this.dashboard.assertDashboard();
+    this.originatorType.assertOnCreateOrTransferInPage();
   }
 
   /**
@@ -79,6 +87,9 @@ export class GlobalApiInterceptorFlow {
     this.dashboard.assertDashboard();
     this.actions.stubBusinessUnitsNonRetriableError(statusCode);
     this.dashboard.goToManualAccountCreation();
+    this.originatorType.assertOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.actions.waitForBusinessUnitsNonRetriableError(statusCode);
     this.common.assertHeaderContains(expectedHeader);
   }
@@ -94,8 +105,11 @@ export class GlobalApiInterceptorFlow {
     this.dashboard.assertDashboard();
     this.actions.stubBusinessUnitsNetworkFailure();
     this.dashboard.goToManualAccountCreation();
+    this.originatorType.assertOnCreateOrTransferInPage();
+    this.originatorType.selectOriginatorType('New');
+    this.originatorType.continueToCreateAccount();
     this.actions.waitForBusinessUnitsNetworkFailure();
-    this.dashboard.assertDashboard();
+    this.originatorType.assertOnCreateOrTransferInPage();
   }
 
   /**

@@ -31,6 +31,11 @@ When('I attempt to open Manual Account Creation and the business units request f
   flow().openManualAccountCreationWithBusinessUnitsNetworkFailure();
 });
 
+When('I click the Cancel button and the Cancel confirmation popup is displayed with:', (table: DataTable) => {
+  log('step', 'Clicking Cancel and asserting Cancel confirmation popup', { rows: table.raw() });
+  actions().clickCancelAndAssertConfirmationPopupFromTable(table);
+});
+
 When(
   'I attempt to open Manual Account Creation and the business units request fails with a non-retriable {int} error',
   (statusCode: number) => {

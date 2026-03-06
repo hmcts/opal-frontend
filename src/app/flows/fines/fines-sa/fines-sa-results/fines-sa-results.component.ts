@@ -27,6 +27,7 @@ import { IFinesSaResultsMinorCreditorTableWrapperTableData } from './fines-sa-re
 import { FinesSaResultsMinorCreditorTableWrapperComponent } from './fines-sa-results-minor-creditor-table-wrapper/fines-sa-results-minor-creditor-table-wrapper.component';
 import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-sort-default.constant';
 import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-data-empty.constant';
+import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-sa-results',
@@ -389,12 +390,27 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
       this.router.createUrlTree([
         FINES_ROUTING_PATHS.root,
         FINES_ACC_ROUTING_PATHS.root,
-        FINES_ACC_ROUTING_PATHS.children.defendant,
+        this.getAccountTypePathSegment(),
         accountId,
         FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
       ]),
     );
     window.open(url, '_blank');
+  }
+
+  /**
+   * Determines the appropriate account type path segment based on the current search type.
+   *
+   * @returns The path segment string for either defendant or minor creditor accounts.
+   */
+  public getAccountTypePathSegment(): string {
+    // Default to defendant path segment
+    let accountTypePathSegment = FINES_ACC_ROUTING_PATHS.children.defendant;
+    // Switch to minor creditor path segment if applicable
+    if (this.finesSaStore.getSearchType() === 'minorCreditors') {
+      accountTypePathSegment = FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root;
+    }
+    return accountTypePathSegment;
   }
 
   /**

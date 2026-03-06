@@ -3,7 +3,7 @@
  * @description Actions for the Account Details "At a glance" panel, including header assertions
  * and navigation to related areas such as Comments. Keeps step definitions thin and reusable.
  */
-import { AccountAtAGlanceLocators as N } from '../../../../../shared/selectors/account-details/account.at-a-glance-details.locators';
+import { AccountAtAGlanceLocators as N } from '../../../../../shared/selectors/account-details/account.at-a-glance.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 
@@ -100,7 +100,7 @@ export class AccountDetailsAtAGlanceActions {
         .should('be.visible')
         .invoke('text')
         .then((allTxt) => {
-          const normalized = String(allTxt).replaceAll(/\s+/g, ' ').trim();
+          const normalized = String(allTxt).replace(/\s+/g, ' ').trim();
           for (const line of lines) {
             expect(normalized).to.contain(line);
           }

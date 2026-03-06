@@ -9,7 +9,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 
   @PO-1816
   Scenario: AC1 - Failed individual fixed penalty draft appears in Failed tab with expected details
-    Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
+    Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status              | failed      |
       | account.defendant.forenames | Oliver      |
       | account.defendant.surname   | GREEN{uniq} |
@@ -34,7 +34,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 
   @PO-1816
   Scenario: AC1a - Failed individual fixed penalty draft returns to Failed tab after viewing details
-    Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
+    Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status              | failed      |
       | account.defendant.forenames | Oliver      |
       | account.defendant.surname   | GREEN{uniq} |
@@ -49,7 +49,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 
   @PO-1816
   Scenario: AC2 - Failed company fixed penalty draft appears in Failed tab with expected details
-    Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending":
+    Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status                 | Submitted                            |
       | account.defendant.company_name | Argent Oak Solutions Ltd comp {uniq} |
       | account.account_type           | Fixed Penalty                        |
@@ -75,7 +75,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 
   @PO-1816
   Scenario: AC2a - Failed company fixed penalty draft returns to Failed tab after viewing details
-    Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending":
+    Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status                 | Submitted                            |
       | account.defendant.company_name | Argent Oak Solutions Ltd comp {uniq} |
       | account.account_type           | Fixed Penalty                        |

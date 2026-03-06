@@ -13,6 +13,7 @@ export const FINES_DRAFT_STATE: IFinesMacAddAccountPayload = {
     defendant_type: null,
     originator_name: null,
     originator_id: null,
+    originator_type: null,
     prosecutor_case_reference: null,
     enforcement_court_id: null,
     collection_order_made: null,

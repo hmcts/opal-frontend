@@ -1,0 +1,345 @@
+/**
+ * @file mac.offence-details.locators.ts
+ * @description Selector map for the Manual Account Creation **Offence details** task.
+ *
+ * @remarks
+ * - Includes offence/imposition inputs, autocomplete listboxes, and navigation CTAs.
+ * - Keep selectors centralized for Cypress actions/flows.
+ */
+import { CommonLocators as Common } from '../common.locators';
+
+const date = new Date();
+const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+// Shared locators used by e2e flows/actions.
+export const MacOffenceDetailsLocators = {
+  pageHeader: Common.pageHeader,
+  dateOfSentenceInput: 'input[id = "fm_offence_details_date_of_sentence"]',
+  offenceCodeInput: 'input[id = "fm_offence_details_offence_cjs_code"]',
+  addImpositionButton: '#addImposition',
+  addAnotherOffenceButton: 'button.nested-flow:contains("Add another offence")',
+  reviewOffenceButton: 'button[type="submit"]:contains("Review offence")',
+  returnToAccountDetailsButton: 'button[type="submit"]:contains("Return to account details")',
+  cancelLink: 'a.button-link, button.button-link, [role="button"].button-link',
+  searchOffenceLink: 'a[href*="search-offences"]',
+  imposition: {
+    container: 'opal-lib-moj-ticket-panel',
+    resultCodeInput: (index: number) => `input[id = "fm_offence_details_result_id_${index}-autocomplete"]`,
+    resultCodeList: (index: number) => `ul[id = "fm_offence_details_result_id_${index}-autocomplete__listbox"]`,
+    amountImposedInput: (index: number) => `input[id = "fm_offence_details_amount_imposed_${index}"]`,
+    amountPaidInput: (index: number) => `input[id = "fm_offence_details_amount_paid_${index}"]`,
+    creditorRadio: (type: 'major' | 'minor', index: number) =>
+      `input[name="fm_offence_details_creditor_${index}"][value="${type}"]`,
+    majorCreditorInput: (index: number) => `input[id = "fm_offence_details_major_creditor_id_${index}-autocomplete"]`,
+    majorCreditorList: (index: number) =>
+      `ul[id = "fm_offence_details_major_creditor_id_${index}-autocomplete__listbox"]`,
+    addMinorCreditorLink: 'a:contains("Add minor creditor details")',
+    removeImpositionLink: 'a:contains("Remove imposition")',
+    minorCreditorSummary: 'app-fines-mac-offence-details-minor-creditor-information',
+    showMinorCreditorLink: 'a:contains("Show details")',
+    changeMinorCreditorLink: 'a:contains("Change")',
+    removeMinorCreditorLink: 'a:contains("Remove")',
+  },
+  minorCreditorForm: {
+    pageHeader: Common.pageHeader,
+    individualRadio: 'input[name="fm_offence_details_minor_creditor_creditor_type"][value="individual"]',
+    companyRadio: 'input[name="fm_offence_details_minor_creditor_creditor_type"][value="company"]',
+    titleSelect: '#fm_offence_details_minor_creditor_title',
+    firstNamesInput: '#fm_offence_details_minor_creditor_forenames',
+    lastNameInput: '#fm_offence_details_minor_creditor_surname',
+    companyNameInput: '#fm_offence_details_minor_creditor_company_name',
+    address1Input: '#fm_offence_details_minor_creditor_address_line_1',
+    address2Input: '#fm_offence_details_minor_creditor_address_line_2',
+    address3Input: '#fm_offence_details_minor_creditor_address_line_3',
+    postcodeInput: '#fm_offence_details_minor_creditor_post_code',
+    payByBacsCheckbox: '#fm_offence_details_minor_creditor_pay_by_bacs',
+    accountNameInput: '#fm_offence_details_minor_creditor_bank_account_name',
+    sortCodeInput: '#fm_offence_details_minor_creditor_bank_sort_code',
+    accountNumberInput: '#fm_offence_details_minor_creditor_bank_account_number',
+    paymentReferenceInput: '#fm_offence_details_minor_creditor_bank_account_ref',
+    saveButton: '#submitForm',
+    cancelLink: 'a.button-link, button.button-link, [role="button"].button-link',
+  },
+  removeMinorCreditor: {
+    pageHeader: Common.pageHeader,
+    confirmButton: '#confirmDeletion',
+    cancelLink: 'a:contains("No - cancel")',
+  },
+  removeImposition: {
+    pageHeader: Common.pageHeader,
+    confirmButton: '#confirmDeletion',
+    cancelLink: 'a:contains("No - cancel")',
+    table: 'opal-lib-govuk-table',
+  },
+  removeOffence: {
+    pageHeader: Common.pageHeader,
+    confirmButton: '#confirmDeletion',
+    cancelLink: 'a:contains("No - cancel")',
+  },
+  review: {
+    pageHeader: Common.pageHeader,
+    offenceComponent: 'app-fines-mac-offence-details-review-offence',
+    offenceCaption: 'span.govuk-caption-m',
+    impositionTable: 'opal-lib-govuk-table',
+    totalsSummaryList: '[summaryListId="offencesTotal"]',
+    returnToAccountDetailsButton: '#returnToCreateAccount',
+    addPaymentTermsButton: 'button:contains("Add payment terms")',
+    addAnotherOffenceButton: 'button#addAnOffence, button:contains("Add another offence")',
+  },
+  search: {
+    pageHeader: Common.pageHeader,
+    offenceCodeInput: '#fm_offence_details_search_offences_code',
+    shortTitleInput: '#fm_offence_details_search_offences_short_title',
+    actAndSectionInput: '#fm_offence_details_search_offences_act_section',
+    includeInactiveCheckbox: '#fm_offence_details_search_offences_inactive',
+    searchButton: '#submitForm',
+    backLink: '.govuk-back-link',
+    resultsTable: 'opal-lib-moj-sortable-table',
+  },
+} as const;
+
+// Add offence component locators.
+export const MacOffenceDetailsAddOffenceLocators = {
+  app: 'app-fines-mac-offence-details-add-an-offence-form',
+  pageTitle: 'h1.govuk-heading-l',
+  legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
+  errorSummary: 'div.govuk-error-summary',
+  fieldset: 'fieldset.govuk-fieldset',
+  dateOfSentenceInput: 'input[id = "fm_offence_details_date_of_sentence"]',
+  offenceCodeInput: 'input[id = "fm_offence_details_offence_cjs_code"]',
+  dateOfSentenceLabel: 'label[for = "fm_offence_details_date_of_sentence"]',
+  dateHint: 'div[id = "fm_offence_details_date_of_sentence-hint"]',
+  offenceCodeLabel: 'label[for = "fm_offence_details_offence_cjs_code"]',
+  offenceCodeHint: 'div[id = "fm_offence_details_offence_cjs_code-hint"]',
+  addImpositionButton: 'button[id = "addImposition"]',
+  submitButton: 'button[type = "submit"]',
+  addAnotherOffenceButton: 'button[type = "submit"]:contains("Add another offence")',
+  ticketPanel: 'opal-lib-moj-ticket-panel',
+  successPanel: 'section.moj-ticket-panel__content.moj-ticket-panel__content--blue',
+  invalidPanel: 'section.moj-ticket-panel__content.moj-ticket-panel__content--orange',
+  datePickerButton: 'button.moj-datepicker__toggle.moj-js-datepicker-toggle',
+  datePickerDateOfSentenceElement: 'div[id = "datepicker-fm_offence_details_date_of_sentence"]',
+  datePickerSubmitButton: 'button.govuk-button.moj-js-datepicker-ok',
+  datePickerCancelButton: 'button.govuk-button.govuk-button--secondary.moj-js-datepicker-cancel',
+  datePickerDialogHead: 'div.moj-datepicker__dialog-header',
+  testDate: `button[data-testid = "${formattedDate}"]`,
+  offenceLink: 'a.govuk-link.govuk-task-list_link.govuk-link--no-visited-state',
+  minorCreditorLink: 'a:contains("Add minor creditor details")',
+  removeImpositionLink: 'a:contains("Remove imposition")',
+} as const;
+
+export const impositionSelectors = (number: number) => ({
+  resultCodeAutoComplete: `ul[id = "fm_offence_details_result_id_${number}-autocomplete__listbox"]`,
+  resultCodeInput: `input[id = "fm_offence_details_result_id_${number}-autocomplete"]`,
+  amountImposedInput: `input[id = "fm_offence_details_amount_imposed_${number}"]`,
+  amountPaidInput: `input[id = "fm_offence_details_amount_paid_${number}"]`,
+  resultCodeLabel: `label[for = "fm_offence_details_result_id_${number}-autocomplete"]`,
+  resultCodeAutoCompleteValues: `ul[id = "fm_offence_details_result_id_${number}-autocomplete__listbox"]`,
+  amountImposedLabel: `label[for = "fm_offence_details_amount_imposed_${number}"]`,
+  amountPaidLabel: `label[for = "fm_offence_details_amount_paid_${number}"]`,
+  majorCreditor: `input[name="fm_offence_details_creditor_${number}"][value="major"]`,
+  majorCreditorLabel: `label[for = "fm_offence_details_creditor_${number}-major_${number}"]`,
+  minorCreditor: `input[name="fm_offence_details_creditor_${number}"][value="minor"]`,
+  minorCreditorLabel: `label[for = "fm_offence_details_creditor_${number}-minor_${number}"]`,
+  majorCreditorCode: `input[id = "fm_offence_details_major_creditor_id_${number}-autocomplete"]`,
+  majorCreditorCodeLabel: `label[for = "fm_offence_details_major_creditor_id_${number}-autocomplete"]`,
+});
+
+// Minor creditor form component locators.
+export const MacOffenceDetailsMinorCreditorLocators = {
+  pageHeading: 'h1.govuk-heading-l',
+  errorSummary: 'opal-lib-govuk-error-summary',
+  form: 'app-fines-mac-offence-details-minor-creditor-form',
+  legendS: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
+  legendM: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
+  creditorTypeIndividual: 'input[name="fm_offence_details_minor_creditor_creditor_type"][value="individual"]',
+  creditorTypeCompany: 'input[name="fm_offence_details_minor_creditor_creditor_type"][value="company"]',
+  titleSelect: 'select[id="fm_offence_details_minor_creditor_title"]',
+  forenamesInput: 'input[id="fm_offence_details_minor_creditor_forenames"]',
+  surnameInput: 'input[id="fm_offence_details_minor_creditor_surname"]',
+  companyNameInput: 'input[id="fm_offence_details_minor_creditor_company_name"]',
+  addressLine1Input: 'input[id="fm_offence_details_minor_creditor_address_line_1"]',
+  addressLine2Input: 'input[id="fm_offence_details_minor_creditor_address_line_2"]',
+  addressLine3Input: 'input[id="fm_offence_details_minor_creditor_address_line_3"]',
+  postCodeInput: 'input[id="fm_offence_details_minor_creditor_post_code"]',
+  payByBacsCheckbox: 'input[id="fm_offence_details_minor_creditor_pay_by_bacs"]',
+  bankAccountNameInput: 'input[id="fm_offence_details_minor_creditor_bank_account_name"]',
+  bankSortCodeInput: 'input[id="fm_offence_details_minor_creditor_bank_sort_code"]',
+  bankAccountNumberInput: 'input[id="fm_offence_details_minor_creditor_bank_account_number"]',
+  bankPaymentRefInput: 'input[id="fm_offence_details_minor_creditor_bank_account_ref"]',
+  titleLabel: 'label[for="fm_offence_details_minor_creditor_title"]',
+  forenamesLabel: 'label[for="fm_offence_details_minor_creditor_forenames"]',
+  surnameLabel: 'label[for="fm_offence_details_minor_creditor_surname"]',
+  companyNameLabel: 'label[for="fm_offence_details_minor_creditor_company_name"]',
+  addressLine1Label: 'label[for="fm_offence_details_minor_creditor_address_line_1"]',
+  addressLine2Label: 'label[for="fm_offence_details_minor_creditor_address_line_2"]',
+  addressLine3Label: 'label[for="fm_offence_details_minor_creditor_address_line_3"]',
+  postCodeLabel: 'label[for="fm_offence_details_minor_creditor_post_code"]',
+  payByBacsLabel: 'label[for="fm_offence_details_minor_creditor_pay_by_bacs"]',
+  bankAccountNameLabel: 'label[for="fm_offence_details_minor_creditor_bank_account_name"]',
+  bankSortCodeLabel: 'label[for="fm_offence_details_minor_creditor_bank_sort_code"]',
+  bankAccountNumberLabel: 'label[for="fm_offence_details_minor_creditor_bank_account_number"]',
+  bankPaymentRefLabel: 'label[for="fm_offence_details_minor_creditor_bank_account_ref"]',
+  submitButton: 'button[id="submitForm"]',
+  cancelLink: 'opal-lib-govuk-cancel-link',
+} as const;
+
+// Minor creditor information summary locators.
+export const MacOffenceDetailsMinorCreditorInformationLocators = {
+  app: 'opal-lib-govuk-summary-card-list',
+  name: 'h5.govuk-summary-card__title',
+  address: 'dd[id = "minorCreditorAddressMinorCreditorValue"]',
+  paymentMethod: 'dd[id = "minorCreditorPaymentMethodMinorCreditorValue"]',
+  accountName: 'dd[id = "minorCreditorAccountNameMinorCreditorValue"]',
+  sortCode: 'dd[id = "minorCreditorSortCodeMinorCreditorValue"]',
+  accountNumber: 'dd[id = "minorCreditorAccountNumberMinorCreditorValue"]',
+  paymentReference: 'dd[id = "minorCreditorPaymentReferenceMinorCreditorValue"]',
+  addressKey: 'dt[id = "minorCreditorAddressMinorCreditorKey"]',
+  paymentMethodKey: 'dt[id = "minorCreditorPaymentMethodMinorCreditorKey"]',
+  accountNameKey: 'dt[id = "minorCreditorAccountNameMinorCreditorKey"]',
+  sortCodeKey: 'dt[id = "minorCreditorSortCodeMinorCreditorKey"]',
+  accountNumberKey: 'dt[id = "minorCreditorAccountNumberMinorCreditorKey"]',
+  paymentReferenceKey: 'dt[id = "minorCreditorPaymentReferenceMinorCreditorKey"]',
+} as const;
+
+// Remove minor creditor confirmation locators.
+export const MacOffenceDetailsRemoveMinorCreditorLocators = {
+  app: 'div.govuk-grid-column-full',
+  heading: 'h1.govuk-heading-l',
+  name: 'h2.govuk-summary-card__title',
+  address: 'dd[id = "minorCreditorAddressMinorCreditorValue"]',
+  paymentMethod: 'dd[id = "minorCreditorPaymentMethodMinorCreditorValue"]',
+  accountName: 'dd[id = "minorCreditorAccountNameMinorCreditorValue"]',
+  sortCode: 'dd[id = "minorCreditorSortCodeMinorCreditorValue"]',
+  accountNumber: 'dd[id = "minorCreditorAccountNumberMinorCreditorValue"]',
+  paymentReference: 'dd[id = "minorCreditorPaymentReferenceMinorCreditorValue"]',
+  addressKey: 'dt[id = "minorCreditorAddressMinorCreditorKey"]',
+  paymentMethodKey: 'dt[id = "minorCreditorPaymentMethodMinorCreditorKey"]',
+  accountNameKey: 'dt[id = "minorCreditorAccountNameMinorCreditorKey"]',
+  sortCodeKey: 'dt[id = "minorCreditorSortCodeMinorCreditorKey"]',
+  accountNumberKey: 'dt[id = "minorCreditorAccountNumberMinorCreditorKey"]',
+  paymentReferenceKey: 'dt[id = "minorCreditorPaymentReferenceMinorCreditorKey"]',
+  removeCreditorButton: 'button[id = "confirmDeletion"]',
+  cancelLink: 'a.govuk-link.button-link',
+} as const;
+
+// Remove imposition confirmation locators.
+export const MacOffenceDetailsRemoveImpositionLocators = {
+  app: 'div.govuk-grid-column-full',
+  heading: 'h1.govuk-heading-l',
+  tableHeadings: 'th.govuk-table__header',
+  impositionType: 'td[id ="imposition"]',
+  creditor: 'td[id ="creditor"]',
+  amountImposed: 'td[id ="amountImposed"]',
+  amountPaid: 'td[id ="amountPaid"]',
+  balanceRemaining: 'td[id ="balanceRemaining"]',
+  removeImpositionButton: 'button[id = "confirmDeletion"]',
+  cancelLink: 'a.govuk-link.button-link',
+} as const;
+
+// Remove offence and impositions confirmation locators.
+export const MacOffenceDetailsRemoveOffenceAndImpositionsLocators = {
+  app: 'div.govuk-grid-column-full',
+  heading: 'h1.govuk-heading-l',
+  caption: 'span.govuk-caption-m',
+  captionText: 'h2.govuk-heading-m',
+  tableHeadings: 'th.govuk-table__header',
+  impositionType: 'td[id ="imposition"]',
+  creditor: 'td[id ="creditor"]',
+  amountImposed: 'td[id ="amountImposed"]',
+  amountPaid: 'td[id ="amountPaid"]',
+  balanceRemaining: 'td[id ="balanceRemaining"]',
+  totalHeading: 'th[id="totalsHeading"]',
+  totalAmountImposed: 'th[id="totalAmountImposed"]',
+  totalAmountPaid: 'th[id="totalAmountPaid"]',
+  totalBalanceRemaining: 'th[id="totalBalanceRemaining"]',
+  removeImpositionButton: 'button[id = "confirmDeletion"]',
+  cancelLink: 'a.govuk-link.button-link',
+} as const;
+
+// Review offence (impositions table) locators.
+export const MacOffenceDetailsReviewOffenceLocators = {
+  app: 'app-fines-mac-offence-details-review-offence-imposition',
+  tableHeadings: 'th.govuk-table__header',
+  impositionType: 'td[id ="imposition"]',
+  creditor: 'td[id ="creditor"]',
+  amountImposed: 'td[id ="amountImposed"]',
+  amountPaid: 'td[id ="amountPaid"]',
+  balanceRemaining: 'td[id ="balanceRemaining"]',
+  totalHeading: 'th[id="totalsHeading"]',
+  totalAmountImposed: 'th[id="totalAmountImposed"]',
+  totalAmountPaid: 'th[id="totalAmountPaid"]',
+  totalBalanceRemaining: 'th[id="totalBalanceRemaining"]',
+} as const;
+
+// Review summary locators.
+export const MacOffenceDetailsReviewSummaryLocators = {
+  headingLarge: 'h1.govuk-heading-l',
+  headingMedium: 'h2.govuk-heading-m',
+  dateOfSentence: 'div[id = "dateOfSentenceDateOfSentence"]',
+  offencecode: 'app-fines-mac-offence-details-review-offence-heading-title',
+  tableHeadings: 'th.govuk-table__header',
+  impositionType: 'td[id ="imposition"]',
+  creditor: 'td[id ="creditor"]',
+  amountImposed: 'td[id ="amountImposed"]',
+  amountPaid: 'td[id ="amountPaid"]',
+  balanceRemaining: 'td[id ="balanceRemaining"]',
+  totalHeading: 'th[id="totalsHeading"]',
+  totalAmountImposed: 'th[id="totalAmountImposed"]',
+  totalAmountPaid: 'th[id="totalAmountPaid"]',
+  totalBalanceRemaining: 'th[id="totalBalanceRemaining"]',
+  GrandtotalAmountImposed: 'div[id ="offencesTotalAmountImposedTotals"]',
+  GrandtotalAmountPaid: 'div[id ="offencesTotalAmountPaidTotals"]',
+  GrandtotalRemainingBalance: 'div[id = "offencesTotalBalanceRemainingTotals"]',
+  addOffenceButton: 'button[id = "addAnOffence"]',
+  returnToCreateAccountButton: 'button[id = "returnToCreateAccount"]',
+  cancelLink: 'a.govuk-link.button-link',
+  hideLink: 'a[id = "hide"]',
+} as const;
+
+// Search offence form locators.
+export const MacOffenceDetailsSearchOffenceLocators = {
+  app: 'div.govuk-grid-column-two-thirds',
+  errorSummary: 'div.govuk-error-summary',
+  heading: 'h1.govuk-heading-l',
+  offenceCodeLabel: 'label[for = "fm_offence_details_search_offences_code"]',
+  shortTitleLabel: 'label[for = "fm_offence_details_search_offences_short_title"]',
+  actAndSectionLabel: 'label[for = "fm_offence_details_search_offences_act_section"]',
+  inactiveLabel: 'label[for = "fm_offence_details_search_offences_inactive"]',
+  offenceCodeInput: 'input[id = "fm_offence_details_search_offences_code"]',
+  shortTitleInput: 'input[id = "fm_offence_details_search_offences_short_title"]',
+  actAndSectionInput: 'textarea[id = "fm_offence_details_search_offences_act_section"]',
+  inactiveInput: 'input[id = "fm_offence_details_search_offences_inactive"]',
+  searchButton: 'button[id = "submitForm"]',
+  backButton: '',
+} as const;
+
+// Search offence results locators.
+export const MacOffenceDetailsSearchOffenceResultsLocators = {
+  app: 'app-fines-mac-offence-details-search-offences-results-table-wrapper',
+  heading: 'h1.govuk-heading-l',
+  table: 'tbody tr',
+  codeHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Code"] button[data-index="0"]',
+  shortTitleHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Short title"] button[data-index="1"]',
+  actAndSectionHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Act and section"] button[data-index="2"]',
+  usedFromHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Used from"] button[data-index="3"]',
+  usedToHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Used to"] button[data-index="4"]',
+  codeCell: 'td[opal-lib-moj-sortable-table-row-data][id="code"]',
+  shortTitleCell: 'td[opal-lib-moj-sortable-table-row-data][id="shortTitle"]',
+  actAndSectionCell: 'td[opal-lib-moj-sortable-table-row-data][id="actAndSection"]',
+  usedFromCell: 'td[opal-lib-moj-sortable-table-row-data][id="usedFrom"]',
+  usedToCell: 'td[opal-lib-moj-sortable-table-row-data][id="usedTo"]',
+  copyCodeLink: 'a.govuk-link',
+  backLink: 'opal-lib-govuk-back-link',
+  paginationElement: 'opal-lib-moj-pagination',
+  paginationText: '.moj-pagination__results',
+  previousPageButton: '.govuk-pagination__prev',
+  nextPageButton: '.govuk-pagination__next',
+  paginationList: '.govuk-pagination__list',
+  paginationListItem: '.govuk-pagination__item',
+  paginationCurrentPage: '.govuk-pagination__item--current',
+  paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
+  noResultsMessage: '.govuk-grid-column-full-width > p:nth-of-type(1)',
+  noResultsFollowupMessage: '.govuk-grid-column-full-width > p:nth-of-type(2)',
+  tableStatusMessage: 'opal-lib-moj-sortable-table-status',
+} as const;

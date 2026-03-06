@@ -78,6 +78,7 @@ export function interceptDefendantDetails(
     .as('getDefendantDetails');
 }
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { IOpalFinesAccountMinorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
@@ -119,6 +120,31 @@ export const interceptDefendantHeader = (
       },
     })
     .as('getDefendantHeaderSummary');
+};
+
+/**
+ * Intercepts the GET request for the minor creditor header summary in Cypress tests,
+ * returning a mocked response with the provided header details and ETag header.
+ *
+ * @param accountId - The unique identifier for the minor creditor account.
+ * @param minorCreditorHeaderMock - The mock data for the minor creditor header summary.
+ * @param respHeaderEtag - The ETag value to be returned in the response headers.
+ * @returns Cypress chainable object with the alias 'getMinorCreditorHeaderSummary'.
+ */
+export const interceptMinorCreditorHeader = (
+  accountId: string | number,
+  minorCreditorHeaderMock: IOpalFinesAccountMinorCreditorDetailsHeader,
+  respHeaderEtag: string,
+) => {
+  return cy
+    .intercept('GET', `/opal-fines-service/minor-creditor-accounts/${accountId}/header-summary`, {
+      statusCode: 200,
+      body: minorCreditorHeaderMock,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getMinorCreditorHeaderSummary');
 };
 /**
  * Intercepts the network request for fetching defendant account party details

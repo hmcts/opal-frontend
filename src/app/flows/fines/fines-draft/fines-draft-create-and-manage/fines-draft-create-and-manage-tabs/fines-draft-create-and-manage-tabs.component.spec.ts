@@ -24,6 +24,7 @@ import {
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_MAC_ROUTING_PATHS } from '@app/flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
 describe('FinesDraftCreateAndManageTabsComponent', () => {
   let component: FinesDraftCreateAndManageTabsComponent;
@@ -254,6 +255,15 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       FINES_ACC_ROUTING_PATHS.children.defendant,
       accountId,
       FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+    ]);
+  });
+
+  it('should route to originator type selection page on navigateToCreateAccount', () => {
+    component.navigateToCreateAccount();
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      FINES_ROUTING_PATHS.root,
+      FINES_MAC_ROUTING_PATHS.root,
+      FINES_MAC_ROUTING_PATHS.children.originatorType,
     ]);
   });
 

@@ -1,7 +1,4 @@
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
-import { IOpalFinesDefendantAccountIndividualDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-individual-details.interface';
-import { IOpalFinesAccountDefendantDetailsHeader } from '../../../../../src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
-import { IOpalFinesDefendantAccountAlias } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account-alias.interface';
 import { IFinesAccountState } from '../../../../../src/app/flows/fines/fines-acc/interfaces/fines-acc-state-interface';
 import { IOpalFinesDefendantAccountIndividualAlias } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account-individual-alias.interface';
 const INDIVIDUAL_ALIASES: IOpalFinesDefendantAccountIndividualAlias[] = [
@@ -12,6 +9,7 @@ const INDIVIDUAL_ALIASES: IOpalFinesDefendantAccountIndividualAlias[] = [
 export const MOCK_FINES_ACCOUNT_STATE: IFinesAccountState = {
   account_number: '123',
   account_id: 123,
+  pg_party_id: null,
   party_type: 'individual',
   party_name: 'John Doe',
   party_id: '456',

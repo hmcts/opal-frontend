@@ -3,10 +3,10 @@
  * @description Actions for the Manual Account Creation **Parent or guardian details** task.
  *
  * @remarks
- * - All selectors are sourced from `ManualParentGuardianDetailsLocators`.
+ * - All selectors are sourced from `MacParentGuardianDetailsLocators`.
  * - Methods are single-purpose to keep step definitions thin.
  */
-import { ManualParentGuardianDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/parent-guardian-details.locators';
+import { MacParentGuardianDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.parent-guardian-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 

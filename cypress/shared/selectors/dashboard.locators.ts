@@ -12,6 +12,9 @@
  *   cy.get(DashboardLocators.manualAccountCreationLink).click();
  */
 export const DashboardLocators = {
+  /** Root app container for dashboard content. */
+  app: 'div.govuk-grid-column-two-thirds',
+
   /** Page title element at the top of the dashboard. */
   dashboardPageTitle: 'h1.govuk-heading-m',
 
@@ -23,6 +26,9 @@ export const DashboardLocators = {
 
   /** Link to open the Account Search interface. */
   searchForAnAccountLink: '#finesSaSearchLink',
+
+  /** Link to open the Consolidate Accounts workflow. */
+  consolidateAccountsLink: '#finesConsolidationLink',
 
   /** Inputter navigation link to Create and Manage Draft Accounts. */
   createAndManageDraftAccountsLink: '#finesCavInputterLink',

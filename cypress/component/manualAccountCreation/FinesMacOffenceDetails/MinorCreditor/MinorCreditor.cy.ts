@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
-import { DOM_ELEMENTS } from './constants/minor_creditor_elements';
+import { MacOffenceDetailsMinorCreditorLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { REQUIRED_FIELDS, FORMAT_CHECK, LENGTH_CHECK } from './constants/minor_creditor_errors';
 import { of } from 'rxjs';
 
@@ -103,7 +103,7 @@ describe('FinesMacMinorCreditor', () => {
   });
 
   it(
-    '(AC.2, AC.2a, AC.3, AC.4, AC.6) should render all elements on the page corectly',
+    '(AC.2, AC.2a, AC.3, AC.4, AC.6) should render all elements on the page correctly',
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
@@ -293,7 +293,7 @@ describe('FinesMacMinorCreditor', () => {
   );
 
   it(
-    '(AC.10) Should check when user reclicks on BACS payment details it clears the fields',
+    '(AC.10) Should check when user re-clicks on BACS payment details it clears the fields',
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
@@ -382,7 +382,7 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it('(AC.1) Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it('(AC.1) Payment reference should be capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy, 'pgToPay');
 

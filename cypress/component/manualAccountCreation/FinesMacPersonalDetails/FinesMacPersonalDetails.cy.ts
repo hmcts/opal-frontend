@@ -11,7 +11,11 @@ import {
   CORRECTION_TEST_MESSAGES,
   VEHICLE_DETAILS_ERRORS,
 } from './constants/fines_mac_personal_details_errors';
-import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/fines_mac_personal_details_elements';
+import {
+  MacPersonalDetailsLocators as DOM_ELEMENTS,
+  getAliasFirstName,
+  getAliasLastName,
+} from '../../../shared/selectors/manual-account-creation/mac.personal-details.locators';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { calculateDOB } from 'cypress/support/utils/dateUtils';
 import { of } from 'rxjs';

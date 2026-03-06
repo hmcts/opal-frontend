@@ -3,7 +3,7 @@
  * @description Encapsulates summary assertions, change-link navigation, submission, and error handling.
  */
 import { ManualReviewAccountActions } from './review-account.actions';
-import { FixedPenaltyReviewLocators as L } from '../../../../../shared/selectors/manual-account-creation/fixed-penalty.locators';
+import { MacFixedPenaltyReviewLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { aliasDraftAccountPut, readDraftIdFromBody, recordCreatedId } from '../../../../../support/draftAccounts';

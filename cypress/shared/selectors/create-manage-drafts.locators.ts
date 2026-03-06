@@ -5,6 +5,7 @@
 export const CreateManageDraftsLocators = {
   header: 'h1.govuk-heading-l',
   backLink: 'a.govuk-back-link',
+  createAccountButton: '#create-account-button, button[buttonid="create-account-button"]',
   tabs: {
     container: '#inputter-tabs',
     inReview: '[subnavitemid="inputter-in-review-tab"] a',
