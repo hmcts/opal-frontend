@@ -1,7 +1,7 @@
 <app-fines-acc-summary-header
   [accountStore]="accountStore"
   id="minor-creditor"
-  [hasAddAccountActivityNotePermission]="hasPermission('add-account-activity-notes')"
+  [hasAddAccountActivityNotePermission]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"
 ></app-fines-acc-summary-header>
@@ -71,3 +71,17 @@
     ></li>
   </opal-lib-moj-sub-navigation>
 </div>
+
+@switch (activeTab) {
+  @case ('at-a-glance') {
+    @if (tabAtAGlance$ | async; as tabData) {
+      <app-fines-acc-minor-creditor-details-at-a-glance-tab
+        [tabData]="tabData"
+        [hasAddRemovePaymentHoldPermission]="hasPermission(finesPermissions['add-remove-payment-hold'])"
+        (addPaymentHold)="navigateToAddPaymentHoldPage()"
+        (removePaymentHold)="navigateToRemovePaymentHoldPage()"
+        [style]="tabContentStyles"
+      ></app-fines-acc-minor-creditor-details-at-a-glance-tab>
+    }
+  }
+}

@@ -50,6 +50,8 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './inter
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IOpalFinesAccountRequestPaymentCardResponse } from './interfaces/opal-fines-account-request-payment-card-response.interface';
+import { IOpalFinesAccountMinorCreditorAtAGlance } from './interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from './mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -978,5 +980,35 @@ export class OpalFines {
       headers['Business-Unit-User-Id'] = businessUnitUserId;
     }
     return this.http.post<IOpalFinesAccountRequestPaymentCardResponse>(url, {}, { headers });
+  }
+
+  /**
+   * Retrieves the minor creditor account details at a glance for a specific tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the minor creditor account.
+   * @returns An Observable that emits the account details for the at a glance tab.
+   */
+  public getMinorCreditorAccountAtAGlance(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountMinorCreditorAtAGlance> {
+    if (!this.cache.minorCreditorAccountAtAGlanceCache$) {
+      const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`;
+      this.cache.minorCreditorAccountAtAGlanceCache$ =
+        of(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK) ??
+        this.http.get<IOpalFinesAccountMinorCreditorAtAGlance>(url, { observe: 'response' }).pipe(
+          map((response: HttpResponse<IOpalFinesAccountMinorCreditorAtAGlance>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountMinorCreditorAtAGlance;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+
+    return this.cache.minorCreditorAccountAtAGlanceCache$;
   }
 }

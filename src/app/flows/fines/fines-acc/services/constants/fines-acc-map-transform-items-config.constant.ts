@@ -19,4 +19,5 @@ export const FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'posted_date', ...MAP_PAYLOAD_DATE_FORMAT },
   { key: 'payment_card_last_requested', ...MAP_PAYLOAD_DATE_FORMAT },
   { key: 'date_notice_issued', ...MAP_PAYLOAD_DATE_FORMAT },
+  { key: 'hearing_date', ...MAP_PAYLOAD_DATE_FORMAT },
 ];

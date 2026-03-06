@@ -33,6 +33,7 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draf
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-defendant-at-a-glance.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from './mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-payload.mock';
 import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
@@ -753,6 +754,18 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('GET');
 
     req.flush(expectedResponse);
+  });
+
+  it('should getMinorCreditorAccountAtAGlance data', () => {
+    const account_id: number = 77;
+    const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`;
+
+    service.getMinorCreditorAccountAtAGlance(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(apiUrl);
   });
 
   it('should getDefendantAccountParty', () => {
