@@ -14,6 +14,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 
 describe('FinesSaSearchAccountComponent', () => {
   let component: FinesSaSearchAccountComponent;
@@ -62,7 +63,9 @@ describe('FinesSaSearchAccountComponent', () => {
     component.handleSearchAccountSubmit(mockForm);
     expect(mockFinesSaStore.searchAccount()).toEqual(mockForm.formData);
     expect(routerSpy).toHaveBeenCalledWith(
-      [`${FINES_ROUTING_PATHS.root}/dashboard/search/${FINES_SA_ROUTING_PATHS.children.results}`],
+      [
+        `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}/${FINES_SA_ROUTING_PATHS.children.results}`,
+      ],
       {},
     );
   });
@@ -223,7 +226,7 @@ describe('FinesSaSearchAccountComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'serializeUrl').mockReturnValue('mockUrl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const windowOpenSpy = vi.spyOn<any, any>(window, 'open');
+    const windowOpenSpy = vi.spyOn<any, any>(globalThis, 'open');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any).navigateToMajorCreditor(accountId);

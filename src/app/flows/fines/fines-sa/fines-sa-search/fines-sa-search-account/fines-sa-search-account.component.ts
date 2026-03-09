@@ -9,6 +9,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from './constants/fines-sa-search-account-state.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor.interface';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-sa-search-account',
@@ -34,7 +35,7 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * @returns {string} The constructed URL path for the fines SA search results.
    */
   private getResultsUrl(): string {
-    return `${this.finesRoutingPaths.root}/dashboard/search/${this.finesSaRoutingPaths.children.results}`;
+    return `${this.finesRoutingPaths.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}/${this.finesSaRoutingPaths.children.results}`;
   }
 
   /**

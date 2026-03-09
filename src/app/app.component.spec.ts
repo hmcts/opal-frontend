@@ -19,11 +19,13 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from './testing/create-spy-obj.helper';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './flows/fines/routing/constants/fines-routing-paths.constant';
+import { FINES_DRAFT_ROUTING_PATHS } from './flows/fines/fines-draft/routing/constants/fines-draft-routing-paths.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -52,6 +54,7 @@ describe('AppComponent - browser', () => {
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
         MojAlertComponent,
+        MojPrimaryNavigationComponent,
         RouterModule.forRoot([]),
       ],
       providers: [
@@ -70,6 +73,7 @@ describe('AppComponent - browser', () => {
 
   beforeEach(() => {
     globalStore.setTokenExpiry(mockTokenExpiry);
+    globalStore.setUserState(OPAL_USER_STATE_MOCK);
   });
 
   it('should create the app', () => {
@@ -247,28 +251,40 @@ describe('AppComponent - browser', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
 
-    expect(component['getDashboardTypeFromUrl']('/fines/dashboard/search')).toBe('search');
+    expect(
+      component['getDashboardTypeFromUrl'](
+        `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}`,
+      ),
+    ).toBe('search');
   });
 
   it('should resolve Search as the active item when dashboard type segment is missing', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
 
-    expect(component['getDashboardTypeFromUrl']('/fines/dashboard')).toBe('search');
+    expect(
+      component['getDashboardTypeFromUrl'](`${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}`),
+    ).toBe('search');
   });
 
   it('should not set an active top-level tab for non-dashboard routes', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
 
-    expect(component['getDashboardTypeFromUrl']('/fines/draft/create-and-manage')).toBe('');
+    expect(
+      component['getDashboardTypeFromUrl'](
+        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}`,
+      ),
+    ).toBe('');
   });
 
   it('should not set an active top-level tab for unknown dashboard types', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
 
-    expect(component['getDashboardTypeFromUrl']('/fines/dashboard/unknown')).toBe('');
+    expect(
+      component['getDashboardTypeFromUrl'](`${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/unknown`),
+    ).toBe('');
   });
 
   it('should configure primary navigation to use path-driven mode', () => {
@@ -341,7 +357,11 @@ describe('AppComponent - browser', () => {
     const component = fixture.componentInstance;
     const navigateSpy = vi.spyOn(component['router'], 'navigate').mockResolvedValue(true);
 
-    expect(component['getDashboardTypeFromUrl']('/fines/dashboard/search#individuals')).toBe('search');
+    expect(
+      component['getDashboardTypeFromUrl'](
+        `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}#individuals`,
+      ),
+    ).toBe('search');
 
     component.onPrimaryNavSelected('finance');
 
