@@ -527,7 +527,30 @@ Feature: Manual account creation - Create Draft Account
 
   @PO-2767
   Scenario Outline: User selects entry type and is visible on review account screen
-    When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type '<Originator type>'
+    When I create a "<Originator type>" manual "Fine" account for business unit "West London" with defendant type "Company"
+    And I complete manual account creation with the following fields and defaults:
+      | Section        | Field                                    | Value                               | Imposition |
+      | Court          | Sending area or Local Justice Area (LJA) | Avon                                |            |
+      | Court          | Prosecutor Case Reference                | 1234                                |            |
+      | Court          | Enforcement court                        | West London VPFPO                   |            |
+      | Offence        | Offence code                             | HY35014                             | 1          |
+      | Offence        | Date of sentence                         | 8 weeks in the past                 | 1          |
+      | Offence        | Result code                              | Compensation (FCOMP)                | 1          |
+      | Offence        | Amount imposed                           | 300                                 | 1          |
+      | Offence        | Amount paid                              | 100                                 | 1          |
+      | Offence        | Creditor type                            | Minor                               | 1          |
+      | Offence        | Payment method                           | BACS                                | 1          |
+      | Minor creditor | Name on the account                      | Mr FNAME LNAME                      | 1          |
+      | Payment terms  | Payment term                             | Lump sum plus instalments           |            |
+      | Payment terms  | Lump sum amount                          | 150                                 |            |
+      | Payment terms  | Instalment amount                        | 300                                 |            |
+      | Payment terms  | Payment frequency                        | Monthly                             |            |
+      | Payment terms  | Start date                               | 2 weeks in the future               |            |
+      | Payment terms  | Enforcement action option                | Hold enforcement on account (NOENF) |            |
+      | Payment terms  | Enforcement reason                       | Reason                              |            |
+      | Company        | Company name                             | COMPANY NAME {uniqUpper}            |            |
+      | Company        | Address line 1                           | Addr Line 1                         |            |
+      | Company        | Postcode                                 | TE1 1ST                             |            |
     And I check the manual account details
     And I should see the entry type '<Entry type>' on the review account screen
 
