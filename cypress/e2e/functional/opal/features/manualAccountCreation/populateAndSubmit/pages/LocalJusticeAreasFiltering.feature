@@ -9,7 +9,7 @@ Feature: Manual account creation - Local justice area filtering
 
   # AC2, AC3, AC4, AC6
   @PO-2761
-  Scenario: Fine + New requests only PSA and CRWCRT local justice areas
+  Scenario: Fine + New requests only LJA (PSA) and CRWCRT local justice areas
     When I create a "New" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
     And I access the "Court details" task
     Then the latest local justice areas request should include lja types:
@@ -22,7 +22,7 @@ Feature: Manual account creation - Local justice area filtering
 
   # AC2, AC3, AC4, AC6
   @PO-2761
-  Scenario: Fine + Transfer in requests only PSA and CRWCRT local justice areas
+  Scenario: Fine + Transfer in requests only LJA (PSA) and CRWCRT local justice areas
     When I create a "Transfer in" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
     And I access the "Court details" task
     Then the latest local justice areas request should include lja types:

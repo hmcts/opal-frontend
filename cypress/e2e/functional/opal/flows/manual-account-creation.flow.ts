@@ -77,6 +77,17 @@ type OffenceImpositionInput = {
   creditorType?: string;
   creditorSearch?: string;
 };
+type ImpositionFinancialInput = {
+  imposition: number;
+  resultCode?: string;
+  amountImposed?: string;
+  amountPaid?: string;
+};
+type ImpositionCreditorTypeInput = {
+  imposition: number;
+  creditorType?: string;
+  creditorSearch?: string;
+};
 type MinorCreditorWithBacs = {
   title?: string;
   firstNames?: string;
@@ -1806,6 +1817,86 @@ export class ManualAccountCreationFlow {
               this.offenceDetails.setMajorCreditor(index, row.creditorSearch);
             }
           } else if (type.includes('minor')) {
+            this.offenceDetails.selectCreditorType(index, 'minor');
+          }
+        });
+    });
+
+    chain.then(() => undefined);
+  }
+
+  /**
+   * Records imposition financial fields for the current offence.
+   * Ensures each imposition row exists before setting values.
+   * @param rows - Imposition rows containing result code and amounts.
+   */
+  recordImpositionFinancialDetails(rows: ImpositionFinancialInput[]): void {
+    const sorted = [...rows].sort((a, b) => a.imposition - b.imposition);
+
+    sorted.forEach(({ imposition }) => {
+      if (!imposition || Number.isNaN(imposition) || imposition < 1) {
+        throw new Error(`Invalid imposition value: ${imposition}`);
+      }
+    });
+
+    log('flow', 'Recording imposition financial details', { rows: sorted });
+
+    let chain = cy.wrap(0);
+    sorted.forEach((row) => {
+      const index = row.imposition - 1;
+      chain = chain
+        .then(() => this.ensureImpositionIndex(index))
+        .then(() => {
+          if (row.resultCode) {
+            this.offenceDetails.setImpositionField(index, 'Result code', row.resultCode);
+          }
+          if (row.amountImposed) {
+            this.offenceDetails.setImpositionField(index, 'Amount imposed', row.amountImposed);
+          }
+          if (row.amountPaid) {
+            this.offenceDetails.setImpositionField(index, 'Amount paid', row.amountPaid);
+          }
+        });
+    });
+
+    chain.then(() => undefined);
+  }
+
+  /**
+   * Sets creditor type/search values for impositions on the current offence.
+   * @param rows - Imposition rows containing creditor type and optional major creditor search.
+   */
+  setImpositionCreditorTypes(rows: ImpositionCreditorTypeInput[]): void {
+    const normalizedRows = rows.map((row) => ({
+      imposition: row.imposition,
+      creditorType: (row.creditorType ?? '').trim(),
+      creditorSearch: (row.creditorSearch ?? '').trim(),
+    }));
+
+    normalizedRows.forEach(({ imposition }) => {
+      if (!imposition || Number.isNaN(imposition) || imposition < 1) {
+        throw new Error(`Invalid imposition value: ${imposition}`);
+      }
+    });
+
+    log('flow', 'Setting imposition creditor types', { rows: normalizedRows });
+
+    let chain = cy.wrap(0);
+    normalizedRows.forEach((row) => {
+      const index = row.imposition - 1;
+      chain = chain
+        .then(() => this.ensureImpositionIndex(index))
+        .then(() => {
+          const type = row.creditorType.toLowerCase();
+          if (type.includes('major')) {
+            this.offenceDetails.selectCreditorType(index, 'major');
+            if (row.creditorSearch) {
+              this.offenceDetails.setMajorCreditor(index, row.creditorSearch);
+            }
+            return;
+          }
+
+          if (type.includes('minor')) {
             this.offenceDetails.selectCreditorType(index, 'minor');
           }
         });
