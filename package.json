@@ -91,9 +91,9 @@
     "zephyr:cucumber:smoke:jira-create": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_TICKETS --process-type=CUCUMBER_JSON_REPORT --report-path=smoke-output/zephyr/cucumber-report.json",
     "zephyr:cucumber:smoke:jira-update": "tsx ./scripts/run-zephyr.ts --action-type=UPDATE_TICKETS --process-type=CUCUMBER_JSON_REPORT --report-path=smoke-output/zephyr/cucumber-report.json",
     "zephyr:cucumber:smoke:jira-execute": "tsx ./scripts/run-zephyr.ts --action-type=CREATE_EXECUTION --process-type=CUCUMBER_JSON_REPORT --report-path=smoke-output/zephyr/cucumber-report.json",
-    "zephyr:test:opalComponent": "yarn reset-test-outputs; yarn test:opalComponent; yarn zephyr:cypress:jira-execute",
-    "zephyr:test:functional": "yarn reset-test-outputs; yarn test:functional; yarn zephyr:cucumber:functional:jira-execute",
-    "zephyr:test:smoke": "yarn reset-test-outputs; yarn test:smoke; yarn zephyr:cucumber:smoke:jira-execute"
+    "zephyr:test:opalComponent": "yarn reset-test-outputs; yarn test:opalComponent || CODE=$?; yarn zephyr:cypress:jira-execute; exit ${CODE:-0}",
+    "zephyr:test:functional": "yarn reset-test-outputs; yarn test:functional || CODE=$?; yarn zephyr:cucumber:functional:jira-execute; exit ${CODE:-0}",
+    "zephyr:test:smoke": "yarn reset-test-outputs; yarn test:smoke || CODE=$?; yarn zephyr:cucumber:smoke:jira-execute; exit ${CODE:-0}"
   },
   "private": true,
   "dependencies": {
