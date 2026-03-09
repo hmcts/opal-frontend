@@ -6,7 +6,12 @@ export const REPORTS_LINKS: IDashboardPageConfigurationLink[] = [
   {
     id: 'testReportsLink',
     text: 'Test Reports Link',
-    routerLink: ['/', FINES_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.children.reports],
+    routerLink: [
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+    ],
     fragment: null,
     permissionIds: [],
     newTab: false,

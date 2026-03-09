@@ -60,7 +60,9 @@ describe('dashboardLandingGuard', () => {
 
   it('should route to Accounts when user does not have search permission', async () => {
     const expectedUrlTree = new UrlTree();
-    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['create-and-manage-draft-accounts']]);
+    mockPermissionsService.getUniquePermissions.mockReturnValue([
+      FINES_PERMISSIONS['create-and-manage-draft-accounts'],
+    ]);
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
     const result = await runGuard();

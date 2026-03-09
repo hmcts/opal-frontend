@@ -16,9 +16,5 @@ export const dashboardTypeGuard: CanActivateFn = (route: ActivatedRouteSnapshot)
     return true;
   }
 
-  return inject(Router).createUrlTree([
-    '/',
-    FINES_ROUTING_PATHS.root,
-    FINES_DASHBOARD_ROUTING_PATHS.root,
-  ]);
+  return inject(Router).createUrlTree(['/', FINES_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.root]);
 };

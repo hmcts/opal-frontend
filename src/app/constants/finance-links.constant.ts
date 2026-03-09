@@ -6,7 +6,12 @@ export const FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
   {
     id: 'testFinanceLink',
     text: 'Test Finance Link',
-    routerLink: ['/', FINES_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.children.finance],
+    routerLink: [
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+    ],
     fragment: null,
     permissionIds: [],
     newTab: false,
