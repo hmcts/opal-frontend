@@ -180,9 +180,12 @@ export const routing: Routes = [
           import('../fines-acc-enf-override-add-change/fines-acc-enf-override-add-change.component').then(
             (c) => c.FinesAccEnfOverrideAddChangeComponent,
           ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
         data: {
           resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
           title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.add,
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
         },
         resolve: {
           titleResolver: TitleResolver,
@@ -190,7 +193,6 @@ export const routing: Routes = [
           localJusticeAreasRefData: fetchLocalJusticeAreasResolver,
           enforcersRefData: fetchEnforcersResolver,
         },
-        canDeactivate: [canDeactivateGuard],
       },
     ],
   },

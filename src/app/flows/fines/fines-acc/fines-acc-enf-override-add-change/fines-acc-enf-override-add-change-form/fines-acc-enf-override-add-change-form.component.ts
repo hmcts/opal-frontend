@@ -15,6 +15,7 @@ import { OpalFines } from '@app/flows/fines/services/opal-fines-service/opal-fin
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '@app/flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { IFinesAccEnfOverrideAddChangeFormState } from '../interfaces/fines-acc-enf-override-add-change-form-state.interface';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-fines-enf-override-add-change-form',
@@ -59,24 +60,29 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
    * Sets up event listeners for changing form values
    */
   private setupFormValueChangeListeners(): void {
-    this.form.get('fenf_account_enforcement_action')?.valueChanges.subscribe((change: string | null): void => {
-      this.handleChangeEnforcementAction(change ?? '');
-    });
+    this.form
+      .get('fenf_account_enforcement_action')
+      ?.valueChanges.pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((change: string | null): void => {
+        this.handleChangeEnforcementAction(change ?? '');
+      });
   }
 
   private getEnforcementActionResult(id: string): void {
-    this.finesService.getResult(id).subscribe((result) => {
-      console.log(result);
-      this.disableFormControl('fenf_account_enforcement_lja');
-      this.disableFormControl('fenf_account_enforcement_enforcer');
-      if (result.requires_enforcer) {
-        this.enableFormControl('fenf_account_enforcement_enforcer');
-      }
-      if (result.requires_lja) {
-        this.enableFormControl('fenf_account_enforcement_lja');
-      }
-      this.form.updateValueAndValidity();
-    });
+    this.finesService
+      .getResult(id)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((result) => {
+        this.disableFormControl('fenf_account_enforcement_lja');
+        this.disableFormControl('fenf_account_enforcement_enforcer');
+        if (result.requires_enforcer) {
+          this.enableFormControl('fenf_account_enforcement_enforcer');
+        }
+        if (result.requires_lja) {
+          this.enableFormControl('fenf_account_enforcement_lja');
+        }
+        this.form.updateValueAndValidity();
+      });
   }
 
   /**
