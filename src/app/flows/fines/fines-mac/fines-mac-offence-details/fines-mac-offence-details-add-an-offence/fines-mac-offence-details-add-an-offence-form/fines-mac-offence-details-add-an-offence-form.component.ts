@@ -221,6 +221,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       this.ngUnsubscribe,
       this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
       (result) => {
+        this.changeDetector.markForCheck();
         this.offenceCode$ = of(result);
       },
       (confirmed) => {
