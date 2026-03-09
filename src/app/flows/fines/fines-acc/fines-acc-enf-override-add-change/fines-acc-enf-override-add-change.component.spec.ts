@@ -30,7 +30,7 @@ describe('FinesAccEnfOverrideAddChangeComponent', () => {
     mockRoute = {
       snapshot: {
         data: {
-          pageHeading: 'Add enforcement override',
+          title: 'Add enforcement override',
           enforcersRefData: {
             refData: [
               { enforcer_id: 'E1', enforcer_code: 'EC1', name: 'Enforcer One' },

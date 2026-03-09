@@ -183,10 +183,9 @@ export const routing: Routes = [
         data: {
           resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
           title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.add,
-          pageHeading: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.add,
         },
         resolve: {
-          title: TitleResolver,
+          titleResolver: TitleResolver,
           resultsRefData: fetchResultsWithParamsResolver,
           localJusticeAreasRefData: fetchLocalJusticeAreasResolver,
           enforcersRefData: fetchEnforcersResolver,

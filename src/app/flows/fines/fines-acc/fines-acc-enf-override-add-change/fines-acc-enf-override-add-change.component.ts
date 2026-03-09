@@ -33,7 +33,7 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
   private finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   public accountNumber = this.finesAccStore.getAccountNumber();
   public partyName = this.finesAccStore.party_name();
-  public pageTitle = this.route.snapshot.data['pageHeading'] as string;
+  public pageTitle = this.route.snapshot.data['title'] as string;
   public enforcerOptions: IGovUkSelectOptions[] = this.setEnforcerOptions();
   public localJusticeAreaOptions: IGovUkSelectOptions[] = this.setLocalJusticeAreaOptions();
   public enforcementActionOptions: IGovUkSelectOptions[] = this.setEnforcementActionOptions();
