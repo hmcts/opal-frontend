@@ -22,4 +22,8 @@ dependencies:
     version: 0.0.76
     repository: 'oci://sdshmctspublic.azurecr.io/helm'
     condition: opal-fines-service.enabled
+  - name: servicebus
+    version: 1.2.1
+    repository: 'oci://hmctspublic.azurecr.io/helm'
+    condition: opal-fines-service.enabled
 
