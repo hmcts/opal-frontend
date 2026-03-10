@@ -21,6 +21,13 @@ Feature: Accessibility Tests for Populate and Submit Screens
     When I open Manual Account Creation
     Then I check the page for accessibility
 
+  @PO-2790
+  Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core
+    When I start creating a new manual account for business unit "West London" with account type "Conditional Caution"
+    Then I am taken to the manual account details page
+    And I see the section titled "Police and court details"
+    And I check the page for accessibility
+
   Scenario: Account details task list is accessible for fine accounts
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     Then I check the page for accessibility

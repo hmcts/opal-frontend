@@ -10,6 +10,9 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../fines-mac-language
 import { IFinesMacLanguagePreferencesOptions } from '../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
 import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { IFinesOriginatorTypes } from '@app/flows/fines/interfaces/fines-originator-types.interface';
+import { FINES_ORIGINATOR_TYPES } from '@app/flows/fines/constants/fines-originator-types.constant';
+import { FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK } from '../../fines-mac-originator-type/mocks/fines-mac-originator-type-state.mock';
 
 describe('FinesMacReviewAccountAccountDetailsComponent', () => {
   let component: FinesMacReviewAccountAccountDetailsComponent;
@@ -26,7 +29,7 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
     component.accountDetails = structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK);
     component.businessUnit = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     component.languagePreferences = structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK);
-
+    component.originatorTypeState = structuredClone(FINES_MAC_ORIGINATOR_TYPE_STATE_MOCK);
     fixture.detectChanges();
   });
 
@@ -42,6 +45,27 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
         component.accountDetails.fm_create_account_account_type as keyof IFinesAccountTypes
       ],
     );
+  });
+
+  it('should set originatorType correctly', () => {
+    component['getOriginatorType']();
+
+    expect(component.originatorType).toBe(
+      FINES_ORIGINATOR_TYPES[
+        component.originatorTypeState.fm_originator_type_originator_type as keyof IFinesOriginatorTypes
+      ],
+    );
+    expect(component.showEntryType).toBe(true);
+  });
+
+  it('should hide entry type when originator type is fixed penalty', () => {
+    component.originatorTypeState.fm_originator_type_originator_type = 'FP';
+    component.accountDetails.fm_create_account_account_type = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES['Fixed Penalty'];
+
+    component['getOriginatorType']();
+
+    expect(component.originatorType).toBe('');
+    expect(component.showEntryType).toBe(false);
   });
 
   it('should set defendantType correctly', () => {
