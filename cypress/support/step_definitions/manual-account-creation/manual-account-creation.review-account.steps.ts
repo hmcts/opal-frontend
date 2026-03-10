@@ -50,6 +50,17 @@ When('I check the manual account details for account header {string}', (header: 
 });
 
 /**
+ * Asserts the review account "Entry type" row value in Account details.
+ */
+When(
+  'I should see the entry type {string} on the review account screen',
+  (expectedType: 'New account' | 'Transfer in from England or Wales') => {
+    log('assert', 'Asserting entry type on review account screen', { expectedType });
+    reviewAccount().assertEntryType(expectedType);
+  },
+);
+
+/**
  * Asserts a review summary card using a DataTable.
  */
 Then('I see the manual review {string} summary:', (section: string, table: DataTable) => {
