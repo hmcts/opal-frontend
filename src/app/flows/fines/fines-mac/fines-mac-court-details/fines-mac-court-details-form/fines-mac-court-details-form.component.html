@@ -1,4 +1,4 @@
-<h1 class="govuk-heading-l">Court details</h1>
+<h1 class="govuk-heading-l">{{ sectionHeading }}</h1>
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
@@ -6,12 +6,12 @@
 <form (submit)="handleFormSubmit($event)">
   <opal-lib-alphagov-accessible-autocomplete
     [control]="form.get('fm_court_details_originator_id')"
-    labelText="Sending area or Local Justice Area (LJA)"
+    [labelText]="originatorIdLabelText"
     labelClasses="govuk-fieldset__legend--s"
     inputId="fm_court_details_originator_id"
     inputName="fm_court_details_originator_id"
     label=""
-    hintText="Search using the code or name of the area that sent the transfer"
+    [hintText]="originatorHintText"
     [autoCompleteItems]="sendingCourtAutoCompleteItems"
     [errors]="formControlErrorMessages['fm_court_details_originator_id']"
   ></opal-lib-alphagov-accessible-autocomplete>
