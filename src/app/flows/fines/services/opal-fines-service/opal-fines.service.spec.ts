@@ -232,6 +232,41 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should send a GET request to local justice area ref data API with lja type filters', () => {
+    const ljaTypes = ['Type1', 'Type2'];
+    const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}?lja_type=${ljaTypes[0]}&lja_type=${ljaTypes[1]}`;
+
+    service.getLocalJusticeAreas(ljaTypes).subscribe((response) => {
+      expect(response).toEqual(mockLocalJusticeArea);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockLocalJusticeArea);
+  });
+
+  it('should return cached response for the same lja type filters regardless of order', () => {
+    const initialLjaTypes = ['Type2', 'Type1'];
+    const subsequentLjaTypes = ['Type1', 'Type2'];
+    const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}?lja_type=${subsequentLjaTypes[0]}&lja_type=${subsequentLjaTypes[1]}`;
+
+    service.getLocalJusticeAreas(initialLjaTypes).subscribe((response) => {
+      expect(response).toEqual(mockLocalJusticeArea);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockLocalJusticeArea);
+
+    service.getLocalJusticeAreas(subsequentLjaTypes).subscribe((response) => {
+      expect(response).toEqual(mockLocalJusticeArea);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
   it('should return the local justice area name and code in a pretty format', () => {
     const localJusticeArea: IOpalFinesLocalJusticeArea = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData[0];
 
@@ -964,6 +999,17 @@ describe('OpalFines', () => {
     expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
   });
 
+  it('should clear grouped caches using dedicated methods', () => {
+    service['cache']['draftAccountsCache$']['key'] = of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+
+    service.clearDraftAccountsCache();
+    service.clearAccountDetailsCache();
+
+    expect(service['cache']['draftAccountsCache$']).toEqual({});
+    expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
+  });
+
   it('should clear all account detail caches', () => {
     service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     service['cache']['defendantAccountPartyCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -1011,6 +1057,7 @@ describe('OpalFines', () => {
     service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     service['cache']['courtRefDataCache$']['1'] = of(OPAL_FINES_COURT_REF_DATA_MOCK);
     service['cache']['businessUnitsCache$'] = of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+    service['cache']['localJusticeAreasLjaTypeCache$']['adult'] = of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
     service['cache']['offenceCodesCache$']['code'] = of(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
 
     service.clearAllCaches();
@@ -1019,6 +1066,7 @@ describe('OpalFines', () => {
     expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
     expect(service['cache']['courtRefDataCache$']).toEqual({});
     expect(service['cache']['businessUnitsCache$']).toBeNull();
+    expect(service['cache']['localJusticeAreasLjaTypeCache$']).toEqual({});
     expect(service['cache']['offenceCodesCache$']).toEqual({});
   });
 

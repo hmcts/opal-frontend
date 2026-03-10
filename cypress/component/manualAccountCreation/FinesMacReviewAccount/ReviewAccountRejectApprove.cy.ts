@@ -141,6 +141,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.status).should('exist').and('contain', 'In review');
 
     // Account details
+    cy.get(DOM_ELEMENTS.originatorTypeData).should('exist');
     cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
     cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
     cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');
