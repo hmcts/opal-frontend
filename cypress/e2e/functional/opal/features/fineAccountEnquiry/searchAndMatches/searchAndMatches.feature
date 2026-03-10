@@ -178,14 +178,12 @@ Feature: Account Search and Matches
       | 12345678      |           | CompanyOne  |
       |               | REF-123   | CompanyOne  |
 
-
+  @PO-715
   Scenario: Minor creditors - company type displays validation message when name, address and postcode are missing
-    #-AC9a
+    # AC5a
     And I view the Minor Creditors search form
     When I search using the following inputs:
-      | minor creditor type      | Company  |
-      | account number           | 12345678 |
-      | reference or case number | REF-123  |
+      | minor creditor type | Company |
     Then the search remains on the Minor creditors form - no navigation
     And I see "Enter minor creditor company name or address or postcode" validation message for a minor creditor "company"
 
@@ -202,7 +200,7 @@ Feature: Account Search and Matches
 
   @PO-705
   Scenario: Route guard prevents accidental navigation away from search screen with data
-    PO-705 - AC8. Route guard prevents accidental navigation away from search screen with data
+    # AC8. Route guard prevents accidental navigation away from search screen with data
     When I view the Individuals search form and enter the following:
       | account number       | 12345678 |
       | individual last name | Smith    |

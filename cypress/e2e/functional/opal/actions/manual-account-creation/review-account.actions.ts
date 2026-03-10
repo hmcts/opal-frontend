@@ -12,6 +12,7 @@ import { captureScenarioScreenshot } from '../../../../../support/utils/screensh
 import { readDraftIdFromBody, recordCreatedId } from 'cypress/support/draftAccounts';
 
 type SummaryRow = { label: string; value: string };
+type EntryType = 'New account' | 'Transfer in from England or Wales';
 type OffenceRow = {
   imposition: string;
   creditor: string;
@@ -121,6 +122,32 @@ export class ManualReviewAccountActions {
               });
             });
         });
+      });
+  }
+
+  /**
+   * Asserts the entry type rendered in Account details on the review page.
+   * @param expectedType Expected entry type ("New account" or "Transfer in from England or Wales").
+   */
+  assertEntryType(expectedType: EntryType): void {
+    log('assert', 'Asserting review entry type', { expectedType });
+    cy.get(L.originatorTypeData, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .invoke('text')
+      .then((text) =>
+        text
+          .replace(/\u00a0/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .toLowerCase(),
+      )
+      .should((actualText) => {
+        if (expectedType === 'New account') {
+          expect(actualText).to.contain('new account');
+          return;
+        }
+
+        expect(actualText).to.contain('transfer in from england or wales');
       });
   }
 
