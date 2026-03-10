@@ -7,6 +7,7 @@ import { FINES_FIXED_PENALTY_MOCK } from './mocks/fines_mac_fixed_penalty_mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { IOpalFinesLocalJusticeAreaRefData } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { MacFixedPenaltyDetailsLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.details.locators';
 import { provideHttpClient } from '@angular/common/http';
 import { calculateWeeksInFuture } from '../../../../support/utils/dateUtils';
@@ -15,7 +16,10 @@ import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonInte
 describe('FinesMacManualFixedPenalty', () => {
   let fixedPenaltyMock = structuredClone(FINES_FIXED_PENALTY_MOCK);
 
-  const setupComponent = (formSubmit?: any) => {
+  const setupComponent = (
+    formSubmit?: any,
+    localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+  ) => {
     return mount(FinesMacFixedPenaltyDetailsComponent, {
       providers: [
         provideHttpClient(),
@@ -35,7 +39,7 @@ describe('FinesMacManualFixedPenalty', () => {
               data: {
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
                 prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
-                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                localJusticeAreas,
               },
               parent: {
                 url: [{ path: 'manual-account-creation' }],
@@ -994,4 +998,26 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'target', '_blank');
     cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'href').and('include', 'search-offences');
   });
+
+  it(
+    '(AC5) should keep Prosecutors (All) visible and selectable as originators for non-filtered journeys',
+    { tags: ['@PO-2761'] },
+    () => {
+      const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
+        count: 1,
+        refData: [OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData[0]],
+      };
+
+      setupComponent(null, filteredLocalJusticeAreas);
+
+      cy.get(DOM_ELEMENTS.issuingAuthorityInput).focus().click();
+      cy.get(DOM_ELEMENTS.issuingAuthorityDropDown).should('contain', 'Central ticket office (998)');
+      cy.get(DOM_ELEMENTS.issuingAuthorityDropDown).should('contain', 'Police force (123)');
+      cy.get(DOM_ELEMENTS.issuingAuthorityDropDown).should('contain', 'Other (433)');
+
+      cy.get(DOM_ELEMENTS.issuingAuthorityInput).clear().type('Police', { delay: 0 });
+      cy.get(DOM_ELEMENTS.issuingAuthorityDropDown).first().click();
+      cy.get(DOM_ELEMENTS.issuingAuthorityInput).should('have.value', 'Police force (123)');
+    },
+  );
 });

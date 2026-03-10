@@ -138,7 +138,7 @@ export class ManualCourtDetailsActions {
   }
 
   /**
-   * Types into the LJA autocomplete and selects the first suggestion.
+   * Types into the LJA autocomplete and selects the matching suggestion.
    * @param lja Local Justice Area value to enter.
    */
   private setLja(lja: string): void {
@@ -156,7 +156,7 @@ export class ManualCourtDetailsActions {
   }
 
   /**
-   * Types into the enforcement court autocomplete and selects the first suggestion.
+   * Types into the enforcement court autocomplete and selects the matching suggestion.
    * @param enforcementCourt Enforcement court value to enter.
    */
   private setEnforcementCourt(enforcementCourt: string): void {
@@ -187,7 +187,8 @@ export class ManualCourtDetailsActions {
   }
 
   /**
-   * Handles autocomplete inputs by typing, waiting for the listbox, and selecting the first option.
+   * Handles autocomplete inputs by typing, waiting for the listbox, and selecting
+   * the best matching option for the typed value (falling back to first option).
    * @param inputSelector Selector for the autocomplete input.
    * @param listboxSelector Selector for the listbox options.
    * @param value Value to type into the autocomplete.
@@ -205,8 +206,26 @@ export class ManualCourtDetailsActions {
 
     input.type(value, { delay: 0, force: true }).should('have.value', value);
     cy.get(listboxSelector, this.common.getTimeoutOptions()).should('exist');
-    cy.get(inputSelector).type('{downarrow}{enter}', { force: true });
-    cy.get(inputSelector, this.common.getTimeoutOptions()).should('not.have.value', '');
+
+    cy.get(`${listboxSelector} li`, this.common.getTimeoutOptions()).then(($options) => {
+      const expected = value.toLowerCase();
+      const matchedOption = Array.from($options).find((option) =>
+        (option.textContent ?? '').toLowerCase().includes(expected),
+      );
+
+      if (matchedOption) {
+        cy.wrap(matchedOption).click({ force: true });
+        return;
+      }
+
+      log('warn', `${label} autocomplete did not return a direct match, falling back to first option`, { value });
+      cy.get(inputSelector).type('{downarrow}{enter}', { force: true });
+    });
+
+    cy.get(inputSelector, this.common.getTimeoutOptions()).should(($input) => {
+      const actual = ($input.val() ?? '').toString().toLowerCase();
+      expect(actual, `${label} autocomplete selected value`).to.include(value.toLowerCase());
+    });
   }
 
   /**
