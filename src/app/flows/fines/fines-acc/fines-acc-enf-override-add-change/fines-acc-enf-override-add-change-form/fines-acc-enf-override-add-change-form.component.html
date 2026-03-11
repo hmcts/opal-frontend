@@ -1,3 +1,9 @@
+<opal-lib-govuk-heading-with-caption
+  [captionText]="`${partyName} - ${accountNumber}`"
+  [headingText]="pageTitle"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+>
+</opal-lib-govuk-heading-with-caption>
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"

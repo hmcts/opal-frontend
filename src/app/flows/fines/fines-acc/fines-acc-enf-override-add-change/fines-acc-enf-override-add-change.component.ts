@@ -4,7 +4,6 @@ import { IOpalFinesResultsRefData } from '@app/flows/fines/services/opal-fines-s
 import { FinesAccEnfOverrideAddChangeFormComponent } from './fines-acc-enf-override-add-change-form/fines-acc-enf-override-add-change-form.component';
 import { FinesAccountStore } from '@app/flows/fines/fines-acc/stores/fines-acc.store';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
-import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesEnforcersRefData } from '@app/flows/fines/services/opal-fines-service/interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -21,7 +20,7 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
   templateUrl: './fines-acc-enf-override-add-change.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [FinesAccEnfOverrideAddChangeFormComponent, GovukHeadingWithCaptionComponent],
+  imports: [FinesAccEnfOverrideAddChangeFormComponent],
 })
 export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBaseComponent implements OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
@@ -31,13 +30,17 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
   private opalFinesService = inject(OpalFines);
   private utilsService = inject(UtilsService);
   private finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
-  public accountNumber = this.finesAccStore.getAccountNumber();
-  public partyName = this.finesAccStore.party_name();
-  public pageTitle = this.route.snapshot.data['title'] as string;
+  public accountNumber = this.finesAccStore.getAccountNumber() ?? '';
+  public partyName = this.finesAccStore.party_name() ?? '';
+  public pageTitle: string = this.route.snapshot.data['title'] ?? '';
   public enforcerOptions: IGovUkSelectOptions[] = this.setEnforcerOptions();
   public localJusticeAreaOptions: IGovUkSelectOptions[] = this.setLocalJusticeAreaOptions();
   public enforcementActionOptions: IGovUkSelectOptions[] = this.setEnforcementActionOptions();
 
+  /**
+   * Sets the options for the enforcer select dropdown.
+   * @returns An array of IGovUkSelectOptions representing the enforcers.
+   */
   private setEnforcerOptions(): IGovUkSelectOptions[] {
     return (this.route.snapshot.data['enforcersRefData'] as IOpalFinesEnforcersRefData).refData.map((enforcer) => ({
       value: enforcer.enforcer_id,
@@ -45,6 +48,10 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
     }));
   }
 
+  /**
+   * Sets the options for the local justice area select dropdown.
+   * @returns An array of IGovUkSelectOptions representing the local justice areas.
+   */
   private setLocalJusticeAreaOptions(): IGovUkSelectOptions[] {
     return (this.route.snapshot.data['localJusticeAreasRefData'] as IOpalFinesLocalJusticeAreaRefData).refData.map(
       (lja) => ({
@@ -54,6 +61,10 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
     );
   }
 
+  /**
+   * Sets the options for the enforcement action select dropdown.
+   * @returns An array of IGovUkSelectOptions representing the enforcement actions.
+   */
   private setEnforcementActionOptions(): IGovUkSelectOptions[] {
     return (this.route.snapshot.data['resultsRefData'] as IOpalFinesResultsRefData).refData.map((result) => ({
       value: result.result_id,
@@ -98,6 +109,9 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
     this.stateUnsavedChanges = unsavedChanges;
   }
 
+  /**
+   * Unsubscribes from all active subscriptions to prevent memory leaks when the component is destroyed.
+   */
   public ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

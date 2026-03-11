@@ -16,6 +16,7 @@ import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-co
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '@app/flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { IFinesAccEnfOverrideAddChangeFormState } from '../interfaces/fines-acc-enf-override-add-change-form-state.interface';
 import { takeUntil } from 'rxjs';
+import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 
 @Component({
   selector: 'app-fines-enf-override-add-change-form',
@@ -25,6 +26,7 @@ import { takeUntil } from 'rxjs';
     GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
+    GovukHeadingWithCaptionComponent,
     AlphagovAccessibleAutocompleteComponent,
   ],
   templateUrl: './fines-acc-enf-override-add-change-form.component.html',
@@ -42,9 +44,13 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
   @Input({ required: true }) enforcementActionOptions!: IGovUkSelectOptions[];
   @Input({ required: true }) enforcerOptions!: IGovUkSelectOptions[];
   @Input({ required: true }) localJusticeAreaOptions!: IGovUkSelectOptions[];
+  @Input({ required: true }) partyName!: string;
+  @Input({ required: true }) accountNumber!: string;
+  @Input({ required: true }) pageTitle!: string;
 
   /**
    * Sets up the enforcement override add/change form with the necessary form controls.
+   * @return void
    */
   private setupEnforcementOverrideAddChangeForm(): void {
     this.form = new FormGroup({
@@ -58,6 +64,7 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
 
   /**
    * Sets up event listeners for changing form values
+   * @return void
    */
   private setupFormValueChangeListeners(): void {
     this.form
@@ -68,6 +75,12 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
       });
   }
 
+  /**
+   * Fetches the enforcement action result for the given ID.
+   * Additionally enables/disables the enforcer and local justice area form controls based on the requirements of the selected enforcement action.
+   * @param id Id of the result to fetch.
+   * @return void
+   */
   private getEnforcementActionResult(id: string): void {
     this.finesService
       .getResult(id)
@@ -88,6 +101,7 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
   /**
    * Enables a form control
    * @param controlName Name of the form field to enable
+   * @returns void
    */
   private enableFormControl(controlName: string): void {
     this.form.get(controlName)?.enable();
@@ -96,12 +110,18 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
   /**
    * Disables a form control and resets its value.
    * @param controlName Name of the form field to disable
+   * @returns void
    */
   private disableFormControl(controlName: string): void {
     this.form.get(controlName)?.reset();
     this.form.get(controlName)?.disable();
   }
 
+  /**
+   * Lifecycle hook that is called after the component's view has been fully initialized.
+   * It sets up the form and the form value change listeners.
+   * @returns void
+   */
   public override ngOnInit(): void {
     this.setupEnforcementOverrideAddChangeForm();
     this.setupFormValueChangeListeners();
