@@ -156,9 +156,9 @@ export const routing: Routes = [
         path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/:type`,
 
         loadComponent: () =>
-          import('../fines-acc-request-payment-card-access-denied/fines-acc-request-payment-card-access-denied.component').then(
-            (c) => c.FinesAccRequestPaymentCardAccessDeniedComponent,
-          ),
+          import(
+            '../fines-acc-request-payment-card-access-denied/fines-acc-request-payment-card-access-denied.component'
+          ).then((c) => c.FinesAccRequestPaymentCardAccessDeniedComponent),
         canActivate: [routePermissionsGuard],
         data: {
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-card'],
