@@ -85,17 +85,22 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     interceptOffences();
   });
 
-  it('AC.2 The Reason for Deletion screen will be created as per the design artefact', { tags: ['@PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
-    setupComponent(fetchMap);
+  it(
+    '(AC.2,AC.2d) The Reason for Deletion screen will be created as per the design artefact',
+    { tags: ['@PO-603', '@PO-2767'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
 
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'Deleted');
-    cy.get(DOM_ELEMENTS.reviewHistory).should('exist').and('contain', 'Review history');
-  });
+      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'Deleted');
+      cy.get(DOM_ELEMENTS.reviewHistory).should('exist').and('contain', 'Review history');
+      cy.get(DOM_ELEMENTS.originatorTypeData).should('exist');
+    },
+  );
 
   it('AC.3 - should render Delete History section correctly', { tags: ['PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
