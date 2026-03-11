@@ -49,6 +49,26 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should render delete account link with required classes and pass $event to handleRoute', () => {
+    const link = fixture.nativeElement.querySelector('a.govuk-link.govuk-error-colour') as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Delete account link not found');
+
+    expect(link.classList.contains('govuk-link')).toBe(true);
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.classList.contains('govuk-error-colour')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRouteSpy = vi.spyOn<any, any>(component, 'handleRoute');
+    const expectedRoute = `${component.finesMacRoutes.children.deleteAccountConfirmation}/${component.accountId}`;
+
+    link.dispatchEvent(event);
+
+    expect(handleRouteSpy).toHaveBeenCalledWith(expectedRoute, { event });
+  });
+
   it('should not emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

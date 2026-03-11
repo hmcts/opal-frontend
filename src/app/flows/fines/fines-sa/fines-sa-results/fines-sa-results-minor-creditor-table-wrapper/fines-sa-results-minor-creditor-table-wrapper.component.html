@@ -75,9 +75,8 @@
               @if (row['Creditor account id'] !== null) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
-                  tabindex="0"
-                  (click)="goToAccount(row['Creditor account id'])"
-                  (keyup.enter)="goToAccount(row['Creditor account id'])"
+                  href=""
+                  (click)="goToAccount(row['Creditor account id'], $event)"
                   >{{ row['Account'] }}</a
                 >
               } @else {
@@ -114,9 +113,8 @@
               @if (row['Defendant account id'] !== null) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
-                  tabindex="0"
-                  (click)="goToAccount(row['Defendant account id'])"
-                  (keyup.enter)="goToAccount(row['Defendant account id'])"
+                  href=""
+                  (click)="goToAccount(row['Defendant account id'], $event)"
                   >{{ row['Defendant'] }}</a
                 >
               } @else {

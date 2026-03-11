@@ -54,9 +54,8 @@
           <a
             class="govuk-link govuk-link--no-visited-state"
             #codeLink
-            (click)="copyCodeToClipboard(codeLink, liveRegion, row['Code'])"
-            (keyup.enter)="copyCodeToClipboard(codeLink, liveRegion, row['Code'])"
-            tabindex="0"
+            href=""
+            (click)="copyCodeToClipboard(codeLink, liveRegion, row['Code'], $event)"
           >
             {{ COPY_CODE_TO_CLIPBOARD }}
           </a>

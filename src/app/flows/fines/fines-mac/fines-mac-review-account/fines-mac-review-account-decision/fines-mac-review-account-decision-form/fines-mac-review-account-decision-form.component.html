@@ -47,12 +47,9 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <a
-        class="govuk-link govuk-error-colour"
+        class="govuk-link govuk-link--no-visited-state govuk-error-colour"
+        href=""
         (click)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, { event: $event })"
-        (keyup.enter)="
-          handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, { event: $event })
-        "
-        tabindex="0"
         >Delete account</a
       >
     </div>

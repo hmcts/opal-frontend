@@ -54,6 +54,29 @@ describe('FinesSaResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should enforce current template link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesSaResultsComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesSaResultsComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const actionLinkConsts = templateConsts.filter(
+      (entry) => entry.includes('govuk-link') && entry.includes('href') && entry.includes('click'),
+    );
+
+    expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
+    actionLinkConsts.forEach((entry) => {
+      expect(entry).toContain('govuk-link--no-visited-state');
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
   it('should initialise resultView, load snapshot data, and set up fragment listener on init', () => {
     const resultView = 'accountNumber';
     const searchAccount = {};
@@ -272,6 +295,45 @@ describe('FinesSaResultsComponent', () => {
       relativeTo: component['activatedRoute'].parent,
       fragment: 'individuals',
     });
+  });
+
+  it('should prevent default and navigate when navigateBackToSearch is called with an event', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesSaStore, 'activeTab').mockReturnValue('companies');
+
+    component.navigateBackToSearch(event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith([component['finesSaSearchRoutingPaths'].root], {
+      relativeTo: component['activatedRoute'].parent,
+      fragment: 'companies',
+    });
+  });
+
+  it('should click "Check your search" link and prevent default via the passed template event', () => {
+    component.resultView = 'individuals';
+    component.individualsData = [];
+    fixture.detectChanges();
+
+    const link = Array.from(
+      fixture.nativeElement.querySelectorAll('a.govuk-link') as NodeListOf<HTMLAnchorElement>,
+    ).find((anchor) => anchor.textContent?.includes('Check your search'));
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Check your search link not found');
+
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'navigateBackToSearch');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(event);
+    expect(event.defaultPrevented).toBe(true);
   });
 
   it('should return mapped individual defendant data with aliases', () => {

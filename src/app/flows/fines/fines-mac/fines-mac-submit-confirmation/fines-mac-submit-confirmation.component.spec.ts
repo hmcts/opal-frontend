@@ -65,12 +65,69 @@ describe('FinesMacSubmitConfirmationComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should enforce current template link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesMacSubmitConfirmationComponent as any).ɵcmp?.consts ?? []).filter(
+      (entry: unknown) => Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesMacSubmitConfirmationComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const actionLinkConsts = templateConsts.filter(
+      (entry) => entry.includes('govuk-link') && entry.includes('href') && entry.includes('click'),
+    );
+
+    expect(actionLinkConsts.length).toBe(2);
+    actionLinkConsts.forEach((entry) => {
+      expect(entry).toContain('govuk-link--no-visited-state');
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
   it('should navigate to create account on createNewAccount', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
     component.createNewAccount();
 
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.createAccount], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
+  it('should click create new account link and preserve current template click behaviour', () => {
+    const link = fixture.nativeElement.querySelector('#createNewAccount') as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Create new account link not found');
+
+    expect(link.classList.contains('govuk-link')).toBe(true);
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'createNewAccount');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(event);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it('should prevent default and navigate when createNewAccount is called with an event', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+
+    component.createNewAccount(event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.createAccount], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -90,5 +147,28 @@ describe('FinesMacSubmitConfirmationComponent', () => {
         fragment: 'review',
       },
     );
+  });
+
+  it('should click see all accounts link and preserve current template click behaviour', () => {
+    const link = fixture.nativeElement.querySelector('#accountsInReview') as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('See all accounts link not found');
+
+    expect(link.classList.contains('govuk-link')).toBe(true);
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'seeAllAccounts');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const resetStoreSpy = vi.spyOn<any, any>(finesMacStore, 'resetStore');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(event);
+    expect(resetStoreSpy).toHaveBeenCalled();
+    expect(event.defaultPrevented).toBe(true);
   });
 });

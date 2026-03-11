@@ -229,8 +229,10 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * Also sets the current active tab as a fragment in the fines draft store.
    *
    * @param route - The route path to navigate to.
+   * @param event - The event object associated with the navigation action.
    */
-  public handleRoute(route: string): void {
+  public handleRoute(route: string, event?: Event): void {
+    event?.preventDefault();
     this.finesDraftStore.setFragment(this.activeTab);
     this['router'].navigate([route], { relativeTo: this['activatedRoute'].parent });
   }

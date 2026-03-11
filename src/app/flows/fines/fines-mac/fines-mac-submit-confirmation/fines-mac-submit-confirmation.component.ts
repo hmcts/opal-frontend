@@ -25,9 +25,11 @@ export class FinesMacSubmitConfirmationComponent {
    * by `FINES_MAC_ROUTING_PATHS.children.createAccount`. The navigation is
    * relative to the parent route of the current activated route.
    *
+   * @param event - The optional DOM event that triggered the navigation.
    * @returns {void}
    */
-  public createNewAccount(): void {
+  public createNewAccount(event?: Event): void {
+    event?.preventDefault();
     this.router.navigate([FINES_MAC_ROUTING_PATHS.children.createAccount], { relativeTo: this.activatedRoute.parent });
   }
 
@@ -39,9 +41,11 @@ export class FinesMacSubmitConfirmationComponent {
    * @remarks
    * This method is typically used to redirect the user to the "see all accounts" view.
    *
+   * @param event - The optional DOM event that triggered the navigation.
    * @returns {void}
    */
-  public seeAllAccounts(): void {
+  public seeAllAccounts(event?: Event): void {
+    event?.preventDefault();
     this.finesMacStore.resetStore();
 
     this.router.navigate(

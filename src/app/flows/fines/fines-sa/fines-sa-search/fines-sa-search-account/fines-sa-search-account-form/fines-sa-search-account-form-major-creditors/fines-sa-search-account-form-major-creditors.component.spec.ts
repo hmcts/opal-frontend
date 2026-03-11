@@ -38,6 +38,30 @@ describe('FinesSaSearchAccountFormMajorCreditorsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should enforce filter link template semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesSaSearchAccountFormMajorCreditorsComponent as any).ɵcmp?.consts ?? []).filter(
+      (entry: unknown) => Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesSaSearchAccountFormMajorCreditorsComponent as any).ɵcmp?.template?.toString() as string | undefined) ??
+      '';
+    const filterLinkConsts = templateConsts.filter(
+      (entry) => entry.includes('govuk-link') && entry.includes('href') && entry.includes('click'),
+    );
+
+    expect(filterLinkConsts.length).toBeGreaterThanOrEqual(1);
+    filterLinkConsts.forEach((entry) => {
+      expect(entry).toContain('govuk-link--no-visited-state');
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
   it('should initialize the form on ngOnInit', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'setupMajorCreditorForm');
@@ -64,5 +88,41 @@ describe('FinesSaSearchAccountFormMajorCreditorsComponent', () => {
     expect(component['addControlsToNestedFormGroup']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(null);
     expect(mockFinesSaStore.resetDefendantSearchCriteria).toHaveBeenCalled();
+  });
+
+  it('should prevent default and emit when onFilterBusinessUnitClick is called', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.filterBusinessUnitClicked, 'emit');
+
+    component.onFilterBusinessUnitClick(event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
+  it('should pass $event to onFilterBusinessUnitClick from filter link click', () => {
+    mockFinesSaStore.setBusinessUnitIds([1, 2]);
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Filter by business unit link not found');
+
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    const handlerSpy = vi.spyOn(component, 'onFilterBusinessUnitClick');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.filterBusinessUnitClicked, 'emit');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(emitSpy).toHaveBeenCalled();
   });
 });

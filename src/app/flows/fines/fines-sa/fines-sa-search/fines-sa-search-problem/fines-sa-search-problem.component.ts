@@ -18,8 +18,11 @@ export class FinesSaSearchProblemComponent {
    * Navigates the user back to the root path of the fines search section.
    * Utilizes Angular's Router to perform navigation relative to the parent route
    * of the current ActivatedRoute.
+   *
+   * @param event - The optional DOM event that triggered the navigation.
    */
-  public goBack(): void {
+  public goBack(event?: Event): void {
+    event?.preventDefault();
     this.router.navigate([this.finesSaSearchRoutingPaths.root], {
       relativeTo: this.activatedRoute.parent,
       fragment: this.finesSaStore.activeTab(),

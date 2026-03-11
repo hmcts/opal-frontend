@@ -62,8 +62,10 @@ export class FinesSaResultsDefendantTableWrapperComponent extends AbstractSortab
    * Emits an event when an account ID is clicked, passing the selected account ID.
    *
    * @param accountID - The account ID that was clicked.
+   * @param event - The optional DOM event that triggered the click.
    */
-  public goToAccount(accountID: number): void {
+  public goToAccount(accountID: number, event?: Event): void {
+    event?.preventDefault();
     this.accountIdClicked.emit(accountID);
   }
 }

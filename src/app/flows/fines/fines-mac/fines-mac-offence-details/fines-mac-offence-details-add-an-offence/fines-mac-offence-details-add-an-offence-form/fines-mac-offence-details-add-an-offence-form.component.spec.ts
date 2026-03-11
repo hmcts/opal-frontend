@@ -117,6 +117,41 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should enforce current template link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesMacOffenceDetailsAddAnOffenceFormComponent as any).ɵcmp?.consts ?? []).filter(
+      (entry: unknown) => Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesMacOffenceDetailsAddAnOffenceFormComponent as any).ɵcmp?.template?.toString() as string | undefined) ??
+      '';
+    const actionLinkConsts = templateConsts.filter(
+      (entry) =>
+        entry.includes('govuk-link') &&
+        entry.includes('govuk-link--no-visited-state') &&
+        entry.includes('href') &&
+        entry.includes('click'),
+    );
+    const searchLink = Array.from(
+      fixture.nativeElement.querySelectorAll('a.govuk-link') as NodeListOf<HTMLAnchorElement>,
+    ).find((link) => link.textContent?.includes('search the offence list'));
+
+    expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
+    actionLinkConsts.forEach((entry) => {
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+
+    expect(searchLink).toBeTruthy();
+    expect(searchLink?.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(searchLink?.getAttribute('href')).toBe(component.searchOffenceUrl);
+    expect(searchLink?.getAttribute('tabindex')).toBeNull();
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
   it('should set needsCreditorControl value to true when result_code is compensation', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
     component.ngOnInit();
@@ -258,6 +293,27 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
+  it('should prevent default and execute goToMinorCreditor logic when event is provided', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setRemoveMinorCreditorSpy = vi.spyOn<any, any>(component['finesMacOffenceDetailsStore'], 'setRemoveMinorCreditor');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setRowIndexSpy = vi.spyOn<any, any>(component['finesMacOffenceDetailsStore'], 'setRowIndex');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateDraftSpy = vi.spyOn<any, any>(component, 'updateOffenceDetailsDraft');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRouteSpy = vi.spyOn<any, any>(component, 'handleRoute');
+
+    component.goToMinorCreditor(0, event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(setRemoveMinorCreditorSpy).toHaveBeenCalledWith(null);
+    expect(setRowIndexSpy).toHaveBeenCalledWith(0);
+    expect(updateDraftSpy).toHaveBeenCalledWith(component.form.value);
+    expect(handleRouteSpy).toHaveBeenCalledWith(component['fineMacOffenceDetailsRoutingPaths'].children.addMinorCreditor);
+  });
+
   it('should populate offence details draft when navigating to remove imposition when draft is empty', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
@@ -271,6 +327,27 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeImposition], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should prevent default and execute removeImpositionConfirmation logic when event is provided', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setRowIndexSpy = vi.spyOn<any, any>(component['finesMacOffenceDetailsStore'], 'setRowIndex');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setFormArrayControlsSpy = vi.spyOn<any, any>(component['finesMacOffenceDetailsStore'], 'setFormArrayControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateDraftSpy = vi.spyOn<any, any>(component, 'updateOffenceDetailsDraft');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRouteSpy = vi.spyOn<any, any>(component, 'handleRoute');
+
+    component.removeImpositionConfirmation(0, event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(setRowIndexSpy).toHaveBeenCalledWith(0);
+    expect(setFormArrayControlsSpy).toHaveBeenCalledWith(component.formArrayControls);
+    expect(updateDraftSpy).toHaveBeenCalledWith(component.form.value);
+    expect(handleRouteSpy).toHaveBeenCalledWith(component['fineMacOffenceDetailsRoutingPaths'].children.removeImposition);
   });
 
   it('should populate offence details draft when navigating to remove imposition when draft is populated', () => {

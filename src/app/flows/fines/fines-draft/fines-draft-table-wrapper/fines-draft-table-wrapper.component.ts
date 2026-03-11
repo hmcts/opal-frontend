@@ -56,9 +56,11 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
    * Emits the clicked row.
    *
    * @param {IFinesDraftTableWrapperTableData} row - The row that was clicked.
+   * @param {Event} event - The optional DOM event that triggered the click.
    * @returns {void}
    */
-  public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
+  public onDefendantClick(row: IFinesDraftTableWrapperTableData, event?: Event): void {
+    event?.preventDefault();
     this.linkClicked.emit(row);
   }
 
@@ -67,9 +69,11 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
    * Emits the clicked account id.
    *
    * @param {number} account_id - the account id of the clicked account.
+   * @param {Event} event - The optional DOM event that triggered the click.
    * @returns {void}
    */
-  public onAccountClick(account_id: number): void {
+  public onAccountClick(account_id: number, event?: Event): void {
+    event?.preventDefault();
     this.accountClicked.emit(account_id);
   }
 }

@@ -124,13 +124,7 @@
     @if (!this.finesDraftStore.draft_account_id()) {
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-          <a
-            class="govuk-link govuk-error-colour"
-            (click)="handleDeleteAccount($event)"
-            (keyup.enter)="handleDeleteAccount($event)"
-            tabindex="0"
-            >Delete account</a
-          >
+          <a class="govuk-link govuk-link--no-visited-state govuk-error-colour" href="" (click)="handleDeleteAccount($event)">Delete account</a>
         </div>
       </div>
     }
