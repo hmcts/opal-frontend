@@ -25,10 +25,10 @@ opal-fines-service:
     devcpuLimits: "2500m"
     secrets:
       SERVICEBUS_SHARED_ACCESS_KEY:
-        secretRef: opal-sb-stg
+        secretRef: opal-sb-dev
         key: primaryKey
       SERVICEBUS_CONNECTION_STRING:
-        secretRef: opal-sb-stg
+        secretRef: opal-sb-dev
         key: connectionString
     keyVaults:
       opal:
@@ -71,8 +71,8 @@ postgresql:
 servicebus:
   enabled: true
   releaseNameOverride: ${SERVICE_NAME}-servicebus
-  resourceGroup: "opal-aso-stg-rg"
-  sbNamespace: "opal-servicebus-stg"
+  resourceGroup: "opal-aso-dev-rg"
+  sbNamespace: "opal-servicebus-dev"
   setup:
     queues:
       - name: "logging-pdpl"
