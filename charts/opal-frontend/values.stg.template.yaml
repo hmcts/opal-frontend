@@ -23,6 +23,13 @@ opal-fines-service:
     devcpuRequests: "250m"
     devmemoryLimits: "2Gi"
     devcpuLimits: "2500m"
+    secrets:
+      SERVICEBUS_SHARED_ACCESS_KEY:
+        secretRef: opal-sb-stg
+        key: primaryKey
+      SERVICEBUS_CONNECTION_STRING:
+        secretRef: opal-sb-stg
+        key: connectionString
     keyVaults:
       opal:
         secrets:
@@ -49,6 +56,8 @@ opal-fines-service:
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
       FLYWAY_LOCATIONS: classpath:db/migration/allEnvs, classpath:db/migration/devOnly
       FEATURES_APP_INSIGHTS_ENABLED: false
+      SERVICEBUS_LOGGING_PDPL_QUEUE_NAME: "{{ .Release.Name}}-servicebus-logging-pdpl"
+      SERVICEBUS_LOGGING_PDPL_PROTOCOL: amqps
 postgresql:
   enabled: true
   auth:
@@ -59,3 +68,11 @@ postgresql:
     persistence:
       enabled: false
     resourcesPreset: small
+servicebus:
+  enabled: true
+  releaseNameOverride: ${SERVICE_NAME}-servicebus
+  resourceGroup: "opal-aso-stg-rg"
+  sbNamespace: "opal-servicebus-stg"
+  setup:
+    queues:
+      - name: "logging-pdpl"
