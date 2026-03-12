@@ -30,7 +30,7 @@ export class FinesMacSubmitConfirmationComponent {
    */
   public createNewAccount(event?: Event): void {
     event?.preventDefault();
-    this.router.navigate([FINES_MAC_ROUTING_PATHS.children.createAccount], { relativeTo: this.activatedRoute.parent });
+    this.router.navigate([FINES_MAC_ROUTING_PATHS.children.originatorType], { relativeTo: this.activatedRoute.parent });
   }
 
   /**

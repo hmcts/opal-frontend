@@ -6,6 +6,7 @@
  */
 
 import { DashboardLocators as L } from '../../../../shared/selectors/dashboard.locators';
+import { CreateManageDraftsLocators as CAM } from '../../../../shared/selectors/create-manage-drafts.locators';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 
 const log = createScopedLogger('DashboardActions');
@@ -55,9 +56,25 @@ export class DashboardActions {
   public goToManualAccountCreation(): void {
     log('navigate', 'Clicking Manual Account Creation link');
 
-    cy.get(L.manualAccountCreationLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+    const manualAccessLinks = `${L.manualAccountCreationLink}, ${L.createAndManageDraftAccountsLink}`;
 
-    log('done', 'Navigated to Manual Account Creation page');
+    cy.get(manualAccessLinks, { timeout: 20_000 })
+      .should('have.length.greaterThan', 0)
+      .then(($links) => {
+        const directMacLink = $links.filter(L.manualAccountCreationLink).first();
+        if (directMacLink.length) {
+          cy.wrap(directMacLink).should('be.visible').click({ force: true });
+          return;
+        }
+
+        log('navigate', 'Using Create and Manage Draft Accounts path');
+        const camLink = $links.filter(L.createAndManageDraftAccountsLink).first();
+        cy.wrap(camLink).should('be.visible').click({ force: true });
+        cy.get(CAM.createAccountButton, { timeout: 20_000 }).should('be.visible').click({ force: true });
+      })
+      .then(() => {
+        log('done', 'Navigated to Manual Account Creation page');
+      });
   }
 
   /**

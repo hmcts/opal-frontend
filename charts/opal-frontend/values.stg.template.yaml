@@ -36,6 +36,12 @@ opal-fines-service:
             alias: AAD_CLIENT_SECRET
           - name: OpalTestUserPassword
             alias: OPAL_TEST_USER_PASSWORD
+          - name: servicebus-connection-string
+            alias: SERVICEBUS_CONNECTION_STRING
+          - name: servicebus-shared-access-key
+            alias: SERVICEBUS_SHARED_ACCESS_KEY
+          - name: servicebus-logging-pdpl-queue-name
+            alias: SERVICEBUS_LOGGING_PDPL_QUEUE_NAME
     environment:
       OPAL_FINES_DB_HOST: "{{ .Release.Name }}-postgresql"
       OPAL_FINES_DB_NAME: opal
