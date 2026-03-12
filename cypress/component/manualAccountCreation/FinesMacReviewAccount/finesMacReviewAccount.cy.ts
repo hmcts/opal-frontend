@@ -151,6 +151,17 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
+  it('(AC.1c) should show Police and court details card for Conditional Caution', { tags: ['@PO-2790'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
+
+    setupComponent();
+    cy.wait('@getOffenceByCjsCode');
+
+    cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
+    cy.contains('.govuk-summary-card__title', 'Police and court details').should('exist');
+    cy.get(DOM_ELEMENTS.originatorName).should('contain', 'Sending police force');
+  });
+
   it(
     '(AC.1a)should render court details and offence details for all defendant types',
     { tags: ['@PO-560', '@PO-662', '@PO-663', '@PO-545', '@PO-657'] },
@@ -239,6 +250,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.backLink).should('exist');
 
       // Account details
+      cy.get(DOM_ELEMENTS.originatorTypeData).should('exist');
       cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
       cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
       cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');
@@ -1512,6 +1524,42 @@ describe('FinesMacReviewAccountComponent', () => {
           expect(body.account.offences[0].impositions).to.be.an('array').that.has.lengthOf(2);
           expect(body.account.offences[0].impositions[1]).to.have.property('minor_creditor');
           expect(body.account.offences[0].impositions[1].minor_creditor).to.have.property('bank_account_type', '1');
+        });
+    },
+  );
+
+  it('should send originator_type as NEW in draft account payload for new journey', { tags: ['@PO-2793'] }, () => {
+    finesMacState.originatorType = {
+      nestedFlow: false,
+      formData: { fm_originator_type_originator_type: 'NEW' },
+    };
+
+    setupComponent(finesDraftState, null, false, false);
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account).to.have.property('originator_type', 'NEW');
+      });
+  });
+
+  it(
+    'should send originator_type as TFO in draft account payload for transfer in journey',
+    { tags: ['@PO-2793'] },
+    () => {
+      finesMacState.originatorType = {
+        nestedFlow: false,
+        formData: { fm_originator_type_originator_type: 'TFO' },
+      };
+
+      setupComponent(finesDraftState, null, false, false);
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+      cy.wait('@postDraftAccount')
+        .its('request.body')
+        .then((body) => {
+          expect(body.account).to.have.property('originator_type', 'TFO');
         });
     },
   );
