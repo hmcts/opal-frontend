@@ -144,7 +144,6 @@ withNightlyPipeline(type, product, component) {
           "Environment: ${env.EXECUTION_ENVIRONMENT}\n" +
           "Description: ${env.EXECUTION_CYCLE_DESCRIPTION}"
     }
-
     if (params.Component) {
       stage('Component Tests') {
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Component tests failed') {
