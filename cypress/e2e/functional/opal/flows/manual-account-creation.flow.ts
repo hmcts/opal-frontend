@@ -2960,7 +2960,7 @@ export class ManualAccountCreationFlow {
         return;
       }
 
-      this.dashboard.goToManualAccountCreation();
+      this.dashboard.goToManualAccountCreation('cam');
       this.originatorType.assertOnCreateOrTransferInPage();
     });
   }

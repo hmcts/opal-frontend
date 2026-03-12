@@ -34,7 +34,7 @@ export class FixedPenaltyFlow {
   ): void {
     log('flow', 'Starting Fixed Penalty account', { businessUnit, defendantType });
     this.dashboard.assertDashboard();
-    this.dashboard.goToManualAccountCreation();
+    this.dashboard.goToManualAccountCreation('cam');
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType(originatorType);
     this.originatorType.continueToCreateAccount();
