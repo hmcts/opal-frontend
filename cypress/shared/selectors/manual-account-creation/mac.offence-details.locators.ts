@@ -23,7 +23,7 @@ export const MacOffenceDetailsLocators = {
   cancelLink: 'a.button-link, button.button-link, [role="button"].button-link',
   searchOffenceLink: 'a[href*="search-offences"]',
   imposition: {
-    container: 'opal-lib-moj-ticket-panel',
+    container: 'fieldset.govuk-fieldset',
     resultCodeInput: (index: number) => `input[id = "fm_offence_details_result_id_${index}-autocomplete"]`,
     resultCodeList: (index: number) => `ul[id = "fm_offence_details_result_id_${index}-autocomplete__listbox"]`,
     amountImposedInput: (index: number) => `input[id = "fm_offence_details_amount_imposed_${index}"]`,
