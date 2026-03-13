@@ -35,24 +35,27 @@ export class FinesDraftService {
    * @returns {IFinesDraftTableWrapperTableData[]} An array of table data objects.
    */
   public populateTableData(response: IOpalFinesDraftAccountsResponse): IFinesDraftTableWrapperTableData[] {
-    return response.summaries.map(({ draft_account_id, account_snapshot, account_status_date, account_number }) => {
-      const { defendant_name, date_of_birth, created_date, account_type, business_unit_name, submitted_by_name } =
-        account_snapshot;
+    return response.summaries.map(
+      ({ draft_account_id, account_snapshot, account_status_date, account_number, account_id }) => {
+        const { defendant_name, date_of_birth, created_date, account_type, business_unit_name, submitted_by_name } =
+          account_snapshot;
 
-      return {
-        Account: account_number,
-        ChangedDate: account_status_date,
-        Changed: this.dateService.getDaysAgo(account_status_date),
-        'Defendant id': draft_account_id,
-        Defendant: defendant_name,
-        'Date of birth': date_of_birth,
-        CreatedDate: created_date,
-        Created: this.dateService.getDaysAgo(created_date),
-        'Account type': FINES_ACCOUNT_TYPES[account_type as keyof typeof FINES_ACCOUNT_TYPES],
-        'Business unit': business_unit_name,
-        'Submitted by': submitted_by_name,
-      };
-    });
+        return {
+          Account: account_number,
+          'Account id': account_id || 0,
+          ChangedDate: account_status_date,
+          Changed: this.dateService.getDaysAgo(account_status_date),
+          'Defendant id': draft_account_id,
+          Defendant: defendant_name,
+          'Date of birth': date_of_birth,
+          CreatedDate: created_date,
+          Created: this.dateService.getDaysAgo(created_date),
+          'Account type': FINES_ACCOUNT_TYPES[account_type as keyof typeof FINES_ACCOUNT_TYPES],
+          'Business unit': business_unit_name,
+          'Submitted by': submitted_by_name,
+        };
+      },
+    );
   }
 
   /**
