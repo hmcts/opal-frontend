@@ -5,5 +5,6 @@ export const FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES: IFinesAccMinorCreditorRout
   children: {
     details: 'Account details',
     note: 'Add note',
+    'payment-hold': 'Payment hold',
   },
 };

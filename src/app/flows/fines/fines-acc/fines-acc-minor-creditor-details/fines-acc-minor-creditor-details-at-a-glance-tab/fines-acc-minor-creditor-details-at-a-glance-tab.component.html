@@ -1,0 +1,139 @@
+<div class="govuk-grid-column-full">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <h2 [class]="style.heading">Minor creditor</h2>
+      <hr [class]="style.hr" />
+
+      @if (tabData.party.organisation_flag) {
+        <h3 [class]="style.key">Company Name</h3>
+        <p [class]="style.value">
+          {{ tabData.party.organisation_details?.organisation_name }}
+        </p>
+
+        @if (tabData.party.organisation_details?.organisation_aliases) {
+          <h3 [class]="style.key">Aliases</h3>
+          <p [class]="style.value">
+            @for (alias of tabData.party.organisation_details?.organisation_aliases; track alias) {
+              {{ alias.organisation_name }}<br />
+            }
+          </p>
+        }
+      } @else {
+        <h3 [class]="style.key">Name</h3>
+        <p [class]="style.value">
+          {{ tabData.party.individual_details?.title }}
+          {{ tabData.party.individual_details?.forenames }}
+          {{ tabData.party.individual_details?.surname | uppercase }}
+        </p>
+
+        @if (tabData.party.individual_details?.individual_aliases) {
+          <h3 [class]="style.key">Aliases</h3>
+          <p [class]="style.value">
+            @for (alias of tabData.party.individual_details?.individual_aliases; track alias) {
+              {{ alias.forenames }} {{ alias.surname | uppercase }}<br />
+            }
+          </p>
+        }
+
+        @if (tabData.party.individual_details && tabData.party.individual_details.date_of_birth) {
+          <h3 [class]="style.key">Date of birth</h3>
+          <p [class]="style.value">
+            {{ tabData.party.individual_details.date_of_birth | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}
+          </p>
+        }
+      }
+
+      <h3 [class]="style.key">Address</h3>
+      <p [class]="style.value">
+        {{ tabData.address.address_line_1 }}
+        @if (tabData.address.address_line_2) {
+          <br />
+          {{ tabData.address.address_line_2 }}
+        }
+        @if (tabData.address.address_line_3) {
+          <br />
+          {{ tabData.address.address_line_3 }}
+        }
+        @if (tabData.address.address_line_4) {
+          <br />
+          {{ tabData.address.address_line_4 }}
+        }
+        @if (tabData.address.address_line_5) {
+          <br />
+          {{ tabData.address.address_line_5 }}
+        }
+        <br />
+        {{ tabData.address.postcode | uppercase }}
+      </p>
+
+      @if (!tabData.party.organisation_flag) {
+        <h3 [class]="style.key">National Insurance Number</h3>
+        <p [class]="style.value">
+          @if (tabData.party.individual_details?.national_insurance_number) {
+            {{ tabData.party.individual_details?.national_insurance_number! | nationalInsurance }}
+          } @else {
+            <app-fines-not-provided></app-fines-not-provided>
+          }
+        </p>
+      }
+    </div>
+
+    @if (tabData.defendant) {
+      <div class="govuk-grid-column-one-third">
+        <h2 [class]="style.heading">Defendant account</h2>
+        <hr [class]="style.hr" />
+
+        <h3 [class]="style.key">Defendant account</h3>
+        <p [class]="style.value">{{ tabData.defendant.account_number }}</p>
+
+        <h3 [class]="style.key">Defendant Name</h3>
+        <p [class]="style.value">{{ tabData.defendant.name }}</p>
+
+        <h3 [class]="style.key">Hearing Date</h3>
+        <p [class]="style.value">{{ tabData.defendant.hearing_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</p>
+      </div>
+    }
+
+    <div class="govuk-grid-column-one-third">
+      <h2 [class]="style.heading">Payout status</h2>
+      <hr [class]="style.hr" />
+      @if (tabData.payment.is_bacs) {
+        <opal-lib-moj-badge badgeId="is_bacs-badge" badgeClasses="moj-badge--blue govuk-!-margin-bottom-2"
+          >Provided</opal-lib-moj-badge
+        >
+      } @else {
+        <opal-lib-moj-badge badgeId="is_bacs-badge" badgeClasses="moj-badge--red govuk-!-margin-bottom-2"
+          >Not provided</opal-lib-moj-badge
+        >
+      }
+
+      @if (hasAddRemovePaymentHoldPermission) {
+        @if (tabData.payment.hold_payment) {
+          <p [class]="style.value">
+            <a
+              tabindex="0"
+              class="govuk-link govuk-link--no-visited-state"
+              (click)="handleRemovePaymentHold()"
+              (keyup.enter)="handleRemovePaymentHold()"
+              (keyup.space)="handleRemovePaymentHold()"
+              role="button"
+              >Remove payment hold</a
+            >
+          </p>
+        } @else {
+          <p [class]="style.value">
+            <a
+              tabindex="0"
+              class="govuk-link govuk-link--no-visited-state"
+              (click)="handleAddPaymentHold()"
+              (keyup.enter)="handleAddPaymentHold()"
+              (keyup.space)="handleAddPaymentHold()"
+              role="button"
+              >Add payment hold</a
+            >
+          </p>
+        }
+      }
+    </div>
+  </div>
+</div>
