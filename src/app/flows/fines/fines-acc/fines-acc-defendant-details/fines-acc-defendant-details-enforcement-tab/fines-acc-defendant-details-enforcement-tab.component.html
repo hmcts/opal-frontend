@@ -261,7 +261,11 @@
     }
   </opal-lib-govuk-summary-card-list>
 
-  @if (tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id) {
+  @if (
+    tabData.enforcement_override &&
+    tabData.enforcement_override.enforcement_override_result &&
+    tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+  ) {
     <opal-lib-govuk-summary-card-list cardTitle="Enforcement override" summaryCardListId="enforcement-override">
       @if (hasAccountMaintenancePermission) {
         <ng-container actions>
@@ -333,10 +337,17 @@
     }
     @if (
       hasAccountMaintenancePermission &&
-      !tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+      !tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
     ) {
       <p>
-        <a class="govuk-link" tabindex="0">Add enforcement override</a>
+        <a
+          class="govuk-link"
+          tabindex="0"
+          class="govuk-link govuk-link--no-visited-state"
+          (click)="handleAddEnforcementOverride()"
+          (keyup.enter)="handleAddEnforcementOverride()"
+          >Add enforcement override</a
+        >
       </p>
     }
     <p>

@@ -205,6 +205,7 @@
         [isCompanyAccount]="accountData.party_details.organisation_flag"
         [hasAccountMaintenancePermission]="hasPermission('account-maintenance')"
         [hasEnterEnforcementPermission]="hasPermission('enter-enforcement')"
+        (addEnforcementOverride)="navigateToAddEnforcementOverridePage()"
       ></app-fines-acc-defendant-details-enforcement-tab>
     }
   }

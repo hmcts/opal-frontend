@@ -14,6 +14,7 @@ const defendantAccounts = 'defendant-accounts';
 const notes = 'notes/add';
 const minorCreditorAccounts = 'minor-creditor-accounts';
 const searchAccounts = '/search';
+const enforcers = 'enforcers';
 
 export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   businessUnitRefData: `${baseUrl}${businessUnit}`,
@@ -30,4 +31,5 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   searchDefendantAccounts: `${baseUrl}${defendantAccounts}${searchAccounts}`,
   searchMinorCreditorAccounts: `${baseUrl}${minorCreditorAccounts}${searchAccounts}`,
   minorCreditorAccounts: `${baseUrl}${minorCreditorAccounts}`,
+  enforcersRefData: `${baseUrl}${enforcers}`,
 };

@@ -53,6 +53,8 @@ import { of } from 'rxjs';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from './mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
+import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
+import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('OpalFines', () => {
@@ -273,6 +275,71 @@ describe('OpalFines', () => {
     const result = service.getLocalJusticeAreaPrettyName(localJusticeArea);
 
     expect(result).toEqual(`${localJusticeArea.name} (${localJusticeArea.lja_code})`);
+  });
+
+  it('should send a GET request to enforcers ref data API', () => {
+    const mockEnforcers: IOpalFinesEnforcersRefData = {
+      count: 1,
+      refData: [
+        {
+          enforcer_id: 101,
+          enforcer_code: 202,
+          name: 'Enforcer One',
+          name_cy: null,
+        },
+      ],
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.enforcersRefData}`;
+
+    service.getEnforcers().subscribe((response) => {
+      expect(response).toEqual(mockEnforcers);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockEnforcers);
+  });
+
+  it('should return cached response for enforcers ref data', () => {
+    const mockEnforcers: IOpalFinesEnforcersRefData = {
+      count: 1,
+      refData: [
+        {
+          enforcer_id: 101,
+          enforcer_code: 202,
+          name: 'Enforcer One',
+          name_cy: null,
+        },
+      ],
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.enforcersRefData}`;
+
+    service.getEnforcers().subscribe((response) => {
+      expect(response).toEqual(mockEnforcers);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockEnforcers);
+
+    service.getEnforcers().subscribe((response) => {
+      expect(response).toEqual(mockEnforcers);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should return the enforcer name and code in a pretty format', () => {
+    const enforcer: IOpalFinesEnforcer = {
+      enforcer_id: 101,
+      enforcer_code: 202,
+      name: 'Enforcer One',
+      name_cy: null,
+    };
+
+    const result = service.getEnforcerPrettyName(enforcer);
+
+    expect(result).toEqual(`${enforcer.name} (${enforcer.enforcer_code})`);
   });
 
   it('should return the item value for a given configuration item name', () => {
@@ -842,12 +909,12 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should getDefendantAccountEnforcementTabData', () => {
+  it('should getDefendantAccountEnforcementStatus', () => {
     const account_id: number = 77;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/enforcement-status`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
 
-    service.getDefendantAccountEnforcementTabData(account_id).subscribe((response) => {
+    service.getDefendantAccountEnforcementStatus(account_id).subscribe((response) => {
       response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK.version;
       expect(response).toEqual(expectedResponse);
     });

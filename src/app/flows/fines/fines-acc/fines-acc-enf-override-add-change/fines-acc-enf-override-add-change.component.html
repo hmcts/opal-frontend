@@ -1,0 +1,12 @@
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-enf-override-add-change-form
+    [enforcementActionOptions]="enforcementActionOptions"
+    [enforcerOptions]="enforcerOptions"
+    [localJusticeAreaOptions]="localJusticeAreaOptions"
+    [partyName]="partyName"
+    [accountNumber]="accountNumber"
+    [pageTitle]="pageTitle"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    (formSubmit)="handleFinesEnfOverrideAddChangeSubmit($event)"
+  ></app-fines-enf-override-add-change-form>
+</div>
