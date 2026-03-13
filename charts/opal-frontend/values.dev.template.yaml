@@ -22,7 +22,7 @@ opal-fines-service:
   java:
     releaseNameOverride: ${SERVICE_NAME}-fines-service
     image: 'sdshmctspublic.azurecr.io/opal/fines-service:${DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX}'
-    ingressHost: "opal-frontend-pr-${CHANGE_ID}-fines-service.dev.platform.hmcts.net"
+    ingressHost: "opal-frontend-pr-${CHANGE_ID}-fines-service.dev.apps.hmcts.net"
     imagePullPolicy: Always
     devmemoryRequests: "1Gi"
     devcpuRequests: "250m"

@@ -249,7 +249,7 @@ void determineDevEnvironmentDeployment() {
             if (label ==~ /enable_opal_fines_service.*/) {
                 env.DEV_ENABLE_OPAL_FINES_SERVICE = true
                 env.DEV_OPAL_FINES_SERVICE_URL =
-          "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
+          "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.apps.hmcts.net"
                 if (label ==~ /enable_opal_fines_service:pr-.*/) {
                     env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = label.replace('enable_opal_fines_service:', '')
                 }

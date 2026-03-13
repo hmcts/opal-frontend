@@ -110,7 +110,7 @@ def setupTestSpecifications() {
 
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(secrets)
-  env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
+  env.TEST_URL = 'https://opal-frontend.staging.apps.hmcts.net/'
 
   before('akschartsinstall') {
     onPR {
