@@ -2,7 +2,7 @@ import { hasFlowStateGuard } from '@hmcts/opal-frontend-common/guards/has-flow-s
 import { FinesSaStore } from '../../stores/fines-sa.store';
 import { inject } from '@angular/core';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_SA_ROUTING_PATHS } from '../../routing/constants/fines-sa-routing-paths.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../../constants/fines-dashboard-routing-paths.constant';
 
 export const finesSaFlowStateGuard = hasFlowStateGuard(
   /**
@@ -19,5 +19,6 @@ export const finesSaFlowStateGuard = hasFlowStateGuard(
    * Redirects the user to the base search screen if no flow state is present.
    * @returns A fallback URL string.
    */
-  () => `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.sa.root}/${FINES_SA_ROUTING_PATHS.children.search}`,
+  () =>
+    `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}`,
 );

@@ -4,11 +4,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NavigationEnd, RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DateTime } from 'luxon';
+import { By } from '@angular/platform-browser';
 import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
 import {
   MojHeaderComponent,
   MojHeaderNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-header';
+import { MojPrimaryNavigationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-primary-navigation';
 import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -17,9 +19,13 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from './testing/create-spy-obj.helper';
+import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from './flows/fines/routing/constants/fines-routing-paths.constant';
+import { FINES_DRAFT_ROUTING_PATHS } from './flows/fines/fines-draft/routing/constants/fines-draft-routing-paths.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -48,6 +54,7 @@ describe('AppComponent - browser', () => {
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
         MojAlertComponent,
+        MojPrimaryNavigationComponent,
         RouterModule.forRoot([]),
       ],
       providers: [
@@ -66,6 +73,7 @@ describe('AppComponent - browser', () => {
 
   beforeEach(() => {
     globalStore.setTokenExpiry(mockTokenExpiry);
+    globalStore.setUserState(OPAL_USER_STATE_MOCK);
   });
 
   it('should create the app', () => {
@@ -237,6 +245,132 @@ describe('AppComponent - browser', () => {
 
     expect(component['appInsightsService'].logPageView).toHaveBeenCalledWith('test', '/test');
     vi.useRealTimers();
+  });
+
+  it('should resolve Search as the active item for the default landing route', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    expect(
+      component['getDashboardTypeFromUrl'](
+        `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}`,
+      ),
+    ).toBe('search');
+  });
+
+  it('should resolve Search as the active item when dashboard type segment is missing', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    expect(
+      component['getDashboardTypeFromUrl'](`${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}`),
+    ).toBe('search');
+  });
+
+  it('should not set an active top-level tab for non-dashboard routes', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    expect(
+      component['getDashboardTypeFromUrl'](
+        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}`,
+      ),
+    ).toBe('');
+  });
+
+  it('should not set an active top-level tab for unknown dashboard types', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    expect(
+      component['getDashboardTypeFromUrl'](`${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/unknown`),
+    ).toBe('');
+  });
+
+  it('should configure primary navigation to use path-driven mode', () => {
+    globalStore.setAuthenticated(true);
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const primaryNavigation = fixture.debugElement.query(By.directive(MojPrimaryNavigationComponent))
+      .componentInstance as MojPrimaryNavigationComponent;
+
+    expect(primaryNavigation.useFragmentNavigation).toBe(false);
+  });
+
+  it('should navigate to the selected dashboard type from primary navigation', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const navigateSpy = vi.spyOn(component['router'], 'navigate').mockResolvedValue(true);
+
+    component.onPrimaryNavSelected('reports');
+
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      'reports',
+    ]);
+  });
+
+  it('should route when primary nav emits navigationItemSelected in path-driven mode', () => {
+    globalStore.setAuthenticated(true);
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const navigateSpy = vi.spyOn(component['router'], 'navigate').mockResolvedValue(true);
+    fixture.detectChanges();
+
+    const primaryNavigation = fixture.debugElement.query(By.directive(MojPrimaryNavigationComponent))
+      .componentInstance as MojPrimaryNavigationComponent;
+    primaryNavigation.navigationItemSelected.emit('accounts');
+
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      'accounts',
+    ]);
+  });
+
+  it('should ignore invalid primary navigation selection values', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const navigateSpy = vi.spyOn(component['router'], 'navigate').mockResolvedValue(true);
+
+    component.onPrimaryNavSelected('unknown');
+
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not perform top-level navigation for search tab fragments', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const navigateSpy = vi.spyOn(component['router'], 'navigate').mockResolvedValue(true);
+
+    component.onPrimaryNavSelected('individuals');
+
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('should keep Search active for search fragments and still allow top-level nav switching', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const navigateSpy = vi.spyOn(component['router'], 'navigate').mockResolvedValue(true);
+
+    expect(
+      component['getDashboardTypeFromUrl'](
+        `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}#individuals`,
+      ),
+    ).toBe('search');
+
+    component.onPrimaryNavSelected('finance');
+
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      'finance',
+    ]);
   });
 });
 
