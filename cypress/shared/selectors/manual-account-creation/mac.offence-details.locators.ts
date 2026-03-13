@@ -187,7 +187,7 @@ export const MacOffenceDetailsMinorCreditorLocators = {
 // Minor creditor information summary locators.
 export const MacOffenceDetailsMinorCreditorInformationLocators = {
   app: 'opal-lib-govuk-summary-card-list',
-  name: 'h4.govuk-summary-card__title',
+  name: '.govuk-summary-card__title',
   address: 'dd[id = "minorCreditorAddressMinorCreditorValue"]',
   paymentMethod: 'dd[id = "minorCreditorPaymentMethodMinorCreditorValue"]',
   accountName: 'dd[id = "minorCreditorAccountNameMinorCreditorValue"]',

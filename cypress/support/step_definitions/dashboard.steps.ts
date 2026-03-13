@@ -43,7 +43,15 @@ const dashboard = () => new DashboardActions();
  * ```
  */
 When('I open Manual Account Creation', () => {
-  dashboard().goToManualAccountCreation();
+  dashboard().goToManualAccountCreation('cam');
+});
+
+/**
+ * @step Opens the **Manual Account Creation** page via a specific dashboard route variant.
+ * @param route - Route variant: `direct` or `cam` (**Create and Manage Draft Accounts**).
+ */
+When('I open Manual Account Creation using {string} route', (route: 'direct' | 'cam') => {
+  dashboard().goToManualAccountCreation(route);
 });
 
 /**
