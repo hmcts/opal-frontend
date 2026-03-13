@@ -86,50 +86,71 @@ export class FinesAccPayloadService {
     headingData: IOpalFinesAccountDefendantDetailsHeader | IOpalFinesAccountMinorCreditorDetailsHeader,
     partyType: 'defendant' | 'minorCreditor',
   ): IFinesAccountState {
-    // Build party_name safely
-    const party_name = headingData.party_details.organisation_flag
-      ? (headingData.party_details.organisation_details?.organisation_name ?? '')
-      : [
-          headingData.party_details.individual_details?.title,
-          headingData.party_details.individual_details?.forenames,
-          headingData.party_details.individual_details?.surname
-            ? headingData.party_details.individual_details.surname.toUpperCase()
-            : undefined,
-        ]
-          .filter(Boolean)
-          .join(' ');
-
-    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
-      Number(headingData.business_unit_summary.business_unit_id),
-      this.globalStore.userState(),
-    );
-
+    let party_name: string;
     let pg_party_id: string | null = null;
     let party_type: string;
     let party_id: string;
+    let account_number: string;
+    let business_unit_user_id: string | null;
+    let business_unit_id: string | null;
+    let business_unit_welsh_speaking: string | null;
 
     if (partyType === 'defendant') {
       const h = headingData as IOpalFinesAccountDefendantDetailsHeader;
       pg_party_id = h.parent_guardian_party_id;
       party_type = h.debtor_type;
       party_id = h.defendant_account_party_id;
+      account_number = h.account_number;
+      party_name = h.party_details.organisation_flag
+        ? (h.party_details.organisation_details?.organisation_name ?? '')
+        : [
+            h.party_details.individual_details?.title,
+            h.party_details.individual_details?.forenames,
+            h.party_details.individual_details?.surname
+              ? h.party_details.individual_details.surname.toUpperCase()
+              : undefined,
+          ]
+            .filter(Boolean)
+            .join(' ');
+      business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+        Number(h.business_unit_summary.business_unit_id),
+        this.globalStore.userState(),
+      );
+      business_unit_id = h.business_unit_summary.business_unit_id;
+      business_unit_welsh_speaking = h.business_unit_summary.welsh_speaking;
     } else {
       const h = headingData as IOpalFinesAccountMinorCreditorDetailsHeader;
       party_type = 'Minor Creditor';
-      party_id = h.party_details.party_id;
+      party_id = h.party.party_id;
+      account_number = h.creditor.account_number;
+      party_name = h.party.organisation_flag
+        ? (h.party.organisation_details?.organisation_name ?? '')
+        : [
+            h.party.individual_details?.title,
+            h.party.individual_details?.forenames,
+            h.party.individual_details?.surname ? h.party.individual_details.surname.toUpperCase() : undefined,
+          ]
+            .filter(Boolean)
+            .join(' ');
+      business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+        Number(h.business_unit.business_unit_id),
+        this.globalStore.userState(),
+      );
+      business_unit_id = h.business_unit.business_unit_id;
+      business_unit_welsh_speaking = h.business_unit.welsh_speaking;
     }
 
     return {
-      account_number: headingData.account_number,
+      account_number,
       account_id: Number(account_id),
       pg_party_id,
       party_id,
       party_type,
       party_name,
       base_version: headingData.version,
-      business_unit_id: headingData.business_unit_summary.business_unit_id,
+      business_unit_id: business_unit_id,
       business_unit_user_id,
-      welsh_speaking: headingData.business_unit_summary.welsh_speaking,
+      welsh_speaking: business_unit_welsh_speaking,
     };
   }
 

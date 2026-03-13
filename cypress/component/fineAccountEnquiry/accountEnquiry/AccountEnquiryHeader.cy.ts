@@ -364,7 +364,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     interceptAuthenticatedUser();
   });
 
-  const minorCreditorAccountId = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.account_number;
+  const minorCreditorAccountId = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.creditor.account_number;
   const minorCreditorComponentProperties: IComponentProperties = {
     accountId: minorCreditorAccountId,
     routeRoot: 'minor-creditor',
@@ -380,11 +380,10 @@ describe('Account Enquiry - Minor Creditor Header', () => {
 
   it('AC1, AC2a: renders the Minor Creditor Account Header Summary', { tags: ['PO-1924'] }, () => {
     const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
-    header.has_associated_defendant = true;
-    header.awaiting_payout_amount = 100;
-    header.awarded_amount = 200;
-    header.paid_out_amount = 50;
-    header.outstanding_amount = 150;
+    header.financials.awaiting_payout = 100;
+    header.financials.awarded = 200;
+    header.financials.paid_out = 50;
+    header.financials.outstanding = 150;
 
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
@@ -416,8 +415,8 @@ describe('Account Enquiry - Minor Creditor Header', () => {
 
   it('AC2b: hides Awarded and Outstanding when no defendant is associated', () => {
     const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
-    header.awaiting_payout_amount = 100;
-    header.paid_out_amount = 50;
+    header.financials.awaiting_payout = 100;
+    header.financials.paid_out = 50;
 
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
