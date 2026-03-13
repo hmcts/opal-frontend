@@ -14,6 +14,81 @@ const log = createScopedLogger('DashboardActions');
 /** Actions and assertions for the Opal dashboard landing page. */
 export class DashboardActions {
   /**
+   * Checks whether the current path is already the Manual Account Creation originator page.
+   * @param pathname - Current browser pathname.
+   * @returns True when already on originator/create-or-transfer step.
+   */
+  private isOnMacOriginatorPage(pathname: string): boolean {
+    return pathname.includes('/originator-type') || pathname.includes('/create-or-transfer-in');
+  }
+
+  /**
+   * Shared navigation routine for a specific dashboard route into Manual Account Creation.
+   * Retries once with a page refresh before failing with a clear selector-specific error.
+   * @param linkSelector - Dashboard selector to use for this route variant.
+   * @param missingLinkMessage - Log message used when the route link is missing before refresh.
+   * @param afterLinkClick - Optional callback for follow-up actions after clicking the route link.
+   */
+  private navigateToMacViaDashboardRoute(
+    linkSelector: string,
+    missingLinkMessage: string,
+    afterLinkClick?: () => void,
+  ): void {
+    const clickRoute = () => {
+      cy.get(linkSelector, { timeout: 20_000 }).first().should('be.visible').click({ force: true });
+      if (afterLinkClick) afterLinkClick();
+    };
+
+    const verifyAfterFailedRetry = () => {
+      cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
+        if (this.isOnMacOriginatorPage(pathname)) {
+          log('navigate', 'Dashboard link not visible after refresh, but already on originator page');
+          return;
+        }
+
+        throw new Error(
+          `Manual Account Creation navigation failed: "${linkSelector}" was not found on the dashboard after refresh ` +
+            `(path: ${pathname}).`,
+        );
+      });
+    };
+
+    cy.location('pathname', { timeout: 10_000 })
+      .then((pathname) => {
+        if (this.isOnMacOriginatorPage(pathname)) {
+          log('navigate', 'Already on the Manual Account Creation originator page');
+          return;
+        }
+
+        cy.get('body', { timeout: 20_000 })
+          .should('be.visible')
+          .then(($body) => {
+            if ($body.find(linkSelector).length) {
+              clickRoute();
+              return;
+            }
+
+            log('navigate', missingLinkMessage);
+            cy.reload();
+
+            cy.get('body', { timeout: 20_000 })
+              .should('be.visible')
+              .then(($bodyAfterRefresh) => {
+                if ($bodyAfterRefresh.find(linkSelector).length) {
+                  clickRoute();
+                  return;
+                }
+
+                verifyAfterFailedRetry();
+              });
+          });
+      })
+      .then(() => {
+        log('done', 'Navigated to Manual Account Creation page');
+      });
+  }
+
+  /**
    * Asserts that the user is on the Dashboard page.
    *
    * Steps performed:
@@ -44,37 +119,44 @@ export class DashboardActions {
   }
 
   /**
-   * Navigates to the Manual Account Creation page from the Dashboard.
-   *
-   * Steps performed:
-   *  1. Clicks the "Manual Account Creation" link.
-   *  2. Ensures the link is visible before interaction.
-   *
-   * @example
-   *   dashboard.goToManualAccountCreation();
+   * Navigates to Manual Account Creation using the direct dashboard link.
+   * Intended for journeys/users that expose `#finesMacLink`.
    */
-  public goToManualAccountCreation(): void {
-    log('navigate', 'Clicking Manual Account Creation link');
+  public goToManualAccountCreationDirect(): void {
+    log('navigate', 'Opening Manual Account Creation using direct dashboard link');
+    this.navigateToMacViaDashboardRoute(
+      L.manualAccountCreationLink,
+      'Direct Manual Account Creation link not found; refreshing dashboard and retrying once',
+    );
+  }
 
-    const manualAccessLinks = `${L.manualAccountCreationLink}, ${L.createAndManageDraftAccountsLink}`;
-
-    cy.get(manualAccessLinks, { timeout: 20_000 })
-      .should('have.length.greaterThan', 0)
-      .then(($links) => {
-        const directMacLink = $links.filter(L.manualAccountCreationLink).first();
-        if (directMacLink.length) {
-          cy.wrap(directMacLink).should('be.visible').click({ force: true });
-          return;
-        }
-
-        log('navigate', 'Using Create and Manage Draft Accounts path');
-        const camLink = $links.filter(L.createAndManageDraftAccountsLink).first();
-        cy.wrap(camLink).should('be.visible').click({ force: true });
+  /**
+   * Navigates to Manual Account Creation via **Create and Manage Draft Accounts (CAM)**.
+   * Intended for inputter journeys where dashboard exposes `#finesCavInputterLink`.
+   */
+  public goToManualAccountCreationViaCam(): void {
+    log('navigate', 'Opening Manual Account Creation using Create and Manage Draft Accounts route');
+    this.navigateToMacViaDashboardRoute(
+      L.createAndManageDraftAccountsLink,
+      'Create and Manage Draft Accounts link not found; refreshing dashboard and retrying once',
+      () => {
         cy.get(CAM.createAccountButton, { timeout: 20_000 }).should('be.visible').click({ force: true });
-      })
-      .then(() => {
-        log('done', 'Navigated to Manual Account Creation page');
-      });
+      },
+    );
+  }
+
+  /**
+   * Navigates to Manual Account Creation using the requested dashboard route variant.
+   * @param route - `direct` uses `#finesMacLink`; `cam` means **Create and Manage Draft Accounts**
+   * and uses inputter drafts then create-account.
+   */
+  public goToManualAccountCreation(route: 'direct' | 'cam' = 'cam'): void {
+    if (route === 'direct') {
+      this.goToManualAccountCreationDirect();
+      return;
+    }
+
+    this.goToManualAccountCreationViaCam();
   }
 
   /**
