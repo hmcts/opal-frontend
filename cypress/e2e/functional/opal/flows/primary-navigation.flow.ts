@@ -43,11 +43,13 @@ export class PrimaryNavigationFlow {
    * Asserts the default Search landing state after login.
    */
   public assertDefaultSearchLanding(): void {
+    const defaultSearchLanding = PRIMARY_NAVIGATION_LANDING_MAP.Search;
+
     this.actions.assertVisible();
     this.actions.assertMenuItemsInOrder();
     this.actions.assertActiveItem('Search');
     this.actions.assertSignOutVisible();
-    this.actions.assertLandingPage('Search for an account', '/fines/dashboard/search');
+    this.actions.assertLandingPage(defaultSearchLanding.header, defaultSearchLanding.path);
   }
 
   /**
@@ -56,11 +58,13 @@ export class PrimaryNavigationFlow {
    * are not reliable there.
    */
   public assertDefaultSearchLandingInComponent(): void {
+    const defaultSearchLanding = PRIMARY_NAVIGATION_LANDING_MAP.Search;
+
     this.actions.assertVisible();
     this.actions.assertMenuItemsInOrder();
     this.actions.assertActiveItem('Search');
     this.actions.assertSignOutVisible();
-    this.actions.assertLandingPageHeader('Search for an account');
+    this.actions.assertLandingPageHeader(defaultSearchLanding.header);
   }
 
   /**
@@ -68,7 +72,7 @@ export class PrimaryNavigationFlow {
    * @param itemLabel - Visible label of the target area.
    */
   public selectArea(itemLabel: string): void {
-    this.actions.clickItem(itemLabel);
+    this.actions.chooseItem(itemLabel);
   }
 
   /**

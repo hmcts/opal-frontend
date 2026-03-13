@@ -66,7 +66,7 @@ export class PrimaryNavigationActions {
    * Selects a top-level Fines navigation item.
    * @param itemLabel - Visible label of the item to select.
    */
-  public clickItem(itemLabel: string): void {
+  public chooseItem(itemLabel: string): void {
     if (!PRIMARY_NAV_ITEMS.some((item) => item.label === itemLabel)) {
       throw new Error(`Unsupported primary navigation item: ${itemLabel}`);
     }
@@ -103,7 +103,9 @@ export class PrimaryNavigationActions {
    */
   public assertSignOutVisible(): void {
     log('assert', 'Checking sign out link is visible');
-    cy.get(L.signOutLink, this.common.getTimeoutOptions()).should('be.visible').and('contain.text', 'Sign out');
+    cy.get(LoginLocators.signOutLink, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .and('contain.text', 'Sign out');
   }
 
   /**
@@ -111,7 +113,7 @@ export class PrimaryNavigationActions {
    */
   public clickSignOut(): void {
     log('action', 'Selecting Sign out');
-    cy.get(L.signOutLink, this.common.getTimeoutOptions()).should('be.visible').click();
+    cy.get(LoginLocators.signOutLink, this.common.getTimeoutOptions()).should('be.visible').click();
   }
 
   /**
