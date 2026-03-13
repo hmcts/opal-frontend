@@ -3727,6 +3727,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/zephyr-automation-nodejs@npm:0.0.6":
+  version: 0.0.6
+  resolution: "@hmcts/zephyr-automation-nodejs@npm:0.0.6"
+  dependencies:
+    "@hmcts/nodejs-logging": "npm:^4.0.4"
+  checksum: 10/7574edb5e5873b53894aa0c1701e389ad1ecaee562c0540ffda5a7596bed687fd8be72a5c689f45d5de098af1326e3047b4072d188ff923bd8d2ed91f1d48282
+  languageName: node
+  linkType: hard
+
 "@hono/node-server@npm:^1.19.9":
   version: 1.19.9
   resolution: "@hono/node-server@npm:1.19.9"
@@ -14703,6 +14712,7 @@ __metadata:
     "@hmcts/opal-frontend-common": "npm:^0.0.65"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.25"
     "@hmcts/properties-volume": "npm:^1.1.0"
+    "@hmcts/zephyr-automation-nodejs": "npm:0.0.6"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^8.0.0"
     "@ngrx/signals": "npm:^21.0.0"
@@ -14761,6 +14771,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     tslib: "npm:^2.3.0"
+    tsx: "npm:^4.21.0"
     typescript: "npm:~5.9.0"
     vitest: "npm:^4.0.8"
     webpack: "npm:^5.93.0"
@@ -18123,6 +18134,22 @@ __metadata:
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10/3e2e043d5c2316461cb54e5c7fe02c30ef6dccb3384717ca22ae5c6b5bc95232a6241df19c622d9c73b809bea33b187f6dbc73030963e29950c2141bc32a79f7
+  languageName: node
+  linkType: hard
+
+"tsx@npm:^4.21.0":
+  version: 4.21.0
+  resolution: "tsx@npm:4.21.0"
+  dependencies:
+    esbuild: "npm:~0.27.0"
+    fsevents: "npm:~2.3.3"
+    get-tsconfig: "npm:^4.7.5"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    tsx: dist/cli.mjs
+  checksum: 10/7afedeff855ba98c47dc28b33d7e8e253c4dc1f791938db402d79c174bdf806b897c1a5f91e5b1259c112520c816f826b4c5d98f0bad7e95b02dec66fedb64d2
   languageName: node
   linkType: hard
 
