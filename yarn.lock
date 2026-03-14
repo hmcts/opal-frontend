@@ -780,8 +780,8 @@ __metadata:
   linkType: hard
 
 "@angular/ssr@npm:^21.1.3":
-  version: 21.1.4
-  resolution: "@angular/ssr@npm:21.1.4"
+  version: 21.2.2
+  resolution: "@angular/ssr@npm:21.2.2"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
@@ -792,7 +792,7 @@ __metadata:
   peerDependenciesMeta:
     "@angular/platform-server":
       optional: true
-  checksum: 10/eb7f654b16196783bcc9f82938910c86675e19a127eff8575d40f23fd680e8018f4604179a2db48efe8e0c41b54acb052118f2fc381c3fb5c825da00f51a371e
+  checksum: 10/541d66a1ca77ff1b8d2c1b5633b6ed45e511e8e0eff89cbb0953332b4fa416a3a009822320a5dca417e6d046eff7a73beebc65f6706ff893770779c5167dfa95
   languageName: node
   linkType: hard
 
