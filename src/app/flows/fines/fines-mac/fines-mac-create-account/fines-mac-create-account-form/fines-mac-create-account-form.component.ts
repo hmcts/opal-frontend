@@ -122,7 +122,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
     this.accountTypes = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES)
       .filter(([key]) => !(this.isTFO && key === 'Conditional Caution'))
       .map(([key, value]) => ({
-        key: key.replace(/\s+/g, ''),
+        key: key.replaceAll(/\s+/g, ''),
         value,
       }));
   }
