@@ -29,11 +29,7 @@ export class DashboardActions {
    * @param missingLinkMessage - Log message used when the route link is missing before refresh.
    * @param afterLinkClick - Optional callback for follow-up actions after clicking the route link.
    */
-  private navigateToMacViaDashboardRoute(
-    linkSelector: string,
-    missingLinkMessage: string,
-    afterLinkClick?: () => void,
-  ): void {
+  private navigateToMac(linkSelector: string, missingLinkMessage: string, afterLinkClick?: () => void): void {
     const clickRoute = () => {
       cy.get(linkSelector, { timeout: 20_000 }).first().should('be.visible').click({ force: true });
       if (afterLinkClick) afterLinkClick();
@@ -119,44 +115,13 @@ export class DashboardActions {
   }
 
   /**
-   * Navigates to Manual Account Creation using the direct dashboard link.
-   * Intended for journeys/users that expose `#finesMacLink`.
+   * Navigates to Manual Account Creation via **Create and Manage Draft Accounts**.
    */
-  public goToManualAccountCreationDirect(): void {
-    log('navigate', 'Opening Manual Account Creation using direct dashboard link');
-    this.navigateToMacViaDashboardRoute(
-      L.manualAccountCreationLink,
-      'Direct Manual Account Creation link not found; refreshing dashboard and retrying once',
-    );
-  }
-
-  /**
-   * Navigates to Manual Account Creation via **Create and Manage Draft Accounts (CAM)**.
-   * Intended for inputter journeys where dashboard exposes `#finesCavInputterLink`.
-   */
-  public goToManualAccountCreationViaCam(): void {
+  public goToManualAccountCreation(): void {
     log('navigate', 'Opening Manual Account Creation using Create and Manage Draft Accounts route');
-    this.navigateToMacViaDashboardRoute(
-      L.createAndManageDraftAccountsLink,
-      'Create and Manage Draft Accounts link not found; refreshing dashboard and retrying once',
-      () => {
-        cy.get(CAM.createAccountButton, { timeout: 20_000 }).should('be.visible').click({ force: true });
-      },
-    );
-  }
-
-  /**
-   * Navigates to Manual Account Creation using the requested dashboard route variant.
-   * @param route - `direct` uses `#finesMacLink`; `cam` means **Create and Manage Draft Accounts**
-   * and uses inputter drafts then create-account.
-   */
-  public goToManualAccountCreation(route: 'direct' | 'cam' = 'cam'): void {
-    if (route === 'direct') {
-      this.goToManualAccountCreationDirect();
-      return;
-    }
-
-    this.goToManualAccountCreationViaCam();
+    this.navigateToMac(L.createAndManageDraftAccountsLink, 'Create and Manage Draft Accounts link not found', () => {
+      cy.get(CAM.createAccountButton, { timeout: 20_000 }).should('be.visible').click({ force: true });
+    });
   }
 
   /**

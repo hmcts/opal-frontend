@@ -10,13 +10,7 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { FINES_CON_DEFENDANT_TYPES } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/constants/fines-con-defendant-types.constant';
 import { SelectBusinessUnitLocators } from 'cypress/shared/selectors/consolidation/SelectBusinessUnit.locators';
-import { FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-individual.mock';
-import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from 'src/app/flows/fines/fines-con/select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-company.mock';
-import {
-  USER_STATE_MOCK_NO_PERMISSION,
-  USER_STATE_MOCK_PERMISSION_BU17,
-  USER_STATE_MOCK_PERMISSION_BU77,
-} from '../../CommonIntercepts/CommonUserState.mocks';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
 describe('FinesConSelectBuFormComponent', () => {
