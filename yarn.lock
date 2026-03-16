@@ -3117,12 +3117,12 @@ __metadata:
   linkType: hard
 
 "@cucumber/messages@npm:^32.0.0":
-  version: 32.0.1
-  resolution: "@cucumber/messages@npm:32.0.1"
+  version: 32.2.0
+  resolution: "@cucumber/messages@npm:32.2.0"
   dependencies:
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-  checksum: 10/697fcf221797977693ebedc24e245408082e65ccc691780b02664893166a235bd39ad4c3499a55d13d531cacaa3bd882aad9b135ff982d8a7ba66bccfdb90814
+  checksum: 10/b041c144977caee48be45c1418923db7ec80395701f0d91c6c6b0491889980941dcbfd82b184e5b3678a8726ca4ab91b77aff19d1ee2b718b4c2d20d597cc5d3
   languageName: node
   linkType: hard
 
@@ -10224,8 +10224,8 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-jsdoc@npm:^62.0.0":
-  version: 62.7.1
-  resolution: "eslint-plugin-jsdoc@npm:62.7.1"
+  version: 62.8.0
+  resolution: "eslint-plugin-jsdoc@npm:62.8.0"
   dependencies:
     "@es-joy/jsdoccomment": "npm:~0.84.0"
     "@es-joy/resolve.exports": "npm:1.2.0"
@@ -10243,7 +10243,7 @@ __metadata:
     to-valid-identifier: "npm:^1.0.0"
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 10/cd4e6b0fa84747456f84ae1a5266de61b4e2171121ad57b6a27b58b09c9130dd4088d4e876b57fa7f0c88dc8c2029d6ee0e2d982fcfb164a75076e25ddc8949e
+  checksum: 10/9450a7df7180043caf446cbf5f314b548761e2ea1af8fe359f704eac54fae7d24c1f33578d32a29f1576c46cdb05f3c0eaee625ac73c0f2832462e5062cb834e
   languageName: node
   linkType: hard
 
