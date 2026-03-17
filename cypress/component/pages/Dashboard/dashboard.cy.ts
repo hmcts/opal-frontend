@@ -5,6 +5,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { CAM_CAV_DASHBOARD_USER_STATE_MOCK } from './mocks/cam_cav_dashboard_user_state_mock';
 import { DashboardLocators as L } from '../../../shared/selectors/dashboard.locators';
+import { CreateManageDraftsLocators as CMDLocators } from '../../../shared/selectors/create-manage-drafts.locators';
 import { CAV_DASHBOARD_USER_STATE_MOCK } from './mocks/cav_dashboard_user_state_mock';
 import { CAM_DASHBOARD_USER_STATE_MOCK } from './mocks/cam_dashboard_user_state_mock';
 import { NO_PERMS_DASHBOARD_USER_STATE_MOCK } from './mocks/no_perms_dashboard_user_state_mock';
@@ -47,7 +48,7 @@ describe('DashboardComponent', () => {
   it.skip('should only show CAV when user has correct permissions', { tags: ['@PO-604'] }, () => {
     setupComponent(CAV_DASHBOARD_USER_STATE_MOCK);
     cy.get('span').contains('testUserCAV@HMCTS.NET').should('exist');
-    cy.get(L.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
+    cy.get(CMDLocators.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
     cy.get(L.checkAndValidateDraftAccountsLink).contains('Check and Validate Draft Accounts').should('exist');
     cy.get(L.createAndManageDraftAccountsLink).should('not.exist');
   });
@@ -55,7 +56,7 @@ describe('DashboardComponent', () => {
   it.skip('should only show CAM when user has correct permissions', { tags: ['@PO-604'] }, () => {
     setupComponent(CAM_DASHBOARD_USER_STATE_MOCK);
     cy.get('span').contains('testUserCAM@HMCTS.NET').should('exist');
-    cy.get(L.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
+    cy.get(CMDLocators.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
     cy.get(L.createAndManageDraftAccountsLink).contains('Create and Manage Draft Accounts').should('exist');
     cy.get(L.checkAndValidateDraftAccountsLink).should('not.exist');
   });
@@ -63,7 +64,7 @@ describe('DashboardComponent', () => {
   it.skip('(AC.1c)should show CAV and CAM when user has the correct permissions', { tags: ['@PO-604'] }, () => {
     setupComponent(CAM_CAV_DASHBOARD_USER_STATE_MOCK);
     cy.get('span').contains('testUserCAM_CAV@HMCTS.NET').should('exist');
-    cy.get(L.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
+    cy.get(CMDLocators.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
     cy.get(L.createAndManageDraftAccountsLink).contains('Create and Manage Draft Accounts').should('exist');
     cy.get(L.checkAndValidateDraftAccountsLink).contains('Check and Validate Draft Accounts').should('exist');
   });
@@ -74,7 +75,7 @@ describe('DashboardComponent', () => {
     () => {
       setupComponent(NO_PERMS_DASHBOARD_USER_STATE_MOCK);
       cy.get('span').contains('noPermissionsTestUser@HMCTS.NET').should('exist');
-      cy.get(L.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
+      cy.get(CMDLocators.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
       cy.get(L.createAndManageDraftAccountsLink).should('not.exist');
       cy.get(L.checkAndValidateDraftAccountsLink).should('not.exist');
     },

@@ -61,11 +61,7 @@ export class DashboardActions {
    * @param missingLinkMessage - Log message used when the route link is missing before refresh.
    * @param afterLinkClick - Optional callback for follow-up actions after clicking the route link.
    */
-  private navigateToMacViaDashboardRoute(
-    linkSelector: string,
-    missingLinkMessage: string,
-    afterLinkClick?: () => void,
-  ): void {
+  private navigateToMac(linkSelector: string, missingLinkMessage: string, afterLinkClick?: () => void): void {
     const clickRoute = () => {
       cy.get(linkSelector, { timeout: 20_000 }).first().should('be.visible').click({ force: true });
       if (afterLinkClick) afterLinkClick();
