@@ -113,12 +113,7 @@ export class ManualOffenceDetailsActions {
 
     log('type', `Setting imposition field ${field}`, { index, value });
     if (field === 'Result code') {
-      this.typeAutocomplete(
-        selector,
-        L.imposition.resultCodeList(index),
-        value,
-        `${field} (imposition ${index + 1})`,
-      );
+      this.typeAutocomplete(selector, L.imposition.resultCodeList(index), value, `${field} (imposition ${index + 1})`);
       return;
     }
 
