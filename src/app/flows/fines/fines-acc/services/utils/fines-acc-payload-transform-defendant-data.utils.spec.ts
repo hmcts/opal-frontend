@@ -833,5 +833,30 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_title).toBeNull();
       expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
     });
+
+    it('should preserve only the shared company-compatible fields when converting an individual account to company', () => {
+      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'company', true);
+
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull();
+      expect(result.facc_party_add_amend_convert_surname).toBeNull();
+      expect(result.facc_party_add_amend_convert_dob).toBeNull();
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBeNull();
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBeNull();
+
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_address_line_2).toBe('Flat 2B');
+      expect(result.facc_party_add_amend_convert_address_line_3).toBe('Riverside');
+      expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe('sarah.thompson@example.com');
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe('s.thompson@workmail.com');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe('07700900123');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe('02071234567');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe('01632960123');
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe('XY21 ABC');
+    });
   });
 });

@@ -254,7 +254,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.navigateToConvertToCompanyAccountPage();
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../party/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`],
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}`],
       {
         relativeTo: component['activatedRoute'],
       },

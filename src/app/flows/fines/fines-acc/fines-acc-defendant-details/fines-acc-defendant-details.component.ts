@@ -423,9 +423,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   public navigateToConvertToCompanyAccountPage(): void {
     if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
-      this['router'].navigate([`../party/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`], {
-        relativeTo: this.activatedRoute,
-      });
+      this['router'].navigate(
+        [
+          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}`,
+        ],
+        {
+          relativeTo: this.activatedRoute,
+        },
+      );
     } else {
       this['router'].navigate(['/access-denied'], {
         relativeTo: this.activatedRoute,

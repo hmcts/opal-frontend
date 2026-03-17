@@ -25,6 +25,9 @@ Feature: Account Enquiries - View Account Details Accessibility
     And I should see the convert to company account action
     ## Check Accessibility on Defendant Details Page
     Then I check the page for accessibility
+    When I start converting the account to a company account
+    Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
+    And I check the page for accessibility
 
   Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":

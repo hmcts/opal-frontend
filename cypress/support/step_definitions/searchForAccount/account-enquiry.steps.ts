@@ -124,6 +124,43 @@ Then('I should not see the convert to company account action', () => {
   flow().assertConvertToCompanyActionNotPresent();
 });
 
+When('I start converting the account to a company account', () => {
+  log('step', 'Start converting account to company');
+  flow().openConvertToCompanyConfirmation();
+});
+
+Then(
+  'I should see the convert to company confirmation screen for defendant {string}',
+  (expectedCaptionName: string) => {
+    const expectedCaptionNameWithUniq = applyUniqPlaceholder(expectedCaptionName);
+    log('assert', 'Convert to company confirmation screen is visible', {
+      expectedCaptionName: expectedCaptionNameWithUniq,
+    });
+    flow().assertOnConvertToCompanyConfirmation(expectedCaptionNameWithUniq);
+  },
+);
+
+When('I continue converting the account to a company account', () => {
+  log('step', 'Continue converting account to company');
+  flow().confirmConvertToCompanyAccount();
+});
+
+When('I cancel converting the account to a company account', () => {
+  log('step', 'Cancel converting account to company');
+  flow().cancelConvertToCompanyAccount();
+});
+
+Then('the Company details form should be pre-populated with:', (table: DataTable) => {
+  const expectedFieldValues = Object.fromEntries(
+    Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [
+      fieldName,
+      applyUniqPlaceholder(fieldValue),
+    ]),
+  );
+  log('assert', 'Company details form is pre-populated', expectedFieldValues);
+  flow().assertCompanyDetailsPrefilledValues(expectedFieldValues);
+});
+
 /**
  * @step Navigates to the Parent or guardian details section and validates the header text.
  *

@@ -67,6 +67,13 @@ export class AccountDetailsDefendantActions {
   }
 
   /**
+   * Clicks the convert-to-company action from the Defendant tab.
+   */
+  startConvertToCompanyAccount(): void {
+    cy.get(L.actions.convertToCompany, this.common.getTimeoutOptions()).should('be.visible').click();
+  }
+
+  /**
    * Asserts that the convert-to-company action is not rendered in the Defendant tab.
    */
   assertConvertToCompanyActionNotPresent(): void {

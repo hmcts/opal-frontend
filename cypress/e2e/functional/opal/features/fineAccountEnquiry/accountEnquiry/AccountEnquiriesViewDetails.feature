@@ -66,6 +66,23 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Mr Updated ACCDETAILSURNAME{uniqUpper}"
       And I verify no amendments were created via API
 
+    @PO-1942 @PO-1943
+    Scenario: Convert to company confirmation continues to Company details with shared fields pre-populated
+      When I start converting the account to a company account
+      Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
+      When I continue converting the account to a company account
+      Then the Company details form should be pre-populated with:
+        | Primary email address   | John.AccDetailSurname{uniq}@test.com |
+        | Home telephone number   | 02078259314 |
+
+    @PO-1943
+    Scenario: Convert to company confirmation cancel returns to Defendant details with no changes made
+      When I start converting the account to a company account
+      Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
+      When I cancel converting the account to a company account
+      Then I should return to the account details page Defendant tab
+      And I should see the convert to company account action
+
   Rule: Company account baseline
     Background:
       # AC1 – Account setup

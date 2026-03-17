@@ -17,6 +17,7 @@ import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
+import { AccountConvertActions } from '../actions/account-details/convert.account.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
@@ -71,6 +72,7 @@ export class AccountEnquiryFlow {
   private readonly editCompanyDetailsActions = new EditCompanyDetailsActions();
   private readonly editParentGuardianActions = new EditParentGuardianDetailsActions();
   private readonly paymentTerms = new AccountDetailsPaymentTermsActions();
+  private readonly accountConvert = new AccountConvertActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -227,6 +229,51 @@ export class AccountEnquiryFlow {
   public assertConvertToCompanyActionNotPresent(): void {
     logAE('method', 'assertConvertToCompanyActionNotPresent()');
     this.defendantDetails.assertConvertToCompanyActionNotPresent();
+  }
+
+  /**
+   * Opens the convert-to-company confirmation page from the Defendant tab.
+   */
+  public openConvertToCompanyConfirmation(): void {
+    logAE('method', 'openConvertToCompanyConfirmation()');
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.startConvertToCompanyAccount();
+  }
+
+  /**
+   * Asserts the convert-to-company confirmation page.
+   *
+   * @param expectedCaptionName - Expected defendant name shown in the caption.
+   */
+  public assertOnConvertToCompanyConfirmation(expectedCaptionName: string): void {
+    logAE('method', 'assertOnConvertToCompanyConfirmation()', { expectedCaptionName });
+    this.accountConvert.assertOnConvertToCompanyConfirmation(expectedCaptionName);
+  }
+
+  /**
+   * Confirms the convert-to-company action.
+   */
+  public confirmConvertToCompanyAccount(): void {
+    logAE('method', 'confirmConvertToCompanyAccount()');
+    this.accountConvert.confirmConvertToCompany();
+  }
+
+  /**
+   * Cancels the convert-to-company action.
+   */
+  public cancelConvertToCompanyAccount(): void {
+    logAE('method', 'cancelConvertToCompanyAccount()');
+    this.accountConvert.cancelConvertToCompany();
+  }
+
+  /**
+   * Asserts the Company details form contains the expected pre-populated values.
+   *
+   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
+   */
+  public assertCompanyDetailsPrefilledValues(expectedFieldValues: Record<string, string>): void {
+    logAE('method', 'assertCompanyDetailsPrefilledValues()', expectedFieldValues);
+    this.editCompanyDetailsActions.assertPrefilledFieldValues(expectedFieldValues);
   }
 
   /**
