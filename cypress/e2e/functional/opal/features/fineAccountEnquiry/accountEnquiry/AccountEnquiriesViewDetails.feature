@@ -71,6 +71,7 @@ Feature: Account Enquiries – View Account Details
       When I start converting the account to a company account
       Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
       When I continue converting the account to a company account
+      Then I should be on the Company details convert route
       Then the Company details form should be pre-populated with:
         | Primary email address   | John.AccDetailSurname{uniq}@test.com |
         | Home telephone number   | 02078259314 |

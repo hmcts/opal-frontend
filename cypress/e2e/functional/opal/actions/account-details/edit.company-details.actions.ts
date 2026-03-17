@@ -12,6 +12,7 @@ const log = createScopedLogger('EditCompanyDetailsActions');
 
 /** Actions for editing company details within Account Details. */
 export class EditCompanyDetailsActions {
+  private static readonly DEFAULT_TIMEOUT = 10_000;
   private readonly common = new CommonActions();
   private readonly companyFieldLocators = {
     'Address line 1': L.fields.addressLine1,
@@ -34,6 +35,18 @@ export class EditCompanyDetailsActions {
     log('assert', 'Asserting company edit form is still visible');
     cy.get(L.form, { timeout: 10_000 }).should('be.visible');
     log('done', 'Company edit form is visible');
+  }
+
+  /**
+   * Asserts the convert handoff lands on the Company details convert route.
+   */
+  public assertOnConvertRoute(): void {
+    log('assert', 'Asserting Company details convert route');
+    cy.location('pathname', { timeout: this.common.getPathTimeout() }).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/party\/company\/convert$/,
+    );
+    cy.get(L.form, { timeout: EditCompanyDetailsActions.DEFAULT_TIMEOUT }).should('be.visible');
   }
 
   /**

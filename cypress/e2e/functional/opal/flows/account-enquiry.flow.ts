@@ -277,6 +277,14 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the convert flow lands on the Company details convert route.
+   */
+  public assertOnCompanyDetailsConvertRoute(): void {
+    logAE('method', 'assertOnCompanyDetailsConvertRoute()');
+    this.editCompanyDetailsActions.assertOnConvertRoute();
+  }
+
+  /**
    * Navigates to the Parent/Guardian tab and asserts a specific section header.
    *
    * @param headerText - Expected section header text.

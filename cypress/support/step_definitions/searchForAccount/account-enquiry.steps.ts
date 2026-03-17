@@ -145,6 +145,11 @@ When('I continue converting the account to a company account', () => {
   flow().confirmConvertToCompanyAccount();
 });
 
+Then('I should be on the Company details convert route', () => {
+  log('assert', 'Company details convert route is active');
+  flow().assertOnCompanyDetailsConvertRoute();
+});
+
 When('I cancel converting the account to a company account', () => {
   log('step', 'Cancel converting account to company');
   flow().cancelConvertToCompanyAccount();
