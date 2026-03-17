@@ -17,6 +17,7 @@ import { defendantAccountHeadingResolver } from '../routing/resolvers/defendant-
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { finesAccStateGuard } from '../routing/guards/fines-acc-state-guard/fines-acc-state.guard';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
 
 describe('FinesAccConvertComponent', () => {
   let fixture: ComponentFixture<FinesAccConvertComponent>;
@@ -119,6 +120,17 @@ describe('FinesAccConvertComponent', () => {
     });
   });
 
+  it('should configure the party route to use partyType and mode route params', () => {
+    const defendantRoute = routing.find(
+      (route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
+    );
+    const partyRoute = defendantRoute?.children?.find(
+      (child) => child.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/:partyType/:mode`,
+    );
+
+    expect(partyRoute?.path).toBe(`${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/:partyType/:mode`);
+  });
+
   it('should create', () => {
     createComponent();
 
@@ -164,7 +176,7 @@ describe('FinesAccConvertComponent', () => {
         '../../',
         FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party,
         FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
-        'amend',
+        FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
       ],
       {
         relativeTo: mockActivatedRoute,

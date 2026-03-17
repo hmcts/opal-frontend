@@ -9,6 +9,7 @@ import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fine
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
 
 @Component({
   selector: 'app-fines-acc-convert',
@@ -77,7 +78,7 @@ export class FinesAccConvertComponent implements OnInit {
         '../../',
         FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party,
         FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
-        'amend',
+        FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
       ],
       {
         relativeTo: this.activatedRoute,

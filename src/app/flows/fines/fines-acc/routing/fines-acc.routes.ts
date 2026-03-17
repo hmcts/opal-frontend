@@ -130,7 +130,7 @@ export const routing: Routes = [
         },
       },
       {
-        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['party']}/:partyType/amend`,
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['party']}/:partyType/:mode`,
 
         loadComponent: () =>
           import('../fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component').then(

@@ -11,6 +11,7 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from './constants/fines-acc-party-add-amend-convert-modes.constant';
 
 describe('FinesAccPartyAddAmendConvert', () => {
   let component: FinesAccPartyAddAmendConvert;
@@ -32,6 +33,18 @@ describe('FinesAccPartyAddAmendConvert', () => {
   let mockUtilsService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockRouter: any;
+  let mockActivatedRoute: {
+    snapshot: {
+      data: {
+        partyAddAmendConvertData: typeof OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK & { version: string };
+      };
+      params: {
+        partyType: string;
+        accountId: string;
+        mode: string;
+      };
+    };
+  };
 
   beforeEach(async () => {
     mockPayloadService = {
@@ -57,6 +70,21 @@ describe('FinesAccPartyAddAmendConvert', () => {
     mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
     };
+    mockActivatedRoute = {
+      snapshot: {
+        data: {
+          partyAddAmendConvertData: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
+            version: '1',
+          },
+        },
+        params: {
+          partyType: 'individual',
+          accountId: '123',
+          mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND,
+        },
+      },
+    };
 
     // Set up default return values
     mockPayloadService.mapDebtorAccountPartyPayload.mockReturnValue(
@@ -75,23 +103,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
         { provide: FinesAccountStore, useValue: mockFinesAccStore },
         { provide: UtilsService, useValue: mockUtilsService },
         { provide: Router, useValue: mockRouter },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                partyAddAmendConvertData: {
-                  ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
-                  version: '1',
-                },
-              },
-              params: {
-                partyType: 'individual',
-                accountId: '123',
-              },
-            },
-          },
-        },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
 
@@ -102,6 +114,19 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should read amend mode from the route by default', () => {
+    expect(component['mode']).toBe(FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND);
+  });
+
+  it('should read convert mode from the route', () => {
+    mockActivatedRoute.snapshot.params.mode = FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT;
+    fixture = TestBed.createComponent(FinesAccPartyAddAmendConvert);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component['mode']).toBe(FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT);
   });
 
   it('should handle form submission for individual party type', () => {

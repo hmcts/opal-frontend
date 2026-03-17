@@ -9,6 +9,7 @@ import { OpalFines } from '../../services/opal-fines-service/opal-fines.service'
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from './constants/fines-acc-party-add-amend-convert-modes.constant';
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
   imports: [FinesAccPartyAddAmendConvertFormComponent],
@@ -24,6 +25,8 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
 
   protected readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
+  protected readonly mode: string =
+    this['activatedRoute'].snapshot.params['mode'] ?? FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND;
   protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
     formData: this.payloadService.mapDebtorAccountPartyPayload(
       this.partyPayload,
