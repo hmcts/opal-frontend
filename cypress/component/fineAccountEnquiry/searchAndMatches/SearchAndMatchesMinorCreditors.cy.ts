@@ -65,7 +65,7 @@ describe('Search Account Component - Minor Creditors', () => {
     minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
   });
 
-  it('AC1-AC3. should render the search for an account screen and minor creditors tab', { tags: ['PO-715'] }, () => {
+  it('AC1-AC3. should render the search for an account screen and minor creditors tab', { tags: ['PO-715', '@JIRA-KEY:POT-3734'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
@@ -105,7 +105,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
   });
 
-  it('AC6a. should show error for non-alphabetical last name', { tags: ['PO-715'] }, () => {
+  it('AC6a. should show error for non-alphabetical last name', { tags: ['PO-715', '@JIRA-KEY:POT-3735'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
       'Smith123';
@@ -118,7 +118,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
   });
 
-  it('AC6b. should show error for non-alphabetical first name', { tags: ['PO-715'] }, () => {
+  it('AC6b. should show error for non-alphabetical first name', { tags: ['PO-715', '@JIRA-KEY:POT-3736'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
       'Name123';
@@ -132,7 +132,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
   });
 
-  it('AC6c. should show error for non-alphabetical company name', { tags: ['PO-715'] }, () => {
+  it('AC6c. should show error for non-alphabetical company name', { tags: ['PO-715', '@JIRA-KEY:POT-3737'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
       'Company123?';
@@ -150,7 +150,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.companyNameInput).clear();
   });
 
-  it('AC6d. should show error for non-alphabetical address line 1', { tags: ['PO-715'] }, () => {
+  it('AC6d. should show error for non-alphabetical address line 1', { tags: ['PO-715', '@JIRA-KEY:POT-3738'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 =
       'Address123?';
@@ -164,7 +164,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Input).clear();
   });
 
-  it('AC6e. should show error for non-alphabetical post code', { tags: ['PO-715'] }, () => {
+  it('AC6e. should show error for non-alphabetical post code', { tags: ['PO-715', '@JIRA-KEY:POT-3739'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
       'POSTCODE?';
@@ -176,7 +176,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
-  it('AC7a. should validate last name maximum field length', { tags: ['PO-715'] }, () => {
+  it('AC7a. should validate last name maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3740'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
       'Abcdefghijklmnopqrstuvwxyzabcdefg';
@@ -188,7 +188,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
   });
 
-  it('AC7b. should validate first names maximum field length', { tags: ['PO-715'] }, () => {
+  it('AC7b. should validate first names maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3741'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
       'AbcdefghijklmnopqrstA';
@@ -200,7 +200,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
   });
 
-  it('AC7c. should validate company name maximum field length', { tags: ['PO-715'] }, () => {
+  it('AC7c. should validate company name maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3742'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
       'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
@@ -212,7 +212,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.companyNameInput).clear();
   });
 
-  it('AC7d. should validate address line 1 maximum field length', { tags: ['PO-715'] }, () => {
+  it('AC7d. should validate address line 1 maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3743'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1 =
       'Address1234Address1234Address12345';
@@ -224,7 +224,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.addressLine1Input).clear();
   });
 
-  it('AC7e. should validate post code maximum field length', { tags: ['PO-715'] }, () => {
+  it('AC7e. should validate post code maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3744'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
       'POSTCODES';
@@ -236,10 +236,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
-  it(
-    'AC3a. Should validate last name field when "Search exact match" for last name is selected on Minor Creditor Individual',
-    { tags: ['PO-1969'] },
-    () => {
+  it('AC3a. Should validate last name field when "Search exact match" for last name is selected on Minor Creditor Individual', { tags: ['PO-1969', '@JIRA-KEY:POT-3745'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
@@ -248,13 +245,9 @@ describe('Search Account Component - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
-    },
-  );
+    });
 
-  it(
-    'AC3b. Should validate first name field when "Search exact match" for first name is selected on Minor Creditor Individual',
-    { tags: ['PO-1969'] },
-    () => {
+  it('AC3b. Should validate first name field when "Search exact match" for first name is selected on Minor Creditor Individual', { tags: ['PO-1969', '@JIRA-KEY:POT-3746'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
@@ -263,13 +256,9 @@ describe('Search Account Component - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'Enter first name');
-    },
-  );
+    });
 
-  it(
-    'AC4a. Should validate company name field when "Search exact match" for company name is selected on Minor Creditor Company',
-    { tags: ['PO-1969'] },
-    () => {
+  it('AC4a. Should validate company name field when "Search exact match" for company name is selected on Minor Creditor Company', { tags: ['PO-1969', '@JIRA-KEY:POT-3747'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
@@ -278,6 +267,5 @@ describe('Search Account Component - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
-    },
-  );
+    });
 });

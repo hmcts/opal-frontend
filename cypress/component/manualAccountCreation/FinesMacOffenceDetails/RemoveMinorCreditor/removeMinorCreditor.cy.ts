@@ -58,10 +58,10 @@ describe('FinesMacRemoveMinorCreditor', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1) should render the component', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] }, () => {
+  it('(AC.1) should render the component', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4209'] }, () => {
     setupComponent();
   });
-  it('AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] }, () => {
+  it('AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4210'] }, () => {
     setupComponent();
     cy.get(DOM_ELEMENTS.app).should('exist');
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -103,10 +103,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     },
   );
 
-  it(
-    'AC.2) should load all fields with the correct values',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
-    () => {
+  it('AC.2) should load all fields with the correct values', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4212'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
@@ -120,13 +117,9 @@ describe('FinesMacRemoveMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.sortCode).should('contain', '12-34-56');
       cy.get(DOM_ELEMENTS.accountNumber).should('contain', '12345678');
       cy.get(DOM_ELEMENTS.paymentReference).should('contain', 'Testing');
-    },
-  );
+    });
 
-  it(
-    'AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
-    () => {
+  it('AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4213'] }, () => {
       setupComponent();
 
       formData[0].formData = {
@@ -150,6 +143,5 @@ describe('FinesMacRemoveMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
       cy.get(DOM_ELEMENTS.address).should('contain', 'Not provided');
       cy.get(DOM_ELEMENTS.paymentMethod).should('contain', 'Not provided');
-    },
-  );
+    });
 });

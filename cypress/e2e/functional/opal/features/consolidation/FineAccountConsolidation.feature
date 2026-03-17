@@ -6,7 +6,7 @@ Feature: Fines Account Consolidation
     Then I should be on the dashboard
     Then I open Consolidate accounts
 
-  @PO-2413
+  @PO-2413 @JIRA-KEY:POT-3328
   Scenario: Consolidation account search for Individuals
     When I continue to the consolidation account search as an "Individual" defendant
 
@@ -50,7 +50,7 @@ Feature: Fines Account Consolidation
       | first names exact match   | true       |
       | include aliases           | true       |
 
-  @PO-2414
+  @PO-2414 @JIRA-KEY:POT-3329
   Scenario: Consolidation account search for Companies
     When I continue to the consolidation account search as an "Company" defendant
     # AC1 - User is navigated to Search tab for Companies after selecting BU and Company

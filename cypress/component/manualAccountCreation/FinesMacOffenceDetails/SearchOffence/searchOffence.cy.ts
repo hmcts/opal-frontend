@@ -50,7 +50,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     offenceSearchFormData = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
   });
 
-  it('AC.1a, AC.1b should render all elements on the page', { tags: ['@PO-545', '@PO-667'] }, () => {
+  it('AC.1a, AC.1b should render all elements on the page', { tags: ['@PO-545', '@PO-667', '@JIRA-KEY:POT-4228'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
@@ -69,10 +69,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   });
 
   // This test verifying the maximum length of the fields
-  it(
-    'AC.2a, AC.2b, AC.2c Checking the validation failures when exceeding the maximum characters',
-    { tags: ['@PO-545', '@PO-667'] },
-    () => {
+  it('AC.2a, AC.2b, AC.2c Checking the validation failures when exceeding the maximum characters', { tags: ['@PO-545', '@PO-667', '@JIRA-KEY:POT-4229'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       //This creates the component with invalid offence code pre-loaded in the form
@@ -87,13 +84,9 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
         .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.offenceCodeMaxLength)
         .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.shortTitleMaxLength)
         .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.actAndSectionMaxLength);
-    },
-  );
+    });
   //The below code will check each string in the invalidInputs array and check if the error message is displayed
-  it(
-    'AC.2d, AC.2e, AC.2f Checking the validation failures when a special character into the fields',
-    { tags: ['@PO-545', '@PO-667'] },
-    () => {
+  it('AC.2d, AC.2e, AC.2f Checking the validation failures when a special character into the fields', { tags: ['@PO-545', '@PO-667', '@JIRA-KEY:POT-4230'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       const invalidInputs = ['*', '$', '@'];
@@ -111,6 +104,5 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
             .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.actAndSectionSpecialCharPattern);
         });
       });
-    },
-  );
+    });
 });

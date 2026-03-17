@@ -10,10 +10,12 @@ Feature: Accessibility Tests for Fixed Penalty Screens
   Scenario Outline: Fixed Penalty details page is accessible for <defendant_type>
     When I start a fixed penalty account for business unit "West London", defendant type "<defendant_type>" and originator type "New"
     Then I check the page for accessibility
+    @JIRA-KEY:POT-3336
     Examples: Adult or youth only
       | defendant_type      |
       | Adult or youth only |
 
+    @JIRA-KEY:POT-3337
     Examples: Company
       | defendant_type |
       | Company        |

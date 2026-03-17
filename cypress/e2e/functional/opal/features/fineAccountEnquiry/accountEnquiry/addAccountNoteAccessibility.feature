@@ -4,6 +4,7 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
     Given I am logged in with email "opal-test@HMCTS.NET"
     And I clear all approved accounts
 
+  @JIRA-KEY:POT-3114
   Scenario: Check Add Account Note Accessibility with Axe-Core for Individual Account
 
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
@@ -29,6 +30,7 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
     Then I should see the header "Mr James GRAHAMADDNOTESURNAME{uniqUpper}" and the URL should contain "details"
     Then I check the page for accessibility
 
+  @JIRA-KEY:POT-3115
   Scenario: Check Add Account Note Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status                      | Submitted                   |

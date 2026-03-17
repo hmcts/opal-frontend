@@ -64,14 +64,14 @@ describe('FinesSaResultsComponent - Companies', () => {
     });
   };
 
-  it('Search company results component is created correctly', { tags: ['PO-707'] }, () => {
+  it('Search company results component is created correctly', { tags: ['PO-707', '@JIRA-KEY:POT-3770'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
   });
 
-  it('(AC2) Displays error message when no search matches are found', { tags: ['PO-707'] }, () => {
+  it('(AC2) Displays error message when no search matches are found', { tags: ['PO-707', '@JIRA-KEY:POT-3771'] }, () => {
     setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
@@ -83,7 +83,7 @@ describe('FinesSaResultsComponent - Companies', () => {
     cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
   });
 
-  it('(AC3) Handles more than 100 search matches correctly', { tags: ['PO-717'] }, () => {
+  it('(AC3) Handles more than 100 search matches correctly', { tags: ['PO-717', '@JIRA-KEY:POT-3772'] }, () => {
     setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('contain', 'There are more than 100 results');
@@ -97,7 +97,7 @@ describe('FinesSaResultsComponent - Companies', () => {
     cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
   });
 
-  it('(AC4a-c) Displays results correctly for 100 or fewer matches', { tags: ['PO-707'] }, () => {
+  it('(AC4a-c) Displays results correctly for 100 or fewer matches', { tags: ['PO-707', '@JIRA-KEY:POT-3773'] }, () => {
     setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
     // Check table exists and headers match design
@@ -116,7 +116,7 @@ describe('FinesSaResultsComponent - Companies', () => {
     cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
   });
 
-  it('(AC4d) Displays pagination correctly for companies', { tags: ['PO-707'] }, () => {
+  it('(AC4d) Displays pagination correctly for companies', { tags: ['PO-707', '@JIRA-KEY:POT-3774'] }, () => {
     setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.paginationElement).should('exist');
@@ -127,7 +127,7 @@ describe('FinesSaResultsComponent - Companies', () => {
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
   });
 
-  it('(AC4e) Default sorting of results is correct', { tags: ['PO-707'] }, () => {
+  it('(AC4e) Default sorting of results is correct', { tags: ['PO-707', '@JIRA-KEY:POT-3775'] }, () => {
     setupComponent(SORTING_SEARCH_RESULTS_MOCK_COMPANIES);
 
     // Default sort = order in the mock

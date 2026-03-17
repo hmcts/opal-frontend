@@ -55,10 +55,7 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
     interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
   };
 
-  it(
-    '(AC.1,AC.1a) should display a primary Create account button in the Create accounts header for inputters',
-    { tags: ['@PO-2762'] },
-    () => {
+  it('(AC.1,AC.1a) should display a primary Create account button in the Create accounts header for inputters', { tags: ['@PO-2762', '@JIRA-KEY:POT-3913'] }, () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
 
@@ -67,10 +64,9 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
         .should('be.visible')
         .and('contain.text', 'Create account')
         .and('have.class', 'govuk-button');
-    },
-  );
+    });
 
-  it('(AC.1b) clicking Create account should navigate to originator type', { tags: ['@PO-2762'] }, () => {
+  it('(AC.1b) clicking Create account should navigate to originator type', { tags: ['@PO-2762', '@JIRA-KEY:POT-3914'] }, () => {
     stubAllTabResponses();
     cy.then(() => {
       mount(FinesDraftCreateAndManageTabsComponent, {
@@ -107,18 +103,14 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
     ]);
   });
 
-  it(
-    '(AC.1c) should hide Create account button for users without create/manage permission',
-    { tags: ['@PO-2762'] },
-    () => {
+  it('(AC.1c) should hide Create account button for users without create/manage permission', { tags: ['@PO-2762', '@JIRA-KEY:POT-3915'] }, () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_MOCK);
 
       cy.get(DOM_ELEMENTS.createAccountButton).should('not.exist');
-    },
-  );
+    });
 
-  it('(AC.1) should display Create account button across all active tabs', { tags: ['@PO-2762'] }, () => {
+  it('(AC.1) should display Create account button across all active tabs', { tags: ['@PO-2762', '@JIRA-KEY:POT-3916'] }, () => {
     stubAllTabResponses();
     setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
 

@@ -4,6 +4,7 @@ Feature: Search and Matches Accessibility
     Given I am logged in with email "opal-test@HMCTS.NET"
     And I am on the Account Search page - Individuals form displayed by default
 
+  @JIRA-KEY:POT-3122
   Scenario: Check Search and Matches Accessibility with Axe-Core
     ## Check Accessibility on Individuals Tab
     When I search using the following inputs:

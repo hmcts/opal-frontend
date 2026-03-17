@@ -10,6 +10,7 @@ Feature: Manual account creation - Personal Details
     And I view the "Personal details" task
     Then I should see the header containing text "Personal details"
 
+  @JIRA-KEY:POT-3094
   Scenario: (AC.13) Personal details persist within the session [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title               | Mr          |
@@ -37,6 +38,7 @@ Feature: Manual account creation - Personal Details
       | make and model      | FORD FOCUS  |
       | registration number | AB12 CDE    |
 
+  @JIRA-KEY:POT-3095
   Scenario: (AC.13) Restarting manual account clears personal details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title          | Mr          |
@@ -61,6 +63,7 @@ Feature: Manual account creation - Personal Details
       | make and model      |              |
       | registration number |              |
 
+  @JIRA-KEY:POT-3096
   Scenario: (AC.14) Confirming cancel clears unsaved personal details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title               | Mr          |
@@ -89,6 +92,7 @@ Feature: Manual account creation - Personal Details
       | make and model      |              |
       | registration number |              |
 
+  @JIRA-KEY:POT-3097
   Scenario: (AC.15) Confirming cancel restores last saved details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title          | Mr          |
@@ -110,6 +114,7 @@ Feature: Manual account creation - Personal Details
       | last name      | LNAME       |
       | address line 1 | Addr Line 1 |
 
+  @JIRA-KEY:POT-3098
   Scenario: (AC.15) Dismissing cancel keeps unsaved personal details on the page [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I complete manual personal details:
       | title          | Mr          |
@@ -126,9 +131,11 @@ Feature: Manual account creation - Personal Details
     And the manual personal details fields are:
       | first names | FNAME EDITED |
 
+  @JIRA-KEY:POT-3099
   Scenario: Personal Details - Axe Core
     Then I check the page for accessibility
 
+  @JIRA-KEY:POT-3100
   Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-433]
     When I complete manual personal details:
       | title          | Mr          |

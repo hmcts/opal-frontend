@@ -63,7 +63,7 @@ describe('Search Account Component - Individuals', () => {
     individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
   });
 
-  it('AC1a-d. should render the search for an account screen', { tags: ['PO-705'] }, () => {
+  it('AC1a-d. should render the search for an account screen', { tags: ['PO-705', '@JIRA-KEY:POT-3701'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
@@ -101,7 +101,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
   });
 
-  it('AC3a. should validate input fields and show errors', { tags: ['PO-705'] }, () => {
+  it('AC3a. should validate input fields and show errors', { tags: ['PO-705', '@JIRA-KEY:POT-3702'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '123$%^78';
 
@@ -120,7 +120,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
   });
 
-  it('AC3b. should show error for incorrectly formatted account number', { tags: ['PO-705'] }, () => {
+  it('AC3b. should show error for incorrectly formatted account number', { tags: ['PO-705', '@JIRA-KEY:POT-3703'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '1234567';
 
@@ -136,7 +136,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
   });
-  it('AC3c. should show error for non-alphabetical reference or case number', { tags: ['PO-705'] }, () => {
+  it('AC3c. should show error for non-alphabetical reference or case number', { tags: ['PO-705', '@JIRA-KEY:POT-3704'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_reference_case_number = 'REF@#$456';
 
@@ -152,7 +152,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
   });
-  it('AC3d. should show error for non-alphabetical last name', { tags: ['PO-705'] }, () => {
+  it('AC3d. should show error for non-alphabetical last name', { tags: ['PO-705', '@JIRA-KEY:POT-3705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
       'Smith123';
@@ -165,7 +165,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
   });
-  it('AC3e. should show error for non-alphabetical first names', { tags: ['PO-705'] }, () => {
+  it('AC3e. should show error for non-alphabetical first names', { tags: ['PO-705', '@JIRA-KEY:POT-3706'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
       'John123';
@@ -178,7 +178,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
   });
-  it('AC3f. should show error for invalid date of birth format', { tags: ['PO-705'] }, () => {
+  it('AC3f. should show error for invalid date of birth format', { tags: ['PO-705', '@JIRA-KEY:POT-3707'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '15/AB/2020';
@@ -191,7 +191,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.dobInput).clear();
   });
-  it('AC3g. should show error for future date of birth', { tags: ['PO-705'] }, () => {
+  it('AC3g. should show error for future date of birth', { tags: ['PO-705', '@JIRA-KEY:POT-3708'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '15/05/2030';
@@ -204,7 +204,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.dobInput).clear();
   });
-  it('AC3h. should show error for incorrectly formatted date of birth', { tags: ['PO-705'] }, () => {
+  it('AC3h. should show error for incorrectly formatted date of birth', { tags: ['PO-705', '@JIRA-KEY:POT-3709'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '5/1/1980';
@@ -218,7 +218,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.dobInput).clear();
   });
 
-  it('date picker should show the date in correct format DD/MM/YYYY', { tags: ['PO-1998'] }, () => {
+  it('date picker should show the date in correct format DD/MM/YYYY', { tags: ['PO-1998', '@JIRA-KEY:POT-3710'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
@@ -229,7 +229,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.searchButton).click();
   });
 
-  it('AC3i. should show error for invalid NI number', { tags: ['PO-705'] }, () => {
+  it('AC3i. should show error for invalid NI number', { tags: ['PO-705', '@JIRA-KEY:POT-3711'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
       'AB123$%^C';
@@ -246,7 +246,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.niNumberInput).clear();
   });
-  it('AC3j. should show error for invalid address line 1', { tags: ['PO-705'] }, () => {
+  it('AC3j. should show error for invalid address line 1', { tags: ['PO-705', '@JIRA-KEY:POT-3712'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
       '123 Test St. ®©™';
@@ -263,7 +263,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.addressLine1Input).clear();
   });
-  it('AC3k. should show error for invalid postcode', { tags: ['PO-705'] }, () => {
+  it('AC3k. should show error for invalid postcode', { tags: ['PO-705', '@JIRA-KEY:POT-3713'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
       'SW1A @#!';
@@ -277,7 +277,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
-  it('AC4a. should validate account number maximum field length', { tags: ['PO-705'] }, () => {
+  it('AC4a. should validate account number maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3714'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '1234567890'; // 10 characters (exceeds 9)
 
@@ -290,7 +290,7 @@ describe('Search Account Component - Individuals', () => {
       .and('contain', 'Account number must be 9 characters or fewer');
   });
 
-  it('AC4b. should validate reference or case number maximum field length', { tags: ['PO-705'] }, () => {
+  it('AC4b. should validate reference or case number maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3715'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_reference_case_number =
       'This reference number is way too long and exceeds thirty characters';
@@ -307,7 +307,7 @@ describe('Search Account Component - Individuals', () => {
       .and('contain', 'Reference or case number must be 30 characters or fewer');
   });
 
-  it('AC4c. should validate last name maximum field length', { tags: ['PO-705'] }, () => {
+  it('AC4c. should validate last name maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3716'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
       'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
@@ -319,7 +319,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must be 30 characters or fewer');
   });
 
-  it('AC4d. should validate first names maximum field length', { tags: ['PO-705'] }, () => {
+  it('AC4d. should validate first names maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3717'] }, () => {
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
       'ThisFirstNameIsTooLongAndExceedsTwentyChars';
     setupComponent(null);
@@ -331,7 +331,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must be 20 characters or fewer');
   });
 
-  it('AC4e. should validate National Insurance number maximum field length', { tags: ['PO-705'] }, () => {
+  it('AC4e. should validate National Insurance number maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3718'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
       'AB123456CD';
@@ -345,7 +345,7 @@ describe('Search Account Component - Individuals', () => {
       .and('contain', 'National Insurance number must be 9 characters or fewer');
   });
 
-  it('AC4f. should validate Address Line 1 maximum field length', { tags: ['PO-705'] }, () => {
+  it('AC4f. should validate Address Line 1 maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3719'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
       'This address line is too long and exceeds thirty characters';
@@ -362,7 +362,7 @@ describe('Search Account Component - Individuals', () => {
       .and('contain', 'Address line 1 must be 30 characters or fewer');
   });
 
-  it('AC4g. should validate Postcode maximum field length', { tags: ['PO-705'] }, () => {
+  it('AC4g. should validate Postcode maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3720'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
       'AB12 3CDEF'; // 9 characters (exceeds 8)
@@ -374,7 +374,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.postcodeError).should('exist').and('contain', 'Postcode must be 8 characters or fewer');
   });
 
-  it('AC5a should validate first name field dependency', { tags: ['PO-705'] }, () => {
+  it('AC5a should validate first name field dependency', { tags: ['PO-705', '@JIRA-KEY:POT-3721'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.firstNamesInput).type('John', { delay: 0 });
@@ -385,7 +385,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
   });
 
-  it('AC5b. should validate dob field dependency', { tags: ['PO-705'] }, () => {
+  it('AC5b. should validate dob field dependency', { tags: ['PO-705', '@JIRA-KEY:POT-3722'] }, () => {
     setupComponent(null);
     cy.window().then((win) => {
       cy.stub(win.console, 'info').as('consoleLog');
@@ -401,7 +401,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get('@consoleLog').should('have.not.been.calledOnce');
   });
 
-  it('AC1a. Should validate last name field when alias checkbox selected', { tags: ['PO-1969'] }, () => {
+  it('AC1a. Should validate last name field when alias checkbox selected', { tags: ['PO-1969', '@JIRA-KEY:POT-3723'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.includeAliasesCheckbox).check().should('be.checked');
@@ -410,28 +410,20 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
   });
 
-  it(
-    'AC1b. Should validate last name field when "Search exact match" for last name is selected',
-    { tags: ['PO-1969'] },
-    () => {
+  it('AC1b. Should validate last name field when "Search exact match" for last name is selected', { tags: ['PO-1969', '@JIRA-KEY:POT-3724'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).check().should('be.checked');
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
-    },
-  );
-  it(
-    'AC1c. Should validate first name field when "Search exact match" for first name is selected',
-    { tags: ['PO-1969'] },
-    () => {
+    });
+  it('AC1c. Should validate first name field when "Search exact match" for first name is selected', { tags: ['PO-1969', '@JIRA-KEY:POT-3725'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).check().should('be.checked');
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'Enter first name');
-    },
-  );
+    });
 });

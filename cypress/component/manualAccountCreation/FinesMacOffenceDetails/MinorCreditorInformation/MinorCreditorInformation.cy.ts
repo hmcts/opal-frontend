@@ -42,13 +42,13 @@ describe('FinesMacMinorCreditorInformation', () => {
       },
     });
   };
-  it('(AC.1) should load the component', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] }, () => {
+  it('(AC.1) should load the component', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4201'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('(AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
+  it('(AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414', '@JIRA-KEY:POT-4202'] }, () => {
     setupComponent(null);
     cy.get(DOM_ELEMENTS.name).should('exist');
     cy.get(DOM_ELEMENTS.address).should('exist');
@@ -66,10 +66,7 @@ describe('FinesMacMinorCreditorInformation', () => {
     cy.get(DOM_ELEMENTS.paymentReferenceKey).should('exist');
   });
 
-  it(
-    '(AC.2) should load all keys and elements with correct text',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
-    () => {
+  it('(AC.2) should load all keys and elements with correct text', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4203'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.addressKey).should('contain', 'Address');
@@ -78,12 +75,8 @@ describe('FinesMacMinorCreditorInformation', () => {
       cy.get(DOM_ELEMENTS.sortCodeKey).should('contain', 'Sort code');
       cy.get(DOM_ELEMENTS.accountNumberKey).should('contain', 'Account number');
       cy.get(DOM_ELEMENTS.paymentReferenceKey).should('contain', 'Payment reference');
-    },
-  );
-  it(
-    '(AC.2)should load all fields with the correct values',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
-    () => {
+    });
+  it('(AC.2)should load all fields with the correct values', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4204'] }, () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
       cy.get(DOM_ELEMENTS.address).within(() => {
@@ -96,6 +89,5 @@ describe('FinesMacMinorCreditorInformation', () => {
       cy.get(DOM_ELEMENTS.sortCode).should('contain', '12-34-56');
       cy.get(DOM_ELEMENTS.accountNumber).should('contain', '12345678');
       cy.get(DOM_ELEMENTS.paymentReference).should('contain', 'Testing');
-    },
-  );
+    });
 });

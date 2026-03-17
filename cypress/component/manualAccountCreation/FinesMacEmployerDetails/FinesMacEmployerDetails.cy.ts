@@ -72,21 +72,21 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
   });
 
-  it('should render the component for AY', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('should render the component for AY', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4138'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     // Verify the component is rendered
     cy.get(L.app).should('exist');
   });
 
-  it('should not show the error summary on initial load for AY', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('should not show the error summary on initial load for AY', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4139'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     // Verify the error summary is not visible
     cy.get(L.errorSummary).should('not.exist');
   });
 
-  it('(AC.1) should be created as per the design artefact', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('(AC.1) should be created as per the design artefact', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4140'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     cy.get(L.pageTitle).should('contain', 'Employer details');
@@ -114,10 +114,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(L.addressLine5Input).should('exist');
     cy.get(L.postCodeInput).should('exist');
   });
-  it(
-    '(AC.1) should display error messages for incorrect format and character limit',
-    { tags: ['@PO-272', '@PO-280'] },
-    () => {
+  it('(AC.1) should display error messages for incorrect format and character limit', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4141'] }, () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       const incorrectData = {
@@ -140,13 +137,9 @@ describe('FinesMacEmployerDetailsComponent', () => {
       for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
         cy.get(L.errorSummary).should('contain', value);
       }
-    },
-  );
+    });
 
-  it(
-    '(AC.1) should display error messages for incorrect format and special characters',
-    { tags: ['@PO-272', '@PO-280'] },
-    () => {
+  it('(AC.1) should display error messages for incorrect format and special characters', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4142'] }, () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       const incorrectData = {
@@ -169,10 +162,9 @@ describe('FinesMacEmployerDetailsComponent', () => {
       for (const [, value] of Object.entries(FORMAT_VALIDATION)) {
         cy.get(L.errorSummary).should('contain', value);
       }
-    },
-  );
+    });
 
-  it('(AC.1) should allow spaces in the telephone number fields', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('(AC.1) should allow spaces in the telephone number fields', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4143'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
     finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0123 456 7890';
 
@@ -182,7 +174,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(L.errorSummary).should('not.contain', FORMAT_VALIDATION.employer_phone_pattern);
   });
 
-  it('(AC.1) should not allow asterisks in the address line fields', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('(AC.1) should not allow asterisks in the address line fields', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4144'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
     finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addr1*';
     finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'addr2*';
@@ -198,7 +190,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address4_special_chars);
     cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address5_special_chars);
   });
-  it('(AC.2) should error when mandatory fields contain no values', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('(AC.2) should error when mandatory fields contain no values', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4145'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     cy.get(L.submitButton).contains('Return to account details').click();
@@ -208,10 +200,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
     cy.get(L.pageTitle).should('contain', 'Employer details');
   });
-  it(
-    '(AC.3) should error when mandatory fields are empty and optional fields are not',
-    { tags: ['@PO-272', '@PO-280'] },
-    () => {
+  it('(AC.3) should error when mandatory fields are empty and optional fields are not', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4146'] }, () => {
       setupComponent(null, 'adultOrYouthOnly');
       finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = 'test@test.com';
       finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '01234567890';
@@ -227,9 +216,8 @@ describe('FinesMacEmployerDetailsComponent', () => {
         cy.get(L.errorSummary).should('contain', value);
       });
       cy.get(L.pageTitle).should('contain', 'Employer details');
-    },
-  );
-  it('(AC.4) should error when email address fails validation', { tags: ['@PO-272', '@PO-280'] }, () => {
+    });
+  it('(AC.4) should error when email address fails validation', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4147'] }, () => {
     const incorrectEmails: string[] = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
     cy.wrap(incorrectEmails).each((email: string) => {
       cy.then(() => {
@@ -241,7 +229,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
   });
 
-  it('(AC.5) should error when employee telephone number fails validation', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('(AC.5) should error when employee telephone number fails validation', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4148'] }, () => {
     const incorrectTelephoneNumbers: string[] = ['notNums', '0123456789', '012345678911'];
     cy.wrap(incorrectTelephoneNumbers).each((telephone: string) => {
       cy.then(() => {
@@ -253,7 +241,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
   });
 
-  it('(AC.6) should allow for form submission with corrected data', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('(AC.6) should allow for form submission with corrected data', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4149'] }, () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy, 'adultOrYouthOnly');
     finesMacState.employerDetails.formData = {
@@ -292,7 +280,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
   });
 
-  it('(AC.7) should allow for form submission with valid data', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('(AC.7) should allow for form submission with valid data', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4150'] }, () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
@@ -314,21 +302,21 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 
-  it('(AC.1) should load button for next page for AY Defendant', { tags: ['@PO-272', '@PO-434'] }, () => {
+  it('(AC.1) should load button for next page for AY Defendant', { tags: ['@PO-272', '@PO-434', '@JIRA-KEY:POT-4151'] }, () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     cy.get(L.submitButton).should('contain', 'Add offence details');
   });
 
-  it('(AC.1) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-435'] }, () => {
+  it('(AC.1) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-435', '@JIRA-KEY:POT-4152'] }, () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy, 'pgToPay');
 
     cy.get(L.submitButton).should('contain', 'Add personal details');
   });
 
-  it('(AC.1) Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it('(AC.1) Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449', '@JIRA-KEY:POT-4153'] }, () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy, 'pgToPay');
 
@@ -347,14 +335,10 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(L.submitButton).first().click();
   });
 
-  it(
-    '(AC.1) should convert Employer reference and Employer postcode to uppercase on user input',
-    { tags: ['@PO-272', '@PO-1448'] },
-    () => {
+  it('(AC.1) should convert Employer reference and Employer postcode to uppercase on user input', { tags: ['@PO-272', '@PO-1448', '@JIRA-KEY:POT-4154'] }, () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       cy.get(L.referenceInput).type('ref123abc', { delay: 0 }).should('have.value', 'REF123ABC');
       cy.get(L.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
-    },
-  );
+    });
 });

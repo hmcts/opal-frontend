@@ -58,7 +58,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
   //   cy.get('a').contains('Defendant').click();
   // });
 
-  it('AC1a, AC1b, AC1d. Defendant details tab layout, debtor flag true', { tags: ['PO-784'] }, () => {
+  it('AC1a, AC1b, AC1d. Defendant details tab layout, debtor flag true', { tags: ['PO-784', '@JIRA-KEY:POT-3499'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -109,7 +109,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       });
   });
 
-  it('AC1a, AC1c, AC1d. Defendant details tab layout, debtor flag false', { tags: ['PO-784', 'PO-2365'] }, () => {
+  it('AC1a, AC1c, AC1d. Defendant details tab layout, debtor flag false', { tags: ['PO-784', 'PO-2365', '@JIRA-KEY:POT-3500'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -144,7 +144,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get('h2').contains('Employer details').should('not.exist');
   });
 
-  it('AC1div. Should display em-dash for blank row', { tags: ['PO-784'] }, () => {
+  it('AC1div. Should display em-dash for blank row', { tags: ['PO-784', '@JIRA-KEY:POT-3501'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -165,7 +165,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.defendantEmployerPhone).should('exist').and('contain.text', '—');
   });
 
-  it('AC1bi. Should display language preferences sub-section when applicable', { tags: ['PO-784'] }, () => {
+  it('AC1bi. Should display language preferences sub-section when applicable', { tags: ['PO-784', '@JIRA-KEY:POT-3502'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -184,7 +184,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.courtHearingLanguage).should('exist').and('contain.text', 'Welsh and English');
   });
 
-  it('AC2. Account maintenance permission true, BU associated with account', { tags: ['PO-784'] }, () => {
+  it('AC2. Account maintenance permission true, BU associated with account', { tags: ['PO-784', '@JIRA-KEY:POT-3503'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -203,7 +203,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/individual/amend']);
   });
 
-  it('AC2a. Account maintenance permission true, BU not associated with account', { tags: ['PO-784'] }, () => {
+  it('AC2a. Account maintenance permission true, BU not associated with account', { tags: ['PO-784', '@JIRA-KEY:POT-3504'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -222,7 +222,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
   });
 
-  it('AC2b. Account maintenance permission false', { tags: ['PO-784'] }, () => {
+  it('AC2b. Account maintenance permission false', { tags: ['PO-784', '@JIRA-KEY:POT-3505'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
@@ -240,7 +240,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
   });
 
-  it('Company - Defendant details tab layout', { tags: ['PO-790'] }, () => {
+  it('Company - Defendant details tab layout', { tags: ['PO-790', '@JIRA-KEY:POT-3506'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -277,7 +277,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.companyWorkPhone).should('exist').and('contain.text', '09876 543210');
   });
 
-  it('AC1ciii. Company - Should display em-dash for blank row', { tags: ['PO-790'] }, () => {
+  it('AC1ciii. Company - Should display em-dash for blank row', { tags: ['PO-790', '@JIRA-KEY:POT-3507'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -297,7 +297,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
   });
 
-  it('AC1b. Company - Should display language preferences sub-section when applicable', { tags: ['PO-790'] }, () => {
+  it('AC1b. Company - Should display language preferences sub-section when applicable', { tags: ['PO-790', '@JIRA-KEY:POT-3508'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -316,7 +316,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.courtHearingLanguage).should('exist').and('contain.text', 'Welsh and English');
   });
 
-  it('AC2. Company - Account maintenance permission true, BU associated with account', { tags: ['PO-790'] }, () => {
+  it('AC2. Company - Account maintenance permission true, BU associated with account', { tags: ['PO-790', '@JIRA-KEY:POT-3509'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -335,10 +335,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/company/amend']);
   });
 
-  it(
-    'AC2a. Company - Account maintenance permission true, BU not associated with account',
-    { tags: ['PO-790'] },
-    () => {
+  it('AC2a. Company - Account maintenance permission true, BU not associated with account', { tags: ['PO-790', '@JIRA-KEY:POT-3510'] }, () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -355,10 +352,9 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
-    },
-  );
+    });
 
-  it('AC2b. Company - Account maintenance permission false', { tags: ['PO-790'] }, () => {
+  it('AC2b. Company - Account maintenance permission false', { tags: ['PO-790', '@JIRA-KEY:POT-3511'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;

@@ -84,7 +84,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     interceptOffences();
   });
 
-  it('AC.2,4 - should render correctly - AY', { tags: ['@PO-1073'] }, () => {
+  it('AC.2,4 - should render correctly - AY', { tags: ['@PO-1073', '@JIRA-KEY:POT-4381'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type =
@@ -117,7 +117,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC.3 - should render Review History section correctly', { tags: ['@PO-1073'] }, () => {
+  it('AC.3 - should render Review History section correctly', { tags: ['@PO-1073', '@JIRA-KEY:POT-4382'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacDraft.timeline_data.push({
@@ -159,7 +159,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.timelineDescription).should('contain.text', '');
   });
 
-  it('AC.2,5 - should render correctly - AYPG', { tags: ['@PO-1073'] }, () => {
+  it('AC.2,5 - should render correctly - AYPG', { tags: ['@PO-1073', '@JIRA-KEY:POT-4383'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypesKeys.pgToPay;
@@ -191,7 +191,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC.2,6 - should render correctly - COMP', { tags: ['@PO-1073'] }, () => {
+  it('AC.2,6 - should render correctly - COMP', { tags: ['@PO-1073', '@JIRA-KEY:POT-4384'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypesKeys.company;
@@ -223,7 +223,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['@PO-1073'] }, () => {
+  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['@PO-1073', '@JIRA-KEY:POT-4385'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -235,10 +235,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
   });
-  it(
-    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
-    { tags: ['@PO-1073'] },
-    () => {
+  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG', { tags: ['@PO-1073', '@JIRA-KEY:POT-4386'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -250,12 +247,8 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    },
-  );
-  it(
-    'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
-    { tags: ['@PO-1073'] },
-    () => {
+    });
+  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP', { tags: ['@PO-1073', '@JIRA-KEY:POT-4387'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -267,10 +260,9 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    },
-  );
+    });
 
-  it('AC.7 - should show em-dash for empty values', { tags: ['@PO-1073'] }, () => {
+  it('AC.7 - should show em-dash for empty values', { tags: ['@PO-1073', '@JIRA-KEY:POT-4388'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';

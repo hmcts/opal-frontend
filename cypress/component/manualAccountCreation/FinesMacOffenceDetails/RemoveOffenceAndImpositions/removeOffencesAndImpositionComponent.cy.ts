@@ -74,11 +74,11 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1) should render component', { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] }, () => {
+  it('(AC.1) should render component', { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545', '@JIRA-KEY:POT-4214'] }, () => {
     setupComponent();
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
-  it('(AC.1) should load all elements on the page', () => {
+  it('(AC.1) should load all elements on the page', {tags: ['@JIRA-KEY:POT-4215']}, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -98,10 +98,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it(
-    '(AC.2, AC.3) should have appropriate text for each element',
-    { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] },
-    () => {
+  it('(AC.2, AC.3) should have appropriate text for each element', { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545', '@JIRA-KEY:POT-4216'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should(
@@ -129,10 +126,9 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
 
       cy.get(DOM_ELEMENTS.removeImpositionButton).should('contain', 'Yes - remove offence and all impositions');
       cy.get(DOM_ELEMENTS.cancelLink).should('contain', 'No - cancel');
-    },
-  );
+    });
 
-  it('should have only one h1 element', { tags: ['@PO-2717'] }, () => {
+  it('should have only one h1 element', { tags: ['@PO-2717', '@JIRA-KEY:POT-4217'] }, () => {
     setupComponent();
     cy.get('h1').should('have.length', 1);
   });

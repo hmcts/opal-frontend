@@ -84,7 +84,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(tabSelector).should('have.class', 'govuk-tabs__list-item govuk-tabs__list-item--selected');
   };
 
-  it('(AC3a) Displays error message when no search matches are found', { tags: ['PO-709'] }, () => {
+  it('(AC3a) Displays error message when no search matches are found', { tags: ['PO-709', '@JIRA-KEY:POT-3789'] }, () => {
     setupComponent('EMPTY_RESULTS');
 
     // AC3a: Verify the error screen is displayed when no search matches are found
@@ -97,10 +97,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(DOM_ELEMENTS.checkSearchLink).click();
   });
 
-  it(
-    '(AC4) Displays "There are more than 100 results" message when more than 100 matches found',
-    { tags: ['PO-709'] },
-    () => {
+  it('(AC4) Displays "There are more than 100 results" message when more than 100 matches found', { tags: ['PO-709', '@JIRA-KEY:POT-3790'] }, () => {
       setupComponent('LARGE_RESULTS_REF_NUM');
 
       // AC4a: Verify the "too many results" error screen is displayed
@@ -111,13 +108,9 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(DOM_ELEMENTS.addMoreInfoLink).should('be.visible').should('contain', 'Try adding more information');
       cy.get(DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
       cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
-    },
-  );
+    });
 
-  it(
-    '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor types and Individual tab is in focus by default',
-    { tags: ['PO-709'] },
-    () => {
+  it('(AC5 ,5b,5f) Displays tabs when matches across multiple debtor types and Individual tab is in focus by default', { tags: ['PO-709', '@JIRA-KEY:POT-3791'] }, () => {
       setupComponent('WITH_DATA', 'individuals');
 
       // AC5b-Verify Individuals tab is in focus by default
@@ -158,10 +151,9 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£524.00');
       cy.get(DOM_ELEMENTS.aliasesCell).eq(1).should('not.contain', 'SMITH');
       cy.get(DOM_ELEMENTS.parentGuardianCell).eq(1).should('not.contain', 'DOE, Jane');
-    },
-  );
+    });
 
-  it('(AC5c) Companies tab displays company defendant account summary data', { tags: ['PO-709'] }, () => {
+  it('(AC5c) Companies tab displays company defendant account summary data', { tags: ['PO-709', '@JIRA-KEY:POT-3792'] }, () => {
     setupComponent('WITH_DATA', 'companies');
 
     switchToTab('companies', DOM_ELEMENTS.companiesTab);
@@ -183,7 +175,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
   });
 
-  it('(AC5e, 5d) Only individual tab when only results exist for individual', { tags: ['PO-709'] }, () => {
+  it('(AC5e, 5d) Only individual tab when only results exist for individual', { tags: ['PO-709', '@JIRA-KEY:POT-3793'] }, () => {
     setupComponent('INDIVIDUALS_ONLY_RESULTS');
 
     // Verify only individuals and companies tabs are shown
@@ -192,7 +184,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
   });
 
-  it('(AC5e, 5d) Only company tab when only results exist for company', { tags: ['PO-709'] }, () => {
+  it('(AC5e, 5d) Only company tab when only results exist for company', { tags: ['PO-709', '@JIRA-KEY:POT-3794'] }, () => {
     setupComponent('COMPANY_RESULTS_ONLY');
 
     // Verify only companies tab are shown

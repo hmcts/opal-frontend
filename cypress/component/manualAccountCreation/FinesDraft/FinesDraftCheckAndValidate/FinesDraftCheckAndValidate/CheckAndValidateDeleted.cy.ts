@@ -45,7 +45,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
     });
   };
 
-  it('(AC.3) should display Deleted tab correctly when there are draft records', { tags: ['@PO-602'] }, () => {
+  it('(AC.3) should display Deleted tab correctly when there are draft records', { tags: ['@PO-602', '@JIRA-KEY:POT-3886'] }, () => {
     const deletedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
@@ -75,7 +75,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
     });
   });
 
-  it('(AC.4a) should have default sort order for created accounts set to ascending', { tags: ['@PO-602'] }, () => {
+  it('(AC.4a) should have default sort order for created accounts set to ascending', { tags: ['@PO-602', '@JIRA-KEY:POT-3887'] }, () => {
     const deletedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
@@ -134,7 +134,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
       });
   });
 
-  it('(AC.4b) should have pagination for over 25 accounts', { tags: ['@PO-602'] }, () => {
+  it('(AC.4b) should have pagination for over 25 accounts', { tags: ['@PO-602', '@JIRA-KEY:POT-3888'] }, () => {
     const deletedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });

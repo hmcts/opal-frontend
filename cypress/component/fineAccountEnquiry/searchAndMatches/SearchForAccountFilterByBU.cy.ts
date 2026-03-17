@@ -111,7 +111,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC1c ----------------
 
-  it('AC1c: shows tabs, master label, Fines list alphabetical (A→Z), and Save/Cancel controls', () => {
+  it('AC1c: shows tabs, master label, Fines list alphabetical (A→Z), and Save/Cancel controls', {tags: ['@JIRA-KEY:POT-3748']}, () => {
     setupComponent();
 
     // Tabs exist by visible text
@@ -141,7 +141,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC1ci ----------------
 
-  it('AC1ci: all business units are selected when filter is set to "All business units" (Fines tab)', () => {
+  it('AC1ci: all business units are selected when filter is set to "All business units" (Fines tab)', {tags: ['@JIRA-KEY:POT-3749']}, () => {
     // Preselect all Fines IDs
     preselectedIds = resolverPayload.refData
       .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
@@ -167,7 +167,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2a ----------------
 
-  it('AC2a: shows two tabs – Fines and Confiscation', () => {
+  it('AC2a: shows two tabs – Fines and Confiscation', {tags: ['@JIRA-KEY:POT-3750']}, () => {
     setupComponent();
     cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.finesTabText).should('exist');
     cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.confiscationTabText).should('exist');
@@ -175,7 +175,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2 (Fines) ----------------
 
-  it('AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z', () => {
+  it('AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z', {tags: ['@JIRA-KEY:POT-3751']}, () => {
     setupComponent();
     clickTabByText(DOM_ELEMENTS.finesTabText);
 
@@ -189,7 +189,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2 (Confiscation) ----------------
 
-  it('AC2aii/2b/2c (Confiscation): only Confiscation units, labels equal names, alphabetical A→Z', () => {
+  it('AC2aii/2b/2c (Confiscation): only Confiscation units, labels equal names, alphabetical A→Z', {tags: ['@JIRA-KEY:POT-3752']}, () => {
     setupComponent();
     // Drive fragment to switch tab in CT
     fragment$.next('confiscation');
@@ -211,7 +211,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC3 (Fines select-all) ----------------
 
-  it('AC3a (Fines): master checkbox selects all fines units and counter shows n of n', () => {
+  it('AC3a (Fines): master checkbox selects all fines units and counter shows n of n', {tags: ['@JIRA-KEY:POT-3753']}, () => {
     preselectedIds = [];
     setupComponent();
 
@@ -234,7 +234,7 @@ describe('Filter by Business Unit (CT)', () => {
       });
   });
 
-  it('AC3ai (Fines): unticking master checkbox clears all fines units and counter shows 0 of n', () => {
+  it('AC3ai (Fines): unticking master checkbox clears all fines units and counter shows 0 of n', {tags: ['@JIRA-KEY:POT-3754']}, () => {
     preselectedIds = resolverPayload.refData
       .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
       .map((bu) => bu.business_unit_id);
@@ -262,7 +262,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC4 (Confiscation select-all) ----------------
 
-  it('AC4a (Confiscation): master checkbox selects all confiscation units and counter shows n of n', () => {
+  it('AC4a (Confiscation): master checkbox selects all confiscation units and counter shows n of n', {tags: ['@JIRA-KEY:POT-3755']}, () => {
     preselectedIds = [];
     setupComponent();
 
@@ -285,7 +285,7 @@ describe('Filter by Business Unit (CT)', () => {
     });
   });
 
-  it('AC4ai (Confiscation): unticking master checkbox clears all confiscation units and counter shows 0 of n', () => {
+  it('AC4ai (Confiscation): unticking master checkbox clears all confiscation units and counter shows 0 of n', {tags: ['@JIRA-KEY:POT-3756']}, () => {
     preselectedIds = resolverPayload.refData
       .filter((bu) => String(bu.opal_domain).toLowerCase() === 'confiscation')
       .map((bu) => bu.business_unit_id);
@@ -312,7 +312,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC5 (Save count across tabs) ----------------
 
-  it('AC5: Save button count shows total across Fines + Confiscation and updates dynamically', () => {
+  it('AC5: Save button count shows total across Fines + Confiscation and updates dynamically', {tags: ['@JIRA-KEY:POT-3757']}, () => {
     setupComponent();
 
     // Start on Fines – 0 selected
@@ -366,7 +366,7 @@ describe('Filter by Business Unit (CT)', () => {
     });
   };
 
-  it('AC6a (Fines): shows an error when clicking Save with no business units selected', () => {
+  it('AC6a (Fines): shows an error when clicking Save with no business units selected', {tags: ['@JIRA-KEY:POT-3758']}, () => {
     // Start clean (no preselectedIds)
     preselectedIds = [];
     setupComponent();
@@ -384,7 +384,7 @@ describe('Filter by Business Unit (CT)', () => {
     cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).should('be.visible');
   });
 
-  it('AC6b (Confiscation): shows an error when clicking Save with no business units selected', () => {
+  it('AC6b (Confiscation): shows an error when clicking Save with no business units selected', {tags: ['@JIRA-KEY:POT-3759']}, () => {
     preselectedIds = [];
     setupComponent();
 

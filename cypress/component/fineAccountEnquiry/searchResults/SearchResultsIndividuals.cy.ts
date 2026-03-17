@@ -64,14 +64,14 @@ describe('FinesSaResultsComponent - Individuals', () => {
     });
   };
 
-  it('Search results component is created correctly', { tags: ['PO-717'] }, () => {
+  it('Search results component is created correctly', { tags: ['PO-717', '@JIRA-KEY:POT-3776'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
   });
 
-  it('(AC2) Displays error message when no search matches are found', { tags: ['PO-717'] }, () => {
+  it('(AC2) Displays error message when no search matches are found', { tags: ['PO-717', '@JIRA-KEY:POT-3777'] }, () => {
     setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.noResultsHeading).should('be.visible');
@@ -85,7 +85,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.checkSearchLink).click();
   });
 
-  it('(AC3) Handles more than 100 search matches correctly', { tags: ['PO-717'] }, () => {
+  it('(AC3) Handles more than 100 search matches correctly', { tags: ['PO-717', '@JIRA-KEY:POT-3778'] }, () => {
     setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
@@ -106,10 +106,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
   });
 
-  it(
-    '(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results',
-    { tags: ['PO-717'] },
-    () => {
+  it('(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results', { tags: ['PO-717', '@JIRA-KEY:POT-3779'] }, () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
@@ -166,10 +163,9 @@ describe('FinesSaResultsComponent - Individuals', () => {
       cy.get(DOM_ELEMENTS.aliasesCell).eq(1).should('not.contain', 'SMITH');
 
       cy.get(DOM_ELEMENTS.parentGuardianCell).eq(1).should('not.contain', 'DOE, Jane');
-    },
-  );
+    });
 
-  it('(AC4d) Displays pagination with 25 results per page and 4 pages for 100 results', { tags: ['PO-717'] }, () => {
+  it('(AC4d) Displays pagination with 25 results per page and 4 pages for 100 results', { tags: ['PO-717', '@JIRA-KEY:POT-3780'] }, () => {
     setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
@@ -236,7 +232,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
   });
 
-  it('(AC4f) Should sort by each column - ascending then descending', { tags: ['PO-717'] }, () => {
+  it('(AC4f) Should sort by each column - ascending then descending', { tags: ['PO-717', '@JIRA-KEY:POT-3781'] }, () => {
     setupComponent(SORTING_SEARCH_RESULTS_MOCK);
 
     //Account column sorting

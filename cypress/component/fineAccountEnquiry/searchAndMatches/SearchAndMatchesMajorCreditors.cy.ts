@@ -68,7 +68,7 @@ describe('Search Account Component - Major Creditors', () => {
     });
   });
 
-  it('AC1. should render the search for an account screen and major creditors tab', { tags: ['PO-716'] }, () => {
+  it('AC1. should render the search for an account screen and major creditors tab', { tags: ['PO-716', '@JIRA-KEY:POT-3726'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.majorCreditorsTab).click();
@@ -94,7 +94,7 @@ describe('Search Account Component - Major Creditors', () => {
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['filter-business-units']);
   });
 
-  it('AC2a, AC2b, AC2c. Single BU filtered and dropdown contents', { tags: ['PO-716'] }, () => {
+  it('AC2a, AC2b, AC2c. Single BU filtered and dropdown contents', { tags: ['PO-716', '@JIRA-KEY:POT-3727'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.majorCreditorsHeading).should('exist').contains('Major creditors');
@@ -107,7 +107,7 @@ describe('Search Account Component - Major Creditors', () => {
     cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(3).should('contain', 'Arriva Rail North (ARVA)');
   });
 
-  it('AC2d. Type ahead and non-case sensitive search', { tags: ['PO-716'] }, () => {
+  it('AC2d. Type ahead and non-case sensitive search', { tags: ['PO-716', '@JIRA-KEY:POT-3728'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.majorCreditorDropdown).click().type('ab');
@@ -115,10 +115,7 @@ describe('Search Account Component - Major Creditors', () => {
     cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
   });
 
-  it(
-    'AC2f. Navigated to account enquiry when major creditor is selected and searched for',
-    { tags: ['PO-716'] },
-    () => {
+  it('AC2f. Navigated to account enquiry when major creditor is selected and searched for', { tags: ['PO-716', '@JIRA-KEY:POT-3729'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.majorCreditorDropdown).click();
@@ -132,10 +129,9 @@ describe('Search Account Component - Major Creditors', () => {
 
       //A stub is used here so a new tab is not actually opened
       cy.get('@windowOpen').should('have.been.calledOnce');
-    },
-  );
+    });
 
-  it('AC2h. Data cleared when another tab is selected', { tags: ['PO-716'] }, () => {
+  it('AC2h. Data cleared when another tab is selected', { tags: ['PO-716', '@JIRA-KEY:POT-3730'] }, () => {
     setupComponent();
 
     majorCreditorsSearchMock.fsa_search_account_number = '12345678';
@@ -149,7 +145,7 @@ describe('Search Account Component - Major Creditors', () => {
     cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('have.value', '');
   });
 
-  it('AC3. Multiple BUs filtered unhappy path', { tags: ['PO-716'] }, () => {
+  it('AC3. Multiple BUs filtered unhappy path', { tags: ['PO-716', '@JIRA-KEY:POT-3731'] }, () => {
     setupComponent();
 
     majorCreditorsSearchMock.fsa_search_account_business_unit_ids = [61, 67, 68, 69, 70, 71, 73];
@@ -161,7 +157,7 @@ describe('Search Account Component - Major Creditors', () => {
     cy.get('a').contains('filter by a single business unit');
   });
 
-  it('AC4, AC5. Major creditor tab error validation', { tags: ['PO-716'] }, () => {
+  it('AC4, AC5. Major creditor tab error validation', { tags: ['PO-716', '@JIRA-KEY:POT-3732'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -171,7 +167,7 @@ describe('Search Account Component - Major Creditors', () => {
       .and('contain', 'Enter a major creditor name or code');
   });
 
-  it('AC6. Validation passes navigated to problem screen', { tags: ['PO-716'] }, () => {
+  it('AC6. Validation passes navigated to problem screen', { tags: ['PO-716', '@JIRA-KEY:POT-3733'] }, () => {
     setupComponent();
     majorCreditorsSearchMock.fsa_search_account_number = '12345678';
     majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';

@@ -145,13 +145,13 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   });
 
-  it('should render component', () => {
+  it('should render component', {tags: ['@JIRA-KEY:POT-4397']}, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('(AC.1c) should show Police and court details card for Conditional Caution', { tags: ['@PO-2790'] }, () => {
+  it('(AC.1c) should show Police and court details card for Conditional Caution', { tags: ['@PO-2790', '@JIRA-KEY:POT-4398'] }, () => {
     finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
 
     setupComponent();
@@ -162,10 +162,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.originatorName).should('contain', 'Sending police force');
   });
 
-  it(
-    '(AC.1a)should render court details and offence details for all defendant types',
-    { tags: ['@PO-560', '@PO-662', '@PO-663', '@PO-545', '@PO-657'] },
-    () => {
+  it('(AC.1a)should render court details and offence details for all defendant types', { tags: ['@PO-560', '@PO-662', '@PO-663', '@PO-545', '@PO-657', '@JIRA-KEY:POT-4399'] }, () => {
       setupComponent();
       cy.wait('@getOffenceByCjsCode');
 
@@ -237,13 +234,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.requestPaymentCard).should('contain', 'Request payment card').should('contain', 'Yes');
       cy.get(DOM_ELEMENTS.hasDaysInDefault).should('contain', 'There are days in default').should('contain', 'No');
       cy.get(DOM_ELEMENTS.enforcementActions).should('contain', 'Enforcement action').should('contain', 'No');
-    },
-  );
+    });
 
-  it(
-    '(AC.1a,AC.2,AC.5)should render all elements on the screen for AY check account',
-    { tags: ['@PO-560', '@PO-272', '@PO-657'] },
-    () => {
+  it('(AC.1a,AC.2,AC.5)should render all elements on the screen for AY check account', { tags: ['@PO-560', '@PO-272', '@PO-657', '@JIRA-KEY:POT-4400'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -294,13 +287,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
       cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.4a) should check each summary list has change button next to them for AY',
-    { tags: ['@PO-560', '@PO-272', '@PO-657'] },
-    () => {
+  it('(AC.4a) should check each summary list has change button next to them for AY', { tags: ['@PO-560', '@PO-272', '@PO-657', '@JIRA-KEY:POT-4401'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Personal details').should('contain', 'Change');
@@ -309,13 +298,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2,AC.4) should have all correct text on all elements for AY',
-    { tags: ['@PO-560', '@PO-272', '@PO-657'] },
-    () => {
+  it('(AC.1,AC.2,AC.4) should have all correct text on all elements for AY', { tags: ['@PO-560', '@PO-272', '@PO-657', '@JIRA-KEY:POT-4402'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
@@ -386,13 +371,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
       cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Submit for review');
       cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
-    },
-  );
+    });
 
-  it(
-    '(AC.3,AC.7) should show dashed line if Data is empty for non required details',
-    { tags: ['@PO-560', '@PO-272', '@PO-657'] },
-    () => {
+  it('(AC.3,AC.7) should show dashed line if Data is empty for non required details', { tags: ['@PO-560', '@PO-272', '@PO-657', '@JIRA-KEY:POT-4403'] }, () => {
       setupComponent();
 
       finesMacState.contactDetails.formData = {
@@ -442,20 +423,15 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-    },
-  );
+    });
 
-  it(
-    '(AC.3,AC.7) should show dash lines for non required fields in the details',
-    { tags: ['@PO-560', '@PO-272', '@PO-657'] },
-    () => {
+  it('(AC.3,AC.7) should show dash lines for non required fields in the details', { tags: ['@PO-560', '@PO-272', '@PO-657', '@JIRA-KEY:POT-4404'] }, () => {
       setupComponent();
 
       finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = '';
 
       cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
-    },
-  );
+    });
 
   it(
     '(AC.1,AC.2,AC.5)should render all elements on the screen for AYPG ',
@@ -522,7 +498,7 @@ describe('FinesMacReviewAccountComponent', () => {
     },
   );
 
-  it('(AC.3,AC.5) should load all data into elements for AYPG', { tags: ['@PO-662', '@PO-344', '@PO-657'] }, () => {
+  it('(AC.3,AC.5) should load all data into elements for AYPG', { tags: ['@PO-662', '@PO-344', '@PO-657', '@JIRA-KEY:POT-4406'] }, () => {
     setupComponent();
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
@@ -607,10 +583,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
   });
 
-  it(
-    '(AC.4a)should check each summary list has change button next to them for AYPG',
-    { tags: ['@PO-662', '@PO-344', '@PO-657'] },
-    () => {
+  it('(AC.4a)should check each summary list has change button next to them for AYPG', { tags: ['@PO-662', '@PO-344', '@PO-657', '@JIRA-KEY:POT-4407'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
@@ -621,12 +594,8 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Parent or guardian details').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-    },
-  );
-  it(
-    '(AC.3)should show dashed line if Data is empty for non required details AYPG',
-    { tags: ['@PO-662', '@PO-344'] },
-    () => {
+    });
+  it('(AC.3)should show dashed line if Data is empty for non required details AYPG', { tags: ['@PO-662', '@PO-344', '@JIRA-KEY:POT-4408'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
@@ -676,26 +645,18 @@ describe('FinesMacReviewAccountComponent', () => {
         .should('contain', '—');
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-    },
-  );
+    });
 
-  it(
-    '(AC.3,AC.7) should show dash lines for non required fields in the details AYPG',
-    { tags: ['@PO-662', '@PO-344', '@PO-657'] },
-    () => {
+  it('(AC.3,AC.7) should show dash lines for non required fields in the details AYPG', { tags: ['@PO-662', '@PO-344', '@PO-657', '@JIRA-KEY:POT-4409'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = '';
 
       cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2,AC.5,AC.6)should render all elements for company defendant type',
-    { tags: ['@PO-663', '@PO-345', '@PO-657'] },
-    () => {
+  it('(AC.1,AC.2,AC.5,AC.6)should render all elements for company defendant type', { tags: ['@PO-663', '@PO-345', '@PO-657', '@JIRA-KEY:POT-4410'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -730,13 +691,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
       cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2,AC.6)should load all data into elements for company',
-    { tags: ['@PO-663', '@PO-345', '@PO-657'] },
-    () => {
+  it('(AC.1,AC.2,AC.6)should load all data into elements for company', { tags: ['@PO-663', '@PO-345', '@PO-657', '@JIRA-KEY:POT-4411'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -783,13 +740,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
       cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Submit for review');
       cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
-    },
-  );
+    });
 
-  it(
-    '(AC.4a)should check each summary list has change button next to them for Company',
-    { tags: ['@PO-663', '@PO-345', '@PO-657'] },
-    () => {
+  it('(AC.4a)should check each summary list has change button next to them for Company', { tags: ['@PO-663', '@PO-345', '@PO-657', '@JIRA-KEY:POT-4412'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -798,12 +751,8 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-    },
-  );
-  it(
-    '(AC.3,AC.7) should show dashed line if Data is empty for non required details Company',
-    { tags: ['@PO-663', '@PO-345', '@PO-657'] },
-    () => {
+    });
+  it('(AC.3,AC.7) should show dashed line if Data is empty for non required details Company', { tags: ['@PO-663', '@PO-345', '@PO-657', '@JIRA-KEY:POT-4413'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -828,9 +777,8 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-    },
-  );
-  it('(AC.2,AC,3a,AC.3bi) should show in review for accounts in review', { tags: ['@PO-610', '@PO-584'] }, () => {
+    });
+  it('(AC.2,AC,3a,AC.3bi) should show in review for accounts in review', { tags: ['@PO-610', '@PO-584', '@JIRA-KEY:POT-4414'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload);
 
     cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
@@ -843,17 +791,13 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
   });
 
-  it(
-    'should not load review component if account is not in review and should load normal Check account details heading',
-    { tags: ['@PO-610', '@PO-584'] },
-    () => {
+  it('should not load review component if account is not in review and should load normal Check account details heading', { tags: ['@PO-610', '@PO-584', '@JIRA-KEY:POT-4415'] }, () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.reviewComponent).should('not.exist');
       cy.get(DOM_ELEMENTS.heading).contains('Check account details').should('exist');
-    },
-  );
+    });
 
-  it('(AC.3bii,AC.3biii,AC.3c)should show history of timeline data', { tags: ['@PO-610', '@PO-584'] }, () => {
+  it('(AC.3bii,AC.3biii,AC.3c)should show history of timeline data', { tags: ['@PO-610', '@PO-584', '@JIRA-KEY:POT-4416'] }, () => {
     finesAccountPayload.timeline_data.push({
       username: 'Timmy Test',
       status: 'Rejected',
@@ -883,7 +827,7 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   });
 
-  it('(AC.4) should render summary tables under review account for AY', { tags: ['@PO-610', '@PO-584'] }, () => {
+  it('(AC.4) should render summary tables under review account for AY', { tags: ['@PO-610', '@PO-584', '@JIRA-KEY:POT-4417'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload);
 
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -987,7 +931,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.changeLink).should('exist');
   });
 
-  it('(AC.5) should render all elements on the screen for AYPG', { tags: ['@PO-610', '@PO-584'] }, () => {
+  it('(AC.5) should render all elements on the screen for AYPG', { tags: ['@PO-610', '@PO-584', '@JIRA-KEY:POT-4418'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -1122,10 +1066,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.changeLink).should('exist');
   });
 
-  it(
-    '(AC.6) should render all elements on the screen for company defendant type',
-    { tags: ['@PO-610', '@PO-584'] },
-    () => {
+  it('(AC.6) should render all elements on the screen for company defendant type', { tags: ['@PO-610', '@PO-584', '@JIRA-KEY:POT-4419'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -1197,13 +1138,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', 'test notes');
 
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.7) should show dashed line if Data is empty for non required details for all defendant types',
-    { tags: ['@PO-610', '@PO-584'] },
-    () => {
+  it('(AC.7) should show dashed line if Data is empty for non required details for all defendant types', { tags: ['@PO-610', '@PO-584', '@JIRA-KEY:POT-4420'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
       finesMacState.contactDetails.formData = {
@@ -1235,9 +1172,8 @@ describe('FinesMacReviewAccountComponent', () => {
           cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
         });
       });
-    },
-  );
-  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
+    });
+  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594', '@JIRA-KEY:POT-4421'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
     cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
@@ -1246,7 +1182,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'In review');
   });
 
-  it('AC.8, Decision table will be shown as per the design artefact', { tags: ['@PO-594'] }, () => {
+  it('AC.8, Decision table will be shown as per the design artefact', { tags: ['@PO-594', '@JIRA-KEY:POT-4422'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
     cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
     cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
@@ -1254,16 +1190,13 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.continue).should('exist');
     cy.get(DOM_ELEMENTS.deleteLink).should('exist');
   });
-  it('AC.8a user does not select any radio button and selects the Continue button', { tags: ['@PO-594'] }, () => {
+  it('AC.8a user does not select any radio button and selects the Continue button', { tags: ['@PO-594', '@JIRA-KEY:POT-4423'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
     cy.get(DOM_ELEMENTS.continue).should('exist').click();
     cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
     cy.get('p').should('contain', 'Select whether approved or rejected');
   });
-  it(
-    'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button',
-    { tags: ['@PO-594'] },
-    () => {
+  it('AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button', { tags: ['@PO-594', '@JIRA-KEY:POT-4424'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
       cy.get(DOM_ELEMENTS.continue).should('exist').click();
@@ -1278,12 +1211,8 @@ describe('FinesMacReviewAccountComponent', () => {
         'contain',
         'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       );
-    },
-  );
-  it(
-    'COLLO should not be sent in draft account payload when payment terms are not applicable',
-    { tags: ['PO-2093'] },
-    () => {
+    });
+  it('COLLO should not be sent in draft account payload when payment terms are not applicable', { tags: ['PO-2093', '@JIRA-KEY:POT-4425'] }, () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       Object.assign(finesMacState.paymentTerms.formData, {
@@ -1302,12 +1231,8 @@ describe('FinesMacReviewAccountComponent', () => {
         .then((body) => {
           expect(body.account.payment_terms).to.have.property('enforcements', null);
         });
-    },
-  );
-  it(
-    'COLLO should be sent in draft account payload when collection order is made previously',
-    { tags: ['PO-2093'] },
-    () => {
+    });
+  it('COLLO should be sent in draft account payload when collection order is made previously', { tags: ['PO-2093', '@JIRA-KEY:POT-4426'] }, () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       Object.assign(finesMacState.paymentTerms.formData, {
@@ -1335,9 +1260,8 @@ describe('FinesMacReviewAccountComponent', () => {
               },
             ]);
         });
-    },
-  );
-  it('COLLO should be sent in draft account payload when collection order is made today', { tags: ['PO-2093'] }, () => {
+    });
+  it('COLLO should be sent in draft account payload when collection order is made today', { tags: ['PO-2093', '@JIRA-KEY:POT-4427'] }, () => {
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     Object.assign(finesMacState.paymentTerms.formData, {
@@ -1366,7 +1290,7 @@ describe('FinesMacReviewAccountComponent', () => {
           ]);
       });
   });
-  it('enforcements should be correct when COLLO and NOENF are selected', { tags: ['PO-2093'] }, () => {
+  it('enforcements should be correct when COLLO and NOENF are selected', { tags: ['PO-2093', '@JIRA-KEY:POT-4428'] }, () => {
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     Object.assign(finesMacState.paymentTerms.formData, {
@@ -1408,7 +1332,7 @@ describe('FinesMacReviewAccountComponent', () => {
           ]);
       });
   });
-  it('enforcements should be correct when COLLO and PRIS are selected', { tags: ['PO-2093'] }, () => {
+  it('enforcements should be correct when COLLO and PRIS are selected', { tags: ['PO-2093', '@JIRA-KEY:POT-4429'] }, () => {
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     Object.assign(finesMacState.paymentTerms.formData, {
@@ -1456,7 +1380,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
   });
 
-  it('imposing_court_id is sent as null for every offence (API contract)', { tags: ['@PO-2240'] }, () => {
+  it('imposing_court_id is sent as null for every offence (API contract)', { tags: ['@PO-2240', '@JIRA-KEY:POT-4430'] }, () => {
     setupComponent(finesDraftState, null, false, false);
 
     cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
@@ -1475,10 +1399,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
   });
 
-  it(
-    'minor creditor bank account number is correct and is against the correct imposition',
-    { tags: ['PO-1988', 'PO-2092'] },
-    () => {
+  it('minor creditor bank account number is correct and is against the correct imposition', { tags: ['PO-1988', 'PO-2092', '@JIRA-KEY:POT-4431'] }, () => {
       //PO-1988 Verify bank account type is sent as '1' for minor creditor when bank account details are provided
       //PO-2092 Verify minor creditor details are sent against the correct imposition
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -1525,10 +1446,9 @@ describe('FinesMacReviewAccountComponent', () => {
           expect(body.account.offences[0].impositions[1]).to.have.property('minor_creditor');
           expect(body.account.offences[0].impositions[1].minor_creditor).to.have.property('bank_account_type', '1');
         });
-    },
-  );
+    });
 
-  it('should send originator_type as NEW in draft account payload for new journey', { tags: ['@PO-2793'] }, () => {
+  it('should send originator_type as NEW in draft account payload for new journey', { tags: ['@PO-2793', '@JIRA-KEY:POT-4432'] }, () => {
     finesMacState.originatorType = {
       nestedFlow: false,
       formData: { fm_originator_type_originator_type: 'NEW' },
@@ -1544,10 +1464,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
   });
 
-  it(
-    'should send originator_type as TFO in draft account payload for transfer in journey',
-    { tags: ['@PO-2793'] },
-    () => {
+  it('should send originator_type as TFO in draft account payload for transfer in journey', { tags: ['@PO-2793', '@JIRA-KEY:POT-4433'] }, () => {
       finesMacState.originatorType = {
         nestedFlow: false,
         formData: { fm_originator_type_originator_type: 'TFO' },
@@ -1561,6 +1478,5 @@ describe('FinesMacReviewAccountComponent', () => {
         .then((body) => {
           expect(body.account).to.have.property('originator_type', 'TFO');
         });
-    },
-  );
+    });
 });

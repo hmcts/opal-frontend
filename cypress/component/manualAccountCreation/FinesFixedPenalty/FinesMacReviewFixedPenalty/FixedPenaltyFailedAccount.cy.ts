@@ -26,10 +26,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
     interceptCourtsByBU(77);
     interceptOffences();
   });
-  it(
-    '(AC.1) should display failed defendant account details correctly for individual defendant in Review',
-    { tags: ['@PO-1816'] },
-    () => {
+  it('(AC.1) should display failed defendant account details correctly for individual defendant in Review', { tags: ['@PO-1816', '@JIRA-KEY:POT-4020'] }, () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
         draftAccountId: draftAccountId,
@@ -107,12 +104,8 @@ describe('Fixed Penalty failed- Review Account Details', () => {
       // AC2d - Review History section exists and has at least one entry
       cy.get('h2').contains('Review history').should('exist').and('be.visible');
       cy.get(DOM_ELEMENTS.reviewHistoryEntries).should('exist').and('be.visible').its('length').should('be.gte', 1);
-    },
-  );
-  it(
-    '(AC.1) should display failed defendant account details correctly for company defendant in Review',
-    { tags: ['@PO-1816'] },
-    () => {
+    });
+  it('(AC.1) should display failed defendant account details correctly for company defendant in Review', { tags: ['@PO-1816', '@JIRA-KEY:POT-4021'] }, () => {
       const draftAccountId = '1004';
       const props: IFinesComponentProperties = {
         draftAccountId: draftAccountId,
@@ -186,6 +179,5 @@ describe('Fixed Penalty failed- Review Account Details', () => {
       // AC2d - Review History section exists and has at least one entry
       cy.get('h2').contains('Review history').should('exist').and('be.visible');
       cy.get(DOM_ELEMENTS.reviewHistoryEntries).its('length').should('be.gte', 1);
-    },
-  );
+    });
 });

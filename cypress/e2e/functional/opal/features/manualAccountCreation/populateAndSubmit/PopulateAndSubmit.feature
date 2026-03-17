@@ -5,6 +5,7 @@ Feature: Manual account creation - Create Draft Account
 
   @PO-2763
   #AC-6 click cancel
+  @JIRA-KEY:POT-3124
   Scenario: Clicking Cancel after beginning to enter information, display the Cancel pop-up before navigating away
     When I open Manual Account Creation
     And I begin entering details on the Originator Type page
@@ -12,12 +13,13 @@ Feature: Manual account creation - Create Draft Account
 
   @PO-2763
   #AC-5 click cancel without entering details
+  @JIRA-KEY:POT-3125
   Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
     When I open Manual Account Creation
     Then I cancel without entering data
     Then I should be on the dashboard
 
-  @PO-1448 @PO-1638 @PO-1872
+  @PO-1448 @PO-1638 @PO-1872 @JIRA-KEY:POT-3126
   Scenario: Mixed creditors offence review shows correct totals and summary
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and I view the "Offence details" task
     Then I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
@@ -63,7 +65,7 @@ Feature: Manual account creation - Create Draft Account
     When I return to account details from offence details
     Then the "Offence details" task status is "Provided"
 
-  @PO-1448 @PO-1638 @PO-1872
+  @PO-1448 @PO-1638 @PO-1872 @JIRA-KEY:POT-3127
   Scenario: Minor creditor summary displays captured address and BACS details
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and I view the "Offence details" task
     And I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
@@ -95,7 +97,7 @@ Feature: Manual account creation - Create Draft Account
       | Account number    | 12345678                   |
       | Payment reference | REF                        |
 
-  @PO-1448 @PO-1638 @PO-1872
+  @PO-1448 @PO-1638 @PO-1872 @JIRA-KEY:POT-3128
   Scenario: Impositions with amounts recorded show remove links for each row
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and I view the "Offence details" task
     And I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
@@ -111,7 +113,7 @@ Feature: Manual account creation - Create Draft Account
       | 3          |
 
 
-  @PO-1450 @PO-1638
+  @PO-1450 @PO-1638 @JIRA-KEY:POT-3129
   Scenario: Capitalisation is applied when submitting a company manual account with a minor creditor
     When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I view the "Court details" task
@@ -152,7 +154,7 @@ Feature: Manual account creation - Create Draft Account
       | Field             | Value |
       | Payment reference | REF   |
 
-  @PO-1450 @PO-1638
+  @PO-1450 @PO-1638 @JIRA-KEY:POT-3130
   Scenario: Submitting a company manual account with a minor creditor shows the correct review summaries
     When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
@@ -208,7 +210,7 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
-  @PO-1449 @PO-1638
+  @PO-1449 @PO-1638 @JIRA-KEY:POT-3131
   Scenario: Capitalisation is applied for parent or guardian, defendant and employer details
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay" and originator type "New"
 
@@ -294,6 +296,7 @@ Feature: Manual account creation - Create Draft Account
       | national insurance number | AB122398B        |
     And returning to account details the "Personal details" task the status is "Provided"
 
+  @JIRA-KEY:POT-3132
   Scenario: Capitalisation is applied for defendant and employer details without parent or guardian
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
 
@@ -342,7 +345,7 @@ Feature: Manual account creation - Create Draft Account
     And returning to account details the "Personal details" task the status is "Provided"
 
 
-  @PO-1449 @PO-1638
+  @PO-1449 @PO-1638 @JIRA-KEY:POT-3133
   Scenario: Submitting an adult or youth with parent or guardian to pay account with a minor creditor shows the correct review summaries
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
@@ -430,7 +433,7 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
-  @PO-2793
+  @PO-2793 @JIRA-KEY:POT-3134
   Scenario: A checker approves a New account and defendant_accounts.originator_type is NEW
     When I open Manual Account Creation
     And I monitor draft account create requests
@@ -441,7 +444,7 @@ Feature: Manual account creation - Create Draft Account
     Then the latest draft account create request should include originator type "NEW"
     And I see the following text on the page "You've submitted this account for review"
 
-  @PO-2793
+  @PO-2793 @JIRA-KEY:POT-3135
   Scenario: A checker approves a Transfer in from England or Wales account and defendant_accounts.originator_type is TFO
     When I open Manual Account Creation
     And I monitor draft account create requests
@@ -451,6 +454,7 @@ Feature: Manual account creation - Create Draft Account
     And I submit the manual account for review
     Then the latest draft account create request should include originator type "TFO"
     And I see the following text on the page "You've submitted this account for review"
+
   @PO-2766
   Scenario Outline: User can navigate to create account page and return via back link for each originator option
     When I open Manual Account Creation
@@ -458,10 +462,12 @@ Feature: Manual account creation - Create Draft Account
     Then I should see the header containing text '<Create account header>'
     When I click the back link on create account page I return to Create or Transfer In page - No data retained
 
+    @JIRA-KEY:POT-3136
     Examples: Transfer in
       | Originator type | Create account header |
       | Transfer in     | Transfer in           |
 
+    @JIRA-KEY:POT-3137
     Examples: New
       | Originator type | Create account header |
       | New             | Create account        |
@@ -474,15 +480,17 @@ Feature: Manual account creation - Create Draft Account
     Then I cancel create account choosing 'Ok'
     Then I should be on the dashboard
 
+    @JIRA-KEY:POT-3138
     Examples: without changes
       | Cancel journey state |
       | without changes      |
 
+    @JIRA-KEY:POT-3139
     Examples: with changes
       | Cancel journey state |
       | with changes         |
 
-  @PO-2790
+  @PO-2790 @JIRA-KEY:POT-3140
   Scenario: Conditional Caution shows Police and court details across task list, court details and check account details
     When I open Manual Account Creation from the dashboard
     And I select manual account business unit "West London"
@@ -560,10 +568,12 @@ Feature: Manual account creation - Create Draft Account
     And I check the manual account details
     And I should see the entry type '<Entry type>' on the review account screen
 
+    @JIRA-KEY:POT-3141
     Examples: Transfer in
       | Originator type | Entry type                        |
       | Transfer in     | Transfer in from England or Wales |
 
+    @JIRA-KEY:POT-3142
     Examples: New
       | Originator type | Entry type  |
       | New             | New account |

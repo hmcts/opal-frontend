@@ -42,7 +42,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     });
   };
 
-  it('(AC.1) render all the fields In review account', { tags: ['@PO-584'] }, () => {
+  it('(AC.1) render all the fields In review account', { tags: ['@PO-584', '@JIRA-KEY:POT-3917'] }, () => {
     const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -64,7 +64,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     }
   });
 
-  it('AC.2 When user has not associated accounts, that are in review', { tags: ['@PO-584'] }, () => {
+  it('AC.2 When user has not associated accounts, that are in review', { tags: ['@PO-584', '@JIRA-KEY:POT-3918'] }, () => {
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
 
@@ -76,7 +76,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     cy.get(DOM_ELEMENTS.table).should('not.exist');
   });
 
-  it('AC.3 verify the table of headers in review tab', { tags: ['@PO-584'] }, () => {
+  it('AC.3 verify the table of headers in review tab', { tags: ['@PO-584', '@JIRA-KEY:POT-3919'] }, () => {
     const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -114,7 +114,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
       });
   });
 
-  it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584'] }, () => {
+  it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584', '@JIRA-KEY:POT-3920'] }, () => {
     const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -155,10 +155,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
       });
   });
 
-  it(
-    '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
-    { tags: ['@PO-584'] },
-    () => {
+  it('(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts', { tags: ['@PO-584', '@JIRA-KEY:POT-3921'] }, () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -182,6 +179,5 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    },
-  );
+    });
 });

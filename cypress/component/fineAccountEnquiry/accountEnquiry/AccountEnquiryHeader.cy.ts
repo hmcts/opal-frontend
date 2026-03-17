@@ -42,7 +42,7 @@ describe('Account Enquiry - Defendant Header', () => {
     ],
   };
 
-  it('AC1a: renders the Defendant Account Header Summary', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC1a: renders the Defendant Account Header Summary', { tags: ['PO-1593', 'PO-866', '@JIRA-KEY:POT-3518'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -58,7 +58,7 @@ describe('Account Enquiry - Defendant Header', () => {
     cy.get(DOM.atAGlanceTabComponent).should('exist');
   });
 
-  it('AC1a: renders the Company Account Header Summary', { tags: ['PO-867'] }, () => {
+  it('AC1a: renders the Company Account Header Summary', { tags: ['PO-867', '@JIRA-KEY:POT-3519'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -74,10 +74,7 @@ describe('Account Enquiry - Defendant Header', () => {
     cy.get(DOM.atAGlanceTabComponent).should('exist');
   });
 
-  it(
-    'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels)',
-    { tags: ['PO-1593', 'PO-866'] },
-    () => {
+  it('AC1b: applies field rules (PCR uppercase, BU formatting, summary labels)', { tags: ['PO-1593', 'PO-866', '@JIRA-KEY:POT-3520'] }, () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.prosecutor_case_reference = 'ref123'; // UI should uppercase
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -103,13 +100,9 @@ describe('Account Enquiry - Defendant Header', () => {
         cy.contains(DOM.labelArrears).should('be.visible');
         cy.contains('£').should('exist'); // any currency value in the bar
       });
-    },
-  );
+    });
 
-  it(
-    'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels) - Company',
-    { tags: ['PO-1593', 'PO-866'] },
-    () => {
+  it('AC1b: applies field rules (PCR uppercase, BU formatting, summary labels) - Company', { tags: ['PO-1593', 'PO-866', '@JIRA-KEY:POT-3521'] }, () => {
       const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       header.prosecutor_case_reference = 'ref123'; // UI should uppercase
 
@@ -136,14 +129,10 @@ describe('Account Enquiry - Defendant Header', () => {
         cy.contains(DOM.labelArrears).should('be.visible');
         cy.contains('£').should('exist'); // any currency value in the bar
       });
-    },
-  );
+    });
 
   // ONLY Youth tag when youth is the debtor and no P/G associated
-  it(
-    'AC2: shows ONLY "Youth Account" when youth=true, debtor=Defendant, and no Parent/Guardian',
-    { tags: ['PO-1593'] },
-    () => {
+  it('AC2: shows ONLY "Youth Account" when youth=true, debtor=Defendant, and no Parent/Guardian', { tags: ['PO-1593', '@JIRA-KEY:POT-3522'] }, () => {
       const dateOfBirth = new Date();
       dateOfBirth.setFullYear(dateOfBirth.getFullYear() - 15); // 15 years old
 
@@ -166,10 +155,9 @@ describe('Account Enquiry - Defendant Header', () => {
       cy.log('header', header);
 
       cy.get(DOM.statusTag).should('exist').and('contain.text', 'Youth Account');
-    },
-  );
+    });
 
-  it('AC2: shows ONLY "Parent or Guardian" when youth=true, debtor=Parent/Guardian', { tags: ['PO-866'] }, () => {
+  it('AC2: shows ONLY "Parent or Guardian" when youth=true, debtor=Parent/Guardian', { tags: ['PO-866', '@JIRA-KEY:POT-3523'] }, () => {
     const header = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
     header.debtor_type = 'Parent/Guardian';
     header.parent_guardian_party_id = '99';
@@ -188,7 +176,7 @@ describe('Account Enquiry - Defendant Header', () => {
   });
 
   //  ONLY "Parent or Guardian to pay" (even if youth)
-  it('AC2i: Youth defendant who is not the debtor hides "Youth" label', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC2i: Youth defendant who is not the debtor hides "Youth" label', { tags: ['PO-1593', 'PO-866', '@JIRA-KEY:POT-3524'] }, () => {
     const header = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
     header.debtor_type = 'Parent/Guardian';
     header.parent_guardian_party_id = '99';
@@ -204,7 +192,7 @@ describe('Account Enquiry - Defendant Header', () => {
   });
 
   //  Adult defendant → no tag at all
-  it('AC2a: renders no tag for adult defendants', { tags: ['PO-1593'] }, () => {
+  it('AC2a: renders no tag for adult defendants', { tags: ['PO-1593', '@JIRA-KEY:POT-3525'] }, () => {
     const adult = structuredClone(DEFENDANT_HEADER_MOCK);
     adult.is_youth = false;
     adult.debtor_type = 'Defendant';
@@ -220,7 +208,7 @@ describe('Account Enquiry - Defendant Header', () => {
   });
 
   // Negative balance prefixed with minus (e.g. -£4.50)
-  it('AC3: negative balance is prefixed with a minus', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC3: negative balance is prefixed with a minus', { tags: ['PO-1593', 'PO-866', '@JIRA-KEY:POT-3526'] }, () => {
     const header = structuredClone(DEFENDANT_HEADER_MOCK);
     header.payment_state_summary.account_balance = -4.5;
 
@@ -235,7 +223,7 @@ describe('Account Enquiry - Defendant Header', () => {
       .should('exist');
   });
 
-  it('AC3: negative balance is prefixed with a minus - Company', { tags: ['PO-867'] }, () => {
+  it('AC3: negative balance is prefixed with a minus - Company', { tags: ['PO-867', '@JIRA-KEY:POT-3527'] }, () => {
     const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
     header.payment_state_summary.account_balance = -4.5;
 
@@ -250,7 +238,7 @@ describe('Account Enquiry - Defendant Header', () => {
       .should('exist');
   });
 
-  it('AC4: shows "Add account note" when user has permission', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
+  it('AC4: shows "Add account note" when user has permission', { tags: ['PO-1593', 'PO-866', 'PO-867', '@JIRA-KEY:POT-3528'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -260,7 +248,7 @@ describe('Account Enquiry - Defendant Header', () => {
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
 
-  it('AC4: Calls add note path when user has permission in this BU', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
+  it('AC4: Calls add note path when user has permission in this BU', { tags: ['PO-1593', 'PO-866', 'PO-867', '@JIRA-KEY:POT-3529'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -276,10 +264,7 @@ describe('Account Enquiry - Defendant Header', () => {
       });
   });
 
-  it(
-    'AC4a: Calls error path when user has no permission in this BU only in other BU',
-    { tags: ['PO-1593', 'PO-866', 'PO-867'] },
-    () => {
+  it('AC4a: Calls error path when user has no permission in this BU only in other BU', { tags: ['PO-1593', 'PO-866', 'PO-867', '@JIRA-KEY:POT-3530'] }, () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -293,10 +278,9 @@ describe('Account Enquiry - Defendant Header', () => {
           const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
           expect(path).to.match(/access-denied/);
         });
-    },
-  );
+    });
 
-  it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866', '@JIRA-KEY:POT-3531'] }, () => {
     interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
     interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -306,7 +290,7 @@ describe('Account Enquiry - Defendant Header', () => {
     cy.get(DOM.addNoteButton).should('not.exist');
   });
 
-  it('AC3: shows "Add account note" when user has permission - Company', { tags: ['PO-867'] }, () => {
+  it('AC3: shows "Add account note" when user has permission - Company', { tags: ['PO-867', '@JIRA-KEY:POT-3532'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -315,7 +299,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
-  it('AC3: Calls add note path when user has permission in this BU - Company', { tags: ['PO-867'] }, () => {
+  it('AC3: Calls add note path when user has permission in this BU - Company', { tags: ['PO-867', '@JIRA-KEY:POT-3533'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -330,10 +314,7 @@ describe('Account Enquiry - Defendant Header', () => {
       });
   });
 
-  it(
-    'AC3a: Calls error path when user has no permission in this BU only in other BU - Company',
-    { tags: ['PO-867'] },
-    () => {
+  it('AC3a: Calls error path when user has no permission in this BU only in other BU - Company', { tags: ['PO-867', '@JIRA-KEY:POT-3534'] }, () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -346,10 +327,9 @@ describe('Account Enquiry - Defendant Header', () => {
           const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
           expect(path).to.match(/access-denied/);
         });
-    },
-  );
+    });
 
-  it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
+  it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867', '@JIRA-KEY:POT-3535'] }, () => {
     interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
     interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
@@ -378,7 +358,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     ],
   };
 
-  it('AC1, AC2a: renders the Minor Creditor Account Header Summary', { tags: ['PO-1924'] }, () => {
+  it('AC1, AC2a: renders the Minor Creditor Account Header Summary', { tags: ['PO-1924', '@JIRA-KEY:POT-3536'] }, () => {
     const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
     header.has_associated_defendant = true;
     header.awaiting_payout_amount = 100;
@@ -414,7 +394,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     });
   });
 
-  it('AC2b: hides Awarded and Outstanding when no defendant is associated', () => {
+  it('AC2b: hides Awarded and Outstanding when no defendant is associated', {tags: ['@JIRA-KEY:POT-3537']}, () => {
     const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
     header.awaiting_payout_amount = 100;
     header.paid_out_amount = 50;
@@ -438,7 +418,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     cy.get(DOM.summaryMetricBar).should('not.contain.text', DOM.labelOutstanding);
   });
 
-  it('AC3a: shows add account note button and navigates to add note page', { tags: ['PO-1924'] }, () => {
+  it('AC3a: shows add account note button and navigates to add note page', { tags: ['PO-1924', '@JIRA-KEY:POT-3538'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
     setupAccountEnquiryComponent(minorCreditorComponentProperties);
@@ -453,10 +433,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
       });
   });
 
-  it(
-    'AC3b: access denied when user has no permission and minor creditor does have permission',
-    { tags: ['PO-1924'] },
-    () => {
+  it('AC3b: access denied when user has no permission and minor creditor does have permission', { tags: ['PO-1924', '@JIRA-KEY:POT-3539'] }, () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
       setupAccountEnquiryComponent(minorCreditorComponentProperties);
@@ -468,10 +445,9 @@ describe('Account Enquiry - Minor Creditor Header', () => {
           const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
           expect(path).to.match(/access-denied/);
         });
-    },
-  );
+    });
 
-  it('AC3c: hides Add account note when user has no permission in any BU', () => {
+  it('AC3c: hides Add account note when user has no permission in any BU', {tags: ['@JIRA-KEY:POT-3540']}, () => {
     interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
     interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
 

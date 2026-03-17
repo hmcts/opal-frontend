@@ -7,6 +7,7 @@ Feature: Manual account creation - Account Comments and Notes
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
 
+  @JIRA-KEY:POT-3198
   Scenario: Providing account comments and notes updates the task status and persists the data [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
@@ -15,12 +16,14 @@ Feature: Manual account creation - Account Comments and Notes
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "Test comments" and "Test notes"
 
+  @JIRA-KEY:POT-3199
   Scenario: A new manual account starts with comments and notes not provided [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "" and ""
 
+  @JIRA-KEY:POT-3200
   Scenario: Unsaved account comments can be kept or discarded [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     And I provide account comments "Test comments" and notes "Test notes"
@@ -32,6 +35,7 @@ Feature: Manual account creation - Account Comments and Notes
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "" and ""
 
+  @JIRA-KEY:POT-3201
   Scenario: Task navigation allows review after all sections are provided [@PO-272, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     Then the "Account comments and notes" task status is "Not provided"
@@ -77,6 +81,7 @@ Feature: Manual account creation - Account Comments and Notes
     And I view the "Account comments and notes" task
     Then I can proceed to review account details from comments and notes and see the header "Check account details"
 
+  @JIRA-KEY:POT-3202
   Scenario: Account Comments and Notes - Axe Core
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     When I view the "Account comments and notes" task

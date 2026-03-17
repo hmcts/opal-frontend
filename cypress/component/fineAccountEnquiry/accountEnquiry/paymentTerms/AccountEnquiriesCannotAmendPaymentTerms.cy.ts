@@ -36,10 +36,7 @@ describe('Account Enquiry Payment Terms', () => {
     ],
   };
 
-  it(
-    'AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE', { tags: ['PO-1801', '@JIRA-KEY:POT-3663'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -60,10 +57,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has an enforcement action outstanding: DW.').should('exist');
-    },
-  );
+    });
 
-  it('AC1.2ai: Display appropriate message based on defendant account status (CS)', { tags: ['PO-1801'] }, () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (CS)', { tags: ['PO-1801', '@JIRA-KEY:POT-3664'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.debtor_type = 'individual';
     headerMock.account_status_reference.account_status_code = 'CS';
@@ -82,7 +78,7 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get('p').contains('This account has been consolidated.').should('exist');
   });
 
-  it('AC1.2ai: Display appropriate message based on defendant account status (WO)', { tags: ['PO-1801'] }, () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (WO)', { tags: ['PO-1801', '@JIRA-KEY:POT-3665'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.debtor_type = 'individual';
     headerMock.account_status_reference.account_status_code = 'WO';
@@ -101,7 +97,7 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get('p').contains('This account has been written-off.').should('exist');
   });
 
-  it('AC1.2ai: Display appropriate message based on defendant account status (TO)', { tags: ['PO-1801'] }, () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TO)', { tags: ['PO-1801', '@JIRA-KEY:POT-3666'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.debtor_type = 'individual';
     headerMock.account_status_reference.account_status_code = 'TO';
@@ -120,7 +116,7 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get('p').contains('This account has been transferred out.').should('exist');
   });
 
-  it('AC1.2ai: Display appropriate message based on defendant account status (TA)', { tags: ['PO-1801'] }, () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TA)', { tags: ['PO-1801', '@JIRA-KEY:POT-3667'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.debtor_type = 'individual';
     headerMock.account_status_reference.account_status_code = 'TA';
@@ -139,7 +135,7 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get('p').contains('This account has been transferred out.').should('exist');
   });
 
-  it('AC1.2ai: Display appropriate message based on defendant account status (TS)', { tags: ['PO-1801'] }, () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TS)', { tags: ['PO-1801', '@JIRA-KEY:POT-3668'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.debtor_type = 'individual';
     headerMock.account_status_reference.account_status_code = 'TS';
@@ -158,7 +154,7 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get('p').contains('This account has been transferred out.').should('exist');
   });
 
-  it('AC1.2aii: If the account has a zero balance,', { tags: ['PO-1801'] }, () => {
+  it('AC1.2aii: If the account has a zero balance,', { tags: ['PO-1801', '@JIRA-KEY:POT-3669'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.payment_state_summary.account_balance = 0.0;
     headerMock.debtor_type = 'individual';
@@ -179,10 +175,7 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get('p').contains('The account has a zero balance.').should('exist');
   });
 
-  it(
-    'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU', { tags: ['PO-1801', '@JIRA-KEY:POT-3670'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
       headerMock.account_status_reference.account_status_code = 'TA';
@@ -203,13 +196,9 @@ describe('Account Enquiry Payment Terms', () => {
           'You do not have the required permissions to make changes to this account as it is outside your business unit.',
         )
         .should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE for company defendant',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE for company defendant', { tags: ['PO-1801', '@JIRA-KEY:POT-3671'] }, () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
         organisation_name: 'Acme Corporation',
@@ -234,13 +223,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has an enforcement action outstanding: DW.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (CS) for company defendants',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (CS) for company defendants', { tags: ['PO-1801', '@JIRA-KEY:POT-3672'] }, () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
         organisation_name: 'Acme Corporation',
@@ -260,13 +245,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been consolidated.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (WO) for company defendants',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (WO) for company defendants', { tags: ['PO-1801', '@JIRA-KEY:POT-3673'] }, () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
         organisation_name: 'Acme Corporation',
@@ -286,13 +267,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been written-off.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (TO) for company defendants',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TO) for company defendants', { tags: ['PO-1801', '@JIRA-KEY:POT-3674'] }, () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
         organisation_name: 'Acme Corporation',
@@ -312,13 +289,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been transferred out.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (TA) for company defendants',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TA) for company defendants', { tags: ['PO-1801', '@JIRA-KEY:POT-3675'] }, () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
         organisation_name: 'Acme Corporation',
@@ -338,13 +311,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been transferred out.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (TS) for company defendants',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TS) for company defendants', { tags: ['PO-1801', '@JIRA-KEY:POT-3676'] }, () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
         organisation_name: 'Acme Corporation',
@@ -364,10 +333,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been transferred out.').should('exist');
-    },
-  );
+    });
 
-  it('AC1.2aii: If the account has a zero balance for company defendants', { tags: ['PO-1801'] }, () => {
+  it('AC1.2aii: If the account has a zero balance for company defendants', { tags: ['PO-1801', '@JIRA-KEY:POT-3677'] }, () => {
     const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
     headerMock.party_details.organisation_details = {
       organisation_name: 'Acme Corporation',
@@ -391,10 +359,7 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get('p').contains('The account has a zero balance.').should('exist');
   });
 
-  it(
-    'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU for company defendants',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU for company defendants', { tags: ['PO-1801', '@JIRA-KEY:POT-3678'] }, () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
         organisation_name: 'Acme Corporation',
@@ -418,13 +383,9 @@ describe('Account Enquiry Payment Terms', () => {
           'You do not have the required permissions to make changes to this account as it is outside your business unit.',
         )
         .should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE for Parent/Guardian',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE for Parent/Guardian', { tags: ['PO-1801', '@JIRA-KEY:POT-3679'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
@@ -441,13 +402,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has an enforcement action outstanding: DW.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (CS) for Parent/Guardian',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (CS) for Parent/Guardian', { tags: ['PO-1801', '@JIRA-KEY:POT-3680'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.account_status_reference.account_status_code = 'CS';
@@ -464,13 +421,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been consolidated.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (WO) for Parent/Guardian',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (WO) for Parent/Guardian', { tags: ['PO-1801', '@JIRA-KEY:POT-3681'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.account_status_reference.account_status_code = 'WO';
@@ -487,13 +440,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been written-off.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (TO) for Parent/Guardian',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TO) for Parent/Guardian', { tags: ['PO-1801', '@JIRA-KEY:POT-3682'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.account_status_reference.account_status_code = 'TO';
@@ -510,13 +459,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been transferred out.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (TA) for Parent/Guardian',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TA) for Parent/Guardian', { tags: ['PO-1801', '@JIRA-KEY:POT-3683'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.account_status_reference.account_status_code = 'TA';
@@ -533,13 +478,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been transferred out.').should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1.2ai: Display appropriate message based on defendant account status (TS) for Parent/Guardian',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2ai: Display appropriate message based on defendant account status (TS) for Parent/Guardian', { tags: ['PO-1801', '@JIRA-KEY:POT-3684'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.account_status_reference.account_status_code = 'TS';
@@ -556,10 +497,9 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
       cy.get('p').contains('This account has been transferred out.').should('exist');
-    },
-  );
+    });
 
-  it('AC1.2aii: If the account has a zero balance for Parent/Guardian', { tags: ['PO-1801'] }, () => {
+  it('AC1.2aii: If the account has a zero balance for Parent/Guardian', { tags: ['PO-1801', '@JIRA-KEY:POT-3685'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.payment_state_summary.account_balance = 0.0;
     headerMock.debtor_type = 'Parent/Guardian';
@@ -580,10 +520,7 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get('p').contains('The account has a zero balance.').should('exist');
   });
 
-  it(
-    'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU for Parent/Guardian',
-    { tags: ['PO-1801'] },
-    () => {
+  it('AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU for Parent/Guardian', { tags: ['PO-1801', '@JIRA-KEY:POT-3686'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.account_status_reference.account_status_code = 'TA';
@@ -604,6 +541,5 @@ describe('Account Enquiry Payment Terms', () => {
           'You do not have the required permissions to make changes to this account as it is outside your business unit.',
         )
         .should('exist');
-    },
-  );
+    });
 });

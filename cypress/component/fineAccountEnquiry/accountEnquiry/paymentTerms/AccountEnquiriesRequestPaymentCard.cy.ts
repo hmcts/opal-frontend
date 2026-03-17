@@ -35,7 +35,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     ],
   };
 
-  it('Last enforcement action prevents the adding of a payment card', { tags: ['PO-1802'] }, () => {
+  it('Last enforcement action prevents the adding of a payment card', { tags: ['PO-1802', '@JIRA-KEY:POT-3687'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.debtor_type = 'individual';
     let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -58,7 +58,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     cy.get('p').should('contain.text', 'DW');
   });
 
-  it('No permission in BU prevents the adding of a payment card', { tags: ['PO-1802'] }, () => {
+  it('No permission in BU prevents the adding of a payment card', { tags: ['PO-1802', '@JIRA-KEY:POT-3688'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
     headerMock.debtor_type = 'individual';
     let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -81,7 +81,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     cy.get('p').contains('Your business unit does not allow payment card requests.');
   });
 
-  it('AC1a: User can request a payment card and sees the confirmation screen', { tags: ['PO-1700'] }, () => {
+  it('AC1a: User can request a payment card and sees the confirmation screen', { tags: ['PO-1700', '@JIRA-KEY:POT-3689'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
     headerMock.debtor_type = 'individual';
     let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -105,7 +105,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     cy.contains('a', 'No - cancel').should('exist');
   });
 
-  it('AC1bi: Cancel returns to Payment terms with no changes made', { tags: ['PO-1700'] }, () => {
+  it('AC1bi: Cancel returns to Payment terms with no changes made', { tags: ['PO-1700', '@JIRA-KEY:POT-3690'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
     headerMock.debtor_type = 'individual';
     let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);

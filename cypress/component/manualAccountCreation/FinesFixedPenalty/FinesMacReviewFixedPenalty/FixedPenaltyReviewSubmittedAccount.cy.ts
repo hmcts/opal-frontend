@@ -90,10 +90,7 @@ describe('Fixed Penalty - Review Account Details', () => {
     },
   );
 
-  it(
-    '(AC.1) should display submitted defendant account details correctly for individual defendant in Review',
-    { tags: ['@PO-1804'] },
-    () => {
+  it('(AC.1) should display submitted defendant account details correctly for individual defendant in Review', { tags: ['@PO-1804', '@JIRA-KEY:POT-4023'] }, () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
         draftAccountId: draftAccountId,
@@ -152,10 +149,9 @@ describe('Fixed Penalty - Review Account Details', () => {
       // Section 5 - Account comments and notes
       cy.get(DOM_ELEMENTS.accountComment).should('contain', 'Defendant scenario account comment');
       cy.get(DOM_ELEMENTS.accountNote).should('contain', 'Defendant scenario account note');
-    },
-  );
+    });
 
-  it('(AC.1) should display "To review" defendant account details correctly', { tags: ['@PO-1804'] }, () => {
+  it('(AC.1) should display "To review" defendant account details correctly', { tags: ['@PO-1804', '@JIRA-KEY:POT-4024'] }, () => {
     const draftAccountId = '1004';
     const props: IFinesComponentProperties = {
       draftAccountId: draftAccountId,
@@ -238,7 +234,7 @@ describe('Fixed Penalty - Review Account Details', () => {
     cy.get(DOM_ELEMENTS.accountNote).should('contain', 'To review scenario account note');
   });
 
-  it('(AC.1) should display "To review" company account details correctly', { tags: ['@PO-1804'] }, () => {
+  it('(AC.1) should display "To review" company account details correctly', { tags: ['@PO-1804', '@JIRA-KEY:POT-4025'] }, () => {
     const draftAccountId = '1005';
     const props: IFinesComponentProperties = {
       draftAccountId: draftAccountId,

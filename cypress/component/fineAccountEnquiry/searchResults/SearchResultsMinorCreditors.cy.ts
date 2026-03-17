@@ -64,14 +64,14 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     });
   };
 
-  it('Search results component is created correctly for minor creditors', { tags: ['PO-708'] }, () => {
+  it('Search results component is created correctly for minor creditors', { tags: ['PO-708', '@JIRA-KEY:POT-3782'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
   });
 
-  it('(AC2) Displays error message when no minor creditor search matches are found', { tags: ['PO-708'] }, () => {
+  it('(AC2) Displays error message when no minor creditor search matches are found', { tags: ['PO-708', '@JIRA-KEY:POT-3783'] }, () => {
     setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.noResultsHeading).should('be.visible');
@@ -86,7 +86,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.checkSearchLink).click();
   });
 
-  it('(AC3) Handles more than 100 minor creditor search matches correctly', { tags: ['PO-708'] }, () => {
+  it('(AC3) Handles more than 100 minor creditor search matches correctly', { tags: ['PO-708', '@JIRA-KEY:POT-3784'] }, () => {
     setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
@@ -107,10 +107,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
   });
 
-  it(
-    '(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting',
-    { tags: ['PO-708'] },
-    () => {
+  it('(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting', { tags: ['PO-708', '@JIRA-KEY:POT-3785'] }, () => {
       setupComponent(INDIVIDUAL_SEARCH_RESULTS_MOCK);
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
@@ -153,13 +150,9 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.defendantCell).eq(1).should('contain', 'WILSON, James Robert');
       cy.get(DOM_ELEMENTS.defendantCell).eq(1).find('a').should('exist');
       cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£567.00');
-    },
-  );
+    });
 
-  it(
-    '(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting',
-    { tags: ['PO-708'] },
-    () => {
+  it('(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting', { tags: ['PO-708', '@JIRA-KEY:POT-3786'] }, () => {
       setupComponent(COMPANY_SEARCH_RESULTS_MOCK);
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
@@ -200,10 +193,9 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.defendantCell).eq(1).should('contain', 'Tech Solutions Inc');
       cy.get(DOM_ELEMENTS.defendantCell).eq(1).find('a').should('exist');
       cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£1,250.00');
-    },
-  );
+    });
 
-  it('(AC4d) Displays pagination with 25 results per page for maximum of 100 results', { tags: ['PO-708'] }, () => {
+  it('(AC4d) Displays pagination with 25 results per page for maximum of 100 results', { tags: ['PO-708', '@JIRA-KEY:POT-3787'] }, () => {
     // Using LARGE_SEARCH_RESULTS_MOCK but limiting to 100 results for pagination testing
     const paginationMock = {
       count: 100,
@@ -248,7 +240,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
   });
 
-  it('(AC4f) Should sort by each column - ascending then descending', { tags: ['PO-708'] }, () => {
+  it('(AC4f) Should sort by each column - ascending then descending', { tags: ['PO-708', '@JIRA-KEY:POT-3788'] }, () => {
     setupComponent(SORTING_MINOR_CREDITORS_MOCK);
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');

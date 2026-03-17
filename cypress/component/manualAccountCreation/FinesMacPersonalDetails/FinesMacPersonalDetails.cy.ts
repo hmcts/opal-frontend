@@ -83,7 +83,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
       };
     });
   });
-  it('(AC.1a) should load all elements on the screen correctly', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.1a) should load all elements on the screen correctly', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4336'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Personal details');
@@ -113,22 +113,19 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.aliasAdd).should('exist');
   });
 
-  it('(AC.1) should load button for next page for adultOrYouthOnly Defendant', { tags: ['@PO-272', '@PO-433'] }, () => {
+  it('(AC.1) should load button for next page for adultOrYouthOnly Defendant', { tags: ['@PO-272', '@PO-433', '@JIRA-KEY:POT-4337'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add contact details');
   });
 
-  it('(AC.2) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-369'] }, () => {
+  it('(AC.2) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-369', '@JIRA-KEY:POT-4338'] }, () => {
     setupComponent(null, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
   });
 
-  it(
-    '(AC.2, AC.3) should display validation error when mandatory fields are missing',
-    { tags: ['@PO-272', '@PO-360'] },
-    () => {
+  it('(AC.2, AC.3) should display validation error when mandatory fields are missing', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4339'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
@@ -136,10 +133,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
       for (const [, value] of Object.entries(MAIN_PERSONAL_DETAILS)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
-    },
-  );
+    });
 
-  it('(AC.1b) should not have any asterisks in address lines', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.1b) should not have any asterisks in address lines', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4340'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'asja*';
@@ -152,10 +148,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     }
   });
 
-  it(
-    '(AC.1a) should not allow first names,last names and Address lines 1,2 & 3 to have more than max characters',
-    { tags: ['@PO-272', '@PO-360'] },
-    () => {
+  it('(AC.1a) should not allow first names,last names and Address lines 1,2 & 3 to have more than max characters', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4341'] }, () => {
       setupComponent(null);
 
       finesMacState.personalDetails.formData.fm_personal_details_forenames =
@@ -170,9 +163,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
-    },
-  );
-  it('(AC.4) should validate the functionality of the Add Aliases tick box', { tags: ['@PO-272', '@PO-360'] }, () => {
+    });
+  it('(AC.4) should validate the functionality of the Add Aliases tick box', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4342'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
@@ -185,10 +177,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.aliasRemoveButton).should('not.exist');
   });
 
-  it(
-    '(AC.5, AC.6, AC.7) should have working alias workflow and remove button',
-    { tags: ['@PO-272', '@PO-360'] },
-    () => {
+  it('(AC.5, AC.6, AC.7) should have working alias workflow and remove button', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4343'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.aliasAdd).click();
@@ -239,10 +228,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
       cy.get(getAliasFirstName(1)).should('not.exist');
       cy.get(getAliasLastName(1)).should('not.exist');
       cy.get(DOM_ELEMENTS.legend).should('not.contain', 'Alias 2');
-    },
-  );
+    });
 
-  it('(AC.8) should validate unticking add aliases removes all aliases', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.8) should validate unticking add aliases removes all aliases', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4344'] }, () => {
     setupComponent(null);
     cy.get(DOM_ELEMENTS.aliasAdd).check();
     cy.get(DOM_ELEMENTS.aliasAddButton).click();
@@ -268,7 +256,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(getAliasLastName(1)).should('not.exist');
   });
 
-  it('(AC.10) should show error for missing alias', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.10) should show error for missing alias', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4345'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
@@ -276,7 +264,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
   });
 
-  it('(AC.10) should show error for missing alias last name', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.10) should show error for missing alias last name', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4346'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -288,7 +276,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
   });
 
-  it('(AC.10) should show error for missing alias first name', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.10) should show error for missing alias first name', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4347'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -300,7 +288,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
   });
 
-  it('(AC.10) should show error for missing additional alias first name', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.10) should show error for missing additional alias first name', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4348'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -324,7 +312,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
   });
 
-  it('(AC.10) should show error for missing additional alias last name', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.10) should show error for missing additional alias last name', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4349'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -348,7 +336,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
   });
 
-  it('(AC.9) should show error for future date of birth', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.9) should show error for future date of birth', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4350'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
@@ -360,7 +348,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Enter a valid date of birth in the past');
   });
 
-  it('(AC.9) should show error for invalid date format', { tags: ['@PO-272', '@PO-360'] }, () => {
+  it('(AC.9) should show error for invalid date format', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4351'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/,.';
@@ -368,10 +356,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
   });
 
-  it(
-    '(AC.11) should not accept national insurance number in the incorrect format',
-    { tags: ['@PO-272', '@PO-360'] },
-    () => {
+  it('(AC.11) should not accept national insurance number in the incorrect format', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4352'] }, () => {
       setupComponent(null);
 
       finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
@@ -383,13 +368,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['validNationalInsuranceNumber']);
-    },
-  );
+    });
 
-  it(
-    '(AC.12) should show errors for invalid mandatory fields and allow corrections',
-    { tags: ['@PO-272', '@PO-360'] },
-    () => {
+  it('(AC.12) should show errors for invalid mandatory fields and allow corrections', { tags: ['@PO-272', '@PO-360', '@JIRA-KEY:POT-4353'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -414,13 +395,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    });
 
-  it(
-    '(AC.5) should render vehicle details for adultOrYouthOnly defendant type and validate max length of data',
-    { tags: ['@PO-272', '@PO-502'] },
-    () => {
+  it('(AC.5) should render vehicle details for adultOrYouthOnly defendant type and validate max length of data', { tags: ['@PO-272', '@PO-502', '@JIRA-KEY:POT-4354'] }, () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       // Verify the vehicle details section is rendered
@@ -436,9 +413,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       for (const [, value] of Object.entries(VEHICLE_DETAILS_ERRORS)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
-    },
-  );
-  it('(AC.2) should display age panel when entering a valid age for youth', { tags: ['@PO-272', '@PO-502'] }, () => {
+    });
+  it('(AC.2) should display age panel when entering a valid age for youth', { tags: ['@PO-272', '@PO-502', '@JIRA-KEY:POT-4355'] }, () => {
     setupComponent(null);
     const age = 17;
     finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
@@ -446,7 +422,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
     cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Youth');
   });
-  it('(AC.3) should display age panel when entering a valid age for adult', { tags: ['@PO-272', '@PO-502'] }, () => {
+  it('(AC.3) should display age panel when entering a valid age for adult', { tags: ['@PO-272', '@PO-502', '@JIRA-KEY:POT-4356'] }, () => {
     setupComponent(null);
     const age = 18;
     finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
@@ -455,7 +431,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Adult');
   });
 
-  it('(AC.5) should not render vehicle details for AY-PG defendant type', { tags: ['@PO-344', '@PO-505'] }, () => {
+  it('(AC.5) should not render vehicle details for AY-PG defendant type', { tags: ['@PO-344', '@PO-505', '@JIRA-KEY:POT-4357'] }, () => {
     setupComponent(null, 'pgToPay');
 
     // Verify the vehicle details section is not rendered
@@ -465,7 +441,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
   });
 
-  it('(AC.1) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it('(AC.1) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449', '@JIRA-KEY:POT-4358'] }, () => {
     const formSubmitSpy = Cypress.sinon.spy();
     setupComponent(formSubmitSpy, 'pgToPay');
 
@@ -499,7 +475,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
   });
 
-  it('(AC.1) should convert specified fields to uppercase on user input', { tags: ['@PO-272', '@PO-1448'] }, () => {
+  it('(AC.1) should convert specified fields to uppercase on user input', { tags: ['@PO-272', '@PO-1448', '@JIRA-KEY:POT-4359'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
