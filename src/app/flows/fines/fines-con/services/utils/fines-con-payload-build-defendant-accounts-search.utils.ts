@@ -5,6 +5,9 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/f
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-reference-defaults.constant';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defendant-defaults.constant';
 
+/**
+ * Returns whether a criteria value should be treated as populated.
+ */
 const hasValue = (value: string | boolean | null | undefined): boolean => {
   if (typeof value === 'string') {
     return value.trim().length > 0;
@@ -13,6 +16,9 @@ const hasValue = (value: string | boolean | null | undefined): boolean => {
   return value === true;
 };
 
+/**
+ * Checks whether any individual search criteria has been provided.
+ */
 const hasIndividualCriteria = (formData: IFinesConSearchAccountState): boolean => {
   const individualCriteria = formData.fcon_search_account_individuals_search_criteria;
 
@@ -23,6 +29,9 @@ const hasIndividualCriteria = (formData: IFinesConSearchAccountState): boolean =
   return Object.values(individualCriteria).some((value) => hasValue(value));
 };
 
+/**
+ * Checks whether any company search criteria has been provided.
+ */
 const hasCompanyCriteria = (formData: IFinesConSearchAccountState): boolean => {
   const companyCriteria = formData.fcon_search_account_companies_search_criteria;
 
@@ -33,6 +42,11 @@ const hasCompanyCriteria = (formData: IFinesConSearchAccountState): boolean => {
   return Object.values(companyCriteria).some((value) => hasValue(value));
 };
 
+/**
+ * Builds the defendant account search payload for consolidation.
+ * Search criteria precedence is: account number, national insurance number,
+ * defendant criteria (individual or company), then base payload.
+ */
 export const buildDefendantAccountsSearchPayload = (
   formData: IFinesConSearchAccountState,
   businessUnitId: number | null,
