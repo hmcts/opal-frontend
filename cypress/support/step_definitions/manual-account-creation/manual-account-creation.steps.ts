@@ -1387,21 +1387,6 @@ When(
 );
 
 /**
- * @step Creates a manual account by selecting journey, business unit and account type.
- * @description For account types without defendant radios, continues from Originator type to Account details.
- * @param selectedType - Originator journey option ("New" or "Transfer in").
- * @param accountType - Manual account type to create.
- * @param businessUnit - Business unit used for account creation.
- */
-When(
-  'I create a {string} manual {string} account for business unit {string}',
-  (selectedType: 'New' | 'Transfer in', accountType: AccountType, businessUnit: string) => {
-    log('flow', 'Creating manual account without defendant type', { selectedType, accountType, businessUnit });
-    flow().startManualAccount(businessUnit, accountType, selectedType);
-  },
-);
-
-/**
  * @step Opens a task from account details using declarative wording.
  * @description Wrapper around task navigation flow helper.
  * @param taskName - Account details task to open.
