@@ -250,6 +250,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should navigate to the company convert page when interactive convert is triggered', () => {
     routerSpy.navigate.mockClear();
+    component.accountData.party_details.organisation_flag = false;
+    component.accountData.debtor_type = 'Defendant';
 
     component.navigateToConvertAccountPage();
 

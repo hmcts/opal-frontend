@@ -809,8 +809,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
     });
 
-    it('should handle company data with individual flag correctly when partyType is specified', () => {
-      // Test edge case: organisation_flag is false but partyType is "company"
+    it('should ignore organisation-only fields when the source is flagged as individual', () => {
       const mockMixedData = {
         ...mockDefendantData,
         defendant_account_party: {
@@ -828,8 +827,10 @@ describe('transformDefendantAccountPartyPayload', () => {
 
       const result = transformDefendantAccountPartyPayload(mockMixedData, 'company', true);
 
-      // Should respect partyType parameter over organisation_flag
-      expect(result.facc_party_add_amend_convert_organisation_name).toBe('Override Company');
+      // Organisation-only fields should not be carried across from an individual source record.
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(false);
       expect(result.facc_party_add_amend_convert_title).toBeNull();
       expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
     });
@@ -848,13 +849,13 @@ describe('transformDefendantAccountPartyPayload', () => {
 
       expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
       expect(result.facc_party_add_amend_convert_address_line_2).toBe('Flat 2B');
-      expect(result.facc_party_add_amend_convert_address_line_3).toBe('Riverside');
+      expect(result.facc_party_add_amend_convert_address_line_3).toBeNull();
       expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
       expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe('sarah.thompson@example.com');
-      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe('s.thompson@workmail.com');
-      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe('07700900123');
-      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe('02071234567');
-      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe('01632960123');
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe('sarah.t@example.com');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe('07123 456789');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe('01234 567890');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe('09876 543210');
       expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
       expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe('XY21 ABC');
     });
@@ -904,10 +905,10 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_address_line_2).toBe('Flat 2B');
       expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
       expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe('sarah.thompson@example.com');
-      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe('s.thompson@workmail.com');
-      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe('07700900123');
-      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe('02071234567');
-      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe('01632960123');
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe('sarah.t@example.com');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe('07123 456789');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe('01234 567890');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe('09876 543210');
       expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
       expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe('XY21 ABC');
     });

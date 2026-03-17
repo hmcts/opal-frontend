@@ -45,7 +45,7 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should render an interactive convert-to-company action when configured', () => {
-    component.convertAction = companyConvertAction;
+    fixture.componentRef.setInput('convertAction', companyConvertAction);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -55,11 +55,11 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should render an interactive convert-to-individual action when configured', () => {
-    component.convertAction = individualConvertAction;
+    fixture.componentRef.setInput('convertAction', individualConvertAction);
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const convertLink = fixture.nativeElement.querySelector('.govuk-grid-column-one-third a');
+    const convertLink = fixture.nativeElement.querySelector('.govuk-link');
 
     expect(compiled.textContent).toContain('Actions');
     expect(compiled.textContent).toContain('Convert to an individual account');
@@ -87,26 +87,26 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should emit convert when the interactive action is clicked', () => {
-    component.convertAction = companyConvertAction;
+    fixture.componentRef.setInput('convertAction', companyConvertAction);
     fixture.detectChanges();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component.convertAccount, 'emit');
 
-    const convertLink = fixture.nativeElement.querySelector('.govuk-grid-column-one-third a') as HTMLAnchorElement;
+    const convertLink = fixture.nativeElement.querySelector('.govuk-link') as HTMLAnchorElement;
     convertLink.click();
 
     expect(component.convertAccount.emit).toHaveBeenCalledWith();
   });
 
   it('should emit convert when the interactive individual action is clicked', () => {
-    component.convertAction = individualConvertAction;
+    fixture.componentRef.setInput('convertAction', individualConvertAction);
     fixture.detectChanges();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component.convertAccount, 'emit');
 
-    const convertLink = fixture.nativeElement.querySelector('.govuk-grid-column-one-third a') as HTMLAnchorElement;
+    const convertLink = fixture.nativeElement.querySelector('.govuk-link') as HTMLAnchorElement;
     convertLink.click();
 
     expect(component.convertAccount.emit).toHaveBeenCalledWith();

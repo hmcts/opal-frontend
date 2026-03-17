@@ -18,6 +18,7 @@ import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { finesAccStateGuard } from '../routing/guards/fines-acc-state-guard/fines-acc-state.guard';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 
 describe('FinesAccConvertComponent', () => {
   let fixture: ComponentFixture<FinesAccConvertComponent>;
@@ -34,22 +35,27 @@ describe('FinesAccConvertComponent', () => {
     party_name: ReturnType<typeof vi.fn>;
   };
 
-  const defaultHeadingData = {
+  const defaultHeadingData: IOpalFinesAccountDefendantDetailsHeader = {
     ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
     debtor_type: 'Defendant',
     party_details: {
       ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details),
       organisation_flag: false,
       individual_details: {
-        ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details.individual_details),
         title: 'Mr',
         forenames: 'Terrence',
         surname: 'CONWAY-JOHNSON',
+        date_of_birth: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details.individual_details?.date_of_birth ?? null,
+        age: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details.individual_details?.age ?? null,
+        national_insurance_number:
+          FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details.individual_details?.national_insurance_number ?? null,
+        individual_aliases:
+          FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details.individual_details?.individual_aliases ?? null,
       },
     },
   };
 
-  const companyHeadingData = {
+  const companyHeadingData: IOpalFinesAccountDefendantDetailsHeader = {
     ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
     debtor_type: 'Defendant',
     party_details: {
@@ -84,7 +90,7 @@ describe('FinesAccConvertComponent', () => {
       navigate: vi.fn().mockName('Router.navigate'),
     };
 
-    mockActivatedRoute = { snapshot: {} as never } as ActivatedRoute;
+    mockActivatedRoute = { snapshot: {} as never } as unknown as ActivatedRoute;
 
     mockPayloadService = {
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
