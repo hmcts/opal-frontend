@@ -92,9 +92,12 @@ Feature: Account Search and Matches
       | individual last name     | <lastName>      |
     And I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
     And I see the listed options "account number, reference or case number, selected tab"
-    Examples:
+    Examples: Account number and reference
       | accountNumber | reference | lastName |
       | 12345678      | REF-123   |          |
+
+    Examples: Reference and last name
+      | accountNumber | reference | lastName |
       |               | REF-123   | Smith    |
 
 
@@ -130,9 +133,12 @@ Feature: Account Search and Matches
       | account number           | <accountNumber> |
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
-    Examples:
+    Examples: Reference and company name
       | accountNumber | reference | companyName |
       |               | REF-123   | CompanyOne  |
+
+    Examples: Account number and reference
+      | accountNumber | reference | companyName |
       | 2345678       | REF-123   |             |
 
   @PO-715
@@ -172,10 +178,16 @@ Feature: Account Search and Matches
       | account number           | <accountNumber> |
       | reference or case number | <reference>     |
       | company name             | <companyName>   |
-    Examples:
+    Examples: Account number, reference, and company name
       | accountNumber | reference | companyName |
       | 12345678      | REF-123   | CompanyOne  |
+
+    Examples: Account number and company name
+      | accountNumber | reference | companyName |
       | 12345678      |           | CompanyOne  |
+
+    Examples: Reference and company name
+      | accountNumber | reference | companyName |
       |               | REF-123   | CompanyOne  |
 
   @PO-715
@@ -351,11 +363,17 @@ Feature: Account Search and Matches
       | reference or case number | <reference_value> |
     And I see the Companies search results:
       | Ref | <reference_value> |
-    Examples:
+    Examples: Case Number
+      | reference_type | reference_field                   | expected_reference_field | reference_value |
+      | Case Number    | account.prosecutor_case_reference | case_number              | CN12345         |
+
+    Examples: Police Reference Number
       | reference_type          | reference_field                   | expected_reference_field | reference_value |
-      | Case Number             | account.prosecutor_case_reference | case_number              | CN12345         |
       | Police Reference Number | account.prosecutor_case_reference | police_reference_number  | PRN67890        |
-      | Crown Court Reference   | account.prosecutor_case_reference | crown_court_reference    | CCR98765        |
+
+    Examples: Crown Court Reference
+      | reference_type        | reference_field                   | expected_reference_field | reference_value |
+      | Crown Court Reference | account.prosecutor_case_reference | crown_court_reference    | CCR98765        |
 
   @PO-709
   Scenario: Verify that the Reference or Case Number search only returns exact matches

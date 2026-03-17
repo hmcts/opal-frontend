@@ -458,9 +458,12 @@ Feature: Manual account creation - Create Draft Account
     Then I should see the header containing text '<Create account header>'
     When I click the back link on create account page I return to Create or Transfer In page - No data retained
 
-    Examples:
+    Examples: Transfer in
       | Originator type | Create account header |
       | Transfer in     | Transfer in           |
+
+    Examples: New
+      | Originator type | Create account header |
       | New             | Create account        |
 
   @PO-2766
@@ -471,9 +474,12 @@ Feature: Manual account creation - Create Draft Account
     Then I cancel create account choosing 'Ok'
     Then I should be on the dashboard
 
-    Examples:
+    Examples: without changes
       | Cancel journey state |
       | without changes      |
+
+    Examples: with changes
+      | Cancel journey state |
       | with changes         |
 
   @PO-2790
@@ -554,7 +560,10 @@ Feature: Manual account creation - Create Draft Account
     And I check the manual account details
     And I should see the entry type '<Entry type>' on the review account screen
 
-    Examples:
+    Examples: Transfer in
       | Originator type | Entry type                        |
       | Transfer in     | Transfer in from England or Wales |
-      | New             | New account                       |
+
+    Examples: New
+      | Originator type | Entry type  |
+      | New             | New account |

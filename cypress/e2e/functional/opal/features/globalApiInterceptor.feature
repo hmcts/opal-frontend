@@ -14,16 +14,40 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       Then the global error banner is displayed
       And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
-      Examples:
+      Examples: 400 response
         | errorCode |
         | 400       |
+
+      Examples: 401 response
+        | errorCode |
         | 401       |
+
+      Examples: 403 response
+        | errorCode |
         | 403       |
+
+      Examples: 404 response
+        | errorCode |
         | 404       |
+
+      Examples: 406 response
+        | errorCode |
         | 406       |
+
+      Examples: 408 response
+        | errorCode |
         | 408       |
+
+      Examples: 415 response
+        | errorCode |
         | 415       |
+
+      Examples: 503 response
+        | errorCode |
         | 503       |
+
+      Examples: 500 response
+        | errorCode |
         | 500       |
 
     @PO-2109
