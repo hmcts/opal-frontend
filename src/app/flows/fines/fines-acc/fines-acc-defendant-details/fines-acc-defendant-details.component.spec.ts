@@ -254,7 +254,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.navigateToConvertAccountPage();
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}`],
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}`,
+      ],
       {
         relativeTo: component['activatedRoute'],
       },
@@ -349,7 +351,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.navigateToConvertAccountPage();
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}`],
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}`,
+      ],
       {
         relativeTo: component['activatedRoute'],
       },

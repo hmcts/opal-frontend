@@ -37,7 +37,9 @@ describe('FinesAccPartyAddAmendConvert', () => {
   let mockActivatedRoute: {
     snapshot: {
       data: {
-        partyAddAmendConvertData: typeof OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK & { version: string };
+        partyAddAmendConvertData: typeof OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK & {
+          version: string;
+        };
       };
       params: {
         partyType: string;

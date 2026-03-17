@@ -440,12 +440,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     const targetPartyType = this.convertAction?.partyType;
 
     if (this.hasAccountMaintenancePermissionInBusinessUnit() && this.convertAction?.interactive && targetPartyType) {
-      this['router'].navigate(
-        [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${targetPartyType}`],
-        {
-          relativeTo: this.activatedRoute,
-        },
-      );
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${targetPartyType}`], {
+        relativeTo: this.activatedRoute,
+      });
     } else {
       this['router'].navigate(['/access-denied'], {
         relativeTo: this.activatedRoute,

@@ -167,10 +167,7 @@ When('I cancel converting the account to a company account', () => {
 
 Then('the Company details form should be pre-populated with:', (table: DataTable) => {
   const expectedFieldValues = Object.fromEntries(
-    Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [
-      fieldName,
-      applyUniqPlaceholder(fieldValue),
-    ]),
+    Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [fieldName, applyUniqPlaceholder(fieldValue)]),
   );
   log('assert', 'Company details form is pre-populated', expectedFieldValues);
   flow().assertCompanyDetailsPrefilledValues(expectedFieldValues);
@@ -209,10 +206,7 @@ When('I cancel converting the account to an individual account', () => {
 
 Then('the Defendant details form should be pre-populated with:', (table: DataTable) => {
   const expectedFieldValues = Object.fromEntries(
-    Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [
-      fieldName,
-      applyUniqPlaceholder(fieldValue),
-    ]),
+    Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [fieldName, applyUniqPlaceholder(fieldValue)]),
   );
   log('assert', 'Defendant details form is pre-populated', expectedFieldValues);
   flow().assertDefendantDetailsPrefilledValues(expectedFieldValues);
