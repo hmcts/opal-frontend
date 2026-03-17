@@ -214,6 +214,22 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the Defendant tab shows the convert-to-company action.
+   */
+  public assertConvertToCompanyActionVisible(): void {
+    logAE('method', 'assertConvertToCompanyActionVisible()');
+    this.defendantDetails.assertConvertToCompanyActionVisible();
+  }
+
+  /**
+   * Asserts the Defendant tab does not show the convert-to-company action.
+   */
+  public assertConvertToCompanyActionNotPresent(): void {
+    logAE('method', 'assertConvertToCompanyActionNotPresent()');
+    this.defendantDetails.assertConvertToCompanyActionNotPresent();
+  }
+
+  /**
    * Navigates to the Parent/Guardian tab and asserts a specific section header.
    *
    * @param headerText - Expected section header text.

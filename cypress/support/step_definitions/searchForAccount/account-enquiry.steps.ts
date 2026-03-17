@@ -114,6 +114,16 @@ When('I go to the Defendant details section and the header is {string}', (expect
   flow().goToDefendantDetailsAndAssert(expectedWithUniq);
 });
 
+Then('I should see the convert to company account action', () => {
+  log('assert', 'Convert to company account action is visible');
+  flow().assertConvertToCompanyActionVisible();
+});
+
+Then('I should not see the convert to company account action', () => {
+  log('assert', 'Convert to company account action is absent');
+  flow().assertConvertToCompanyActionNotPresent();
+});
+
 /**
  * @step Navigates to the Parent or guardian details section and validates the header text.
  *

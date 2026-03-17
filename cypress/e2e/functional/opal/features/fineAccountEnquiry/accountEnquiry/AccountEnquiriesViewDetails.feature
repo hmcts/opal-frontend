@@ -27,6 +27,7 @@ Feature: Account Enquiries – View Account Details
       Then I should see the page header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
       # AC3 – Navigate to Defendant details
       When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the convert to company account action
 
     @PO-1593 @866 @PO-1110 @PO-1127
     Scenario: Defendant edit warning retains changes when I stay on the form
@@ -79,6 +80,7 @@ Feature: Account Enquiries – View Account Details
       Then I should see the account header contains "Accdetail comp{uniq}"
       # AC3 – Navigate to Company details
       When I go to the Defendant details section and the header is "Company details"
+      Then I should not see the convert to company account action
 
     @967 @PO-1111 @PO-1128
     Scenario: Company edit warning retains changes when I stay on the form
@@ -131,6 +133,7 @@ Feature: Account Enquiries – View Account Details
       Then I should see the page header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
       # AC3 – Navigate to Defendant details
       When I go to the Defendant details section and the header is "Defendant details"
+      Then I should not see the convert to company account action
 
     @PO-2315 @PO-1663
     Scenario: Defendant edit warning retains changes for a non-paying account when I stay

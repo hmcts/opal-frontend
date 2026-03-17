@@ -55,6 +55,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -177,6 +178,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     } else {
       return 'permission';
     }
+  }
+
+  private hasAccountMaintenancePermissionInBusinessUnit(): boolean {
+    return this.permissionsService.hasBusinessUnitPermissionAccess(
+      FINES_PERMISSIONS['account-maintenance'],
+      Number(this.accountStore.business_unit_id()!),
+      this.userState.business_unit_users,
+    );
   }
 
   /**
@@ -385,20 +394,36 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.refreshFragment$.complete();
   }
 
+  public get canShowConvertToCompanyAction(): boolean {
+    const isAdultOrYouthOnlyAccount = this.accountData.debtor_type !== this.debtorTypes.parentGuardian;
+
+    return (
+      !this.accountData.party_details.organisation_flag &&
+      isAdultOrYouthOnlyAccount &&
+      this.hasAccountMaintenancePermissionInBusinessUnit()
+    );
+  }
+
   /**
    * Navigates to the amend party details page for the specified party type.
    * Or navigates to the access-denied page if the user lacks the required permission in this BU.
    * @param partyType
    */
   public navigateToAmendPartyDetailsPage(partyType: string): void {
-    if (
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['account-maintenance'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
+    if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
       this['router'].navigate([`../party/${partyType}/amend`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
+  }
+
+  public navigateToConvertToCompanyAccountPage(): void {
+    if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
+      this['router'].navigate([`../party/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`], {
         relativeTo: this.activatedRoute,
       });
     } else {

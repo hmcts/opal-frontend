@@ -14,16 +14,13 @@ import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party
 export class FinesAccDefendantDetailsDefendantTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty;
   @Input() hasAccountMaintenencePermission: boolean = false;
+  @Input() showConvertToCompanyAction: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Output() changeDefendantDetails = new EventEmitter<string>();
-  @Output() convertAccount = new EventEmitter<string>();
+  @Output() convertToCompanyAccount = new EventEmitter<void>();
 
-  public handleConvertAccount(): void {
-    if (this.tabData.defendant_account_party.party_details.organisation_flag) {
-      this.convertAccount.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
-    } else {
-      this.convertAccount.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL);
-    }
+  public handleConvertToCompanyAccount(): void {
+    this.convertToCompanyAccount.emit();
   }
 
   public handleChangeDefendantDetails(): void {

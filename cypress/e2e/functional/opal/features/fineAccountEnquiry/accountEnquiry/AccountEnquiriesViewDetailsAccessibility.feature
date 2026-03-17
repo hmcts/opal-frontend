@@ -21,7 +21,9 @@ Feature: Account Enquiries - View Account Details Accessibility
     ## Check Accessibility on Search Results Page
     Then I check the page for accessibility
     And I select the latest published account and verify the header is "Mr John ACCDETAILSURNAME{uniqUpper}"
-    ## Check Accessibility on Account Details Page
+    And I go to the Defendant details section and the header is "Defendant details"
+    And I should see the convert to company account action
+    ## Check Accessibility on Defendant Details Page
     Then I check the page for accessibility
 
   Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
@@ -38,6 +40,8 @@ Feature: Account Enquiries - View Account Details Accessibility
     When I search for the account by company name "Accdetail comp{uniq}"
     # Check Accessibility on Company Search Results Page
     Then I check the page for accessibility
-    # Check Accessibility on Company Account Details Page
+    # Check Accessibility on Company Defendant Details Page
     And I select the latest published account and verify the header is "Accdetail comp{uniqUpper}"
+    And I go to the Defendant details section and the header is "Company details"
+    And I should not see the convert to company account action
     Then I check the page for accessibility

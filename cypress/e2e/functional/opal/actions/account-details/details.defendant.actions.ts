@@ -56,4 +56,20 @@ export class AccountDetailsDefendantActions {
   assertDefendantNameContains(expected: string): void {
     cy.get(L.defendant.fields.name, this.common.getTimeoutOptions()).should('contain.text', expected);
   }
+
+  /**
+   * Asserts that the convert-to-company action is visible in the Defendant tab.
+   */
+  assertConvertToCompanyActionVisible(): void {
+    cy.get(L.actions.convertToCompany, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .and('contain.text', 'Convert to a company account');
+  }
+
+  /**
+   * Asserts that the convert-to-company action is not rendered in the Defendant tab.
+   */
+  assertConvertToCompanyActionNotPresent(): void {
+    cy.get(L.actions.convertToCompany, this.common.getTimeoutOptions()).should('not.exist');
+  }
 }

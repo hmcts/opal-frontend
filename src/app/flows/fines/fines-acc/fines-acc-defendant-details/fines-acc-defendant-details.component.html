@@ -160,10 +160,11 @@
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [showConvertToCompanyAction]="canShowConvertToCompanyAction"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
-        (convertAccount)="navigateToAmendPartyDetailsPage($event)"
+        (convertToCompanyAccount)="navigateToConvertToCompanyAccountPage()"
       ></app-fines-acc-defendant-details-defendant-tab>
     }
   }
