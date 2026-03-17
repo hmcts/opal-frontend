@@ -1,0 +1,97 @@
+:host ::ng-deep tr.defendant-main-row-with-checks > .govuk-table__cell {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+:host ::ng-deep tr.defendant-checks-row > .govuk-table__cell {
+  border-top: 0;
+  padding-top: 0;
+}
+
+:host ::ng-deep .govuk-table__cell {
+  font-size: 16px;
+}
+
+:host ::ng-deep th[columnKey='Account'],
+:host ::ng-deep #defendantAccountNumber {
+  min-width: 8rem;
+}
+
+:host ::ng-deep th[columnKey='Name'],
+:host ::ng-deep #defendantName {
+  min-width: 12rem;
+}
+
+:host ::ng-deep th[columnKey='Aliases'],
+:host ::ng-deep #defendantAliases {
+  min-width: 12rem;
+}
+
+:host ::ng-deep th[columnKey='Date of birth'],
+:host ::ng-deep #defendantDateOfBirth {
+  min-width: 8.5rem;
+}
+
+:host ::ng-deep th[columnKey='Address line 1'],
+:host ::ng-deep #defendantAddressLine1 {
+  min-width: 12rem;
+}
+
+:host ::ng-deep th[columnKey='Postcode'],
+:host ::ng-deep #defendantPostcode {
+  min-width: 7rem;
+}
+
+:host ::ng-deep th[columnKey='ENF'],
+:host ::ng-deep #defendantEnforcement {
+  min-width: 6rem;
+}
+
+:host ::ng-deep th[columnKey='Balance'],
+:host ::ng-deep #defendantBalance {
+  min-width: 8rem;
+}
+
+:host ::ng-deep th[columnKey='NI number'],
+:host ::ng-deep #defendantNationalInsuranceNumber {
+  min-width: 10rem;
+}
+
+:host ::ng-deep th[columnKey='Ref'],
+:host ::ng-deep #defendantRef {
+  min-width: 10rem;
+}
+
+.defendant-check-message {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.defendant-check-message__text {
+  margin-top: 0.1rem;
+}
+
+.defendant-check-message-group:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.defendant-check-message-list {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+:host ::ng-deep .govuk-form-group {
+  margin-bottom: 0;
+}
+
+@media (min-width: 40.0625em) {
+  :host ::ng-deep .govuk-form-group {
+    margin-bottom: 0;
+  }
+}
+
+:host ::ng-deep .govuk-table__header,
+:host ::ng-deep .govuk-table__cell {
+  vertical-align: middle;
+}

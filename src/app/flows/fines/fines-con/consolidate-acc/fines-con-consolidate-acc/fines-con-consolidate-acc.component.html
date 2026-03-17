@@ -54,23 +54,29 @@
   </opal-lib-moj-sub-navigation>
 </div>
 
-<div class="govuk-grid-two-thirds">
-  @switch (finesConStore.activeTab()) {
-    @case ('search') {
-      <app-fines-con-search-account [defendantType]="getDefendantType()"></app-fines-con-search-account>
-    }
-    @case ('results') {
-      <div class="tab-content">
-        <!-- Results tab content will be loaded here from routing -->
-      </div>
-    }
-    @case ('for-consolidation') {
+@switch (finesConStore.activeTab()) {
+  @case ('search') {
+    <app-fines-con-search-account
+      [defendantType]="getDefendantType()"
+      (searchPayload)="handleSearchPayload($event)"
+    ></app-fines-con-search-account>
+  }
+  @case ('results') {
+    <div class="govuk-grid-column-full">
+      <app-fines-con-search-result
+        [defendantType]="getDefendantType()"
+        [searchPayload]="defendantAccountsSearchPayload"
+      ></app-fines-con-search-result>
+    </div>
+  }
+  @case ('for-consolidation') {
+    <div class="govuk-grid-column-full">
       <div class="tab-content">
         <!-- For consolidation tab content will be loaded here from routing -->
       </div>
-    }
+    </div>
   }
-</div>
+}
 
 <div class="govuk-grid-column-full">
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />

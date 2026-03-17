@@ -1,0 +1,10 @@
+@if (tableData.length > 0) {
+  <app-fines-con-search-result-defendant-table-wrapper
+    [tableData]="tableData"
+    [checksByAccountId]="checksByAccountId"
+    [existingSortState]="defendantsSort"
+    (accountIdClicked)="onAccountIdClick($event)"
+  ></app-fines-con-search-result-defendant-table-wrapper>
+} @else {
+  <h2 class="govuk-heading-m">There are no matching results</h2>
+}

@@ -1,0 +1,3 @@
+export const FINES_CON_PAYLOAD_MAP_DEFENDANT_ACCOUNTS_RESPONSE_INVALID_VALUE_MOCK = {
+  defendant_accounts: 42,
+};

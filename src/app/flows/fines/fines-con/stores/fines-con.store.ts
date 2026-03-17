@@ -5,12 +5,15 @@ import { IFinesConSelectBuForm } from '../select-business-unit/fines-con-select-
 import { FINES_CON_SELECT_BU_FORM } from '../select-business-unit/fines-con-select-bu/constants/fines-con-select-bu-form.constant';
 import { IFinesConSearchAccountState } from '../consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
 import { FINES_CON_SEARCH_ACCOUNT_STATE } from '../consolidate-acc/fines-con-search-account/constants/fines-con-search-account-state.constant';
+import { IFinesConSearchResultDefendantAccount } from '../consolidate-acc/fines-con-search-result/interfaces/fines-con-search-result-defendant-account.interface';
 
 export const FinesConStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
     selectBuForm: FINES_CON_SELECT_BU_FORM,
     searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+    individualResults: [] as IFinesConSearchResultDefendantAccount[],
+    companyResults: [] as IFinesConSearchResultDefendantAccount[],
     activeTab: 'search',
     stateChanges: false,
     unsavedChanges: false,
@@ -21,6 +24,8 @@ export const FinesConStore = signalStore(
         patchState(store, {
           selectBuForm: FINES_CON_SELECT_BU_FORM,
           searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+          individualResults: [],
+          companyResults: [],
           activeTab: 'search',
           stateChanges: false,
           unsavedChanges: false,
@@ -56,6 +61,8 @@ export const FinesConStore = signalStore(
           formData,
         },
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+        individualResults: [],
+        companyResults: [],
         stateChanges: true,
       });
     },
@@ -87,6 +94,21 @@ export const FinesConStore = signalStore(
     resetSearchAccountForm(): void {
       patchState(store, {
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+        individualResults: [],
+        companyResults: [],
+      });
+    },
+
+    /**
+     * Updates both individual and company search result buckets.
+     */
+    updateDefendantResults(
+      individualResults: IFinesConSearchResultDefendantAccount[],
+      companyResults: IFinesConSearchResultDefendantAccount[],
+    ): void {
+      patchState(store, {
+        individualResults,
+        companyResults,
       });
     },
 
@@ -97,6 +119,8 @@ export const FinesConStore = signalStore(
       patchState(store, {
         selectBuForm: FINES_CON_SELECT_BU_FORM,
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+        individualResults: [],
+        companyResults: [],
         stateChanges: false,
         activeTab: 'search',
         unsavedChanges: false,
