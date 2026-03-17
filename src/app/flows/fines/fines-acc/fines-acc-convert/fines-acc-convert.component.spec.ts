@@ -49,6 +49,20 @@ describe('FinesAccConvertComponent', () => {
     },
   };
 
+  const companyHeadingData = {
+    ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+    debtor_type: 'Defendant',
+    party_details: {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details),
+      organisation_flag: true,
+      organisation_details: {
+        organisation_name: 'Accdetail comp limited',
+        organisation_aliases: [],
+      },
+      individual_details: null,
+    },
+  };
+
   const configureRoute = (
     partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
     headingData = defaultHeadingData,
@@ -166,6 +180,23 @@ describe('FinesAccConvertComponent', () => {
     expect(compiled.textContent).toContain('No - cancel');
   });
 
+  it('should render the caption, heading, warning text, and action buttons for individual conversion', () => {
+    mockAccountStore.party_name.mockReturnValue('Accdetail comp limited');
+    configureRoute(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL, companyHeadingData);
+
+    createComponent();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('06000427N - Accdetail comp limited');
+    expect(compiled.textContent).toContain('Are you sure you want to convert this account to an individual account?');
+    expect(compiled.textContent).toContain(
+      'Some information specific to company accounts, such as company name, will be removed.',
+    );
+    expect(compiled.textContent).toContain('Yes - continue');
+    expect(compiled.textContent).toContain('No - cancel');
+  });
+
   it('should navigate to the company details page when continue is clicked', () => {
     createComponent();
 
@@ -176,6 +207,26 @@ describe('FinesAccConvertComponent', () => {
         '../../',
         FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party,
         FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
+        FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
+      ],
+      {
+        relativeTo: mockActivatedRoute,
+      },
+    );
+  });
+
+  it('should navigate to the defendant details page when continuing individual conversion', () => {
+    configureRoute(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL, companyHeadingData);
+
+    createComponent();
+
+    component.handleContinue();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [
+        '../../',
+        FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party,
+        FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
         FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
       ],
       {
@@ -196,7 +247,18 @@ describe('FinesAccConvertComponent', () => {
   });
 
   it('should redirect back to defendant details when partyType is unsupported', () => {
-    configureRoute(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL);
+    configureRoute('unsupported-target');
+
+    createComponent();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../', FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'defendant',
+    });
+  });
+
+  it('should redirect back to defendant details when an individual account tries to convert to individual', () => {
+    configureRoute(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL, defaultHeadingData);
 
     createComponent();
 

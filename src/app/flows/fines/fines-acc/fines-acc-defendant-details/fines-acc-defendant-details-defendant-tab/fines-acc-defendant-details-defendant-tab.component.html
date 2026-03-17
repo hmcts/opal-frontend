@@ -1,5 +1,5 @@
 @if (tabData.defendant_account_party; as party) {
-  <div [class]="showConvertToCompanyAction ? 'govuk-grid-column-two-thirds' : 'govuk-grid-column-full'">
+  <div [class]="convertAction ? 'govuk-grid-column-two-thirds' : 'govuk-grid-column-full'">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         @if (party.party_details.organisation_flag) {
@@ -29,17 +29,18 @@
       summaryListId="defendantDetails"
     ></app-fines-acc-party-details>
   </div>
-  @if (showConvertToCompanyAction) {
+  @if (convertAction) {
     <div class="govuk-grid-column-one-third">
       <hr [class]="style.hr" />
       <h2 [class]="style.heading">Actions</h2>
       <p>
-        <a
-          tabindex="0"
-          (click)="handleConvertToCompanyAccount()"
-          (keyup.enter)="handleConvertToCompanyAccount()"
-          >Convert to a company account</a
-        >
+        @if (convertAction.interactive) {
+          <a tabindex="0" (click)="handleConvertAccount()" (keyup.enter)="handleConvertAccount()">{{
+            convertAction.label
+          }}</a>
+        } @else {
+          <span>{{ convertAction.label }}</span>
+        }
       </p>
     </div>
   }

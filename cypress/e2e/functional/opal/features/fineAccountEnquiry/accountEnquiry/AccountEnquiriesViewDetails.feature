@@ -98,7 +98,8 @@ Feature: Account Enquiries – View Account Details
       Then I should see the account header contains "Accdetail comp{uniq}"
       # AC3 – Navigate to Company details
       When I go to the Defendant details section and the header is "Company details"
-      Then I should not see the convert to company account action
+      Then I should see the convert to individual account action
+      And I should not see the convert to company account text
 
     @967 @PO-1111 @PO-1128
     Scenario: Company edit warning retains changes when I stay on the form
@@ -136,6 +137,25 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Accdetail comp updated{uniq}"
       And I verify no amendments were created via API for company details
+
+    @PO-1956
+    Scenario: Convert to individual confirmation continues to Defendant details with shared fields pre-populated
+      When I start converting the account to an individual account
+      Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
+      When I continue converting the account to an individual account
+      Then I should be on the Defendant details convert route
+      And the Defendant details form should be pre-populated with:
+        | Postcode              | AB23 4RN                     |
+        | Primary email address | Accdetailcomp{uniq}@test.com |
+
+    @PO-1956
+    Scenario: Convert to individual confirmation cancel returns to Defendant details with no changes made
+      When I start converting the account to an individual account
+      Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
+      When I cancel converting the account to an individual account
+      Then I should return to the account details page Defendant tab
+      And I should see the convert to individual account action
+      And I should not see the convert to company account text
 
   Rule: Non-paying defendant account baseline
     Background:

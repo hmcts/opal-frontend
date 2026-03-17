@@ -248,10 +248,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
-  it('should navigate to the company amend page when convert-to-company is triggered', () => {
+  it('should navigate to the company convert page when interactive convert is triggered', () => {
     routerSpy.navigate.mockClear();
 
-    component.navigateToConvertToCompanyAccountPage();
+    component.navigateToConvertAccountPage();
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}`],
@@ -289,53 +289,80 @@ describe('FinesAccDefendantDetailsComponent', () => {
     });
   });
 
-  it('should navigate to access-denied if user lacks permission for convert-to-company', () => {
+  it('should navigate to access-denied if user lacks permission for convert action', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
-    component.navigateToConvertToCompanyAccountPage();
+    component.navigateToConvertAccountPage();
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });
   });
 
-  it('should show convert-to-company action for an adult individual account with account maintenance permission', () => {
+  it('should show interactive convert-to-company action for an adult individual account with account maintenance permission', () => {
     component.accountData.party_details.organisation_flag = false;
     component.accountData.debtor_type = 'Defendant';
     component.accountData.is_youth = false;
 
-    expect(component.canShowConvertToCompanyAction).toBe(true);
+    expect(component.convertAction).toEqual({
+      interactive: true,
+      label: 'Convert to a company account',
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
+    });
   });
 
-  it('should show convert-to-company action for a youth individual account with account maintenance permission', () => {
+  it('should show interactive convert-to-company action for a youth individual account with account maintenance permission', () => {
     component.accountData.party_details.organisation_flag = false;
     component.accountData.debtor_type = 'Defendant';
     component.accountData.is_youth = true;
 
-    expect(component.canShowConvertToCompanyAction).toBe(true);
+    expect(component.convertAction).toEqual({
+      interactive: true,
+      label: 'Convert to a company account',
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
+    });
   });
 
-  it('should hide convert-to-company action for an account with parent or guardian to pay', () => {
+  it('should hide convert action for an account with parent or guardian to pay', () => {
     component.accountData.party_details.organisation_flag = false;
     component.accountData.debtor_type = component.debtorTypes.parentGuardian;
 
-    expect(component.canShowConvertToCompanyAction).toBe(false);
+    expect(component.convertAction).toBeNull();
   });
 
-  it('should hide convert-to-company action for a company account', () => {
+  it('should show display-only convert-to-individual action for a company account', () => {
     component.accountData.party_details.organisation_flag = true;
     component.accountData.debtor_type = 'Defendant';
 
-    expect(component.canShowConvertToCompanyAction).toBe(false);
+    expect(component.convertAction).toEqual({
+      interactive: true,
+      label: 'Convert to an individual account',
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
+    });
   });
 
-  it('should hide convert-to-company action when account maintenance permission is not available', () => {
+  it('should navigate to the individual convert page when interactive company convert is triggered', () => {
+    routerSpy.navigate.mockClear();
+    component.accountData.party_details.organisation_flag = true;
+    component.accountData.debtor_type = 'Defendant';
+
+    component.navigateToConvertAccountPage();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should hide convert action when account maintenance permission is not available', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
     component.accountData.party_details.organisation_flag = false;
     component.accountData.debtor_type = 'Defendant';
 
-    expect(component.canShowConvertToCompanyAction).toBe(false);
+    expect(component.convertAction).toBeNull();
   });
 
   it('should navigate to the change defendant payment terms access denied page if user does not have the relevant permission', () => {

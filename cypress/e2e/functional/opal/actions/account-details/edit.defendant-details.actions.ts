@@ -5,11 +5,28 @@
 
 import { DefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.defendant.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('EditDefendantDetailsActions');
 
 /** Actions for editing defendant details within Account Details. */
 export class EditDefendantDetailsActions {
+  private static readonly DEFAULT_TIMEOUT = 10_000;
+  private readonly common = new CommonActions();
+  private readonly defendantFieldLocators = {
+    'Address line 1': L.addressLine1Input,
+    'Address line 2': L.addressLine2Input,
+    'Address line 3': L.addressLine3Input,
+    Postcode: L.postcodeInput,
+    'Primary email address': L.primaryEmailInput,
+    'Secondary email address': L.secondaryEmailInput,
+    'Mobile telephone number': L.mobileTelInput,
+    'Home telephone number': L.homeTelInput,
+    'Work telephone number': L.workTelInput,
+    'Make and model': L.vehicleMakeModelInput,
+    'Registration number': L.vehicleRegInput,
+  } as const;
+
   /**
    * Ensures the user is still on the edit page (form visible, not navigated away).
    */
@@ -17,6 +34,35 @@ export class EditDefendantDetailsActions {
     log('assert', 'Asserting Defendant Details edit form is visible');
     cy.get(L.form.selector, { timeout: 10_000 }).should('be.visible');
     log('done', 'Defendant Details edit form confirmed visible');
+  }
+
+  /**
+   * Asserts the convert handoff lands on the Defendant details convert route.
+   */
+  public assertOnConvertRoute(): void {
+    log('assert', 'Asserting Defendant details convert route');
+    cy.location('pathname', { timeout: this.common.getPathTimeout() }).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/party\/individual\/convert$/,
+    );
+    cy.get(L.form.selector, { timeout: EditDefendantDetailsActions.DEFAULT_TIMEOUT }).should('be.visible');
+  }
+
+  /**
+   * Asserts Defendant details form fields are pre-populated with the expected values.
+   *
+   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
+   */
+  public assertPrefilledFieldValues(expectedFieldValues: Record<string, string>): void {
+    Object.entries(expectedFieldValues).forEach(([fieldName, expectedValue]) => {
+      const fieldSelector = this.defendantFieldLocators[fieldName as keyof typeof this.defendantFieldLocators];
+      if (!fieldSelector) {
+        throw new Error(`Unsupported defendant prefill field: ${fieldName}`);
+      }
+
+      log('assert', 'Asserting defendant field prefill', { fieldName, expectedValue });
+      cy.get(fieldSelector.selector, this.common.getTimeoutOptions()).should('have.value', expectedValue);
+    });
   }
 
   /**

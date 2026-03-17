@@ -4,6 +4,7 @@ import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party-details.component';
+import { IFinesAccDefendantDetailsConvertAction } from '../interfaces/fines-acc-defendant-details-convert-action.interface';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-defendant-tab',
@@ -14,13 +15,15 @@ import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party
 export class FinesAccDefendantDetailsDefendantTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty;
   @Input() hasAccountMaintenencePermission: boolean = false;
-  @Input() showConvertToCompanyAction: boolean = false;
+  @Input() convertAction: IFinesAccDefendantDetailsConvertAction | null = null;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Output() changeDefendantDetails = new EventEmitter<string>();
-  @Output() convertToCompanyAccount = new EventEmitter<void>();
+  @Output() convertAccount = new EventEmitter<void>();
 
-  public handleConvertToCompanyAccount(): void {
-    this.convertToCompanyAccount.emit();
+  public handleConvertAccount(): void {
+    if (this.convertAction?.interactive) {
+      this.convertAccount.emit();
+    }
   }
 
   public handleChangeDefendantDetails(): void {

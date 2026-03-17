@@ -119,9 +119,19 @@ Then('I should see the convert to company account action', () => {
   flow().assertConvertToCompanyActionVisible();
 });
 
+Then('I should see the convert to individual account action', () => {
+  log('assert', 'Convert to individual account action is visible');
+  flow().assertConvertToIndividualActionVisible();
+});
+
 Then('I should not see the convert to company account action', () => {
   log('assert', 'Convert to company account action is absent');
   flow().assertConvertToCompanyActionNotPresent();
+});
+
+Then('I should not see the convert to company account text', () => {
+  log('assert', 'Convert to company account text is absent from the visible action');
+  flow().assertConvertToCompanyActionTextNotPresent();
 });
 
 When('I start converting the account to a company account', () => {
@@ -164,6 +174,48 @@ Then('the Company details form should be pre-populated with:', (table: DataTable
   );
   log('assert', 'Company details form is pre-populated', expectedFieldValues);
   flow().assertCompanyDetailsPrefilledValues(expectedFieldValues);
+});
+
+When('I start converting the account to an individual account', () => {
+  log('step', 'Start converting account to individual');
+  flow().openConvertToIndividualConfirmation();
+});
+
+Then(
+  'I should see the convert to individual confirmation screen for company {string}',
+  (expectedCaptionName: string) => {
+    const expectedCaptionNameWithUniq = applyUniqPlaceholder(expectedCaptionName);
+    log('assert', 'Convert to individual confirmation screen is visible', {
+      expectedCaptionName: expectedCaptionNameWithUniq,
+    });
+    flow().assertOnConvertToIndividualConfirmation(expectedCaptionNameWithUniq);
+  },
+);
+
+When('I continue converting the account to an individual account', () => {
+  log('step', 'Continue converting account to individual');
+  flow().confirmConvertToIndividualAccount();
+});
+
+Then('I should be on the Defendant details convert route', () => {
+  log('assert', 'Defendant details convert route is active');
+  flow().assertOnDefendantDetailsConvertRoute();
+});
+
+When('I cancel converting the account to an individual account', () => {
+  log('step', 'Cancel converting account to individual');
+  flow().cancelConvertToIndividualAccount();
+});
+
+Then('the Defendant details form should be pre-populated with:', (table: DataTable) => {
+  const expectedFieldValues = Object.fromEntries(
+    Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [
+      fieldName,
+      applyUniqPlaceholder(fieldValue),
+    ]),
+  );
+  log('assert', 'Defendant details form is pre-populated', expectedFieldValues);
+  flow().assertDefendantDetailsPrefilledValues(expectedFieldValues);
 });
 
 /**

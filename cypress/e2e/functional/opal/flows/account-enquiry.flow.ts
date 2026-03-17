@@ -224,11 +224,27 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the Defendant tab shows the convert-to-individual action.
+   */
+  public assertConvertToIndividualActionVisible(): void {
+    logAE('method', 'assertConvertToIndividualActionVisible()');
+    this.defendantDetails.assertConvertToIndividualActionVisible();
+  }
+
+  /**
    * Asserts the Defendant tab does not show the convert-to-company action.
    */
   public assertConvertToCompanyActionNotPresent(): void {
     logAE('method', 'assertConvertToCompanyActionNotPresent()');
     this.defendantDetails.assertConvertToCompanyActionNotPresent();
+  }
+
+  /**
+   * Asserts the visible convert action is not the company-convert label.
+   */
+  public assertConvertToCompanyActionTextNotPresent(): void {
+    logAE('method', 'assertConvertToCompanyActionTextNotPresent()');
+    this.defendantDetails.assertConvertToCompanyActionTextNotPresent();
   }
 
   /**
@@ -238,6 +254,15 @@ export class AccountEnquiryFlow {
     logAE('method', 'openConvertToCompanyConfirmation()');
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.startConvertToCompanyAccount();
+  }
+
+  /**
+   * Opens the convert-to-individual confirmation page from the Defendant tab.
+   */
+  public openConvertToIndividualConfirmation(): void {
+    logAE('method', 'openConvertToIndividualConfirmation()');
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.startConvertToIndividualAccount();
   }
 
   /**
@@ -267,6 +292,32 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts the convert-to-individual confirmation page.
+   *
+   * @param expectedCaptionName - Expected company name shown in the caption.
+   */
+  public assertOnConvertToIndividualConfirmation(expectedCaptionName: string): void {
+    logAE('method', 'assertOnConvertToIndividualConfirmation()', { expectedCaptionName });
+    this.accountConvert.assertOnConvertToIndividualConfirmation(expectedCaptionName);
+  }
+
+  /**
+   * Confirms the convert-to-individual action.
+   */
+  public confirmConvertToIndividualAccount(): void {
+    logAE('method', 'confirmConvertToIndividualAccount()');
+    this.accountConvert.confirmConvertToIndividual();
+  }
+
+  /**
+   * Cancels the convert-to-individual action.
+   */
+  public cancelConvertToIndividualAccount(): void {
+    logAE('method', 'cancelConvertToIndividualAccount()');
+    this.accountConvert.cancelConvertToIndividual();
+  }
+
+  /**
    * Asserts the Company details form contains the expected pre-populated values.
    *
    * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
@@ -282,6 +333,24 @@ export class AccountEnquiryFlow {
   public assertOnCompanyDetailsConvertRoute(): void {
     logAE('method', 'assertOnCompanyDetailsConvertRoute()');
     this.editCompanyDetailsActions.assertOnConvertRoute();
+  }
+
+  /**
+   * Asserts the convert flow lands on the Defendant details convert route.
+   */
+  public assertOnDefendantDetailsConvertRoute(): void {
+    logAE('method', 'assertOnDefendantDetailsConvertRoute()');
+    this.editDefendantDetailsActions.assertOnConvertRoute();
+  }
+
+  /**
+   * Asserts the Defendant details form contains the expected pre-populated values.
+   *
+   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
+   */
+  public assertDefendantDetailsPrefilledValues(expectedFieldValues: Record<string, string>): void {
+    logAE('method', 'assertDefendantDetailsPrefilledValues()', expectedFieldValues);
+    this.editDefendantDetailsActions.assertPrefilledFieldValues(expectedFieldValues);
   }
 
   /**

@@ -858,5 +858,58 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
       expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe('XY21 ABC');
     });
+
+    it('should preserve only shared fields when converting a company account to individual', () => {
+      const mockCompanyData = {
+        ...mockDefendantData,
+        defendant_account_party: {
+          ...mockDefendantData.defendant_account_party,
+          party_details: {
+            ...mockDefendantData.defendant_account_party.party_details,
+            organisation_flag: true,
+            organisation_details: {
+              organisation_name: 'Convert Me Ltd',
+              organisation_aliases: [
+                {
+                  alias_id: 'ORG-1',
+                  sequence_number: 1,
+                  organisation_name: 'Convert Alias Ltd',
+                },
+              ],
+            },
+            individual_details: null,
+          },
+          employer_details: null,
+        },
+      };
+
+      const result = transformDefendantAccountPartyPayload(mockCompanyData, 'individual', true);
+
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(false);
+
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull();
+      expect(result.facc_party_add_amend_convert_surname).toBeNull();
+      expect(result.facc_party_add_amend_convert_dob).toBeNull();
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBeNull();
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_reference).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_email_address).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_telephone_number).toBeNull();
+
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_address_line_2).toBe('Flat 2B');
+      expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe('sarah.thompson@example.com');
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe('s.thompson@workmail.com');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe('07700900123');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe('02071234567');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe('01632960123');
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe('XY21 ABC');
+    });
   });
 });

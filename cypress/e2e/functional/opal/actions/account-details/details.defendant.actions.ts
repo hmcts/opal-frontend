@@ -61,22 +61,47 @@ export class AccountDetailsDefendantActions {
    * Asserts that the convert-to-company action is visible in the Defendant tab.
    */
   assertConvertToCompanyActionVisible(): void {
-    cy.get(L.actions.convertToCompany, this.common.getTimeoutOptions())
+    cy.get(L.actions.convertAction, this.common.getTimeoutOptions())
       .should('be.visible')
       .and('contain.text', 'Convert to a company account');
+  }
+
+  /**
+   * Asserts that the convert-to-individual action is visible in the Defendant tab.
+   */
+  assertConvertToIndividualActionVisible(): void {
+    cy.get(L.actions.convertAction, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .and('contain.text', 'Convert to an individual account');
+  }
+
+  /**
+   * Asserts that the visible convert action does not contain the company label.
+   */
+  assertConvertToCompanyActionTextNotPresent(): void {
+    cy.get(L.actions.convertAction, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .and('not.contain.text', 'Convert to a company account');
   }
 
   /**
    * Clicks the convert-to-company action from the Defendant tab.
    */
   startConvertToCompanyAccount(): void {
-    cy.get(L.actions.convertToCompany, this.common.getTimeoutOptions()).should('be.visible').click();
+    cy.get(L.actions.convertActionLink, this.common.getTimeoutOptions()).should('be.visible').click();
+  }
+
+  /**
+   * Clicks the convert-to-individual action from the Defendant tab.
+   */
+  startConvertToIndividualAccount(): void {
+    cy.get(L.actions.convertActionLink, this.common.getTimeoutOptions()).should('be.visible').click();
   }
 
   /**
    * Asserts that the convert-to-company action is not rendered in the Defendant tab.
    */
   assertConvertToCompanyActionNotPresent(): void {
-    cy.get(L.actions.convertToCompany, this.common.getTimeoutOptions()).should('not.exist');
+    cy.get(L.actions.convertAction, this.common.getTimeoutOptions()).should('not.exist');
   }
 }

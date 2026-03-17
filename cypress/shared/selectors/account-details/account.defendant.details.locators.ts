@@ -169,7 +169,10 @@ export const AccountDefendantDetailsLocators = {
     /** Container for the right column actions within Defendant tab. */
     sideColumn: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-column-one-third',
 
-    /** “Convert to a company account” action link. */
-    convertToCompany: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-column-one-third p > a',
+    /** Convert action text within the Defendant tab actions column. */
+    convertAction: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-column-one-third p',
+
+    /** Interactive convert action link, when present. */
+    convertActionLink: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-column-one-third p > a',
   },
 };

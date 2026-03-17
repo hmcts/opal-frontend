@@ -39,12 +39,20 @@ export class FinesAccConvertComponent implements OnInit {
     );
   }
 
-  private get canConvertToCompanyAccount(): boolean {
-    return (
-      this.routePartyType === this.partyTypes.COMPANY &&
-      !this.accountData.party_details.organisation_flag &&
-      this.accountData.debtor_type !== FINES_ACC_DEBTOR_TYPES.parentGuardian
-    );
+  private get isSourceCompanyAccount(): boolean {
+    return this.accountData.party_details.organisation_flag;
+  }
+
+  private get canConvertAccount(): boolean {
+    if (this.routePartyType === this.partyTypes.COMPANY) {
+      return !this.isSourceCompanyAccount && this.accountData.debtor_type !== FINES_ACC_DEBTOR_TYPES.parentGuardian;
+    }
+
+    if (this.routePartyType === this.partyTypes.INDIVIDUAL) {
+      return this.isSourceCompanyAccount;
+    }
+
+    return false;
   }
 
   public get captionText(): string {
@@ -52,23 +60,31 @@ export class FinesAccConvertComponent implements OnInit {
   }
 
   public get headingText(): string {
+    if (this.routePartyType === this.partyTypes.INDIVIDUAL) {
+      return 'Are you sure you want to convert this account to an individual account?';
+    }
+
     return 'Are you sure you want to convert this account to a company account?';
   }
 
   public get warningText(): string {
+    if (this.routePartyType === this.partyTypes.INDIVIDUAL) {
+      return 'Some information specific to company accounts, such as company name, will be removed.';
+    }
+
     return 'Certain data related to individual accounts, such as employment details, will be removed.';
   }
 
   public ngOnInit(): void {
     this.getHeaderDataFromRoute();
 
-    if (!this.canConvertToCompanyAccount) {
+    if (!this.canConvertAccount) {
       this.navigateBackToAccountSummary();
     }
   }
 
   public handleContinue(): void {
-    if (!this.canConvertToCompanyAccount) {
+    if (!this.canConvertAccount) {
       this.navigateBackToAccountSummary();
       return;
     }
@@ -77,7 +93,7 @@ export class FinesAccConvertComponent implements OnInit {
       [
         '../../',
         FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party,
-        FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
+        this.routePartyType,
         FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
       ],
       {

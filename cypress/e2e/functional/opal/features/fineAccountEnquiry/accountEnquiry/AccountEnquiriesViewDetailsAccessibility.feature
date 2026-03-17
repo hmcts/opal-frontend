@@ -46,5 +46,9 @@ Feature: Account Enquiries - View Account Details Accessibility
     # Check Accessibility on Company Defendant Details Page
     And I select the latest published account and verify the header is "Accdetail comp{uniqUpper}"
     And I go to the Defendant details section and the header is "Company details"
-    And I should not see the convert to company account action
+    And I should see the convert to individual account action
+    And I should not see the convert to company account text
     Then I check the page for accessibility
+    When I start converting the account to an individual account
+    Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
+    And I check the page for accessibility
