@@ -6,6 +6,7 @@ import { GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOC
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_EXISTING_SORT_STATE_MOCK } from './mocks/fines-con-search-result-defendant-table-wrapper-existing-sort-state.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_MOCK } from './mocks/fines-con-search-result-defendant-table-wrapper-checks-by-account-id.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_ERROR_MOCK } from './mocks/fines-con-search-result-defendant-table-wrapper-checks-by-account-id-error.mock';
+import { FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_ERROR_WARNING_MOCK } from './mocks/fines-con-search-result-defendant-table-wrapper-checks-by-account-id-error-warning.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_NULL_ACCOUNT_ID_MOCK } from './mocks/fines-con-search-result-defendant-table-wrapper-table-data-null-account-id.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -94,6 +95,20 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
 
     const checkMessage = fixture.nativeElement.textContent;
     expect(checkMessage).toContain('Account status is Consolidated');
+  });
+
+  it('should only return error checks when both warnings and errors exist', () => {
+    const row = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1)[0];
+    component.checksByAccountId = FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_ERROR_WARNING_MOCK;
+    fixture.detectChanges();
+
+    expect(component.getChecksBySeverity(row, 'error')).toEqual([
+      expect.objectContaining({
+        severity: 'error',
+        message: 'Account is blocked for consolidation',
+      }),
+    ]);
+    expect(component.getChecksBySeverity(row, 'warning')).toEqual([]);
   });
 
   it('should not select a row when account has an error check', () => {

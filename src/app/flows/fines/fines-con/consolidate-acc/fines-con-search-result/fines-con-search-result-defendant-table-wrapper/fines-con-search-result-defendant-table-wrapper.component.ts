@@ -246,7 +246,14 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
     row: IFinesConSearchResultDefendantTableWrapperTableData,
     severity: IFinesConSearchResultAccountCheck['severity'],
   ): IFinesConSearchResultAccountCheck[] {
-    return this.getRowChecks(row).filter((check) => check.severity === severity);
+    const rowChecks = this.getRowChecks(row);
+    const hasErrorChecks = rowChecks.some((check) => check.severity === 'error');
+
+    if (hasErrorChecks && severity === 'warning') {
+      return [];
+    }
+
+    return rowChecks.filter((check) => check.severity === severity);
   }
 
   /**
