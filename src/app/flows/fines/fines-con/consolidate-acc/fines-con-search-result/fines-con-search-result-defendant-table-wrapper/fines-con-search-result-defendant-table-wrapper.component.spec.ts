@@ -99,7 +99,8 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
 
   it('should only return error checks when both warnings and errors exist', () => {
     const row = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1)[0];
-    component.checksByAccountId = FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_ERROR_WARNING_MOCK;
+    component.checksByAccountId =
+      FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_ERROR_WARNING_MOCK;
     fixture.detectChanges();
 
     expect(component.getChecksBySeverity(row, 'error')).toEqual([
