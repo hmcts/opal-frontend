@@ -202,4 +202,15 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
 
     expect(component.isRowIdSelectable('missing-row-id')).toBe(true);
   });
+
+  it('should clear selected ids that are no longer present in current table rows', () => {
+    component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
+    fixture.detectChanges();
+
+    component['selectedRowIdsSignal'].set(new Set([999]));
+    component.pruneUnselectableSelections();
+
+    expect(component.selectedAccountsCountComputed()).toBe(0);
+    expect(component['selectedRowIdsSignal']().has(999)).toBe(false);
+  });
 });

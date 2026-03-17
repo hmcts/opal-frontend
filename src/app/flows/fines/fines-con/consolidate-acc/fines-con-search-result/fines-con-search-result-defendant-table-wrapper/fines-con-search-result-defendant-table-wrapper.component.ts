@@ -349,11 +349,14 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
    * Removes selected rows that are no longer selectable.
    */
   public pruneUnselectableSelections(): void {
-    const nextSelection = new Set(this.selectedRowIdsSignal());
+    const currentSelection = this.selectedRowIdsSignal();
+    const nextSelection = new Set<MultiSelectRowIdentifier>();
 
     this.sortedTableDataComputed().forEach((row, index) => {
-      if (!this.isRowSelectable(row)) {
-        nextSelection.delete(this.getRowIdentifier(row, index));
+      const rowId = this.getRowIdentifier(row, index);
+
+      if (currentSelection.has(rowId) && this.isRowSelectable(row)) {
+        nextSelection.add(rowId);
       }
     });
 

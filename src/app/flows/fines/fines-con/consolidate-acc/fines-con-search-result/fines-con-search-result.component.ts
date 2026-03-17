@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -21,12 +22,13 @@ import { FinesConPayloadService } from '../../services/fines-con-payload.service
   templateUrl: './fines-con-search-result.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesConSearchResultComponent {
+export class FinesConSearchResultComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesConStore = inject(FinesConStore);
   private readonly finesConPayloadService = inject(FinesConPayloadService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private defendantAccountsSearchSubscription: Subscription | null = null;
 
   public readonly defendantsSort = FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public tableData: IFinesConSearchResultDefendantTableWrapperTableData[] = [];
@@ -39,6 +41,8 @@ export class FinesConSearchResultComponent {
   @Input({ required: false })
   public set searchPayload(searchPayload: IOpalFinesDefendantAccountSearchParams | null) {
     if (!searchPayload) {
+      this.defendantAccountsSearchSubscription?.unsubscribe();
+      this.defendantAccountsSearchSubscription = null;
       this.hydrateResultsFromStore();
       return;
     }
@@ -65,23 +69,27 @@ export class FinesConSearchResultComponent {
    * Calls defendant account search API and maps returned results for table display.
    */
   private fetchDefendantAccounts(searchPayload: IOpalFinesDefendantAccountSearchParams): void {
+    this.defendantAccountsSearchSubscription?.unsubscribe();
+
     const payload: IOpalFinesDefendantAccountSearchParams = {
       ...searchPayload,
       consolidation_search: true,
     };
 
-    this.opalFinesService.getDefendantAccounts(payload).subscribe((response) => {
-      const defendantAccounts = this.finesConPayloadService.extractDefendantAccounts(response);
-      this.applyMappedResults(defendantAccounts);
+    this.defendantAccountsSearchSubscription = this.opalFinesService
+      .getDefendantAccounts(payload)
+      .subscribe((response) => {
+        const defendantAccounts = this.finesConPayloadService.extractDefendantAccounts(response);
+        this.applyMappedResults(defendantAccounts);
 
-      if (this.defendantType === 'company') {
-        this.finesConStore.updateDefendantResults([], defendantAccounts);
-      } else {
-        this.finesConStore.updateDefendantResults(defendantAccounts, []);
-      }
+        if (this.defendantType === 'company') {
+          this.finesConStore.updateDefendantResults([], defendantAccounts);
+        } else {
+          this.finesConStore.updateDefendantResults(defendantAccounts, []);
+        }
 
-      this.cdr.markForCheck();
-    });
+        this.cdr.markForCheck();
+      });
   }
 
   private applyMappedResults(defendantAccounts: IFinesConSearchResultDefendantAccount[]): void {
@@ -105,5 +113,10 @@ export class FinesConSearchResultComponent {
     );
 
     window.open(url, '_blank');
+  }
+
+  public ngOnDestroy(): void {
+    this.defendantAccountsSearchSubscription?.unsubscribe();
+    this.defendantAccountsSearchSubscription = null;
   }
 }

@@ -4,7 +4,7 @@ import { FinesConSearchResultComponent } from './fines-con-search-result.compone
 import { IFinesConSearchResultDefendantAccount } from './interfaces/fines-con-search-result-defendant-account.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
@@ -202,6 +202,46 @@ describe('FinesConSearchResultComponent', () => {
 
     expect(component.checksByAccountId[12345]).toEqual([
       { reference: 'CON.ER.9', severity: 'error', message: 'Blocked account' },
+    ]);
+  });
+
+  it('should ignore stale in-flight response when a newer search is triggered', () => {
+    const oldResponse$ = new Subject<unknown>();
+    const newResponse$ = new Subject<unknown>();
+
+    opalFines.getDefendantAccounts.mockReturnValueOnce(oldResponse$).mockReturnValueOnce(newResponse$);
+
+    component.defendantType = 'individual';
+
+    component.searchPayload = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+      consolidation_search: false,
+    };
+
+    component.searchPayload = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+      consolidation_search: false,
+    };
+
+    newResponse$.next(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_RESPONSE_MOCK);
+    newResponse$.complete();
+
+    oldResponse$.next({
+      defendant_accounts: [
+        {
+          defendant_account_id: 999,
+          account_number: 'STALE',
+          defendant_surname: 'Stale',
+        },
+      ],
+    });
+    oldResponse$.complete();
+
+    expect(component.tableData).toEqual([
+      expect.objectContaining({
+        'Account ID': 11,
+        Account: 'ACC001',
+      }),
     ]);
   });
 });
