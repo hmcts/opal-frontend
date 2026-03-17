@@ -430,6 +430,27 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
+  @PO-2793
+  Scenario: A checker approves a New account and defendant_accounts.originator_type is NEW
+    When I open Manual Account Creation
+    And I monitor draft account create requests
+    And I create a "New" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
+    And I complete standard manual fine account fields for originator type checks
+    When I check the manual account details
+    And I submit the manual account for review
+    Then the latest draft account create request should include originator type "NEW"
+    And I see the following text on the page "You've submitted this account for review"
+
+  @PO-2793
+  Scenario: A checker approves a Transfer in from England or Wales account and defendant_accounts.originator_type is TFO
+    When I open Manual Account Creation
+    And I monitor draft account create requests
+    And I create a "Transfer in" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
+    And I complete standard manual fine account fields for originator type checks
+    When I check the manual account details
+    And I submit the manual account for review
+    Then the latest draft account create request should include originator type "TFO"
+    And I see the following text on the page "You've submitted this account for review"
   @PO-2766
   Scenario Outline: User can navigate to create account page and return via back link for each originator option
     When I open Manual Account Creation
@@ -454,3 +475,86 @@ Feature: Manual account creation - Create Draft Account
       | Cancel journey state |
       | without changes      |
       | with changes         |
+
+  @PO-2790
+  Scenario: Conditional Caution shows Police and court details across task list, court details and check account details
+    When I open Manual Account Creation from the dashboard
+    And I select manual account business unit "West London"
+    And I choose manual account type "Conditional Caution"
+    And I continue to manual account details
+    Then I see the following text on the page "Police and court details"
+
+    When I view the "Court details" task
+    Then I see the following text on the page "Police and court details"
+    And I see the following text on the page "Sending police force"
+    And I see the following text on the page "Search using the code or name of the sending police force that sent the caution"
+
+    When I complete manual court details:
+      | Sending police force            | Avon              |
+      | Prosecutor Case Reference (PCR) | 1234              |
+      | Enforcement court               | West London VPFPO |
+    And I return to account details
+    Then the "Court details" task status is "Provided"
+    And I complete manual account creation with the following fields and defaults:
+      | Section       | Field                       | Value                 | Imposition |
+      | Personal      | Title                       | Mr                    |            |
+      | Personal      | First names                 | FNAME                 |            |
+      | Personal      | Last name                   | LNAME                 |            |
+      | Personal      | Address line 1              | Addr Line 1           |            |
+      | Personal      | Address line 2              | Addr Line 2           |            |
+      | Personal      | Address line 3              | Addr Line 3           |            |
+      | Personal      | Postcode                    | TE1 1ST               |            |
+      | Personal      | Date of birth               | 01/01/1990            |            |
+      | Offence       | Offence code                | HY35014               | 1          |
+      | Offence       | Date of sentence            | 8 weeks in the past   | 1          |
+      | Offence       | Result code                 | Compensation (FCOMP)  | 1          |
+      | Offence       | Amount imposed              | 300                   | 1          |
+      | Offence       | Amount paid                 | 100                   | 1          |
+      | Offence       | Creditor type               | Major                 | 1          |
+      | Offence       | Creditor search             | Temporary Creditor    | 1          |
+      | Payment terms | Collection order            | No                    |            |
+      | Payment terms | Make collection order today | Yes                   |            |
+      | Payment terms | Payment term                | Pay in full           |            |
+      | Payment terms | Pay in full by              | 2 weeks in the future |            |
+
+    When I check the manual account details
+    Then I see the following text on the page "Check account details"
+    And I see the following text on the page "Police and court details"
+    And I see the manual review "Court details" summary:
+      | Sending police force            | Avon & Somerset Magistrates' Court (1450) |
+      | Prosecutor Case Reference (PCR) | 1234                                      |
+      | Enforcement court               | West London VPFPO (101)                   |
+
+  @PO-2767
+  Scenario Outline: User selects entry type and is visible on review account screen
+    When I create a "<Originator type>" manual "Fine" account for business unit "West London" with defendant type "Company"
+    And I complete manual account creation with the following fields and defaults:
+      | Section        | Field                                    | Value                               | Imposition |
+      | Court          | Sending area or Local Justice Area (LJA) | Avon                                |            |
+      | Court          | Prosecutor Case Reference                | 1234                                |            |
+      | Court          | Enforcement court                        | West London VPFPO                   |            |
+      | Offence        | Offence code                             | HY35014                             | 1          |
+      | Offence        | Date of sentence                         | 8 weeks in the past                 | 1          |
+      | Offence        | Result code                              | Compensation (FCOMP)                | 1          |
+      | Offence        | Amount imposed                           | 300                                 | 1          |
+      | Offence        | Amount paid                              | 100                                 | 1          |
+      | Offence        | Creditor type                            | Minor                               | 1          |
+      | Offence        | Payment method                           | BACS                                | 1          |
+      | Minor creditor | Name on the account                      | Mr FNAME LNAME                      | 1          |
+      | Payment terms  | Payment term                             | Lump sum plus instalments           |            |
+      | Payment terms  | Lump sum amount                          | 150                                 |            |
+      | Payment terms  | Instalment amount                        | 300                                 |            |
+      | Payment terms  | Payment frequency                        | Monthly                             |            |
+      | Payment terms  | Start date                               | 2 weeks in the future               |            |
+      | Payment terms  | Enforcement action option                | Hold enforcement on account (NOENF) |            |
+      | Payment terms  | Enforcement reason                       | Reason                              |            |
+      | Company        | Company name                             | COMPANY NAME {uniqUpper}            |            |
+      | Company        | Address line 1                           | Addr Line 1                         |            |
+      | Company        | Postcode                                 | TE1 1ST                             |            |
+    And I check the manual account details
+    And I should see the entry type '<Entry type>' on the review account screen
+
+    Examples:
+      | Originator type | Entry type                        |
+      | Transfer in     | Transfer in from England or Wales |
+      | New             | New account                       |

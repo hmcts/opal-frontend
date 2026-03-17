@@ -21,6 +21,8 @@ const resolveBrowser = () => {
 
 const browser = resolveBrowser();
 process.env.BROWSER_TO_RUN = browser;
+process.env.TEST_SPECS = (process.env.TEST_SPECS || '').trim() || 'cypress/e2e/functional/opal/**/*.feature';
+console.log(`[run-functional] TEST_SPECS=${process.env.TEST_SPECS}`);
 
 if (withTags) {
   if (!process.env.CYPRESS_TAGS && process.env.TAGS) {

@@ -2,7 +2,10 @@
  * @file Actions for Manual Account Creation - Offence details task.
  * @description Handles offence entry, impositions, minor creditor interactions, and navigation.
  */
-import { MacOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import {
+  MacOffenceDetailsLocators as L,
+  MacOffenceDetailsMinorCreditorInformationLocators as MinorCreditorInfo,
+} from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 
@@ -431,7 +434,7 @@ export class ManualOffenceDetailsActions {
         if (!value) return;
 
         if (label === 'Minor creditor') {
-          cy.get('h5.govuk-summary-card__title', this.common.getTimeoutOptions()).should('contain.text', value);
+          cy.get(MinorCreditorInfo.name, this.common.getTimeoutOptions()).should('contain.text', value);
           return;
         }
 
@@ -472,7 +475,7 @@ export class ManualOffenceDetailsActions {
       if (!value) return;
 
       if (label === 'Minor creditor') {
-        summary.find('h5.govuk-summary-card__title').should('contain.text', value);
+        summary.find(MinorCreditorInfo.name).should('contain.text', value);
         return;
       }
 

@@ -6,12 +6,84 @@
  */
 
 import { DashboardLocators as L } from '../../../../shared/selectors/dashboard.locators';
+import { CreateManageDraftsLocators as CAM } from '../../../../shared/selectors/create-manage-drafts.locators';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 
 const log = createScopedLogger('DashboardActions');
 
 /** Actions and assertions for the Opal dashboard landing page. */
 export class DashboardActions {
+  /**
+   * Checks whether the current path is already the Manual Account Creation originator page.
+   * @param pathname - Current browser pathname.
+   * @returns True when already on originator/create-or-transfer step.
+   */
+  private isOnMacOriginatorPage(pathname: string): boolean {
+    return pathname.includes('/originator-type') || pathname.includes('/create-or-transfer-in');
+  }
+
+  /**
+   * Shared navigation routine for a specific dashboard route into Manual Account Creation.
+   * Retries once with a page refresh before failing with a clear selector-specific error.
+   * @param linkSelector - Dashboard selector to use for this route variant.
+   * @param missingLinkMessage - Log message used when the route link is missing before refresh.
+   * @param afterLinkClick - Optional callback for follow-up actions after clicking the route link.
+   */
+  private navigateToMac(linkSelector: string, missingLinkMessage: string, afterLinkClick?: () => void): void {
+    const clickRoute = () => {
+      cy.get(linkSelector, { timeout: 20_000 }).first().should('be.visible').click({ force: true });
+      if (afterLinkClick) afterLinkClick();
+    };
+
+    const verifyAfterFailedRetry = () => {
+      cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
+        if (this.isOnMacOriginatorPage(pathname)) {
+          log('navigate', 'Dashboard link not visible after refresh, but already on originator page');
+          return;
+        }
+
+        throw new Error(
+          `Manual Account Creation navigation failed: "${linkSelector}" was not found on the dashboard after refresh ` +
+            `(path: ${pathname}).`,
+        );
+      });
+    };
+
+    cy.location('pathname', { timeout: 10_000 })
+      .then((pathname) => {
+        if (this.isOnMacOriginatorPage(pathname)) {
+          log('navigate', 'Already on the Manual Account Creation originator page');
+          return;
+        }
+
+        cy.get('body', { timeout: 20_000 })
+          .should('be.visible')
+          .then(($body) => {
+            if ($body.find(linkSelector).length) {
+              clickRoute();
+              return;
+            }
+
+            log('navigate', missingLinkMessage);
+            cy.reload();
+
+            cy.get('body', { timeout: 20_000 })
+              .should('be.visible')
+              .then(($bodyAfterRefresh) => {
+                if ($bodyAfterRefresh.find(linkSelector).length) {
+                  clickRoute();
+                  return;
+                }
+
+                verifyAfterFailedRetry();
+              });
+          });
+      })
+      .then(() => {
+        log('done', 'Navigated to Manual Account Creation page');
+      });
+  }
+
   /**
    * Asserts that the user is on the Dashboard page.
    *
@@ -43,21 +115,13 @@ export class DashboardActions {
   }
 
   /**
-   * Navigates to the Manual Account Creation page from the Dashboard.
-   *
-   * Steps performed:
-   *  1. Clicks the "Manual Account Creation" link.
-   *  2. Ensures the link is visible before interaction.
-   *
-   * @example
-   *   dashboard.goToManualAccountCreation();
+   * Navigates to Manual Account Creation via **Create and Manage Draft Accounts**.
    */
   public goToManualAccountCreation(): void {
-    log('navigate', 'Clicking Manual Account Creation link');
-
-    cy.get(L.manualAccountCreationLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
-
-    log('done', 'Navigated to Manual Account Creation page');
+    log('navigate', 'Opening Manual Account Creation using Create and Manage Draft Accounts route');
+    this.navigateToMac(L.createAndManageDraftAccountsLink, 'Create and Manage Draft Accounts link not found', () => {
+      cy.get(CAM.createAccountButton, { timeout: 20_000 }).should('be.visible').click({ force: true });
+    });
   }
 
   /**

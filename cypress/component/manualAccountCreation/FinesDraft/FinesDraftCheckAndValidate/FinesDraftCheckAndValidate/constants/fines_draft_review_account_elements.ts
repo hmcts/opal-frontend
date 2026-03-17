@@ -4,6 +4,7 @@ export const DOM_ELEMENTS = {
   backLink: 'a.govuk-back-link',
 
   //Account details
+  originatorTypeData: 'div[id = "accountDetailsOriginatorType"]',
   businessUnitData: 'div[id = "accountDetailsBusinessUnit"]',
   accountTypeData: 'div[id = "accountDetailsAccountType"]',
   defendantTypeData: 'div[id = "accountDetailsDefendantType"]',
