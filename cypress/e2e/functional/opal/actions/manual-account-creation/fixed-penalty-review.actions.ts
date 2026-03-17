@@ -93,6 +93,9 @@ export class FixedPenaltyReviewActions {
       expect(response, 'POST /draft-accounts response').to.exist;
       expect(response!.statusCode, 'POST /draft-accounts status').to.equal(201);
       const id = readDraftIdFromBody(response!.body as unknown);
+      if (id === undefined) {
+        throw new Error(`Expected draft_account_id in response body: ${JSON.stringify(response!.body)}`);
+      }
       recordCreatedId(id);
       aliasDraftAccountPut();
       cy.log(`Created Account ID: ${id}`);

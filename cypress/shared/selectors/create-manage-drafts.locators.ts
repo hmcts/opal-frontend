@@ -5,6 +5,8 @@
 export const CreateManageDraftsLocators = {
   header: 'h1.govuk-heading-l',
   backLink: 'a.govuk-back-link',
+  /** Link or button to open the Manual Account Creation workflow. */
+  manualAccountCreationLink: '#finesMacLink',
   createAccountButton: '#create-account-button, button[buttonid="create-account-button"]',
   tabs: {
     container: '#inputter-tabs',

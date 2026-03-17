@@ -21,9 +21,6 @@ export const DashboardLocators = {
   /** Displays the logged-in user’s name in the header area. */
   userName: '.govuk-grid-column-two-thirds ul li span',
 
-  /** Link or button to open the Manual Account Creation workflow. */
-  manualAccountCreationLink: '#finesMacLink',
-
   /** Link to open the Account Search interface. */
   searchForAnAccountLink: '#finesSaSearchLink',
 
