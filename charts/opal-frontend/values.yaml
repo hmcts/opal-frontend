@@ -2,7 +2,7 @@ nodejs:
   applicationPort: 4000
   aadIdentityName: opal
   ingressHost: opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
-  image: 'sdshmctspublic.azurecr.io/opal/frontend:latest'
+  image: 'sdshmctsprod.azurecr.io/opal/frontend:latest'
   keyVaults:
     opal:
       secrets:
