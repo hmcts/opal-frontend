@@ -227,8 +227,7 @@ export class DashboardActions {
         );
         const activeItemText = activeSearchNavItem.text().trim();
         const pageText = $body.text();
-        const alreadyOnSearchPage =
-          activeItemText === 'Search' && pageText.includes('Search for an account');
+        const alreadyOnSearchPage = activeItemText === 'Search' && pageText.includes('Search for an account');
 
         if (alreadyOnSearchPage) {
           log('navigate', 'Already on Search for an Account landing page');
