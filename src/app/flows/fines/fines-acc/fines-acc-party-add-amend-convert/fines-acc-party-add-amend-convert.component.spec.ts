@@ -28,6 +28,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     account_number: Mock;
     party_name: Mock;
     welsh_speaking: Mock;
+    setSuccessMessage: Mock;
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockUtilsService: any;
@@ -63,6 +64,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       account_number: vi.fn().mockReturnValue('12345ABC'),
       party_name: vi.fn().mockReturnValue('John Doe'),
       welsh_speaking: vi.fn().mockReturnValue('Yes'),
+      setSuccessMessage: vi.fn(),
     };
     mockUtilsService = {
       scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
