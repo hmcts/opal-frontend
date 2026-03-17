@@ -9,7 +9,7 @@ maintainers:
 dependencies:
   - name: nodejs
     version: 3.2.0
-    repository: 'oci://hmctspublic.azurecr.io/helm'
+    repository: 'oci://hmctsprod.azurecr.io/helm'
   - name: redis
     version: 25.3.2
     repository: 'oci://registry-1.docker.io/bitnamicharts'
@@ -24,6 +24,6 @@ dependencies:
     condition: opal-fines-service.enabled
   - name: servicebus
     version: 1.2.1
-    repository: 'oci://hmctspublic.azurecr.io/helm'
+    repository: 'oci://hmctsprod.azurecr.io/helm'
     condition: opal-fines-service.enabled
 

@@ -25,6 +25,9 @@ type IRawDefendantAccount = IFinesConSearchResultDefendantAccount & {
   organisationName?: string | null;
 };
 
+/**
+ * Normalises account IDs from number or digit-only string values.
+ */
 const normaliseAccountId = (value: number | string | null | undefined): number | null => {
   if (typeof value === 'number' && Number.isFinite(value)) {
     return value;
@@ -38,6 +41,9 @@ const normaliseAccountId = (value: number | string | null | undefined): number |
   return null;
 };
 
+/**
+ * Formats defendant name as "SURNAME, Forenames".
+ */
 const formatName = (surname: string | null, forenames: string | null): string | null => {
   if (!surname && !forenames) {
     return null;
@@ -50,7 +56,10 @@ const formatName = (surname: string | null, forenames: string | null): string | 
   return `${surnameText}${separator}${forenamesText}`;
 };
 
-const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null, isOrganisation: boolean): string | null => {
+/**
+ * Sorts aliases by alias number and formats each alias on a new line.
+ */
+const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null): string | null => {
   if (!aliases?.length) {
     return null;
   }
@@ -72,6 +81,9 @@ const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null, isOrga
   return aliasText.length > 0 ? aliasText.join('\n') : null;
 };
 
+/**
+ * Maps raw check entries into normalised check models by severity.
+ */
 const mapCheckArray = (
   checks: Array<{ reference?: string; message?: string }> | undefined,
   severity: 'error' | 'warning',
@@ -98,6 +110,9 @@ const mapCheckArray = (
   });
 };
 
+/**
+ * Combines account errors and warnings into a single checks array.
+ */
 const mapAccountChecks = (account: IFinesConSearchResultDefendantAccount): IFinesConSearchResultAccountCheck[] => {
   if (!account.checks) {
     return [];
@@ -106,6 +121,9 @@ const mapAccountChecks = (account: IFinesConSearchResultDefendantAccount): IFine
   return [...mapCheckArray(account.checks.errors, 'error'), ...mapCheckArray(account.checks.warnings, 'warning')];
 };
 
+/**
+ * Extracts defendant accounts from array, keyed object, or API response wrapper.
+ */
 export const extractDefendantAccounts = (response: unknown): IFinesConSearchResultDefendantAccount[] => {
   if (Array.isArray(response)) {
     return response as IFinesConSearchResultDefendantAccount[];
@@ -135,6 +153,9 @@ export const extractDefendantAccounts = (response: unknown): IFinesConSearchResu
   return [];
 };
 
+/**
+ * Maps defendant accounts into table row data with fallback field support.
+ */
 export const mapDefendantAccounts = (
   defendantAccounts: IFinesConSearchResultDefendantAccount[],
 ): IFinesConSearchResultDefendantTableWrapperTableData[] => {
@@ -178,6 +199,9 @@ export const mapDefendantAccounts = (
   });
 };
 
+/**
+ * Builds a map of account checks keyed by normalised defendant account ID.
+ */
 export const buildChecksByAccountId = (
   defendantAccounts: IFinesConSearchResultDefendantAccount[],
 ): Record<number, IFinesConSearchResultAccountCheck[]> => {

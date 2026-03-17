@@ -15,7 +15,13 @@ import { IFinesConSearchResultAccountCheck } from '../consolidate-acc/fines-con-
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Facade service for building and mapping consolidation payload data.
+ */
 export class FinesConPayloadService {
+  /**
+   * Builds defendant account search parameters from consolidation form data.
+   */
   public buildDefendantAccountsSearchPayload(
     formData: IFinesConSearchAccountState,
     businessUnitId: number | null,
@@ -24,16 +30,25 @@ export class FinesConPayloadService {
     return buildDefendantAccountsSearchPayload(formData, businessUnitId, defendantType);
   }
 
+  /**
+   * Extracts defendant accounts from supported API response shapes.
+   */
   public extractDefendantAccounts(response: unknown): IFinesConSearchResultDefendantAccount[] {
     return extractDefendantAccounts(response);
   }
 
+  /**
+   * Maps raw defendant accounts into search result table row data.
+   */
   public mapDefendantAccounts(
     defendantAccounts: IFinesConSearchResultDefendantAccount[],
   ): IFinesConSearchResultDefendantTableWrapperTableData[] {
     return mapDefendantAccounts(defendantAccounts);
   }
 
+  /**
+   * Builds a checks map keyed by defendant account ID.
+   */
   public buildChecksByAccountId(
     defendantAccounts: IFinesConSearchResultDefendantAccount[],
   ): Record<number, IFinesConSearchResultAccountCheck[]> {
