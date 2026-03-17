@@ -35,9 +35,13 @@
       <h2 [class]="style.heading">Actions</h2>
       <p>
         @if (convertAction.interactive) {
-          <a tabindex="0" (click)="handleConvertAccount()" (keyup.enter)="handleConvertAccount()">{{
-            convertAction.label
-          }}</a>
+          <a
+            tabindex="0"
+            class="govuk-link govuk-link--no-visited-state"
+            (click)="handleConvertAccount()"
+            (keyup.enter)="handleConvertAccount()"
+            >{{ convertAction.label }}</a
+          >
         } @else {
           <span>{{ convertAction.label }}</span>
         }
