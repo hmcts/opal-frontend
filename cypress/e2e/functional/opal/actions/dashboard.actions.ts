@@ -164,7 +164,7 @@ export class DashboardActions {
   public goToManualAccountCreationDirect(): void {
     log('navigate', 'Opening Manual Account Creation using direct dashboard link');
     this.ensureAccountsLandingPage();
-    this.navigateToMacViaDashboardRoute(
+    this.navigateToMac(
       L.manualAccountCreationLink,
       'Direct Manual Account Creation link not found; refreshing dashboard and retrying once',
     );
@@ -178,7 +178,7 @@ export class DashboardActions {
   public goToManualAccountCreationViaCam(): void {
     log('navigate', 'Opening Manual Account Creation using Create and Manage Draft Accounts route');
     this.ensureAccountsLandingPage();
-    this.navigateToMacViaDashboardRoute(
+    this.navigateToMac(
       L.createAndManageDraftAccountsLink,
       'Create and Manage Draft Accounts link not found; refreshing dashboard and retrying once',
       () => {
