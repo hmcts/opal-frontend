@@ -22,8 +22,8 @@ export class DashboardActions {
   /** Shared common assertions/timeouts used across home-area navigation. */
   private readonly common = new CommonActions();
 
-  /** Valid first-page headings immediately after authentication. */
-  private readonly allowedHomePageHeaders = ['Dashboard', 'Search for an account', 'Accounts'] as const;
+  /** Valid first-page headings immediately after authentication or MAC cancel return. */
+  private readonly allowedHomePageHeaders = ['Dashboard', 'Search for an account', 'Accounts', 'Transfer in'] as const;
 
   /**
    * Checks whether the current path is already the Manual Account Creation originator page.
