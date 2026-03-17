@@ -228,4 +228,17 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     expect(component.selectedAccountsCountComputed()).toBe(0);
     expect(component['selectedRowIdsSignal']().has(999)).toBe(false);
   });
+
+  it('should hide individual-only columns and reduce checks colspan for company defendant type', () => {
+    component.defendantType = 'company';
+    component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
+    component.checksByAccountId = FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_MOCK;
+    fixture.detectChanges();
+
+    const tableText = fixture.nativeElement.textContent;
+    expect(tableText).not.toContain('Date of birth');
+    expect(tableText).not.toContain('P/G');
+    expect(tableText).not.toContain('NI number');
+    expect(component.getChecksColspan()).toBe(9);
+  });
 });

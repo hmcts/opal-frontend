@@ -31,6 +31,7 @@ import { FinesNotProvidedComponent } from '@app/flows/fines/components/fines-not
 import { IFinesConSearchResultAccountCheck } from '../interfaces/fines-con-search-result-account-check.interface';
 import { IFinesConSearchResultDefendantTableWrapperTableData } from './interfaces/fines-con-search-result-defendant-table-wrapper-table-data.interface';
 import { IFinesConSearchResultDefendantTableWrapperTableSort } from './interfaces/fines-con-search-result-defendant-table-wrapper-table-sort.interface';
+import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
 
 @Component({
   selector: 'app-fines-con-search-result-defendant-table-wrapper',
@@ -104,6 +105,7 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
   ) {
     this.abstractExistingSortState = existingSortState;
   }
+  @Input({ required: true }) public defendantType: FinesConDefendant = 'individual';
 
   @Output() public accountIdClicked = new EventEmitter<number>();
   @Output() public addToList = new EventEmitter<number[]>();
@@ -399,5 +401,14 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
     }
 
     return classes.join(' ');
+  }
+
+  /**
+   * Returns the dynamic colspan for row checks cell, excluding the leading checkbox spacer column.
+   *
+   * @returns Column span for checks cell.
+   */
+  public getChecksColspan(): number {
+    return this.defendantType === 'company' ? 9 : 12;
   }
 }
