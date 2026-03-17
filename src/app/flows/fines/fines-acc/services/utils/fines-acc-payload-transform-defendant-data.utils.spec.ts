@@ -911,5 +911,39 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
       expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe('XY21 ABC');
     });
+
+    it('should trim non-debtor-only fields when converting a non-debtor company account to individual', () => {
+      const mockCompanyData = {
+        ...mockDefendantData,
+        defendant_account_party: {
+          ...mockDefendantData.defendant_account_party,
+          is_debtor: false,
+          party_details: {
+            ...mockDefendantData.defendant_account_party.party_details,
+            organisation_flag: true,
+            organisation_details: {
+              organisation_name: 'Convert Me Ltd',
+              organisation_aliases: [],
+            },
+            individual_details: null,
+          },
+          employer_details: null,
+        },
+      };
+
+      const result = transformDefendantAccountPartyPayload(mockCompanyData, 'individual', false);
+
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBeNull();
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBeNull();
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBeNull();
+      expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBeNull();
+      expect(result.facc_party_add_amend_convert_language_preferences_hearing_language).toBeNull();
+    });
   });
 });

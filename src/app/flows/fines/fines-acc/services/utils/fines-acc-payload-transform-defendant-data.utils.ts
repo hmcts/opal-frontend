@@ -238,7 +238,7 @@ export const transformDefendantAccountPartyPayload = (
 
   if (isCompany || (!hasExplicitPartyType && organisation_flag)) {
     return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
-  } else if (isIndividual && !isDebtor && !organisation_flag) {
+  } else if (isIndividual && !isDebtor) {
     // For individual party type that is not a debtor, only show fields from title to address postcode
     return getIndividualDebtorParty(baseState, individualDetails, individualAliases, hasAliases);
   } else {
