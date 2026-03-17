@@ -34,7 +34,7 @@ export class AccountSearchIndividualsActions {
    */
   public assertOnSearchPage(): void {
     log('assert', 'Verifying Search for an Account page URL');
-    cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/search-accounts/search');
+    cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/dashboard/search');
 
     log('assert', 'Ensuring search form is visible');
     cy.get(L.searchFormRoot, this.common.getTimeoutOptions()).should('be.visible');
@@ -57,7 +57,7 @@ export class AccountSearchIndividualsActions {
     log('assert', 'Asserting we remain on the Search Individuals form (no navigation)');
 
     // 1) Path check. The canonical search path used elsewhere in the suite.
-    cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/search-accounts/search');
+    cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/dashboard/search');
 
     // 2) Ensure Individuals search form panel is visible
     if (!L.searchFormRoot) {

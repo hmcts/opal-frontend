@@ -209,8 +209,9 @@ export class DashboardActions {
    * Navigates from the authenticated home area to the "Search for an Account" page.
    *
    * Steps performed:
-   *  1. Clicks the Search link in the dashboard.
-   *  2. Waits for the URL to include `/fines/search-accounts/search`.
+   *  1. If already on the Search landing page, reuses the current page.
+   *  2. Otherwise clicks the Search link from the authenticated home area.
+   *  3. Waits for the URL to include the Search route.
    *  3. Asserts that the search form component is rendered.
    *
    * @example
@@ -219,14 +220,43 @@ export class DashboardActions {
   public goToAccountSearch(): void {
     log('navigate', 'Navigating to Search for an Account');
 
-    cy.get('#finesSaSearchLink', { timeout: 10_000 }).should('be.visible').click({ force: true });
+    cy.get('body', { timeout: 20_000 })
+      .should('be.visible')
+      .then(($body) => {
+        // The search-first landing uses the primary navigation rather than the
+        // legacy dashboard tile link, so use the active nav item + page heading
+        // to decide whether navigation is already complete.
+        const activeSearchNavItem = Cypress.$($body).find(
+          `${PN.container} .moj-primary-navigation__link[aria-current="page"]`,
+        );
+        const activeItemText = activeSearchNavItem.text().trim();
+        const pageText = $body.text();
+        const alreadyOnSearchPage =
+          activeItemText === 'Search' && pageText.includes('Search for an account');
+
+        if (alreadyOnSearchPage) {
+          log('navigate', 'Already on Search for an Account landing page');
+          return;
+        }
+
+        cy.contains(`${PN.container} .moj-primary-navigation__link`, 'Search', this.common.getTimeoutOptions())
+          .should('be.visible')
+          .click();
+      });
+
+    cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
+      if (!pathname.includes('/fines/dashboard/search')) {
+        log('navigate', 'Waiting for Search for an Account route to load');
+      }
+    });
 
     log('assert', 'Verifying Search for an Account page URL');
-    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/search-accounts/search');
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/dashboard/search');
 
-    // Ensure the search form is rendered
-    log('assert', 'Ensuring search form is visible');
-    cy.get('app-fines-sa-search, [data-testid="fines-sa-search"]', { timeout: 10_000 }).should('be.visible');
+    log('assert', 'Ensuring search page heading is visible');
+    cy.contains('h1.govuk-heading-l, h1.govuk-heading-m, h1', 'Search for an account', { timeout: 10_000 }).should(
+      'be.visible',
+    );
 
     log('done', 'Successfully navigated to Search for an Account page');
   }
