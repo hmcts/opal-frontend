@@ -1,3 +1,4 @@
+@JIRA-LABEL:manual-account-creation
 Feature: Accessibility Tests for Check and Validate Screens
   # This feature file ensures that all screens in the Check and Validate flow meet accessibility standards using Axe-Core.
 

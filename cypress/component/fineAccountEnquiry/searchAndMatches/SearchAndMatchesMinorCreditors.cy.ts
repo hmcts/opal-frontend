@@ -10,6 +10,10 @@ import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_mi
 import { finesSaMinorCreditorAccountsResolver } from '../../../../src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('Search Account Component - Minor Creditors', () => {
   let minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
 
@@ -67,7 +71,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC1-AC3. should render the search for an account screen and minor creditors tab',
-    { tags: ['PO-715', '@JIRA-KEY:POT-3734'] },
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3734') },
     () => {
       setupComponent(null);
 
@@ -109,140 +113,180 @@ describe('Search Account Component - Minor Creditors', () => {
     },
   );
 
-  it('AC6a. should show error for non-alphabetical last name', { tags: ['PO-715', '@JIRA-KEY:POT-3735'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
-      'Smith123';
+  it(
+    'AC6a. should show error for non-alphabetical last name',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3735') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
+        'Smith123';
 
-    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
-    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Last name must only contain letters');
-    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must only contain letters');
-    cy.get(DOM_ELEMENTS.lastNameInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+      cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Last name must only contain letters');
+      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must only contain letters');
+      cy.get(DOM_ELEMENTS.lastNameInput).clear();
+    },
+  );
 
-  it('AC6b. should show error for non-alphabetical first name', { tags: ['PO-715', '@JIRA-KEY:POT-3736'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
-      'Name123';
+  it(
+    'AC6b. should show error for non-alphabetical first name',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3736') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
+        'Name123';
 
-    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
-    cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'Name123');
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'First names must only contain letters');
-    cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must only contain letters');
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+      cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'Name123');
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'First names must only contain letters');
+      cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must only contain letters');
 
-    cy.get(DOM_ELEMENTS.firstNamesInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.firstNamesInput).clear();
+    },
+  );
 
-  it('AC6c. should show error for non-alphabetical company name', { tags: ['PO-715', '@JIRA-KEY:POT-3737'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
-      'Company123?';
+  it(
+    'AC6c. should show error for non-alphabetical company name',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3737') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
+        'Company123?';
 
-    cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should(
-      'contain',
-      'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-    );
-    cy.get(DOM_ELEMENTS.companyNameError).should(
-      'contain',
-      'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-    );
-    cy.get(DOM_ELEMENTS.companyNameInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain',
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+      );
+      cy.get(DOM_ELEMENTS.companyNameError).should(
+        'contain',
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+      );
+      cy.get(DOM_ELEMENTS.companyNameInput).clear();
+    },
+  );
 
-  it('AC6d. should show error for non-alphabetical address line 1', { tags: ['PO-715', '@JIRA-KEY:POT-3738'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 =
-      'Address123?';
-    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Address line 1 must only contain letters or numbers');
-    cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Error).should(
-      'contain',
-      'Address line 1 must only contain letters or numbers',
-    );
-    cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Input).clear();
-  });
+  it(
+    'AC6d. should show error for non-alphabetical address line 1',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3738') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 =
+        'Address123?';
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Address line 1 must only contain letters or numbers');
+      cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Error).should(
+        'contain',
+        'Address line 1 must only contain letters or numbers',
+      );
+      cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Input).clear();
+    },
+  );
 
-  it('AC6e. should show error for non-alphabetical post code', { tags: ['PO-715', '@JIRA-KEY:POT-3739'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
-      'POSTCODE?';
+  it(
+    'AC6e. should show error for non-alphabetical post code',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3739') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
+        'POSTCODE?';
 
-    cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must only contain letters or numbers');
-    cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must only contain letters or numbers');
-    cy.get(DOM_ELEMENTS.postcodeInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must only contain letters or numbers');
+      cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must only contain letters or numbers');
+      cy.get(DOM_ELEMENTS.postcodeInput).clear();
+    },
+  );
 
-  it('AC7a. should validate last name maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3740'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
-      'Abcdefghijklmnopqrstuvwxyzabcdefg';
+  it(
+    'AC7a. should validate last name maximum field length',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3740') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
+        'Abcdefghijklmnopqrstuvwxyzabcdefg';
 
-    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Last name must be 30 characters or fewer');
-    cy.get(DOM_ELEMENTS.lastNameError).should('contain', 'Last name must be 30 characters or fewer');
-    cy.get(DOM_ELEMENTS.lastNameInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Last name must be 30 characters or fewer');
+      cy.get(DOM_ELEMENTS.lastNameError).should('contain', 'Last name must be 30 characters or fewer');
+      cy.get(DOM_ELEMENTS.lastNameInput).clear();
+    },
+  );
 
-  it('AC7b. should validate first names maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3741'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
-      'AbcdefghijklmnopqrstA';
+  it(
+    'AC7b. should validate first names maximum field length',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3741') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
+        'AbcdefghijklmnopqrstA';
 
-    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'First names must be 20 characters or fewer');
-    cy.get(DOM_ELEMENTS.firstNamesError).should('contain', 'First names must be 20 characters or fewer');
-    cy.get(DOM_ELEMENTS.firstNamesInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'First names must be 20 characters or fewer');
+      cy.get(DOM_ELEMENTS.firstNamesError).should('contain', 'First names must be 20 characters or fewer');
+      cy.get(DOM_ELEMENTS.firstNamesInput).clear();
+    },
+  );
 
-  it('AC7c. should validate company name maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3742'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
-      'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
+  it(
+    'AC7c. should validate company name maximum field length',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3742') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
+        'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
 
-    cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must be 50 characters or fewer');
-    cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must be 50 characters or fewer');
-    cy.get(DOM_ELEMENTS.companyNameInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must be 50 characters or fewer');
+      cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must be 50 characters or fewer');
+      cy.get(DOM_ELEMENTS.companyNameInput).clear();
+    },
+  );
 
-  it('AC7d. should validate address line 1 maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3743'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1 =
-      'Address1234Address1234Address12345';
+  it(
+    'AC7d. should validate address line 1 maximum field length',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3743') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1 =
+        'Address1234Address1234Address12345';
 
-    cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Address line 1 must be 30 characters or fewer');
-    cy.get(DOM_ELEMENTS.addressLine1Error).should('contain', 'Address line 1 must be 30 characters or fewer');
-    cy.get(DOM_ELEMENTS.addressLine1Input).clear();
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Address line 1 must be 30 characters or fewer');
+      cy.get(DOM_ELEMENTS.addressLine1Error).should('contain', 'Address line 1 must be 30 characters or fewer');
+      cy.get(DOM_ELEMENTS.addressLine1Input).clear();
+    },
+  );
 
-  it('AC7e. should validate post code maximum field length', { tags: ['PO-715', '@JIRA-KEY:POT-3744'] }, () => {
-    setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
-      'POSTCODES';
+  it(
+    'AC7e. should validate post code maximum field length',
+    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3744') },
+    () => {
+      setupComponent(null);
+      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
+        'POSTCODES';
 
-    cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
-    cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must be 8 characters or fewer');
-    cy.get(DOM_ELEMENTS.postcodeInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
+      cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must be 8 characters or fewer');
+      cy.get(DOM_ELEMENTS.postcodeInput).clear();
+    },
+  );
 
   it(
     'AC3a. Should validate last name field when "Search exact match" for last name is selected on Minor Creditor Individual',
-    { tags: ['PO-1969', '@JIRA-KEY:POT-3745'] },
+    { tags: buildTags('@JIRA-STORY:PO-1969', '@JIRA-KEY:POT-3745') },
     () => {
       setupComponent(null);
 
@@ -257,7 +301,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC3b. Should validate first name field when "Search exact match" for first name is selected on Minor Creditor Individual',
-    { tags: ['PO-1969', '@JIRA-KEY:POT-3746'] },
+    { tags: buildTags('@JIRA-STORY:PO-1969', '@JIRA-KEY:POT-3746') },
     () => {
       setupComponent(null);
 
@@ -272,7 +316,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC4a. Should validate company name field when "Search exact match" for company name is selected on Minor Creditor Company',
-    { tags: ['PO-1969', '@JIRA-KEY:POT-3747'] },
+    { tags: buildTags('@JIRA-STORY:PO-1969', '@JIRA-KEY:POT-3747') },
     () => {
       setupComponent(null);
 

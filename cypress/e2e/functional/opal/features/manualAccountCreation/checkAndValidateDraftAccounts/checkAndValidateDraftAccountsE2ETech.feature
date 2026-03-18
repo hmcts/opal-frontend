@@ -1,10 +1,11 @@
+@JIRA-LABEL:manual-account-creation
 Feature: Check and Validate Draft Accounts - Extra E2E Technical Scenarios
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
     Then I should be on the dashboard
 
-  @PO-2243
+  @JIRA-STORY:PO-2243
   Scenario Outline: Approve draft account for <scenario>
     Given a "<draftType>" draft account exists with:
       | Account_status    | Submitted         |
@@ -17,12 +18,12 @@ Feature: Check and Validate Draft Accounts - Extra E2E Technical Scenarios
       | Decision | Approve |
     Then I should see the checker header "Review accounts" and status heading "To review"
     And the draft success banner is "<banner>"
-    @skip
+    @skip @JIRA-IGNORE
     Examples: Adult
       | scenario            | draftType      | identifierField           | identifierValue        | listName                                  | header                                      | banner                                                               |
       | E2E auto test Adult | opalE2EAdultEn | account.defendant.surname | OPAL E TO E{uniqUpper} | OPAL E TO E{uniqUpper}, Opal Scenario one | Mr Opal Scenario one OPAL E TO E{uniqUpper} | You have approved Opal Scenario one OPAL E TO E{uniqUpper}'s account |
 
-    @skip
+    @skip @JIRA-IGNORE
     Examples: Adult, Welsh
       | scenario                   | draftType      | identifierField           | identifierValue        | listName                                  | header                                      | banner                                                               |
       | E2E auto test Adult, Welsh | opalE2EAdultCy | account.defendant.surname | OPAL E TO E{uniqUpper} | OPAL E TO E{uniqUpper}, Opal Scenario two | Mr Opal Scenario two OPAL E TO E{uniqUpper} | You have approved Opal Scenario two OPAL E TO E{uniqUpper}'s account |

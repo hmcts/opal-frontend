@@ -20,6 +20,10 @@ import { getToday } from 'cypress/support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
   let finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE);
@@ -100,7 +104,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
   it(
     '(AC.1,2) should send a PUT request containing correct derived values when a rejected account is resubmitted',
-    { tags: ['@PO-964', '@JIRA-KEY:POT-4370'] },
+    { tags: buildTags('@JIRA-STORY:PO-964', '@JIRA-KEY:POT-4370') },
     () => {
       cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');
 
@@ -152,7 +156,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
   it(
     'should send PUT request with correct Fixed Penalty account data and timeline when rejected account is resubmitted',
-    { tags: ['@PO-1809', '@JIRA-KEY:POT-4371'] },
+    { tags: buildTags('@JIRA-STORY:PO-1809', '@JIRA-KEY:POT-4371') },
     () => {
       cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');
 

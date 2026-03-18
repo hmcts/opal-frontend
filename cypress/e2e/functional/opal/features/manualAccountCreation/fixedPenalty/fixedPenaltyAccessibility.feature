@@ -1,3 +1,4 @@
+@JIRA-LABEL:manual-account-creation
 Feature: Accessibility Tests for Fixed Penalty Screens
   # This feature file ensures that all screens related to fixed penalty account creation meet accessibility standards using Axe-Core.
 

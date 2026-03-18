@@ -1,3 +1,4 @@
+@JIRA-LABEL:reciprocal-maintenance
 Feature: Reciprocal Maintenance - dummy test
   @JIRA-KEY:POT-3123
   Scenario: The user can sign in to and sign out of the application

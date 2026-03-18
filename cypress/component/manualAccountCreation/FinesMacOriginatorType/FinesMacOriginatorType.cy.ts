@@ -5,44 +5,52 @@ import { interceptAuthenticatedUser, interceptUserState } from 'cypress/componen
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import { CreateNewOrTransferInLocators as DOM } from 'cypress/shared/selectors/manual-account-creation/create-transfer.locators';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('Manual account creation - Originator Type', () => {
   beforeEach(() => {
     interceptAuthenticatedUser();
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
   });
 
-  it('Validate Originator Type page renders as designed', { tags: ['@JIRA-KEY:POT-4238'] }, () => {
-    const props: IFinesComponentProperties = {
-      draftAccountId: '100',
-      fragments: undefined,
-      componentUrl: `${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
-      interceptedRoutes: ['create-account', 'dashboard'],
-      isCheckerUser: false,
-    };
-    setupFinesMacComponent(props);
+  it(
+    'Validate Originator Type page renders as designed',
+    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4238') },
+    () => {
+      const props: IFinesComponentProperties = {
+        draftAccountId: '100',
+        fragments: undefined,
+        componentUrl: `${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
+        interceptedRoutes: ['create-account', 'dashboard'],
+        isCheckerUser: false,
+      };
+      setupFinesMacComponent(props);
 
-    cy.get(DOM.pageHeader).should('contain.text', 'Do you want to create a new account or transfer in?');
-    cy.get(DOM.originatorType.createNew).should('exist');
-    cy.get(DOM.originatorType.transferIn).should('exist');
-    cy.get(DOM.continueButton).should('exist');
-    cy.get(DOM.cancelLink).should('exist');
+      cy.get(DOM.pageHeader).should('contain.text', 'Do you want to create a new account or transfer in?');
+      cy.get(DOM.originatorType.createNew).should('exist');
+      cy.get(DOM.originatorType.transferIn).should('exist');
+      cy.get(DOM.continueButton).should('exist');
+      cy.get(DOM.cancelLink).should('exist');
 
-    cy.get(DOM.originatorType.createNew).should('not.be.checked');
-    cy.get(DOM.originatorType.transferIn).should('not.be.checked');
+      cy.get(DOM.originatorType.createNew).should('not.be.checked');
+      cy.get(DOM.originatorType.transferIn).should('not.be.checked');
 
-    cy.get(DOM.originatorType.createNew).check({ force: true }).should('be.checked');
-    cy.get(DOM.originatorType.transferIn).should('not.be.checked');
+      cy.get(DOM.originatorType.createNew).check({ force: true }).should('be.checked');
+      cy.get(DOM.originatorType.transferIn).should('not.be.checked');
 
-    cy.get(DOM.originatorType.transferIn).check({ force: true }).should('be.checked');
-    cy.get(DOM.originatorType.createNew).should('not.be.checked');
+      cy.get(DOM.originatorType.transferIn).check({ force: true }).should('be.checked');
+      cy.get(DOM.originatorType.createNew).should('not.be.checked');
 
-    cy.get(DOM.continueButton).click({ force: true });
-    cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
-  });
+      cy.get(DOM.continueButton).click({ force: true });
+      cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
+    },
+  );
 
   it(
     'AC2: routes to Create account view when "New account" is selected and Continue is clicked',
-    { tags: ['@PO-2763', '@JIRA-KEY:POT-4239'] },
+    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4239') },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
@@ -62,7 +70,7 @@ describe('Manual account creation - Originator Type', () => {
 
   it(
     'AC2: routes to Create account view when "Transfer in from England or Wales" is selected and Continue is clicked',
-    { tags: ['@PO-2763', '@JIRA-KEY:POT-4240'] },
+    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4240') },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
@@ -82,7 +90,7 @@ describe('Manual account creation - Originator Type', () => {
 
   it(
     'AC4: clicking Continue without making a selection shows error "Select an option" and does not navigate',
-    { tags: ['@PO-2763', '@JIRA-KEY:POT-4241'] },
+    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4241') },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
@@ -102,7 +110,7 @@ describe('Manual account creation - Originator Type', () => {
 
   it(
     'AC5: clicking Cancel without entering anything returns to the Inputter Dashboard',
-    { tags: ['@PO-2763', '@JIRA-KEY:POT-4242'] },
+    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4242') },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',

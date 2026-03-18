@@ -15,6 +15,10 @@ import { interceptGetDeletedAccounts, interceptGetRejectedAccounts } from './moc
 import { OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK } from './mocks/fines-draft-delete-account.mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesDraftCreateAndManageDeletedComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
@@ -44,7 +48,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
 
   it(
     '(AC.1) should not have table when user does not have accounts submitted',
-    { tags: ['@PO-609', '@JIRA-KEY:POT-3908'] },
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3908') },
     () => {
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
@@ -60,7 +64,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
 
   it(
     '(AC.2)Deleted accounts should not appear if deleted 8 or more days ago',
-    { tags: ['@PO-609', '@JIRA-KEY:POT-3909'] },
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3909') },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
@@ -106,7 +110,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
   );
   it(
     '(AC.3)should show summary table with correct data for deleted accounts',
-    { tags: ['@PO-609', '@JIRA-KEY:POT-3910'] },
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3910') },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
@@ -159,7 +163,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
   );
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for deleted accounts',
-    { tags: ['@PO-609', '@JIRA-KEY:POT-3911'] },
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3911') },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
@@ -190,7 +194,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending for Deleted',
-    { tags: ['@PO-609', '@JIRA-KEY:POT-3912'] },
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3912') },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 

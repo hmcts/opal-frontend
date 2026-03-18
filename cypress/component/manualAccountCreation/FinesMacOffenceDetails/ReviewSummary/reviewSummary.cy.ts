@@ -13,6 +13,10 @@ import { MacOffenceDetailsReviewSummaryLocators as DOM_ELEMENTS } from '../../..
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('ReviewSummaryComponent', () => {
   beforeEach(() => {
     interceptOffences();
@@ -58,7 +62,15 @@ describe('ReviewSummaryComponent', () => {
   };
   it(
     '(AC.1)should render component',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@JIRA-KEY:POT-4222'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-417',
+        '@JIRA-STORY:PO-676',
+        '@JIRA-STORY:PO-679',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4222',
+      ),
+    },
     () => {
       setupComponent();
     },
@@ -66,7 +78,18 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     '(AC.1,AC.3)should load all elements on the screen',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560', '@JIRA-KEY:POT-4223'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-417',
+        '@JIRA-STORY:PO-676',
+        '@JIRA-STORY:PO-679',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-STORY:PO-662',
+        '@JIRA-STORY:PO-663',
+        '@JIRA-STORY:PO-560',
+        '@JIRA-KEY:POT-4223',
+      ),
+    },
     () => {
       setupComponent();
 
@@ -95,7 +118,18 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     '(AC.4,AC.5,AC.6) should display the correct data in the elements',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560', '@JIRA-KEY:POT-4224'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-417',
+        '@JIRA-STORY:PO-676',
+        '@JIRA-STORY:PO-679',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-STORY:PO-662',
+        '@JIRA-STORY:PO-663',
+        '@JIRA-STORY:PO-560',
+        '@JIRA-KEY:POT-4224',
+      ),
+    },
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.headingLarge).should('contain', 'Offences and impositions');
@@ -143,7 +177,18 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     'should have updated values for different set of impositions and reflect correct totals and balances',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560', '@JIRA-KEY:POT-4225'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-417',
+        '@JIRA-STORY:PO-676',
+        '@JIRA-STORY:PO-679',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-STORY:PO-662',
+        '@JIRA-STORY:PO-663',
+        '@JIRA-STORY:PO-560',
+        '@JIRA-KEY:POT-4225',
+      ),
+    },
     () => {
       setupComponent();
 
@@ -206,7 +251,18 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     '(AC.9)should allow for multiple impositions for the same offence and reflect correct totals and balances',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560', '@JIRA-KEY:POT-4226'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-417',
+        '@JIRA-STORY:PO-676',
+        '@JIRA-STORY:PO-679',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-STORY:PO-662',
+        '@JIRA-STORY:PO-663',
+        '@JIRA-STORY:PO-560',
+        '@JIRA-KEY:POT-4226',
+      ),
+    },
     () => {
       setupComponent();
 
@@ -301,7 +357,18 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     '(AC.7a,AC.4b,AC.4c)should be able to hide and show impositions',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560', '@JIRA-KEY:POT-4227'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-417',
+        '@JIRA-STORY:PO-676',
+        '@JIRA-STORY:PO-679',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-STORY:PO-662',
+        '@JIRA-STORY:PO-663',
+        '@JIRA-STORY:PO-560',
+        '@JIRA-KEY:POT-4227',
+      ),
+    },
     () => {
       setupComponent();
 

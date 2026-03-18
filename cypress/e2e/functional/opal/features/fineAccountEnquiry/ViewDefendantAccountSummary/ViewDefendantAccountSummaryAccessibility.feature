@@ -1,11 +1,12 @@
-@PO-777
+@JIRA-LABEL:account-enquiry
+@JIRA-STORY:PO-777
 Feature: View Defendant Account Summary - Add Comments Accessibility
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
     And I clear all approved accounts
 
-  @PO-777 @JIRA-KEY:POT-3314
+  @JIRA-STORY:PO-777 @JIRA-KEY:POT-3314
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":

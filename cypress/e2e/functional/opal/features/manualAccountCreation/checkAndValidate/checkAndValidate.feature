@@ -1,10 +1,11 @@
+@JIRA-LABEL:manual-account-creation
 Feature: Navigate and edit sections from task list
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
     And I open Create and Manage Draft Accounts
 
-  @PO-640 @PO-618 @JIRA-KEY:POT-3071
+  @JIRA-STORY:PO-640 @JIRA-STORY:PO-618 @JIRA-KEY:POT-3071
   Scenario: View all rejected accounts navigation
     Given I create a "company" draft account with the following details and set status "Rejected":
       | account.defendant.company_name | TEST Rejected-PO-640-company-{uniq} |
@@ -17,12 +18,12 @@ Feature: Navigate and edit sections from task list
     When I return to the rejected accounts tab
     Then I should see the header containing text "Create accounts"
 
-  @PO-2762 @JIRA-KEY:POT-3072
+  @JIRA-STORY:PO-2762 @JIRA-KEY:POT-3072
   Scenario: Inputter can start a new account from Create accounts screen
     When I click the Create account button on Create and Manage Draft Accounts
     Then I should see the header containing text "Do you want to create a new account or transfer in?"
 
-  @PO-640 @PO-618 @JIRA-KEY:POT-3073
+  @JIRA-STORY:PO-640 @JIRA-STORY:PO-618 @JIRA-KEY:POT-3073
   Scenario: Rejected company account can be edited and resubmitted
     Given I create a "company" draft account with the following details and set status "Rejected":
       | account.defendant.company_name | TEST Rejected-PO-640-company-{uniq} |
@@ -93,7 +94,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @PO-640 @JIRA-KEY:POT-3074
+  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3074
   Scenario: Rejected adult or youth account can be edited and resubmitted
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}                       |
@@ -194,7 +195,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @PO-640 @JIRA-KEY:POT-3075
+  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3075
   Scenario: Rejected parent or guardian to pay account can be edited and resubmitted
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}              |
@@ -298,7 +299,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @PO-640 @JIRA-KEY:POT-3076
+  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3076
   Scenario: Back navigation confirms before leaving a rejected account
     Given I create a "company" draft account with the following details and set status "Rejected":
       | account.defendant.company_name | TEST Rejected-PO-640-BackButton-{uniq} |
@@ -328,7 +329,7 @@ Feature: Navigate and edit sections from task list
     When I go back to Create and Manage Draft Accounts
     Then I should see the header containing text "Create accounts"
 
-  @PO-607 @JIRA-KEY:POT-3077
+  @JIRA-STORY:PO-607 @JIRA-KEY:POT-3077
   Scenario: Approved tab lists recent accounts
     Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd {uniq} |
@@ -352,7 +353,7 @@ Feature: Navigate and edit sections from task list
       | Account type  | Fine               |
       | Business unit | Business Unit A    |
 
-  @PO-1804 @JIRA-KEY:POT-3078
+  @JIRA-STORY:PO-1804 @JIRA-KEY:POT-3078
   Scenario: Fixed penalty individual accounts are accessible from In Review drafts
     Given I create a "fixedPenalty" draft account with the following details and set status "In review":
       | account.defendant.forenames | FakeFixed      |
@@ -362,7 +363,7 @@ Feature: Navigate and edit sections from task list
     When I open the draft account in row containing "FAKELAST{uniq}, FakeFixed" in the manual draft column "Defendant"
     Then I should see the header containing text "Mr FakeFixed FAKELAST{uniq}"
 
-  @PO-1804 @JIRA-KEY:POT-3079
+  @JIRA-STORY:PO-1804 @JIRA-KEY:POT-3079
   Scenario: Fixed penalty company accounts are accessible from In Review drafts
     Given I create a "fixedPenaltyCompany" draft account with the following details and set status "In review":
       | account.defendant.company_name | TestFixedPenaltyCompany{uniq} |

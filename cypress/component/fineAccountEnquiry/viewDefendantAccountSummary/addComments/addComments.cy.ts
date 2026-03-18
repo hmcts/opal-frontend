@@ -18,6 +18,10 @@ import {
   ADD_COMMENTS_FORM_STATE_MIXED_ERROR_MOCK,
 } from './mocks/add_comments_mock';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('FinesAccCommentsAddComponent', () => {
   const setupComponent = (prefilledData = ADD_COMMENTS_FORM_STATE_MOCK, formSubmit: any = null) => {
     const patchDefendantAccountStub = cy.stub().as('patchDefendantAccount').returns(of(undefined));
@@ -68,27 +72,31 @@ describe('FinesAccCommentsAddComponent', () => {
     });
   };
 
-  it('should display the comments form with all required fields', { tags: ['@PO-777', '@JIRA-KEY:POT-3858'] }, () => {
-    setupComponent();
+  it(
+    'should display the comments form with all required fields',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3858') },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.form).should('exist');
-    cy.get(DOM_ELEMENTS.commentField).should('exist');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('exist');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('exist');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('exist');
+      cy.get(DOM_ELEMENTS.form).should('exist');
+      cy.get(DOM_ELEMENTS.commentField).should('exist');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('exist');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('exist');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('exist');
 
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '');
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '');
 
-    cy.get(DOM_ELEMENTS.submitButton).should('exist');
-    cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelButton).should('exist');
+    },
+  );
 
   it(
     'should enforce field length limits according to specifications (AC2a)',
-    { tags: ['@PO-777', '@JIRA-KEY:POT-3859'] },
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3859') },
     () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_MAX_LENGTH_MOCK);
 
@@ -100,18 +108,22 @@ describe('FinesAccCommentsAddComponent', () => {
     },
   );
 
-  it('should accept alphanumeric characters in all fields (AC2a)', { tags: ['@PO-777', '@JIRA-KEY:POT-3860'] }, () => {
-    setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK);
+  it(
+    'should accept alphanumeric characters in all fields (AC2a)',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3860') },
+    () => {
+      setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK);
 
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', 'Test123');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'ABC123');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'ABC123');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'ABC123');
-  });
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', 'Test123');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'ABC123');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'ABC123');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'ABC123');
+    },
+  );
 
   it(
     'should handle character count and allow clearing fields without errors (AC3, AC3a, AC2a)',
-    { tags: ['@PO-777', '@JIRA-KEY:POT-3861'] },
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3861') },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
@@ -156,7 +168,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should display error messages for non-alphanumeric characters (AC4a)',
-    { tags: ['@PO-777', '@JIRA-KEY:POT-3862'] },
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3862') },
     () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_NON_ALPHANUMERIC_MOCK);
 
@@ -205,7 +217,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should display error messages for exceeding character limits (AC4b)',
-    { tags: ['@PO-777', '@JIRA-KEY:POT-3863'] },
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3863') },
     () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_EXCEEDS_LIMITS_MOCK);
 
@@ -242,7 +254,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should clear error messages when Save comment button is clicked with valid data (AC5bi)',
-    { tags: ['@PO-777', '@JIRA-KEY:POT-3864'] },
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3864') },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       // Start with mixed error state to demonstrate error clearing workflow
@@ -279,7 +291,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should handle various form submission scenarios with valid data (AC5, AC2a, AC5d)',
-    { tags: ['@PO-777', '@JIRA-KEY:POT-3865'] },
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3865') },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       setupComponent(ADD_COMMENTS_FORM_STATE_MOCK, mockFormSubmit);
@@ -316,20 +328,24 @@ describe('FinesAccCommentsAddComponent', () => {
     },
   );
 
-  it('should allow saving when user has not made amendments (AC8)', { tags: ['@PO-777', '@JIRA-KEY:POT-3866'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    // Start with pre-filled data to simulate existing comments
-    setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK, mockFormSubmit);
+  it(
+    'should allow saving when user has not made amendments (AC8)',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3866') },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      // Start with pre-filled data to simulate existing comments
+      setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK, mockFormSubmit);
 
-    // Verify data is pre-filled
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', 'Test123');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'ABC123');
+      // Verify data is pre-filled
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', 'Test123');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'ABC123');
 
-    // Don't make any changes - just click Save comment button
-    cy.get(DOM_ELEMENTS.submitButton).should('not.be.disabled');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      // Don't make any changes - just click Save comment button
+      cy.get(DOM_ELEMENTS.submitButton).should('not.be.disabled');
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // Verify form submission was triggered even without changes (AC8a - API call will be made)
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
+      // Verify form submission was triggered even without changes (AC8a - API call will be made)
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    },
+  );
 });

@@ -8,6 +8,10 @@ import { FinesMacOffenceDetailsSearchOffencesResultsComponent } from 'src/app/fl
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-search-offences/constants/fines-mac-offence-details-search-offences-form.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   beforeEach(() => {
     cy.window().then((win) => {
@@ -71,7 +75,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Search offences results component is created correctly',
-    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4231'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-987', '@JIRA-KEY:POT-4231') },
     () => {
       setupComponent();
 
@@ -94,7 +98,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Displays error message when no search matches are found (AC3, AC3a)',
-    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4232'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-987', '@JIRA-KEY:POT-4232') },
     () => {
       setupComponent(NO_SEARCH_RESULTS_MOCK);
 
@@ -108,7 +112,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Displays search results with correct column headers (AC4)',
-    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4233'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-987', '@JIRA-KEY:POT-4233') },
     () => {
       setupComponent();
 
@@ -122,7 +126,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Displays "Copy Code" link between Code and Short Title columns (AC5)',
-    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4234'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-987', '@JIRA-KEY:POT-4234') },
     () => {
       setupComponent();
 
@@ -139,7 +143,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Correctly handles pagination with 25 results per page (AC6b)',
-    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4235'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-987', '@JIRA-KEY:POT-4235') },
     () => {
       setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
@@ -153,7 +157,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Handles pagination buttons correctly (AC6a), (AC6b, AC6c)',
-    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4236'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-987', '@JIRA-KEY:POT-4236') },
     () => {
       setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
@@ -213,7 +217,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
   it(
     'Handles column sorting and resets to page 1 for all columns (AC6a)',
-    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4237'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-987', '@JIRA-KEY:POT-4237') },
     () => {
       setupComponent(FULL_SEARCH_RESULTS_MOCK);
 

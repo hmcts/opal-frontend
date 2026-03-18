@@ -16,6 +16,10 @@ import { FIXED_PENALTY_DEFENDANT_MOCK } from 'cypress/component/manualAccountCre
 import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/CommonIntercept.mocks';
 import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('Fixed Penalty - Review Account Details', () => {
   beforeEach(() => {
     interceptAuthenticatedUser();
@@ -26,7 +30,7 @@ describe('Fixed Penalty - Review Account Details', () => {
   });
   it(
     '(AC.1)should display submitted account details correctly for company in Review  ',
-    { tags: ['@PO-1804 '] },
+    { tags: buildTags('@JIRA-STORY:PO-1804', '@JIRA-KEY:POT-4022') },
     () => {
       const draftAccountId = '1002';
       const props: IFinesComponentProperties = {
@@ -92,7 +96,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display submitted defendant account details correctly for individual defendant in Review',
-    { tags: ['@PO-1804', '@JIRA-KEY:POT-4023'] },
+    { tags: buildTags('@JIRA-STORY:PO-1804', '@JIRA-KEY:POT-4023') },
     () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
@@ -157,7 +161,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display "To review" defendant account details correctly',
-    { tags: ['@PO-1804', '@JIRA-KEY:POT-4024'] },
+    { tags: buildTags('@JIRA-STORY:PO-1804', '@JIRA-KEY:POT-4024') },
     () => {
       const draftAccountId = '1004';
       const props: IFinesComponentProperties = {
@@ -244,7 +248,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display "To review" company account details correctly',
-    { tags: ['@PO-1804', '@JIRA-KEY:POT-4025'] },
+    { tags: buildTags('@JIRA-STORY:PO-1804', '@JIRA-KEY:POT-4025') },
     () => {
       const draftAccountId = '1005';
       const props: IFinesComponentProperties = {

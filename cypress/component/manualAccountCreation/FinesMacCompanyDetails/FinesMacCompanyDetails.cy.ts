@@ -13,6 +13,10 @@ import {
 import { MacCompanyDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.company-details.locators';
 import { of } from 'rxjs';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacCompanyDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COMPANY_DETAILS_MOCK);
 
@@ -54,12 +58,16 @@ describe('FinesMacCompanyDetailsComponent', () => {
     });
   };
 
-  it('should render the component', { tags: ['@JIRA-KEY:POT-4061'] }, () => {
-    setupComponent(null, 'company');
+  it(
+    'should render the component',
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4061') },
+    () => {
+      setupComponent(null, 'company');
 
-    // Verify the component is rendered
-    cy.get(L.componentRoot).should('exist');
-  });
+      // Verify the component is rendered
+      cy.get(L.componentRoot).should('exist');
+    },
+  );
 
   afterEach(() => {
     cy.then(() => {
@@ -77,7 +85,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.8) should error when submitted without mandatory fields but has included optional input - Return to account details + Add contact details',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4062'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4062') },
     () => {
       setupComponent(null, 'company');
 
@@ -93,36 +101,40 @@ describe('FinesMacCompanyDetailsComponent', () => {
     },
   );
 
-  it('(AC.1) should be created as per the design artefact', { tags: ['@JIRA-KEY:POT-4063'] }, () => {
-    setupComponent(null, 'company');
+  it(
+    '(AC.1) should be created as per the design artefact',
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4063') },
+    () => {
+      setupComponent(null, 'company');
 
-    cy.get(L.pageHeader).should('contain', 'Company details');
-    cy.get(L.companyNameLabel).should('contain', 'Company name');
-    cy.get(L.addressLegend)
-      .should('not.be.empty')
-      .invoke('text')
-      .then((txt) => expect(txt.trim()).to.contain('Address'));
-    cy.get(L.addressLine1Label).should('contain', 'Address line 1');
-    cy.get(L.addressLine2Label).should('contain', 'Address line 2');
-    cy.get(L.addressLine3Label).should('contain', 'Address line 3');
-    cy.get(L.postcodeLabel).should('contain', 'Postcode');
-    cy.get(L.addAliasesCheckbox).should('exist');
+      cy.get(L.pageHeader).should('contain', 'Company details');
+      cy.get(L.companyNameLabel).should('contain', 'Company name');
+      cy.get(L.addressLegend)
+        .should('not.be.empty')
+        .invoke('text')
+        .then((txt) => expect(txt.trim()).to.contain('Address'));
+      cy.get(L.addressLine1Label).should('contain', 'Address line 1');
+      cy.get(L.addressLine2Label).should('contain', 'Address line 2');
+      cy.get(L.addressLine3Label).should('contain', 'Address line 3');
+      cy.get(L.postcodeLabel).should('contain', 'Postcode');
+      cy.get(L.addAliasesCheckbox).should('exist');
 
-    cy.get(L.companyNameInput).should('exist');
-    cy.get(L.addressLine1Input).should('exist');
-    cy.get(L.addressLine2Input).should('exist');
-    cy.get(L.addressLine3Input).should('exist');
-    cy.get(L.postcodeInput).should('exist');
+      cy.get(L.companyNameInput).should('exist');
+      cy.get(L.addressLine1Input).should('exist');
+      cy.get(L.addressLine2Input).should('exist');
+      cy.get(L.addressLine3Input).should('exist');
+      cy.get(L.postcodeInput).should('exist');
 
-    cy.get(L.submitButton).should('contain', 'Return to account details');
-    cy.get(L.addContactDetailsButton).should('exist');
-    cy.get(L.cancelLink).should('exist');
-    cy.get(L.cancelLink).should('exist');
-  });
+      cy.get(L.submitButton).should('contain', 'Return to account details');
+      cy.get(L.addContactDetailsButton).should('exist');
+      cy.get(L.cancelLink).should('exist');
+      cy.get(L.cancelLink).should('exist');
+    },
+  );
 
   it(
     '(AC.2) should register all fields for aliases correctly',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4064'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4064') },
     () => {
       setupComponent(null, 'company');
 
@@ -135,114 +147,122 @@ describe('FinesMacCompanyDetailsComponent', () => {
     },
   );
 
-  it('(AC.3) should allow users to add another aliases', { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4065'] }, () => {
-    setupComponent(null, 'company');
+  it(
+    '(AC.3) should allow users to add another aliases',
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4065') },
+    () => {
+      setupComponent(null, 'company');
 
-    cy.get(L.addAliasesCheckbox).check();
+      cy.get(L.addAliasesCheckbox).check();
 
-    cy.get(L.aliasRemoveLink).should('not.exist');
-    cy.get(L.aliasCompanyName2Label).should('not.exist');
-    cy.get(L.aliasCompanyName2Input).should('not.exist');
+      cy.get(L.aliasRemoveLink).should('not.exist');
+      cy.get(L.aliasCompanyName2Label).should('not.exist');
+      cy.get(L.aliasCompanyName2Input).should('not.exist');
 
-    cy.get(L.addAliasButton).first().click();
+      cy.get(L.addAliasButton).first().click();
 
-    cy.get(L.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
-    cy.get(L.aliasCompanyName1Input).should('exist');
+      cy.get(L.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
+      cy.get(L.aliasCompanyName1Input).should('exist');
 
-    cy.get(L.aliasCompanyName2Label).should('have.text', 'Alias 2');
-    cy.get(L.aliasCompanyName2Input).should('exist');
+      cy.get(L.aliasCompanyName2Label).should('have.text', 'Alias 2');
+      cy.get(L.aliasCompanyName2Input).should('exist');
 
-    cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
+      cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
 
-    cy.get(L.aliasCompanyName3Label).should('not.exist');
-    cy.get(L.aliasCompanyName3Input).should('not.exist');
-  });
+      cy.get(L.aliasCompanyName3Label).should('not.exist');
+      cy.get(L.aliasCompanyName3Input).should('not.exist');
+    },
+  );
 
-  it('(AC.4) should allow users to add up to 5 aliases', { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4066'] }, () => {
-    setupComponent(null, 'company');
+  it(
+    '(AC.4) should allow users to add up to 5 aliases',
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4066') },
+    () => {
+      setupComponent(null, 'company');
 
-    cy.get(L.addAliasesCheckbox).check();
+      cy.get(L.addAliasesCheckbox).check();
 
-    cy.get(L.aliasRemoveLink).should('not.exist');
-    cy.get(L.aliasCompanyName1Label).should('have.text', 'Alias 1');
-    cy.get(L.aliasCompanyName1Input).should('exist');
+      cy.get(L.aliasRemoveLink).should('not.exist');
+      cy.get(L.aliasCompanyName1Label).should('have.text', 'Alias 1');
+      cy.get(L.aliasCompanyName1Input).should('exist');
 
-    cy.get(L.aliasCompanyName2Label).should('not.exist');
-    cy.get(L.aliasCompanyName2Input).should('not.exist');
+      cy.get(L.aliasCompanyName2Label).should('not.exist');
+      cy.get(L.aliasCompanyName2Input).should('not.exist');
 
-    cy.get(L.aliasCompanyName3Label).should('not.exist');
-    cy.get(L.aliasCompanyName3Input).should('not.exist');
+      cy.get(L.aliasCompanyName3Label).should('not.exist');
+      cy.get(L.aliasCompanyName3Input).should('not.exist');
 
-    cy.get(L.aliasCompanyName4Label).should('not.exist');
-    cy.get(L.aliasCompanyName4Input).should('not.exist');
+      cy.get(L.aliasCompanyName4Label).should('not.exist');
+      cy.get(L.aliasCompanyName4Input).should('not.exist');
 
-    cy.get(L.aliasCompanyName5Label).should('not.exist');
-    cy.get(L.aliasCompanyName5Input).should('not.exist');
+      cy.get(L.aliasCompanyName5Label).should('not.exist');
+      cy.get(L.aliasCompanyName5Input).should('not.exist');
 
-    //Add Alias 2
-    cy.get(L.addAliasButton).first().click();
-    cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
+      //Add Alias 2
+      cy.get(L.addAliasButton).first().click();
+      cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
 
-    cy.get(L.aliasCompanyName2Label).should('have.text', 'Alias 2');
-    cy.get(L.aliasCompanyName2Input).should('exist');
+      cy.get(L.aliasCompanyName2Label).should('have.text', 'Alias 2');
+      cy.get(L.aliasCompanyName2Input).should('exist');
 
-    cy.get(L.aliasCompanyName3Label).should('not.exist');
-    cy.get(L.aliasCompanyName3Input).should('not.exist');
+      cy.get(L.aliasCompanyName3Label).should('not.exist');
+      cy.get(L.aliasCompanyName3Input).should('not.exist');
 
-    cy.get(L.aliasCompanyName4Label).should('not.exist');
-    cy.get(L.aliasCompanyName4Input).should('not.exist');
+      cy.get(L.aliasCompanyName4Label).should('not.exist');
+      cy.get(L.aliasCompanyName4Input).should('not.exist');
 
-    cy.get(L.aliasCompanyName5Label).should('not.exist');
-    cy.get(L.aliasCompanyName5Input).should('not.exist');
+      cy.get(L.aliasCompanyName5Label).should('not.exist');
+      cy.get(L.aliasCompanyName5Input).should('not.exist');
 
-    //Add Alias 3
-    cy.get(L.addAliasButton).first().click();
-    cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
+      //Add Alias 3
+      cy.get(L.addAliasButton).first().click();
+      cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
 
-    cy.get(L.aliasCompanyName3Label).should('have.text', 'Alias 3');
-    cy.get(L.aliasCompanyName3Input).should('exist');
+      cy.get(L.aliasCompanyName3Label).should('have.text', 'Alias 3');
+      cy.get(L.aliasCompanyName3Input).should('exist');
 
-    cy.get(L.aliasCompanyName4Label).should('not.exist');
-    cy.get(L.aliasCompanyName4Input).should('not.exist');
+      cy.get(L.aliasCompanyName4Label).should('not.exist');
+      cy.get(L.aliasCompanyName4Input).should('not.exist');
 
-    cy.get(L.aliasCompanyName5Label).should('not.exist');
-    cy.get(L.aliasCompanyName5Input).should('not.exist');
+      cy.get(L.aliasCompanyName5Label).should('not.exist');
+      cy.get(L.aliasCompanyName5Input).should('not.exist');
 
-    //Add Alias 4
-    cy.get(L.addAliasButton).first().click();
-    cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
+      //Add Alias 4
+      cy.get(L.addAliasButton).first().click();
+      cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
 
-    cy.get(L.aliasCompanyName4Label).should('have.text', 'Alias 4');
-    cy.get(L.aliasCompanyName4Input).should('exist');
+      cy.get(L.aliasCompanyName4Label).should('have.text', 'Alias 4');
+      cy.get(L.aliasCompanyName4Input).should('exist');
 
-    cy.get(L.aliasCompanyName5Label).should('not.exist');
-    cy.get(L.aliasCompanyName5Input).should('not.exist');
+      cy.get(L.aliasCompanyName5Label).should('not.exist');
+      cy.get(L.aliasCompanyName5Input).should('not.exist');
 
-    //Add Alias 5
-    cy.get(L.addAliasButton).first().click();
-    cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
+      //Add Alias 5
+      cy.get(L.addAliasButton).first().click();
+      cy.get(L.aliasRemoveLink).should('exist').and('not.have.attr', 'aria-label');
 
-    cy.get(L.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
-    cy.get(L.aliasCompanyName1Input).should('exist');
+      cy.get(L.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
+      cy.get(L.aliasCompanyName1Input).should('exist');
 
-    cy.get(L.aliasCompanyName2Label).should('have.text', 'Alias 2');
-    cy.get(L.aliasCompanyName2Input).should('exist');
+      cy.get(L.aliasCompanyName2Label).should('have.text', 'Alias 2');
+      cy.get(L.aliasCompanyName2Input).should('exist');
 
-    cy.get(L.aliasCompanyName3Label).should('have.text', 'Alias 3');
-    cy.get(L.aliasCompanyName3Input).should('exist');
+      cy.get(L.aliasCompanyName3Label).should('have.text', 'Alias 3');
+      cy.get(L.aliasCompanyName3Input).should('exist');
 
-    cy.get(L.aliasCompanyName4Label).should('have.text', 'Alias 4');
-    cy.get(L.aliasCompanyName4Input).should('exist');
+      cy.get(L.aliasCompanyName4Label).should('have.text', 'Alias 4');
+      cy.get(L.aliasCompanyName4Input).should('exist');
 
-    cy.get(L.aliasCompanyName5Label).should('have.text', 'Alias 5');
-    cy.get(L.aliasCompanyName5Input).should('exist');
+      cy.get(L.aliasCompanyName5Label).should('have.text', 'Alias 5');
+      cy.get(L.aliasCompanyName5Input).should('exist');
 
-    cy.get(L.addAliasButton).should('not.exist');
-  });
+      cy.get(L.addAliasButton).should('not.exist');
+    },
+  );
 
   it(
     '(AC.5) should allow users to remove an alias when an additional alias has been added for the first time',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4067'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4067') },
     () => {
       setupComponent(null, 'company');
 
@@ -268,7 +288,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.6) should allow users to remove an alias when multiple additional aliases have been added',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4068'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4068') },
     () => {
       setupComponent(null, 'company');
 
@@ -336,7 +356,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.7) should not retain alias information when checkbox is unticked',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4069'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4069') },
     () => {
       setupComponent(null, 'company');
 
@@ -362,7 +382,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.12) should allow form to be submitted with valid data',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4070'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4070') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
@@ -379,7 +399,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.9) should errors when form is submitted with empty aliases fields - Return to account details + Add contact details',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4071'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4071') },
     () => {
       setupComponent(null, 'company');
 
@@ -395,7 +415,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.10) should error when submitted with many empty aliases fields - Return to account details + Add contact details',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4072'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4072') },
     () => {
       setupComponent(null, 'company');
 
@@ -433,7 +453,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.1) should show maxlength errors when form fields exceed character limits',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4073'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4073') },
     () => {
       setupComponent(null, 'company');
 
@@ -474,7 +494,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.1) should show errors when address line fields contain asterisks (*)',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4074'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4074') },
     () => {
       setupComponent(null, 'company');
 
@@ -492,7 +512,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.1) should validate type check to ensure name fields are only alphabetical letters A-Z',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4075'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4075') },
     () => {
       setupComponent(null, 'company');
 
@@ -518,7 +538,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   );
   it(
     '(AC.11) should allow form to be submitted when validation errors are corrected - Return to account details + Add contact details',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4076'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4076') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'company');
@@ -544,7 +564,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it(
     '(AC.12) should allow form to be submitted with valid data with aliases - Return to account details + Add contact details',
-    { tags: ['@PO-345', '@PO-365', '@JIRA-KEY:POT-4077'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4077') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'company');
@@ -574,7 +594,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   );
   it(
     '(AC.1) should convert specified company details fields to uppercase on user input',
-    { tags: ['@PO-345', '@PO-1450', '@JIRA-KEY:POT-4078'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-1450', '@JIRA-KEY:POT-4078') },
     () => {
       setupComponent(null, 'company');
 

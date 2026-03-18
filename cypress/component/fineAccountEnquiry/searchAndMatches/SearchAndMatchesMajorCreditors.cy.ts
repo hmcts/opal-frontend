@@ -10,6 +10,10 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { BehaviorSubject } from 'rxjs';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('Search Account Component - Major Creditors', () => {
   let majorCreditorsSearchMock = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
   const fragment$ = new BehaviorSubject<string | null>(null);
@@ -70,7 +74,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC1. should render the search for an account screen and major creditors tab',
-    { tags: ['PO-716', '@JIRA-KEY:POT-3726'] },
+    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3726') },
     () => {
       setupComponent();
 
@@ -98,30 +102,44 @@ describe('Search Account Component - Major Creditors', () => {
     },
   );
 
-  it('AC2a, AC2b, AC2c. Single BU filtered and dropdown contents', { tags: ['PO-716', '@JIRA-KEY:POT-3727'] }, () => {
-    setupComponent();
+  it(
+    'AC2a, AC2b, AC2c. Single BU filtered and dropdown contents',
+    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3727') },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.majorCreditorsHeading).should('exist').contains('Major creditors');
-    cy.get(DOM_ELEMENTS.majorCreditorsHelpText).should('exist').contains('Search using creditor name or code');
-    cy.get(DOM_ELEMENTS.majorCreditorDropdown).click();
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').should('have.length', 4);
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(0).should('contain', 'Abellio Greater Anglia (AGAL)');
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(2).should('contain', 'Aldi Stores Ltd (ALDI)');
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(3).should('contain', 'Arriva Rail North (ARVA)');
-  });
+      cy.get(DOM_ELEMENTS.majorCreditorsHeading).should('exist').contains('Major creditors');
+      cy.get(DOM_ELEMENTS.majorCreditorsHelpText).should('exist').contains('Search using creditor name or code');
+      cy.get(DOM_ELEMENTS.majorCreditorDropdown).click();
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').should('have.length', 4);
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete)
+        .find('li')
+        .eq(0)
+        .should('contain', 'Abellio Greater Anglia (AGAL)');
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(2).should('contain', 'Aldi Stores Ltd (ALDI)');
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(3).should('contain', 'Arriva Rail North (ARVA)');
+    },
+  );
 
-  it('AC2d. Type ahead and non-case sensitive search', { tags: ['PO-716', '@JIRA-KEY:POT-3728'] }, () => {
-    setupComponent();
+  it(
+    'AC2d. Type ahead and non-case sensitive search',
+    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3728') },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.majorCreditorDropdown).click().type('ab');
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(0).should('contain', 'Abellio Greater Anglia (AGAL)');
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
-  });
+      cy.get(DOM_ELEMENTS.majorCreditorDropdown).click().type('ab');
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete)
+        .find('li')
+        .eq(0)
+        .should('contain', 'Abellio Greater Anglia (AGAL)');
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
+    },
+  );
 
   it(
     'AC2f. Navigated to account enquiry when major creditor is selected and searched for',
-    { tags: ['PO-716', '@JIRA-KEY:POT-3729'] },
+    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3729') },
     () => {
       setupComponent();
 
@@ -139,21 +157,25 @@ describe('Search Account Component - Major Creditors', () => {
     },
   );
 
-  it('AC2h. Data cleared when another tab is selected', { tags: ['PO-716', '@JIRA-KEY:POT-3730'] }, () => {
-    setupComponent();
+  it(
+    'AC2h. Data cleared when another tab is selected',
+    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3730') },
+    () => {
+      setupComponent();
 
-    majorCreditorsSearchMock.fsa_search_account_number = '12345678';
-    majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
+      majorCreditorsSearchMock.fsa_search_account_number = '12345678';
+      majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
 
-    cy.get(DOM_ELEMENTS.majorCreditorDropdown).click();
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').contains('Abellio Greater Anglia').click();
-    cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('have.value', 'Abellio Greater Anglia (AGAL)');
-    cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
-    cy.get(DOM_ELEMENTS.majorCreditorsTab).click();
-    cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('have.value', '');
-  });
+      cy.get(DOM_ELEMENTS.majorCreditorDropdown).click();
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').contains('Abellio Greater Anglia').click();
+      cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('have.value', 'Abellio Greater Anglia (AGAL)');
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
+      cy.get(DOM_ELEMENTS.majorCreditorsTab).click();
+      cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('have.value', '');
+    },
+  );
 
-  it('AC3. Multiple BUs filtered unhappy path', { tags: ['PO-716', '@JIRA-KEY:POT-3731'] }, () => {
+  it('AC3. Multiple BUs filtered unhappy path', { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3731') }, () => {
     setupComponent();
 
     majorCreditorsSearchMock.fsa_search_account_business_unit_ids = [61, 67, 68, 69, 70, 71, 73];
@@ -165,25 +187,33 @@ describe('Search Account Component - Major Creditors', () => {
     cy.get('a').contains('filter by a single business unit');
   });
 
-  it('AC4, AC5. Major creditor tab error validation', { tags: ['PO-716', '@JIRA-KEY:POT-3732'] }, () => {
-    setupComponent();
+  it(
+    'AC4, AC5. Major creditor tab error validation',
+    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3732') },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.majorCreditorMissingError)
-      .should('exist')
-      .and('contain', 'Enter a major creditor name or code');
-  });
+      cy.get(DOM_ELEMENTS.majorCreditorMissingError)
+        .should('exist')
+        .and('contain', 'Enter a major creditor name or code');
+    },
+  );
 
-  it('AC6. Validation passes navigated to problem screen', { tags: ['PO-716', '@JIRA-KEY:POT-3733'] }, () => {
-    setupComponent();
-    majorCreditorsSearchMock.fsa_search_account_number = '12345678';
-    majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
-    cy.get(DOM_ELEMENTS.majorCreditorDropdown).click();
-    cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').contains('Abellio Greater Anglia').click();
-    cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('have.value', 'Abellio Greater Anglia (AGAL)');
+  it(
+    'AC6. Validation passes navigated to problem screen',
+    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3733') },
+    () => {
+      setupComponent();
+      majorCreditorsSearchMock.fsa_search_account_number = '12345678';
+      majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
+      cy.get(DOM_ELEMENTS.majorCreditorDropdown).click();
+      cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').contains('Abellio Greater Anglia').click();
+      cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('have.value', 'Abellio Greater Anglia (AGAL)');
 
-    cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
-  });
+      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
+    },
+  );
 });

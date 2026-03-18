@@ -1,4 +1,5 @@
-@ManualAccountCreation @OffenceDetails @PO-272 @PO-344 @PO-345 @PO-545 @PO-412 @PO-668 @PO-669 @PO-413 @PO-817 @PO-818 @PO-414 @PO-670 @PO-671 @PO-686 @PO-696 @PO-411 @PO-681 @PO-684 @PO-815 @PO-417 @PO-676 @PO-679 @PO-416 @PO-682 @PO-680 @PO-1395 @PO-987
+@JIRA-LABEL:manual-account-creation
+@ManualAccountCreation @OffenceDetails @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-545 @JIRA-STORY:PO-412 @JIRA-STORY:PO-668 @JIRA-STORY:PO-669 @JIRA-STORY:PO-413 @JIRA-STORY:PO-817 @JIRA-STORY:PO-818 @JIRA-STORY:PO-414 @JIRA-STORY:PO-670 @JIRA-STORY:PO-671 @JIRA-STORY:PO-686 @JIRA-STORY:PO-696 @JIRA-STORY:PO-411 @JIRA-STORY:PO-681 @JIRA-STORY:PO-684 @JIRA-STORY:PO-815 @JIRA-STORY:PO-417 @JIRA-STORY:PO-676 @JIRA-STORY:PO-679 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-STORY:PO-1395 @JIRA-STORY:PO-987
 Feature: Manual account creation - Offence Details
   #This feature file contains tests for the Offence details pages of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the Offence screens component tests
@@ -555,7 +556,7 @@ Feature: Manual account creation - Offence Details
       | Amount paid    | £500.00  |
       | Balance        | £500.00  |
 
-  @PO-272 @PO-344 @PO-345 @PO-416 @PO-682 @PO-680 @JIRA-KEY:POT-3059
+  @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-KEY:POT-3059
   Scenario: User can add multiple offences and remove all offences
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
     And I record imposition financial details:
@@ -762,7 +763,7 @@ Feature: Manual account creation - Offence Details
 
 
 
-  @PO-667 @PO-987 @PO-545 @JIRA-KEY:POT-3064
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-3064
   Scenario: AC1a Guarding against empty offence search submissions
     When I follow the offence search link in the same tab
     Then I should see the header containing text "Search offences"
@@ -772,7 +773,7 @@ Feature: Manual account creation - Offence Details
     Then I should see the header containing text "Search offences"
 
 
-  @PO-667 @PO-987 @PO-545 @JIRA-KEY:POT-3065
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-3065
   Scenario: AC1b-d Single-field offence searches
     When I follow the offence search link in the same tab
 
@@ -791,7 +792,7 @@ Feature: Manual account creation - Offence Details
       | Act and section | e |
 
 
-  @PO-667 @PO-987 @PO-545 @JIRA-KEY:POT-3066
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-3066
   Scenario: AC1e Combination offence search across fields
     When I follow the offence search link in the same tab
     And I search offences with:
@@ -805,7 +806,7 @@ Feature: Manual account creation - Offence Details
       | Act and section | London    |
 
 
-  @PO-667 @PO-987 @PO-545 @JIRA-KEY:POT-3067
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-3067
   Scenario: AC1f Case-insensitive offence searches
     When I follow the offence search link in the same tab
 
@@ -829,7 +830,7 @@ Feature: Manual account creation - Offence Details
       | Column          | Value  |
       | Act and section | London |
 
-  @PO-667 @PO-987 @PO-545 @JIRA-KEY:POT-3068
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-3068
   Scenario: AC1g-h Starts-with, contains and max-results offence searches
     When I follow the offence search link in the same tab
 
@@ -863,7 +864,7 @@ Feature: Manual account creation - Offence Details
       | Act and section |   |
     Then I see the offence search max results message "100 total results"
 
-  @PO-667 @PO-987 @PO-545 @JIRA-KEY:POT-3069
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-3069
   Scenario: AC2a-b Active and inactive offence filter behaviour
     When I follow the offence search link in the same tab
 
@@ -879,7 +880,7 @@ Feature: Manual account creation - Offence Details
     When I reset the offence search to exclude inactive offence codes
     Then I am viewing offence results with active offences only
 
-  @PO-2432 @JIRA-KEY:POT-3070
+  @JIRA-STORY:PO-2432 @JIRA-KEY:POT-3070
   Scenario: Minor creditor details persist after repeated offence review and change [PO-2432]
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 

@@ -7,6 +7,10 @@ import { FinesMacOffenceDetailsSearchOffencesSearchComponent } from 'src/app/flo
 import { SEARCH_OFFENCES_LENGTH_CHECK, SEARCH_OFFENCES_FORMAT_CHECK } from './constants/search_offence_errors';
 import { of } from 'rxjs';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let offenceSearchFormData = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
 
@@ -52,7 +56,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
 
   it(
     'AC.1a, AC.1b should render all elements on the page',
-    { tags: ['@PO-545', '@PO-667', '@JIRA-KEY:POT-4228'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-667', '@JIRA-KEY:POT-4228') },
     () => {
       setupComponent(null);
 
@@ -75,7 +79,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   // This test verifying the maximum length of the fields
   it(
     'AC.2a, AC.2b, AC.2c Checking the validation failures when exceeding the maximum characters',
-    { tags: ['@PO-545', '@PO-667', '@JIRA-KEY:POT-4229'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-667', '@JIRA-KEY:POT-4229') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -96,7 +100,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   //The below code will check each string in the invalidInputs array and check if the error message is displayed
   it(
     'AC.2d, AC.2e, AC.2f Checking the validation failures when a special character into the fields',
-    { tags: ['@PO-545', '@PO-667', '@JIRA-KEY:POT-4230'] },
+    { tags: buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-667', '@JIRA-KEY:POT-4230') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 

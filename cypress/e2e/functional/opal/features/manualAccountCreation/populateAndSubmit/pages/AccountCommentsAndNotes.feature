@@ -1,4 +1,5 @@
-@ManualAccountCreation @AccountCommentsAndNotes @PO-272 @PO-344 @PO-345 @PO-469 @PO-499 @PO-500
+@JIRA-LABEL:manual-account-creation
+@ManualAccountCreation @AccountCommentsAndNotes @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-469 @JIRA-STORY:PO-499 @JIRA-STORY:PO-500
 Feature: Manual account creation - Account Comments and Notes
   #This feature file contains tests for the Account Comments and Notes page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the AccountCommentsAndNotesComponent.cy.ts component tests

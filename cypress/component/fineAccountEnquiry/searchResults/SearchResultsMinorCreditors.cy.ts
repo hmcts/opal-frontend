@@ -15,6 +15,10 @@ import {
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_matches_minor_creditors_mock';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('FinesSaResultsComponent - Minor Creditors', () => {
   let searchResultState = {
     searchAccount: MINOR_CREDITORS_SEARCH_STATE_MOCK,
@@ -66,7 +70,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     'Search results component is created correctly for minor creditors',
-    { tags: ['PO-708', '@JIRA-KEY:POT-3782'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3782') },
     () => {
       setupComponent();
 
@@ -77,7 +81,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC2) Displays error message when no minor creditor search matches are found',
-    { tags: ['PO-708', '@JIRA-KEY:POT-3783'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3783') },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
@@ -96,7 +100,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC3) Handles more than 100 minor creditor search matches correctly',
-    { tags: ['PO-708', '@JIRA-KEY:POT-3784'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3784') },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
@@ -121,7 +125,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting',
-    { tags: ['PO-708', '@JIRA-KEY:POT-3785'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3785') },
     () => {
       setupComponent(INDIVIDUAL_SEARCH_RESULTS_MOCK);
 
@@ -170,7 +174,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting',
-    { tags: ['PO-708', '@JIRA-KEY:POT-3786'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3786') },
     () => {
       setupComponent(COMPANY_SEARCH_RESULTS_MOCK);
 
@@ -217,7 +221,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4d) Displays pagination with 25 results per page for maximum of 100 results',
-    { tags: ['PO-708', '@JIRA-KEY:POT-3787'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3787') },
     () => {
       // Using LARGE_SEARCH_RESULTS_MOCK but limiting to 100 results for pagination testing
       const paginationMock = {
@@ -266,7 +270,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4f) Should sort by each column - ascending then descending',
-    { tags: ['PO-708', '@JIRA-KEY:POT-3788'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3788') },
     () => {
       setupComponent(SORTING_MINOR_CREDITORS_MOCK);
 

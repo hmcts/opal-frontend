@@ -15,6 +15,10 @@ import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over
 import { interceptGetApprovedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesDraftCreateAndManageApprovedComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
@@ -44,7 +48,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
 
   it(
     '(AC.2,AC.3,AC.4)should show summary table with correct data for approved accounts',
-    { tags: ['@PO-607', '@JIRA-KEY:POT-3905'] },
+    { tags: buildTags('@JIRA-STORY:PO-607', '@JIRA-KEY:POT-3905') },
     () => {
       const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
@@ -90,7 +94,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
 
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for approved accounts',
-    { tags: ['@PO-607', '@JIRA-KEY:POT-3906'] },
+    { tags: buildTags('@JIRA-STORY:PO-607', '@JIRA-KEY:POT-3906') },
     () => {
       const approvedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
@@ -121,7 +125,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
 
   it(
     '(AC.1)should show empty value statement for Approved status when no accounts have been Approved',
-    { tags: ['@PO-607', '@JIRA-KEY:POT-3907'] },
+    { tags: buildTags('@JIRA-STORY:PO-607', '@JIRA-KEY:POT-3907') },
     () => {
       const approvedMockData = { count: 0, summaries: [] };
 

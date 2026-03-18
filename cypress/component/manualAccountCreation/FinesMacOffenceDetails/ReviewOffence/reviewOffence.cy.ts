@@ -13,6 +13,10 @@ import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from 'src/app/flows/
 import { of } from 'rxjs';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('ReviewOffenceComponent', () => {
   let finesMacOffenceDetailsDraftState = {
     ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
@@ -57,15 +61,35 @@ describe('ReviewOffenceComponent', () => {
       },
     });
   };
-  it('should render component', { tags: ['@JIRA-KEY:POT-4218'] }, () => {
-    setupComponent();
+  it(
+    'should render component',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4218',
+      ),
+    },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.app).should('exist');
+    },
+  );
 
   it(
     'should load all elements on the screen correctly',
-    { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545', '@JIRA-KEY:POT-4219'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4219',
+      ),
+    },
     () => {
       setupComponent();
 
@@ -85,7 +109,15 @@ describe('ReviewOffenceComponent', () => {
 
   it(
     'should have correct values in the elements',
-    { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545', '@JIRA-KEY:POT-4220'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4220',
+      ),
+    },
     () => {
       setupComponent();
 
@@ -110,7 +142,15 @@ describe('ReviewOffenceComponent', () => {
 
   it(
     'should update value according to imposition type',
-    { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545', '@JIRA-KEY:POT-4221'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4221',
+      ),
+    },
     () => {
       setupComponent(1);
 

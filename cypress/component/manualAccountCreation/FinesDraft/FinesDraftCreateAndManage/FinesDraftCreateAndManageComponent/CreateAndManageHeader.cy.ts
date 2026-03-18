@@ -21,6 +21,10 @@ import {
 import { FINES_ROUTING_PATHS } from 'src/app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from 'src/app/flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesDraftCreateAndManageHeaderComponent', () => {
   const setupComponent = (userState = DRAFT_SESSION_USER_STATE_MOCK) => {
     cy.then(() => {
@@ -57,7 +61,7 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
 
   it(
     '(AC.1,AC.1a) should display a primary Create account button in the Create accounts header for inputters',
-    { tags: ['@PO-2762', '@JIRA-KEY:POT-3913'] },
+    { tags: buildTags('@JIRA-STORY:PO-2762', '@JIRA-KEY:POT-3913') },
     () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
@@ -72,7 +76,7 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
 
   it(
     '(AC.1b) clicking Create account should navigate to originator type',
-    { tags: ['@PO-2762', '@JIRA-KEY:POT-3914'] },
+    { tags: buildTags('@JIRA-STORY:PO-2762', '@JIRA-KEY:POT-3914') },
     () => {
       stubAllTabResponses();
       cy.then(() => {
@@ -113,7 +117,7 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
 
   it(
     '(AC.1c) should hide Create account button for users without create/manage permission',
-    { tags: ['@PO-2762', '@JIRA-KEY:POT-3915'] },
+    { tags: buildTags('@JIRA-STORY:PO-2762', '@JIRA-KEY:POT-3915') },
     () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_MOCK);
@@ -124,7 +128,7 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
 
   it(
     '(AC.1) should display Create account button across all active tabs',
-    { tags: ['@PO-2762', '@JIRA-KEY:POT-3916'] },
+    { tags: buildTags('@JIRA-STORY:PO-2762', '@JIRA-KEY:POT-3916') },
     () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);

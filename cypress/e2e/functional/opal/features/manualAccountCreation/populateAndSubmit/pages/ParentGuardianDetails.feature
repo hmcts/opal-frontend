@@ -1,4 +1,5 @@
-@ManualAccountCreation @ParentGuardianDetails @PO-344 @PO-364 @PO-436
+@JIRA-LABEL:manual-account-creation
+@ManualAccountCreation @ParentGuardianDetails @JIRA-STORY:PO-344 @JIRA-STORY:PO-364 @JIRA-STORY:PO-436
 Feature: Manual account creation - Parent Guardian Details
   #This feature file contains tests for the Parent guardian details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the CompanyDetailsComponent.cy.ts component tests

@@ -4,6 +4,10 @@ import { IFinesConSearchAccountState } from 'src/app/flows/fines/fines-con/conso
 import { setupConsolidationComponent as mountConsolidationComponent } from './setup/SetupComponent';
 import { ConsolidationTabFragment, IComponentProperties } from './setup/setupComponent.interface';
 
+const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
+
+const buildTags = (...tags: string[]): string[] => [...tags, CONSOLIDATION_JIRA_LABEL];
+
 describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   let finesConSearchAccountFormData: IFinesConSearchAccountState = structuredClone(
     FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData,
@@ -53,59 +57,63 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     cy.get(AccountSearchLocators.postCodeInput).should('have.value', '');
   };
 
-  it('AC1. Search screen mirrors expected field types, headings and actions', { tags: ['@JIRA-KEY:POT-3867'] }, () => {
-    setupConsolidationComponent();
+  it(
+    'AC1. Search screen mirrors expected field types, headings and actions',
+    { tags: buildTags('@JIRA-KEY:POT-3867') },
+    () => {
+      setupConsolidationComponent();
 
-    cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
-    cy.get(AccountSearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
-    cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
+      cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
+      cy.get(AccountSearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
+      cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
 
-    //AC1a. Business unit displays the selected BU and is read-only'
+      //AC1a. Business unit displays the selected BU and is read-only'
 
-    cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business Unit');
-    cy.get(AccountSearchLocators.businessUnitValue).should('contain', 'Historical Debt');
+      cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business Unit');
+      cy.get(AccountSearchLocators.businessUnitValue).should('contain', 'Historical Debt');
 
-    //AC1b. Defendant type displays 'Individual'
-    cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant Type');
-    cy.get(AccountSearchLocators.defendantTypeValue).should('contain', 'Individual');
+      //AC1b. Defendant type displays 'Individual'
+      cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant Type');
+      cy.get(AccountSearchLocators.defendantTypeValue).should('contain', 'Individual');
 
-    //AC1c. Search screen mirrors expected field types, headings and actions
-    cy.get(AccountSearchLocators.tabsNav).should('be.visible');
-    cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
-    cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
-    cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For Consolidation');
+      //AC1c. Search screen mirrors expected field types, headings and actions
+      cy.get(AccountSearchLocators.tabsNav).should('be.visible');
+      cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
+      cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
+      cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For Consolidation');
 
-    cy.get(AccountSearchLocators.quickSearchHeading).should('contain', 'Quick search');
-    cy.contains(AccountSearchLocators.advancedSearchHeading, 'Advanced Search').should('be.visible');
+      cy.get(AccountSearchLocators.quickSearchHeading).should('contain', 'Quick search');
+      cy.contains(AccountSearchLocators.advancedSearchHeading, 'Advanced Search').should('be.visible');
 
-    cy.get(AccountSearchLocators.accountNumberInput).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.nationalInsuranceNumberInput).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.lastNameInput).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.lastNameExactMatchCheckbox).should('have.attr', 'type', 'checkbox');
-    cy.get(AccountSearchLocators.firstNamesInput).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.firstNamesExactMatchCheckbox).should('have.attr', 'type', 'checkbox');
-    cy.get(AccountSearchLocators.includeAliasesCheckbox).should('have.attr', 'type', 'checkbox');
-    cy.get(AccountSearchLocators.dateOfBirthInput).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.addressLine1Input).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.postCodeInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.accountNumberInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.nationalInsuranceNumberInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.lastNameInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.lastNameExactMatchCheckbox).should('have.attr', 'type', 'checkbox');
+      cy.get(AccountSearchLocators.firstNamesInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.firstNamesExactMatchCheckbox).should('have.attr', 'type', 'checkbox');
+      cy.get(AccountSearchLocators.includeAliasesCheckbox).should('have.attr', 'type', 'checkbox');
+      cy.get(AccountSearchLocators.dateOfBirthInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.addressLine1Input).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.postCodeInput).should('have.attr', 'type', 'text');
 
-    cy.get(AccountSearchLocators.searchButton).should('be.visible').and('contain', 'Search');
-    cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').should('be.visible');
+      cy.get(AccountSearchLocators.searchButton).should('be.visible').and('contain', 'Search');
+      cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').should('be.visible');
 
-    //AC1d. Hint text is present above Quick search heading
-    cy.get(AccountSearchLocators.quickSearchHint)
-      .invoke('text')
-      .then((text) => {
-        const normalisedText = text.replace(/\s+/g, ' ').trim();
-        expect(normalisedText).to.equal(
-          'Use quick search to search for an account using either account number or National Insurance number, or use advanced search',
-        );
-      });
-  });
+      //AC1d. Hint text is present above Quick search heading
+      cy.get(AccountSearchLocators.quickSearchHint)
+        .invoke('text')
+        .then((text) => {
+          const normalisedText = text.replace(/\s+/g, ' ').trim();
+          expect(normalisedText).to.equal(
+            'Use quick search to search for an account using either account number or National Insurance number, or use advanced search',
+          );
+        });
+    },
+  );
 
   it(
     'AC2. Selecting Search with no populated fields triggers no action and user stays on same screen',
-    { tags: ['@JIRA-KEY:POT-3868'] },
+    { tags: buildTags('@JIRA-KEY:POT-3868') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       setupConsolidationComponent({ updateSearchSpy });
@@ -120,7 +128,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC3. Invalid search criteria display the expected errors and no search update occurs',
-    { tags: ['@JIRA-KEY:POT-3869'] },
+    { tags: buildTags('@JIRA-KEY:POT-3869') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
@@ -176,7 +184,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC4. Max length validation errors display expected messages and no search update occurs',
-    { tags: ['@JIRA-KEY:POT-3870'] },
+    { tags: buildTags('@JIRA-KEY:POT-3870') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
@@ -236,7 +244,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC5a. User enters data into First names without Last name and sees Enter last name',
-    { tags: ['@JIRA-KEY:POT-3871'] },
+    { tags: buildTags('@JIRA-KEY:POT-3871') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_first_names =
@@ -254,7 +262,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC5b. User enters Date of birth without Last name and sees Enter last name',
-    { tags: ['@JIRA-KEY:POT-3872'] },
+    { tags: buildTags('@JIRA-KEY:POT-3872') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_date_of_birth =
@@ -271,7 +279,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC5c. User selects Include aliases without Last name and sees Enter last name',
-    { tags: ['@JIRA-KEY:POT-3873'] },
+    { tags: buildTags('@JIRA-KEY:POT-3873') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_include_aliases = true;
@@ -287,7 +295,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC5d. User selects Search exact match for Last name without Last name and sees Enter last name',
-    { tags: ['@JIRA-KEY:POT-3874'] },
+    { tags: buildTags('@JIRA-KEY:POT-3874') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_last_name_exact_match = true;
@@ -304,7 +312,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC6a. When account number is entered, it is used exclusively for the search payload',
-    { tags: ['@JIRA-KEY:POT-3875'] },
+    { tags: buildTags('@JIRA-KEY:POT-3875') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_number = '12345678';
@@ -334,7 +342,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC6b. When National Insurance number is entered, it is used exclusively for the search payload',
-    { tags: ['@JIRA-KEY:POT-3876'] },
+    { tags: buildTags('@JIRA-KEY:POT-3876') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_national_insurance_number = 'AB123456C';
@@ -362,32 +370,36 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     },
   );
 
-  it('AC7. Selecting Clear search clears all entered Search tab data', { tags: ['@JIRA-KEY:POT-3877'] }, () => {
-    finesConSearchAccountFormData = {
-      ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
-      fcon_search_account_number: '12345678',
-      fcon_search_account_national_insurance_number: 'AB123456C',
-      fcon_search_account_individuals_search_criteria: {
-        fcon_search_account_individuals_last_name: 'Smith',
-        fcon_search_account_individuals_last_name_exact_match: true,
-        fcon_search_account_individuals_first_names: 'John',
-        fcon_search_account_individuals_first_names_exact_match: true,
-        fcon_search_account_individuals_include_aliases: true,
-        fcon_search_account_individuals_date_of_birth: '01/01/1990',
-        fcon_search_account_individuals_address_line_1: '1 High Street',
-        fcon_search_account_individuals_post_code: 'SW1A 1AA',
-      },
-    };
-    setupConsolidationComponent();
+  it(
+    'AC7. Selecting Clear search clears all entered Search tab data',
+    { tags: buildTags('@JIRA-KEY:POT-3877') },
+    () => {
+      finesConSearchAccountFormData = {
+        ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
+        fcon_search_account_number: '12345678',
+        fcon_search_account_national_insurance_number: 'AB123456C',
+        fcon_search_account_individuals_search_criteria: {
+          fcon_search_account_individuals_last_name: 'Smith',
+          fcon_search_account_individuals_last_name_exact_match: true,
+          fcon_search_account_individuals_first_names: 'John',
+          fcon_search_account_individuals_first_names_exact_match: true,
+          fcon_search_account_individuals_include_aliases: true,
+          fcon_search_account_individuals_date_of_birth: '01/01/1990',
+          fcon_search_account_individuals_address_line_1: '1 High Street',
+          fcon_search_account_individuals_post_code: 'SW1A 1AA',
+        },
+      };
+      setupConsolidationComponent();
 
-    cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').click();
+      cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').click();
 
-    assertSearchFieldsAreCleared();
-  });
+      assertSearchFieldsAreCleared();
+    },
+  );
 
   it(
     'AC7a. Clear search does not clear other tabs; note: Results/For consolidation currently have no data model to assert',
-    { tags: ['@JIRA-KEY:POT-3878'] },
+    { tags: buildTags('@JIRA-KEY:POT-3878') },
     () => {
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
@@ -425,61 +437,65 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   );
   // Company search scenarios
 
-  it('AC1. Search screen mirrors expected field types, headings and actions', { tags: ['@JIRA-KEY:POT-3867'] }, () => {
-    setupConsolidationComponent({ defendantType: 'company' });
+  it(
+    'AC1. Search screen mirrors expected field types, headings and actions',
+    { tags: buildTags('@JIRA-KEY:POT-3867') },
+    () => {
+      setupConsolidationComponent({ defendantType: 'company' });
 
-    cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
-    cy.get(AccountSearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
-    cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
+      cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
+      cy.get(AccountSearchLocators.searchTabLink).should('have.attr', 'aria-current', 'page');
+      cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
 
-    //AC1a. Business unit displays the selected BU and is read-only'
+      //AC1a. Business unit displays the selected BU and is read-only'
 
-    cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business Unit');
-    cy.get(AccountSearchLocators.businessUnitValue)
-      .should('contain', 'Historical Debt')
-      .find('input, select, textarea')
-      .should('not.exist');
+      cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business Unit');
+      cy.get(AccountSearchLocators.businessUnitValue)
+        .should('contain', 'Historical Debt')
+        .find('input, select, textarea')
+        .should('not.exist');
 
-    //AC1b. Defendant type displays 'Company'
-    cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant Type');
-    cy.get(AccountSearchLocators.defendantTypeValue)
-      .should('contain', 'Company')
-      .find('input, select, textarea')
-      .should('not.exist');
+      //AC1b. Defendant type displays 'Company'
+      cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant Type');
+      cy.get(AccountSearchLocators.defendantTypeValue)
+        .should('contain', 'Company')
+        .find('input, select, textarea')
+        .should('not.exist');
 
-    //AC1c. Search screen mirrors expected field types, headings and actions
-    cy.get(AccountSearchLocators.tabsNav).should('be.visible');
-    cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
-    cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
-    cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For Consolidation');
+      //AC1c. Search screen mirrors expected field types, headings and actions
+      cy.get(AccountSearchLocators.tabsNav).should('be.visible');
+      cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
+      cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
+      cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For Consolidation');
 
-    cy.get(AccountSearchLocators.quickSearchHeading).should('contain', 'Quick search');
-    cy.contains(AccountSearchLocators.advancedSearchHeading, 'Advanced Search').should('be.visible');
+      cy.get(AccountSearchLocators.quickSearchHeading).should('contain', 'Quick search');
+      cy.contains(AccountSearchLocators.advancedSearchHeading, 'Advanced Search').should('be.visible');
 
-    cy.get(AccountSearchLocators.accountNumberInput).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.companyNameInput).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.companyNameExactMatchCheckbox).should('have.attr', 'type', 'checkbox');
-    cy.get(AccountSearchLocators.companyIncludeAliasesCheckbox).should('have.attr', 'type', 'checkbox');
-    cy.get(AccountSearchLocators.companyAddressLine1Input).should('have.attr', 'type', 'text');
-    cy.get(AccountSearchLocators.companyPostCodeInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.accountNumberInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.companyNameInput).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.companyNameExactMatchCheckbox).should('have.attr', 'type', 'checkbox');
+      cy.get(AccountSearchLocators.companyIncludeAliasesCheckbox).should('have.attr', 'type', 'checkbox');
+      cy.get(AccountSearchLocators.companyAddressLine1Input).should('have.attr', 'type', 'text');
+      cy.get(AccountSearchLocators.companyPostCodeInput).should('have.attr', 'type', 'text');
 
-    cy.get(AccountSearchLocators.searchButton).should('be.visible').and('contain', 'Search');
-    cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').should('be.visible');
+      cy.get(AccountSearchLocators.searchButton).should('be.visible').and('contain', 'Search');
+      cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search').should('be.visible');
 
-    //AC1d. Hint text is present above Quick search heading
-    cy.get(AccountSearchLocators.quickSearchHint)
-      .invoke('text')
-      .then((text) => {
-        const normalisedText = text.replace(/\s+/g, ' ').trim();
-        expect(normalisedText).to.equal(
-          'Use quick search to search for an account using account number, or use advanced search',
-        );
-      });
-  });
+      //AC1d. Hint text is present above Quick search heading
+      cy.get(AccountSearchLocators.quickSearchHint)
+        .invoke('text')
+        .then((text) => {
+          const normalisedText = text.replace(/\s+/g, ' ').trim();
+          expect(normalisedText).to.equal(
+            'Use quick search to search for an account using account number, or use advanced search',
+          );
+        });
+    },
+  );
 
   it(
     'AC2. Selecting Search with no populated fields triggers no action and user stays on same screen',
-    { tags: ['@JIRA-KEY:POT-3868'] },
+    { tags: buildTags('@JIRA-KEY:POT-3868') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
@@ -494,7 +510,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC3. Invalid search criteria display the expected errors and no search update occurs',
-    { tags: ['@JIRA-KEY:POT-3869'] },
+    { tags: buildTags('@JIRA-KEY:POT-3869') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
@@ -547,7 +563,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC4. Max length search validation displays the expected errors and no search update occurs',
-    { tags: ['@JIRA-KEY:POT-3879'] },
+    { tags: buildTags('@JIRA-KEY:POT-3879') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
@@ -600,7 +616,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC5. Field dependencies checked & display the expected errors when ommited - no search update occurs',
-    { tags: ['@JIRA-KEY:POT-3880'] },
+    { tags: buildTags('@JIRA-KEY:POT-3880') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
@@ -638,7 +654,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC6a. When account number is entered, it is used exclusively for the search payload',
-    { tags: ['@JIRA-KEY:POT-3875'] },
+    { tags: buildTags('@JIRA-KEY:POT-3875') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_number = '12345678';
@@ -664,7 +680,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
   it(
     'AC7 Clear search button removes all populated data except in results/consolidation tabs',
-    { tags: ['@JIRA-KEY:POT-3881'] },
+    { tags: buildTags('@JIRA-KEY:POT-3881') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {

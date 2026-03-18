@@ -13,6 +13,10 @@ import { SelectBusinessUnitLocators } from 'cypress/shared/selectors/consolidati
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
+const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
+
+const buildTags = (...tags: string[]): string[] => [...tags, CONSOLIDATION_JIRA_LABEL];
+
 describe('FinesConSelectBuFormComponent', () => {
   let finesConFormData = structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
   let autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
@@ -69,7 +73,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC1, AC2, AC3) should show business unit and defendant type fields',
-    { tags: ['@PO-2412', '@JIRA-KEY:POT-3882'] },
+    { tags: buildTags('@JIRA-STORY:PO-2412', '@JIRA-KEY:POT-3882') },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = 1;
@@ -102,7 +106,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC2) should list available business units in the autocomplete',
-    { tags: ['@PO-2412', '@JIRA-KEY:POT-3883'] },
+    { tags: buildTags('@JIRA-STORY:PO-2412', '@JIRA-KEY:POT-3883') },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = null;
@@ -120,22 +124,26 @@ describe('FinesConSelectBuFormComponent', () => {
     },
   );
 
-  it('(AC2a) should auto select a single business unit', { tags: ['@PO-2412', '@JIRA-KEY:POT-3884'] }, () => {
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK.slice(0, 1));
+  it(
+    '(AC2a) should auto select a single business unit',
+    { tags: buildTags('@JIRA-STORY:PO-2412', '@JIRA-KEY:POT-3884') },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK.slice(0, 1));
 
-    setupComponent();
+      setupComponent();
 
-    cy.get(SelectBusinessUnitLocators.singleBusinessUnitMessage).should(
-      'have.text',
-      `The consolidation will be processed in Historical Debt`,
-    );
-    cy.get(SelectBusinessUnitLocators.businessUnitInput).should('not.exist');
-  });
+      cy.get(SelectBusinessUnitLocators.singleBusinessUnitMessage).should(
+        'have.text',
+        `The consolidation will be processed in Historical Debt`,
+      );
+      cy.get(SelectBusinessUnitLocators.businessUnitInput).should('not.exist');
+    },
+  );
 
   it(
     '(AC4) should show an error when continuing without selecting a business unit',
-    { tags: ['@PO-2412', '@JIRA-KEY:POT-3885'] },
+    { tags: buildTags('@JIRA-STORY:PO-2412', '@JIRA-KEY:POT-3885') },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = null;

@@ -1,4 +1,5 @@
-@ManualAccountCreation @EmployerDetails @PO-272 @PO-280 @PO-368 @PO-434 @PO-435
+@JIRA-LABEL:manual-account-creation
+@ManualAccountCreation @EmployerDetails @JIRA-STORY:PO-272 @JIRA-STORY:PO-280 @JIRA-STORY:PO-368 @JIRA-STORY:PO-434 @JIRA-STORY:PO-435
 Feature: Manual account creation - Employer Details
   #This feature file contains tests for the Employer Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the EmployerDetailsComponent.cy.ts component tests

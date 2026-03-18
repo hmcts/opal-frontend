@@ -1,4 +1,5 @@
-@ManualAccountCreation @CourtDetails @PO-272 @PO-344 @PO-345 @PO-389 @PO-527 @PO-529
+@JIRA-LABEL:manual-account-creation
+@ManualAccountCreation @CourtDetails @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-389 @JIRA-STORY:PO-527 @JIRA-STORY:PO-529
 Feature: Manual account creation - Court Details
   #This feature file contains tests for the Court Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the CourtDetailsComponent.cy.ts component tests
@@ -69,11 +70,11 @@ Feature: Manual account creation - Court Details
     And I cancel manual court details choosing "Cancel"
     Then the manual court details fields are:
       | Prosecutor Case Reference (PCR) | 4321 |
-  @PO-2790 @JIRA-KEY:POT-3188
+  @JIRA-STORY:PO-2790 @JIRA-KEY:POT-3188
   Scenario: Court Details - Axe Core
     Then I check the page for accessibility
 
-  @PO-2790 @JIRA-KEY:POT-3189
+  @JIRA-STORY:PO-2790 @JIRA-KEY:POT-3189
   Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core
     Given I am logged in with email "opal-test@hmcts.net"
     When I open Manual Account Creation from the dashboard

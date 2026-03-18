@@ -14,6 +14,10 @@ import { FinesSaSearchFilterBusinessUnitComponent } from 'src/app/flows/fines/fi
 // Unit-test refData (resolver payload)
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('Filter by Business Unit (CT)', () => {
   let resolverPayload: typeof OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
   let preselectedIds: number[];
@@ -113,7 +117,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC1c: shows tabs, master label, Fines list alphabetical (A→Z), and Save/Cancel controls',
-    { tags: ['@JIRA-KEY:POT-3748'] },
+    { tags: buildTags('@JIRA-KEY:POT-3748') },
     () => {
       setupComponent();
 
@@ -147,7 +151,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC1ci: all business units are selected when filter is set to "All business units" (Fines tab)',
-    { tags: ['@JIRA-KEY:POT-3749'] },
+    { tags: buildTags('@JIRA-KEY:POT-3749') },
     () => {
       // Preselect all Fines IDs
       preselectedIds = resolverPayload.refData
@@ -175,7 +179,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2a ----------------
 
-  it('AC2a: shows two tabs – Fines and Confiscation', { tags: ['@JIRA-KEY:POT-3750'] }, () => {
+  it('AC2a: shows two tabs – Fines and Confiscation', { tags: buildTags('@JIRA-KEY:POT-3750') }, () => {
     setupComponent();
     cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.finesTabText).should('exist');
     cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.confiscationTabText).should('exist');
@@ -185,7 +189,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z',
-    { tags: ['@JIRA-KEY:POT-3751'] },
+    { tags: buildTags('@JIRA-KEY:POT-3751') },
     () => {
       setupComponent();
       clickTabByText(DOM_ELEMENTS.finesTabText);
@@ -203,7 +207,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC2aii/2b/2c (Confiscation): only Confiscation units, labels equal names, alphabetical A→Z',
-    { tags: ['@JIRA-KEY:POT-3752'] },
+    { tags: buildTags('@JIRA-KEY:POT-3752') },
     () => {
       setupComponent();
       // Drive fragment to switch tab in CT
@@ -229,7 +233,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC3a (Fines): master checkbox selects all fines units and counter shows n of n',
-    { tags: ['@JIRA-KEY:POT-3753'] },
+    { tags: buildTags('@JIRA-KEY:POT-3753') },
     () => {
       preselectedIds = [];
       setupComponent();
@@ -256,7 +260,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC3ai (Fines): unticking master checkbox clears all fines units and counter shows 0 of n',
-    { tags: ['@JIRA-KEY:POT-3754'] },
+    { tags: buildTags('@JIRA-KEY:POT-3754') },
     () => {
       preselectedIds = resolverPayload.refData
         .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
@@ -288,7 +292,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC4a (Confiscation): master checkbox selects all confiscation units and counter shows n of n',
-    { tags: ['@JIRA-KEY:POT-3755'] },
+    { tags: buildTags('@JIRA-KEY:POT-3755') },
     () => {
       preselectedIds = [];
       setupComponent();
@@ -315,7 +319,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC4ai (Confiscation): unticking master checkbox clears all confiscation units and counter shows 0 of n',
-    { tags: ['@JIRA-KEY:POT-3756'] },
+    { tags: buildTags('@JIRA-KEY:POT-3756') },
     () => {
       preselectedIds = resolverPayload.refData
         .filter((bu) => String(bu.opal_domain).toLowerCase() === 'confiscation')
@@ -346,7 +350,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC5: Save button count shows total across Fines + Confiscation and updates dynamically',
-    { tags: ['@JIRA-KEY:POT-3757'] },
+    { tags: buildTags('@JIRA-KEY:POT-3757') },
     () => {
       setupComponent();
 
@@ -404,7 +408,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC6a (Fines): shows an error when clicking Save with no business units selected',
-    { tags: ['@JIRA-KEY:POT-3758'] },
+    { tags: buildTags('@JIRA-KEY:POT-3758') },
     () => {
       // Start clean (no preselectedIds)
       preselectedIds = [];
@@ -426,7 +430,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC6b (Confiscation): shows an error when clicking Save with no business units selected',
-    { tags: ['@JIRA-KEY:POT-3759'] },
+    { tags: buildTags('@JIRA-KEY:POT-3759') },
     () => {
       preselectedIds = [];
       setupComponent();

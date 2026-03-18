@@ -21,6 +21,10 @@ import { getToday } from 'cypress/support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
   let finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE);
@@ -81,7 +85,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     interceptOffences();
   });
 
-  it('AC.2,4 - should render correctly - AY', { tags: ['PO-601', '@JIRA-KEY:POT-4389'] }, () => {
+  it('AC.2,4 - should render correctly - AY', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4389') }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Rejected';
 
@@ -108,58 +112,62 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC.3 - should render Review History section correctly', { tags: ['PO-601', '@JIRA-KEY:POT-4390'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Rejected';
+  it(
+    'AC.3 - should render Review History section correctly',
+    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4390') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Rejected';
 
-    fetchMap.finesMacDraft.timeline_data.pop();
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'User.testone',
-      status: 'Submitted',
-      status_date: '2025-01-01',
-      reason_text: '',
-    });
+      fetchMap.finesMacDraft.timeline_data.pop();
+      fetchMap.finesMacDraft.timeline_data.push({
+        username: 'User.testone',
+        status: 'Submitted',
+        status_date: '2025-01-01',
+        reason_text: '',
+      });
 
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'Admin.testone',
-      status: 'Rejected',
-      status_date: '2025-01-01',
-      reason_text: 'Missing aliases',
-    });
+      fetchMap.finesMacDraft.timeline_data.push({
+        username: 'Admin.testone',
+        status: 'Rejected',
+        status_date: '2025-01-01',
+        reason_text: 'Missing aliases',
+      });
 
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'User.testone',
-      status: 'Resubmitted',
-      status_date: '2025-01-02',
-      reason_text: '',
-    });
+      fetchMap.finesMacDraft.timeline_data.push({
+        username: 'User.testone',
+        status: 'Resubmitted',
+        status_date: '2025-01-02',
+        reason_text: '',
+      });
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
-    cy.get(DOM_ELEMENTS.timeLine).should('exist');
-    cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
-    cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');
-    cy.get(DOM_ELEMENTS.timelineDate).should('exist');
-    cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
+      cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
+      cy.get(DOM_ELEMENTS.timeLine).should('exist');
+      cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
+      cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');
+      cy.get(DOM_ELEMENTS.timelineDate).should('exist');
+      cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'User.testone');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Resubmitted');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', '');
+      cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'User.testone');
+      cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 January 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Resubmitted');
+      cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', '');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin.testone');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Rejected');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'Missing aliases');
+      cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin.testone');
+      cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 January 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Rejected');
+      cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'Missing aliases');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(2).should('contain.text', 'User.testone');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(2).should('contain.text', '01 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Submitted');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
-  });
+      cy.get(DOM_ELEMENTS.timelineAuthor).eq(2).should('contain.text', 'User.testone');
+      cy.get(DOM_ELEMENTS.timelineDate).eq(2).should('contain.text', '01 January 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Submitted');
+      cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
+    },
+  );
 
-  it('AC.2,5 - should render correctly - AYPG', { tags: ['PO-601', '@JIRA-KEY:POT-4391'] }, () => {
+  it('AC.2,5 - should render correctly - AYPG', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4391') }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Rejected';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -187,7 +195,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC.2,6 - should render correctly - COMP', { tags: ['PO-601', '@JIRA-KEY:POT-4392'] }, () => {
+  it('AC.2,6 - should render correctly - COMP', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4392') }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Rejected';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -217,7 +225,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
   it(
     'AC4ai - should show language preferences if business unit is welsh speaking - AY',
-    { tags: ['PO-601', '@JIRA-KEY:POT-4393'] },
+    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4393') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -233,7 +241,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   );
   it(
     'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
-    { tags: ['PO-601', '@JIRA-KEY:POT-4394'] },
+    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4394') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -250,7 +258,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   );
   it(
     'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
-    { tags: ['PO-601', '@JIRA-KEY:POT-4395'] },
+    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4395') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -266,60 +274,64 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     },
   );
 
-  it('AC.7 - should show em-dash for empty values', { tags: ['PO-601', '@JIRA-KEY:POT-4396'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Rejected';
-    fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
+  it(
+    'AC.7 - should show em-dash for empty values',
+    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4396') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Rejected';
+      fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
 
-    fetchMap.finesMacState.offenceDetails.push({
-      formData: {
-        fm_offence_details_date_of_sentence: getToday(),
-        fm_offence_details_impositions: [
+      fetchMap.finesMacState.offenceDetails.push({
+        formData: {
+          fm_offence_details_date_of_sentence: getToday(),
+          fm_offence_details_impositions: [
+            {
+              fm_offence_details_imposition_id: 0,
+              fm_offence_details_result_id: 'FCOST',
+              fm_offence_details_amount_imposed: 400,
+              fm_offence_details_amount_paid: 50,
+              fm_offence_details_balance_remaining: 350,
+              fm_offence_details_needs_creditor: true,
+              fm_offence_details_creditor: 'minor',
+              fm_offence_details_major_creditor_id: null,
+            },
+          ],
+          fm_offence_details_id: 1,
+          fm_offence_details_offence_cjs_code: 'AK123456',
+          fm_offence_details_offence_id: 123,
+        },
+        nestedFlow: false,
+        childFormData: [
           {
-            fm_offence_details_imposition_id: 0,
-            fm_offence_details_result_id: 'FCOST',
-            fm_offence_details_amount_imposed: 400,
-            fm_offence_details_amount_paid: 50,
-            fm_offence_details_balance_remaining: 350,
-            fm_offence_details_needs_creditor: true,
-            fm_offence_details_creditor: 'minor',
-            fm_offence_details_major_creditor_id: null,
+            formData: {
+              fm_offence_details_imposition_position: 0,
+              fm_offence_details_minor_creditor_creditor_type: 'individual',
+              fm_offence_details_minor_creditor_title: 'Mr',
+              fm_offence_details_minor_creditor_forenames: 'James',
+              fm_offence_details_minor_creditor_surname: 'LNAME',
+              fm_offence_details_minor_creditor_company_name: null,
+              fm_offence_details_minor_creditor_address_line_1: '1 Testing Lane',
+              fm_offence_details_minor_creditor_address_line_2: 'Test Town',
+              fm_offence_details_minor_creditor_address_line_3: 'Testing',
+              fm_offence_details_minor_creditor_post_code: 'TE12 3ST',
+              fm_offence_details_minor_creditor_pay_by_bacs: false,
+              fm_offence_details_minor_creditor_bank_account_name: 'John Doe',
+              fm_offence_details_minor_creditor_bank_sort_code: '123456',
+              fm_offence_details_minor_creditor_bank_account_number: '12345678',
+              fm_offence_details_minor_creditor_bank_account_ref: 'Testing',
+            },
+            nestedFlow: false,
           },
         ],
-        fm_offence_details_id: 1,
-        fm_offence_details_offence_cjs_code: 'AK123456',
-        fm_offence_details_offence_id: 123,
-      },
-      nestedFlow: false,
-      childFormData: [
-        {
-          formData: {
-            fm_offence_details_imposition_position: 0,
-            fm_offence_details_minor_creditor_creditor_type: 'individual',
-            fm_offence_details_minor_creditor_title: 'Mr',
-            fm_offence_details_minor_creditor_forenames: 'James',
-            fm_offence_details_minor_creditor_surname: 'LNAME',
-            fm_offence_details_minor_creditor_company_name: null,
-            fm_offence_details_minor_creditor_address_line_1: '1 Testing Lane',
-            fm_offence_details_minor_creditor_address_line_2: 'Test Town',
-            fm_offence_details_minor_creditor_address_line_3: 'Testing',
-            fm_offence_details_minor_creditor_post_code: 'TE12 3ST',
-            fm_offence_details_minor_creditor_pay_by_bacs: false,
-            fm_offence_details_minor_creditor_bank_account_name: 'John Doe',
-            fm_offence_details_minor_creditor_bank_sort_code: '123456',
-            fm_offence_details_minor_creditor_bank_account_number: '12345678',
-            fm_offence_details_minor_creditor_bank_account_ref: 'Testing',
-          },
-          nestedFlow: false,
-        },
-      ],
-    });
-    setupComponent(fetchMap);
+      });
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
 
-    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
 
-    cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
+    },
+  );
 });

@@ -15,6 +15,10 @@ import { of } from 'rxjs';
 import { IOpalFinesLocalJusticeAreaRefData } from '../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
 
@@ -81,29 +85,37 @@ describe('FinesMacCourtDetailsComponent', () => {
     finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
   });
 
-  it('should render the component correctly for AY', { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4095'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
-    cy.get(L.componentRoot).should('exist');
-    cy.get(L.nestedFlowButton).should('contain', 'Add personal details');
-  });
+  it(
+    'should render the component correctly for AY',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4095') },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+      cy.get(L.componentRoot).should('exist');
+      cy.get(L.nestedFlowButton).should('contain', 'Add personal details');
+    },
+  );
   it(
     'should render the component correctly for AYPG',
-    { tags: ['@PO-344', '@PO-527', '@PO-1449', '@JIRA-KEY:POT-4096'] },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-527', '@JIRA-STORY:PO-1449', '@JIRA-KEY:POT-4096') },
     () => {
       setupComponent(null, 'pgToPay');
       cy.get(L.componentRoot).should('exist');
       cy.get(L.nestedFlowButton).should('contain', 'Add parent or guardian details');
     },
   );
-  it('should render the component correctly for COMP', { tags: ['@PO-345', '@PO-529', '@JIRA-KEY:POT-4097'] }, () => {
-    setupComponent(null, 'company');
-    cy.get(L.componentRoot).should('exist');
-    cy.get(L.nestedFlowButton).should('contain', 'Add company details');
-  });
+  it(
+    'should render the component correctly for COMP',
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-529', '@JIRA-KEY:POT-4097') },
+    () => {
+      setupComponent(null, 'company');
+      cy.get(L.componentRoot).should('exist');
+      cy.get(L.nestedFlowButton).should('contain', 'Add company details');
+    },
+  );
 
   it(
     '(AC.1, AC.4) should be created as per the design artifacts',
-    { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4098'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4098') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -125,24 +137,28 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.enforcementCourtInput).should('exist');
     },
   );
-  it('(AC.2) should dynamically filter LJA field', { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4099'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    '(AC.2) should dynamically filter LJA field',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4099') },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    //Verify working input fields
-    cy.get(L.ljaInput).focus().type('Asylum', { delay: 0 });
-    cy.get(L.ljaListbox).find('li').first().click();
-    cy.get(L.ljaInput).should('have.value', 'Asylum & Immigration Tribunal (9985)');
+      //Verify working input fields
+      cy.get(L.ljaInput).focus().type('Asylum', { delay: 0 });
+      cy.get(L.ljaListbox).find('li').first().click();
+      cy.get(L.ljaInput).should('have.value', 'Asylum & Immigration Tribunal (9985)');
 
-    cy.get(L.ljaInput).focus().clear().type('court', { delay: 0 });
-    cy.get(L.ljaListbox).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
-    cy.get(L.ljaListbox).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
-    cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
-    cy.get(L.ljaListbox).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
-    cy.get(L.ljaListbox).find('li').should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
-  });
+      cy.get(L.ljaInput).focus().clear().type('court', { delay: 0 });
+      cy.get(L.ljaListbox).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(L.ljaListbox).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
+      cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
+      cy.get(L.ljaListbox).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
+      cy.get(L.ljaListbox).find('li').should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
+    },
+  );
   it(
     '(AC.3) should dynamically filter Enforcement court field',
-    { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4100'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4100') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       //Verify working input fields
@@ -158,49 +174,53 @@ describe('FinesMacCourtDetailsComponent', () => {
     },
   );
 
-  it('(AC.5) should validate mandatory fields', { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4101'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    '(AC.5) should validate mandatory fields',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4101') },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    //Submit without input
-    cy.get(L.returnToAccountDetailsButton).click();
+      //Submit without input
+      cy.get(L.returnToAccountDetailsButton).click();
 
-    //Verify page did not change
-    cy.get(L.pageHeader).should('have.text', 'Court details');
+      //Verify page did not change
+      cy.get(L.pageHeader).should('have.text', 'Court details');
 
-    //Verify error summary
-    cy.get(L.errorSummary).should('exist');
+      //Verify error summary
+      cy.get(L.errorSummary).should('exist');
 
-    Object.values(MISSING_ERRORS).forEach((key) => {
-      cy.get(L.errorSummary).should('contain', key);
-    });
+      Object.values(MISSING_ERRORS).forEach((key) => {
+        cy.get(L.errorSummary).should('contain', key);
+      });
 
-    //Verify input field error messages
-    cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-    cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
-    cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+      //Verify input field error messages
+      cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+      cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
+      cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
 
-    //Submit without input
-    cy.get(L.nestedFlowButton).click();
+      //Submit without input
+      cy.get(L.nestedFlowButton).click();
 
-    //Verify page did not change
-    cy.get(L.pageHeader).should('have.text', 'Court details');
+      //Verify page did not change
+      cy.get(L.pageHeader).should('have.text', 'Court details');
 
-    //Verify error summary
-    cy.get(L.errorSummary).should('exist');
+      //Verify error summary
+      cy.get(L.errorSummary).should('exist');
 
-    Object.values(MISSING_ERRORS).forEach((key) => {
-      cy.get(L.errorSummary).should('contain', key);
-    });
+      Object.values(MISSING_ERRORS).forEach((key) => {
+        cy.get(L.errorSummary).should('contain', key);
+      });
 
-    //Verify input field error messages
-    cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-    cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
-    cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
-  });
+      //Verify input field error messages
+      cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+      cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
+      cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+    },
+  );
 
   it(
     '(AC.6) should validate mandatory fields even when data exists in another',
-    { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4102'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4102') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = '1234';
@@ -243,21 +263,25 @@ describe('FinesMacCourtDetailsComponent', () => {
     },
   );
 
-  it('(AC.7) should validate PRC field length', { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4103'] }, () => {
-    finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
+  it(
+    '(AC.7) should validate PRC field length',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4103') },
+    () => {
+      finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
 
-    setupComponent(null);
+      setupComponent(null);
 
-    //Submit with invalid input
-    cy.get(L.returnToAccountDetailsButton).click();
+      //Submit with invalid input
+      cy.get(L.returnToAccountDetailsButton).click();
 
-    //Verify error message
-    cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.tooLongPCR);
-  });
+      //Verify error message
+      cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.tooLongPCR);
+    },
+  );
 
   it(
     '(AC.7) should validate PCR field allowed characters',
-    { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4104'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4104') },
     () => {
       const invalidInputs = ['1234!', '1@', 'test@', 'test1234@', 'abc#', '123$', 'abc%', '123^', 'abc&', '123*'];
       cy.wrap(invalidInputs).each((input: string) => {
@@ -273,7 +297,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.8) should clear errors when validation is passed',
-    { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4105'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4105') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -308,7 +332,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.9) should clear errors when validation is passed',
-    { tags: ['@PO-272', '@PO-389', '@JIRA-KEY:POT-4106'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389', '@JIRA-KEY:POT-4106') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -344,7 +368,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.1) should convert PCR input to uppercase',
-    { tags: ['@PO-345', '@PO-1450', '@JIRA-KEY:POT-4107', '@JIRA-KEY:POT-4109'] },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-1450', '@JIRA-KEY:POT-4107', '@JIRA-KEY:POT-4109') },
     () => {
       setupComponent(null, 'company');
 
@@ -356,7 +380,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     'Prosecutor Case Reference should capitalise - AYPG',
-    { tags: ['@PO-344', '@PO-1449', '@JIRA-KEY:POT-4108'] },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-1449', '@JIRA-KEY:POT-4108') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');
@@ -376,7 +400,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.1) should convert PCR input to uppercase',
-    { tags: ['@PO-272', '@PO-1448', '@JIRA-KEY:POT-4107', '@JIRA-KEY:POT-4109'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-1448', '@JIRA-KEY:POT-4107', '@JIRA-KEY:POT-4109') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -388,7 +412,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     'Should show all values in LJA and Enforcement Court auto-complete dropdown when selected',
-    { tags: ['@PO-1990', '@JIRA-KEY:POT-4110'] },
+    { tags: buildTags('@JIRA-STORY:PO-1990', '@JIRA-KEY:POT-4110') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -412,7 +436,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC3, AC4) should only show PSA/CRWCRT local justice areas for filtered journeys (Fine/Confiscation)',
-    { tags: ['@PO-2761', '@JIRA-KEY:POT-4111'] },
+    { tags: buildTags('@JIRA-STORY:PO-2761', '@JIRA-KEY:POT-4111') },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
         count: 2,

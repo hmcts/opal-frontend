@@ -9,6 +9,10 @@ import { INDIVIDUAL_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_a
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { BehaviorSubject } from 'rxjs';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('FinesSaResultsComponent - All Account Types', () => {
   let fragmentSubject: BehaviorSubject<string>;
 
@@ -86,7 +90,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC3a) Displays error message when no search matches are found',
-    { tags: ['PO-709', '@JIRA-KEY:POT-3789'] },
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3789') },
     () => {
       setupComponent('EMPTY_RESULTS');
 
@@ -103,7 +107,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC4) Displays "There are more than 100 results" message when more than 100 matches found',
-    { tags: ['PO-709', '@JIRA-KEY:POT-3790'] },
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3790') },
     () => {
       setupComponent('LARGE_RESULTS_REF_NUM');
 
@@ -120,7 +124,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor types and Individual tab is in focus by default',
-    { tags: ['PO-709', '@JIRA-KEY:POT-3791'] },
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3791') },
     () => {
       setupComponent('WITH_DATA', 'individuals');
 
@@ -167,7 +171,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5c) Companies tab displays company defendant account summary data',
-    { tags: ['PO-709', '@JIRA-KEY:POT-3792'] },
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3792') },
     () => {
       setupComponent('WITH_DATA', 'companies');
 
@@ -193,7 +197,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5e, 5d) Only individual tab when only results exist for individual',
-    { tags: ['PO-709', '@JIRA-KEY:POT-3793'] },
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3793') },
     () => {
       setupComponent('INDIVIDUALS_ONLY_RESULTS');
 
@@ -206,7 +210,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5e, 5d) Only company tab when only results exist for company',
-    { tags: ['PO-709', '@JIRA-KEY:POT-3794'] },
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3794') },
     () => {
       setupComponent('COMPANY_RESULTS_ONLY');
 

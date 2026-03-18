@@ -20,6 +20,10 @@ import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_d
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
@@ -49,7 +53,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.1) Review account is created as per design artefact',
-    { tags: ['@PO-593', '@PO-600', '@JIRA-KEY:POT-3900'] },
+    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-STORY:PO-600', '@JIRA-KEY:POT-3900') },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -103,7 +107,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.2) should display To review tab correctly when there are zero draft records',
-    { tags: ['@PO-593', '@JIRA-KEY:POT-3901'] },
+    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3901') },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -124,7 +128,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.3) should display To review tab correctly when there are draft records',
-    { tags: ['@PO-593', '@JIRA-KEY:POT-3902'] },
+    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3902') },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -157,7 +161,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending',
-    { tags: ['@PO-593', '@JIRA-KEY:POT-3903'] },
+    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3903') },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -217,33 +221,37 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     },
   );
 
-  it('(AC.4b) should have pagination for over 25 accounts', { tags: ['@PO-593', '@JIRA-KEY:POT-3904'] }, () => {
-    const toReviewMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
-    interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetToReviewAccounts(200, toReviewMockData);
-    interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
+  it(
+    '(AC.4b) should have pagination for over 25 accounts',
+    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3904') },
+    () => {
+      const toReviewMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
+      interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetToReviewAccounts(200, toReviewMockData);
+      interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
-    setupComponent();
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
 
-    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 total results').should('exist');
-    cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
-    cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
-    cy.get(DOM_ELEMENTS.paginationLinksNext).contains('Next').should('exist');
-    cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Robert Brown').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 total results').should('exist');
+      cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
+      cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
+      cy.get(DOM_ELEMENTS.paginationLinksNext).contains('Next').should('exist');
+      cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Robert Brown').should('exist');
 
-    cy.get(DOM_ELEMENTS.paginationLinksNext).contains('Next').click({ force: true });
-    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 26 to 50 of 50 total results').should('exist');
+      cy.get(DOM_ELEMENTS.paginationLinksNext).contains('Next').click({ force: true });
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 26 to 50 of 50 total results').should('exist');
 
-    cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Emma Gonzalez').should('exist');
-    cy.get(DOM_ELEMENTS.paginationLinksPrevious).contains('Previous').should('exist');
+      cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Emma Gonzalez').should('exist');
+      cy.get(DOM_ELEMENTS.paginationLinksPrevious).contains('Previous').should('exist');
 
-    cy.get(DOM_ELEMENTS.defendant)
-      .its('length')
-      .then((count) => {
-        expect(count).to.be.eq(25);
-      });
-  });
+      cy.get(DOM_ELEMENTS.defendant)
+        .its('length')
+        .then((count) => {
+          expect(count).to.be.eq(25);
+        });
+    },
+  );
 });

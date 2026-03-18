@@ -1,3 +1,4 @@
+@JIRA-LABEL:account-enquiry
 Feature: Account Enquiries - Amend Payment Terms Accessibility
 
   Background:

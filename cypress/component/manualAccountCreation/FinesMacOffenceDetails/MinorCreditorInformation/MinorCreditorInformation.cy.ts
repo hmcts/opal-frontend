@@ -10,6 +10,10 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from 'src/app/flo
 import { MacOffenceDetailsMinorCreditorInformationLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { of } from 'rxjs';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacMinorCreditorInformation', () => {
   let finesMacState = structuredClone(FINES_MINOR_CREDITOR_MOCK);
 
@@ -44,7 +48,15 @@ describe('FinesMacMinorCreditorInformation', () => {
   };
   it(
     '(AC.1) should load the component',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4201'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-670',
+        '@JIRA-STORY:PO-671',
+        '@JIRA-STORY:PO-414',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4201',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -54,7 +66,7 @@ describe('FinesMacMinorCreditorInformation', () => {
 
   it(
     '(AC.1) should render all elements on the page',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@JIRA-KEY:POT-4202'] },
+    { tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-KEY:POT-4202') },
     () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.name).should('exist');
@@ -76,7 +88,15 @@ describe('FinesMacMinorCreditorInformation', () => {
 
   it(
     '(AC.2) should load all keys and elements with correct text',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4203'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-670',
+        '@JIRA-STORY:PO-671',
+        '@JIRA-STORY:PO-414',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4203',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -90,7 +110,15 @@ describe('FinesMacMinorCreditorInformation', () => {
   );
   it(
     '(AC.2)should load all fields with the correct values',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545', '@JIRA-KEY:POT-4204'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-670',
+        '@JIRA-STORY:PO-671',
+        '@JIRA-STORY:PO-414',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4204',
+      ),
+    },
     () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');

@@ -10,6 +10,10 @@ import { INDIVIDUAL_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_a
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { BehaviorSubject } from 'rxjs';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('FinesSaResultsComponent - All Account Types', () => {
   let fragmentSubject: BehaviorSubject<string>;
 
@@ -86,16 +90,20 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(tabSelector).should('have.class', 'govuk-tabs__list-item govuk-tabs__list-item--selected');
   };
 
-  it('(AC1d) Search results component is created correctly', { tags: ['PO-706', '@JIRA-KEY:POT-3760'] }, () => {
-    setupComponent('WITH_DATA');
+  it(
+    '(AC1d) Search results component is created correctly',
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3760') },
+    () => {
+      setupComponent('WITH_DATA');
 
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.heading).should('contain', 'Search results');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.backLink).should('exist');
-  });
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.backLink).should('exist');
+    },
+  );
 
   it(
     '(AC3a) Displays error message when no search matches are found',
-    { tags: ['PO-706', '@JIRA-KEY:POT-3761'] },
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3761') },
     () => {
       setupComponent('EMPTY_RESULTS');
 
@@ -114,7 +122,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC4a) Displays "There are more than 100 results" message when more than 100 matches found',
-    { tags: ['PO-706', '@JIRA-KEY:POT-3762'] },
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3762') },
     () => {
       setupComponent('LARGE_RESULTS');
 
@@ -134,7 +142,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor/creditor types and Individual tab is in focus by default',
-    { tags: ['PO-706', '@JIRA-KEY:POT-3763'] },
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3763') },
     () => {
       setupComponent('WITH_DATA', 'individuals');
 
@@ -181,7 +189,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5c) Companies tab displays company defendant account summary data',
-    { tags: ['PO-706', '@JIRA-KEY:POT-3764'] },
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3764') },
     () => {
       setupComponent('WITH_DATA', 'companies');
 
@@ -206,7 +214,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
   );
   it(
     '(AC5d) Minor Creditors tab displays creditor account summary data',
-    { tags: ['PO-706', '@JIRA-KEY:POT-3765'] },
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3765') },
     () => {
       setupComponent('WITH_DATA', 'individuals');
       // Switch to minor creditors tab using helper function
@@ -245,7 +253,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5e) Tabs only displayed when results exist for corresponding type',
-    { tags: ['PO-706', '@JIRA-KEY:POT-3766'] },
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3766') },
     () => {
       // Test scenario with only individuals and companies (no minor creditors)
       setupComponent('PARTIAL_RESULTS');
@@ -257,28 +265,40 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     },
   );
 
-  it('(AC5fi) Companies tab in focus when no individuals found', { tags: ['PO-706', '@JIRA-KEY:POT-3767'] }, () => {
-    setupComponent('COMPANY_RESULTS_ONLY', 'companies');
+  it(
+    '(AC5fi) Companies tab in focus when no individuals found',
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3767') },
+    () => {
+      setupComponent('COMPANY_RESULTS_ONLY', 'companies');
 
-    // Verify companies tab is selected when individuals tab doesn't exist
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.individualsTab).should('not.exist');
-    verifyTabIsActive(INDIVIDUAL_DOM_ELEMENTS.companiesTab);
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.tableWrapper).should('exist');
-  });
+      // Verify companies tab is selected when individuals tab doesn't exist
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.individualsTab).should('not.exist');
+      verifyTabIsActive(INDIVIDUAL_DOM_ELEMENTS.companiesTab);
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.tableWrapper).should('exist');
+    },
+  );
 
-  it('(AC5fii) No tabs displayed for single creditor type results', { tags: ['PO-706', '@JIRA-KEY:POT-3768'] }, () => {
-    setupComponent('INDIVIDUALS_ONLY_RESULTS', 'individuals');
+  it(
+    '(AC5fii) No tabs displayed for single creditor type results',
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3768') },
+    () => {
+      setupComponent('INDIVIDUALS_ONLY_RESULTS', 'individuals');
 
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.individualsTab).should('be.visible');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.companiesTab).should('not.exist');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
-  });
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.individualsTab).should('be.visible');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.companiesTab).should('not.exist');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
+    },
+  );
 
-  it('(AC5fii) No tabs displayed for single debtor type results', { tags: ['PO-706', '@JIRA-KEY:POT-3769'] }, () => {
-    setupComponent('MINOR_CREDITOR_ONLY_RESULTS', 'minorCreditors');
+  it(
+    '(AC5fii) No tabs displayed for single debtor type results',
+    { tags: buildTags('@JIRA-STORY:PO-706', '@JIRA-KEY:POT-3769') },
+    () => {
+      setupComponent('MINOR_CREDITOR_ONLY_RESULTS', 'minorCreditors');
 
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.individualsTab).should('not.exist');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.companiesTab).should('not.exist');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab).should('be.visible');
-  });
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.individualsTab).should('not.exist');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.companiesTab).should('not.exist');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab).should('be.visible');
+    },
+  );
 });

@@ -1,4 +1,5 @@
-@ManualAccountCreation @ContactDetails @PO-272 @PO-344 @PO-345 @PO-419 @PO-371 @PO-370 @PO-358
+@JIRA-LABEL:manual-account-creation
+@ManualAccountCreation @ContactDetails @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-419 @JIRA-STORY:PO-371 @JIRA-STORY:PO-370 @JIRA-STORY:PO-358
 Feature: Manual account creation - Contact Details
   #This feature file contains tests for the Contact Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the ContactDetailsComponent.cy.ts component tests

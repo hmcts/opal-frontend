@@ -15,6 +15,10 @@ import { SORTING_SEARCH_RESULTS_MOCK } from './mocks/search_results_sorting_mock
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_matches_individual_mock';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('FinesSaResultsComponent - Individuals', () => {
   let searchResultState = {
     searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
@@ -64,16 +68,20 @@ describe('FinesSaResultsComponent - Individuals', () => {
     });
   };
 
-  it('Search results component is created correctly', { tags: ['PO-717', '@JIRA-KEY:POT-3776'] }, () => {
-    setupComponent();
+  it(
+    'Search results component is created correctly',
+    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3776') },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+    },
+  );
 
   it(
     '(AC2) Displays error message when no search matches are found',
-    { tags: ['PO-717', '@JIRA-KEY:POT-3777'] },
+    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3777') },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
@@ -89,30 +97,34 @@ describe('FinesSaResultsComponent - Individuals', () => {
     },
   );
 
-  it('(AC3) Handles more than 100 search matches correctly', { tags: ['PO-717', '@JIRA-KEY:POT-3778'] }, () => {
-    setupComponent(LARGE_SEARCH_RESULTS_MOCK);
+  it(
+    '(AC3) Handles more than 100 search matches correctly',
+    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3778') },
+    () => {
+      setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
 
-    // Should show too many results message when more than 100 results
-    cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('be.visible');
-    cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      // Should show too many results message when more than 100 results
+      cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('be.visible');
+      cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('contain', 'There are more than 100 results');
 
-    cy.get(DOM_ELEMENTS.addMoreInfoLink).should('be.visible');
-    cy.get(DOM_ELEMENTS.addMoreInfoLink).should('contain', 'Try adding more information');
+      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('be.visible');
+      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('contain', 'Try adding more information');
 
-    cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
+      cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
 
-    //(AC3b) Try adding more information link is clickable and functional
-    // Test that the link is clickable (Full Test to be implemented when API complete)
-    cy.get(DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
-    cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
-  });
+      //(AC3b) Try adding more information link is clickable and functional
+      // Test that the link is clickable (Full Test to be implemented when API complete)
+      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
+      cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
+    },
+  );
 
   it(
     '(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results',
-    { tags: ['PO-717', '@JIRA-KEY:POT-3779'] },
+    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3779') },
     () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
@@ -175,7 +187,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC4d) Displays pagination with 25 results per page and 4 pages for 100 results',
-    { tags: ['PO-717', '@JIRA-KEY:POT-3780'] },
+    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3780') },
     () => {
       setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
@@ -246,7 +258,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC4f) Should sort by each column - ascending then descending',
-    { tags: ['PO-717', '@JIRA-KEY:POT-3781'] },
+    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3781') },
     () => {
       setupComponent(SORTING_SEARCH_RESULTS_MOCK);
 

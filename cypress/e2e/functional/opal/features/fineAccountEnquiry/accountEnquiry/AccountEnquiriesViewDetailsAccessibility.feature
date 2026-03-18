@@ -1,3 +1,4 @@
+@JIRA-LABEL:account-enquiry
 Feature: Account Enquiries - View Account Details Accessibility
 
   Background:

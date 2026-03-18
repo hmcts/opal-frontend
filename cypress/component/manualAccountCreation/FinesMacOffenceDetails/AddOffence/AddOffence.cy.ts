@@ -25,6 +25,10 @@ import {
   IMPOSITION_MOCK_4,
 } from './mocks/add-offence-imposition-mock';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacAddOffenceComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
   let offenceDetailsDraftState = structuredClone(ADD_OFFENCE_OFFENCE_MOCK);
@@ -123,7 +127,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1)should render the component',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4160'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4160',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -133,7 +145,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.3a,AC.3ai,AC.3b,AC.4) should render all the elements on the page as per design artifact and not render imposition remove link',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4161'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4161',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -169,7 +189,17 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     'should render Add another offence button correctly for all defendant types',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-272', '@PO-344', '@PO-345', '@JIRA-KEY:POT-4162'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-272',
+        '@JIRA-STORY:PO-344',
+        '@JIRA-STORY:PO-345',
+        '@JIRA-KEY:POT-4162',
+      ),
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       cy.get('button[type="submit"]').should('contain', 'Add another offence');
@@ -185,7 +215,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.7b,AC.7d,AC.7h,AC.7i) should show error messages when the form is submitted with empty fields',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4163'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4163',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -201,7 +239,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.8)should allow form to be submitted with required fields filled in',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4164'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4164',
+      ),
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
@@ -221,7 +267,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.4b,AC.4bi,AC,4c) should show minor,major creditor fields for (FCOMP,FCOST) Only',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4165'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4165',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -254,7 +308,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     'should not allow form to be submitted without selecting minor creditor or major creditor field',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4166'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4166',
+      ),
+    },
     () => {
       setupComponent(null);
       const SELECTOR = impositionSelectors(0);
@@ -276,7 +338,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     ' (AC.5a) should not show remove imposition link for only 1 imposition',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4167',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -286,7 +356,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.4bii) should load correct fields for major creditor selection and expect error if field is not filled in',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4168'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4168',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -313,7 +391,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.4bii) should load correct fields for minor creditor selection and expect error if field is not filled in',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4169'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4169',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -337,7 +423,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.5) should check impositions flow for multiple impositions and remove imposition link',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4170'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4170',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -361,7 +455,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.7E) should show error message for invalid date format',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4171'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4171',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -374,7 +476,15 @@ describe('FinesMacAddOffenceComponent', () => {
   );
   it(
     '(AC.7F) should show error message for invalid date',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4172'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4172',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -388,7 +498,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.7g) should show error message for future date',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4173'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4173',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -407,7 +525,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.7j) should show error message for invalid amount imposed',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4174'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4174',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -432,7 +558,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.7k) should show error message for invalid  amount paid',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4175'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4175',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -457,7 +591,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.3bii) should show invalid ticket panel for invalid offence code',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4176'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4176',
+      ),
+    },
     () => {
       finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123457';
@@ -473,7 +615,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.3bi) should show ticket panel for valid offence code',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4177'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4177',
+      ),
+    },
     () => {
       finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
@@ -489,7 +639,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.2) should allow dateOfSentence to be entered via date picker and have all elements loaded',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4178'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4178',
+      ),
+    },
     () => {
       setupComponent(null);
 
@@ -507,7 +665,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.6, AC.8) should allow form submission with multiple impositions',
-    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4179'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-411',
+        '@JIRA-STORY:PO-681',
+        '@JIRA-STORY:PO-684',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4179',
+      ),
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -549,7 +715,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y only',
-    { tags: ['@PO-1060', '@JIRA-KEY:POT-4180'] },
+    { tags: buildTags('@JIRA-STORY:PO-1060', '@JIRA-KEY:POT-4180') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       const SELECTOR = impositionSelectors(0);
@@ -574,7 +740,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay',
-    { tags: ['@PO-1060', '@JIRA-KEY:POT-4181'] },
+    { tags: buildTags('@JIRA-STORY:PO-1060', '@JIRA-KEY:POT-4181') },
     () => {
       setupComponent(null, 'pgToPay');
       const SELECTOR = impositionSelectors(0);
@@ -599,7 +765,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, company',
-    { tags: ['@PO-1060', '@JIRA-KEY:POT-4182'] },
+    { tags: buildTags('@JIRA-STORY:PO-1060', '@JIRA-KEY:POT-4182') },
     () => {
       setupComponent(null, 'company');
       const SELECTOR = impositionSelectors(0);
@@ -622,37 +788,41 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it('Each imposition is wrapped in its own fieldset', { tags: ['@PO-2716', '@JIRA-KEY:POT-4183'] }, () => {
-    setupComponent(null);
+  it(
+    'Each imposition is wrapped in its own fieldset',
+    { tags: buildTags('@JIRA-STORY:PO-2716', '@JIRA-KEY:POT-4183') },
+    () => {
+      setupComponent(null);
 
-    // Prepare three impositions in the store
-    let Imposition = structuredClone(IMPOSITION_MOCK_2);
-    if (!Array.isArray(Imposition)) Imposition = [Imposition];
-    // Ensure at least 3 impositions
-    while (Imposition.length < 3) {
-      Imposition.push(structuredClone(IMPOSITION_MOCK_1)[0] ?? structuredClone(IMPOSITION_MOCK_2)[0]);
-    }
+      // Prepare three impositions in the store
+      let Imposition = structuredClone(IMPOSITION_MOCK_2);
+      if (!Array.isArray(Imposition)) Imposition = [Imposition];
+      // Ensure at least 3 impositions
+      while (Imposition.length < 3) {
+        Imposition.push(structuredClone(IMPOSITION_MOCK_1)[0] ?? structuredClone(IMPOSITION_MOCK_2)[0]);
+      }
 
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
-      structuredClone(Imposition);
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
 
-    cy.log('assert', 'Asserting each imposition is wrapped in its own fieldset');
+      cy.log('assert', 'Asserting each imposition is wrapped in its own fieldset');
 
-    cy.contains(DOM_ELEMENTS.legend, /^Impositions$/)
-      .closest('h2')
-      .nextUntil(DOM_ELEMENTS.addImpositionButton, DOM_ELEMENTS.fieldset) // only fieldsets
-      .then(($fieldsets) => {
-        const fieldsetCount = $fieldsets.length;
-        const impositionCount = Cypress.$($fieldsets).find(DOM_ELEMENTS.removeImpositionLink).length;
+      cy.contains(DOM_ELEMENTS.legend, /^Impositions$/)
+        .closest('h2')
+        .nextUntil(DOM_ELEMENTS.addImpositionButton, DOM_ELEMENTS.fieldset) // only fieldsets
+        .then(($fieldsets) => {
+          const fieldsetCount = $fieldsets.length;
+          const impositionCount = Cypress.$($fieldsets).find(DOM_ELEMENTS.removeImpositionLink).length;
 
-        cy.log(`Fieldsets: ${fieldsetCount}`);
-        cy.log(`Remove links (impositions): ${impositionCount}`);
+          cy.log(`Fieldsets: ${fieldsetCount}`);
+          cy.log(`Remove links (impositions): ${impositionCount}`);
 
-        expect(impositionCount, 'impositions on screen').to.be.greaterThan(0);
-        expect(fieldsetCount, 'fieldset per imposition').to.eq(impositionCount);
-      });
-  });
+          expect(impositionCount, 'impositions on screen').to.be.greaterThan(0);
+          expect(fieldsetCount, 'fieldset per imposition').to.eq(impositionCount);
+        });
+    },
+  );
 });
