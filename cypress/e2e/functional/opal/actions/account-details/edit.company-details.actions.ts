@@ -130,6 +130,22 @@ export class EditCompanyDetailsActions {
   }
 
   /**
+   * Asserts the company summary card is rendered in the Defendant tab.
+   */
+  public assertCompanySummaryVisible(): void {
+    log('assert', 'Asserting company summary card is visible');
+    cy.get(SummaryL.card, this.common.getTimeoutOptions()).should('be.visible');
+  }
+
+  /**
+   * Asserts the company summary card is not rendered in the Defendant tab.
+   */
+  public assertCompanySummaryNotPresent(): void {
+    log('assert', 'Asserting company summary card is absent');
+    cy.get(SummaryL.card, this.common.getTimeoutOptions()).should('not.exist');
+  }
+
+  /**
    * Asserts Company details form fields are pre-populated with the expected values.
    *
    * @param expectedFieldValues - Key/value map of ticket field labels to expected values.

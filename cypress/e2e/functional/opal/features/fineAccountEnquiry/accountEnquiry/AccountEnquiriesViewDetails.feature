@@ -67,7 +67,7 @@ Feature: Account Enquiries – View Account Details
       And I verify no amendments were created via API
 
     @PO-1942 @PO-1943
-    Scenario: Convert to company confirmation continues to Company details with shared fields pre-populated
+    Scenario: Convert to company saves and shows the converted company account details
       When I start converting the account to a company account
       Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
       When I continue converting the account to a company account
@@ -75,6 +75,14 @@ Feature: Account Enquiries – View Account Details
       Then the Company details form should be pre-populated with:
         | Primary email address   | John.AccDetailSurname{uniq}@test.com |
         | Home telephone number   | 02078259314 |
+      When I complete converting the account to a company with company name "Accdetail converted comp{uniq}"
+      Then I should return to the account details page Defendant tab
+      And I should see the account conversion success message "Converted to a company account."
+      When I go to the Defendant details section and the header is "Company details"
+      Then I should see the company summary card
+      And I should not see the defendant summary card
+      And I should see the company name contains "Accdetail converted comp{uniq}"
+      And I should see the primary email address contains "John.AccDetailSurname{uniq}@test.com"
 
     @PO-1943
     Scenario: Convert to company confirmation cancel returns to Defendant details with no changes made
@@ -139,7 +147,7 @@ Feature: Account Enquiries – View Account Details
       And I verify no amendments were created via API for company details
 
     @PO-1956
-    Scenario: Convert to individual confirmation continues to Defendant details with shared fields pre-populated
+    Scenario: Convert to individual saves and shows the converted defendant account details
       When I start converting the account to an individual account
       Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
       When I continue converting the account to an individual account
@@ -147,6 +155,14 @@ Feature: Account Enquiries – View Account Details
       And the Defendant details form should be pre-populated with:
         | Postcode              | AB23 4RN                     |
         | Primary email address | Accdetailcomp{uniq}@test.com |
+      When I complete converting the account to an individual with title "Miss", first name "Jamie", and last name "Converted{uniq}"
+      Then I should return to the account details page Defendant tab
+      And I should see the account conversion success message "Converted to an individual account."
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the defendant summary card
+      And I should not see the company summary card
+      And I should see the defendant name contains "Jamie"
+      And I should see the primary email address contains "Accdetailcomp{uniq}@test.com"
 
     @PO-1956
     Scenario: Convert to individual confirmation cancel returns to Defendant details with no changes made

@@ -58,6 +58,29 @@ export class AccountDetailsDefendantActions {
   }
 
   /**
+   * Asserts the defendant summary card is rendered in the Defendant tab.
+   */
+  assertDefendantSummaryVisible(): void {
+    cy.get(L.defendant.card, this.common.getTimeoutOptions()).should('be.visible');
+  }
+
+  /**
+   * Asserts the defendant summary card is not rendered in the Defendant tab.
+   */
+  assertDefendantSummaryNotPresent(): void {
+    cy.get(L.defendant.card, this.common.getTimeoutOptions()).should('not.exist');
+  }
+
+  /**
+   * Asserts the primary email address shown in the contact summary contains the expected value.
+   *
+   * @param expected - Expected text within the primary email field.
+   */
+  assertPrimaryEmailContains(expected: string): void {
+    cy.get(L.contact.fields.primaryEmail, this.common.getTimeoutOptions()).should('contain.text', expected);
+  }
+
+  /**
    * Asserts that the convert-to-company action is visible in the Defendant tab.
    */
   assertConvertToCompanyActionVisible(): void {

@@ -181,4 +181,18 @@ export class AccountDetailsNavActions {
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Payment terms');
   }
+
+  /**
+   * Asserts the account details success banner shows the expected message.
+   *
+   * @param expected - Expected success banner text.
+   */
+  assertSuccessBannerText(expected: string): void {
+    log('assert', 'Asserting account details success banner text', { expected });
+
+    cy.get(N.banners.success, { timeout: 10_000 })
+      .should('be.visible')
+      .find(N.banners.successText)
+      .should('contain.text', expected);
+  }
 }

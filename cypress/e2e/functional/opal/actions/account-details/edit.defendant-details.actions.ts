@@ -66,6 +66,22 @@ export class EditDefendantDetailsActions {
   }
 
   /**
+   * Selects the title on the defendant details form.
+   *
+   * @param value - Title option text to select.
+   * @param opts Optional configuration.
+   * @param opts.timeout Max time to wait for the form/field visibility.
+   */
+  public selectTitle(value: string, opts?: { timeout?: number }): void {
+    const timeout = opts?.timeout ?? 10_000;
+
+    log('method', `Selecting Title value: "${value}"`);
+    cy.get(L.form.selector, { timeout }).should('be.visible');
+    cy.get(L.titleSelect.selector, { timeout }).should('be.visible').select(value);
+    cy.get(L.titleSelect.selector, { timeout }).find('option:selected').should('contain.text', value);
+  }
+
+  /**
    * Updates the "First names" field on the edit form.
    *
    * @param value - The new first name to enter.
@@ -96,6 +112,37 @@ export class EditDefendantDetailsActions {
       log('assert', `Verifying First Name field value equals "${value}"`);
       cy.get(L.forenamesInput.selector).should('have.value', value);
       log('done', 'First Name field value updated successfully');
+    }
+  }
+
+  /**
+   * Updates the "Last name" field on the edit form.
+   *
+   * @param value - The new last name to enter.
+   * @param opts Optional configuration.
+   * @param opts.timeout Max time to wait for elements (default 10_000ms).
+   * @param opts.assert Whether to assert the value after typing (default true).
+   */
+  public updateSurname(value: string, opts?: { timeout?: number; assert?: boolean }): void {
+    const timeout = opts?.timeout ?? 10_000;
+
+    log('method', `Updating Last Name field to: "${value}"`);
+
+    cy.get(L.form.selector, { timeout }).should('be.visible');
+
+    log('action', 'Typing into Last Name field');
+    cy.get(L.surnameInput.selector, { timeout })
+      .should('be.visible')
+      .and('be.enabled')
+      .scrollIntoView()
+      .clear({ force: true })
+      .type(value)
+      .blur();
+
+    if (opts?.assert !== false) {
+      log('assert', `Verifying Last Name field value equals "${value}"`);
+      cy.get(L.surnameInput.selector).should('have.value', value.toUpperCase());
+      log('done', 'Last Name field value updated successfully');
     }
   }
 

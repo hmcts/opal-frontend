@@ -212,6 +212,61 @@ Then('the Defendant details form should be pre-populated with:', (table: DataTab
   flow().assertDefendantDetailsPrefilledValues(expectedFieldValues);
 });
 
+When('I complete converting the account to a company with company name {string}', (companyName: string) => {
+  const companyNameWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Complete converting account to company', { companyName: companyNameWithUniq });
+  flow().completeConvertToCompany(companyNameWithUniq);
+});
+
+When(
+  'I complete converting the account to an individual with title {string}, first name {string}, and last name {string}',
+  (title: string, firstName: string, lastName: string) => {
+    const firstNameWithUniq = applyUniqPlaceholder(firstName);
+    const lastNameWithUniq = applyUniqPlaceholder(lastName);
+    log('step', 'Complete converting account to individual', {
+      title,
+      firstName: firstNameWithUniq,
+      lastName: lastNameWithUniq,
+    });
+    flow().completeConvertToIndividual({
+      title,
+      firstName: firstNameWithUniq,
+      lastName: lastNameWithUniq,
+    });
+  },
+);
+
+Then('I should see the account conversion success message {string}', (expected: string) => {
+  log('assert', 'Account conversion success message is visible', { expected });
+  flow().assertAccountConversionSuccessMessage(expected);
+});
+
+Then('I should see the company summary card', () => {
+  log('assert', 'Company summary card is visible');
+  flow().assertCompanySummaryVisible();
+});
+
+Then('I should not see the company summary card', () => {
+  log('assert', 'Company summary card is absent');
+  flow().assertCompanySummaryNotPresent();
+});
+
+Then('I should see the defendant summary card', () => {
+  log('assert', 'Defendant summary card is visible');
+  flow().assertDefendantSummaryVisible();
+});
+
+Then('I should not see the defendant summary card', () => {
+  log('assert', 'Defendant summary card is absent');
+  flow().assertDefendantSummaryNotPresent();
+});
+
+Then('I should see the primary email address contains {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Primary email address contains', { expected: expectedWithUniq });
+  flow().assertPrimaryEmailContains(expectedWithUniq);
+});
+
 /**
  * @step Navigates to the Parent or guardian details section and validates the header text.
  *

@@ -354,6 +354,82 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Completes the convert-to-company form by providing a company name and saving the form.
+   *
+   * @param companyName - Company name to use for the converted account.
+   */
+  public completeConvertToCompany(companyName: string): void {
+    logAE('method', 'completeConvertToCompany()', { companyName });
+    this.editCompanyDetailsActions.editCompanyName(companyName);
+    this.editCompanyDetailsActions.saveChanges();
+  }
+
+  /**
+   * Completes the convert-to-individual form by filling the required personal details and saving.
+   *
+   * @param details - Title and name fields required for the converted individual account.
+   */
+  public completeConvertToIndividual(details: { title: string; firstName: string; lastName: string }): void {
+    logAE('method', 'completeConvertToIndividual()', details);
+    this.editDefendantDetailsActions.selectTitle(details.title);
+    this.editDefendantDetailsActions.updateFirstName(details.firstName);
+    this.editDefendantDetailsActions.updateSurname(details.lastName);
+    this.editDefendantDetailsActions.saveChanges();
+  }
+
+  /**
+   * Asserts the account details success banner contains the expected conversion message.
+   *
+   * @param expected - Expected banner text.
+   */
+  public assertAccountConversionSuccessMessage(expected: string): void {
+    logAE('method', 'assertAccountConversionSuccessMessage()', { expected });
+    this.detailsNav.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the company summary card is visible in the Defendant tab.
+   */
+  public assertCompanySummaryVisible(): void {
+    logAE('method', 'assertCompanySummaryVisible()');
+    this.editCompanyDetailsActions.assertCompanySummaryVisible();
+  }
+
+  /**
+   * Asserts the company summary card is not visible in the Defendant tab.
+   */
+  public assertCompanySummaryNotPresent(): void {
+    logAE('method', 'assertCompanySummaryNotPresent()');
+    this.editCompanyDetailsActions.assertCompanySummaryNotPresent();
+  }
+
+  /**
+   * Asserts the defendant summary card is visible in the Defendant tab.
+   */
+  public assertDefendantSummaryVisible(): void {
+    logAE('method', 'assertDefendantSummaryVisible()');
+    this.defendantDetails.assertDefendantSummaryVisible();
+  }
+
+  /**
+   * Asserts the defendant summary card is not visible in the Defendant tab.
+   */
+  public assertDefendantSummaryNotPresent(): void {
+    logAE('method', 'assertDefendantSummaryNotPresent()');
+    this.defendantDetails.assertDefendantSummaryNotPresent();
+  }
+
+  /**
+   * Asserts the primary email address shown in the contact card contains the expected value.
+   *
+   * @param expected - Expected email text.
+   */
+  public assertPrimaryEmailContains(expected: string): void {
+    logAE('method', 'assertPrimaryEmailContains()', { expected });
+    this.defendantDetails.assertPrimaryEmailContains(expected);
+  }
+
+  /**
    * Navigates to the Parent/Guardian tab and asserts a specific section header.
    *
    * @param headerText - Expected section header text.
