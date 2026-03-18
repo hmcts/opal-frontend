@@ -57,6 +57,7 @@ describe('FinesConConsolidateAccComponent', () => {
   });
 
   it('should store transformed search payload for results tab', () => {
+    const activeTabSpy = vi.spyOn(finesConStore, 'setActiveTab');
     const payload = {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       consolidation_search: true,
@@ -66,6 +67,13 @@ describe('FinesConConsolidateAccComponent', () => {
 
     // @ts-expect-error - Testing protected property
     expect(component.defendantAccountsSearchPayload).toEqual(payload);
+    expect(activeTabSpy).toHaveBeenCalledWith('results');
+    expect(mockRouter.navigate).toHaveBeenCalledWith([], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'results',
+      queryParamsHandling: 'preserve',
+      replaceUrl: true,
+    });
   });
 
   it('should switch to for-consolidation tab when clicked', () => {

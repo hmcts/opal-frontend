@@ -48,7 +48,6 @@ describe('FinesConSearchAccountComponent', () => {
   it('should handle search account form submission', () => {
     const updateSpy = vi.spyOn(finesConStore, 'updateSearchAccountFormTemporary');
     const setSpy = vi.spyOn(finesConStore, 'setUnsavedChanges');
-    const activeTabSpy = vi.spyOn(finesConStore, 'setActiveTab');
     const payloadSpy = vi.spyOn(finesConPayloadService, 'buildDefendantAccountsSearchPayload').mockReturnValue({
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       consolidation_search: true,
@@ -58,7 +57,6 @@ describe('FinesConSearchAccountComponent', () => {
     component.handleSearchAccountSubmit(FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK);
     expect(updateSpy).toHaveBeenCalledWith(FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData);
     expect(setSpy).toHaveBeenCalledWith(false);
-    expect(activeTabSpy).toHaveBeenCalledWith('results');
     expect(payloadSpy).toHaveBeenCalledWith(
       FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData,
       finesConStore.getBusinessUnitId(),

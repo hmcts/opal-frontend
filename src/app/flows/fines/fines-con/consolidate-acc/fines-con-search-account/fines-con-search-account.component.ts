@@ -40,7 +40,6 @@ export class FinesConSearchAccountComponent {
 
     this.finesConStore.updateSearchAccountFormTemporary(form.formData);
     this.finesConStore.setUnsavedChanges(false);
-    this.finesConStore.setActiveTab('results');
     this.searchPayload.emit(payload);
   }
 
