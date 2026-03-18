@@ -59,7 +59,7 @@ const formatName = (surname: string | null, forenames: string | null): string | 
 /**
  * Sorts aliases by alias number and formats each alias on a new line.
  */
-const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null): string | null => {
+const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null, isOrganisation: boolean): string | null => {
   if (!aliases?.length) {
     return null;
   }
