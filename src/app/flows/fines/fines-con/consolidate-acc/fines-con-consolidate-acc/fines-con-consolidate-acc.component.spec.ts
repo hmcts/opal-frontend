@@ -15,7 +15,7 @@ describe('FinesConConsolidateAccComponent', () => {
   let mockActivatedRoute: {
     parent: Record<string, unknown>;
     fragment: Observable<string | null>;
-    snapshot: { data: Record<string, unknown> };
+    snapshot: { data: Record<string, unknown>; fragment?: string | null };
   };
   let finesConStore: InstanceType<FinesConStoreType>;
 
@@ -27,6 +27,7 @@ describe('FinesConConsolidateAccComponent', () => {
       parent: parentActivatedRoute,
       fragment: of('search'),
       snapshot: {
+        fragment: null,
         data: {
           businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
         },
@@ -57,6 +58,20 @@ describe('FinesConConsolidateAccComponent', () => {
   it('should switch to results tab when clicked', () => {
     component.handleTabSwitch('results');
     expect(finesConStore.activeTab()).toBe('results');
+  });
+
+  it('should not navigate to update fragment when selected tab matches current fragment', () => {
+    mockActivatedRoute.snapshot.fragment = 'results';
+
+    component.handleTabSwitch('results');
+
+    expect(finesConStore.activeTab()).toBe('results');
+    expect(mockRouter.navigate).not.toHaveBeenCalledWith([], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'results',
+      queryParamsHandling: 'preserve',
+      replaceUrl: true,
+    });
   });
 
   it('should store transformed search payload for results tab', () => {

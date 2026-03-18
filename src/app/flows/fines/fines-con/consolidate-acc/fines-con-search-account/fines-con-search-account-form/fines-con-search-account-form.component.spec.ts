@@ -8,6 +8,7 @@ import { FinesConSearchAccountFormComponent } from './fines-con-search-account-f
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FinesConStoreType } from '../../../stores/types/fines-con-store.type';
 import { FINES_CON_ROUTING_PATHS } from '../../../routing/constants/fines-con-routing-paths.constant';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 
 describe('FinesConSearchAccountFormComponent', () => {
   let component: FinesConSearchAccountFormComponent;
@@ -115,5 +116,35 @@ describe('FinesConSearchAccountFormComponent', () => {
       relativeTo: component['activatedRoute'].parent,
     });
     expect(submitEmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not call super.handleFormSubmit when form is empty (formEmpty)', () => {
+    const superSubmitSpy = vi.spyOn(AbstractFormBaseComponent.prototype, 'handleFormSubmit');
+
+    component.form.reset();
+    component.form.updateValueAndValidity({ emitEvent: false });
+    expect(component.form.errors?.['formEmpty']).toBe(true);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(superSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should call super.handleFormSubmit when form submission is valid', () => {
+    const superSubmitSpy = vi.spyOn(AbstractFormBaseComponent.prototype, 'handleFormSubmit');
+    const router = TestBed.inject(Router);
+
+    component.form.patchValue({
+      fcon_search_account_number: '12345678',
+    });
+    component.form.updateValueAndValidity({ emitEvent: false });
+    expect(component.form.errors).toBeNull();
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(superSubmitSpy).toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalledWith([FINES_CON_ROUTING_PATHS.children.searchError], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 });
