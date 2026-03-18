@@ -36,7 +36,7 @@ Feature: Manual account creation - Local justice area filtering
   # AC2, AC3, AC5, AC6
   @PO-2761
   Scenario: Conditional Caution + New requests all local justice area types
-    When I create a "New" manual "Conditional Caution" account for business unit "West London"
+    When I create a "New" manual "Conditional Caution" account for business unit "West London" with defendant type "Adult or youth only"
     And I access the "Court details" task
     Then the latest local justice areas request should include lja types:
       | CRWCRT |
