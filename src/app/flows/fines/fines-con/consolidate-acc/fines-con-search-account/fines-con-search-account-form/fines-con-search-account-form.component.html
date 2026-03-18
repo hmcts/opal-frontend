@@ -1,5 +1,8 @@
 <div class="govuk-grid-column-two-thirds">
-  <opal-lib-govuk-error-summary [errors]="formErrorSummaryMessage"></opal-lib-govuk-error-summary>
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
 
   <form [formGroup]="form" (ngSubmit)="handleFormSubmit($event)">
     @if (defendantType === 'individual') {
