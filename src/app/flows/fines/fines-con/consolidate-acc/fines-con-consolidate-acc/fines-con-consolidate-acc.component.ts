@@ -49,6 +49,24 @@ export class FinesConConsolidateAccComponent implements OnInit {
   protected defendantAccountsSearchPayload: IOpalFinesDefendantAccountSearchParams | null = null;
 
   /**
+   * Keeps URL fragment in sync with the current tab for moj sub-navigation state.
+   *
+   * @param tabFragment - Active tab fragment.
+   */
+  private syncTabFragment(tabFragment: string): void {
+    if (this.activatedRoute.snapshot.fragment === tabFragment) {
+      return;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      fragment: tabFragment,
+      queryParamsHandling: 'preserve',
+      replaceUrl: true,
+    });
+  }
+
+  /**
    * Retrieves business unit reference data from the route resolver.
    *
    * - Reads resolver data from the activated route snapshot.
@@ -107,6 +125,7 @@ export class FinesConConsolidateAccComponent implements OnInit {
     }
 
     this.finesConStore.setActiveTab(tabFragment);
+    this.syncTabFragment(tabFragment);
   }
 
   /**
@@ -114,6 +133,7 @@ export class FinesConConsolidateAccComponent implements OnInit {
    */
   public handleSearchPayload(payload: IOpalFinesDefendantAccountSearchParams): void {
     this.defendantAccountsSearchPayload = payload;
+    this.handleTabSwitch('results');
   }
 
   /**
