@@ -49,7 +49,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     });
   });
 
-  it('should render the component', {tags: ['@JIRA-KEY:POT-4155']}, () => {
+  it('should render the component', { tags: ['@JIRA-KEY:POT-4155'] }, () => {
     setupComponent(null);
 
     // Verify the component is rendered
@@ -103,16 +103,20 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 
-  it('(AC.3)should allow selections on language preferences Opposite options', { tags: ['@PO-464', '@JIRA-KEY:POT-4159'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
+  it(
+    '(AC.3)should allow selections on language preferences Opposite options',
+    { tags: ['@PO-464', '@JIRA-KEY:POT-4159'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
 
-    setupComponent(formSubmitSpy);
+      setupComponent(formSubmitSpy);
 
-    cy.get(L.enDocumentRadioOption).click();
-    cy.get(L.cyCourtHearingRadioOption).click();
+      cy.get(L.enDocumentRadioOption).click();
+      cy.get(L.cyCourtHearingRadioOption).click();
 
-    cy.get(L.submitButton).first().click();
+      cy.get(L.submitButton).first().click();
 
-    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-  });
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+    },
+  );
 });

@@ -215,44 +215,56 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['PO-601', '@JIRA-KEY:POT-4393'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Rejected';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
-    fetchMap.finesMacState.businessUnit.welsh_language = true;
+  it(
+    'AC4ai - should show language preferences if business unit is welsh speaking - AY',
+    { tags: ['PO-601', '@JIRA-KEY:POT-4393'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Rejected';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+      fetchMap.finesMacState.businessUnit.welsh_language = true;
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-  });
-  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG', { tags: ['PO-601', '@JIRA-KEY:POT-4394'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Rejected';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
-    fetchMap.finesMacState.businessUnit.welsh_language = true;
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+    },
+  );
+  it(
+    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
+    { tags: ['PO-601', '@JIRA-KEY:POT-4394'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Rejected';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+      fetchMap.finesMacState.businessUnit.welsh_language = true;
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-  });
-  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP', { tags: ['PO-601', '@JIRA-KEY:POT-4395'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Rejected';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
-    fetchMap.finesMacState.businessUnit.welsh_language = true;
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+    },
+  );
+  it(
+    'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
+    { tags: ['PO-601', '@JIRA-KEY:POT-4395'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Rejected';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+      fetchMap.finesMacState.businessUnit.welsh_language = true;
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+    },
+  );
 
   it('AC.7 - should show em-dash for empty values', { tags: ['PO-601', '@JIRA-KEY:POT-4396'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);

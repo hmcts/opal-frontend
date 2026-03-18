@@ -35,28 +35,32 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     ],
   };
 
-  it('Last enforcement action prevents the adding of a payment card', { tags: ['PO-1802', '@JIRA-KEY:POT-3687'] }, () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
-    headerMock.debtor_type = 'individual';
-    let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-    paymentTermsMock.last_enforcement = 'DW';
+  it(
+    'Last enforcement action prevents the adding of a payment card',
+    { tags: ['PO-1802', '@JIRA-KEY:POT-3687'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
+      headerMock.debtor_type = 'individual';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'DW';
 
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptPaymentTerms(accountId, paymentTermsMock, '123');
-    interceptResultByCode('DW');
-    setupAccountEnquiryComponent({
-      ...componentProperties,
-      accountId: accountId,
-    });
-    cy.get('router-outlet').should('exist');
-    cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Request payment card').click();
-    cy.get('h1').should('contain.text', 'You cannot request a payment card.');
-    cy.get('p').should('contain.text', 'The last enforcement action prevents you from adding a payment card.');
-    cy.get('p').should('contain.text', 'DW');
-  });
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('DW');
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+      });
+      cy.get('router-outlet').should('exist');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Request payment card').click();
+      cy.get('h1').should('contain.text', 'You cannot request a payment card.');
+      cy.get('p').should('contain.text', 'The last enforcement action prevents you from adding a payment card.');
+      cy.get('p').should('contain.text', 'DW');
+    },
+  );
 
   it('No permission in BU prevents the adding of a payment card', { tags: ['PO-1802', '@JIRA-KEY:POT-3688'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
@@ -81,29 +85,33 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
     cy.get('p').contains('Your business unit does not allow payment card requests.');
   });
 
-  it('AC1a: User can request a payment card and sees the confirmation screen', { tags: ['PO-1700', '@JIRA-KEY:POT-3689'] }, () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'individual';
-    let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-    paymentTermsMock.last_enforcement = 'REM';
+  it(
+    'AC1a: User can request a payment card and sees the confirmation screen',
+    { tags: ['PO-1700', '@JIRA-KEY:POT-3689'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'REM';
 
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptPaymentTerms(accountId, paymentTermsMock, '123');
-    interceptResultByCode('REM');
-    setupAccountEnquiryComponent({
-      ...componentProperties,
-      accountId: accountId,
-    });
-    cy.get('router-outlet').should('exist');
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId: accountId,
+      });
+      cy.get('router-outlet').should('exist');
 
-    cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Request payment card').click();
-    cy.get('h1').should('contain.text', 'Do you want to request a payment card for the defendant?');
-    cy.contains('button', 'Yes - request a payment card').should('exist');
-    cy.contains('a', 'No - cancel').should('exist');
-  });
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Request payment card').click();
+      cy.get('h1').should('contain.text', 'Do you want to request a payment card for the defendant?');
+      cy.contains('button', 'Yes - request a payment card').should('exist');
+      cy.contains('a', 'No - cancel').should('exist');
+    },
+  );
 
   it('AC1bi: Cancel returns to Payment terms with no changes made', { tags: ['PO-1700', '@JIRA-KEY:POT-3690'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));

@@ -64,17 +64,21 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     }
   });
 
-  it('AC.2 When user has not associated accounts, that are in review', { tags: ['@PO-584', '@JIRA-KEY:POT-3918'] }, () => {
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
+  it(
+    'AC.2 When user has not associated accounts, that are in review',
+    { tags: ['@PO-584', '@JIRA-KEY:POT-3918'] },
+    () => {
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
 
-    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
-    cy.get('p').should('exist').and('contain', 'You have no accounts in review');
-    cy.get(DOM_ELEMENTS.table).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
+      cy.get('p').should('exist').and('contain', 'You have no accounts in review');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+    },
+  );
 
   it('AC.3 verify the table of headers in review tab', { tags: ['@PO-584', '@JIRA-KEY:POT-3919'] }, () => {
     const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
@@ -155,7 +159,10 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
       });
   });
 
-  it('(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts', { tags: ['@PO-584', '@JIRA-KEY:POT-3921'] }, () => {
+  it(
+    '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
+    { tags: ['@PO-584', '@JIRA-KEY:POT-3921'] },
+    () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -179,5 +186,6 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    });
+    },
+  );
 });

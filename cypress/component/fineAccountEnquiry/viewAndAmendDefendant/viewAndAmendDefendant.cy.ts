@@ -80,7 +80,10 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.then(() => {});
   });
 
-  it('AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data', { tags: ['@PO-1110', '@JIRA-KEY:POT-3795'] }, () => {
+  it(
+    'AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3795'] },
+    () => {
       setupComponent('INDIVIDUAL', fullMock);
 
       // Verify page heading and caption
@@ -256,30 +259,39 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // Form Actions
       cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
       cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-    });
+    },
+  );
 
-  it('AC1a. Should show alias checkbox unticked when no aliases exist in data', { tags: ['@PO-1110', '@JIRA-KEY:POT-3796'] }, () => {
-    setupComponent('INDIVIDUAL', minimalMock);
+  it(
+    'AC1a. Should show alias checkbox unticked when no aliases exist in data',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3796'] },
+    () => {
+      setupComponent('INDIVIDUAL', minimalMock);
 
-    // Add aliases checkbox should be unticked when no aliases in mock data
-    cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
-    cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
+      // Add aliases checkbox should be unticked when no aliases in mock data
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
 
-    // Alias section should not be visible when checkbox is unchecked
-    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
-  });
+      // Alias section should not be visible when checkbox is unchecked
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+    },
+  );
 
-  it('AC1a. Language preferences should appear for Welsh speaking business units', { tags: ['@PO-1110', '@JIRA-KEY:POT-3797'] }, () => {
-    setupComponent('INDIVIDUAL', fullMock, 'Y');
+  it(
+    'AC1a. Language preferences should appear for Welsh speaking business units',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3797'] },
+    () => {
+      setupComponent('INDIVIDUAL', fullMock, 'Y');
 
-    // Language Preferences Section should exist for Welsh speaking BUs
-    cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('exist');
-    cy.get(DOM_ELEMENTS.languagePreferencesLegend).should('contain', 'Language preferences');
-    cy.get(DOM_ELEMENTS.documentLanguageFieldset).should('exist');
-    cy.get(DOM_ELEMENTS.documentLanguageLegend).should('contain', 'Documents');
-    cy.get(DOM_ELEMENTS.hearingLanguageFieldset).should('exist');
-    cy.get(DOM_ELEMENTS.hearingLanguageLegend).should('contain', 'Court hearings');
-  });
+      // Language Preferences Section should exist for Welsh speaking BUs
+      cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.languagePreferencesLegend).should('contain', 'Language preferences');
+      cy.get(DOM_ELEMENTS.documentLanguageFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.documentLanguageLegend).should('contain', 'Documents');
+      cy.get(DOM_ELEMENTS.hearingLanguageFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.hearingLanguageLegend).should('contain', 'Court hearings');
+    },
+  );
 
   it('AC2. Alias add/remove and clear behaviour', { tags: ['@PO-1110', '@JIRA-KEY:POT-3798'] }, () => {
     setupComponent('INDIVIDUAL', minimalMock);
@@ -435,63 +447,70 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     });
   });
 
-  it('AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5)', { tags: ['@PO-1110', '@JIRA-KEY:POT-3803'] }, () => {
-    setupComponent('INDIVIDUAL', minimalMock);
-    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+  it(
+    'AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5)',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3803'] },
+    () => {
+      setupComponent('INDIVIDUAL', minimalMock);
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
 
-    for (let i = 2; i <= 5; i++) {
-      cy.get(DOM_ELEMENTS.addAliasButton).click();
-      cy.contains('legend', `Alias ${i}`).should('exist');
-    }
-    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+      for (let i = 2; i <= 5; i++) {
+        cy.get(DOM_ELEMENTS.addAliasButton).click();
+        cy.contains('legend', `Alias ${i}`).should('exist');
+      }
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // AC5h: Verify all alias first name and last name required errors appear
-    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber));
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber));
-    }
+      // AC5h: Verify all alias first name and last name required errors appear
+      for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber));
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber));
+      }
 
-    // AC5i: Test partial completion - fill only first names, leave last names empty
-    for (let aliasIndex = 0; aliasIndex < 5; aliasIndex++) {
-      cy.get(getAliasForenamesInput(aliasIndex))
-        .clear()
-        .type(`FirstName${aliasIndex + 1}`, { delay: 0 });
-    }
+      // AC5i: Test partial completion - fill only first names, leave last names empty
+      for (let aliasIndex = 0; aliasIndex < 5; aliasIndex++) {
+        cy.get(getAliasForenamesInput(aliasIndex))
+          .clear()
+          .type(`FirstName${aliasIndex + 1}`, { delay: 0 });
+      }
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber));
-    }
+      for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber));
+      }
 
-    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
-      cy.get(DOM_ELEMENTS.errorSummary).should(
-        'not.contain.text',
-        ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber),
-      );
-    }
+      for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+        cy.get(DOM_ELEMENTS.errorSummary).should(
+          'not.contain.text',
+          ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber),
+        );
+      }
 
-    // AC5j: Test partial completion - clear first names, fill only last names
-    for (let aliasIndex = 0; aliasIndex < 5; aliasIndex++) {
-      cy.get(getAliasForenamesInput(aliasIndex)).clear();
-      cy.get(getAliasSurnameInput(aliasIndex))
-        .clear()
-        .type(`LastName${aliasIndex + 1}`, { delay: 0 });
-    }
+      // AC5j: Test partial completion - clear first names, fill only last names
+      for (let aliasIndex = 0; aliasIndex < 5; aliasIndex++) {
+        cy.get(getAliasForenamesInput(aliasIndex)).clear();
+        cy.get(getAliasSurnameInput(aliasIndex))
+          .clear()
+          .type(`LastName${aliasIndex + 1}`, { delay: 0 });
+      }
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber));
-    }
+      for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber));
+      }
 
-    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber));
-    }
-  });
+      for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+        cy.get(DOM_ELEMENTS.errorSummary).should(
+          'not.contain.text',
+          ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber),
+        );
+      }
+    },
+  );
 
   it('AC6a. DOB with non-numerical characters shows format error', { tags: ['@PO-1110', '@JIRA-KEY:POT-3804'] }, () => {
     minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = 'AA/BB/CCCC';
@@ -521,154 +540,191 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
   });
 
   // AC7: Email format validation
-  it('AC7a. Primary email invalid format shows primary email format error', { tags: ['@PO-1110', '@JIRA-KEY:POT-3807'] }, () => {
-    minimalMock.defendant_account_party.contact_details!.primary_email_address = 'invalid_email'; // missing @ and domain
-    setupComponent('INDIVIDUAL', minimalMock);
+  it(
+    'AC7a. Primary email invalid format shows primary email format error',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3807'] },
+    () => {
+      minimalMock.defendant_account_party.contact_details!.primary_email_address = 'invalid_email'; // missing @ and domain
+      setupComponent('INDIVIDUAL', minimalMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_PRIMARY);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_PRIMARY);
+    },
+  );
 
-  it('AC7b. Secondary email invalid format shows secondary email format error', { tags: ['@PO-1110', '@JIRA-KEY:POT-3808'] }, () => {
-    minimalMock.defendant_account_party.contact_details!.secondary_email_address = 'bad.second'; // missing @
-    setupComponent('INDIVIDUAL', minimalMock);
+  it(
+    'AC7b. Secondary email invalid format shows secondary email format error',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3808'] },
+    () => {
+      minimalMock.defendant_account_party.contact_details!.secondary_email_address = 'bad.second'; // missing @
+      setupComponent('INDIVIDUAL', minimalMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_SECONDARY);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_SECONDARY);
+    },
+  );
 
-  it('AC7c. Employer email invalid format shows employer email format error', { tags: ['@PO-1110', '@JIRA-KEY:POT-3809'] }, () => {
-    minimalMock.defendant_account_party.employer_details!.employer_email_address = 'employer#mail'; // invalid char & structure
-    setupComponent('INDIVIDUAL', minimalMock);
+  it(
+    'AC7c. Employer email invalid format shows employer email format error',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3809'] },
+    () => {
+      minimalMock.defendant_account_party.employer_details!.employer_email_address = 'employer#mail'; // invalid char & structure
+      setupComponent('INDIVIDUAL', minimalMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_EMPLOYER);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_EMPLOYER);
+    },
+  );
 
-  it('AC8a. Home telephone invalid format shows home telephone error', { tags: ['@PO-1110', '@JIRA-KEY:POT-3810'] }, () => {
-    minimalMock.defendant_account_party.contact_details!.home_telephone_number = '01632A960001'; // alpha char
-    setupComponent('INDIVIDUAL', minimalMock);
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_HOME);
-  });
+  it(
+    'AC8a. Home telephone invalid format shows home telephone error',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3810'] },
+    () => {
+      minimalMock.defendant_account_party.contact_details!.home_telephone_number = '01632A960001'; // alpha char
+      setupComponent('INDIVIDUAL', minimalMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_HOME);
+    },
+  );
 
-  it('AC8b. Work telephone invalid format shows work telephone error', { tags: ['@PO-1110', '@JIRA-KEY:POT-3811'] }, () => {
-    minimalMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001X'; // invalid char X
-    setupComponent('INDIVIDUAL', minimalMock);
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_WORK);
-  });
+  it(
+    'AC8b. Work telephone invalid format shows work telephone error',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3811'] },
+    () => {
+      minimalMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001X'; // invalid char X
+      setupComponent('INDIVIDUAL', minimalMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_WORK);
+    },
+  );
 
-  it('AC8c. Mobile telephone invalid length/format shows mobile telephone error', { tags: ['@PO-1110', '@JIRA-KEY:POT-3812'] }, () => {
-    minimalMock.defendant_account_party.contact_details!.mobile_telephone_number = '0770090098'; // 10 digits (should be 11)
-    setupComponent('INDIVIDUAL', minimalMock);
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_MOBILE);
-  });
+  it(
+    'AC8c. Mobile telephone invalid length/format shows mobile telephone error',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3812'] },
+    () => {
+      minimalMock.defendant_account_party.contact_details!.mobile_telephone_number = '0770090098'; // 10 digits (should be 11)
+      setupComponent('INDIVIDUAL', minimalMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_MOBILE);
+    },
+  );
 
-  it('AC8d. Employer telephone invalid format shows employer telephone error', { tags: ['@PO-1110', '@JIRA-KEY:POT-3813'] }, () => {
-    minimalMock.defendant_account_party.employer_details!.employer_telephone_number = '01263 76612X'; // invalid char X
-    setupComponent('INDIVIDUAL', minimalMock);
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_EMPLOYER);
-  });
+  it(
+    'AC8d. Employer telephone invalid format shows employer telephone error',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3813'] },
+    () => {
+      minimalMock.defendant_account_party.employer_details!.employer_telephone_number = '01263 76612X'; // invalid char X
+      setupComponent('INDIVIDUAL', minimalMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_EMPLOYER);
+    },
+  );
 
-  it('AC9. Max length validation retains user on form and shows per-field errors', { tags: ['@PO-1110', '@JIRA-KEY:POT-3814'] }, () => {
-    const maxLengthMock = structuredClone(minimalMock);
-    const primaryEmail = `${'a'.repeat(65)}@example.com`;
-    const secondaryEmail = `${'b'.repeat(65)}@example.com`;
-    const employerEmail = `${'c'.repeat(65)}@example.com`;
+  it(
+    'AC9. Max length validation retains user on form and shows per-field errors',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3814'] },
+    () => {
+      const maxLengthMock = structuredClone(minimalMock);
+      const primaryEmail = `${'a'.repeat(65)}@example.com`;
+      const secondaryEmail = `${'b'.repeat(65)}@example.com`;
+      const employerEmail = `${'c'.repeat(65)}@example.com`;
 
-    // Set up data with values exceeding max length
-    maxLengthMock.defendant_account_party.party_details.individual_details!.forenames = 'A'.repeat(21);
-    maxLengthMock.defendant_account_party.party_details.individual_details!.surname = 'B'.repeat(31);
-    maxLengthMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
-      {
-        alias_id: '1',
-        sequence_number: 1,
-        forenames: 'C'.repeat(21),
-        surname: 'D'.repeat(31),
-      },
-    ];
-    maxLengthMock.defendant_account_party.party_details.individual_details!.national_insurance_number = 'AB123456CD';
-    maxLengthMock.defendant_account_party.address!.address_line_1 = 'E'.repeat(31);
-    maxLengthMock.defendant_account_party.address!.address_line_2 = 'F'.repeat(31);
-    maxLengthMock.defendant_account_party.address!.address_line_3 = 'G'.repeat(17);
-    maxLengthMock.defendant_account_party.address!.postcode = 'POSTCODE9';
-    maxLengthMock.defendant_account_party.contact_details!.primary_email_address = primaryEmail;
-    maxLengthMock.defendant_account_party.contact_details!.secondary_email_address = secondaryEmail;
-    maxLengthMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'H'.repeat(31);
-    maxLengthMock.defendant_account_party.vehicle_details!.vehicle_registration = 'I'.repeat(21);
-    maxLengthMock.defendant_account_party.employer_details!.employer_name = 'J'.repeat(51);
-    maxLengthMock.defendant_account_party.employer_details!.employer_reference = 'K'.repeat(21);
-    maxLengthMock.defendant_account_party.employer_details!.employer_email_address = employerEmail;
-    maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = 'L'.repeat(31);
-    maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_2 = 'M'.repeat(31);
-    maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_3 = 'N'.repeat(31);
-    maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_4 = 'O'.repeat(31);
-    maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_5 = 'P'.repeat(31);
-    maxLengthMock.defendant_account_party.employer_details!.employer_address!.postcode = 'EMPPOSTC9';
+      // Set up data with values exceeding max length
+      maxLengthMock.defendant_account_party.party_details.individual_details!.forenames = 'A'.repeat(21);
+      maxLengthMock.defendant_account_party.party_details.individual_details!.surname = 'B'.repeat(31);
+      maxLengthMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
+        {
+          alias_id: '1',
+          sequence_number: 1,
+          forenames: 'C'.repeat(21),
+          surname: 'D'.repeat(31),
+        },
+      ];
+      maxLengthMock.defendant_account_party.party_details.individual_details!.national_insurance_number = 'AB123456CD';
+      maxLengthMock.defendant_account_party.address!.address_line_1 = 'E'.repeat(31);
+      maxLengthMock.defendant_account_party.address!.address_line_2 = 'F'.repeat(31);
+      maxLengthMock.defendant_account_party.address!.address_line_3 = 'G'.repeat(17);
+      maxLengthMock.defendant_account_party.address!.postcode = 'POSTCODE9';
+      maxLengthMock.defendant_account_party.contact_details!.primary_email_address = primaryEmail;
+      maxLengthMock.defendant_account_party.contact_details!.secondary_email_address = secondaryEmail;
+      maxLengthMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'H'.repeat(31);
+      maxLengthMock.defendant_account_party.vehicle_details!.vehicle_registration = 'I'.repeat(21);
+      maxLengthMock.defendant_account_party.employer_details!.employer_name = 'J'.repeat(51);
+      maxLengthMock.defendant_account_party.employer_details!.employer_reference = 'K'.repeat(21);
+      maxLengthMock.defendant_account_party.employer_details!.employer_email_address = employerEmail;
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = 'L'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_2 = 'M'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_3 = 'N'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_4 = 'O'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_5 = 'P'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.postcode = 'EMPPOSTC9';
 
-    setupComponent('INDIVIDUAL', maxLengthMock);
+      setupComponent('INDIVIDUAL', maxLengthMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
-    INDIVIDUAL_MAX_LENGTH_ERRORS.forEach((message) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
-    });
-  });
+      INDIVIDUAL_MAX_LENGTH_ERRORS.forEach((message) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+      });
+    },
+  );
 
-  it('AC10. Data type validation for alphabetical and alphanumeric fields', { tags: ['@PO-1110', '@JIRA-KEY:POT-3815'] }, () => {
-    const dataTypeValidationMock = structuredClone(minimalMock);
+  it(
+    'AC10. Data type validation for alphabetical and alphanumeric fields',
+    { tags: ['@PO-1110', '@JIRA-KEY:POT-3815'] },
+    () => {
+      const dataTypeValidationMock = structuredClone(minimalMock);
 
-    // Set up data with invalid characters for validation testing
-    dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
-    dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
-    dataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
-      {
-        alias_id: '1',
-        sequence_number: 1,
-        forenames: 'Johnny$',
-        surname: 'Smith#Brown',
-      },
-    ];
-    dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
-    dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
-    dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
-    dataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
-    dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'Toyota Corolla {}[]';
-    dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123|\\';
-    dataTypeValidationMock.defendant_account_party.employer_details!.employer_name = 'Test Company <>?/';
-    dataTypeValidationMock.defendant_account_party.employer_details!.employer_reference = 'EMP123~`';
-    dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_1 =
-      '456 Business Park !@#';
-    dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_2 = 'Suite 200 $%^';
-    dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_3 =
-      'Industrial Estate &*()';
-    dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_4 =
-      'Business District +={}';
-    dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_5 =
-      'Metropolitan Area []|\\';
-    dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.postcode = 'BU5& 1NE';
+      // Set up data with invalid characters for validation testing
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
+        {
+          alias_id: '1',
+          sequence_number: 1,
+          forenames: 'Johnny$',
+          surname: 'Smith#Brown',
+        },
+      ];
+      dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
+      dataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
+      dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'Toyota Corolla {}[]';
+      dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123|\\';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_name = 'Test Company <>?/';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_reference = 'EMP123~`';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_1 =
+        '456 Business Park !@#';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_2 =
+        'Suite 200 $%^';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_3 =
+        'Industrial Estate &*()';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_4 =
+        'Business District +={}';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_5 =
+        'Metropolitan Area []|\\';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.postcode = 'BU5& 1NE';
 
-    setupComponent('INDIVIDUAL', dataTypeValidationMock);
+      setupComponent('INDIVIDUAL', dataTypeValidationMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
-    // Verify all expected error messages appear
-    INDIVIDUAL_ALL_DATA_TYPE_ERRORS.forEach((message) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
-    });
-  });
+      // Verify all expected error messages appear
+      INDIVIDUAL_ALL_DATA_TYPE_ERRORS.forEach((message) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+      });
+    },
+  );
 
   it('AC1. Amend Company Details screen opens successfully', { tags: ['@PO-1111', '@JIRA-KEY:POT-3816'] }, () => {
     setupComponent('COMPANY', companyfullMock);
@@ -774,7 +830,10 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
   });
 
-  it('AC1b. Company Details screen shows language preferences for Welsh speaking business units', { tags: ['@PO-1111', '@JIRA-KEY:POT-3817'] }, () => {
+  it(
+    'AC1b. Company Details screen shows language preferences for Welsh speaking business units',
+    { tags: ['@PO-1111', '@JIRA-KEY:POT-3817'] },
+    () => {
       setupComponent('COMPANY', companyfullMock, 'Y');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
@@ -802,48 +861,53 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // Verify the "English" radio button is selected by default
       cy.get(DOM_ELEMENTS.documentLanguageRadioEN).should('be.checked');
       cy.get(DOM_ELEMENTS.hearingLanguageRadioEN).should('be.checked');
-    });
+    },
+  );
 
-  it('AC1d. Optional fields display as blank when no data is entered for company', { tags: ['@PO-1111', '@JIRA-KEY:POT-3818'] }, () => {
-    const companyMinimalMock = structuredClone(companyfullMock);
+  it(
+    'AC1d. Optional fields display as blank when no data is entered for company',
+    { tags: ['@PO-1111', '@JIRA-KEY:POT-3818'] },
+    () => {
+      const companyMinimalMock = structuredClone(companyfullMock);
 
-    // Clear optional fields to test blank state
-    companyMinimalMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [];
-    companyMinimalMock.defendant_account_party.address!.address_line_2 = null;
-    companyMinimalMock.defendant_account_party.address!.address_line_3 = null;
-    companyMinimalMock.defendant_account_party.address!.postcode = null;
-    companyMinimalMock.defendant_account_party.contact_details!.primary_email_address = null;
-    companyMinimalMock.defendant_account_party.contact_details!.secondary_email_address = null;
-    companyMinimalMock.defendant_account_party.contact_details!.mobile_telephone_number = null;
-    companyMinimalMock.defendant_account_party.contact_details!.home_telephone_number = null;
-    companyMinimalMock.defendant_account_party.contact_details!.work_telephone_number = null;
-    companyMinimalMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = null;
-    companyMinimalMock.defendant_account_party.vehicle_details!.vehicle_registration = null;
+      // Clear optional fields to test blank state
+      companyMinimalMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [];
+      companyMinimalMock.defendant_account_party.address!.address_line_2 = null;
+      companyMinimalMock.defendant_account_party.address!.address_line_3 = null;
+      companyMinimalMock.defendant_account_party.address!.postcode = null;
+      companyMinimalMock.defendant_account_party.contact_details!.primary_email_address = null;
+      companyMinimalMock.defendant_account_party.contact_details!.secondary_email_address = null;
+      companyMinimalMock.defendant_account_party.contact_details!.mobile_telephone_number = null;
+      companyMinimalMock.defendant_account_party.contact_details!.home_telephone_number = null;
+      companyMinimalMock.defendant_account_party.contact_details!.work_telephone_number = null;
+      companyMinimalMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = null;
+      companyMinimalMock.defendant_account_party.vehicle_details!.vehicle_registration = null;
 
-    setupComponent('COMPANY', companyMinimalMock);
+      setupComponent('COMPANY', companyMinimalMock);
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 
-    // Verify company aliases checkbox is unchecked and alias section not visible
-    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
-    cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.exist');
+      // Verify company aliases checkbox is unchecked and alias section not visible
+      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.exist');
 
-    // Verify optional address fields are blank
-    cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '');
-    cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', '');
-    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', '');
+      // Verify optional address fields are blank
+      cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '');
+      cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', '');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', '');
 
-    // Verify optional contact fields are blank
-    cy.get(DOM_ELEMENTS.email1Input).should('have.value', '');
-    cy.get(DOM_ELEMENTS.email2Input).should('have.value', '');
-    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '');
-    cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '');
-    cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '');
+      // Verify optional contact fields are blank
+      cy.get(DOM_ELEMENTS.email1Input).should('have.value', '');
+      cy.get(DOM_ELEMENTS.email2Input).should('have.value', '');
+      cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '');
+      cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '');
+      cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '');
 
-    // Verify optional vehicle fields are blank
-    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', '');
-    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', '');
-  });
+      // Verify optional vehicle fields are blank
+      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', '');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', '');
+    },
+  );
 
   it('AC2. Company alias add/remove and clear behaviour', { tags: ['@PO-1111', '@JIRA-KEY:POT-3819'] }, () => {
     // Start with company mock without aliases
@@ -936,68 +1000,72 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('not.exist');
   });
 
-  it('AC3. Required field validation for company mandatory fields', { tags: ['@PO-1111', '@JIRA-KEY:POT-3820'] }, () => {
-    const testMock = structuredClone(companyfullMock);
-    testMock.defendant_account_party.party_details.organisation_details!.organisation_name = '';
-    testMock.defendant_account_party.address!.address_line_1 = '';
-    testMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [
-      { alias_id: '1', sequence_number: 1, organisation_name: '' },
-      { alias_id: '2', sequence_number: 2, organisation_name: '' },
-    ];
+  it(
+    'AC3. Required field validation for company mandatory fields',
+    { tags: ['@PO-1111', '@JIRA-KEY:POT-3820'] },
+    () => {
+      const testMock = structuredClone(companyfullMock);
+      testMock.defendant_account_party.party_details.organisation_details!.organisation_name = '';
+      testMock.defendant_account_party.address!.address_line_1 = '';
+      testMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [
+        { alias_id: '1', sequence_number: 1, organisation_name: '' },
+        { alias_id: '2', sequence_number: 2, organisation_name: '' },
+      ];
 
-    setupComponent('COMPANY', testMock);
+      setupComponent('COMPANY', testMock);
 
-    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 
-    // AC3a. Verify Company name error message
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_NAME);
+      // AC3a. Verify Company name error message
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_NAME);
 
-    // AC3b. Verify Address Line 1 error message
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
+      // AC3b. Verify Address Line 1 error message
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
 
-    // AC3c. Verify Alias Company name error messages for each alias row
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
+      // AC3c. Verify Alias Company name error messages for each alias row
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
 
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
-    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 4);
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
+      cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 4);
 
-    cy.get(DOM_ELEMENTS.organisationNameInput).type('Test Company Ltd');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.organisationNameInput).type('Test Company Ltd');
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_COMPANY_NAME);
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
-    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 3);
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_COMPANY_NAME);
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
+      cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 3);
 
-    cy.get(DOM_ELEMENTS.addressLine1Input).type('123 Business Street');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.addressLine1Input).type('123 Business Street');
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // Verify address error is gone but alias errors remain
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
-    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 2);
+      // Verify address error is gone but alias errors remain
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
+      cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 2);
 
-    // Fix first alias
-    cy.get(DOM_ELEMENTS.organisationAliasInput0).type('First Alias Company');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      // Fix first alias
+      cy.get(DOM_ELEMENTS.organisationAliasInput0).type('First Alias Company');
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // Verify first alias error is gone but second alias error remains
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
-    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 1);
+      // Verify first alias error is gone but second alias error remains
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
+      cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 1);
 
-    // Fix second alias
-    cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Second Alias Company');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      // Fix second alias
+      cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Second Alias Company');
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // Verify all errors are gone
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-  });
+      // Verify all errors are gone
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+    },
+  );
 
   it('AC4. Email format validation for company forms', { tags: ['@PO-1111', '@JIRA-KEY:POT-3821'] }, () => {
     const testMock = structuredClone(companyfullMock);
@@ -1024,31 +1092,46 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
   });
 
-  it('AC5a. Home telephone invalid format shows home telephone error for company', { tags: ['@PO-1111', '@JIRA-KEY:POT-3822'] }, () => {
-    const testMock = structuredClone(companyfullMock);
-    testMock.defendant_account_party.contact_details!.home_telephone_number = '01632A960001'; // alpha char
-    setupComponent('COMPANY', testMock);
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_HOME);
-  });
+  it(
+    'AC5a. Home telephone invalid format shows home telephone error for company',
+    { tags: ['@PO-1111', '@JIRA-KEY:POT-3822'] },
+    () => {
+      const testMock = structuredClone(companyfullMock);
+      testMock.defendant_account_party.contact_details!.home_telephone_number = '01632A960001'; // alpha char
+      setupComponent('COMPANY', testMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_HOME);
+    },
+  );
 
-  it('AC5b. Work telephone invalid format shows work telephone error for company', { tags: ['@PO-1111', '@JIRA-KEY:POT-3823'] }, () => {
-    const testMock = structuredClone(companyfullMock);
-    testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001X'; // invalid char X
-    setupComponent('COMPANY', testMock);
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_WORK);
-  });
+  it(
+    'AC5b. Work telephone invalid format shows work telephone error for company',
+    { tags: ['@PO-1111', '@JIRA-KEY:POT-3823'] },
+    () => {
+      const testMock = structuredClone(companyfullMock);
+      testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001X'; // invalid char X
+      setupComponent('COMPANY', testMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_WORK);
+    },
+  );
 
-  it('AC5c. Mobile telephone invalid length/format shows mobile telephone error for company', { tags: ['@PO-1111', '@JIRA-KEY:POT-3824'] }, () => {
+  it(
+    'AC5c. Mobile telephone invalid length/format shows mobile telephone error for company',
+    { tags: ['@PO-1111', '@JIRA-KEY:POT-3824'] },
+    () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.mobile_telephone_number = '0770090098'; // 10 digits (should be 11)
       setupComponent('COMPANY', testMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_MOBILE);
-    });
+    },
+  );
 
-  it('AC6. Max length validation for company forms retains user on form and shows per-field errors', { tags: ['@PO-1111', '@JIRA-KEY:POT-3825'] }, () => {
+  it(
+    'AC6. Max length validation for company forms retains user on form and shows per-field errors',
+    { tags: ['@PO-1111', '@JIRA-KEY:POT-3825'] },
+    () => {
       const maxLengthCompanyMock = structuredClone(companyfullMock);
 
       // Set all fields to exceed max length using API structure
@@ -1086,9 +1169,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       COMPANY_MAX_LENGTH_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    });
+    },
+  );
 
-  it('AC7. Data type validation for alphabetical and alphanumeric fields in company forms', { tags: ['@PO-1111', '@JIRA-KEY:POT-3826'] }, () => {
+  it(
+    'AC7. Data type validation for alphabetical and alphanumeric fields in company forms',
+    { tags: ['@PO-1111', '@JIRA-KEY:POT-3826'] },
+    () => {
       const dataTypeCompanyMock = structuredClone(companyfullMock);
 
       // Set all fields with invalid characters using API structure
@@ -1125,9 +1212,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       COMPANY_ALL_DATA_TYPE_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    });
+    },
+  );
 
-  it('AC1. The "Defendant Details (Change)" screen will be built for a non-paying adult or youth with all fields populated', { tags: ['@PO-2315', '@JIRA-KEY:POT-3827'] }, () => {
+  it(
+    'AC1. The "Defendant Details (Change)" screen will be built for a non-paying adult or youth with all fields populated',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3827'] },
+    () => {
       // Create a non-paying adult/youth defendant mock
       const nonPayingAdultYouthMock = structuredClone(fullMock);
       nonPayingAdultYouthMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1230,9 +1321,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // Form Actions
       cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
       cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-    });
+    },
+  );
 
-  it('AC1a. Should show alias checkbox unticked when no aliases exist in data for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3828'] }, () => {
+  it(
+    'AC1a. Should show alias checkbox unticked when no aliases exist in data for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3828'] },
+    () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1245,118 +1340,130 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // Alias section should not be visible when checkbox is unchecked
       cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
-    });
+    },
+  );
 
-  it('AC2. Alias add/remove and clear behaviour for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3829'] }, () => {
-    const nonPayingMinimalMock = structuredClone(minimalMock);
-    nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
-    nonPayingMinimalMock.defendant_account_party.is_debtor = false;
+  it(
+    'AC2. Alias add/remove and clear behaviour for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3829'] },
+    () => {
+      const nonPayingMinimalMock = structuredClone(minimalMock);
+      nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
+      nonPayingMinimalMock.defendant_account_party.is_debtor = false;
 
-    setupComponent('INDIVIDUAL', nonPayingMinimalMock);
+      setupComponent('INDIVIDUAL', nonPayingMinimalMock);
 
-    // Pre-condition: checkbox unchecked & section hidden
-    cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+      // Pre-condition: checkbox unchecked & section hidden
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
-    // AC2: Tick the Add aliases checkbox
-    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+      // AC2: Tick the Add aliases checkbox
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
 
-    // AC2a: Subheading 'Alias 1' displayed
-    cy.contains('legend', 'Alias 1').should('exist').and('have.class', 'govuk-fieldset__legend');
+      // AC2a: Subheading 'Alias 1' displayed
+      cy.contains('legend', 'Alias 1').should('exist').and('have.class', 'govuk-fieldset__legend');
 
-    // AC2b: Two free text boxes with titles First names / Last name for Alias 1
-    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
-    cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
+      // AC2b: Two free text boxes with titles First names / Last name for Alias 1
+      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
+      cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
 
-    // Enter some data to later verify clearing behaviour (AC2f)
-    cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
+      // Enter some data to later verify clearing behaviour (AC2f)
+      cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
 
-    // AC2c: Grey 'Add another alias' button displayed
-    cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
+      // AC2c: Grey 'Add another alias' button displayed
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
 
-    // Helper to add alias and assert its presence
-    const addAliasAndAssert = (aliasNumber: number) => {
-      cy.get(DOM_ELEMENTS.addAliasButton).click();
-      cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
-      const index = aliasNumber - 1;
-      cy.get(getAliasForenamesInput(index)).should('exist');
-      cy.get(getAliasSurnameInput(index)).should('exist');
-    };
+      // Helper to add alias and assert its presence
+      const addAliasAndAssert = (aliasNumber: number) => {
+        cy.get(DOM_ELEMENTS.addAliasButton).click();
+        cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
+        const index = aliasNumber - 1;
+        cy.get(getAliasForenamesInput(index)).should('exist');
+        cy.get(getAliasSurnameInput(index)).should('exist');
+      };
 
-    // AC2d / AC2di: Add aliases 2 through 5 incrementally
-    addAliasAndAssert(2);
-    cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
-    addAliasAndAssert(3);
-    addAliasAndAssert(4);
-    addAliasAndAssert(5);
+      // AC2d / AC2di: Add aliases 2 through 5 incrementally
+      addAliasAndAssert(2);
+      cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
+      addAliasAndAssert(3);
+      addAliasAndAssert(4);
+      addAliasAndAssert(5);
 
-    // AC2dii: Once 5 alias rows added, add button disappears
-    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+      // AC2dii: Once 5 alias rows added, add button disappears
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-    // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
-    cy.get('a.govuk-link').contains('Remove').should('exist');
-    cy.contains('legend', 'Alias 1')
-      .parent('fieldset')
-      .within(() => {
-        cy.contains('Remove').should('not.exist');
+      // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
+      cy.get('a.govuk-link').contains('Remove').should('exist');
+      cy.contains('legend', 'Alias 1')
+        .parent('fieldset')
+        .within(() => {
+          cy.contains('Remove').should('not.exist');
+        });
+
+      // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
+      cy.get('a.govuk-link').contains('Remove').click();
+      cy.contains('legend', 'Alias 5').should('not.exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
+
+      // Add back up to 5 to demonstrate cap again
+      addAliasAndAssert(5);
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+
+      // AC2f: Untick Add aliases checkbox hides & wipes alias data
+      cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+
+      // Re-check and ensure a fresh empty Alias 1 row (data wiped)
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
+    },
+  );
+
+  it(
+    'AC5. Required field validation (core) for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3830'] },
+    () => {
+      const nonPayingEmptyCoreMock = structuredClone(minimalMock);
+      nonPayingEmptyCoreMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
+      nonPayingEmptyCoreMock.defendant_account_party.is_debtor = false;
+      // Clear required fields to trigger validation
+      nonPayingEmptyCoreMock.defendant_account_party.party_details.individual_details!.title = null;
+      nonPayingEmptyCoreMock.defendant_account_party.party_details.individual_details!.forenames = '';
+      nonPayingEmptyCoreMock.defendant_account_party.party_details.individual_details!.surname = '';
+      nonPayingEmptyCoreMock.defendant_account_party.address.address_line_1 = '';
+
+      setupComponent('INDIVIDUAL', nonPayingEmptyCoreMock);
+
+      // Pre-condition: no error summary
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+
+      // Ensure mandatory fields are empty
+      cy.get(DOM_ELEMENTS.titleSelect).should('have.value', null);
+      cy.get(DOM_ELEMENTS.forenamesInput).should('have.value', '');
+      cy.get(DOM_ELEMENTS.surnameInput).should('have.value', '');
+      cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '');
+
+      // Submit to trigger validation
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      // AC5a, AC5b, AC5c, AC5d: Required field error messages for non-paying defendant
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      INDIVIDUAL_REQUIRED_MESSAGES.forEach((msg) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
       });
+    },
+  );
 
-    // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
-    cy.get('a.govuk-link').contains('Remove').click();
-    cy.contains('legend', 'Alias 5').should('not.exist');
-    cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
-
-    // Add back up to 5 to demonstrate cap again
-    addAliasAndAssert(5);
-    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
-
-    // AC2f: Untick Add aliases checkbox hides & wipes alias data
-    cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
-
-    // Re-check and ensure a fresh empty Alias 1 row (data wiped)
-    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
-    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
-  });
-
-  it('AC5. Required field validation (core) for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3830'] }, () => {
-    const nonPayingEmptyCoreMock = structuredClone(minimalMock);
-    nonPayingEmptyCoreMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
-    nonPayingEmptyCoreMock.defendant_account_party.is_debtor = false;
-    // Clear required fields to trigger validation
-    nonPayingEmptyCoreMock.defendant_account_party.party_details.individual_details!.title = null;
-    nonPayingEmptyCoreMock.defendant_account_party.party_details.individual_details!.forenames = '';
-    nonPayingEmptyCoreMock.defendant_account_party.party_details.individual_details!.surname = '';
-    nonPayingEmptyCoreMock.defendant_account_party.address.address_line_1 = '';
-
-    setupComponent('INDIVIDUAL', nonPayingEmptyCoreMock);
-
-    // Pre-condition: no error summary
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-
-    // Ensure mandatory fields are empty
-    cy.get(DOM_ELEMENTS.titleSelect).should('have.value', null);
-    cy.get(DOM_ELEMENTS.forenamesInput).should('have.value', '');
-    cy.get(DOM_ELEMENTS.surnameInput).should('have.value', '');
-    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '');
-
-    // Submit to trigger validation
-    cy.get(DOM_ELEMENTS.submitButton).click();
-
-    // AC5a, AC5b, AC5c, AC5d: Required field error messages for non-paying defendant
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    INDIVIDUAL_REQUIRED_MESSAGES.forEach((msg) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
-    });
-  });
-
-  it('AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5) for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3831'] }, () => {
+  it(
+    'AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5) for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3831'] },
+    () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1419,9 +1526,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
           ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber),
         );
       }
-    });
+    },
+  );
 
-  it('AC6a. DOB with non-numerical characters shows format error for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3832'] }, () => {
+  it(
+    'AC6a. DOB with non-numerical characters shows format error for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3832'] },
+    () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1432,35 +1543,48 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_INVALID);
-    });
+    },
+  );
 
-  it('AC6b. DOB in the future shows past-date error for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3833'] }, () => {
-    const nonPayingMinimalMock = structuredClone(minimalMock);
-    nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
-    nonPayingMinimalMock.defendant_account_party.is_debtor = false;
-    nonPayingMinimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
+  it(
+    'AC6b. DOB in the future shows past-date error for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3833'] },
+    () => {
+      const nonPayingMinimalMock = structuredClone(minimalMock);
+      nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
+      nonPayingMinimalMock.defendant_account_party.is_debtor = false;
+      nonPayingMinimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
 
-    setupComponent('INDIVIDUAL', nonPayingMinimalMock);
+      setupComponent('INDIVIDUAL', nonPayingMinimalMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_FUTURE);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_FUTURE);
+    },
+  );
 
-  it('AC6c. NI number invalid format shows NI format error for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3834'] }, () => {
-    const nonPayingMinimalMock = structuredClone(minimalMock);
-    nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
-    nonPayingMinimalMock.defendant_account_party.is_debtor = false;
-    nonPayingMinimalMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12345';
+  it(
+    'AC6c. NI number invalid format shows NI format error for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3834'] },
+    () => {
+      const nonPayingMinimalMock = structuredClone(minimalMock);
+      nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
+      nonPayingMinimalMock.defendant_account_party.is_debtor = false;
+      nonPayingMinimalMock.defendant_account_party.party_details.individual_details!.national_insurance_number =
+        '12345';
 
-    setupComponent('INDIVIDUAL', nonPayingMinimalMock);
+      setupComponent('INDIVIDUAL', nonPayingMinimalMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_NI_NUMBER);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_NI_NUMBER);
+    },
+  );
 
-  it('AC7. Max length validation retains user on form and shows per-field errors for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3835'] }, () => {
+  it(
+    'AC7. Max length validation retains user on form and shows per-field errors for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3835'] },
+    () => {
       const nonPayingMaxLengthMock = structuredClone(minimalMock);
       nonPayingMaxLengthMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMaxLengthMock.defendant_account_party.is_debtor = false;
@@ -1493,9 +1617,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       NON_PAYING_MAX_LENGTH_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    });
+    },
+  );
 
-  it('AC9. Data type validation for alphabetical and alphanumeric fields for non-paying defendant', { tags: ['@PO-2315', '@JIRA-KEY:POT-3836'] }, () => {
+  it(
+    'AC9. Data type validation for alphabetical and alphanumeric fields for non-paying defendant',
+    { tags: ['@PO-2315', '@JIRA-KEY:POT-3836'] },
+    () => {
       const nonPayingDataTypeValidationMock = structuredClone(minimalMock);
       nonPayingDataTypeValidationMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingDataTypeValidationMock.defendant_account_party.is_debtor = false;
@@ -1527,5 +1655,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       NON_PAYING_ALL_DATA_TYPE_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    });
+    },
+  );
 });

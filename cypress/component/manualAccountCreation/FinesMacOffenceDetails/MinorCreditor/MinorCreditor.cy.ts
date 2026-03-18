@@ -96,13 +96,20 @@ describe('FinesMacMinorCreditor', () => {
     });
   };
 
-  it('(AC.1 , AC.2) should render the form', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4184'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.1 , AC.2) should render the form',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4184'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.form).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.form).should('exist');
+    },
+  );
 
-  it('(AC.2, AC.2a, AC.3, AC.4, AC.6) should render all elements on the page correctly', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4185'] }, () => {
+  it(
+    '(AC.2, AC.2a, AC.3, AC.4, AC.6) should render all elements on the page correctly',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4185'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.pageHeading).should('contain.text', 'Minor creditor details');
@@ -146,9 +153,13 @@ describe('FinesMacMinorCreditor', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    });
+    },
+  );
 
-  it('(AC.2) should display length validation errors with individual type', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4186'] }, () => {
+  it(
+    '(AC.2) should display length validation errors with individual type',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4186'] },
+    () => {
       setupComponent(null);
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
       formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
@@ -173,37 +184,45 @@ describe('FinesMacMinorCreditor', () => {
           cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
         }
       }
-    });
+    },
+  );
 
-  it('(AC.2) should display format validation errors', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4187'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.2) should display format validation errors',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4187'] },
+    () => {
+      setupComponent(null);
 
-    formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
-    formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = '!@#';
-    formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = 'abc';
-    formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = 'abc';
-    formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = '!@#';
-    formData[0].formData.fm_offence_details_minor_creditor_address_line_3 = '!@#*';
-    formData[0].formData.fm_offence_details_minor_creditor_address_line_2 = '!@#*';
-    formData[0].formData.fm_offence_details_minor_creditor_address_line_1 = '!@#*';
-    formData[0].formData.fm_offence_details_minor_creditor_company_name = '123$£!*';
-    formData[0].formData.fm_offence_details_minor_creditor_surname = '123$£!*';
-    formData[0].formData.fm_offence_details_minor_creditor_forenames = '123$£!*';
+      formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = '!@#';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = 'abc';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = 'abc';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = '!@#';
+      formData[0].formData.fm_offence_details_minor_creditor_address_line_3 = '!@#*';
+      formData[0].formData.fm_offence_details_minor_creditor_address_line_2 = '!@#*';
+      formData[0].formData.fm_offence_details_minor_creditor_address_line_1 = '!@#*';
+      formData[0].formData.fm_offence_details_minor_creditor_company_name = '123$£!*';
+      formData[0].formData.fm_offence_details_minor_creditor_surname = '123$£!*';
+      formData[0].formData.fm_offence_details_minor_creditor_forenames = '123$£!*';
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    for (const [, value] of Object.entries(FORMAT_CHECK)) {
-      if (
-        value !=
-          'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)' &&
-        value != 'Enter last name'
-      ) {
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+      for (const [, value] of Object.entries(FORMAT_CHECK)) {
+        if (
+          value !=
+            'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)' &&
+          value != 'Enter last name'
+        ) {
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+        }
       }
-    }
-  });
+    },
+  );
 
-  it('( AC.9, AC.7 ) should display required field validation errors', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4188'] }, () => {
+  it(
+    '( AC.9, AC.7 ) should display required field validation errors',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4188'] },
+    () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.creditorTypeRequired);
@@ -211,9 +230,13 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankSortCodeRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountNumberRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountRefRequired);
-    });
+    },
+  );
 
-  it('(AC.2) should have Length check in place for company creditor types', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4189'] }, () => {
+  it(
+    '(AC.2) should have Length check in place for company creditor types',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4189'] },
+    () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
@@ -221,26 +244,38 @@ describe('FinesMacMinorCreditor', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_CHECK.companyNameMaxLength);
-    });
+    },
+  );
 
-  it('(AC.2) should have Format check in place for company creditor types', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4190'] }, () => {
+  it(
+    '(AC.2) should have Format check in place for company creditor types',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4190'] },
+    () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
       formData[0].formData.fm_offence_details_minor_creditor_company_name = '123@*';
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.companyNameAlphabeticalTextPattern);
-    });
+    },
+  );
 
-  it('(AC.4ai , AC.8bii) should have Required check in place for company creditor types', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4191'] }, () => {
+  it(
+    '(AC.4ai , AC.8bii) should have Required check in place for company creditor types',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4191'] },
+    () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.companyNameRequired);
-    });
+    },
+  );
 
-  it('(AC.3)should have format check in place for individual creditor types', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4192'] }, () => {
+  it(
+    '(AC.3)should have format check in place for individual creditor types',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4192'] },
+    () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
@@ -250,7 +285,8 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.forenamesAlphabeticalTextPattern);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.surnameAlphabeticalTextPattern);
-    });
+    },
+  );
 
   it(
     ' (AC.8bi) Should check for required fields for individual creditor types',
@@ -264,7 +300,10 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it('(AC.10) Should check when user re-clicks on BACS payment details it clears the fields', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4194'] }, () => {
+  it(
+    '(AC.10) Should check when user re-clicks on BACS payment details it clears the fields',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4194'] },
+    () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
@@ -284,7 +323,8 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.bankSortCodeInput).should('have.value', '');
       cy.get(DOM_ELEMENTS.bankAccountNumberInput).should('have.value', '');
       cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('have.value', '');
-    });
+    },
+  );
 
   it(
     ' (AC.11) should allow form submission with valid data for individual creditor',
@@ -312,7 +352,10 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it('(AC.11) should allow form submission with valid data for company creditor', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4196'] }, () => {
+  it(
+    '(AC.11) should allow form submission with valid data for company creditor',
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545', '@JIRA-KEY:POT-4196'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
 
@@ -330,8 +373,12 @@ describe('FinesMacMinorCreditor', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
-  it('(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input', { tags: ['@PO-345', '@PO-1450', '@JIRA-KEY:POT-4197', '@JIRA-KEY:POT-4199'] }, () => {
+    },
+  );
+  it(
+    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
+    { tags: ['@PO-345', '@PO-1450', '@JIRA-KEY:POT-4197', '@JIRA-KEY:POT-4199'] },
+    () => {
       setupComponent(null, 'company');
 
       cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc', { delay: 0 });
@@ -340,35 +387,43 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
       cy.get(DOM_ELEMENTS.surnameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
       cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
-    });
+    },
+  );
 
-  it('(AC.1) Payment reference should be capitalise - AYPG', { tags: ['@PO-344', '@PO-1449', '@JIRA-KEY:POT-4198'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
-    setupComponent(formSubmitSpy, 'pgToPay');
+  it(
+    '(AC.1) Payment reference should be capitalise - AYPG',
+    { tags: ['@PO-344', '@PO-1449', '@JIRA-KEY:POT-4198'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'pgToPay');
 
-    formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
-    formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';
-    formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = '123456';
-    formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
+      formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = '123456';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
 
-    cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('abgc123', { delay: 0 });
-    cy.get(DOM_ELEMENTS.bankPaymentRefInput).blur();
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('abgc123', { delay: 0 });
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).blur();
 
-    formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
-    cy.get(DOM_ELEMENTS.surnameInput).type('surname', { delay: 0 });
-    cy.get(DOM_ELEMENTS.surnameInput).blur();
+      formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
+      cy.get(DOM_ELEMENTS.surnameInput).type('surname', { delay: 0 });
+      cy.get(DOM_ELEMENTS.surnameInput).blur();
 
-    cy.get(DOM_ELEMENTS.postCodeInput).type('ne137fg', { delay: 0 });
-    cy.get(DOM_ELEMENTS.postCodeInput).blur();
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ne137fg', { delay: 0 });
+      cy.get(DOM_ELEMENTS.postCodeInput).blur();
 
-    cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('have.value', 'ABGC123');
-    cy.get(DOM_ELEMENTS.surnameInput).should('have.value', 'SURNAME');
-    cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE137FG');
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('have.value', 'ABGC123');
+      cy.get(DOM_ELEMENTS.surnameInput).should('have.value', 'SURNAME');
+      cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE137FG');
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
-  });
+      cy.get(DOM_ELEMENTS.submitButton).click();
+    },
+  );
 
-  it('(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input', { tags: ['@PO-242', '@PO-1448', '@JIRA-KEY:POT-4197', '@JIRA-KEY:POT-4199'] }, () => {
+  it(
+    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
+    { tags: ['@PO-242', '@PO-1448', '@JIRA-KEY:POT-4197', '@JIRA-KEY:POT-4199'] },
+    () => {
       setupComponent(null, 'AdultOrYouthOnly');
 
       cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc', { delay: 0 }).should('have.value', 'REF123ABC');
@@ -376,9 +431,13 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
       cy.get(DOM_ELEMENTS.surnameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
       cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
-    });
+    },
+  );
 
-  it('(AC.1a, AC.3) updated conditionality and validation on minor creditor screen for individual', { tags: ['@PO-1075', '@JIRA-KEY:POT-4200'] }, () => {
+  it(
+    '(AC.1a, AC.3) updated conditionality and validation on minor creditor screen for individual',
+    { tags: ['@PO-1075', '@JIRA-KEY:POT-4200'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
 
@@ -398,5 +457,6 @@ describe('FinesMacMinorCreditor', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
+    },
+  );
 });

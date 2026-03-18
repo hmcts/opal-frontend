@@ -30,12 +30,16 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     });
   };
 
-  it('AC.2 Should show all the headings as per the design artifact', { tags: ['@PO-618', '@JIRA-KEY:POT-3930'] }, () => {
-    const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+  it(
+    'AC.2 Should show all the headings as per the design artifact',
+    { tags: ['@PO-618', '@JIRA-KEY:POT-3930'] },
+    () => {
+      const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
-    setupComponent(allRejectedMockData);
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'All rejected accounts');
-  });
+      setupComponent(allRejectedMockData);
+      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'All rejected accounts');
+    },
+  );
 
   it('AC.3 verify the table of headers in review tab', { tags: ['@PO-618', '@JIRA-KEY:POT-3931'] }, () => {
     const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
@@ -107,7 +111,10 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
       });
   });
 
-  it('(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts', { tags: ['@PO-618', '@JIRA-KEY:POT-3933'] }, () => {
+  it(
+    '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
+    { tags: ['@PO-618', '@JIRA-KEY:POT-3933'] },
+    () => {
       const allRejectedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
       setupComponent(allRejectedMockData);
@@ -127,5 +134,6 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    });
+    },
+  );
 });

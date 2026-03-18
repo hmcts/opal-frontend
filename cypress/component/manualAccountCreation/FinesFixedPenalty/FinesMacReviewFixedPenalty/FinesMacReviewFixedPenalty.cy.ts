@@ -137,7 +137,10 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
     });
   };
 
-  it('(AC2, AC2a, AC5a) should display tables in correct order and correct content for adult/youth', { tags: ['@PO-861', '@JIRA-KEY:POT-4008'] }, () => {
+  it(
+    '(AC2, AC2a, AC5a) should display tables in correct order and correct content for adult/youth',
+    { tags: ['@PO-861', '@JIRA-KEY:POT-4008'] },
+    () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
       cy.wait('@getOffenceByCjsCode');
 
@@ -196,51 +199,59 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Section 6 - Account comments and notes
       cy.get(DOM_ELEMENTS.comments).should('contain', 'test comments');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'test notes');
-    });
+    },
+  );
 
-  it('(AC2bi, AC5a) should display an em-dash for unpopulated fields (adult/youth only)', { tags: ['@PO-861', '@JIRA-KEY:POT-4009'] }, () => {
-    setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
+  it(
+    '(AC2bi, AC5a) should display an em-dash for unpopulated fields (adult/youth only)',
+    { tags: ['@PO-861', '@JIRA-KEY:POT-4009'] },
+    () => {
+      setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
-    // Clear out fixed penalty field which are optional
-    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_offence_type = 'non-vehicle';
-    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '';
-    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = '';
-    fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = '';
-    fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = '';
-    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '';
-    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = '';
-    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_vehicle_registration_number = '';
-    fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '';
+      // Clear out fixed penalty field which are optional
+      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_offence_type = 'non-vehicle';
+      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '';
+      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = '';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = '';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = '';
+      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '';
+      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = '';
+      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_vehicle_registration_number = '';
+      fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '';
 
-    // Visual verification - check for em-dashes
-    cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '—');
-    cy.get(DOM_ELEMENTS.comments).should('contain', '—');
-    cy.get(DOM_ELEMENTS.accountNotes).should('contain', '—');
-    cy.get(DOM_ELEMENTS.ntoNth).should('contain', '—');
-    cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '—');
-    cy.get(DOM_ELEMENTS.drivingLicenceNumber).should('contain', '—');
-    cy.get(DOM_ELEMENTS.registrationNumber).should('contain', '—');
-    cy.get(DOM_ELEMENTS.dateOfBirth).should('contain', '—');
+      // Visual verification - check for em-dashes
+      cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '—');
+      cy.get(DOM_ELEMENTS.comments).should('contain', '—');
+      cy.get(DOM_ELEMENTS.accountNotes).should('contain', '—');
+      cy.get(DOM_ELEMENTS.ntoNth).should('contain', '—');
+      cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '—');
+      cy.get(DOM_ELEMENTS.drivingLicenceNumber).should('contain', '—');
+      cy.get(DOM_ELEMENTS.registrationNumber).should('contain', '—');
+      cy.get(DOM_ELEMENTS.dateOfBirth).should('contain', '—');
 
-    // Accessibility verification - check for screen readers (AC2bia)
-    const adultNotProvidedFields = [
-      DOM_ELEMENTS.timeOfOffence,
-      DOM_ELEMENTS.comments,
-      DOM_ELEMENTS.accountNotes,
-      DOM_ELEMENTS.ntoNth,
-      DOM_ELEMENTS.dateOfOffence,
-      DOM_ELEMENTS.drivingLicenceNumber,
-      DOM_ELEMENTS.registrationNumber,
-      DOM_ELEMENTS.dateOfBirth,
-    ];
-    adultNotProvidedFields.forEach((selector) => {
-      cy.get(selector)
-        .find(`${DOM_ELEMENTS.notProvided} p`)
-        .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
-    });
-  });
+      // Accessibility verification - check for screen readers (AC2bia)
+      const adultNotProvidedFields = [
+        DOM_ELEMENTS.timeOfOffence,
+        DOM_ELEMENTS.comments,
+        DOM_ELEMENTS.accountNotes,
+        DOM_ELEMENTS.ntoNth,
+        DOM_ELEMENTS.dateOfOffence,
+        DOM_ELEMENTS.drivingLicenceNumber,
+        DOM_ELEMENTS.registrationNumber,
+        DOM_ELEMENTS.dateOfBirth,
+      ];
+      adultNotProvidedFields.forEach((selector) => {
+        cy.get(selector)
+          .find(`${DOM_ELEMENTS.notProvided} p`)
+          .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
+      });
+    },
+  );
 
-  it('(AC2, AC2a, AC5a) should display Welsh language preferences Business Unit supports Welsh (AdultOrYouthOnly)', { tags: ['@PO-861', '@JIRA-KEY:POT-4010'] }, () => {
+  it(
+    '(AC2, AC2a, AC5a) should display Welsh language preferences Business Unit supports Welsh (AdultOrYouthOnly)',
+    { tags: ['@PO-861', '@JIRA-KEY:POT-4010'] },
+    () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
       // Create a mock with Welsh language support
@@ -251,9 +262,13 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Verify language preferences section shows Welsh options
       cy.get(DOM_ELEMENTS.documentLanguage).should('contain', 'Welsh and English');
       cy.get(DOM_ELEMENTS.hearingLanguage).should('contain', 'Welsh and English');
-    });
+    },
+  );
 
-  it('(AC2, AC2a, AC5b) should display Welsh language preferences when Business Unit supports Welsh (Company)', { tags: ['@PO-861', '@JIRA-KEY:POT-4011'] }, () => {
+  it(
+    '(AC2, AC2a, AC5b) should display Welsh language preferences when Business Unit supports Welsh (Company)',
+    { tags: ['@PO-861', '@JIRA-KEY:POT-4011'] },
+    () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
       // Create a mock with Welsh language support
@@ -264,9 +279,13 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Verify language preferences section shows Welsh options
       cy.get(DOM_ELEMENTS.documentLanguage).should('contain', 'Welsh and English');
       cy.get(DOM_ELEMENTS.hearingLanguage).should('contain', 'Welsh and English');
-    });
+    },
+  );
 
-  it('(AC2, AC2a, AC5b) should display tables in correct order and correct content for company defendant', { tags: ['@PO-861', '@JIRA-KEY:POT-4012'] }, () => {
+  it(
+    '(AC2, AC2a, AC5b) should display tables in correct order and correct content for company defendant',
+    { tags: ['@PO-861', '@JIRA-KEY:POT-4012'] },
+    () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
       // Check the page heading
@@ -303,9 +322,13 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Section 4 - Account comments and notes
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Corporate fixed penalty notice');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Contact company secretary for all correspondence');
-    });
+    },
+  );
 
-  it('(AC2bi, AC5b) should display an em-dash for unpopulated fields in company defendant view', { tags: ['@PO-861', '@JIRA-KEY:POT-4013'] }, () => {
+  it(
+    '(AC2bi, AC5b) should display an em-dash for unpopulated fields in company defendant view',
+    { tags: ['@PO-861', '@JIRA-KEY:POT-4013'] },
+    () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
       // Clear out fixed penalty fields which are optional for company
@@ -341,27 +364,39 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           .find(`${DOM_ELEMENTS.notProvided} p`)
           .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
       });
-    });
+    },
+  );
 
-  it('(AC.1) Submit for Review button should be present at bottom of form - adultOrYouthOnly', { tags: ['@PO-1796', '@JIRA-KEY:POT-4014'] }, () => {
+  it(
+    '(AC.1) Submit for Review button should be present at bottom of form - adultOrYouthOnly',
+    { tags: ['@PO-1796', '@JIRA-KEY:POT-4014'] },
+    () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
       // Check the Submit for Review button is present beneath the account comments and notes section
       cy.get(DOM_ELEMENTS.commentsNotesCard).parent().next().find('button').should('contain', 'Submit for review');
       cy.get(DOM_ELEMENTS.submitButton).should('exist').and('contain', 'Submit for review').and('be.visible');
-    });
-  it('(AC.1a) should navigate to submit confirmation page on submit - adultOrYouthOnly', { tags: ['@PO-1796', '@JIRA-KEY:POT-4015'] }, () => {
-    cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
+    },
+  );
+  it(
+    '(AC.1a) should navigate to submit confirmation page on submit - adultOrYouthOnly',
+    { tags: ['@PO-1796', '@JIRA-KEY:POT-4015'] },
+    () => {
+      cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
-    setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
+      setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
-    // Click the submit button
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      // Click the submit button
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // Verify navigation to submit confirmation page
-    cy.get('@routerNavigate').should('have.been.calledWith', ['submit-confirmation']);
-  });
-  it('(AC.1b) should have the correct payload based on the defendant type - adultOrYouthOnly', { tags: ['@PO-1796', '@JIRA-KEY:POT-4016'] }, () => {
+      // Verify navigation to submit confirmation page
+      cy.get('@routerNavigate').should('have.been.calledWith', ['submit-confirmation']);
+    },
+  );
+  it(
+    '(AC.1b) should have the correct payload based on the defendant type - adultOrYouthOnly',
+    { tags: ['@PO-1796', '@JIRA-KEY:POT-4016'] },
+    () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
       setupComponent(FINES_DRAFT_STATE, 'individual');
@@ -404,72 +439,85 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         expect(request.request.body.timeline_data[0].status_date).to.equal(getToday());
         expect(request.request.body.timeline_data[0].reason_text).to.equal(null);
       });
-    });
-  it('(AC.1) Submit for Review button should be present at bottom of form - company', { tags: ['@PO-1796', '@JIRA-KEY:POT-4017'] }, () => {
-    setupComponent(FINES_DRAFT_STATE, 'company');
+    },
+  );
+  it(
+    '(AC.1) Submit for Review button should be present at bottom of form - company',
+    { tags: ['@PO-1796', '@JIRA-KEY:POT-4017'] },
+    () => {
+      setupComponent(FINES_DRAFT_STATE, 'company');
 
-    // Check the Submit for Review button is present beneath the account comments and notes section
-    cy.get(DOM_ELEMENTS.commentsNotesCard).parent().next().find('button').should('contain', 'Submit for review');
-    cy.get(DOM_ELEMENTS.submitButton).should('exist').and('contain', 'Submit for review').and('be.visible');
-  });
-  it('(AC.1a) should navigate to submit confirmation page on submit - company', { tags: ['@PO-1796', '@JIRA-KEY:POT-4018'] }, () => {
-    cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
+      // Check the Submit for Review button is present beneath the account comments and notes section
+      cy.get(DOM_ELEMENTS.commentsNotesCard).parent().next().find('button').should('contain', 'Submit for review');
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').and('contain', 'Submit for review').and('be.visible');
+    },
+  );
+  it(
+    '(AC.1a) should navigate to submit confirmation page on submit - company',
+    { tags: ['@PO-1796', '@JIRA-KEY:POT-4018'] },
+    () => {
+      cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
-    setupComponent(FINES_DRAFT_STATE, 'company');
+      setupComponent(FINES_DRAFT_STATE, 'company');
 
-    // Click the submit button
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      // Click the submit button
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // Verify navigation to submit confirmation page
-    cy.get('@routerNavigate').should('have.been.calledWith', ['submit-confirmation']);
-  });
-  it('(AC.1b) should have the correct payload based on the defendant type - company', { tags: ['@PO-1796', '@JIRA-KEY:POT-4019'] }, () => {
-    cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
+      // Verify navigation to submit confirmation page
+      cy.get('@routerNavigate').should('have.been.calledWith', ['submit-confirmation']);
+    },
+  );
+  it(
+    '(AC.1b) should have the correct payload based on the defendant type - company',
+    { tags: ['@PO-1796', '@JIRA-KEY:POT-4019'] },
+    () => {
+      cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
-    setupComponent(FINES_DRAFT_STATE, 'company');
+      setupComponent(FINES_DRAFT_STATE, 'company');
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.wait('@postDraftAccount').then((request) => {
-      // Verify the request body contains the correct account type and details
-      expect(request.request.body.business_unit_id).to.equal(
-        FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK.businessUnit.business_unit_id,
-      );
-      expect(request.request.body.submitted_by).to.equal(
-        ACCOUNT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id,
-      );
-      expect(request.request.body.submitted_by_name).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
+      cy.wait('@postDraftAccount').then((request) => {
+        // Verify the request body contains the correct account type and details
+        expect(request.request.body.business_unit_id).to.equal(
+          FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK.businessUnit.business_unit_id,
+        );
+        expect(request.request.body.submitted_by).to.equal(
+          ACCOUNT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id,
+        );
+        expect(request.request.body.submitted_by_name).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
 
-      // Check company defendant details
-      expect(request.request.body.account.defendant.company_flag).to.equal(true);
-      expect(request.request.body.account.defendant.company_name).to.equal('Example Corporation Ltd');
-      expect(request.request.body.account.defendant.address_line_1).to.equal('123 Business Park');
-      expect(request.request.body.account.defendant.address_line_2).to.equal('Commerce Way');
-      expect(request.request.body.account.defendant.address_line_3).to.equal('London');
-      expect(request.request.body.account.defendant.post_code).to.equal('EC1A 1BB');
-      expect(request.request.body.account.defendant.telephone_number_business).to.equal('02012345678');
-      expect(request.request.body.account.defendant.email_address_1).to.equal('company@example.com');
+        // Check company defendant details
+        expect(request.request.body.account.defendant.company_flag).to.equal(true);
+        expect(request.request.body.account.defendant.company_name).to.equal('Example Corporation Ltd');
+        expect(request.request.body.account.defendant.address_line_1).to.equal('123 Business Park');
+        expect(request.request.body.account.defendant.address_line_2).to.equal('Commerce Way');
+        expect(request.request.body.account.defendant.address_line_3).to.equal('London');
+        expect(request.request.body.account.defendant.post_code).to.equal('EC1A 1BB');
+        expect(request.request.body.account.defendant.telephone_number_business).to.equal('02012345678');
+        expect(request.request.body.account.defendant.email_address_1).to.equal('company@example.com');
 
-      //check individual defendant details are null
-      expect(request.request.body.account.defendant.title).to.equal(null);
-      expect(request.request.body.account.defendant.surname).to.equal(null);
-      expect(request.request.body.account.defendant.forenames).to.equal(null);
-      expect(request.request.body.account.defendant.dob).to.equal(null);
-      expect(request.request.body.account.defendant.national_insurance_number).to.equal(null);
+        //check individual defendant details are null
+        expect(request.request.body.account.defendant.title).to.equal(null);
+        expect(request.request.body.account.defendant.surname).to.equal(null);
+        expect(request.request.body.account.defendant.forenames).to.equal(null);
+        expect(request.request.body.account.defendant.dob).to.equal(null);
+        expect(request.request.body.account.defendant.national_insurance_number).to.equal(null);
 
-      //AC defines Manual Fixed Penalty but currently is fixedPenalty - This will be fixed in PO-1996, where the account type will be updated to 'Fixed Penalty'
-      //Delete this comment once PO-1996 is complete
-      const account_type = 'Fixed Penalty';
-      expect(request.request.body.account_type).to.equal(account_type);
-      expect(request.request.body.account.account_type).to.equal(account_type);
+        //AC defines Manual Fixed Penalty but currently is fixedPenalty - This will be fixed in PO-1996, where the account type will be updated to 'Fixed Penalty'
+        //Delete this comment once PO-1996 is complete
+        const account_type = 'Fixed Penalty';
+        expect(request.request.body.account_type).to.equal(account_type);
+        expect(request.request.body.account.account_type).to.equal(account_type);
 
-      expect(request.request.body.account.defendant_type).to.equal('company');
-      expect(request.request.body.account_status).to.equal('Submitted');
+        expect(request.request.body.account.defendant_type).to.equal('company');
+        expect(request.request.body.account_status).to.equal('Submitted');
 
-      expect(request.request.body.timeline_data[0].username).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
-      expect(request.request.body.timeline_data[0].status).to.equal('Submitted');
-      expect(request.request.body.timeline_data[0].status_date).to.equal(getToday());
-      expect(request.request.body.timeline_data[0].reason_text).to.equal(null);
-    });
-  });
+        expect(request.request.body.timeline_data[0].username).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
+        expect(request.request.body.timeline_data[0].status).to.equal('Submitted');
+        expect(request.request.body.timeline_data[0].status_date).to.equal(getToday());
+        expect(request.request.body.timeline_data[0].reason_text).to.equal(null);
+      });
+    },
+  );
 });

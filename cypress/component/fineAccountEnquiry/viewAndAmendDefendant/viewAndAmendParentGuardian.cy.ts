@@ -66,7 +66,10 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     });
   };
 
-  it('AC1a. The "Parent Guardian Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data', { tags: ['@PO-1112', '@JIRA-KEY:POT-3837'] }, () => {
+  it(
+    'AC1a. The "Parent Guardian Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3837'] },
+    () => {
       setupComponent('parentGuardian', fullMock);
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
@@ -213,17 +216,25 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
       cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-    });
+    },
+  );
 
-  it('AC1a. Parent/Guardian - Should show alias checkbox unticked when no aliases exist in data', { tags: ['@PO-1112', '@JIRA-KEY:POT-3838'] }, () => {
+  it(
+    'AC1a. Parent/Guardian - Should show alias checkbox unticked when no aliases exist in data',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3838'] },
+    () => {
       setupComponent('parentGuardian', minimalMock);
 
       cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
       cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
-    });
+    },
+  );
 
-  it('AC1a. Parent/Guardian - Language preferences should appear for Welsh speaking business units', { tags: ['@PO-1112', '@JIRA-KEY:POT-3839'] }, () => {
+  it(
+    'AC1a. Parent/Guardian - Language preferences should appear for Welsh speaking business units',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3839'] },
+    () => {
       setupComponent('parentGuardian', fullMock, 'Y');
 
       cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('exist');
@@ -232,81 +243,86 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.documentLanguageLegend).should('contain', 'Documents');
       cy.get(DOM_ELEMENTS.hearingLanguageFieldset).should('exist');
       cy.get(DOM_ELEMENTS.hearingLanguageLegend).should('contain', 'Court hearings');
-    });
+    },
+  );
 
-  it('AC2. Parent/Guardian - Alias add/remove and clear behaviour', { tags: ['@PO-1112', '@JIRA-KEY:POT-3840'] }, () => {
-    setupComponent('parentGuardian', minimalMock);
+  it(
+    'AC2. Parent/Guardian - Alias add/remove and clear behaviour',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3840'] },
+    () => {
+      setupComponent('parentGuardian', minimalMock);
 
-    // Pre-condition: checkbox unchecked & section hidden
-    cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+      // Pre-condition: checkbox unchecked & section hidden
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
-    // AC2: Tick the Add aliases checkbox
-    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+      // AC2: Tick the Add aliases checkbox
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
 
-    // AC2a: Subheading 'Alias 1' displayed
-    cy.contains('legend', 'Alias 1').should('exist').and('have.class', 'govuk-fieldset__legend');
+      // AC2a: Subheading 'Alias 1' displayed
+      cy.contains('legend', 'Alias 1').should('exist').and('have.class', 'govuk-fieldset__legend');
 
-    // AC2b: Two free text boxes with titles First names / Last name for Alias 1
-    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
-    cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
+      // AC2b: Two free text boxes with titles First names / Last name for Alias 1
+      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
+      cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
 
-    // Enter some data to later verify clearing behaviour (AC2f)
-    cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
+      // Enter some data to later verify clearing behaviour (AC2f)
+      cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
 
-    // AC2c: Grey 'Add another alias' button displayed
-    cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
+      // AC2c: Grey 'Add another alias' button displayed
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
 
-    // Helper to add alias and assert its presence
-    const addAliasAndAssert = (aliasNumber: number) => {
-      cy.get(DOM_ELEMENTS.addAliasButton).click();
-      cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
-      const index = aliasNumber - 1;
-      cy.get(getAliasForenamesInput(index)).should('exist');
-      cy.get(getAliasSurnameInput(index)).should('exist');
-    };
+      // Helper to add alias and assert its presence
+      const addAliasAndAssert = (aliasNumber: number) => {
+        cy.get(DOM_ELEMENTS.addAliasButton).click();
+        cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
+        const index = aliasNumber - 1;
+        cy.get(getAliasForenamesInput(index)).should('exist');
+        cy.get(getAliasSurnameInput(index)).should('exist');
+      };
 
-    // AC2d / AC2di: Add aliases 2 through 5 incrementally
-    addAliasAndAssert(2);
-    cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
-    addAliasAndAssert(3);
-    addAliasAndAssert(4);
-    addAliasAndAssert(5);
+      // AC2d / AC2di: Add aliases 2 through 5 incrementally
+      addAliasAndAssert(2);
+      cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
+      addAliasAndAssert(3);
+      addAliasAndAssert(4);
+      addAliasAndAssert(5);
 
-    // AC2dii: Once 5 alias rows added, add button disappears
-    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+      // AC2dii: Once 5 alias rows added, add button disappears
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-    // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
-    cy.get('a.govuk-link').contains('Remove').should('exist');
-    cy.contains('legend', 'Alias 1')
-      .parent('fieldset')
-      .within(() => {
-        cy.contains('Remove').should('not.exist');
-      });
+      // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
+      cy.get('a.govuk-link').contains('Remove').should('exist');
+      cy.contains('legend', 'Alias 1')
+        .parent('fieldset')
+        .within(() => {
+          cy.contains('Remove').should('not.exist');
+        });
 
-    // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
-    cy.get('a.govuk-link').contains('Remove').click();
-    cy.contains('legend', 'Alias 5').should('not.exist');
-    cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
+      // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
+      cy.get('a.govuk-link').contains('Remove').click();
+      cy.contains('legend', 'Alias 5').should('not.exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
 
-    // Add back up to 5 to demonstrate cap again
-    addAliasAndAssert(5);
-    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+      // Add back up to 5 to demonstrate cap again
+      addAliasAndAssert(5);
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-    // AC2f: Untick Add aliases checkbox hides & wipes alias data
-    cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+      // AC2f: Untick Add aliases checkbox hides & wipes alias data
+      cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
-    // Re-check and ensure a fresh empty Alias 1 row (data wiped)
-    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
-    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
-  });
+      // Re-check and ensure a fresh empty Alias 1 row (data wiped)
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
+    },
+  );
 
   it('AC5. Parent/Guardian - Required field validation (core)', { tags: ['@PO-1112', '@JIRA-KEY:POT-3841'] }, () => {
     const emptyCoreMock = structuredClone(minimalMock);
@@ -339,49 +355,67 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     );
   });
 
-  it('AC5. Parent/Guardian - Required field validation (employer name)', { tags: ['@PO-1112', '@JIRA-KEY:POT-3842'] }, () => {
-    const testMock = structuredClone(minimalMock);
-    testMock.defendant_account_party.employer_details!.employer_name = 'Quality Corp';
-    setupComponent('parentGuardian', testMock);
+  it(
+    'AC5. Parent/Guardian - Required field validation (employer name)',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3842'] },
+    () => {
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.employer_details!.employer_name = 'Quality Corp';
+      setupComponent('parentGuardian', testMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    const employerRequiredMessages = [
-      'Enter employee reference or National Insurance number',
-      'Enter address line 1, typically the building and street',
-    ];
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      const employerRequiredMessages = [
+        'Enter employee reference or National Insurance number',
+        'Enter address line 1, typically the building and street',
+      ];
 
-    employerRequiredMessages.forEach((msg) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
-    });
-  });
+      employerRequiredMessages.forEach((msg) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+      });
+    },
+  );
 
-  it('AC5. Parent/Guardian - Required field validation (employer address)', { tags: ['@PO-1112', '@JIRA-KEY:POT-3843'] }, () => {
-    const testMock = structuredClone(minimalMock);
-    testMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = '123 Office Park';
-    setupComponent('parentGuardian', testMock);
+  it(
+    'AC5. Parent/Guardian - Required field validation (employer address)',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3843'] },
+    () => {
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = '123 Office Park';
+      setupComponent('parentGuardian', testMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    const employerRequiredMessages = ['Enter employee reference or National Insurance number', 'Enter employer name'];
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      const employerRequiredMessages = ['Enter employee reference or National Insurance number', 'Enter employer name'];
 
-    employerRequiredMessages.forEach((msg) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
-    });
-  });
+      employerRequiredMessages.forEach((msg) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+      });
+    },
+  );
 
-  it('AC5. Parent/Guardian - Required field validation (employer reference number)', { tags: ['@PO-1112', '@JIRA-KEY:POT-3844'] }, () => {
-    const testMock = structuredClone(minimalMock);
-    testMock.defendant_account_party.employer_details!.employer_reference = 'Empref123';
-    setupComponent('parentGuardian', testMock);
+  it(
+    'AC5. Parent/Guardian - Required field validation (employer reference number)',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3844'] },
+    () => {
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.employer_details!.employer_reference = 'Empref123';
+      setupComponent('parentGuardian', testMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    const employerRequiredMessages = ['Enter address line 1, typically the building and street', 'Enter employer name'];
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      const employerRequiredMessages = [
+        'Enter address line 1, typically the building and street',
+        'Enter employer name',
+      ];
 
-    employerRequiredMessages.forEach((msg) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
-    });
-  });
+      employerRequiredMessages.forEach((msg) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+      });
+    },
+  );
 
-  it('AC5h, AC5i, AC5j. Parent/Guardian - Required field validation for all alias rows (N=1 to 5)', { tags: ['@PO-1112', '@JIRA-KEY:POT-3845'] }, () => {
+  it(
+    'AC5h, AC5i, AC5j. Parent/Guardian - Required field validation for all alias rows (N=1 to 5)',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3845'] },
+    () => {
       setupComponent('parentGuardian', minimalMock);
       cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('exist');
@@ -434,43 +468,59 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
         cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', `Enter alias ${aliasNumber} last name`);
       }
-    });
+    },
+  );
 
-  it('AC6a. Parent/Guardian - DOB with non-numerical characters shows format error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3846'] }, () => {
-    const testMock = structuredClone(minimalMock);
-    testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '!5/02/1980';
-    setupComponent('parentGuardian', testMock);
+  it(
+    'AC6a. Parent/Guardian - DOB with non-numerical characters shows format error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3846'] },
+    () => {
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '!5/02/1980';
+      setupComponent('parentGuardian', testMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain.text', 'Enter date of birth in the format DD/MM/YYYY');
-  });
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('exist')
+        .and('contain.text', 'Enter date of birth in the format DD/MM/YYYY');
+    },
+  );
 
-  it('AC6b. Parent/Guardian - DOB in the future shows past-date error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3847'] }, () => {
-    const testMock = structuredClone(minimalMock);
-    testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
-    setupComponent('parentGuardian', testMock);
+  it(
+    'AC6b. Parent/Guardian - DOB in the future shows past-date error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3847'] },
+    () => {
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
+      setupComponent('parentGuardian', testMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', 'Enter a valid date of birth in the past');
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', 'Enter a valid date of birth in the past');
+    },
+  );
 
-  it('AC6c. Parent/Guardian - NI number invalid format shows NI format error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3848'] }, () => {
-    const testMock = structuredClone(minimalMock);
-    testMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12AB3';
-    setupComponent('parentGuardian', testMock);
+  it(
+    'AC6c. Parent/Guardian - NI number invalid format shows NI format error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3848'] },
+    () => {
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12AB3';
+      setupComponent('parentGuardian', testMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain.text', 'Enter a National Insurance number in the format AANNNNNNA');
-  });
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('exist')
+        .and('contain.text', 'Enter a National Insurance number in the format AANNNNNNA');
+    },
+  );
 
-  it('AC7a. Parent/Guardian - Primary email invalid format shows primary email format error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3849'] }, () => {
+  it(
+    'AC7a. Parent/Guardian - Primary email invalid format shows primary email format error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3849'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.primary_email_address = 'invalid_email';
       setupComponent('parentGuardian', testMock);
@@ -480,9 +530,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter primary email address in the correct format, like name@example.com');
-    });
+    },
+  );
 
-  it('AC7b. Parent/Guardian - Secondary email invalid format shows secondary email format error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3850'] }, () => {
+  it(
+    'AC7b. Parent/Guardian - Secondary email invalid format shows secondary email format error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3850'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.secondary_email_address = 'wrong.secondemail';
       setupComponent('parentGuardian', testMock);
@@ -492,9 +546,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter secondary email address in the correct format, like name@example.com');
-    });
+    },
+  );
 
-  it('AC7c. Parent/Guardian - Employer email invalid format shows employer email format error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3851'] }, () => {
+  it(
+    'AC7c. Parent/Guardian - Employer email invalid format shows employer email format error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3851'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_email_address = 'employer#email@gmail.com';
       setupComponent('parentGuardian', testMock);
@@ -504,29 +562,41 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter employer email address in the correct format, like name@example.com');
-    });
+    },
+  );
 
-  it('AC8a. Parent/Guardian - Home telephone invalid format shows home telephone error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3852'] }, () => {
-    const testMock = structuredClone(minimalMock);
-    testMock.defendant_account_party.contact_details!.home_telephone_number = '0207A214875';
-    setupComponent('parentGuardian', testMock);
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain.text', 'Enter a valid home telephone number, like 01632 960 001');
-  });
+  it(
+    'AC8a. Parent/Guardian - Home telephone invalid format shows home telephone error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3852'] },
+    () => {
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.contact_details!.home_telephone_number = '0207A214875';
+      setupComponent('parentGuardian', testMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('exist')
+        .and('contain.text', 'Enter a valid home telephone number, like 01632 960 001');
+    },
+  );
 
-  it('AC8b. Parent/Guardian - Work telephone invalid format shows work telephone error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3853'] }, () => {
-    const testMock = structuredClone(minimalMock);
-    testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001A';
-    setupComponent('parentGuardian', testMock);
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain.text', 'Enter a valid work telephone number, like 01632 960 001 or 07700 900 982');
-  });
+  it(
+    'AC8b. Parent/Guardian - Work telephone invalid format shows work telephone error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3853'] },
+    () => {
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001A';
+      setupComponent('parentGuardian', testMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('exist')
+        .and('contain.text', 'Enter a valid work telephone number, like 01632 960 001 or 07700 900 982');
+    },
+  );
 
-  it('AC8c. Parent/Guardian - Mobile telephone invalid length/format shows mobile telephone error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3854'] }, () => {
+  it(
+    'AC8c. Parent/Guardian - Mobile telephone invalid length/format shows mobile telephone error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3854'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.mobile_telephone_number = '0207821734';
       setupComponent('parentGuardian', testMock);
@@ -534,9 +604,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter a valid mobile telephone number, like 07700 900 982');
-    });
+    },
+  );
 
-  it('AC8d. Parent/Guardian - Employer telephone invalid format shows employer telephone error', { tags: ['@PO-1112', '@JIRA-KEY:POT-3855'] }, () => {
+  it(
+    'AC8d. Parent/Guardian - Employer telephone invalid format shows employer telephone error',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3855'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_telephone_number = '0207A214875';
       setupComponent('parentGuardian', testMock);
@@ -547,9 +621,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
           'contain.text',
           'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
         );
-    });
+    },
+  );
 
-  it('AC9. Parent/Guardian - Max length validation retains user on form and shows per-field errors', { tags: ['@PO-1112', '@JIRA-KEY:POT-3856'] }, () => {
+  it(
+    'AC9. Parent/Guardian - Max length validation retains user on form and shows per-field errors',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3856'] },
+    () => {
       const maxLengthMock = structuredClone(minimalMock);
       const primaryEmail = `${'a'.repeat(65)}@example.com`;
       const secondaryEmail = `${'b'.repeat(65)}@example.com`;
@@ -595,9 +673,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       expectedErrors.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    });
+    },
+  );
 
-  it('AC10. Parent/Guardian - Data type validation for alphabetical and alphanumeric fields', { tags: ['@PO-1112', '@JIRA-KEY:POT-3857'] }, () => {
+  it(
+    'AC10. Parent/Guardian - Data type validation for alphabetical and alphanumeric fields',
+    { tags: ['@PO-1112', '@JIRA-KEY:POT-3857'] },
+    () => {
       const dataTypeValidationMock = structuredClone(minimalMock);
 
       // Set all fields with invalid characters using API structure
@@ -641,5 +723,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       allExpectedErrors.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    });
+    },
+  );
 });

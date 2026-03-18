@@ -92,7 +92,10 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
   //Dom-Elements check for each defendant type
 
-  it('(AC.1,AC.3,AC.4,)should load all elements on the screen correctly for adult or youth defendant types', { tags: ['@PO-566', '@PO-429', '@PO-471', '@PO-272', '@JIRA-KEY:POT-4277'] }, () => {
+  it(
+    '(AC.1,AC.3,AC.4,)should load all elements on the screen correctly for adult or youth defendant types',
+    { tags: ['@PO-566', '@PO-429', '@PO-471', '@PO-272', '@JIRA-KEY:POT-4277'] },
+    () => {
       setupComponent('adultOrYouthOnly');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('exist');
@@ -195,7 +198,8 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.collectionOrderDate).should('exist');
       cy.get(DOM_ELEMENTS.collectionOrderDateLabel).should('contain', 'Date of collection order');
       cy.get(DOM_ELEMENTS.collectionOrderHint).should('contain', 'For example, 31/01/2023');
-    });
+    },
+  );
 
   it('has legend text for enforcement action fieldset', { tags: ['@PO-2783', '@JIRA-KEY:POT-4278'] }, () => {
     setupComponent('adultOrYouthOnly');
@@ -216,7 +220,10 @@ describe('FinesMacPaymentTermsComponent', () => {
       });
   });
 
-  it('(AC.1,AC.3,AC.4)Should load all elements on the screen correctly for AYPG defendant types', { tags: ['@PO-566', '@PO-587', '@PO-649', '@PO-344', '@JIRA-KEY:POT-4279'] }, () => {
+  it(
+    '(AC.1,AC.3,AC.4)Should load all elements on the screen correctly for AYPG defendant types',
+    { tags: ['@PO-566', '@PO-587', '@PO-649', '@PO-344', '@JIRA-KEY:POT-4279'] },
+    () => {
       setupComponent('pgToPay');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('exist');
@@ -297,9 +304,13 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.collectionOrderDate).should('exist');
       cy.get(DOM_ELEMENTS.collectionOrderDateLabel).should('contain', 'Date of collection order');
       cy.get(DOM_ELEMENTS.collectionOrderHint).should('contain', 'For example, 31/01/2023');
-    });
+    },
+  );
 
-  it('(AC.1,AC.3,AC.4)Should load all elements for company defendant type', { tags: ['@PO-566', '@PO-592', '@PO-345', '@JIRA-KEY:POT-4280'] }, () => {
+  it(
+    '(AC.1,AC.3,AC.4)Should load all elements for company defendant type',
+    { tags: ['@PO-566', '@PO-592', '@PO-345', '@JIRA-KEY:POT-4280'] },
+    () => {
       setupComponent('company');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('exist');
@@ -368,20 +379,28 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
-    });
+    },
+  );
   //Collection order tests
-  it('(AC.1) should only load collection order for adult over 18 years old', { tags: ['@PO-471', '@PO-272', '@JIRA-KEY:POT-4281'] }, () => {
-    setupComponent('adultOrYouthOnly');
+  it(
+    '(AC.1) should only load collection order for adult over 18 years old',
+    { tags: ['@PO-471', '@PO-272', '@JIRA-KEY:POT-4281'] },
+    () => {
+      setupComponent('adultOrYouthOnly');
 
-    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-    cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).should('exist');
-    cy.get(DOM_ELEMENTS.collectionNo).should('exist');
-    cy.get(DOM_ELEMENTS.collectionYes).should('exist');
-    cy.get(DOM_ELEMENTS.collectionYesLabel).should('contain', 'Yes');
-    cy.get(DOM_ELEMENTS.collectionNoLabel).should('contain', 'No');
-  });
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).should('exist');
+      cy.get(DOM_ELEMENTS.collectionNo).should('exist');
+      cy.get(DOM_ELEMENTS.collectionYes).should('exist');
+      cy.get(DOM_ELEMENTS.collectionYesLabel).should('contain', 'Yes');
+      cy.get(DOM_ELEMENTS.collectionNoLabel).should('contain', 'No');
+    },
+  );
 
-  it('(AC.3) Should load make a new collection order for correct permission for AYPG and AY', { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4282'] }, () => {
+  it(
+    '(AC.3) Should load make a new collection order for correct permission for AYPG and AY',
+    { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4282'] },
+    () => {
       finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
       finesMacState.businessUnit.business_unit_id = 17;
       for (let i = 0; i < 2; i++) {
@@ -392,17 +411,25 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.makeCollectionLabel).should('contain', 'Make collection order today');
         });
       }
-    });
+    },
+  );
 
-  it('(AC.1) should not load collection order for adult or youth under 18 years old', { tags: ['@PO-471', '@PO-272', '@JIRA-KEY:POT-4283'] }, () => {
+  it(
+    '(AC.1) should not load collection order for adult or youth under 18 years old',
+    { tags: ['@PO-471', '@PO-272', '@JIRA-KEY:POT-4283'] },
+    () => {
       setupComponent('adultOrYouthOnly');
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2020';
       cy.get(DOM_ELEMENTS.collectionNo).should('not.exist');
       cy.get(DOM_ELEMENTS.collectionYes).should('not.exist');
-    });
+    },
+  );
   //collection order validation check
-  it('(AC.1, AC.2)should prefill date of sentence in date of collection order field', { tags: ['@PO-853', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4284'] }, () => {
+  it(
+    '(AC.1, AC.2)should prefill date of sentence in date of collection order field',
+    { tags: ['@PO-853', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4284'] },
+    () => {
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
@@ -411,9 +438,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.collectionOrderDate).should('have.value', '01/10/2022');
         });
       }
-    });
+    },
+  );
 
-  it('(AC.1)should have error handling with date of sentence and collection order date to ensure date cannot be before date of sentence', { tags: ['@PO-796', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4285'] }, () => {
+  it(
+    '(AC.1)should have error handling with date of sentence and collection order date to ensure date cannot be before date of sentence',
+    { tags: ['@PO-796', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4285'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -424,9 +455,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDatePast);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.4)should throw error if no collection order field is selected and user presses submit or return', { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4286'] }, () => {
+  it(
+    '(AC.4)should throw error if no collection order field is selected and user presses submit or return',
+    { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4286'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -435,9 +470,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionError);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.5)If a user selects yes to collection order and does not enter a date, an error should be thrown', { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4287'] }, () => {
+  it(
+    '(AC.5)If a user selects yes to collection order and does not enter a date, an error should be thrown',
+    { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4287'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -448,9 +487,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDateError);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.6)Should throw error for collection date validation', { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4288'] }, () => {
+  it(
+    '(AC.6)Should throw error for collection date validation',
+    { tags: ['@PO-471', '@PO-649', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4288'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -477,10 +520,14 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDatePast);
         });
       }
-    });
+    },
+  );
 
   //Checking pay by date, instalment option and lump sum flow checks and error handling
-  it('(AC.2a) should allow payByDate to be entered via date picker for all defendant types', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4289'] }, () => {
+  it(
+    '(AC.2a) should allow payByDate to be entered via date picker for all defendant types',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4289'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         setupComponent(defendantType);
 
@@ -493,9 +540,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
         );
       });
-    });
+    },
+  );
 
-  it('(AC.3c) should allow startDate to be entered via date picker for all defendant types', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4290'] }, () => {
+  it(
+    '(AC.3c) should allow startDate to be entered via date picker for all defendant types',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4290'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         setupComponent(defendantType);
 
@@ -508,27 +559,43 @@ describe('FinesMacPaymentTermsComponent', () => {
           `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
         );
       });
-    });
+    },
+  );
 
-  it('(AC.16a) should load button for next page for adultOrYouthOnly Defendant', { tags: ['@PO-429', '@PO-272', '@JIRA-KEY:POT-4291'] }, () => {
+  it(
+    '(AC.16a) should load button for next page for adultOrYouthOnly Defendant',
+    { tags: ['@PO-429', '@PO-272', '@JIRA-KEY:POT-4291'] },
+    () => {
       setupComponent('adultOrYouthOnly');
 
       cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
-    });
+    },
+  );
 
-  it('(AC.16a) should load button for next page for AYPG Defendant', { tags: ['@PO-429', '@PO-344', '@JIRA-KEY:POT-4292'] }, () => {
-    setupComponent('pgToPay');
+  it(
+    '(AC.16a) should load button for next page for AYPG Defendant',
+    { tags: ['@PO-429', '@PO-344', '@JIRA-KEY:POT-4292'] },
+    () => {
+      setupComponent('pgToPay');
 
-    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
-  });
+      cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
+    },
+  );
 
-  it('(AC.17a) should load button for next page for Company Defendant', { tags: ['@PO-592', '@PO-345', '@JIRA-KEY:POT-4293'] }, () => {
-    setupComponent('company');
+  it(
+    '(AC.17a) should load button for next page for Company Defendant',
+    { tags: ['@PO-592', '@PO-345', '@JIRA-KEY:POT-4293'] },
+    () => {
+      setupComponent('company');
 
-    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
-  });
+      cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
+    },
+  );
 
-  it('(AC.3ci))should handle "Pay in full" with past dates', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4294'] }, () => {
+  it(
+    '(AC.3ci))should handle "Pay in full" with past dates',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4294'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -538,9 +605,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.dateInPast);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.3cii)should handle "Pay in full" with future dates', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4295'] }, () => {
+  it(
+    '(AC.3cii)should handle "Pay in full" with future dates',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4295'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -550,9 +621,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.dateInFuture);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.4ci) should handle "Instalments only" with past dates', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4296'] }, () => {
+  it(
+    '(AC.4ci) should handle "Instalments only" with past dates',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4296'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -564,9 +639,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInPast);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.4cii) should handle "Instalments only" with future dates', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4297'] }, () => {
+  it(
+    '(AC.4cii) should handle "Instalments only" with future dates',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4297'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -578,9 +657,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInFuture);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.3Ci) should handle "Lump sum plus instalments" with past dates', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4298'] }, () => {
+  it(
+    '(AC.3Ci) should handle "Lump sum plus instalments" with past dates',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4298'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -593,9 +676,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInPast);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.3Cii) should handle "Lump sum plus instalments" with future dates', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4299'] }, () => {
+  it(
+    '(AC.3Cii) should handle "Lump sum plus instalments" with future dates',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4299'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -608,9 +695,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInFuture);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.7,AC.8)should handle empty data for Pay by date', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4300'] }, () => {
+  it(
+    '(AC.7,AC.8)should handle empty data for Pay by date',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4300'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -624,9 +715,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.payInFull).first().click();
         });
       });
-    });
+    },
+  );
 
-  it('(AC.5)should round lumpsum amount and instalment amount to .2 decimal place values', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4301'] }, () => {
+  it(
+    '(AC.5)should round lumpsum amount and instalment amount to .2 decimal place values',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4301'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -640,9 +735,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.instalmentAmount).filter(':visible').should('have.value', '100.50');
         });
       });
-    });
+    },
+  );
 
-  it('(AC.11)should handle date Format error for pay in full', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4302'] }, () => {
+  it(
+    '(AC.11)should handle date Format error for pay in full',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4302'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -653,9 +752,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDateFormat);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.11)should handle valid date Error for Pay in full', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4303'] }, () => {
+  it(
+    '(AC.11)should handle valid date Error for Pay in full',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4303'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -666,25 +769,33 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.9)should handle errors for Instalment', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4304'] }, () => {
-    defendantTypes.forEach((defendantType) => {
-      cy.then(() => {
-        setupComponent(defendantType);
+  it(
+    '(AC.9)should handle errors for Instalment',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4304'] },
+    () => {
+      defendantTypes.forEach((defendantType) => {
+        cy.then(() => {
+          setupComponent(defendantType);
 
-        cy.get(DOM_ELEMENTS.instalmentsOnly).click({ multiple: true });
+          cy.get(DOM_ELEMENTS.instalmentsOnly).click({ multiple: true });
 
-        cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
 
-        for (const [, value] of Object.entries(INSTALMENT_ERRORS)) {
-          cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', value);
-        }
+          for (const [, value] of Object.entries(INSTALMENT_ERRORS)) {
+            cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', value);
+          }
+        });
       });
-    });
-  });
+    },
+  );
 
-  it('(AC.13)should handle valid instalmentAmount error for instalment', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4305'] }, () => {
+  it(
+    '(AC.13)should handle valid instalmentAmount error for instalment',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4305'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -695,9 +806,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentAmount);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.12) should handle valid InstalmentDateFormat error for instalment', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4306'] }, () => {
+  it(
+    '(AC.12) should handle valid InstalmentDateFormat error for instalment',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4306'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -708,9 +823,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentDateFormat);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.12) should handle valid date error for instalment', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4307'] }, () => {
+  it(
+    '(AC.12) should handle valid date error for instalment',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4307'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -721,9 +840,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.10)should handle errors for Lump sum plus Instalment', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4308'] }, () => {
+  it(
+    '(AC.10)should handle errors for Lump sum plus Instalment',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4308'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -736,9 +859,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           }
         });
       });
-    });
+    },
+  );
 
-  it('(AC.14) should have validations in place for validLumpSumAmount', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4309'] }, () => {
+  it(
+    '(AC.14) should have validations in place for validLumpSumAmount',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4309'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -749,9 +876,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validLumpSumAmount);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.14) should have validations in place for validLumpSumInstalmentAmount', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4310'] }, () => {
+  it(
+    '(AC.14) should have validations in place for validLumpSumInstalmentAmount',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4310'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -762,9 +893,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentAmount);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.12) should have validations in place for validLumpSumStartDateFormat', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4311'] }, () => {
+  it(
+    '(AC.12) should have validations in place for validLumpSumStartDateFormat',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4311'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -775,9 +910,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentDateFormat);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.12) should have validations in place for validLumpSumStartDate', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4312'] }, () => {
+  it(
+    '(AC.12) should have validations in place for validLumpSumStartDate',
+    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545', '@JIRA-KEY:POT-4312'] },
+    () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
           setupComponent(defendantType);
@@ -788,10 +927,14 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
       });
-    });
+    },
+  );
 
   //Days in default tests
-  it('(AC.1,AC.2,AC.3) should load days in default for adult or youth over 18 only', { tags: ['@PO-432', '@PO-272', '@JIRA-KEY:POT-4313'] }, () => {
+  it(
+    '(AC.1,AC.2,AC.3) should load days in default for adult or youth over 18 only',
+    { tags: ['@PO-432', '@PO-272', '@JIRA-KEY:POT-4313'] },
+    () => {
       setupComponent('adultOrYouthOnly');
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
 
@@ -808,16 +951,24 @@ describe('FinesMacPaymentTermsComponent', () => {
         'This should be whichever date is most recent - the sentencing date or the date of the suspended committal order.',
       );
       cy.get(DOM_ELEMENTS.defaultDaysInJailLabel).should('contain', 'Enter days in default');
-    });
+    },
+  );
 
-  it('(AC.1) should not load days in default for adult or youth under 18 years old', { tags: ['@PO-432', '@PO-588', '@PO-272', '@JIRA-KEY:POT-4314'] }, () => {
+  it(
+    '(AC.1) should not load days in default for adult or youth under 18 years old',
+    { tags: ['@PO-432', '@PO-588', '@PO-272', '@JIRA-KEY:POT-4314'] },
+    () => {
       setupComponent('adultOrYouthOnly');
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2010';
       cy.get(DOM_ELEMENTS.hasDaysInDefault).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC.4) Validation check to ensure only 5 integers can be inputted to the days in default field Adult or youth, AYPG', { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4315'] }, () => {
+  it(
+    '(AC.4) Validation check to ensure only 5 integers can be inputted to the days in default field Adult or youth, AYPG',
+    { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4315'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -829,9 +980,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.daysInDefaultLength);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.10a,AC.10c) should have validations in place for days in default enter valid data Adult or youth ,AYPG', { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4316'] }, () => {
+  it(
+    '(AC.10a,AC.10c) should have validations in place for days in default enter valid data Adult or youth ,AYPG',
+    { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4316'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -844,9 +999,13 @@ describe('FinesMacPaymentTermsComponent', () => {
             .should('contain', ERROR_MESSAGES.defaultDays);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.10b) should have validations in place for days in default future date Adult or youth ,AYPG', { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4317'] }, () => {
+  it(
+    '(AC.10b) should have validations in place for days in default future date Adult or youth ,AYPG',
+    { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4317'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -857,8 +1016,12 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.futureDate);
         });
       }
-    });
-  it('(AC.5,AC.6)should have all elements in the calculate days in default panel for AYPG, Adult or Youth Only and calculate days accurately', { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4318'] }, () => {
+    },
+  );
+  it(
+    '(AC.5,AC.6)should have all elements in the calculate days in default panel for AYPG, Adult or Youth Only and calculate days accurately',
+    { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4318'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -886,9 +1049,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', '413 days');
         });
       }
-    });
+    },
+  );
 
-  it('(AC.7) should not allow the user to calculate days until date has been filled out for days in default, AYPG, Adult or Youth Only', { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4319'] }, () => {
+  it(
+    '(AC.7) should not allow the user to calculate days until date has been filled out for days in default, AYPG, Adult or Youth Only',
+    { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4319'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -903,9 +1070,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'You must enter a date days in default were imposed');
         });
       }
-    });
+    },
+  );
 
-  it('(AC.10d) should have validations in place for days in default invalid date date Adult or youth ,AYPG', { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4320'] }, () => {
+  it(
+    '(AC.10d) should have validations in place for days in default invalid date date Adult or youth ,AYPG',
+    { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4320'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         setupComponent(defendantTypes[i]);
 
@@ -914,10 +1085,14 @@ describe('FinesMacPaymentTermsComponent', () => {
         cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
         cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.defaultDaysTypeCheck);
       }
-    });
+    },
+  );
   //Enforcement action tests
 
-  it('(AC.1,AC.2,AC.3)should load enforcement action PRIS and NOENF for Adult or youth and APYG', { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4321'] }, () => {
+  it(
+    '(AC.1,AC.2,AC.3)should load enforcement action PRIS and NOENF for Adult or youth and APYG',
+    { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4321'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -941,9 +1116,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.noenfCharHint).should('contain', 'You have 28 characters remaining');
         });
       }
-    });
+    },
+  );
 
-  it('(AC.4)should provide error for selection enforcement action panel but not selecting any enforcement action', { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4322'] }, () => {
+  it(
+    '(AC.4)should provide error for selection enforcement action panel but not selecting any enforcement action',
+    { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4322'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -953,9 +1132,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.enforcementActionReason);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.5,AC.6)should have validations in place for enforcement action (pris)', { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4323'] }, () => {
+  it(
+    '(AC.5,AC.6)should have validations in place for enforcement action (pris)',
+    { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4323'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -979,9 +1162,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.prisonDateFormat);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.7) Should provide error if (NOENF) field is left empty', { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4324'] }, () => {
+  it(
+    '(AC.7) Should provide error if (NOENF) field is left empty',
+    { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4324'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -992,9 +1179,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfReason);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.8) should have validations in place for enforcement action (NOENF)', { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4325'] }, () => {
+  it(
+    '(AC.8) should have validations in place for enforcement action (NOENF)',
+    { tags: ['@PO-548', '@PO-590', '@PO-272', '@PO-344', '@JIRA-KEY:POT-4325'] },
+    () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
@@ -1006,9 +1197,13 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfTypeCheck);
         });
       }
-    });
+    },
+  );
 
-  it('(AC.1,4,5a) correct system note - A collection order was previously made - AY', { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4326'] }, () => {
+  it(
+    '(AC.1,4,5a) correct system note - A collection order was previously made - AY',
+    { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4326'] },
+    () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
@@ -1030,8 +1225,12 @@ describe('FinesMacPaymentTermsComponent', () => {
           'A collection order was previously made on 05/01/2023 prior to this account creation',
         );
       });
-    });
-  it('(AC.1,4,5b) correct system note - A collection order was previously made - AYPG', { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4327'] }, () => {
+    },
+  );
+  it(
+    '(AC.1,4,5b) correct system note - A collection order was previously made - AYPG',
+    { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4327'] },
+    () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
@@ -1054,50 +1253,59 @@ describe('FinesMacPaymentTermsComponent', () => {
           'A collection order was previously made on 05/01/2023 prior to this account creation',
         );
       });
-    });
-  it('(AC.2,4,5a) correct system note - Make collection order today - AY', { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4328'] }, () => {
-    const setAccountCommentsNotesSpy = Cypress.sinon.spy();
+    },
+  );
+  it(
+    '(AC.2,4,5a) correct system note - Make collection order today - AY',
+    { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4328'] },
+    () => {
+      const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-    finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-    finesMacState.businessUnit.business_unit_id = 17;
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
 
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
+      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
-    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
-      const arg = calls.args[0][0];
-      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
-      expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
-    });
-  });
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
+    },
+  );
 
-  it('(AC.2,4,5b) correct system note - Make collection order today - AYPG', { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4329'] }, () => {
-    const setAccountCommentsNotesSpy = Cypress.sinon.spy();
-    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-    finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-    finesMacState.businessUnit.business_unit_id = 17;
+  it(
+    '(AC.2,4,5b) correct system note - Make collection order today - AYPG',
+    { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4329'] },
+    () => {
+      const setAccountCommentsNotesSpy = Cypress.sinon.spy();
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
 
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
+      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('pgToPay', setAccountCommentsNotesSpy);
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
-    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
-    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
-      const arg = calls.args[0][0];
-      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
-      expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
-    });
-  });
+      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
+    },
+  );
 
   it('(AC3a,c,4,5a) update system note - Made today - Previously made - AY ', { tags: ['@PO-545', '@PO-651'] }, () => {
     const setAccountCommentsNotesSpy = Cypress.sinon.spy();
@@ -1139,46 +1347,50 @@ describe('FinesMacPaymentTermsComponent', () => {
     });
   });
 
-  it('(AC3a,c,4,5b) update system note - Made today - Previously made - AYPG', { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4331'] }, () => {
-    const setAccountCommentsNotesSpy = Cypress.sinon.spy();
+  it(
+    '(AC3a,c,4,5b) update system note - Made today - Previously made - AYPG',
+    { tags: ['@PO-545', '@PO-651', '@JIRA-KEY:POT-4331'] },
+    () => {
+      const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-    finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-    finesMacState.businessUnit.business_unit_id = 17;
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
 
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
+      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      setupComponent('pgToPay', setAccountCommentsNotesSpy);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
-    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
-      cy.log('Calls:', calls);
-      const arg = calls.args[0][0];
-      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
-      cy.log('System note:', systemNote);
-      expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
-    });
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
 
-    cy.get(DOM_ELEMENTS.collectionYes).check();
-    cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
-    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
-      cy.log('Calls:', calls);
-      const arg = calls.args[1][0];
-      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
-      cy.log('System note:', systemNote);
-      expect(systemNote).to.equal(
-        'A collection order was previously made on 01/01/2023 prior to this account creation',
-      );
-    });
-  });
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[1][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal(
+          'A collection order was previously made on 01/01/2023 prior to this account creation',
+        );
+      });
+    },
+  );
 
   it('(AC3b,d,4,5a) update system note - Previously made - Made today - AY ', { tags: ['@PO-545', '@PO-651'] }, () => {
     const setAccountCommentsNotesSpy = Cypress.sinon.spy();
@@ -1273,92 +1485,100 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
 
-  it('(AC1b, 1e) Update system note - Previously made → Criteria not met', { tags: ['@PO-1592', '@JIRA-KEY:POT-4334'] }, () => {
-    const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
+  it(
+    '(AC1b, 1e) Update system note - Previously made → Criteria not met',
+    { tags: ['@PO-1592', '@JIRA-KEY:POT-4334'] },
+    () => {
+      const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
 
-    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-    finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-    finesMacState.businessUnit.business_unit_id = 17;
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
 
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '05/01/2023';
-    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '05/01/2023';
+      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('pgToPay', setAccountCommentsNotesSpy);
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
-    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
-      cy.log('Calls:', calls);
-      const arg = calls.args[0][0];
-      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
-      cy.log('System note:', systemNote);
-      expect(systemNote).to.equal(
-        'A collection order was previously made on 05/01/2023 prior to this account creation',
-      );
-    });
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal(
+          'A collection order was previously made on 05/01/2023 prior to this account creation',
+        );
+      });
 
-    cy.get(DOM_ELEMENTS.collectionNo).check();
-    cy.get(DOM_ELEMENTS.makeCollection).uncheck();
+      cy.get(DOM_ELEMENTS.collectionNo).check();
+      cy.get(DOM_ELEMENTS.makeCollection).uncheck();
 
-    cy.get(DOM_ELEMENTS.payInFull).check();
-    cy.get(DOM_ELEMENTS.payByDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.payInFull).check();
+      cy.get(DOM_ELEMENTS.payByDate).clear().type('01/01/2023', { delay: 0, force: true });
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
-    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
-      cy.log('Calls:', calls);
-      const arg = calls.args[1][0];
-      cy.log('Arg:', arg);
-      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
-      cy.log('System note:', systemNote);
-      expect(systemNote).to.be.null;
-    });
-  });
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[1][0];
+        cy.log('Arg:', arg);
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.be.null;
+      });
+    },
+  );
 
-  it('(AC1b, 1e) Update system note - Made today → Criteria not met', { tags: ['@PO-1592', '@JIRA-KEY:POT-4335'] }, () => {
-    const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
+  it(
+    '(AC1b, 1e) Update system note - Made today → Criteria not met',
+    { tags: ['@PO-1592', '@JIRA-KEY:POT-4335'] },
+    () => {
+      const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
 
-    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-    finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-    finesMacState.businessUnit.business_unit_id = 17;
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
 
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
+      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
+      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      setupComponent('pgToPay', setAccountCommentsNotesSpy);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
-    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
-      cy.log('Calls:', calls);
-      const arg = calls.args[0][0];
-      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
-      cy.log('System note:', systemNote);
-      expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
-    });
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
 
-    cy.get(DOM_ELEMENTS.collectionNo).check();
-    cy.get(DOM_ELEMENTS.makeCollection).uncheck();
+      cy.get(DOM_ELEMENTS.collectionNo).check();
+      cy.get(DOM_ELEMENTS.makeCollection).uncheck();
 
-    cy.get(DOM_ELEMENTS.payInFull).check();
-    cy.get(DOM_ELEMENTS.payByDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.payInFull).check();
+      cy.get(DOM_ELEMENTS.payByDate).clear().type('01/01/2023', { delay: 0, force: true });
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
-    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
-      cy.log('Calls:', calls);
-      const arg = calls.args[1][0];
-      cy.log('Arg:', arg);
-      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
-      cy.log('System note:', systemNote);
-      expect(systemNote).to.be.null;
-    });
-  });
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[1][0];
+        cy.log('Arg:', arg);
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.be.null;
+      });
+    },
+  );
 });

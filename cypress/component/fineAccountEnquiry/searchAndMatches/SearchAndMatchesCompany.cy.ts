@@ -62,34 +62,38 @@ describe('Search Account Component - Company', () => {
     companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
   });
 
-  it('AC1a-b. should render the search for an account screen and companies tab', { tags: ['PO-712', '@JIRA-KEY:POT-3691'] }, () => {
-    setupComponent(null);
+  it(
+    'AC1a-b. should render the search for an account screen and companies tab',
+    { tags: ['PO-712', '@JIRA-KEY:POT-3691'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.companiesTab).click();
-    cy.get(DOM_ELEMENTS.app).should('exist');
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
-    cy.get(DOM_ELEMENTS.tabs).should('exist');
-    cy.get(DOM_ELEMENTS.tabsList).should('exist');
-    cy.get(DOM_ELEMENTS.individualsTab).should('exist');
-    cy.get(DOM_ELEMENTS.companiesTab).should('exist');
-    cy.get(DOM_ELEMENTS.minorCreditorsTab).should('exist');
-    cy.get(DOM_ELEMENTS.majorCreditorsTab).should('exist');
-    cy.get(DOM_ELEMENTS.companiesPanel).should('exist');
-    cy.get(DOM_ELEMENTS.companiesHeading).should('contain', 'Companies');
-    cy.get(DOM_ELEMENTS.companyNameLabel).should('exist').contains('Company name');
-    cy.get(DOM_ELEMENTS.companyNameInput).should('exist');
-    cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).should('exist').and('not.be.checked');
-    cy.get(DOM_ELEMENTS.includeAliasCheckbox).should('exist').and('not.be.checked');
-    cy.get(DOM_ELEMENTS.addressLine1Label).should('exist').contains('Address line 1');
-    cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
-    cy.get(DOM_ELEMENTS.postcodeLabel).should('exist').and('contain', 'Postcode');
-    cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
-    cy.get(DOM_ELEMENTS.accountNumberLabel).should('exist').and('contain', 'Account number');
-    cy.get(DOM_ELEMENTS.referenceNumberLabel).should('exist').and('contain', 'Reference or case number');
-    cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist');
-    cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
-    cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
-  });
+      cy.get(DOM_ELEMENTS.companiesTab).click();
+      cy.get(DOM_ELEMENTS.app).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
+      cy.get(DOM_ELEMENTS.tabs).should('exist');
+      cy.get(DOM_ELEMENTS.tabsList).should('exist');
+      cy.get(DOM_ELEMENTS.individualsTab).should('exist');
+      cy.get(DOM_ELEMENTS.companiesTab).should('exist');
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).should('exist');
+      cy.get(DOM_ELEMENTS.majorCreditorsTab).should('exist');
+      cy.get(DOM_ELEMENTS.companiesPanel).should('exist');
+      cy.get(DOM_ELEMENTS.companiesHeading).should('contain', 'Companies');
+      cy.get(DOM_ELEMENTS.companyNameLabel).should('exist').contains('Company name');
+      cy.get(DOM_ELEMENTS.companyNameInput).should('exist');
+      cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).should('exist').and('not.be.checked');
+      cy.get(DOM_ELEMENTS.includeAliasCheckbox).should('exist').and('not.be.checked');
+      cy.get(DOM_ELEMENTS.addressLine1Label).should('exist').contains('Address line 1');
+      cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
+      cy.get(DOM_ELEMENTS.postcodeLabel).should('exist').and('contain', 'Postcode');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
+      cy.get(DOM_ELEMENTS.accountNumberLabel).should('exist').and('contain', 'Account number');
+      cy.get(DOM_ELEMENTS.referenceNumberLabel).should('exist').and('contain', 'Reference or case number');
+      cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist');
+      cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
+    },
+  );
 
   it('AC3a. should show error for non-alphabetical company name', { tags: ['PO-712', '@JIRA-KEY:POT-3692'] }, () => {
     setupComponent(null);
@@ -176,17 +180,24 @@ describe('Search Account Component - Company', () => {
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
-  it('AC2a. Should validate company name field when "Alias" checkbox is selected', { tags: ['PO-1969', '@JIRA-KEY:POT-3699'] }, () => {
-    setupComponent(null);
+  it(
+    'AC2a. Should validate company name field when "Alias" checkbox is selected',
+    { tags: ['PO-1969', '@JIRA-KEY:POT-3699'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.companiesTab).click();
-    cy.get(DOM_ELEMENTS.includeAliasCheckbox).check().should('be.checked');
-    cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.companiesTab).click();
+      cy.get(DOM_ELEMENTS.includeAliasCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
-  });
+      cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
+    },
+  );
 
-  it('AC2b. Should validate company name field when "Search exact match" for company name is selected', { tags: ['PO-1969', '@JIRA-KEY:POT-3700'] }, () => {
+  it(
+    'AC2b. Should validate company name field when "Search exact match" for company name is selected',
+    { tags: ['PO-1969', '@JIRA-KEY:POT-3700'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.companiesTab).click();
@@ -194,5 +205,6 @@ describe('Search Account Component - Company', () => {
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
-    });
+    },
+  );
 });

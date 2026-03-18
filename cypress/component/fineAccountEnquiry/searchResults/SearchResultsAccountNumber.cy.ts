@@ -93,22 +93,29 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(INDIVIDUAL_DOM_ELEMENTS.backLink).should('exist');
   });
 
-  it('(AC3a) Displays error message when no search matches are found', { tags: ['PO-706', '@JIRA-KEY:POT-3761'] }, () => {
-    setupComponent('EMPTY_RESULTS');
+  it(
+    '(AC3a) Displays error message when no search matches are found',
+    { tags: ['PO-706', '@JIRA-KEY:POT-3761'] },
+    () => {
+      setupComponent('EMPTY_RESULTS');
 
-    // AC3a: Verify the error screen is displayed when no search matches are found
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.noResultsHeading).should('be.visible');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
+      // AC3a: Verify the error screen is displayed when no search matches are found
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.noResultsHeading).should('be.visible');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
 
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.checkSearchLink).should('be.visible');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
-    // AC3b: Verify 'Check your search' link is clickable and functional
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.checkSearchLink).click();
-  });
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.checkSearchLink).should('be.visible');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
+      // AC3b: Verify 'Check your search' link is clickable and functional
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.checkSearchLink).click();
+    },
+  );
 
   //Note: AC3b The 'Check your search' link will navigate a user back to the Search for an Account screen - Full Test to be implemented when API complete
 
-  it('(AC4a) Displays "There are more than 100 results" message when more than 100 matches found', { tags: ['PO-706', '@JIRA-KEY:POT-3762'] }, () => {
+  it(
+    '(AC4a) Displays "There are more than 100 results" message when more than 100 matches found',
+    { tags: ['PO-706', '@JIRA-KEY:POT-3762'] },
+    () => {
       setupComponent('LARGE_RESULTS');
 
       // AC4a: Verify the "too many results" error screen is displayed
@@ -122,9 +129,13 @@ describe('FinesSaResultsComponent - All Account Types', () => {
         .should('contain', 'Try adding more information');
       cy.get(INDIVIDUAL_DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
       cy.get(INDIVIDUAL_DOM_ELEMENTS.addMoreInfoLink).click();
-    });
+    },
+  );
 
-  it('(AC5 ,5b,5f) Displays tabs when matches across multiple debtor/creditor types and Individual tab is in focus by default', { tags: ['PO-706', '@JIRA-KEY:POT-3763'] }, () => {
+  it(
+    '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor/creditor types and Individual tab is in focus by default',
+    { tags: ['PO-706', '@JIRA-KEY:POT-3763'] },
+    () => {
       setupComponent('WITH_DATA', 'individuals');
 
       // AC5b-Verify Individuals tab is in focus by default
@@ -165,73 +176,86 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(INDIVIDUAL_DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£524.00');
       cy.get(INDIVIDUAL_DOM_ELEMENTS.aliasesCell).eq(1).should('not.contain', 'SMITH');
       cy.get(INDIVIDUAL_DOM_ELEMENTS.parentGuardianCell).eq(1).should('not.contain', 'DOE, Jane');
-    });
+    },
+  );
 
-  it('(AC5c) Companies tab displays company defendant account summary data', { tags: ['PO-706', '@JIRA-KEY:POT-3764'] }, () => {
-    setupComponent('WITH_DATA', 'companies');
+  it(
+    '(AC5c) Companies tab displays company defendant account summary data',
+    { tags: ['PO-706', '@JIRA-KEY:POT-3764'] },
+    () => {
+      setupComponent('WITH_DATA', 'companies');
 
-    switchToTab('companies', INDIVIDUAL_DOM_ELEMENTS.companiesTab);
-    verifyTabIsActive(INDIVIDUAL_DOM_ELEMENTS.companiesTab);
+      switchToTab('companies', INDIVIDUAL_DOM_ELEMENTS.companiesTab);
+      verifyTabIsActive(INDIVIDUAL_DOM_ELEMENTS.companiesTab);
 
-    // Verify table exists and headers match design
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.tableWrapper).should('exist');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.accountHeader).should('contain', 'Account');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.refHeader).should('contain', 'Ref');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.enfHeader).should('contain', 'ENF');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
+      // Verify table exists and headers match design
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.tableWrapper).should('exist');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.accountHeader).should('contain', 'Account');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.refHeader).should('contain', 'Ref');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.enfHeader).should('contain', 'ENF');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
 
-    // Verify first row matches mock data
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.nameCell).first().should('contain', 'ACME LTD');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.addressCell).first().should('contain', '10 Downing Street');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
-  });
-  it('(AC5d) Minor Creditors tab displays creditor account summary data', { tags: ['PO-706', '@JIRA-KEY:POT-3765'] }, () => {
-    setupComponent('WITH_DATA', 'individuals');
-    // Switch to minor creditors tab using helper function
-    switchToTab('minorCreditors', INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab);
-    verifyTabIsActive(INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab);
-    // Verify table headers for minor creditors
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.accountHeader).should('contain', 'Account');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.nameHeader).should('contain', 'Name');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.defendantHeader).should('contain', 'Defendant');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
-    // Verify first row data matches mock
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.accountCell).first().should('contain', '14002MC');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.accountCell).first().find('a').should('exist');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.nameCell).first().should('contain', 'WILSON, James Robert');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.addressCell).first().should('contain', '8 Elm Street');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.postcodeCell).first().should('contain', 'MC3 5RT');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Minor Creditors Unit');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.defendantCell).first().should('contain', 'WILSON, James Robert');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.defendantCell).first().find('a').should('exist');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.balanceCell).first().should('contain', '£567.00');
+      // Verify first row matches mock data
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.nameCell).first().should('contain', 'ACME LTD');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.addressCell).first().should('contain', '10 Downing Street');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
+    },
+  );
+  it(
+    '(AC5d) Minor Creditors tab displays creditor account summary data',
+    { tags: ['PO-706', '@JIRA-KEY:POT-3765'] },
+    () => {
+      setupComponent('WITH_DATA', 'individuals');
+      // Switch to minor creditors tab using helper function
+      switchToTab('minorCreditors', INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab);
+      verifyTabIsActive(INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab);
+      // Verify table headers for minor creditors
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.accountHeader).should('contain', 'Account');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.nameHeader).should('contain', 'Name');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.defendantHeader).should('contain', 'Defendant');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
+      // Verify first row data matches mock
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.accountCell).first().should('contain', '14002MC');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.accountCell).first().find('a').should('exist');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.nameCell).first().should('contain', 'WILSON, James Robert');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.addressCell).first().should('contain', '8 Elm Street');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.postcodeCell).first().should('contain', 'MC3 5RT');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Minor Creditors Unit');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.defendantCell).first().should('contain', 'WILSON, James Robert');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.defendantCell).first().find('a').should('exist');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.balanceCell).first().should('contain', '£567.00');
 
-    // Verify second row data
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.accountCell).eq(1).should('contain', '14001MC');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.accountCell).eq(1).find('a').should('exist');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.nameCell).eq(1).should('contain', ' THOMPSON, Emma Claire ');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.addressCell).eq(1).should('contain', '5 Minor Court');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.postcodeCell).eq(1).should('contain', 'MC1 2RT');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.defendantCell).eq(1).should('contain', 'THOMPSON, Emma Claire');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.defendantCell).eq(1).find('a').should('exist');
-    cy.get(MINOR_CREDITOR_DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£345.00');
-  });
+      // Verify second row data
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.accountCell).eq(1).should('contain', '14001MC');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.accountCell).eq(1).find('a').should('exist');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.nameCell).eq(1).should('contain', ' THOMPSON, Emma Claire ');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.addressCell).eq(1).should('contain', '5 Minor Court');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.postcodeCell).eq(1).should('contain', 'MC1 2RT');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.defendantCell).eq(1).should('contain', 'THOMPSON, Emma Claire');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.defendantCell).eq(1).find('a').should('exist');
+      cy.get(MINOR_CREDITOR_DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£345.00');
+    },
+  );
 
-  it('(AC5e) Tabs only displayed when results exist for corresponding type', { tags: ['PO-706', '@JIRA-KEY:POT-3766'] }, () => {
-    // Test scenario with only individuals and companies (no minor creditors)
-    setupComponent('PARTIAL_RESULTS');
+  it(
+    '(AC5e) Tabs only displayed when results exist for corresponding type',
+    { tags: ['PO-706', '@JIRA-KEY:POT-3766'] },
+    () => {
+      // Test scenario with only individuals and companies (no minor creditors)
+      setupComponent('PARTIAL_RESULTS');
 
-    // Verify only individuals and companies tabs are shown
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.individualsTab).should('be.visible');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.companiesTab).should('be.visible');
-    cy.get(INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
-  });
+      // Verify only individuals and companies tabs are shown
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.individualsTab).should('be.visible');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.companiesTab).should('be.visible');
+      cy.get(INDIVIDUAL_DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
+    },
+  );
 
   it('(AC5fi) Companies tab in focus when no individuals found', { tags: ['PO-706', '@JIRA-KEY:POT-3767'] }, () => {
     setupComponent('COMPANY_RESULTS_ONLY', 'companies');

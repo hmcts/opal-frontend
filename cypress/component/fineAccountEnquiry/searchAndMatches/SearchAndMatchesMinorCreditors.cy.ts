@@ -65,45 +65,49 @@ describe('Search Account Component - Minor Creditors', () => {
     minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
   });
 
-  it('AC1-AC3. should render the search for an account screen and minor creditors tab', { tags: ['PO-715', '@JIRA-KEY:POT-3734'] }, () => {
-    setupComponent(null);
+  it(
+    'AC1-AC3. should render the search for an account screen and minor creditors tab',
+    { tags: ['PO-715', '@JIRA-KEY:POT-3734'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
-    cy.get(DOM_ELEMENTS.tabs).should('exist');
-    cy.get(DOM_ELEMENTS.tabsList).should('exist');
-    cy.get(DOM_ELEMENTS.individualsTab).should('exist');
-    cy.get(DOM_ELEMENTS.companiesTab).should('exist');
-    cy.get(DOM_ELEMENTS.minorCreditorsTab).should('exist');
-    cy.get(DOM_ELEMENTS.majorCreditorsTab).should('exist');
-    cy.get(DOM_ELEMENTS.minorCreditorsPanel).should('exist');
-    cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).should('exist');
-    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).should('exist');
-    cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
-    cy.get(DOM_ELEMENTS.companyNameLabel).should('exist').contains('Company name');
-    cy.get(DOM_ELEMENTS.companyNameInput).should('exist');
-    cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).should('exist').and('not.be.checked');
-    cy.get(DOM_ELEMENTS.addressLine1Label).should('exist').contains('Address line 1');
-    cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
-    cy.get(DOM_ELEMENTS.postcodeLabel).should('exist').and('contain', 'Postcode');
-    cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
-    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
-    cy.get(DOM_ELEMENTS.lastNameLabel).should('exist').and('contain', 'Last name');
-    cy.get(DOM_ELEMENTS.lastNameInput).should('exist');
-    cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).should('exist').and('not.be.checked');
-    cy.get(DOM_ELEMENTS.firstNamesLabel).should('exist').and('contain', 'First names');
-    cy.get(DOM_ELEMENTS.firstNamesInput).should('exist');
-    cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).should('exist').and('not.be.checked');
-    cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Label).should('exist').and('contain', 'Address line 1');
-    cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Input).should('exist');
-    cy.get(DOM_ELEMENTS.minorIndividualPostcodeLabel).should('exist').and('contain', 'Postcode');
-    cy.get(DOM_ELEMENTS.minorIndividualPostcodeInput).should('exist');
-    cy.get(DOM_ELEMENTS.accountNumberLabel).should('exist').and('contain', 'Account number');
-    cy.get(DOM_ELEMENTS.referenceNumberLabel).should('exist').and('contain', 'Reference or case number');
-    cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist');
-    cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
-    cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
-  });
+      cy.get(DOM_ELEMENTS.app).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
+      cy.get(DOM_ELEMENTS.tabs).should('exist');
+      cy.get(DOM_ELEMENTS.tabsList).should('exist');
+      cy.get(DOM_ELEMENTS.individualsTab).should('exist');
+      cy.get(DOM_ELEMENTS.companiesTab).should('exist');
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).should('exist');
+      cy.get(DOM_ELEMENTS.majorCreditorsTab).should('exist');
+      cy.get(DOM_ELEMENTS.minorCreditorsPanel).should('exist');
+      cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
+      cy.get(DOM_ELEMENTS.companyNameLabel).should('exist').contains('Company name');
+      cy.get(DOM_ELEMENTS.companyNameInput).should('exist');
+      cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).should('exist').and('not.be.checked');
+      cy.get(DOM_ELEMENTS.addressLine1Label).should('exist').contains('Address line 1');
+      cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
+      cy.get(DOM_ELEMENTS.postcodeLabel).should('exist').and('contain', 'Postcode');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+      cy.get(DOM_ELEMENTS.lastNameLabel).should('exist').and('contain', 'Last name');
+      cy.get(DOM_ELEMENTS.lastNameInput).should('exist');
+      cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).should('exist').and('not.be.checked');
+      cy.get(DOM_ELEMENTS.firstNamesLabel).should('exist').and('contain', 'First names');
+      cy.get(DOM_ELEMENTS.firstNamesInput).should('exist');
+      cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).should('exist').and('not.be.checked');
+      cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Label).should('exist').and('contain', 'Address line 1');
+      cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Input).should('exist');
+      cy.get(DOM_ELEMENTS.minorIndividualPostcodeLabel).should('exist').and('contain', 'Postcode');
+      cy.get(DOM_ELEMENTS.minorIndividualPostcodeInput).should('exist');
+      cy.get(DOM_ELEMENTS.accountNumberLabel).should('exist').and('contain', 'Account number');
+      cy.get(DOM_ELEMENTS.referenceNumberLabel).should('exist').and('contain', 'Reference or case number');
+      cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist');
+      cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
+    },
+  );
 
   it('AC6a. should show error for non-alphabetical last name', { tags: ['PO-715', '@JIRA-KEY:POT-3735'] }, () => {
     setupComponent(null);
@@ -236,7 +240,10 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
-  it('AC3a. Should validate last name field when "Search exact match" for last name is selected on Minor Creditor Individual', { tags: ['PO-1969', '@JIRA-KEY:POT-3745'] }, () => {
+  it(
+    'AC3a. Should validate last name field when "Search exact match" for last name is selected on Minor Creditor Individual',
+    { tags: ['PO-1969', '@JIRA-KEY:POT-3745'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
@@ -245,9 +252,13 @@ describe('Search Account Component - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
-    });
+    },
+  );
 
-  it('AC3b. Should validate first name field when "Search exact match" for first name is selected on Minor Creditor Individual', { tags: ['PO-1969', '@JIRA-KEY:POT-3746'] }, () => {
+  it(
+    'AC3b. Should validate first name field when "Search exact match" for first name is selected on Minor Creditor Individual',
+    { tags: ['PO-1969', '@JIRA-KEY:POT-3746'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
@@ -256,9 +267,13 @@ describe('Search Account Component - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'Enter first name');
-    });
+    },
+  );
 
-  it('AC4a. Should validate company name field when "Search exact match" for company name is selected on Minor Creditor Company', { tags: ['PO-1969', '@JIRA-KEY:POT-3747'] }, () => {
+  it(
+    'AC4a. Should validate company name field when "Search exact match" for company name is selected on Minor Creditor Company',
+    { tags: ['PO-1969', '@JIRA-KEY:POT-3747'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
@@ -267,5 +282,6 @@ describe('Search Account Component - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
-    });
+    },
+  );
 });

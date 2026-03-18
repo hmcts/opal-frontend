@@ -133,115 +133,129 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     });
   });
 
-  it('(AC.4) should render summary tables under review account for AY', { tags: ['@PO-594', '@JIRA-KEY:POT-4360'] }, () => {
-    setupComponent(finesAccountPayload, finesAccountPayload, true);
+  it(
+    '(AC.4) should render summary tables under review account for AY',
+    { tags: ['@PO-594', '@JIRA-KEY:POT-4360'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, true);
 
-    cy.get(DOM_ELEMENTS.heading).should('exist');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
-    cy.get(DOM_ELEMENTS.status).should('exist').and('contain', 'In review');
+      cy.get(DOM_ELEMENTS.heading).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.status).should('exist').and('contain', 'In review');
 
-    // Account details
-    cy.get(DOM_ELEMENTS.originatorTypeData).should('exist');
-    cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
-    cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');
+      // Account details
+      cy.get(DOM_ELEMENTS.originatorTypeData).should('exist');
+      cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
+      cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
+      cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');
 
-    // Personal details
-    cy.get(DOM_ELEMENTS.summaryTitle).should('exist');
-    cy.get(DOM_ELEMENTS.title).should('exist');
-    cy.get(DOM_ELEMENTS.forenames).should('exist');
-    cy.get(DOM_ELEMENTS.surname).should('exist');
-    cy.get(DOM_ELEMENTS.aliases).should('exist');
-    cy.get(DOM_ELEMENTS.dob).should('exist');
-    cy.get(DOM_ELEMENTS.nationalInsuranceNumber).should('exist');
-    cy.get(DOM_ELEMENTS.address).should('exist');
-    cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('exist');
-    cy.get(DOM_ELEMENTS.registrationNumber).should('exist');
+      // Personal details
+      cy.get(DOM_ELEMENTS.summaryTitle).should('exist');
+      cy.get(DOM_ELEMENTS.title).should('exist');
+      cy.get(DOM_ELEMENTS.forenames).should('exist');
+      cy.get(DOM_ELEMENTS.surname).should('exist');
+      cy.get(DOM_ELEMENTS.aliases).should('exist');
+      cy.get(DOM_ELEMENTS.dob).should('exist');
+      cy.get(DOM_ELEMENTS.nationalInsuranceNumber).should('exist');
+      cy.get(DOM_ELEMENTS.address).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('exist');
+      cy.get(DOM_ELEMENTS.registrationNumber).should('exist');
 
-    // Contact details
-    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('exist');
-    cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('exist');
-    cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('exist');
-    cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('exist');
-    cy.get(DOM_ELEMENTS.workTelephoneNumber).should('exist');
+      // Contact details
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('exist');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('exist');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('exist');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('exist');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber).should('exist');
 
-    // Employer details
-    cy.get(DOM_ELEMENTS.employerName).should('exist');
-    cy.get(DOM_ELEMENTS.employeeReference).should('exist');
-    cy.get(DOM_ELEMENTS.employerEmailAddress).should('exist');
-    cy.get(DOM_ELEMENTS.employerTelephoneNumber).should('exist');
-    cy.get(DOM_ELEMENTS.employerAddress).should('exist');
+      // Employer details
+      cy.get(DOM_ELEMENTS.employerName).should('exist');
+      cy.get(DOM_ELEMENTS.employeeReference).should('exist');
+      cy.get(DOM_ELEMENTS.employerEmailAddress).should('exist');
+      cy.get(DOM_ELEMENTS.employerTelephoneNumber).should('exist');
+      cy.get(DOM_ELEMENTS.employerAddress).should('exist');
 
-    // Payment terms
-    cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-    cy.get(DOM_ELEMENTS.payByDate).should('exist');
-    cy.get(DOM_ELEMENTS.requestPaymentCard).should('exist');
-    cy.get(DOM_ELEMENTS.hasDaysInDefault).should('exist');
-    cy.get(DOM_ELEMENTS.enforcementActions).should('exist');
+      // Payment terms
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.payByDate).should('exist');
+      cy.get(DOM_ELEMENTS.requestPaymentCard).should('exist');
+      cy.get(DOM_ELEMENTS.hasDaysInDefault).should('exist');
+      cy.get(DOM_ELEMENTS.enforcementActions).should('exist');
 
-    // Account comments and notes
-    cy.get(DOM_ELEMENTS.comments).should('exist');
-    cy.get(DOM_ELEMENTS.accountNotes).should('exist');
+      // Account comments and notes
+      cy.get(DOM_ELEMENTS.comments).should('exist');
+      cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
-    cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', FINES_ACCOUNT_TYPES.Fine);
-    cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Adult or youth only');
+      cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
+      cy.get(DOM_ELEMENTS.accountTypeData)
+        .should('contain', 'Account type')
+        .should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.defendantTypeData)
+        .should('contain', 'Defendant type')
+        .should('contain', 'Adult or youth only');
 
-    cy.get(DOM_ELEMENTS.title).should('contain', 'Title').should('contain', 'Mr');
-    cy.get(DOM_ELEMENTS.forenames).should('contain', 'First names').should('contain', 'John');
-    cy.get(DOM_ELEMENTS.surname).should('contain', 'Last name').should('contain', 'Doe');
-    cy.get(DOM_ELEMENTS.aliases).should('contain', 'Aliases').should('contain', 'Rebecca Johnson');
-    cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
-    cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
-      .should('contain', 'National Insurance number')
-      .should('contain', 'AB 12 34 56 C');
-    cy.get(DOM_ELEMENTS.address)
-      .should('contain', 'Address')
-      .should('contain', '123 Fake Street')
-      .should('contain', 'Fake Town')
-      .should('contain', 'Fake City')
-      .should('contain', 'AB12 3CD');
-    cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', 'Ford');
-    cy.get(DOM_ELEMENTS.registrationNumber).should('contain', 'Registration number').should('contain', 'AB12 CDE');
+      cy.get(DOM_ELEMENTS.title).should('contain', 'Title').should('contain', 'Mr');
+      cy.get(DOM_ELEMENTS.forenames).should('contain', 'First names').should('contain', 'John');
+      cy.get(DOM_ELEMENTS.surname).should('contain', 'Last name').should('contain', 'Doe');
+      cy.get(DOM_ELEMENTS.aliases).should('contain', 'Aliases').should('contain', 'Rebecca Johnson');
+      cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
+      cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
+        .should('contain', 'National Insurance number')
+        .should('contain', 'AB 12 34 56 C');
+      cy.get(DOM_ELEMENTS.address)
+        .should('contain', 'Address')
+        .should('contain', '123 Fake Street')
+        .should('contain', 'Fake Town')
+        .should('contain', 'Fake City')
+        .should('contain', 'AB12 3CD');
+      cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', 'Ford');
+      cy.get(DOM_ELEMENTS.registrationNumber).should('contain', 'Registration number').should('contain', 'AB12 CDE');
 
-    cy.get(DOM_ELEMENTS.primaryEmailAddress)
-      .should('contain', 'Primary email address')
-      .should('contain', 'test@test.com');
-    cy.get(DOM_ELEMENTS.secondaryEmailAddress)
-      .should('contain', 'Secondary email address')
-      .should('contain', 'test@test.com');
-    cy.get(DOM_ELEMENTS.mobileTelephoneNumber)
-      .should('contain', 'Mobile telephone number')
-      .should('contain', '0123456789');
-    cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '0123456789');
-    cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '0123456789');
+      cy.get(DOM_ELEMENTS.primaryEmailAddress)
+        .should('contain', 'Primary email address')
+        .should('contain', 'test@test.com');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress)
+        .should('contain', 'Secondary email address')
+        .should('contain', 'test@test.com');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber)
+        .should('contain', 'Mobile telephone number')
+        .should('contain', '0123456789');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber)
+        .should('contain', 'Home telephone number')
+        .should('contain', '0123456789');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber)
+        .should('contain', 'Work telephone number')
+        .should('contain', '0123456789');
 
-    cy.get(DOM_ELEMENTS.employerName).should('contain', 'Employer name').should('contain', 'Test Company');
-    cy.get(DOM_ELEMENTS.employeeReference).should('contain', 'Employee reference').should('contain', 'Test Reference');
-    cy.get(DOM_ELEMENTS.employerEmailAddress)
-      .should('contain', 'Employer email address')
-      .should('contain', 'test@test.com');
-    cy.get(DOM_ELEMENTS.employerTelephoneNumber)
-      .should('contain', 'Employer telephone number')
-      .should('contain', '0123456789');
-    cy.get(DOM_ELEMENTS.employerAddress)
-      .should('contain', 'Employer address')
-      .should('contain', 'test address line 1')
-      .should('contain', 'test address line 2')
-      .should('contain', 'test address line 3')
-      .should('contain', 'test address line 4')
-      .should('contain', 'test address line 5')
-      .should('contain', 'test post code');
+      cy.get(DOM_ELEMENTS.employerName).should('contain', 'Employer name').should('contain', 'Test Company');
+      cy.get(DOM_ELEMENTS.employeeReference)
+        .should('contain', 'Employee reference')
+        .should('contain', 'Test Reference');
+      cy.get(DOM_ELEMENTS.employerEmailAddress)
+        .should('contain', 'Employer email address')
+        .should('contain', 'test@test.com');
+      cy.get(DOM_ELEMENTS.employerTelephoneNumber)
+        .should('contain', 'Employer telephone number')
+        .should('contain', '0123456789');
+      cy.get(DOM_ELEMENTS.employerAddress)
+        .should('contain', 'Employer address')
+        .should('contain', 'test address line 1')
+        .should('contain', 'test address line 2')
+        .should('contain', 'test address line 3')
+        .should('contain', 'test address line 4')
+        .should('contain', 'test address line 5')
+        .should('contain', 'test post code');
 
-    cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', 'test comments');
-    cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', 'test notes');
+      cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', 'test comments');
+      cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', 'test notes');
 
-    cy.get(DOM_ELEMENTS.changeLink).should('exist');
-    cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
-    cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist');
-    cy.get(DOM_ELEMENTS.continue).should('exist');
-    cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.changeLink).should('exist');
+      cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.continue).should('exist');
+      cy.get(DOM_ELEMENTS.deleteLink).should('exist');
+    },
+  );
 
   it('(AC.5) should render all elements on the screen for AYPG', { tags: ['@PO-594', '@JIRA-KEY:POT-4361'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload);
@@ -382,79 +396,92 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.deleteLink).should('exist');
   });
 
-  it('(AC.6) should render all elements on the screen for company defendant type', { tags: ['@PO-594', '@JIRA-KEY:POT-4362'] }, () => {
-    setupComponent(finesAccountPayload, finesAccountPayload);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+  it(
+    '(AC.6) should render all elements on the screen for company defendant type',
+    { tags: ['@PO-594', '@JIRA-KEY:POT-4362'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-    cy.get(DOM_ELEMENTS.heading).should('exist');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
 
-    // Account details
-    cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
-    cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');
+      // Account details
+      cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
+      cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
+      cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');
 
-    // Company Details
-    cy.get(DOM_ELEMENTS.companyName).should('exist');
-    cy.get(DOM_ELEMENTS.companyAliases).should('exist');
-    cy.get(DOM_ELEMENTS.companyAddress).should('exist');
+      // Company Details
+      cy.get(DOM_ELEMENTS.companyName).should('exist');
+      cy.get(DOM_ELEMENTS.companyAliases).should('exist');
+      cy.get(DOM_ELEMENTS.companyAddress).should('exist');
 
-    // Contact details
-    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('exist');
-    cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('exist');
-    cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('exist');
-    cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('exist');
-    cy.get(DOM_ELEMENTS.workTelephoneNumber).should('exist');
+      // Contact details
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('exist');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('exist');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('exist');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('exist');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber).should('exist');
 
-    // Payment terms
-    cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-    cy.get(DOM_ELEMENTS.payByDate).should('exist');
-    cy.get(DOM_ELEMENTS.enforcementActions).should('exist');
+      // Payment terms
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.payByDate).should('exist');
+      cy.get(DOM_ELEMENTS.enforcementActions).should('exist');
 
-    // Account comments and notes
-    cy.get(DOM_ELEMENTS.comments).should('exist');
-    cy.get(DOM_ELEMENTS.accountNotes).should('exist');
+      // Account comments and notes
+      cy.get(DOM_ELEMENTS.comments).should('exist');
+      cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
-    cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', FINES_ACCOUNT_TYPES.Fine);
-    cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Company');
+      cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
+      cy.get(DOM_ELEMENTS.accountTypeData)
+        .should('contain', 'Account type')
+        .should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Company');
 
-    cy.get(DOM_ELEMENTS.companyName).should('contain', 'Company name').should('contain', 'test company');
-    cy.get(DOM_ELEMENTS.companyAliases).should('contain', 'Aliases').should('contain', 'test alias');
-    cy.get(DOM_ELEMENTS.companyAddress)
-      .should('contain', 'Address')
-      .should('contain', 'test address line 1')
-      .should('contain', 'test address line 2')
-      .should('contain', 'test address line 3')
-      .should('contain', 'test post code');
+      cy.get(DOM_ELEMENTS.companyName).should('contain', 'Company name').should('contain', 'test company');
+      cy.get(DOM_ELEMENTS.companyAliases).should('contain', 'Aliases').should('contain', 'test alias');
+      cy.get(DOM_ELEMENTS.companyAddress)
+        .should('contain', 'Address')
+        .should('contain', 'test address line 1')
+        .should('contain', 'test address line 2')
+        .should('contain', 'test address line 3')
+        .should('contain', 'test post code');
 
-    cy.get(DOM_ELEMENTS.primaryEmailAddress)
-      .should('contain', 'Primary email address')
-      .should('contain', 'test@test.com');
-    cy.get(DOM_ELEMENTS.secondaryEmailAddress)
-      .should('contain', 'Secondary email address')
-      .should('contain', 'test@test.com');
-    cy.get(DOM_ELEMENTS.mobileTelephoneNumber)
-      .should('contain', 'Mobile telephone number')
-      .should('contain', '0123456789');
-    cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '0123456789');
-    cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '0123456789');
+      cy.get(DOM_ELEMENTS.primaryEmailAddress)
+        .should('contain', 'Primary email address')
+        .should('contain', 'test@test.com');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress)
+        .should('contain', 'Secondary email address')
+        .should('contain', 'test@test.com');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber)
+        .should('contain', 'Mobile telephone number')
+        .should('contain', '0123456789');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber)
+        .should('contain', 'Home telephone number')
+        .should('contain', '0123456789');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber)
+        .should('contain', 'Work telephone number')
+        .should('contain', '0123456789');
 
-    cy.get(DOM_ELEMENTS.paymentTerms).should('contain', 'Payment terms').should('contain', 'Pay in full');
-    cy.get(DOM_ELEMENTS.payByDate).should('contain', 'Pay by date').should('contain', '01 January 2022');
-    cy.get(DOM_ELEMENTS.enforcementActions).should('contain', 'Enforcement action').should('contain', 'No');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('contain', 'Payment terms').should('contain', 'Pay in full');
+      cy.get(DOM_ELEMENTS.payByDate).should('contain', 'Pay by date').should('contain', '01 January 2022');
+      cy.get(DOM_ELEMENTS.enforcementActions).should('contain', 'Enforcement action').should('contain', 'No');
 
-    cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', 'test comments');
-    cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', 'test notes');
+      cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', 'test comments');
+      cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', 'test notes');
 
-    cy.get(DOM_ELEMENTS.changeLink).should('exist');
-    cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
-    cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist');
-    cy.get(DOM_ELEMENTS.continue).should('exist');
-    cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.changeLink).should('exist');
+      cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.continue).should('exist');
+      cy.get(DOM_ELEMENTS.deleteLink).should('exist');
+    },
+  );
 
-  it('(AC.7) should show dashed line if Data is empty for non required details for all defendant types', { tags: ['@PO-594', '@JIRA-KEY:POT-4363'] }, () => {
+  it(
+    '(AC.7) should show dashed line if Data is empty for non required details for all defendant types',
+    { tags: ['@PO-594', '@JIRA-KEY:POT-4363'] },
+    () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
       finesMacState.contactDetails.formData = {
@@ -486,31 +513,47 @@ describe('ReviewAccountRejectedApproveComponent', () => {
           cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
         });
       });
-    });
-  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594', '@JIRA-KEY:POT-4364'] }, () => {
-    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+    },
+  );
+  it(
+    'AC.2 The Review Account screen will be created as per the design artefact',
+    { tags: ['@PO-594', '@JIRA-KEY:POT-4364'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
-    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
 
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'In review');
-  });
+      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'In review');
+    },
+  );
 
-  it('AC.8, Decision table will be shown as per the design artefact', { tags: ['@PO-594', '@JIRA-KEY:POT-4365'] }, () => {
-    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
-    cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
-    cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
-    cy.get(DOM_ELEMENTS.rejectionText).should('exist');
-    cy.get(DOM_ELEMENTS.continue).should('exist');
-    cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-  });
-  it('AC.8a user does not select any radio button and selects the Continue button', { tags: ['@PO-594', '@JIRA-KEY:POT-4366'] }, () => {
-    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
-    cy.get(DOM_ELEMENTS.continue).should('exist').click();
-    cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
-    cy.get('p').should('contain', 'Select whether approved or rejected');
-  });
-  it('AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button', { tags: ['@PO-594', '@JIRA-KEY:POT-4367'] }, () => {
+  it(
+    'AC.8, Decision table will be shown as per the design artefact',
+    { tags: ['@PO-594', '@JIRA-KEY:POT-4365'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+      cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
+      cy.get(DOM_ELEMENTS.rejectionText).should('exist');
+      cy.get(DOM_ELEMENTS.continue).should('exist');
+      cy.get(DOM_ELEMENTS.deleteLink).should('exist');
+    },
+  );
+  it(
+    'AC.8a user does not select any radio button and selects the Continue button',
+    { tags: ['@PO-594', '@JIRA-KEY:POT-4366'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+      cy.get(DOM_ELEMENTS.continue).should('exist').click();
+      cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
+      cy.get('p').should('contain', 'Select whether approved or rejected');
+    },
+  );
+  it(
+    'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button',
+    { tags: ['@PO-594', '@JIRA-KEY:POT-4367'] },
+    () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
       cy.get(DOM_ELEMENTS.continue).should('exist').click();
@@ -525,69 +568,78 @@ describe('ReviewAccountRejectedApproveComponent', () => {
         'contain',
         'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       );
-    });
+    },
+  );
 
   //PO-969
-  it('AC.1b update draft account with patch method', { tags: ['@PO-969', '@JIRA-KEY:POT-4368', '@JIRA-KEY:POT-4369'] }, () => {
-    cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
-    let payload = structuredClone(finesAccountPayload);
-    payload.draft_account_id = 342;
-    setupComponent(finesAccountPayload, payload, false, true);
+  it(
+    'AC.1b update draft account with patch method',
+    { tags: ['@PO-969', '@JIRA-KEY:POT-4368', '@JIRA-KEY:POT-4369'] },
+    () => {
+      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
+      let payload = structuredClone(finesAccountPayload);
+      payload.draft_account_id = 342;
+      setupComponent(finesAccountPayload, payload, false, true);
 
-    cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
-    cy.get(DOM_ELEMENTS.rejectionText).type('I have rejected this account because the surname is incorrect');
-    cy.get(DOM_ELEMENTS.continue).click();
+      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
+      cy.get(DOM_ELEMENTS.rejectionText).type('I have rejected this account because the surname is incorrect');
+      cy.get(DOM_ELEMENTS.continue).click();
 
-    cy.wait('@patchDraftAccount').then(({ request }) => {
-      expect(request.body).to.exist;
-      expect(request.url).to.include('/opal-fines-service/draft-accounts/342');
-      expect(request.method).to.equal('PATCH');
+      cy.wait('@patchDraftAccount').then(({ request }) => {
+        expect(request.body).to.exist;
+        expect(request.url).to.include('/opal-fines-service/draft-accounts/342');
+        expect(request.method).to.equal('PATCH');
 
-      expect(request.body).to.have.property('account_status', 'Rejected');
-      expect(request.body).to.have.property('timeline_data');
+        expect(request.body).to.have.property('account_status', 'Rejected');
+        expect(request.body).to.have.property('timeline_data');
 
-      expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-      expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-      expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-      expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
+        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
+        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
+        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
+        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
 
-      expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-      expect(request.body.timeline_data[1]).to.have.property('status', 'Rejected');
-      expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-      expect(request.body.timeline_data[1]).to.have.property(
-        'reason_text',
-        'I have rejected this account because the surname is incorrect',
-      );
-    });
-  });
+        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
+        expect(request.body.timeline_data[1]).to.have.property('status', 'Rejected');
+        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
+        expect(request.body.timeline_data[1]).to.have.property(
+          'reason_text',
+          'I have rejected this account because the surname is incorrect',
+        );
+      });
+    },
+  );
 
   //PO-968
-  it('AC.1b update draft account with patch method', { tags: ['@PO-968', '@JIRA-KEY:POT-4368', '@JIRA-KEY:POT-4369'] }, () => {
-    cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
-    let payload = structuredClone(finesAccountPayload);
-    payload.draft_account_id = 42;
-    setupComponent(finesAccountPayload, payload, false, true);
+  it(
+    'AC.1b update draft account with patch method',
+    { tags: ['@PO-968', '@JIRA-KEY:POT-4368', '@JIRA-KEY:POT-4369'] },
+    () => {
+      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
+      let payload = structuredClone(finesAccountPayload);
+      payload.draft_account_id = 42;
+      setupComponent(finesAccountPayload, payload, false, true);
 
-    cy.get(DOM_ELEMENTS.approveRadioButton).should('exist').click();
-    cy.get(DOM_ELEMENTS.continue).click();
+      cy.get(DOM_ELEMENTS.approveRadioButton).should('exist').click();
+      cy.get(DOM_ELEMENTS.continue).click();
 
-    cy.wait('@patchDraftAccount').then(({ request }) => {
-      expect(request.body).to.exist;
-      expect(request.url).to.include('/opal-fines-service/draft-accounts/42');
-      expect(request.method).to.equal('PATCH');
+      cy.wait('@patchDraftAccount').then(({ request }) => {
+        expect(request.body).to.exist;
+        expect(request.url).to.include('/opal-fines-service/draft-accounts/42');
+        expect(request.method).to.equal('PATCH');
 
-      expect(request.body).to.have.property('account_status', 'Publishing Pending');
-      expect(request.body).to.have.property('timeline_data');
+        expect(request.body).to.have.property('account_status', 'Publishing Pending');
+        expect(request.body).to.have.property('timeline_data');
 
-      expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-      expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-      expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-      expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
+        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
+        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
+        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
+        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
 
-      expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-      expect(request.body.timeline_data[1]).to.have.property('status', 'Publishing Pending');
-      expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-      expect(request.body.timeline_data[1]).not.to.have.property('reason_text');
-    });
-  });
+        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
+        expect(request.body.timeline_data[1]).to.have.property('status', 'Publishing Pending');
+        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
+        expect(request.body.timeline_data[1]).not.to.have.property('reason_text');
+      });
+    },
+  );
 });

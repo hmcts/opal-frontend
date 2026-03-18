@@ -37,7 +37,10 @@ describe('Global Version Control Mechanism - Component Tests', () => {
     ],
   };
 
-  it('AC1: Warning banner will not be displayed when version control mechanism confirms account-level-data has not changed', { tags: ['@PO-2140', '@JIRA-KEY:POT-3549'] }, () => {
+  it(
+    'AC1: Warning banner will not be displayed when version control mechanism confirms account-level-data has not changed',
+    { tags: ['@PO-2140', '@JIRA-KEY:POT-3549'] },
+    () => {
       // Use same ETag for both header and at-a-glance to simulate no version change
       const etag = 'W/"version-1"';
 
@@ -75,9 +78,13 @@ describe('Global Version Control Mechanism - Component Tests', () => {
 
       cy.get(DOM_ELEMENTS.historyNotesTab).click();
       cy.get(DOM_ELEMENTS.warningBanner).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC2a, AC2b, AC2bi) When navigating to a new tab with version changes, tab displays with orange warning banner matching design', { tags: ['@PO-2140', '@JIRA-KEY:POT-3550'] }, () => {
+  it(
+    '(AC2a, AC2b, AC2bi) When navigating to a new tab with version changes, tab displays with orange warning banner matching design',
+    { tags: ['@PO-2140', '@JIRA-KEY:POT-3550'] },
+    () => {
       // Use different ETags to simulate version changes
       const headerEtag = 'W/"version-1"';
       const atAGlanceEtag = 'W/"version-2"';
@@ -120,9 +127,13 @@ describe('Global Version Control Mechanism - Component Tests', () => {
 
       cy.get(DOM_ELEMENTS.historyNotesTab).click();
       cy.get(DOM_ELEMENTS.warningBanner).should('exist');
-    });
+    },
+  );
 
-  it('(AC2c, AC2ci, AC2cii, AC2ciii, AC2ciiia) When refresh button is clicked, page refreshes and shows green success banner', { tags: ['@PO-2140', '@JIRA-KEY:POT-3551'] }, () => {
+  it(
+    '(AC2c, AC2ci, AC2cii, AC2ciii, AC2ciiia) When refresh button is clicked, page refreshes and shows green success banner',
+    { tags: ['@PO-2140', '@JIRA-KEY:POT-3551'] },
+    () => {
       // Start with different ETags to show version mismatch
       const headerEtag = 'W/"version-1"';
       const atAGlanceEtag = 'W/"version-2"';
@@ -170,5 +181,6 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       // Verify success banner can be dismissed
       cy.get(DOM_ELEMENTS.successBannerDismiss).should('exist').click();
       cy.get(DOM_ELEMENTS.successBanner).should('not.exist');
-    });
+    },
+  );
 });

@@ -47,109 +47,121 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
     });
   };
 
-  it('(AC.2) should display rejected tab correctly when there are zero draft records', { tags: ['@PO-600', '@JIRA-KEY:POT-3896'] }, () => {
-    const emptyMockData = { count: 0, summaries: [] };
+  it(
+    '(AC.2) should display rejected tab correctly when there are zero draft records',
+    { tags: ['@PO-600', '@JIRA-KEY:POT-3896'] },
+    () => {
+      const emptyMockData = { count: 0, summaries: [] };
 
-    interceptCAVGetRejectedAccounts(200, emptyMockData);
-    interceptCAVGetToReviewAccounts(200, emptyMockData);
-    interceptCAVGetDeletedAccounts(200, emptyMockData);
-    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetRejectedAccounts(200, emptyMockData);
+      interceptCAVGetToReviewAccounts(200, emptyMockData);
+      interceptCAVGetDeletedAccounts(200, emptyMockData);
+      interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
-    setupComponent();
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
 
-    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
-    cy.get('p').should('exist').and('contain', 'There are no rejected accounts');
-    cy.get(DOM_ELEMENTS.table).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
+      cy.get('p').should('exist').and('contain', 'There are no rejected accounts');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+    },
+  );
 
-  it('(AC.3) should display Rejected tab correctly when there are draft records', { tags: ['@PO-600', '@JIRA-KEY:POT-3897'] }, () => {
-    const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
-    interceptCAVGetRejectedAccounts(200, rejectedMockData);
-    interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
+  it(
+    '(AC.3) should display Rejected tab correctly when there are draft records',
+    { tags: ['@PO-600', '@JIRA-KEY:POT-3897'] },
+    () => {
+      const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
+      interceptCAVGetRejectedAccounts(200, rejectedMockData);
+      interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
-    //Get the test user and business unit from the mock data
-    const testUser = DRAFT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id;
-    const businessUnitId = DRAFT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_id;
+      //Get the test user and business unit from the mock data
+      const testUser = DRAFT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id;
+      const businessUnitId = DRAFT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_id;
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
-    cy.get(DOM_ELEMENTS.table).should('exist');
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
+      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
+      cy.get(DOM_ELEMENTS.table).should('exist');
 
-    //Ensure the request created by the frontend is correct
-    cy.get('@getRejectedAccounts').then((interception: any) => {
-      expect(interception.request.url).to.include(`business_unit=${businessUnitId}`);
-      expect(interception.request.url).to.include(`not_submitted_by=${testUser}`);
-    });
-
-    //Check table headings
-    cy.get(DOM_ELEMENTS.tableHeadings).each((heading, index) => {
-      const expectedHeading = TABLE_HEADINGS[index];
-      cy.wrap(heading).should('contain', expectedHeading);
-    });
-  });
-
-  it('(AC.4a) should have default sort order for created accounts set to ascending', { tags: ['@PO-600', '@JIRA-KEY:POT-3898'] }, () => {
-    const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
-    interceptCAVGetRejectedAccounts(200, rejectedMockData);
-    interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
-
-    setupComponent();
-
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
-
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
-
-    //Check table row data in row 1
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(0)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.dob).contains('—');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+      //Ensure the request created by the frontend is correct
+      cy.get('@getRejectedAccounts').then((interception: any) => {
+        expect(interception.request.url).to.include(`business_unit=${businessUnitId}`);
+        expect(interception.request.url).to.include(`not_submitted_by=${testUser}`);
       });
 
-    //Check table row data in row 2
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(1)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+      //Check table headings
+      cy.get(DOM_ELEMENTS.tableHeadings).each((heading, index) => {
+        const expectedHeading = TABLE_HEADINGS[index];
+        cy.wrap(heading).should('contain', expectedHeading);
       });
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'descending');
+  it(
+    '(AC.4a) should have default sort order for created accounts set to ascending',
+    { tags: ['@PO-600', '@JIRA-KEY:POT-3898'] },
+    () => {
+      const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
+      interceptCAVGetRejectedAccounts(200, rejectedMockData);
+      interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(0)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
-      });
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(1)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.dob).contains('—');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
-      });
-  });
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
+
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
+
+      //Check table row data in row 1
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(0)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.dob).contains('—');
+          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+        });
+
+      //Check table row data in row 2
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(1)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+          cy.get(DOM_ELEMENTS.created).contains('Today');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+        });
+
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'descending');
+
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(0)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+          cy.get(DOM_ELEMENTS.created).contains('Today');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+        });
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(1)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.dob).contains('—');
+          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+        });
+    },
+  );
 
   it('(AC.4b) should have pagination for over 25 accounts', { tags: ['@PO-600', '@JIRA-KEY:POT-3899'] }, () => {
     const rejectedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);

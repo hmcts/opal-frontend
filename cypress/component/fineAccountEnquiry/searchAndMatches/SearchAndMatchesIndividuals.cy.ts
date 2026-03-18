@@ -120,38 +120,46 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
   });
 
-  it('AC3b. should show error for incorrectly formatted account number', { tags: ['PO-705', '@JIRA-KEY:POT-3703'] }, () => {
-    setupComponent(null);
-    individualSearchMock.fsa_search_account_number = '1234567';
+  it(
+    'AC3b. should show error for incorrectly formatted account number',
+    { tags: ['PO-705', '@JIRA-KEY:POT-3703'] },
+    () => {
+      setupComponent(null);
+      individualSearchMock.fsa_search_account_number = '1234567';
 
-    cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '1234567');
-    cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '1234567');
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain', 'Enter account number in the correct format such as 12345678 or 12345678A');
-    cy.get(DOM_ELEMENTS.accountNumberError)
-      .should('exist')
-      .and('contain', 'Enter account number in the correct format such as 12345678 or 12345678A');
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('exist')
+        .and('contain', 'Enter account number in the correct format such as 12345678 or 12345678A');
+      cy.get(DOM_ELEMENTS.accountNumberError)
+        .should('exist')
+        .and('contain', 'Enter account number in the correct format such as 12345678 or 12345678A');
 
-    cy.get(DOM_ELEMENTS.accountNumberInput).clear();
-  });
-  it('AC3c. should show error for non-alphabetical reference or case number', { tags: ['PO-705', '@JIRA-KEY:POT-3704'] }, () => {
-    setupComponent(null);
-    individualSearchMock.fsa_search_account_reference_case_number = 'REF@#$456';
+      cy.get(DOM_ELEMENTS.accountNumberInput).clear();
+    },
+  );
+  it(
+    'AC3c. should show error for non-alphabetical reference or case number',
+    { tags: ['PO-705', '@JIRA-KEY:POT-3704'] },
+    () => {
+      setupComponent(null);
+      individualSearchMock.fsa_search_account_reference_case_number = 'REF@#$456';
 
-    cy.get(DOM_ELEMENTS.referenceNumberInput).should('have.value', 'REF@#$456');
-    cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.referenceNumberInput).should('have.value', 'REF@#$456');
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain', 'Reference or case number must only contain letters or numbers');
-    cy.get(DOM_ELEMENTS.referenceNumberError)
-      .should('exist')
-      .and('contain', 'Reference or case number must only contain letters or numbers');
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('exist')
+        .and('contain', 'Reference or case number must only contain letters or numbers');
+      cy.get(DOM_ELEMENTS.referenceNumberError)
+        .should('exist')
+        .and('contain', 'Reference or case number must only contain letters or numbers');
 
-    cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
+    },
+  );
   it('AC3d. should show error for non-alphabetical last name', { tags: ['PO-705', '@JIRA-KEY:POT-3705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
@@ -204,30 +212,38 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.dobInput).clear();
   });
-  it('AC3h. should show error for incorrectly formatted date of birth', { tags: ['PO-705', '@JIRA-KEY:POT-3709'] }, () => {
-    setupComponent(null);
-    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
-      '5/1/1980';
+  it(
+    'AC3h. should show error for incorrectly formatted date of birth',
+    { tags: ['PO-705', '@JIRA-KEY:POT-3709'] },
+    () => {
+      setupComponent(null);
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
+        '5/1/1980';
 
-    cy.get(DOM_ELEMENTS.dobInput).should('have.value', '5/1/1980');
-    cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.dobInput).should('have.value', '5/1/1980');
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
-    cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
+      cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
 
-    cy.get(DOM_ELEMENTS.dobInput).clear();
-  });
+      cy.get(DOM_ELEMENTS.dobInput).clear();
+    },
+  );
 
-  it('date picker should show the date in correct format DD/MM/YYYY', { tags: ['PO-1998', '@JIRA-KEY:POT-3710'] }, () => {
-    setupComponent(null);
+  it(
+    'date picker should show the date in correct format DD/MM/YYYY',
+    { tags: ['PO-1998', '@JIRA-KEY:POT-3710'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
-    cy.get(DOM_ELEMENTS.dobDatePickerPrevMonth).click();
-    cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
-    const expectedDate = getFirstDayOfPreviousMonth();
-    cy.get(DOM_ELEMENTS.dobInput).should('have.value', expectedDate);
-    cy.get(DOM_ELEMENTS.searchButton).click();
-  });
+      cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
+      cy.get(DOM_ELEMENTS.dobDatePickerPrevMonth).click();
+      cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
+      const expectedDate = getFirstDayOfPreviousMonth();
+      cy.get(DOM_ELEMENTS.dobInput).should('have.value', expectedDate);
+      cy.get(DOM_ELEMENTS.searchButton).click();
+    },
+  );
 
   it('AC3i. should show error for invalid NI number', { tags: ['PO-705', '@JIRA-KEY:POT-3711'] }, () => {
     setupComponent(null);
@@ -290,22 +306,26 @@ describe('Search Account Component - Individuals', () => {
       .and('contain', 'Account number must be 9 characters or fewer');
   });
 
-  it('AC4b. should validate reference or case number maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3715'] }, () => {
-    setupComponent(null);
-    individualSearchMock.fsa_search_account_reference_case_number =
-      'This reference number is way too long and exceeds thirty characters';
+  it(
+    'AC4b. should validate reference or case number maximum field length',
+    { tags: ['PO-705', '@JIRA-KEY:POT-3715'] },
+    () => {
+      setupComponent(null);
+      individualSearchMock.fsa_search_account_reference_case_number =
+        'This reference number is way too long and exceeds thirty characters';
 
-    cy.get(DOM_ELEMENTS.referenceNumberInput).should(
-      'have.value',
-      'This reference number is way too long and exceeds thirty characters',
-    );
-    cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.referenceNumberInput).should(
+        'have.value',
+        'This reference number is way too long and exceeds thirty characters',
+      );
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.referenceNumberError)
-      .should('exist')
-      .and('contain', 'Reference or case number must be 30 characters or fewer');
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.referenceNumberError)
+        .should('exist')
+        .and('contain', 'Reference or case number must be 30 characters or fewer');
+    },
+  );
 
   it('AC4c. should validate last name maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3716'] }, () => {
     setupComponent(null);
@@ -331,19 +351,23 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must be 20 characters or fewer');
   });
 
-  it('AC4e. should validate National Insurance number maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3718'] }, () => {
-    setupComponent(null);
-    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
-      'AB123456CD';
+  it(
+    'AC4e. should validate National Insurance number maximum field length',
+    { tags: ['PO-705', '@JIRA-KEY:POT-3718'] },
+    () => {
+      setupComponent(null);
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+        'AB123456CD';
 
-    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456CD');
-    cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456CD');
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.niNumberError)
-      .should('exist')
-      .and('contain', 'National Insurance number must be 9 characters or fewer');
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.niNumberError)
+        .should('exist')
+        .and('contain', 'National Insurance number must be 9 characters or fewer');
+    },
+  );
 
   it('AC4f. should validate Address Line 1 maximum field length', { tags: ['PO-705', '@JIRA-KEY:POT-3719'] }, () => {
     setupComponent(null);
@@ -401,29 +425,41 @@ describe('Search Account Component - Individuals', () => {
     cy.get('@consoleLog').should('have.not.been.calledOnce');
   });
 
-  it('AC1a. Should validate last name field when alias checkbox selected', { tags: ['PO-1969', '@JIRA-KEY:POT-3723'] }, () => {
-    setupComponent(null);
+  it(
+    'AC1a. Should validate last name field when alias checkbox selected',
+    { tags: ['PO-1969', '@JIRA-KEY:POT-3723'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.includeAliasesCheckbox).check().should('be.checked');
-    cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.includeAliasesCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
-  });
+      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+    },
+  );
 
-  it('AC1b. Should validate last name field when "Search exact match" for last name is selected', { tags: ['PO-1969', '@JIRA-KEY:POT-3724'] }, () => {
+  it(
+    'AC1b. Should validate last name field when "Search exact match" for last name is selected',
+    { tags: ['PO-1969', '@JIRA-KEY:POT-3724'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).check().should('be.checked');
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
-    });
-  it('AC1c. Should validate first name field when "Search exact match" for first name is selected', { tags: ['PO-1969', '@JIRA-KEY:POT-3725'] }, () => {
+    },
+  );
+  it(
+    'AC1c. Should validate first name field when "Search exact match" for first name is selected',
+    { tags: ['PO-1969', '@JIRA-KEY:POT-3725'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).check().should('be.checked');
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'Enter first name');
-    });
+    },
+  );
 });

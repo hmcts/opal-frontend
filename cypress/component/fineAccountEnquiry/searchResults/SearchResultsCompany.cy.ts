@@ -71,17 +71,21 @@ describe('FinesSaResultsComponent - Companies', () => {
     cy.get(DOM_ELEMENTS.backLink).should('exist');
   });
 
-  it('(AC2) Displays error message when no search matches are found', { tags: ['PO-707', '@JIRA-KEY:POT-3771'] }, () => {
-    setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
+  it(
+    '(AC2) Displays error message when no search matches are found',
+    { tags: ['PO-707', '@JIRA-KEY:POT-3771'] },
+    () => {
+      setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
-    cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
 
-    //(AC2b) Check your search link is clickable and functional
-    // Test that the link is clickable (Full Test to be implemented when API complete)
-    cy.get(DOM_ELEMENTS.checkSearchLink).should('have.class', 'govuk-link');
-    cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible').click();
-    cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
-  });
+      //(AC2b) Check your search link is clickable and functional
+      // Test that the link is clickable (Full Test to be implemented when API complete)
+      cy.get(DOM_ELEMENTS.checkSearchLink).should('have.class', 'govuk-link');
+      cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible').click();
+      cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
+    },
+  );
 
   it('(AC3) Handles more than 100 search matches correctly', { tags: ['PO-717', '@JIRA-KEY:POT-3772'] }, () => {
     setupComponent(LARGE_SEARCH_RESULTS_MOCK);

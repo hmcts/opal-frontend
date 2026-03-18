@@ -69,181 +69,209 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     });
   };
 
-  it('Search offences results component is created correctly', { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4231'] }, () => {
-    setupComponent();
+  it(
+    'Search offences results component is created correctly',
+    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4231'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(DOM_ELEMENTS.app).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
 
-    cy.get(DOM_ELEMENTS.codeHeader).should('exist');
-    cy.get(DOM_ELEMENTS.shortTitleHeader).should('exist');
-    cy.get(DOM_ELEMENTS.actAndSectionHeader).should('exist');
-    cy.get(DOM_ELEMENTS.usedFromHeader).should('exist');
-    cy.get(DOM_ELEMENTS.usedToHeader).should('exist');
+      cy.get(DOM_ELEMENTS.codeHeader).should('exist');
+      cy.get(DOM_ELEMENTS.shortTitleHeader).should('exist');
+      cy.get(DOM_ELEMENTS.actAndSectionHeader).should('exist');
+      cy.get(DOM_ELEMENTS.usedFromHeader).should('exist');
+      cy.get(DOM_ELEMENTS.usedToHeader).should('exist');
 
-    cy.get(DOM_ELEMENTS.codeCell).should('exist');
-    cy.get(DOM_ELEMENTS.shortTitleCell).should('exist');
-    cy.get(DOM_ELEMENTS.actAndSectionCell).should('exist');
-    cy.get(DOM_ELEMENTS.usedFromCell).should('exist');
-    cy.get(DOM_ELEMENTS.usedToCell).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.codeCell).should('exist');
+      cy.get(DOM_ELEMENTS.shortTitleCell).should('exist');
+      cy.get(DOM_ELEMENTS.actAndSectionCell).should('exist');
+      cy.get(DOM_ELEMENTS.usedFromCell).should('exist');
+      cy.get(DOM_ELEMENTS.usedToCell).should('exist');
+    },
+  );
 
-  it('Displays error message when no search matches are found (AC3, AC3a)', { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4232'] }, () => {
-    setupComponent(NO_SEARCH_RESULTS_MOCK);
+  it(
+    'Displays error message when no search matches are found (AC3, AC3a)',
+    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4232'] },
+    () => {
+      setupComponent(NO_SEARCH_RESULTS_MOCK);
 
-    cy.get(DOM_ELEMENTS.noResultsMessage).should('be.visible');
-    cy.get(DOM_ELEMENTS.noResultsMessage).should('contain', 'There are no matching results.');
+      cy.get(DOM_ELEMENTS.noResultsMessage).should('be.visible');
+      cy.get(DOM_ELEMENTS.noResultsMessage).should('contain', 'There are no matching results.');
 
-    cy.get(DOM_ELEMENTS.noResultsFollowupMessage).should('be.visible');
-    cy.get(DOM_ELEMENTS.noResultsFollowupMessage).should('contain', 'Check your search and try again.');
-  });
+      cy.get(DOM_ELEMENTS.noResultsFollowupMessage).should('be.visible');
+      cy.get(DOM_ELEMENTS.noResultsFollowupMessage).should('contain', 'Check your search and try again.');
+    },
+  );
 
-  it('Displays search results with correct column headers (AC4)', { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4233'] }, () => {
-    setupComponent();
+  it(
+    'Displays search results with correct column headers (AC4)',
+    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4233'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.codeHeader).should('contain', 'Code');
-    cy.get(DOM_ELEMENTS.shortTitleHeader).should('contain', 'Short title');
-    cy.get(DOM_ELEMENTS.actAndSectionHeader).should('contain', 'Act and section');
-    cy.get(DOM_ELEMENTS.usedFromHeader).should('contain', 'Used from');
-    cy.get(DOM_ELEMENTS.usedToHeader).should('contain', 'Used to');
-  });
+      cy.get(DOM_ELEMENTS.codeHeader).should('contain', 'Code');
+      cy.get(DOM_ELEMENTS.shortTitleHeader).should('contain', 'Short title');
+      cy.get(DOM_ELEMENTS.actAndSectionHeader).should('contain', 'Act and section');
+      cy.get(DOM_ELEMENTS.usedFromHeader).should('contain', 'Used from');
+      cy.get(DOM_ELEMENTS.usedToHeader).should('contain', 'Used to');
+    },
+  );
 
-  it('Displays "Copy Code" link between Code and Short Title columns (AC5)', { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4234'] }, () => {
-    setupComponent();
+  it(
+    'Displays "Copy Code" link between Code and Short Title columns (AC5)',
+    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4234'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.copyCodeLink).first().should('exist');
-    cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Copy code');
+      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('exist');
+      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Copy code');
 
-    cy.get(DOM_ELEMENTS.copyCodeLink).first().click();
+      cy.get(DOM_ELEMENTS.copyCodeLink).first().click();
 
-    cy.get('@clipboardWriteText').should('have.been.called');
+      cy.get('@clipboardWriteText').should('have.been.called');
 
-    cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Code copied');
-  });
+      cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Code copied');
+    },
+  );
 
-  it('Correctly handles pagination with 25 results per page (AC6b)', { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4235'] }, () => {
-    setupComponent(FULL_SEARCH_RESULTS_MOCK);
+  it(
+    'Correctly handles pagination with 25 results per page (AC6b)',
+    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4235'] },
+    () => {
+      setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
-    cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
 
-    cy.get(DOM_ELEMENTS.paginationElement).should('exist');
+      cy.get(DOM_ELEMENTS.paginationElement).should('exist');
 
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
-  });
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
+    },
+  );
 
-  it('Handles pagination buttons correctly (AC6a), (AC6b, AC6c)', { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4236'] }, () => {
-    setupComponent(FULL_SEARCH_RESULTS_MOCK);
+  it(
+    'Handles pagination buttons correctly (AC6a), (AC6b, AC6c)',
+    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4236'] },
+    () => {
+      setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
-    //Handling Next and Previous buttons
-    cy.get(DOM_ELEMENTS.previousPageButton).should('not.exist');
+      //Handling Next and Previous buttons
+      cy.get(DOM_ELEMENTS.previousPageButton).should('not.exist');
 
-    cy.get(DOM_ELEMENTS.nextPageButton).should('exist').click();
+      cy.get(DOM_ELEMENTS.nextPageButton).should('exist').click();
 
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
 
-    cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
-    cy.get(DOM_ELEMENTS.nextPageButton).should('exist').click();
+      cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
+      cy.get(DOM_ELEMENTS.nextPageButton).should('exist').click();
 
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 to 75 of 100 total results');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 to 75 of 100 total results');
 
-    cy.get(DOM_ELEMENTS.nextPageButton).should('exist').click();
+      cy.get(DOM_ELEMENTS.nextPageButton).should('exist').click();
 
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 to 100 of 100 total results');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 to 100 of 100 total results');
 
-    cy.get(DOM_ELEMENTS.nextPageButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.nextPageButton).should('not.exist');
 
-    //Handle page number buttons
-    cy.get(DOM_ELEMENTS.paginationList).should('exist');
-    cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
+      //Handle page number buttons
+      cy.get(DOM_ELEMENTS.paginationList).should('exist');
+      cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
 
-    // Click on page 1 by content, not position
-    cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist').click();
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
+      // Click on page 1 by content, not position
+      cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist').click();
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
 
-    // Click on page 2 by content, not position
-    cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist').click();
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
+      // Click on page 2 by content, not position
+      cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist').click();
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
 
-    // Click on page 3 by content, not position
-    cy.get(DOM_ELEMENTS.paginationPageNumber(3)).should('exist').click();
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 to 75 of 100 total results');
+      // Click on page 3 by content, not position
+      cy.get(DOM_ELEMENTS.paginationPageNumber(3)).should('exist').click();
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 to 75 of 100 total results');
 
-    // Click on page 4 by content, not position
-    cy.get(DOM_ELEMENTS.paginationPageNumber(4)).should('exist').click();
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 to 100 of 100 total results');
-  });
+      // Click on page 4 by content, not position
+      cy.get(DOM_ELEMENTS.paginationPageNumber(4)).should('exist').click();
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 to 100 of 100 total results');
+    },
+  );
 
-  it('Handles column sorting and resets to page 1 for all columns (AC6a)', { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4237'] }, () => {
-    setupComponent(FULL_SEARCH_RESULTS_MOCK);
+  it(
+    'Handles column sorting and resets to page 1 for all columns (AC6a)',
+    { tags: ['@PO-545', '@PO-987', '@JIRA-KEY:POT-4237'] },
+    () => {
+      setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
-    // Navigate to page 2 to verify sorting resets pagination
-    cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
-    cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
+      // Navigate to page 2 to verify sorting resets pagination
+      cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
+      cy.get(DOM_ELEMENTS.nextPageButton).click();
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
 
-    // Test Code column sorting
-    cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS075');
-    cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS074');
+      // Test Code column sorting
+      cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS075');
+      cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS074');
 
-    cy.get(DOM_ELEMENTS.codeHeader).should('exist');
-    cy.get(DOM_ELEMENTS.codeHeader).click();
+      cy.get(DOM_ELEMENTS.codeHeader).should('exist');
+      cy.get(DOM_ELEMENTS.codeHeader).click();
 
-    cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS001');
-    cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS002');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
+      cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS001');
+      cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS002');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
 
-    // Test Short Title column sorting
-    cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
+      // Test Short Title column sorting
+      cy.get(DOM_ELEMENTS.nextPageButton).click();
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
 
-    cy.get(DOM_ELEMENTS.shortTitleHeader).should('exist');
-    cy.get(DOM_ELEMENTS.shortTitleHeader).click();
+      cy.get(DOM_ELEMENTS.shortTitleHeader).should('exist');
+      cy.get(DOM_ELEMENTS.shortTitleHeader).click();
 
-    cy.get(DOM_ELEMENTS.shortTitleCell).eq(0).should('contain', 'Offence Title 1');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
+      cy.get(DOM_ELEMENTS.shortTitleCell).eq(0).should('contain', 'Offence Title 1');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
 
-    // Test Act and Section column sorting
-    cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
+      // Test Act and Section column sorting
+      cy.get(DOM_ELEMENTS.nextPageButton).click();
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
 
-    cy.get(DOM_ELEMENTS.actAndSectionHeader).should('exist');
-    cy.get(DOM_ELEMENTS.actAndSectionHeader).click();
+      cy.get(DOM_ELEMENTS.actAndSectionHeader).should('exist');
+      cy.get(DOM_ELEMENTS.actAndSectionHeader).click();
 
-    cy.get(DOM_ELEMENTS.actAndSectionCell).eq(0).should('contain', 'Section 1.1');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
+      cy.get(DOM_ELEMENTS.actAndSectionCell).eq(0).should('contain', 'Section 1.1');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
 
-    // Test Used From column sorting
-    cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
+      // Test Used From column sorting
+      cy.get(DOM_ELEMENTS.nextPageButton).click();
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
 
-    cy.get(DOM_ELEMENTS.usedFromHeader).should('exist');
-    cy.get(DOM_ELEMENTS.usedFromHeader).click();
+      cy.get(DOM_ELEMENTS.usedFromHeader).should('exist');
+      cy.get(DOM_ELEMENTS.usedFromHeader).click();
 
-    cy.get(DOM_ELEMENTS.usedFromCell).eq(0).should('contain', '01 Jan 2024');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
+      cy.get(DOM_ELEMENTS.usedFromCell).eq(0).should('contain', '01 Jan 2024');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
 
-    // Test Used To column sorting
-    cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
+      // Test Used To column sorting
+      cy.get(DOM_ELEMENTS.nextPageButton).click();
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 total results');
 
-    cy.get(DOM_ELEMENTS.usedToHeader).should('exist');
-    cy.get(DOM_ELEMENTS.usedToHeader).click();
+      cy.get(DOM_ELEMENTS.usedToHeader).should('exist');
+      cy.get(DOM_ELEMENTS.usedToHeader).click();
 
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
-    cy.get(DOM_ELEMENTS.usedToCell).eq(0).should('contain', '31 Dec 2025');
-  });
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 total results');
+      cy.get(DOM_ELEMENTS.usedToCell).eq(0).should('contain', '31 Dec 2025');
+    },
+  );
 });

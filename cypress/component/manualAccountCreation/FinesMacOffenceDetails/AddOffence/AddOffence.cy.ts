@@ -121,13 +121,20 @@ describe('FinesMacAddOffenceComponent', () => {
     });
   };
 
-  it('(AC.1)should render the component', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4160'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.1)should render the component',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4160'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.app).should('exist');
+    },
+  );
 
-  it('(AC.1,AC.2,AC.3,AC.3a,AC.3ai,AC.3b,AC.4) should render all the elements on the page as per design artifact and not render imposition remove link', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4161'] }, () => {
+  it(
+    '(AC.1,AC.2,AC.3,AC.3a,AC.3ai,AC.3b,AC.4) should render all the elements on the page as per design artifact and not render imposition remove link',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4161'] },
+    () => {
       setupComponent(null);
 
       const imposition_1 = impositionSelectors(0);
@@ -157,9 +164,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(imposition_1.amountPaidLabel).should('contain', 'Amount paid');
 
       cy.get(DOM_ELEMENTS.removeImpositionLink).should('not.exist');
-    });
+    },
+  );
 
-  it('should render Add another offence button correctly for all defendant types', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-272', '@PO-344', '@PO-345', '@JIRA-KEY:POT-4162'] }, () => {
+  it(
+    'should render Add another offence button correctly for all defendant types',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-272', '@PO-344', '@PO-345', '@JIRA-KEY:POT-4162'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
       cy.get('button[type="submit"]').should('contain', 'Add another offence');
 
@@ -169,9 +180,13 @@ describe('FinesMacAddOffenceComponent', () => {
       setupComponent(null, 'company');
 
       cy.get('button[type="submit"]').should('contain', 'Add another offence');
-    });
+    },
+  );
 
-  it('(AC.7b,AC.7d,AC.7h,AC.7i) should show error messages when the form is submitted with empty fields', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4163'] }, () => {
+  it(
+    '(AC.7b,AC.7d,AC.7h,AC.7i) should show error messages when the form is submitted with empty fields',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4163'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
@@ -181,9 +196,13 @@ describe('FinesMacAddOffenceComponent', () => {
         .should('contain', OFFENCE_ERROR_MESSAGES.requiredOffenceCode)
         .should('contain', IMPOSITION_ERROR_MESSAGES.requiredImpositionCode)
         .should('contain', IMPOSITION_ERROR_MESSAGES.requiredAmountImposed);
-    });
+    },
+  );
 
-  it('(AC.8)should allow form to be submitted with required fields filled in', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4164'] }, () => {
+  it(
+    '(AC.8)should allow form to be submitted with required fields filled in',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4164'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
 
@@ -197,9 +216,13 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
+    },
+  );
 
-  it('(AC.4b,AC.4bi,AC,4c) should show minor,major creditor fields for (FCOMP,FCOST) Only', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4165'] }, () => {
+  it(
+    '(AC.4b,AC.4bi,AC,4c) should show minor,major creditor fields for (FCOMP,FCOST) Only',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4165'] },
+    () => {
       setupComponent(null);
 
       const imposition_1 = impositionSelectors(0);
@@ -226,9 +249,13 @@ describe('FinesMacAddOffenceComponent', () => {
           cy.get(imposition_1.minorCreditorLabel).should('not.exist');
         }
       });
-    });
+    },
+  );
 
-  it('should not allow form to be submitted without selecting minor creditor or major creditor field', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4166'] }, () => {
+  it(
+    'should not allow form to be submitted without selecting minor creditor or major creditor field',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4166'] },
+    () => {
       setupComponent(null);
       const SELECTOR = impositionSelectors(0);
 
@@ -244,7 +271,8 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
       cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredCreditor);
-    });
+    },
+  );
 
   it(
     ' (AC.5a) should not show remove imposition link for only 1 imposition',
@@ -256,7 +284,10 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it('(AC.4bii) should load correct fields for major creditor selection and expect error if field is not filled in', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4168'] }, () => {
+  it(
+    '(AC.4bii) should load correct fields for major creditor selection and expect error if field is not filled in',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4168'] },
+    () => {
       setupComponent(null);
 
       const SELECTOR = impositionSelectors(0);
@@ -277,9 +308,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMajorCreditor);
-    });
+    },
+  );
 
-  it('(AC.4bii) should load correct fields for minor creditor selection and expect error if field is not filled in', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4169'] }, () => {
+  it(
+    '(AC.4bii) should load correct fields for minor creditor selection and expect error if field is not filled in',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4169'] },
+    () => {
       setupComponent(null);
 
       const SELECTOR = impositionSelectors(0);
@@ -297,9 +332,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(SELECTOR.majorCreditor).should('not.be.selected');
 
       cy.get(DOM_ELEMENTS.minorCreditorLink).should('exist');
-    });
+    },
+  );
 
-  it('(AC.5) should check impositions flow for multiple impositions and remove imposition link', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4170'] }, () => {
+  it(
+    '(AC.5) should check impositions flow for multiple impositions and remove imposition link',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4170'] },
+    () => {
       setupComponent(null);
 
       const SELECTOR = impositionSelectors(0);
@@ -317,9 +356,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(SELECTOR.amountPaidInput).should('exist');
 
       cy.get(DOM_ELEMENTS.removeImpositionLink).should('exist');
-    });
+    },
+  );
 
-  it('(AC.7E) should show error message for invalid date format', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4171'] }, () => {
+  it(
+    '(AC.7E) should show error message for invalid date format',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4171'] },
+    () => {
       setupComponent(null);
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01.01.2021';
@@ -327,8 +370,12 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDateFormat);
-    });
-  it('(AC.7F) should show error message for invalid date', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4172'] }, () => {
+    },
+  );
+  it(
+    '(AC.7F) should show error message for invalid date',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4172'] },
+    () => {
       setupComponent(null);
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '32/01/2021';
@@ -336,9 +383,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDate);
-    });
+    },
+  );
 
-  it('(AC.7g) should show error message for future date', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4173'] }, () => {
+  it(
+    '(AC.7g) should show error message for future date',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4173'] },
+    () => {
       setupComponent(null);
 
       const futureDate = new Date();
@@ -351,9 +402,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidFutureDate);
-    });
+    },
+  );
 
-  it('(AC.7j) should show error message for invalid amount imposed', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4174'] }, () => {
+  it(
+    '(AC.7j) should show error message for invalid amount imposed',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4174'] },
+    () => {
       setupComponent(null);
 
       const SELECTOR = impositionSelectors(0);
@@ -372,9 +427,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmountValue);
-    });
+    },
+  );
 
-  it('(AC.7k) should show error message for invalid  amount paid', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4175'] }, () => {
+  it(
+    '(AC.7k) should show error message for invalid  amount paid',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4175'] },
+    () => {
       setupComponent(null);
 
       const SELECTOR = impositionSelectors(0);
@@ -393,9 +452,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmount);
-    });
+    },
+  );
 
-  it('(AC.3bii) should show invalid ticket panel for invalid offence code', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4176'] }, () => {
+  it(
+    '(AC.3bii) should show invalid ticket panel for invalid offence code',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4176'] },
+    () => {
       finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123457';
       setupComponent(null);
@@ -405,9 +468,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('AK123457', { delay: 0 });
       cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
       cy.get(DOM_ELEMENTS.invalidPanel).should('exist');
-    });
+    },
+  );
 
-  it('(AC.3bi) should show ticket panel for valid offence code', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4177'] }, () => {
+  it(
+    '(AC.3bi) should show ticket panel for valid offence code',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4177'] },
+    () => {
       finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
       setupComponent(null);
@@ -417,9 +484,13 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist').click();
       cy.get(DOM_ELEMENTS.successPanel, { timeout: 30000 }).should('be.visible');
-    });
+    },
+  );
 
-  it('(AC.2) should allow dateOfSentence to be entered via date picker and have all elements loaded', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4178'] }, () => {
+  it(
+    '(AC.2) should allow dateOfSentence to be entered via date picker and have all elements loaded',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4178'] },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
@@ -431,9 +502,13 @@ describe('FinesMacAddOffenceComponent', () => {
         'have.value',
         `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
       );
-    });
+    },
+  );
 
-  it('(AC.6, AC.8) should allow form submission with multiple impositions', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4179'] }, () => {
+  it(
+    '(AC.6, AC.8) should allow form submission with multiple impositions',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545', '@JIRA-KEY:POT-4179'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy);
@@ -469,9 +544,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
+    },
+  );
 
-  it('(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y only', { tags: ['@PO-1060', '@JIRA-KEY:POT-4180'] }, () => {
+  it(
+    '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y only',
+    { tags: ['@PO-1060', '@JIRA-KEY:POT-4180'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
       const SELECTOR = impositionSelectors(0);
 
@@ -490,9 +569,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
       cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
-    });
+    },
+  );
 
-  it('(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay', { tags: ['@PO-1060', '@JIRA-KEY:POT-4181'] }, () => {
+  it(
+    '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay',
+    { tags: ['@PO-1060', '@JIRA-KEY:POT-4181'] },
+    () => {
       setupComponent(null, 'pgToPay');
       const SELECTOR = impositionSelectors(0);
 
@@ -511,9 +594,13 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
       cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
-    });
+    },
+  );
 
-  it('(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, company', { tags: ['@PO-1060', '@JIRA-KEY:POT-4182'] }, () => {
+  it(
+    '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, company',
+    { tags: ['@PO-1060', '@JIRA-KEY:POT-4182'] },
+    () => {
       setupComponent(null, 'company');
       const SELECTOR = impositionSelectors(0);
 
@@ -532,7 +619,8 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
       cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
-    });
+    },
+  );
 
   it('Each imposition is wrapped in its own fieldset', { tags: ['@PO-2716', '@JIRA-KEY:POT-4183'] }, () => {
     setupComponent(null);

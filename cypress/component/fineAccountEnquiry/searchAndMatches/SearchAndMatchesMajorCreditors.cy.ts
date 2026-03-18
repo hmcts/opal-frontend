@@ -68,31 +68,35 @@ describe('Search Account Component - Major Creditors', () => {
     });
   });
 
-  it('AC1. should render the search for an account screen and major creditors tab', { tags: ['PO-716', '@JIRA-KEY:POT-3726'] }, () => {
-    setupComponent();
+  it(
+    'AC1. should render the search for an account screen and major creditors tab',
+    { tags: ['PO-716', '@JIRA-KEY:POT-3726'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.majorCreditorsTab).click();
-    cy.get(DOM_ELEMENTS.app).should('exist');
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
-    cy.get(DOM_ELEMENTS.tabs).should('exist');
-    cy.get(DOM_ELEMENTS.tabsList).should('exist');
-    cy.get(DOM_ELEMENTS.individualsTab).should('exist');
-    cy.get(DOM_ELEMENTS.companiesTab).should('exist');
-    cy.get(DOM_ELEMENTS.minorCreditorsTab).should('exist');
-    cy.get(DOM_ELEMENTS.majorCreditorsTab).should('exist');
-    cy.get(DOM_ELEMENTS.majorCreditorsPanel).should('exist');
-    cy.get(DOM_ELEMENTS.majorCreditorsHeading).should('exist').contains('Major creditors');
-    cy.get(DOM_ELEMENTS.majorCreditorsHelpText).should('exist').contains('Search using creditor name or code');
-    cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('exist');
-    cy.get(DOM_ELEMENTS.accountNumberLabel).should('exist').and('contain', 'Account number');
-    cy.get(DOM_ELEMENTS.referenceNumberLabel).should('exist').and('contain', 'Reference or case number');
-    cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist');
-    cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
-    cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
+      cy.get(DOM_ELEMENTS.majorCreditorsTab).click();
+      cy.get(DOM_ELEMENTS.app).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
+      cy.get(DOM_ELEMENTS.tabs).should('exist');
+      cy.get(DOM_ELEMENTS.tabsList).should('exist');
+      cy.get(DOM_ELEMENTS.individualsTab).should('exist');
+      cy.get(DOM_ELEMENTS.companiesTab).should('exist');
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).should('exist');
+      cy.get(DOM_ELEMENTS.majorCreditorsTab).should('exist');
+      cy.get(DOM_ELEMENTS.majorCreditorsPanel).should('exist');
+      cy.get(DOM_ELEMENTS.majorCreditorsHeading).should('exist').contains('Major creditors');
+      cy.get(DOM_ELEMENTS.majorCreditorsHelpText).should('exist').contains('Search using creditor name or code');
+      cy.get(DOM_ELEMENTS.majorCreditorDropdown).should('exist');
+      cy.get(DOM_ELEMENTS.accountNumberLabel).should('exist').and('contain', 'Account number');
+      cy.get(DOM_ELEMENTS.referenceNumberLabel).should('exist').and('contain', 'Reference or case number');
+      cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist');
+      cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
 
-    cy.get('a').contains('Change').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['filter-business-units']);
-  });
+      cy.get('a').contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['filter-business-units']);
+    },
+  );
 
   it('AC2a, AC2b, AC2c. Single BU filtered and dropdown contents', { tags: ['PO-716', '@JIRA-KEY:POT-3727'] }, () => {
     setupComponent();
@@ -115,7 +119,10 @@ describe('Search Account Component - Major Creditors', () => {
     cy.get(DOM_ELEMENTS.majorCreditorAutoComplete).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
   });
 
-  it('AC2f. Navigated to account enquiry when major creditor is selected and searched for', { tags: ['PO-716', '@JIRA-KEY:POT-3729'] }, () => {
+  it(
+    'AC2f. Navigated to account enquiry when major creditor is selected and searched for',
+    { tags: ['PO-716', '@JIRA-KEY:POT-3729'] },
+    () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.majorCreditorDropdown).click();
@@ -129,7 +136,8 @@ describe('Search Account Component - Major Creditors', () => {
 
       //A stub is used here so a new tab is not actually opened
       cy.get('@windowOpen').should('have.been.calledOnce');
-    });
+    },
+  );
 
   it('AC2h. Data cleared when another tab is selected', { tags: ['PO-716', '@JIRA-KEY:POT-3730'] }, () => {
     setupComponent();

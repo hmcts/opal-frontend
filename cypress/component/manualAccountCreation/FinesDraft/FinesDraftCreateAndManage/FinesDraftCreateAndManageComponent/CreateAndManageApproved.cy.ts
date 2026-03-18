@@ -42,49 +42,56 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
     });
   };
 
-  it('(AC.2,AC.3,AC.4)should show summary table with correct data for approved accounts', { tags: ['@PO-607', '@JIRA-KEY:POT-3905'] }, () => {
-    const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
+  it(
+    '(AC.2,AC.3,AC.4)should show summary table with correct data for approved accounts',
+    { tags: ['@PO-607', '@JIRA-KEY:POT-3905'] },
+    () => {
+      const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptGetApprovedAccounts(200, approvedMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetApprovedAccounts(200, approvedMockData);
 
-    setupComponent();
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
 
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
+      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
 
-    for (const link of NAVIGATION_LINKS) {
-      cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
-      if (link === 'Approved') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
+      for (const link of NAVIGATION_LINKS) {
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
+        if (link === 'Approved') {
+          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
+        }
       }
-    }
 
-    //Check table row data in row 1
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(0)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
-      });
+      //Check table row data in row 1
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(0)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+          cy.get(DOM_ELEMENTS.created).contains('Today');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+        });
 
-    //Check table row data in row 2
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(1)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.dob).contains('—');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
-      });
-  });
+      //Check table row data in row 2
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(1)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.dob).contains('—');
+          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+        });
+    },
+  );
 
-  it('(AC.4b)should have pagination enabled for over 25 draft accounts for approved accounts', { tags: ['@PO-607', '@JIRA-KEY:POT-3906'] }, () => {
+  it(
+    '(AC.4b)should have pagination enabled for over 25 draft accounts for approved accounts',
+    { tags: ['@PO-607', '@JIRA-KEY:POT-3906'] },
+    () => {
       const approvedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -109,9 +116,13 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    });
+    },
+  );
 
-  it('(AC.1)should show empty value statement for Approved status when no accounts have been Approved', { tags: ['@PO-607', '@JIRA-KEY:POT-3907'] }, () => {
+  it(
+    '(AC.1)should show empty value statement for Approved status when no accounts have been Approved',
+    { tags: ['@PO-607', '@JIRA-KEY:POT-3907'] },
+    () => {
       const approvedMockData = { count: 0, summaries: [] };
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -123,5 +134,6 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
       cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
-    });
+    },
+  );
 });

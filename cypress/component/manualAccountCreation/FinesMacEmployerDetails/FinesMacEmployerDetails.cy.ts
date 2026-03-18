@@ -79,42 +79,53 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(L.app).should('exist');
   });
 
-  it('should not show the error summary on initial load for AY', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4139'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    'should not show the error summary on initial load for AY',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4139'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    // Verify the error summary is not visible
-    cy.get(L.errorSummary).should('not.exist');
-  });
+      // Verify the error summary is not visible
+      cy.get(L.errorSummary).should('not.exist');
+    },
+  );
 
-  it('(AC.1) should be created as per the design artefact', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4140'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    '(AC.1) should be created as per the design artefact',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4140'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(L.pageTitle).should('contain', 'Employer details');
-    cy.get(L.companyNameLabel).should('contain', 'Employer name');
-    cy.get(L.referenceLabel).should('contain', 'Employee reference');
-    cy.get(L.emailAddressLabel).should('contain', 'Employer email address');
-    cy.get(L.telephoneNumberLabel).should('contain', 'Employer telephone');
-    cy.get(L.addressLine1Label).should('contain', 'Address line 1');
-    cy.get(L.addressLine2Label).should('contain', 'Address line 2');
-    cy.get(L.addressLine3Label).should('contain', 'Address line 3');
-    cy.get(L.addressLine4Label).should('contain', 'Address line 4');
-    cy.get(L.addressLine5Label).should('contain', 'Address line 5');
-    cy.get(L.postCodeLabel).should('contain', 'Postcode');
+      cy.get(L.pageTitle).should('contain', 'Employer details');
+      cy.get(L.companyNameLabel).should('contain', 'Employer name');
+      cy.get(L.referenceLabel).should('contain', 'Employee reference');
+      cy.get(L.emailAddressLabel).should('contain', 'Employer email address');
+      cy.get(L.telephoneNumberLabel).should('contain', 'Employer telephone');
+      cy.get(L.addressLine1Label).should('contain', 'Address line 1');
+      cy.get(L.addressLine2Label).should('contain', 'Address line 2');
+      cy.get(L.addressLine3Label).should('contain', 'Address line 3');
+      cy.get(L.addressLine4Label).should('contain', 'Address line 4');
+      cy.get(L.addressLine5Label).should('contain', 'Address line 5');
+      cy.get(L.postCodeLabel).should('contain', 'Postcode');
 
-    cy.get(L.referenceHint).should('contain', 'If employee reference not known, add National Insurance number');
+      cy.get(L.referenceHint).should('contain', 'If employee reference not known, add National Insurance number');
 
-    cy.get(L.companyNameInput).should('exist');
-    cy.get(L.referenceInput).should('exist');
-    cy.get(L.emailAddressInput).should('exist');
-    cy.get(L.telephoneNumberInput).should('exist');
-    cy.get(L.addressLine1Input).should('exist');
-    cy.get(L.addressLine2Input).should('exist');
-    cy.get(L.addressLine3Input).should('exist');
-    cy.get(L.addressLine4Input).should('exist');
-    cy.get(L.addressLine5Input).should('exist');
-    cy.get(L.postCodeInput).should('exist');
-  });
-  it('(AC.1) should display error messages for incorrect format and character limit', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4141'] }, () => {
+      cy.get(L.companyNameInput).should('exist');
+      cy.get(L.referenceInput).should('exist');
+      cy.get(L.emailAddressInput).should('exist');
+      cy.get(L.telephoneNumberInput).should('exist');
+      cy.get(L.addressLine1Input).should('exist');
+      cy.get(L.addressLine2Input).should('exist');
+      cy.get(L.addressLine3Input).should('exist');
+      cy.get(L.addressLine4Input).should('exist');
+      cy.get(L.addressLine5Input).should('exist');
+      cy.get(L.postCodeInput).should('exist');
+    },
+  );
+  it(
+    '(AC.1) should display error messages for incorrect format and character limit',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4141'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       const incorrectData = {
@@ -137,9 +148,13 @@ describe('FinesMacEmployerDetailsComponent', () => {
       for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
         cy.get(L.errorSummary).should('contain', value);
       }
-    });
+    },
+  );
 
-  it('(AC.1) should display error messages for incorrect format and special characters', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4142'] }, () => {
+  it(
+    '(AC.1) should display error messages for incorrect format and special characters',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4142'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       const incorrectData = {
@@ -162,45 +177,61 @@ describe('FinesMacEmployerDetailsComponent', () => {
       for (const [, value] of Object.entries(FORMAT_VALIDATION)) {
         cy.get(L.errorSummary).should('contain', value);
       }
-    });
+    },
+  );
 
-  it('(AC.1) should allow spaces in the telephone number fields', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4143'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
-    finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0123 456 7890';
+  it(
+    '(AC.1) should allow spaces in the telephone number fields',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4143'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+      finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0123 456 7890';
 
-    cy.get(L.telephoneNumberInput).should('have.value', '0123 456 7890');
-    cy.get(L.submitButton).contains('Return to account details').click();
+      cy.get(L.telephoneNumberInput).should('have.value', '0123 456 7890');
+      cy.get(L.submitButton).contains('Return to account details').click();
 
-    cy.get(L.errorSummary).should('not.contain', FORMAT_VALIDATION.employer_phone_pattern);
-  });
+      cy.get(L.errorSummary).should('not.contain', FORMAT_VALIDATION.employer_phone_pattern);
+    },
+  );
 
-  it('(AC.1) should not allow asterisks in the address line fields', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4144'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
-    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addr1*';
-    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'addr2*';
-    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_3 = 'addr3*';
-    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addr4*';
-    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addr5*';
-    cy.get(L.addressLine1Input).should('have.value', 'addr1*');
-    cy.get(L.submitButton).contains('Return to account details').click();
+  it(
+    '(AC.1) should not allow asterisks in the address line fields',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4144'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addr1*';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'addr2*';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_3 = 'addr3*';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addr4*';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addr5*';
+      cy.get(L.addressLine1Input).should('have.value', 'addr1*');
+      cy.get(L.submitButton).contains('Return to account details').click();
 
-    cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address1_special_chars);
-    cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address2_special_chars);
-    cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address3_special_chars);
-    cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address4_special_chars);
-    cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address5_special_chars);
-  });
-  it('(AC.2) should error when mandatory fields contain no values', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4145'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+      cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address1_special_chars);
+      cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address2_special_chars);
+      cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address3_special_chars);
+      cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address4_special_chars);
+      cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_address5_special_chars);
+    },
+  );
+  it(
+    '(AC.2) should error when mandatory fields contain no values',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4145'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(L.submitButton).contains('Return to account details').click();
+      cy.get(L.submitButton).contains('Return to account details').click();
 
-    Object.values(REQUIRED_FIELDS_VALIDATION).forEach((value) => {
-      cy.get(L.errorSummary).should('contain', value);
-    });
-    cy.get(L.pageTitle).should('contain', 'Employer details');
-  });
-  it('(AC.3) should error when mandatory fields are empty and optional fields are not', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4146'] }, () => {
+      Object.values(REQUIRED_FIELDS_VALIDATION).forEach((value) => {
+        cy.get(L.errorSummary).should('contain', value);
+      });
+      cy.get(L.pageTitle).should('contain', 'Employer details');
+    },
+  );
+  it(
+    '(AC.3) should error when mandatory fields are empty and optional fields are not',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4146'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
       finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = 'test@test.com';
       finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '01234567890';
@@ -216,129 +247,162 @@ describe('FinesMacEmployerDetailsComponent', () => {
         cy.get(L.errorSummary).should('contain', value);
       });
       cy.get(L.pageTitle).should('contain', 'Employer details');
-    });
-  it('(AC.4) should error when email address fails validation', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4147'] }, () => {
-    const incorrectEmails: string[] = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
-    cy.wrap(incorrectEmails).each((email: string) => {
-      cy.then(() => {
-        finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = email;
-        setupComponent(null, 'adultOrYouthOnly');
+    },
+  );
+  it(
+    '(AC.4) should error when email address fails validation',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4147'] },
+    () => {
+      const incorrectEmails: string[] = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
+      cy.wrap(incorrectEmails).each((email: string) => {
+        cy.then(() => {
+          finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = email;
+          setupComponent(null, 'adultOrYouthOnly');
+        });
+        cy.get(L.submitButton).contains('Return to account details').click();
+        cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_email_pattern);
       });
-      cy.get(L.submitButton).contains('Return to account details').click();
-      cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_email_pattern);
-    });
-  });
+    },
+  );
 
-  it('(AC.5) should error when employee telephone number fails validation', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4148'] }, () => {
-    const incorrectTelephoneNumbers: string[] = ['notNums', '0123456789', '012345678911'];
-    cy.wrap(incorrectTelephoneNumbers).each((telephone: string) => {
-      cy.then(() => {
-        finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = telephone;
-        setupComponent(null, 'adultOrYouthOnly');
+  it(
+    '(AC.5) should error when employee telephone number fails validation',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4148'] },
+    () => {
+      const incorrectTelephoneNumbers: string[] = ['notNums', '0123456789', '012345678911'];
+      cy.wrap(incorrectTelephoneNumbers).each((telephone: string) => {
+        cy.then(() => {
+          finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = telephone;
+          setupComponent(null, 'adultOrYouthOnly');
+        });
+        cy.get(L.submitButton).contains('Return to account details').click();
+        cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_phone_pattern);
       });
-      cy.get(L.submitButton).contains('Return to account details').click();
-      cy.get(L.errorSummary).should('contain', FORMAT_VALIDATION.employer_phone_pattern);
-    });
-  });
+    },
+  );
 
-  it('(AC.6) should allow for form submission with corrected data', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4149'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
-    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
-    finesMacState.employerDetails.formData = {
-      fm_employer_details_employer_company_name: 'John Maddy & co., Limited company',
-      fm_employer_details_employer_reference: 'XNJ#5567',
-      fm_employer_details_employer_email_address: 'test-test-com',
-      fm_employer_details_employer_telephone_number: '0123 456 789#',
-      fm_employer_details_employer_address_line_1: '12* test road',
-      fm_employer_details_employer_address_line_2: 'Avenue_test*',
-      fm_employer_details_employer_address_line_3: 'Avenue_test*',
-      fm_employer_details_employer_address_line_4: 'Avenue_test*',
-      fm_employer_details_employer_address_line_5: 'Avenue_test*',
-      fm_employer_details_employer_post_code: 'AB124BM#',
-    };
-    cy.get(L.submitButton).contains('Return to account details').click();
-    cy.get(L.errorSummary).should('exist');
-
-    cy.then(() => {
+  it(
+    '(AC.6) should allow for form submission with corrected data',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4149'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
+      finesMacState.employerDetails.formData = {
+        fm_employer_details_employer_company_name: 'John Maddy & co., Limited company',
+        fm_employer_details_employer_reference: 'XNJ#5567',
+        fm_employer_details_employer_email_address: 'test-test-com',
+        fm_employer_details_employer_telephone_number: '0123 456 789#',
+        fm_employer_details_employer_address_line_1: '12* test road',
+        fm_employer_details_employer_address_line_2: 'Avenue_test*',
+        fm_employer_details_employer_address_line_3: 'Avenue_test*',
+        fm_employer_details_employer_address_line_4: 'Avenue_test*',
+        fm_employer_details_employer_address_line_5: 'Avenue_test*',
+        fm_employer_details_employer_post_code: 'AB124BM#',
+      };
+      cy.get(L.submitButton).contains('Return to account details').click();
+      cy.get(L.errorSummary).should('exist');
+
+      cy.then(() => {
+        setupComponent(formSubmitSpy, 'adultOrYouthOnly');
+        finesMacState.employerDetails.formData = {
+          fm_employer_details_employer_company_name: 'Test Employer',
+          fm_employer_details_employer_reference: '1234567890',
+          fm_employer_details_employer_email_address: 'test@test.com',
+          fm_employer_details_employer_telephone_number: '07700900982',
+          fm_employer_details_employer_address_line_1: 'Addr1',
+          fm_employer_details_employer_address_line_2: 'Addr2',
+          fm_employer_details_employer_address_line_3: 'Addr3',
+          fm_employer_details_employer_address_line_4: 'Addr4',
+          fm_employer_details_employer_address_line_5: 'Addr5',
+          fm_employer_details_employer_post_code: 'TE12 3ST',
+        };
+
+        cy.get(L.submitButton).contains('Return to account details').click();
+        cy.get(L.errorSummary).should('not.exist');
+        cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+      });
+    },
+  );
+
+  it(
+    '(AC.7) should allow for form submission with valid data',
+    { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4150'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
+
       finesMacState.employerDetails.formData = {
         fm_employer_details_employer_company_name: 'Test Employer',
         fm_employer_details_employer_reference: '1234567890',
         fm_employer_details_employer_email_address: 'test@test.com',
         fm_employer_details_employer_telephone_number: '07700900982',
-        fm_employer_details_employer_address_line_1: 'Addr1',
-        fm_employer_details_employer_address_line_2: 'Addr2',
-        fm_employer_details_employer_address_line_3: 'Addr3',
-        fm_employer_details_employer_address_line_4: 'Addr4',
-        fm_employer_details_employer_address_line_5: 'Addr5',
-        fm_employer_details_employer_post_code: 'TE12 3ST',
+        fm_employer_details_employer_address_line_1: 'Address Line 1',
+        fm_employer_details_employer_address_line_2: 'Address Line 2',
+        fm_employer_details_employer_address_line_3: 'Address Line 3',
+        fm_employer_details_employer_address_line_4: 'Address Line 4',
+        fm_employer_details_employer_address_line_5: 'Address Line 5',
+        fm_employer_details_employer_post_code: '12345',
       };
 
-      cy.get(L.submitButton).contains('Return to account details').click();
-      cy.get(L.errorSummary).should('not.exist');
+      cy.get(L.submitButton).first().click();
+
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
-  });
+    },
+  );
 
-  it('(AC.7) should allow for form submission with valid data', { tags: ['@PO-272', '@PO-280', '@JIRA-KEY:POT-4150'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
-    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
+  it(
+    '(AC.1) should load button for next page for AY Defendant',
+    { tags: ['@PO-272', '@PO-434', '@JIRA-KEY:POT-4151'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
-    finesMacState.employerDetails.formData = {
-      fm_employer_details_employer_company_name: 'Test Employer',
-      fm_employer_details_employer_reference: '1234567890',
-      fm_employer_details_employer_email_address: 'test@test.com',
-      fm_employer_details_employer_telephone_number: '07700900982',
-      fm_employer_details_employer_address_line_1: 'Address Line 1',
-      fm_employer_details_employer_address_line_2: 'Address Line 2',
-      fm_employer_details_employer_address_line_3: 'Address Line 3',
-      fm_employer_details_employer_address_line_4: 'Address Line 4',
-      fm_employer_details_employer_address_line_5: 'Address Line 5',
-      fm_employer_details_employer_post_code: '12345',
-    };
+      cy.get(L.submitButton).should('contain', 'Add offence details');
+    },
+  );
 
-    cy.get(L.submitButton).first().click();
+  it(
+    '(AC.1) should load button for next page for AYPG Defendant',
+    { tags: ['@PO-344', '@PO-435', '@JIRA-KEY:POT-4152'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'pgToPay');
 
-    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-  });
+      cy.get(L.submitButton).should('contain', 'Add personal details');
+    },
+  );
 
-  it('(AC.1) should load button for next page for AY Defendant', { tags: ['@PO-272', '@PO-434', '@JIRA-KEY:POT-4151'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
-    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
+  it(
+    '(AC.1) Employer reference and postcode should capitalise - AYPG',
+    { tags: ['@PO-344', '@PO-1449', '@JIRA-KEY:POT-4153'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'pgToPay');
 
-    cy.get(L.submitButton).should('contain', 'Add offence details');
-  });
+      cy.get(L.companyNameInput).type('Company XYZ Ltd.', { delay: 0 });
+      cy.get(L.companyNameInput).blur();
+      cy.get(L.addressLine1Input).type('12 Street', { delay: 0 });
+      cy.get(L.addressLine1Input).blur();
+      cy.get(L.referenceInput).type('abd123fgt', { delay: 0 });
+      cy.get(L.referenceInput).blur();
+      cy.get(L.postCodeInput).type('ne129et', { delay: 0 });
+      cy.get(L.postCodeInput).blur();
 
-  it('(AC.1) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-435', '@JIRA-KEY:POT-4152'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
-    setupComponent(formSubmitSpy, 'pgToPay');
+      cy.get(L.referenceInput).should('have.value', 'ABD123FGT');
+      cy.get(L.postCodeInput).should('have.value', 'NE129ET');
 
-    cy.get(L.submitButton).should('contain', 'Add personal details');
-  });
+      cy.get(L.submitButton).first().click();
+    },
+  );
 
-  it('(AC.1) Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449', '@JIRA-KEY:POT-4153'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
-    setupComponent(formSubmitSpy, 'pgToPay');
-
-    cy.get(L.companyNameInput).type('Company XYZ Ltd.', { delay: 0 });
-    cy.get(L.companyNameInput).blur();
-    cy.get(L.addressLine1Input).type('12 Street', { delay: 0 });
-    cy.get(L.addressLine1Input).blur();
-    cy.get(L.referenceInput).type('abd123fgt', { delay: 0 });
-    cy.get(L.referenceInput).blur();
-    cy.get(L.postCodeInput).type('ne129et', { delay: 0 });
-    cy.get(L.postCodeInput).blur();
-
-    cy.get(L.referenceInput).should('have.value', 'ABD123FGT');
-    cy.get(L.postCodeInput).should('have.value', 'NE129ET');
-
-    cy.get(L.submitButton).first().click();
-  });
-
-  it('(AC.1) should convert Employer reference and Employer postcode to uppercase on user input', { tags: ['@PO-272', '@PO-1448', '@JIRA-KEY:POT-4154'] }, () => {
+  it(
+    '(AC.1) should convert Employer reference and Employer postcode to uppercase on user input',
+    { tags: ['@PO-272', '@PO-1448', '@JIRA-KEY:POT-4154'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       cy.get(L.referenceInput).type('ref123abc', { delay: 0 }).should('have.value', 'REF123ABC');
       cy.get(L.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
-    });
+    },
+  );
 });

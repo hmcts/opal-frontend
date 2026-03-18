@@ -55,7 +55,10 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
     interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
   };
 
-  it('(AC.1,AC.1a) should display a primary Create account button in the Create accounts header for inputters', { tags: ['@PO-2762', '@JIRA-KEY:POT-3913'] }, () => {
+  it(
+    '(AC.1,AC.1a) should display a primary Create account button in the Create accounts header for inputters',
+    { tags: ['@PO-2762', '@JIRA-KEY:POT-3913'] },
+    () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
 
@@ -64,65 +67,78 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
         .should('be.visible')
         .and('contain.text', 'Create account')
         .and('have.class', 'govuk-button');
-    });
+    },
+  );
 
-  it('(AC.1b) clicking Create account should navigate to originator type', { tags: ['@PO-2762', '@JIRA-KEY:POT-3914'] }, () => {
-    stubAllTabResponses();
-    cy.then(() => {
-      mount(FinesDraftCreateAndManageTabsComponent, {
-        providers: [
-          provideHttpClient(),
-          OpalFines,
-          DateService,
-          FinesMacPayloadService,
-          FinesDraftStore,
-          provideRouter([]),
-          {
-            provide: GlobalStore,
-            useFactory: () => {
-              const store = new GlobalStore();
-              store.setUserState(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
-              return store;
+  it(
+    '(AC.1b) clicking Create account should navigate to originator type',
+    { tags: ['@PO-2762', '@JIRA-KEY:POT-3914'] },
+    () => {
+      stubAllTabResponses();
+      cy.then(() => {
+        mount(FinesDraftCreateAndManageTabsComponent, {
+          providers: [
+            provideHttpClient(),
+            OpalFines,
+            DateService,
+            FinesMacPayloadService,
+            FinesDraftStore,
+            provideRouter([]),
+            {
+              provide: GlobalStore,
+              useFactory: () => {
+                const store = new GlobalStore();
+                store.setUserState(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
+                return store;
+              },
             },
+          ],
+          componentProperties: {
+            activeTab: 'review',
           },
-        ],
-        componentProperties: {
-          activeTab: 'review',
-        },
-      }).then(({ fixture }) => {
-        const router = fixture.componentRef.injector.get(Router);
-        cy.spy(router, 'navigate').as('routerNavigate');
+        }).then(({ fixture }) => {
+          const router = fixture.componentRef.injector.get(Router);
+          cy.spy(router, 'navigate').as('routerNavigate');
+        });
       });
-    });
 
-    cy.get(DOM_ELEMENTS.createAccountButton).click({ force: true });
-    cy.get('@routerNavigate').should('have.been.calledOnceWith', [
-      FINES_ROUTING_PATHS.root,
-      FINES_MAC_ROUTING_PATHS.root,
-      FINES_MAC_ROUTING_PATHS.children.originatorType,
-    ]);
-  });
+      cy.get(DOM_ELEMENTS.createAccountButton).click({ force: true });
+      cy.get('@routerNavigate').should('have.been.calledOnceWith', [
+        FINES_ROUTING_PATHS.root,
+        FINES_MAC_ROUTING_PATHS.root,
+        FINES_MAC_ROUTING_PATHS.children.originatorType,
+      ]);
+    },
+  );
 
-  it('(AC.1c) should hide Create account button for users without create/manage permission', { tags: ['@PO-2762', '@JIRA-KEY:POT-3915'] }, () => {
+  it(
+    '(AC.1c) should hide Create account button for users without create/manage permission',
+    { tags: ['@PO-2762', '@JIRA-KEY:POT-3915'] },
+    () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_MOCK);
 
       cy.get(DOM_ELEMENTS.createAccountButton).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC.1) should display Create account button across all active tabs', { tags: ['@PO-2762', '@JIRA-KEY:POT-3916'] }, () => {
-    stubAllTabResponses();
-    setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
+  it(
+    '(AC.1) should display Create account button across all active tabs',
+    { tags: ['@PO-2762', '@JIRA-KEY:POT-3916'] },
+    () => {
+      stubAllTabResponses();
+      setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
 
-    const tabs: Array<'In review' | 'Rejected' | 'Approved' | 'Deleted'> = [
-      'In review',
-      'Rejected',
-      'Approved',
-      'Deleted',
-    ];
-    tabs.forEach((tab) => {
-      cy.get(DOM_ELEMENTS.navigationLinks).contains(tab).click();
-      cy.get(DOM_ELEMENTS.createAccountButton).should('be.visible').and('contain.text', 'Create account');
-    });
-  });
+      const tabs: Array<'In review' | 'Rejected' | 'Approved' | 'Deleted'> = [
+        'In review',
+        'Rejected',
+        'Approved',
+        'Deleted',
+      ];
+      tabs.forEach((tab) => {
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(tab).click();
+        cy.get(DOM_ELEMENTS.createAccountButton).should('be.visible').and('contain.text', 'Create account');
+      });
+    },
+  );
 });

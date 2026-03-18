@@ -98,7 +98,10 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
     interceptOffences();
   });
 
-  it('(AC.1,2) should send a PUT request containing correct derived values when a rejected account is resubmitted', { tags: ['@PO-964', '@JIRA-KEY:POT-4370'] }, () => {
+  it(
+    '(AC.1,2) should send a PUT request containing correct derived values when a rejected account is resubmitted',
+    { tags: ['@PO-964', '@JIRA-KEY:POT-4370'] },
+    () => {
       cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');
 
       setupComponent(false);
@@ -144,9 +147,13 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
         expect(request.body.timeline_data[1]).to.have.property('reason_text', null);
       });
-    });
+    },
+  );
 
-  it('should send PUT request with correct Fixed Penalty account data and timeline when rejected account is resubmitted', { tags: ['@PO-1809', '@JIRA-KEY:POT-4371'] }, () => {
+  it(
+    'should send PUT request with correct Fixed Penalty account data and timeline when rejected account is resubmitted',
+    { tags: ['@PO-1809', '@JIRA-KEY:POT-4371'] },
+    () => {
       cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');
 
       setupComponent(false);
@@ -206,5 +213,6 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
         expect(request.body.timeline_data[1]).to.have.property('reason_text', null);
       });
-    });
+    },
+  );
 });
