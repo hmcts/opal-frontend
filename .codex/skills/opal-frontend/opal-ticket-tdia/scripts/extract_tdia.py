@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import re
-import shutil
 import sys
 from collections import OrderedDict
 from dataclasses import dataclass
@@ -125,13 +124,6 @@ class SectionBlock:
     position: int
 
 
-@dataclass
-class ImageRef:
-    section_key: str
-    source_path: str
-    title: str | None = None
-
-
 def normalize_inline(text: str) -> str:
     text = text.replace('\xa0', ' ')
     text = re.sub(r'[ \t\r\f\v]+', ' ', text)
@@ -187,15 +179,7 @@ def match_requested_sections(sections: dict[str, SectionBlock], selector: str) -
     return matched
 
 
-def build_output(
-    source_path: Path,
-    sections: dict[str, SectionBlock],
-    requested: list[str],
-    saved_from_url: str | None = None,
-    e2e_image_markdown: str | None = None,
-    e2e_image_missing_note: str | None = None,
-    section_image_markdown: dict[str, list[str]] | None = None,
-) -> str:
+def build_output(source_path: Path, sections: dict[str, SectionBlock], requested: list[str], saved_from_url: str | None = None) -> str:
     if requested:
         resolved: list[SectionBlock] = []
         missing: list[str] = []
@@ -239,134 +223,9 @@ def build_output(
         lines.append(f'- Sections missing: {", ".join(missing)}')
 
     for block in unique_resolved:
-        content = sanitize_markdown(block.content)
-        image_markdown = []
-        if section_image_markdown:
-            image_markdown = section_image_markdown.get(block.key, [])
-
-        if block.key == 'E2E Interactions':
-            if image_markdown:
-                content = f'{content}\n\n### Diagram Images\n\n' + '\n\n'.join(image_markdown)
-            elif e2e_image_markdown:
-                content = f'{content}\n\n### Diagram Image\n\n{e2e_image_markdown}'
-            elif e2e_image_missing_note:
-                content = f'{content}\n\n{e2e_image_missing_note}'
-        lines.extend(['', f'## {block.key}', '', content])
+        lines.extend(['', f'## {block.key}', '', sanitize_markdown(block.content)])
 
     return '\n'.join(lines).rstrip() + '\n'
-
-
-def derive_tdia_name(sections: dict[str, SectionBlock], fallback: str) -> str:
-    preamble = sections.get(DOCUMENT_PREAMBLE)
-    if preamble:
-        lines = [line.strip() for line in preamble.content.splitlines() if line.strip()]
-        for line in lines:
-            tdia_match = re.match(r'^TDIA:\s*(.+)$', line, re.IGNORECASE)
-            if tdia_match:
-                return tdia_match.group(1).strip()
-
-            design_match = re.search(r'\bfor\s+(.+)$', line, re.IGNORECASE)
-            if 'tech design ia' in line.lower() and design_match:
-                return design_match.group(1).strip()
-
-    return fallback
-
-
-def slugify(value: str) -> str:
-    slug = value.strip().lower()
-    slug = re.sub(r'[^a-z0-9]+', '-', slug)
-    slug = re.sub(r'-{2,}', '-', slug).strip('-')
-    return slug or 'tdia'
-
-
-def copy_e2e_image(target_dir: Path, image_path: Path) -> tuple[Path, str]:
-    image_dir = target_dir / 'images'
-    image_dir.mkdir(parents=True, exist_ok=True)
-
-    safe_name = f'e2e-interactions{image_path.suffix.lower()}'
-    target_path = image_dir / safe_name
-    shutil.copy2(image_path, target_path)
-    markdown = f'![E2E Interactions](images/{target_path.name})'
-    return target_path, markdown
-
-
-def resolve_companion_asset(html_path: Path, source_path: str) -> Path | None:
-    files_dir = html_path.with_name(f'{html_path.stem}_files')
-    if not files_dir.exists():
-        return None
-
-    cleaned = source_path.strip()
-    if cleaned.startswith('./'):
-        cleaned = cleaned[2:]
-
-    candidate = (html_path.parent / cleaned).resolve()
-    if candidate.exists():
-        return candidate
-
-    fallback = files_dir / Path(cleaned).name
-    if fallback.exists():
-        return fallback.resolve()
-
-    return None
-
-
-def copy_section_images(
-    target_dir: Path,
-    html_path: Path,
-    image_refs: list[ImageRef],
-    allowed_sections: set[str] | None = None,
-) -> dict[str, list[str]]:
-    if not image_refs:
-        return {}
-
-    image_dir = target_dir / 'images'
-    image_dir.mkdir(parents=True, exist_ok=True)
-
-    by_section: dict[str, list[str]] = {}
-    seen_targets: set[tuple[str, str]] = set()
-
-    for image_ref in image_refs:
-        if allowed_sections is not None and image_ref.section_key not in allowed_sections:
-            continue
-
-        source_asset = resolve_companion_asset(html_path, image_ref.source_path)
-        if source_asset is None:
-            continue
-
-        target_name = source_asset.name
-        target_path = image_dir / target_name
-        key = (image_ref.section_key, target_name)
-        if key not in seen_targets:
-            shutil.copy2(source_asset, target_path)
-            seen_targets.add(key)
-
-        alt = image_ref.title or image_ref.section_key
-        by_section.setdefault(image_ref.section_key, []).append(f'![{alt}](images/{target_name})')
-
-    return by_section
-
-
-def write_output_bundle(
-    output_root: Path,
-    source_path: Path,
-    output_markdown: str,
-    sections: dict[str, SectionBlock],
-    e2e_image_path: Path | None = None,
-) -> Path:
-    tdia_name = derive_tdia_name(sections, fallback=source_path.stem)
-    target_dir = output_root / slugify(tdia_name)
-    target_dir.mkdir(parents=True, exist_ok=True)
-
-    source_target = target_dir / f'source{source_path.suffix.lower()}'
-    if source_path.resolve() != source_target.resolve():
-        shutil.copy2(source_path, source_target)
-
-    if e2e_image_path is not None:
-        copy_e2e_image(target_dir, e2e_image_path)
-
-    markdown_target = target_dir / 'extracted.md'
-    markdown_target.write_text(output_markdown, encoding='utf-8')
-    return markdown_target
 
 
 def extract_saved_from_url(raw_html: str) -> str | None:
@@ -380,7 +239,6 @@ class ConfluenceHtmlSectionParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.sections: OrderedDict[str, dict[str, object]] = OrderedDict()
-        self.section_images: list[ImageRef] = []
         self.heading_stack: list[str] = []
         self.section_counter = 0
         self.in_body = False
@@ -479,11 +337,6 @@ class ConfluenceHtmlSectionParser(HTMLParser):
             return
 
         if tag == 'img':
-            embedded_image = self.embedded_image_ref(attrs_dict)
-            if embedded_image is not None:
-                self.section_images.append(embedded_image)
-                return
-
             macro_text = self.macro_text(attrs_dict)
             if macro_text:
                 self.append_fragment(macro_text)
@@ -601,17 +454,6 @@ class ConfluenceHtmlSectionParser(HTMLParser):
 
         return f'_Confluence {macro_name} macro omitted in saved HTML export._'
 
-    def embedded_image_ref(self, attrs: dict[str, str]) -> ImageRef | None:
-        if 'confluence-embedded-image' not in attrs.get('class', ''):
-            return None
-
-        source_path = attrs.get('src', '').strip()
-        if not source_path:
-            return None
-
-        title = attrs.get('data-element-title') or attrs.get('data-linked-resource-default-alias') or attrs.get('title') or None
-        return ImageRef(section_key=self.current_section_key(), source_path=source_path, title=title)
-
     def append_fragment(self, text: str) -> None:
         if not text:
             return
@@ -661,11 +503,6 @@ class ConfluenceHtmlSectionParser(HTMLParser):
         key = build_section_key(self.heading_stack)
         return self.ensure_section(key, self.heading_stack[-1])
 
-    def current_section_key(self) -> str:
-        if not self.heading_stack:
-            return DOCUMENT_PREAMBLE
-        return build_section_key(self.heading_stack)
-
     def emit_block(self, text: str) -> None:
         block = normalize_block(text)
         if not block:
@@ -713,7 +550,7 @@ class ConfluenceHtmlSectionParser(HTMLParser):
             self.emit_block(table_markdown)
         self.current_table = None
 
-    def finalize(self) -> tuple[dict[str, SectionBlock], list[ImageRef]]:
+    def finalize(self) -> dict[str, SectionBlock]:
         self.flush_orphan_fragments()
         self.flush_paragraph()
         self.flush_lists()
@@ -730,7 +567,7 @@ class ConfluenceHtmlSectionParser(HTMLParser):
                 content=content,
                 position=int(raw['position']),
             )
-        return sections, self.section_images
+        return sections
 
 
 def render_table(rows: list[tuple[list[str], bool]]) -> str:
@@ -767,13 +604,13 @@ def escape_table_cell(text: str) -> str:
     return text.replace('|', '\\|')
 
 
-def parse_html_sections(html_path: Path) -> tuple[dict[str, SectionBlock], list[ImageRef], str | None]:
+def parse_html_sections(html_path: Path) -> tuple[dict[str, SectionBlock], str | None]:
     raw_html = html_path.read_text(encoding='utf-8')
     parser = ConfluenceHtmlSectionParser()
     parser.feed(raw_html)
     parser.close()
-    sections, section_images = parser.finalize()
-    return sections, section_images, extract_saved_from_url(raw_html)
+    sections = parser.finalize()
+    return sections, extract_saved_from_url(raw_html)
 
 
 def parse_args() -> argparse.Namespace:
@@ -785,16 +622,7 @@ def parse_args() -> argparse.Namespace:
         dest='sections',
         help='Repeat to limit output to specific headings or section paths. Defaults to extracting the full TDIA.',
     )
-    output_group = parser.add_mutually_exclusive_group()
-    output_group.add_argument('--output', help='Write markdown output to a specific file')
-    output_group.add_argument(
-        '--output-root',
-        help='Create `.codex-docs/tdia/<tdia-name>/` style output under this root with `source.html` and `extracted.md`.',
-    )
-    parser.add_argument(
-        '--e2e-image',
-        help='Optional path to the E2E interactions diagram image. When used with `--output-root`, the image is copied to `images/` beside `extracted.md`.',
-    )
+    parser.add_argument('--output', help='Write markdown output to a file instead of stdout')
     return parser.parse_args()
 
 
@@ -806,17 +634,6 @@ def main() -> int:
         print(f'[ERROR] Source file not found: {source_path}', file=sys.stderr)
         return 1
 
-    if args.e2e_image and not args.output_root:
-        print('[ERROR] `--e2e-image` requires `--output-root` so the image can be copied beside `extracted.md`.', file=sys.stderr)
-        return 1
-
-    e2e_image_path: Path | None = None
-    if args.e2e_image:
-        e2e_image_path = Path(args.e2e_image).expanduser().resolve()
-        if not e2e_image_path.exists():
-            print(f'[ERROR] E2E image not found: {e2e_image_path}', file=sys.stderr)
-            return 1
-
     suffix = source_path.suffix.lower()
     requested = resolve_requested_sections(args.sections)
 
@@ -825,39 +642,10 @@ def main() -> int:
         print('[ERROR] Expected .html or .htm', file=sys.stderr)
         return 1
 
-    sections, section_images, saved_from_url = parse_html_sections(source_path)
-    e2e_image_markdown = None
-    e2e_image_missing_note = None
-    section_image_markdown: dict[str, list[str]] | None = None
-    if e2e_image_path is not None:
-        e2e_image_markdown = f'![E2E Interactions](images/e2e-interactions{e2e_image_path.suffix.lower()})'
-    elif 'E2E Interactions' in sections and not any(ref.section_key == 'E2E Interactions' for ref in section_images):
-        e2e_image_missing_note = '_E2E interactions image not provided. Ask the user for the diagram export and store it under `images/` beside this file._'
+    sections, saved_from_url = parse_html_sections(source_path)
+    output = build_output(source_path=source_path, sections=sections, requested=requested, saved_from_url=saved_from_url)
 
-    if args.output_root:
-        output_root = Path(args.output_root).expanduser().resolve()
-        tdia_name = derive_tdia_name(sections, fallback=source_path.stem)
-        target_dir = output_root / slugify(tdia_name)
-        section_image_markdown = copy_section_images(
-            target_dir=target_dir,
-            html_path=source_path,
-            image_refs=section_images,
-            allowed_sections={'E2E Interactions'},
-        )
-
-    output = build_output(
-        source_path=source_path,
-        sections=sections,
-        requested=requested,
-        saved_from_url=saved_from_url,
-        e2e_image_markdown=e2e_image_markdown,
-        e2e_image_missing_note=e2e_image_missing_note,
-        section_image_markdown=section_image_markdown,
-    )
-
-    if args.output_root:
-        write_output_bundle(output_root, source_path, output, sections, e2e_image_path=e2e_image_path)
-    elif args.output:
+    if args.output:
         output_path = Path(args.output).expanduser().resolve()
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(output, encoding='utf-8')
