@@ -44,7 +44,7 @@ export class GlobalApiInterceptorFlow {
     log('flow', 'Opening Manual Account Creation with business units error', { statusCode });
     this.dashboard.assertDashboard();
     this.actions.stubBusinessUnitsError(statusCode);
-    this.dashboard.goToManualAccountCreation('cam');
+    this.dashboard.goToManualAccountCreation();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -63,7 +63,7 @@ export class GlobalApiInterceptorFlow {
     log('flow', 'Opening Manual Account Creation with retriable business units error', { statusCode });
     this.dashboard.assertDashboard();
     this.actions.stubBusinessUnitsRetriableError(statusCode);
-    this.dashboard.goToManualAccountCreation('cam');
+    this.dashboard.goToManualAccountCreation();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -86,7 +86,7 @@ export class GlobalApiInterceptorFlow {
     });
     this.dashboard.assertDashboard();
     this.actions.stubBusinessUnitsNonRetriableError(statusCode);
-    this.dashboard.goToManualAccountCreation('cam');
+    this.dashboard.goToManualAccountCreation();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -104,7 +104,7 @@ export class GlobalApiInterceptorFlow {
     log('flow', 'Opening Manual Account Creation with business units network failure');
     this.dashboard.assertDashboard();
     this.actions.stubBusinessUnitsNetworkFailure();
-    this.dashboard.goToManualAccountCreation('cam');
+    this.dashboard.goToManualAccountCreation();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();

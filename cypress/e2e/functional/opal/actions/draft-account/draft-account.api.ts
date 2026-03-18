@@ -390,7 +390,11 @@ export function createDraftAndSetStatus(
             }
             expect(postResp.status, 'POST /draft-accounts').to.eq(201);
 
-            createdId = readDraftIdFromBody(postResp.body);
+            const draftId = readDraftIdFromBody(postResp.body);
+            if (draftId === undefined) {
+              throw new Error(`Expected draft_account_id in response body: ${JSON.stringify(postResp.body)}`);
+            }
+            createdId = draftId;
             recordCreatedId(createdId);
             postAccountNumber = extractAccountNumber(postResp.body as unknown);
             log('done', 'Draft account created', { createdId });
