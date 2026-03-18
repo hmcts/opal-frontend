@@ -186,6 +186,18 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
   }
 
   /**
+   * Builds checks details row id for aria-describedby linkage.
+   *
+   * @param row - Table row data.
+   * @param index - Row index fallback.
+   * @returns Sanitised checks row id.
+   */
+  public getRowChecksId(row: IFinesConSearchResultDefendantTableWrapperTableData, index: number): string {
+    const raw = String(this.getRowIdentifier(row, index));
+    return `defendant-checks-${raw.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
+  }
+
+  /**
    * Gets or creates checkbox control for a row.
    *
    * @param row - Table row data.
