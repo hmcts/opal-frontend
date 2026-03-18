@@ -19,6 +19,9 @@ import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { finesAccStateGuard } from '../routing/guards/fines-acc-state-guard/fines-acc-state.guard';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
+import { of, throwError } from 'rxjs';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 
 describe('FinesAccConvertComponent', () => {
   let fixture: ComponentFixture<FinesAccConvertComponent>;
@@ -33,6 +36,9 @@ describe('FinesAccConvertComponent', () => {
     setAccountState: ReturnType<typeof vi.fn>;
     account_number: ReturnType<typeof vi.fn>;
     party_name: ReturnType<typeof vi.fn>;
+  };
+  let mockOpalFinesService: {
+    getDefendantAccountParty: ReturnType<typeof vi.fn>;
   };
 
   const defaultHeadingData: IOpalFinesAccountDefendantDetailsHeader = {
@@ -106,6 +112,9 @@ describe('FinesAccConvertComponent', () => {
     };
     mockAccountStore.account_number.mockReturnValue('06000427N');
     mockAccountStore.party_name.mockReturnValue('Mr Terrence CONWAY-JOHNSON');
+    mockOpalFinesService = {
+      getDefendantAccountParty: vi.fn().mockReturnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK)),
+    };
 
     configureRoute();
 
@@ -116,6 +125,7 @@ describe('FinesAccConvertComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: FinesAccPayloadService, useValue: mockPayloadService },
         { provide: FinesAccountStore, useValue: mockAccountStore },
+        { provide: OpalFines, useValue: mockOpalFinesService },
       ],
     }).compileComponents();
   });
@@ -170,6 +180,7 @@ describe('FinesAccConvertComponent', () => {
       'defendant',
     );
     expect(mockAccountStore.setAccountState).toHaveBeenCalledWith(MOCK_FINES_ACCOUNT_STATE);
+    expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalledWith(123, defaultHeadingData.defendant_account_party_id);
   });
 
   it('should render the caption, heading, warning text, and action buttons for company conversion', () => {
@@ -282,6 +293,36 @@ describe('FinesAccConvertComponent', () => {
         organisation_flag: true,
       },
     });
+
+    createComponent();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../', FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'defendant',
+    });
+  });
+
+  it('should redirect back to defendant details when the defendant is non-paying', () => {
+    mockOpalFinesService.getDefendantAccountParty.mockReturnValue(
+      of({
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
+        defendant_account_party: {
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party,
+          is_debtor: false,
+        },
+      }),
+    );
+
+    createComponent();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../', FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'defendant',
+    });
+  });
+
+  it('should redirect back to defendant details when loading defendant party data fails', () => {
+    mockOpalFinesService.getDefendantAccountParty.mockReturnValue(throwError(() => new Error('API error')));
 
     createComponent();
 

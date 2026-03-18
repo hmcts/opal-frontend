@@ -15,14 +15,33 @@ import { IFinesAccDefendantDetailsConvertAction } from '../interfaces/fines-acc-
 export class FinesAccDefendantDetailsDefendantTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty;
   @Input() hasAccountMaintenencePermission: boolean = false;
-  @Input() convertAction: IFinesAccDefendantDetailsConvertAction | null = null;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Output() changeDefendantDetails = new EventEmitter<string>();
-  @Output() convertAccount = new EventEmitter<void>();
+  @Output() convertAccount = new EventEmitter<string>();
+
+  public get convertAction(): IFinesAccDefendantDetailsConvertAction | null {
+    if (!this.hasAccountMaintenencePermission || !this.tabData.defendant_account_party.is_debtor) {
+      return null;
+    }
+
+    if (this.tabData.defendant_account_party.party_details.organisation_flag) {
+      return {
+        interactive: true,
+        label: 'Convert to an individual account',
+        partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
+      };
+    }
+
+    return {
+      interactive: true,
+      label: 'Convert to a company account',
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
+    };
+  }
 
   public handleConvertAccount(): void {
     if (this.convertAction?.interactive) {
-      this.convertAccount.emit();
+      this.convertAccount.emit(this.convertAction.partyType);
     }
   }
 

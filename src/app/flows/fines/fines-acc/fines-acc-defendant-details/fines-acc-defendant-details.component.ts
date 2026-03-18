@@ -55,8 +55,6 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
-import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
-import { IFinesAccDefendantDetailsConvertAction } from './interfaces/fines-acc-defendant-details-convert-action.interface';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -395,30 +393,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.refreshFragment$.complete();
   }
 
-  public get convertAction(): IFinesAccDefendantDetailsConvertAction | null {
-    if (!this.hasAccountMaintenancePermissionInBusinessUnit()) {
-      return null;
-    }
-
-    if (this.accountData.debtor_type === this.debtorTypes.parentGuardian) {
-      return null;
-    }
-
-    if (this.accountData.party_details.organisation_flag) {
-      return {
-        interactive: true,
-        label: 'Convert to an individual account',
-        partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
-      };
-    }
-
-    return {
-      interactive: true,
-      label: 'Convert to a company account',
-      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
-    };
-  }
-
   /**
    * Navigates to the amend party details page for the specified party type.
    * Or navigates to the access-denied page if the user lacks the required permission in this BU.
@@ -436,10 +410,8 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     }
   }
 
-  public navigateToConvertAccountPage(): void {
-    const targetPartyType = this.convertAction?.partyType;
-
-    if (this.hasAccountMaintenancePermissionInBusinessUnit() && this.convertAction?.interactive && targetPartyType) {
+  public navigateToConvertAccountPage(targetPartyType: string): void {
+    if (this.hasAccountMaintenancePermissionInBusinessUnit() && targetPartyType) {
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${targetPartyType}`], {
         relativeTo: this.activatedRoute,
       });
