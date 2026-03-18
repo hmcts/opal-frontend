@@ -1,15 +1,24 @@
 <div class="govuk-grid-column-two-thirds">
   <opal-lib-govuk-heading-with-caption
+    id="account-convert-heading"
     [captionText]="captionText"
     [headingText]="headingText"
     headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
   ></opal-lib-govuk-heading-with-caption>
 
-  <p class="govuk-body govuk-!-margin-bottom-6">{{ warningText }}</p>
+  <p id="account-convert-warning" class="govuk-body govuk-!-margin-bottom-6">{{ warningText }}</p>
 
   <div class="govuk-button-group">
-    <button class="govuk-button govuk-!-margin-right-4" type="button" (click)="handleContinue()">Yes - continue</button>
+    <button
+      id="account-convert-confirm"
+      class="govuk-button govuk-!-margin-right-4"
+      type="button"
+      (click)="handleContinue()"
+    >
+      Yes - continue
+    </button>
     <opal-lib-govuk-cancel-link
+      id="account-convert-cancel"
       cancelLinkText="No - cancel"
       (linkClickEvent)="navigateBackToAccountSummary()"
     ></opal-lib-govuk-cancel-link>

@@ -30,12 +30,13 @@
     ></app-fines-acc-party-details>
   </div>
   @if (convertAction) {
-    <div class="govuk-grid-column-one-third">
+    <div id="defendant-convert-actions" class="govuk-grid-column-one-third">
       <hr [class]="style.hr" />
       <h2 [class]="style.heading">Actions</h2>
-      <p>
+      <p id="defendant-convert-action">
         @if (convertAction.interactive) {
           <a
+            id="defendant-convert-action-link"
             tabindex="0"
             class="govuk-link govuk-link--no-visited-state"
             (click)="handleConvertAccount()"
@@ -43,7 +44,7 @@
             >{{ convertAction.label }}</a
           >
         } @else {
-          <span>{{ convertAction.label }}</span>
+          <span id="defendant-convert-action-text">{{ convertAction.label }}</span>
         }
       </p>
     </div>

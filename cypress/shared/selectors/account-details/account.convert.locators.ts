@@ -5,10 +5,10 @@
 export const AccountConvertLocators = {
   page: {
     root: 'main[role="main"]',
-    header: 'main[role="main"] h1.govuk-heading-l',
-    caption: 'main[role="main"] h1.govuk-heading-l .govuk-caption-l',
-    warningText: 'main[role="main"] p.govuk-body',
-    confirmButton: 'main[role="main"] button.govuk-button:contains("Yes - continue")',
-    cancelLink: 'main[role="main"] a.govuk-link:contains("No - cancel")',
+    heading: '#account-convert-heading',
+    caption: '#account-convert-heading .govuk-caption-l',
+    warningText: '#account-convert-warning',
+    confirmButton: '#account-convert-confirm',
+    cancelLink: '#account-convert-cancel a.govuk-link',
   },
 } as const;
