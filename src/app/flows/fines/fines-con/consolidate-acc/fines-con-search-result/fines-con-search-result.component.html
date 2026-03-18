@@ -1,4 +1,4 @@
-@if (tableData.length > 0) {
+@if (invalidResultsState === 'none') {
   <app-fines-con-search-result-defendant-table-wrapper
     [tableData]="tableData"
     [checksByAccountId]="checksByAccountId"
@@ -7,6 +7,20 @@
     (accountIdClicked)="onAccountIdClick($event)"
     (addToList)="onAddToList($event)"
   ></app-fines-con-search-result-defendant-table-wrapper>
+} @else if (invalidResultsState === 'tooManyResults') {
+  <h2 class="govuk-heading-m">There are more than 100 results.</h2>
+  <p class="govuk-body-m">
+    <a class="govuk-link" tabindex="0" (click)="navigateBackToSearch()" (keyup.enter)="navigateBackToSearch()"
+      >Try adding more information</a
+    >
+    to your search
+  </p>
 } @else {
-  <h2 class="govuk-heading-m">There are no matching results</h2>
+  <h2 class="govuk-heading-m">There are no matching results.</h2>
+  <p class="govuk-body-m">
+    <a class="govuk-link" tabindex="0" (click)="navigateBackToSearch()" (keyup.enter)="navigateBackToSearch()"
+      >Check your search</a
+    >
+    and try again
+  </p>
 }

@@ -226,8 +226,7 @@ describe('FinesConSearchResultComponent', () => {
     ]);
   });
 
-  it('should log and not display results when more than 100 results are provided', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  it('should set tooManyResults state and not display table when more than 100 results are provided', () => {
     const defendantAccounts = Array.from({ length: 101 }, (_, index) => ({
       defendant_account_id: index + 1,
       account_number: `ACC-${index + 1}`,
@@ -240,7 +239,31 @@ describe('FinesConSearchResultComponent', () => {
     expect(component.tableData).toHaveLength(0);
     expect(component.defendantAccountsData).toHaveLength(0);
     expect(component.checksByAccountId).toEqual({});
-    expect(logSpy).toHaveBeenCalledWith('more than 100 results');
+    expect(component.invalidResultsState).toBe('tooManyResults');
+  });
+
+  it('should set noResults state when no accounts are provided', () => {
+    component.defendantAccounts = [];
+
+    expect(component.tableData).toHaveLength(0);
+    expect(component.defendantAccountsData).toHaveLength(0);
+    expect(component.checksByAccountId).toEqual({});
+    expect(component.invalidResultsState).toBe('noResults');
+  });
+
+  it('should set table state when result set is valid', () => {
+    component.defendantAccounts = FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK;
+
+    expect(component.tableData.length).toBeGreaterThan(0);
+    expect(component.invalidResultsState).toBe('none');
+  });
+
+  it('should emit navigateToSearch when navigateBackToSearch is called', () => {
+    const navigateToSearchSpy = vi.spyOn(component.navigateToSearch, 'emit');
+
+    component.navigateBackToSearch();
+
+    expect(navigateToSearchSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should ignore stale in-flight response when a newer search is triggered', () => {
