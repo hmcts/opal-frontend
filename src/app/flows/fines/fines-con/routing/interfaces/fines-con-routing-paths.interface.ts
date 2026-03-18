@@ -4,5 +4,6 @@ export interface IFinesConRoutingPaths extends IChildRoutingPaths {
   children: {
     selectBusinessUnit: string;
     consolidateAcc: string;
+    searchError: string;
   };
 }
