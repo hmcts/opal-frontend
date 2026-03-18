@@ -290,5 +290,4 @@ describe('FinesAccConvertComponent', () => {
       fragment: 'defendant',
     });
   });
-
 });
