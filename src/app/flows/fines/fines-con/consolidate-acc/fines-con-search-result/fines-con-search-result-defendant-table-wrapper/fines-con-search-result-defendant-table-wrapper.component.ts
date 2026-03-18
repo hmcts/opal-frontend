@@ -174,15 +174,16 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
   }
 
   /**
-   * Builds checkbox DOM id for a row.
+   * Builds a sanitised DOM id for a row using the supplied prefix.
    *
    * @param row - Table row data.
    * @param index - Row index fallback.
-   * @returns Sanitised checkbox id.
+   * @param prefix - Id prefix used by the caller context.
+   * @returns Sanitised row id with prefix.
    */
   public getRowDomId(row: IFinesConSearchResultDefendantTableWrapperTableData, index: number, prefix: string): string {
     const raw = String(this.getRowIdentifier(row, index));
-    return `defendant-checks-${raw.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
+    return `${prefix}-${raw.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
   }
 
   /**
