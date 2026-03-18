@@ -180,19 +180,7 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
    * @param index - Row index fallback.
    * @returns Sanitised checkbox id.
    */
-  public getRowCheckboxId(row: IFinesConSearchResultDefendantTableWrapperTableData, index: number): string {
-    const raw = String(this.getRowIdentifier(row, index));
-    return `defendant-select-${raw.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
-  }
-
-  /**
-   * Builds checks details row id for aria-describedby linkage.
-   *
-   * @param row - Table row data.
-   * @param index - Row index fallback.
-   * @returns Sanitised checks row id.
-   */
-  public getRowChecksId(row: IFinesConSearchResultDefendantTableWrapperTableData, index: number): string {
+  public getRowDomId(row: IFinesConSearchResultDefendantTableWrapperTableData, index: number, prefix: string): string {
     const raw = String(this.getRowIdentifier(row, index));
     return `defendant-checks-${raw.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
   }
