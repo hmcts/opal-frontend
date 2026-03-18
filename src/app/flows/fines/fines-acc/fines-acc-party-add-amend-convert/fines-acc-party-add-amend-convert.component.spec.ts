@@ -221,6 +221,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Assert
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
+    expect(mockFinesAccStore.setSuccessMessage).not.toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'defendant',
@@ -249,10 +250,45 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Assert
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
+    expect(mockFinesAccStore.setSuccessMessage).not.toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'parent-or-guardian',
     });
+  });
+
+  it('should set a success message when converting to a company account', () => {
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    Object.defineProperty(component, 'mode', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
+      writable: true,
+    });
+    Object.defineProperty(component, 'partyType', { value: 'company', writable: true });
+
+    component.handleFormSubmit(mockFormData);
+
+    expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith('Converted to a company account.');
+  });
+
+  it('should set a success message when converting to an individual account', () => {
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    Object.defineProperty(component, 'mode', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
+      writable: true,
+    });
+    Object.defineProperty(component, 'partyType', { value: 'individual', writable: true });
+
+    component.handleFormSubmit(mockFormData);
+
+    expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith('Converted to an individual account.');
   });
 
   it('should redirect to details page when required store values are missing', () => {

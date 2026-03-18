@@ -38,6 +38,22 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
   protected readonly fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
 
+  private get successMessage(): string | null {
+    if (this.mode !== FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT) {
+      return null;
+    }
+
+    if (this.partyType === 'company') {
+      return 'Converted to a company account.';
+    }
+
+    if (this.partyType === 'individual') {
+      return 'Converted to an individual account.';
+    }
+
+    return null;
+  }
+
   /**
    * Handles the form submission event from the child form component.
    * @param formData - The form data submitted from the child component
@@ -73,7 +89,12 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
       )
       .subscribe({
         next: () => {
+          const successMessage = this.successMessage;
+
           this.opalFinesService.clearCache('defendantAccountPartyCache$');
+          if (successMessage) {
+            this.finesAccStore.setSuccessMessage(successMessage);
+          }
           this.routerNavigate(
             this.finesDefendantRoutingPaths.children.details,
             false,
