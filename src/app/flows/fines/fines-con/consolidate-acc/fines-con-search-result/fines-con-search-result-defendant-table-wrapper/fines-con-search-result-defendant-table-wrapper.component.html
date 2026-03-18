@@ -168,8 +168,8 @@
                     opal-lib-govuk-checkboxes-item
                     opalLibMojMultiSelectBody
                     [control]="getRowControl(row, $index)"
-                    [inputId]="getRowCheckboxId(row, $index)"
-                    [inputName]="getRowCheckboxId(row, $index)"
+                    [inputId]="getRowDomId(row, $index, 'defendant-select')"
+                    [inputName]="getRowDomId(row, $index, 'defendant-select')"
                     labelText=""
                     labelClasses="govuk-!-padding-0"
                     [rowId]="getRowIdentifier(row, $index)"
@@ -187,6 +187,7 @@
                   <a
                     class="govuk-link govuk-link--no-visited-state"
                     tabindex="0"
+                    [attr.aria-describedby]="hasRowChecks(row) ? getRowDomId(row, $index, 'defendant-checks') : null"
                     (click)="goToAccount(row['Account ID'])"
                     (keyup.enter)="goToAccount(row['Account ID'])"
                     >{{ row['Account']! }}</a
@@ -284,7 +285,11 @@
           @if (hasRowChecks(row)) {
             <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="'defendant-checks-row'">
               <td opal-lib-moj-sortable-table-row-data id="defendantChecksSpacer"></td>
-              <td opal-lib-moj-sortable-table-row-data id="defendantChecks" [attr.colspan]="getChecksColspan()">
+              <td
+                opal-lib-moj-sortable-table-row-data
+                [id]="getRowDomId(row, $index, 'defendant-checks')"
+                [attr.colspan]="getChecksColspan()"
+              >
                 @for (severity of checkSeverities; track severity) {
                   @let severityChecks = getChecksBySeverity(row, severity);
                   @if (severityChecks.length > 0) {
