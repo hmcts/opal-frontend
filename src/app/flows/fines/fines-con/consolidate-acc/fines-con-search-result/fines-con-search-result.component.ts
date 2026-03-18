@@ -23,6 +23,7 @@ import { FinesConPayloadService } from '../../services/fines-con-payload.service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesConSearchResultComponent implements OnDestroy {
+  private readonly MAX_RESULTS_WARNING_THRESHOLD = 100;
   private readonly router = inject(Router);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesConStore = inject(FinesConStore);
@@ -93,6 +94,16 @@ export class FinesConSearchResultComponent implements OnDestroy {
   }
 
   private applyMappedResults(defendantAccounts: IFinesConSearchResultDefendantAccount[]): void {
+    if (defendantAccounts.length > this.MAX_RESULTS_WARNING_THRESHOLD) {
+      // eslint-disable-next-line no-console
+      console.log('more than 100 results');
+
+      this.defendantAccountsData = [];
+      this.tableData = [];
+      this.checksByAccountId = {};
+      return;
+    }
+
     this.defendantAccountsData = defendantAccounts;
     this.tableData = this.finesConPayloadService.mapDefendantAccounts(defendantAccounts);
     this.checksByAccountId = this.finesConPayloadService.buildChecksByAccountId(defendantAccounts);

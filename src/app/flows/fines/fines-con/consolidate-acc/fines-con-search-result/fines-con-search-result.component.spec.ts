@@ -205,6 +205,23 @@ describe('FinesConSearchResultComponent', () => {
     ]);
   });
 
+  it('should log and not display results when more than 100 results are provided', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const defendantAccounts = Array.from({ length: 101 }, (_, index) => ({
+      defendant_account_id: index + 1,
+      account_number: `ACC-${index + 1}`,
+      defendant_surname: `SURNAME_${index + 1}`,
+      defendant_firstnames: `FORENAME_${index + 1}`,
+    })) as unknown as IFinesConSearchResultDefendantAccount[];
+
+    component.defendantAccounts = defendantAccounts;
+
+    expect(component.tableData).toHaveLength(0);
+    expect(component.defendantAccountsData).toHaveLength(0);
+    expect(component.checksByAccountId).toEqual({});
+    expect(logSpy).toHaveBeenCalledWith('more than 100 results');
+  });
+
   it('should ignore stale in-flight response when a newer search is triggered', () => {
     const oldResponse$ = new Subject<unknown>();
     const newResponse$ = new Subject<unknown>();
