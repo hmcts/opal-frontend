@@ -10,7 +10,6 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
-import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 
 @Component({
   selector: 'app-fines-acc-convert',
@@ -22,7 +21,6 @@ export class FinesAccConvertComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly payloadService = inject(FinesAccPayloadService);
-  private readonly opalFinesService = inject(OpalFines);
 
   public readonly accountStore = inject(FinesAccountStore);
   public readonly partyTypes = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES;
@@ -30,7 +28,6 @@ export class FinesAccConvertComponent implements OnInit {
   public readonly accountId = Number(this.activatedRoute.snapshot.paramMap.get('accountId'));
 
   public accountData!: IOpalFinesAccountDefendantDetailsHeader;
-  private isDebtor = false;
 
   private getHeaderDataFromRoute(): void {
     this.accountData = this.payloadService.transformPayload(
@@ -47,10 +44,6 @@ export class FinesAccConvertComponent implements OnInit {
   }
 
   private get canConvertAccount(): boolean {
-    if (!this.isDebtor) {
-      return false;
-    }
-
     if (this.routePartyType === this.partyTypes.COMPANY) {
       return !this.isSourceCompanyAccount && this.accountData.debtor_type !== FINES_ACC_DEBTOR_TYPES.parentGuardian;
     }
@@ -84,18 +77,10 @@ export class FinesAccConvertComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getHeaderDataFromRoute();
-    this.opalFinesService
-      .getDefendantAccountParty(this.accountId, this.accountData.defendant_account_party_id)
-      .subscribe({
-        next: (partyData) => {
-          this.isDebtor = partyData.defendant_account_party.is_debtor;
 
-          if (!this.canConvertAccount) {
-            this.navigateBackToAccountSummary();
-          }
-        },
-        error: () => this.navigateBackToAccountSummary(),
-      });
+    if (!this.canConvertAccount) {
+      this.navigateBackToAccountSummary();
+    }
   }
 
   public handleContinue(): void {
