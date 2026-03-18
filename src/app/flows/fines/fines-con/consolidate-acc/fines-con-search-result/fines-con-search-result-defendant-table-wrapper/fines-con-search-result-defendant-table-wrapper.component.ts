@@ -172,11 +172,7 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
    * @param prefix - Id prefix used by the caller context.
    * @returns Sanitised row id with prefix.
    */
-  public getRowDomId(
-    row: IFinesConSearchResultDefendantTableWrapperTableData,
-    index: number,
-    prefix: string,
-  ): string {
+  public getRowDomId(row: IFinesConSearchResultDefendantTableWrapperTableData, index: number, prefix: string): string {
     const raw = String(this.getRowIdentifier(row, index));
     return `${prefix}-${raw.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`;
   }
