@@ -97,6 +97,22 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     expect(checkMessage).toContain('Account status is Consolidated');
   });
 
+  it('should link account to checks row via aria-describedby when checks are present', () => {
+    component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
+    component.checksByAccountId = FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_MOCK;
+    fixture.detectChanges();
+
+    const accountLink: HTMLAnchorElement | null = fixture.nativeElement.querySelector(
+      '#defendantAccountNumber .govuk-link',
+    );
+    const checksCell: HTMLTableCellElement | null = fixture.nativeElement.querySelector('td[colspan="12"]');
+
+    expect(accountLink).toBeTruthy();
+    expect(checksCell).toBeTruthy();
+    expect(checksCell?.getAttribute('id')).toBe('defendant-checks-1');
+    expect(accountLink?.getAttribute('aria-describedby')).toBe('defendant-checks-1');
+  });
+
   it('should only return error checks when both warnings and errors exist', () => {
     const row = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1)[0];
     component.checksByAccountId =
