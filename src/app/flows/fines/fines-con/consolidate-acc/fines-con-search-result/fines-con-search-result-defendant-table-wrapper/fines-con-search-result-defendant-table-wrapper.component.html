@@ -277,7 +277,7 @@
             <td
               opal-lib-moj-sortable-table-row-data
               [id]="getRowDomId(row, $index, 'defendant-checks')"
-              [attr.colspan]="getChecksColspan()
+              [attr.colspan]="getChecksColspan()"
             >
               @for (severity of checkSeverities; track severity) {
                 @let severityChecks = getChecksBySeverity(row, severity);
