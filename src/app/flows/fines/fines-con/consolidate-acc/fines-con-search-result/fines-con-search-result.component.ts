@@ -38,6 +38,7 @@ export class FinesConSearchResultComponent implements OnDestroy {
 
   @Input({ required: true })
   public defendantType: FinesConDefendant = 'individual';
+  @Input({ required: false }) public alreadyAddedAccountIds: number[] = [];
 
   @Input({ required: false })
   public set searchPayload(searchPayload: IOpalFinesDefendantAccountSearchParams | null) {
@@ -124,6 +125,27 @@ export class FinesConSearchResultComponent implements OnDestroy {
     );
 
     window.open(url, '_blank');
+  }
+
+  /**
+   * Handles Add to list selections.
+   * AC6c temporary behaviour: log when selected accounts already exist in consolidation list.
+   *
+   * @param selectedAccountIds - Selected account ids emitted from the table wrapper.
+   */
+  public onAddToList(selectedAccountIds: number[]): void {
+    const hasAlreadyAddedAccount = selectedAccountIds.some((accountId) =>
+      this.alreadyAddedAccountIds.includes(accountId),
+    );
+
+    if (hasAlreadyAddedAccount) {
+      // eslint-disable-next-line no-console
+      console.log('PO-2422: navigate to Selection alert screen');
+      return;
+    }
+
+    this.finesConStore.addSelectedAccountIds(selectedAccountIds);
+    // Navigation to "For consolidation" tab is implemented in a separate ticket.
   }
 
   public ngOnDestroy(): void {

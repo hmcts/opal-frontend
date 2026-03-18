@@ -5,6 +5,7 @@
     [existingSortState]="defendantsSort"
     [defendantType]="defendantType"
     (accountIdClicked)="onAccountIdClick($event)"
+    (addToList)="onAddToList($event)"
   ></app-fines-con-search-result-defendant-table-wrapper>
 } @else {
   <h2 class="govuk-heading-m">There are no matching results</h2>

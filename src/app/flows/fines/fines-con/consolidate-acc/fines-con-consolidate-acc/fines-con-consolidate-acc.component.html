@@ -66,6 +66,7 @@
       <app-fines-con-search-result
         [defendantType]="getDefendantType()"
         [searchPayload]="defendantAccountsSearchPayload"
+        [alreadyAddedAccountIds]="finesConStore.selectedAccountIds()"
       ></app-fines-con-search-result>
     </div>
   }
