@@ -4,7 +4,7 @@ import { FinesConSearchResultComponent } from './fines-con-search-result.compone
 import { IFinesConSearchResultDefendantAccount } from './interfaces/fines-con-search-result-defendant-account.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { of, Subject } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
@@ -62,6 +62,7 @@ describe('FinesConSearchResultComponent', () => {
       FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK;
 
     component.defendantAccounts = defendantAccounts;
+    fixture.detectChanges();
 
     expect(component.tableData).toEqual([
       expect.objectContaining({
@@ -95,6 +96,7 @@ describe('FinesConSearchResultComponent', () => {
       FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FALSEY_VALUES_MOCK;
 
     component.defendantAccounts = defendantAccounts;
+    fixture.detectChanges();
 
     expect(component.tableData[0]['CO']).toBe('-');
     expect(component.tableData[0]['P/G']).toBe('-');
@@ -125,6 +127,7 @@ describe('FinesConSearchResultComponent', () => {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       consolidation_search: false,
     };
+    fixture.detectChanges();
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
       expect.objectContaining({ consolidation_search: true }),
@@ -144,6 +147,7 @@ describe('FinesConSearchResultComponent', () => {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       consolidation_search: false,
     };
+    fixture.detectChanges();
 
     expect(updateResultsSpy).toHaveBeenCalledWith([], defendantAccounts);
   });
@@ -153,6 +157,7 @@ describe('FinesConSearchResultComponent', () => {
     component.defendantType = 'individual';
 
     component.searchPayload = null;
+    fixture.detectChanges();
 
     expect(opalFines.getDefendantAccounts).not.toHaveBeenCalled();
     expect(component.tableData[0]).toEqual(
@@ -168,6 +173,7 @@ describe('FinesConSearchResultComponent', () => {
     component.defendantType = 'company';
 
     component.searchPayload = null;
+    fixture.detectChanges();
 
     expect(opalFines.getDefendantAccounts).not.toHaveBeenCalled();
     expect(component.tableData[0]).toEqual(
@@ -183,6 +189,7 @@ describe('FinesConSearchResultComponent', () => {
       FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_WITH_CHECKS_MOCK;
 
     component.defendantAccounts = defendantAccounts;
+    fixture.detectChanges();
 
     expect(component.checksByAccountId[99000000000020]).toEqual([
       { reference: 'CON.ER.1', severity: 'error', message: 'Account status is `CS`' },
@@ -199,6 +206,7 @@ describe('FinesConSearchResultComponent', () => {
         },
       } as unknown as IFinesConSearchResultDefendantAccount,
     ];
+    fixture.detectChanges();
 
     expect(component.checksByAccountId[12345]).toEqual([
       { reference: 'CON.ER.9', severity: 'error', message: 'Blocked account' },
@@ -215,6 +223,7 @@ describe('FinesConSearchResultComponent', () => {
     })) as unknown as IFinesConSearchResultDefendantAccount[];
 
     component.defendantAccounts = defendantAccounts;
+    fixture.detectChanges();
 
     expect(component.tableData).toHaveLength(0);
     expect(component.defendantAccountsData).toHaveLength(0);
@@ -234,11 +243,13 @@ describe('FinesConSearchResultComponent', () => {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       consolidation_search: false,
     };
+    fixture.detectChanges();
 
     component.searchPayload = {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       consolidation_search: false,
     };
+    fixture.detectChanges();
 
     newResponse$.next(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_RESPONSE_MOCK);
     newResponse$.complete();
@@ -260,5 +271,19 @@ describe('FinesConSearchResultComponent', () => {
         Account: 'ACC001',
       }),
     ]);
+  });
+
+  it('should emit empty results when defendant account search fails', () => {
+    opalFines.getDefendantAccounts.mockReturnValue(throwError(() => new Error('Request failed')));
+
+    component.searchPayload = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+      consolidation_search: false,
+    };
+    fixture.detectChanges();
+
+    expect(component.tableData).toEqual([]);
+    expect(component.checksByAccountId).toEqual({});
+    expect(component.defendantAccountsData).toEqual([]);
   });
 });
