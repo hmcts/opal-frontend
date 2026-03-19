@@ -368,6 +368,9 @@ export class AccountEnquiryFlow {
    * Completes the convert-to-individual form by filling the required personal details and saving.
    *
    * @param details - Title and name fields required for the converted individual account.
+   * @param details.title - Title to select for the converted individual account.
+   * @param details.firstName - First name to enter for the converted individual account.
+   * @param details.lastName - Last name to enter for the converted individual account.
    */
   public completeConvertToIndividual(details: { title: string; firstName: string; lastName: string }): void {
     logAE('method', 'completeConvertToIndividual()', details);
