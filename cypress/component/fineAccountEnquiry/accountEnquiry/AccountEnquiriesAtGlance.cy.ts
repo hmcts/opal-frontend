@@ -16,6 +16,10 @@ import { interceptAuthenticatedUser, interceptUserState } from 'cypress/componen
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('Defendant Account Summary - At a Glance Tab', () => {
   beforeEach(() => {
     interceptAuthenticatedUser();
@@ -33,7 +37,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   };
   it(
     'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for company',
-    { tags: ['PO-814'] },
+    { tags: buildTags('@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3338') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -68,7 +72,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for defendant',
-    { tags: ['PO-984'] },
+    { tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-KEY:POT-3339') },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
@@ -99,41 +103,53 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     },
   );
 
-  it('AC2a: Displays Language Preferences section below National Insurance Number', { tags: ['PO-984'] }, () => {
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+  it(
+    'AC2a: Displays Language Preferences section below National Insurance Number',
+    { tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-KEY:POT-3340') },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.get('h3').contains('National Insurance Number').next('p').should('be.visible').as('niH3');
-    cy.get('@niH3')
-      .siblings('h2')
-      .contains(/language preference(s)?/i)
-      .should('be.visible');
-  });
+      cy.get('h3').contains('National Insurance Number').next('p').should('be.visible').as('niH3');
+      cy.get('@niH3')
+        .siblings('h2')
+        .contains(/language preference(s)?/i)
+        .should('be.visible');
+    },
+  );
 
-  it('AC2ai: Displays Language Preferences as read-only fields', { tags: ['PO-984', 'PO-814'] }, () => {
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+  it(
+    'AC2ai: Displays Language Preferences as read-only fields',
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3341'),
+    },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.contains('h2', /language preference(s)?/i)
-      .should('be.visible')
-      .parent()
-      .within(() => {
-        // Verify all language preference fields are read-only (no input elements)
-        cy.get('input').should('not.exist');
-        cy.get('select').should('not.exist');
-        cy.get('textarea').should('not.exist');
-      });
-  });
+      cy.contains('h2', /language preference(s)?/i)
+        .should('be.visible')
+        .parent()
+        .within(() => {
+          // Verify all language preference fields are read-only (no input elements)
+          cy.get('input').should('not.exist');
+          cy.get('select').should('not.exist');
+          cy.get('textarea').should('not.exist');
+        });
+    },
+  );
 
   it(
     'AC2b: displays Document language and Court hearing language values in Language Preferences section',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3342'),
+    },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
@@ -155,127 +171,165 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         });
     },
   );
-  it('AC2bi: Label Welsh and Language is displayed in blue', { tags: ['PO-984', 'PO-814'] }, () => {
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+  it(
+    'AC2bi: Label Welsh and Language is displayed in blue',
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3343'),
+    },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.get(DOM.enforcementStatusTag)
-      .should('be.visible')
-      .and('contain.text', 'Welsh and English')
-      .and('have.css', 'color', 'rgb(12, 45, 74)');
-  });
+      cy.get(DOM.enforcementStatusTag)
+        .should('be.visible')
+        .and('contain.text', 'Welsh and English')
+        .and('have.css', 'color', 'rgb(12, 45, 74)');
+    },
+  );
 
-  it('AC2bia: Label Welsh and Language is not displayed ', { tags: ['PO-984', 'PO-814'] }, () => {
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+  it(
+    'AC2bia: Label Welsh and Language is not displayed ',
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3344'),
+    },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.get(DOM.enforcementStatusTag).should('not.exist');
-  });
+      cy.get(DOM.enforcementStatusTag).should('not.exist');
+    },
+  );
 
-  it('AC2c: Labels not displayed ', { tags: ['PO-984', 'PO-814'] }, () => {
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+  it(
+    'AC2c: Labels not displayed ',
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3345'),
+    },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.contains('h2', /language preference(s)?/i).should('not.exist');
-    cy.contains(/document language/i).should('not.exist');
-    cy.contains('p', 'Welsh and English').should('not.exist');
+      cy.contains('h2', /language preference(s)?/i).should('not.exist');
+      cy.contains(/document language/i).should('not.exist');
+      cy.contains('p', 'Welsh and English').should('not.exist');
 
-    cy.contains(/court hearing language/i).should('not.exist');
-    cy.contains('p', 'Welsh and English').should('not.exist');
-  });
+      cy.contains(/court hearing language/i).should('not.exist');
+      cy.contains('p', 'Welsh and English').should('not.exist');
+    },
+  );
 
-  it('AC3: displays Aliases section when defendant has one or more aliases', { tags: ['PO-984'] }, () => {
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+  it(
+    'AC3: displays Aliases section when defendant has one or more aliases',
+    { tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-KEY:POT-3346') },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.get('h3')
-      .contains('Aliases')
-      .next('p')
-      .should('exist')
-      .invoke('text')
-      .then((text) => {
-        const aliases = text.replace(/\s+/g, ' ').trim();
+      cy.get('h3')
+        .contains('Aliases')
+        .next('p')
+        .should('exist')
+        .invoke('text')
+        .then((text) => {
+          const aliases = text.replace(/\s+/g, ' ').trim();
 
-        expect(aliases).to.contain('Ewan SMITH');
-        expect(aliases).to.contain('Megan WILLIAMS');
-        expect(aliases.indexOf('Ewan SMITH')).to.be.lessThan(aliases.indexOf('Megan WILLIAMS')); // order check
-      });
-  });
-  it('AC3b: does not display Aliases section when defendant has no aliases', { tags: ['PO-984'] }, () => {
-    const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    headerNoAliases.party_details.individual_details!.individual_aliases = [];
+          expect(aliases).to.contain('Ewan SMITH');
+          expect(aliases).to.contain('Megan WILLIAMS');
+          expect(aliases.indexOf('Ewan SMITH')).to.be.lessThan(aliases.indexOf('Megan WILLIAMS')); // order check
+        });
+    },
+  );
+  it(
+    'AC3b: does not display Aliases section when defendant has no aliases',
+    { tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-KEY:POT-3347') },
+    () => {
+      const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      headerNoAliases.party_details.individual_details!.individual_aliases = [];
 
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, headerNoAliases, '1');
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, headerNoAliases, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
-    cy.get('h3').contains('Aliases').next('p').should('not.have.text');
-  });
+      setupAccountEnquiryComponent(componentProperties);
+      cy.get('h3').contains('Aliases').next('p').should('not.have.text');
+    },
+  );
 
-  it('AC3: displays Aliases section when company has one or more aliases', { tags: ['PO-814'] }, () => {
-    const header = structuredClone(DEFENDANT_HEADER_MOCK);
-    header.party_details.organisation_flag = true;
-    header.party_details.organisation_details = {
-      organisation_name: 'Test Org Ltd',
-      organisation_aliases: [],
-    };
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, header, '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+  it(
+    'AC3: displays Aliases section when company has one or more aliases',
+    { tags: buildTags('@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3348') },
+    () => {
+      const header = structuredClone(DEFENDANT_HEADER_MOCK);
+      header.party_details.organisation_flag = true;
+      header.party_details.organisation_details = {
+        organisation_name: 'Test Org Ltd',
+        organisation_aliases: [],
+      };
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, header, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.get(DOM.pageHeader).should('exist');
+      cy.get(DOM.pageHeader).should('exist');
 
-    cy.get('h3')
-      .contains('Aliases')
-      .next('p')
-      .should('exist')
-      .invoke('text')
-      .then((text) => {
-        const aliases = text.replace(/\s+/g, ' ').trim();
+      cy.get('h3')
+        .contains('Aliases')
+        .next('p')
+        .should('exist')
+        .invoke('text')
+        .then((text) => {
+          const aliases = text.replace(/\s+/g, ' ').trim();
 
-        expect(aliases).to.contain('Meridian Construction Ltd');
-        expect(aliases).to.contain('Meridian Solutions Ltd');
-        expect(aliases.indexOf('Meridian Construction Ltd')).to.be.lessThan(aliases.indexOf('Meridian Solutions Ltd')); // order check
-      });
-  });
+          expect(aliases).to.contain('Meridian Construction Ltd');
+          expect(aliases).to.contain('Meridian Solutions Ltd');
+          expect(aliases.indexOf('Meridian Construction Ltd')).to.be.lessThan(
+            aliases.indexOf('Meridian Solutions Ltd'),
+          ); // order check
+        });
+    },
+  );
 
-  it('AC3b: does not display Aliases section when company has no aliases', { tags: ['PO-814'] }, () => {
-    const header = structuredClone(DEFENDANT_HEADER_MOCK);
-    header.party_details.organisation_flag = true;
-    header.party_details.organisation_details = {
-      organisation_name: 'Test Org Ltd',
-      organisation_aliases: [],
-    };
-    const atAGlanceNoAliases = structuredClone(OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK);
-    atAGlanceNoAliases.party_details.organisation_details!.organisation_aliases = [];
+  it(
+    'AC3b: does not display Aliases section when company has no aliases',
+    { tags: buildTags('@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3349') },
+    () => {
+      const header = structuredClone(DEFENDANT_HEADER_MOCK);
+      header.party_details.organisation_flag = true;
+      header.party_details.organisation_details = {
+        organisation_name: 'Test Org Ltd',
+        organisation_aliases: [],
+      };
+      const atAGlanceNoAliases = structuredClone(OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK);
+      atAGlanceNoAliases.party_details.organisation_details!.organisation_aliases = [];
 
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, header, '1');
-    interceptAtAGlance(77, atAGlanceNoAliases, '1');
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, header, '1');
+      interceptAtAGlance(77, atAGlanceNoAliases, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.get('h3').contains('Aliases').next('p').should('not.have.text');
-  });
+      cy.get('h3').contains('Aliases').next('p').should('not.have.text');
+    },
+  );
 
   it(
     'AC4,AC4a: displays Comments section with no Account Comment or Free Text Notes',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3350'),
+    },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -299,7 +353,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3351'),
+    },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -322,7 +378,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC4c, Ac9: displays Comments section with Free Text Notes but no Account Comment',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3352'),
+    },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -345,7 +403,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC4d: displays Comments section with both Account Comment and Free Text Notes',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3353'),
+    },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -368,7 +428,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5: Shows Add comments link and navigates to Comments screen when user has Account Maintenance permission in associated  BU',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3354'),
+    },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -399,7 +461,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5: Shows Change link and navigates to Comments screen when user has Account Maintenance permission in associated BU',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3355'),
+    },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -428,7 +492,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5a: Add Comment link exists when user has permission in at least one BU but not the BU associated to the account',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3356'),
+    },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -459,7 +525,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5a: Change link exists when user has permission in at least one BU but not the BU associated to the account',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3357'),
+    },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
@@ -480,7 +548,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5b: Change link and add comment do not exist when user has no permission in any BU',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3358'),
+    },
     () => {
       interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
@@ -492,37 +562,45 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     },
   );
 
-  it('AC6a: displays Payment Terms section for "Pay by date" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
-    const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    mockDataPayByDate.payment_terms = {
-      payment_terms_type: {
-        payment_terms_type_code: 'B',
-        payment_terms_type_display_name: 'By date',
-      },
-      effective_date: '31/12/2024',
-      instalment_period: null,
-      lump_sum_amount: null,
-      instalment_amount: null,
-    };
+  it(
+    'AC6a: displays Payment Terms section for "Pay by date" scenario',
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3359'),
+    },
+    () => {
+      const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataPayByDate.payment_terms = {
+        payment_terms_type: {
+          payment_terms_type_code: 'B',
+          payment_terms_type_display_name: 'By date',
+        },
+        effective_date: '31/12/2024',
+        instalment_period: null,
+        lump_sum_amount: null,
+        instalment_amount: null,
+      };
 
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, mockDataPayByDate, '1');
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataPayByDate, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
-    cy.get('h2').contains('Payment terms').should('exist');
-    cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay in full');
-    cy.get('h3').contains('Pay by date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
+      setupAccountEnquiryComponent(componentProperties);
+      cy.get('h2').contains('Payment terms').should('exist');
+      cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay in full');
+      cy.get('h3').contains('Pay by date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
 
-    // Verify that instalment-specific fields are not displayed
-    cy.get('h3').contains('Frequency').should('not.exist');
-    cy.get('h3').contains('Instalments').should('not.exist');
-    cy.get('h3').contains('Start Date').should('not.exist');
-  });
+      // Verify that instalment-specific fields are not displayed
+      cy.get('h3').contains('Frequency').should('not.exist');
+      cy.get('h3').contains('Instalments').should('not.exist');
+      cy.get('h3').contains('Start Date').should('not.exist');
+    },
+  );
 
   it(
     'AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3360'),
+    },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
@@ -544,36 +622,44 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     },
   );
 
-  it('AC6c: displays Payment Terms section for "Instalments only" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
-    const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    mockDataPayByDate.payment_terms = {
-      payment_terms_type: {
-        payment_terms_type_code: 'I',
-        payment_terms_type_display_name: 'By date',
-      },
-      effective_date: '31/12/2024',
-      instalment_period: {
-        instalment_period_code: 'M',
-        instalment_period_display_name: 'Monthly',
-      },
-      lump_sum_amount: 1000,
-      instalment_amount: 100,
-    };
+  it(
+    'AC6c: displays Payment Terms section for "Instalments only" scenario',
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3361'),
+    },
+    () => {
+      const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataPayByDate.payment_terms = {
+        payment_terms_type: {
+          payment_terms_type_code: 'I',
+          payment_terms_type_display_name: 'By date',
+        },
+        effective_date: '31/12/2024',
+        instalment_period: {
+          instalment_period_code: 'M',
+          instalment_period_display_name: 'Monthly',
+        },
+        lump_sum_amount: 1000,
+        instalment_amount: 100,
+      };
 
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-    interceptAtAGlance(77, mockDataPayByDate, '1');
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+      interceptAtAGlance(77, mockDataPayByDate, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
-    cy.get('h2').contains('Payment terms').should('exist');
-    cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
-    cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
-    cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
-  });
+      setupAccountEnquiryComponent(componentProperties);
+      cy.get('h2').contains('Payment terms').should('exist');
+      cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
+      cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
+      cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
+    },
+  );
 
   it(
     'AC7a, AC7b, AC7c, AC7d: displays Last Enforcement Action field only when value is present',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3362'),
+    },
     () => {
       const mockDataNoEnforcementAction = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoEnforcementAction.enforcement_status = {
@@ -615,7 +701,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   );
   it(
     'AC8a: displays blue "collection order" label when defendant is adult and CO flag is true',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3363'),
+    },
     () => {
       const mockDataAdultWithCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataAdultWithCO.is_youth = false;
@@ -636,7 +724,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   );
   it(
     'AC8b: displays red "no collection order" label when defendant is adult and CO flag is false',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3364'),
+    },
     () => {
       const mockDataAdultNoCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataAdultNoCO.is_youth = false;
@@ -658,7 +748,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC8c: displays red "no collection order" label when defendant is youth and CO flag is true',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3365'),
+    },
     () => {
       const mockDataYouthWithCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataYouthWithCO.is_youth = true;
@@ -679,7 +771,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC8d: displays no collection order label when defendant is youth and CO flag is false',
-    { tags: ['PO-984', 'PO-814'] },
+    {
+      tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3366'),
+    },
     () => {
       const mockDataYouthNoCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataYouthNoCO.is_youth = true;

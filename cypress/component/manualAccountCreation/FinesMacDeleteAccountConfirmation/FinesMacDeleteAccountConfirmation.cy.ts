@@ -3,6 +3,11 @@ import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-s
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { FinesMacDeleteAccountConfirmationComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component';
+
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacDeleteAccountConfirmation', () => {
   let mockFinesService = {
     finesMacState: { ...FINES_MAC_STATE_MOCK },
@@ -42,11 +47,15 @@ describe('FinesMacDeleteAccountConfirmation', () => {
     });
   };
 
-  it('(AC.2)should render the component and have all elements ', { tags: ['@PO-518'] }, () => {
-    setupComponent();
+  it(
+    '(AC.2)should render the component and have all elements ',
+    { tags: buildTags('@JIRA-STORY:PO-518', '@JIRA-KEY:POT-4137') },
+    () => {
+      setupComponent();
 
-    cy.get('h1').should('contain', 'Are you sure you want to delete this account?');
-    cy.get('button[id = "confirmDeletion"]').should('contain', 'Yes - delete');
-    cy.get('a').should('contain', 'No - cancel');
-  });
+      cy.get('h1').should('contain', 'Are you sure you want to delete this account?');
+      cy.get('button[id = "confirmDeletion"]').should('contain', 'Yes - delete');
+      cy.get('a').should('contain', 'No - cancel');
+    },
+  );
 });
