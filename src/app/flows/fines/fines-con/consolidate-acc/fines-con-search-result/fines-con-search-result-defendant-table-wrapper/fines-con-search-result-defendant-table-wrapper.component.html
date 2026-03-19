@@ -263,8 +263,6 @@
                   {{ row['P/G'] }}
                 }
               </td>
-            }
-            @if (defendantType === 'individual') {
               <td opal-lib-moj-sortable-table-row-data id="defendantNationalInsuranceNumber">
                 @if (row['NI number'] === null) {
                   <ng-container *ngTemplateOutlet="noData"></ng-container>
