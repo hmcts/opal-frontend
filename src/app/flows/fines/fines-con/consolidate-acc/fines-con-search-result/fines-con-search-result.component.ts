@@ -169,7 +169,8 @@ export class FinesConSearchResultComponent implements OnDestroy {
   /**
    * Navigates user back to Search tab in the consolidation flow.
    */
-  public navigateBackToSearch(): void {
+  public navigateBackToSearch(event: Event): void {
+    event.preventDefault();
     this.navigateToSearch.emit();
   }
 
