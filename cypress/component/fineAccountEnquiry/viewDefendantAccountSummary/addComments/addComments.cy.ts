@@ -18,6 +18,10 @@ import {
   ADD_COMMENTS_FORM_STATE_MIXED_ERROR_MOCK,
 } from './mocks/add_comments_mock';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('FinesAccCommentsAddComponent', () => {
   const setupComponent = (prefilledData = ADD_COMMENTS_FORM_STATE_MOCK, formSubmit: any = null) => {
     const patchDefendantAccountStub = cy.stub().as('patchDefendantAccount').returns(of(undefined));
@@ -68,46 +72,58 @@ describe('FinesAccCommentsAddComponent', () => {
     });
   };
 
-  it('should display the comments form with all required fields', { tags: ['@PO-777'] }, () => {
-    setupComponent();
+  it(
+    'should display the comments form with all required fields',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3858') },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.form).should('exist');
-    cy.get(DOM_ELEMENTS.commentField).should('exist');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('exist');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('exist');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('exist');
+      cy.get(DOM_ELEMENTS.form).should('exist');
+      cy.get(DOM_ELEMENTS.commentField).should('exist');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('exist');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('exist');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('exist');
 
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '');
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '');
 
-    cy.get(DOM_ELEMENTS.submitButton).should('exist');
-    cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelButton).should('exist');
+    },
+  );
 
-  it('should enforce field length limits according to specifications (AC2a)', { tags: ['@PO-777'] }, () => {
-    setupComponent(ADD_COMMENTS_FORM_STATE_MAX_LENGTH_MOCK);
+  it(
+    'should enforce field length limits according to specifications (AC2a)',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3859') },
+    () => {
+      setupComponent(ADD_COMMENTS_FORM_STATE_MAX_LENGTH_MOCK);
 
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', 'A'.repeat(30));
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', 'A'.repeat(30));
 
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'B'.repeat(76));
-    cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'C'.repeat(76));
-    cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'D'.repeat(76));
-  });
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'B'.repeat(76));
+      cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'C'.repeat(76));
+      cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'D'.repeat(76));
+    },
+  );
 
-  it('should accept alphanumeric characters in all fields (AC2a)', { tags: ['@PO-777'] }, () => {
-    setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK);
+  it(
+    'should accept alphanumeric characters in all fields (AC2a)',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3860') },
+    () => {
+      setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK);
 
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', 'Test123');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'ABC123');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'ABC123');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'ABC123');
-  });
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', 'Test123');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'ABC123');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'ABC123');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'ABC123');
+    },
+  );
 
   it(
     'should handle character count and allow clearing fields without errors (AC3, AC3a, AC2a)',
-    { tags: ['@PO-777'] },
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3861') },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
@@ -150,87 +166,95 @@ describe('FinesAccCommentsAddComponent', () => {
     },
   );
 
-  it('should display error messages for non-alphanumeric characters (AC4a)', { tags: ['@PO-777'] }, () => {
-    setupComponent(ADD_COMMENTS_FORM_STATE_NON_ALPHANUMERIC_MOCK);
+  it(
+    'should display error messages for non-alphanumeric characters (AC4a)',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3862') },
+    () => {
+      setupComponent(ADD_COMMENTS_FORM_STATE_NON_ALPHANUMERIC_MOCK);
 
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', '<Test>');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', '<Test>');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '<Test>');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '<Test>');
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', '<Test>');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', '<Test>');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '<Test>');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '<Test>');
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
-    cy.get(DOM_ELEMENTS.commentError)
-      .should('exist')
-      .and('be.visible')
-      .and(
-        'contain',
-        'Account comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
+      cy.get(DOM_ELEMENTS.commentError)
+        .should('exist')
+        .and('be.visible')
+        .and(
+          'contain',
+          'Account comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        );
 
-    cy.get(DOM_ELEMENTS.freeText1Error)
-      .should('exist')
-      .and('be.visible')
-      .and(
-        'contain',
-        'Free text 1 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
+      cy.get(DOM_ELEMENTS.freeText1Error)
+        .should('exist')
+        .and('be.visible')
+        .and(
+          'contain',
+          'Free text 1 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        );
 
-    cy.get(DOM_ELEMENTS.freeText2Error)
-      .should('exist')
-      .and('be.visible')
-      .and(
-        'contain',
-        'Free text 2 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
+      cy.get(DOM_ELEMENTS.freeText2Error)
+        .should('exist')
+        .and('be.visible')
+        .and(
+          'contain',
+          'Free text 2 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        );
 
-    cy.get(DOM_ELEMENTS.freeText3Error)
-      .should('exist')
-      .and('be.visible')
-      .and(
-        'contain',
-        'Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
-  });
+      cy.get(DOM_ELEMENTS.freeText3Error)
+        .should('exist')
+        .and('be.visible')
+        .and(
+          'contain',
+          'Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        );
+    },
+  );
 
-  it('should display error messages for exceeding character limits (AC4b)', { tags: ['@PO-777'] }, () => {
-    setupComponent(ADD_COMMENTS_FORM_STATE_EXCEEDS_LIMITS_MOCK);
+  it(
+    'should display error messages for exceeding character limits (AC4b)',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3863') },
+    () => {
+      setupComponent(ADD_COMMENTS_FORM_STATE_EXCEEDS_LIMITS_MOCK);
 
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', 'A'.repeat(31));
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'B'.repeat(77));
-    cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'C'.repeat(77));
-    cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'D'.repeat(77));
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', 'A'.repeat(31));
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'B'.repeat(77));
+      cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'C'.repeat(77));
+      cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'D'.repeat(77));
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
-    cy.get(DOM_ELEMENTS.commentError)
-      .should('exist')
-      .and('be.visible')
-      .and('contain', 'Account note must be 30 characters or fewer');
+      cy.get(DOM_ELEMENTS.commentError)
+        .should('exist')
+        .and('be.visible')
+        .and('contain', 'Account note must be 30 characters or fewer');
 
-    cy.get(DOM_ELEMENTS.freeText1Error)
-      .should('exist')
-      .and('be.visible')
-      .and('contain', 'Free text 1 must be 76 characters or fewer');
+      cy.get(DOM_ELEMENTS.freeText1Error)
+        .should('exist')
+        .and('be.visible')
+        .and('contain', 'Free text 1 must be 76 characters or fewer');
 
-    cy.get(DOM_ELEMENTS.freeText2Error)
-      .should('exist')
-      .and('be.visible')
-      .and('contain', 'Free text 2 must be 76 characters or fewer');
+      cy.get(DOM_ELEMENTS.freeText2Error)
+        .should('exist')
+        .and('be.visible')
+        .and('contain', 'Free text 2 must be 76 characters or fewer');
 
-    cy.get(DOM_ELEMENTS.freeText3Error)
-      .should('exist')
-      .and('be.visible')
-      .and('contain', 'Free text 3 must be 76 characters or fewer');
-  });
+      cy.get(DOM_ELEMENTS.freeText3Error)
+        .should('exist')
+        .and('be.visible')
+        .and('contain', 'Free text 3 must be 76 characters or fewer');
+    },
+  );
 
   it(
     'should clear error messages when Save comment button is clicked with valid data (AC5bi)',
-    { tags: ['@PO-777'] },
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3864') },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       // Start with mixed error state to demonstrate error clearing workflow
@@ -265,55 +289,63 @@ describe('FinesAccCommentsAddComponent', () => {
     },
   );
 
-  it('should handle various form submission scenarios with valid data (AC5, AC2a, AC5d)', { tags: ['@PO-777'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(ADD_COMMENTS_FORM_STATE_MOCK, mockFormSubmit);
+  it(
+    'should handle various form submission scenarios with valid data (AC5, AC2a, AC5d)',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3865') },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      setupComponent(ADD_COMMENTS_FORM_STATE_MOCK, mockFormSubmit);
 
-    // Verify initial empty state
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '');
+      // Verify initial empty state
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '');
 
-    // AC5d: Verify the fields appear in the correct order in the DOM
-    cy.get(DOM_ELEMENTS.freeText1Field).should('exist');
-    cy.get(DOM_ELEMENTS.freeText2Field).should('exist');
-    cy.get(DOM_ELEMENTS.freeText3Field).should('exist');
+      // AC5d: Verify the fields appear in the correct order in the DOM
+      cy.get(DOM_ELEMENTS.freeText1Field).should('exist');
+      cy.get(DOM_ELEMENTS.freeText2Field).should('exist');
+      cy.get(DOM_ELEMENTS.freeText3Field).should('exist');
 
-    // Verify the order by checking their relative positions
-    cy.get(DOM_ELEMENTS.freeText1Field).then(($field1) => {
-      cy.get(DOM_ELEMENTS.freeText2Field).then(($field2) => {
-        cy.get(DOM_ELEMENTS.freeText3Field).then(($field3) => {
-          const field1Top = $field1[0].getBoundingClientRect().top;
-          const field2Top = $field2[0].getBoundingClientRect().top;
-          const field3Top = $field3[0].getBoundingClientRect().top;
+      // Verify the order by checking their relative positions
+      cy.get(DOM_ELEMENTS.freeText1Field).then(($field1) => {
+        cy.get(DOM_ELEMENTS.freeText2Field).then(($field2) => {
+          cy.get(DOM_ELEMENTS.freeText3Field).then(($field3) => {
+            const field1Top = $field1[0].getBoundingClientRect().top;
+            const field2Top = $field2[0].getBoundingClientRect().top;
+            const field3Top = $field3[0].getBoundingClientRect().top;
 
-          expect(field1Top).to.be.lessThan(field2Top);
-          expect(field2Top).to.be.lessThan(field3Top);
+            expect(field1Top).to.be.lessThan(field2Top);
+            expect(field2Top).to.be.lessThan(field3Top);
+          });
         });
       });
-    });
 
-    // AC2a: Test that all fields are optional - submit with empty form
-    cy.get(DOM_ELEMENTS.submitButton).should('not.be.disabled');
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
+      // AC2a: Test that all fields are optional - submit with empty form
+      cy.get(DOM_ELEMENTS.submitButton).should('not.be.disabled');
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    },
+  );
 
-  it('should allow saving when user has not made amendments (AC8)', { tags: ['@PO-777'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    // Start with pre-filled data to simulate existing comments
-    setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK, mockFormSubmit);
+  it(
+    'should allow saving when user has not made amendments (AC8)',
+    { tags: buildTags('@JIRA-STORY:PO-777', '@JIRA-KEY:POT-3866') },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      // Start with pre-filled data to simulate existing comments
+      setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK, mockFormSubmit);
 
-    // Verify data is pre-filled
-    cy.get(DOM_ELEMENTS.commentField).should('have.value', 'Test123');
-    cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'ABC123');
+      // Verify data is pre-filled
+      cy.get(DOM_ELEMENTS.commentField).should('have.value', 'Test123');
+      cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'ABC123');
 
-    // Don't make any changes - just click Save comment button
-    cy.get(DOM_ELEMENTS.submitButton).should('not.be.disabled');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      // Don't make any changes - just click Save comment button
+      cy.get(DOM_ELEMENTS.submitButton).should('not.be.disabled');
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // Verify form submission was triggered even without changes (AC8a - API call will be made)
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
+      // Verify form submission was triggered even without changes (AC8a - API call will be made)
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    },
+  );
 });

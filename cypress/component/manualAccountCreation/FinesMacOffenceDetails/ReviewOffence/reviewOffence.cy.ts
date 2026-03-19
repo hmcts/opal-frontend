@@ -13,6 +13,10 @@ import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from 'src/app/flows/
 import { of } from 'rxjs';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('ReviewOffenceComponent', () => {
   let finesMacOffenceDetailsDraftState = {
     ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
@@ -57,67 +61,115 @@ describe('ReviewOffenceComponent', () => {
       },
     });
   };
-  it('should render component', () => {
-    setupComponent();
+  it(
+    'should render component',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4218',
+      ),
+    },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.app).should('exist');
+    },
+  );
 
-  it('should load all elements on the screen correctly', { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] }, () => {
-    setupComponent();
+  it(
+    'should load all elements on the screen correctly',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4219',
+      ),
+    },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
-    cy.get(DOM_ELEMENTS.impositionType).should('exist');
-    cy.get(DOM_ELEMENTS.creditor).should('exist');
-    cy.get(DOM_ELEMENTS.amountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.amountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
+      cy.get(DOM_ELEMENTS.impositionType).should('exist');
+      cy.get(DOM_ELEMENTS.creditor).should('exist');
+      cy.get(DOM_ELEMENTS.amountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.amountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
 
-    cy.get(DOM_ELEMENTS.totalHeading).should('exist');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.totalHeading).should('exist');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
+    },
+  );
 
-  it('should have correct values in the elements', { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] }, () => {
-    setupComponent();
+  it(
+    'should have correct values in the elements',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4220',
+      ),
+    },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-    cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
-    cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
-    cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
-    cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£150.00');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
+      cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
+      cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£150.00');
 
-    cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£200.00');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
-  });
+      cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£200.00');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
+    },
+  );
 
-  it('should update value according to imposition type', { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] }, () => {
-    setupComponent(1);
+  it(
+    'should update value according to imposition type',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4221',
+      ),
+    },
+    () => {
+      setupComponent(1);
 
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-    cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_ACCOUNT_TYPES.Fine);
-    cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
-    cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£0.0');
-    cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£0.0');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£0.0');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£0.0');
+      cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£0.0');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£0.0');
 
-    cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£0.0');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£0.0');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£0.0');
-  });
+      cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£0.0');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£0.0');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£0.0');
+    },
+  );
 });
