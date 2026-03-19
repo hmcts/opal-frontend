@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subscription, tap } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -106,11 +106,14 @@ export class FinesConSearchResultComponent implements OnDestroy {
 
     this.defendantAccountsSearchSubscription = this.opalFinesService
       .getDefendantAccounts(payload)
-      .subscribe((response) => {
-        const defendantAccounts = this.finesConPayloadService.extractDefendantAccounts(response);
-        this.syncStoreResults(defendantAccounts);
-        this.applyMappedResults(defendantAccounts);
-      });
+      .pipe(
+        map((response) => this.finesConPayloadService.extractDefendantAccounts(response)),
+        tap((defendantAccounts) => {
+          this.syncStoreResults(defendantAccounts);
+          this.applyMappedResults(defendantAccounts);
+        }),
+      )
+      .subscribe();
   }
 
   private applyMappedResults(defendantAccounts: IFinesConSearchResultDefendantAccount[]): void {
