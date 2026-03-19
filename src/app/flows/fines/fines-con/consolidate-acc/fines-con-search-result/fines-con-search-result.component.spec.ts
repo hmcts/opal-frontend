@@ -12,6 +12,7 @@ import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK } from './mo
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FALSEY_VALUES_MOCK } from './mocks/fines-con-search-result-defendant-accounts-falsey-values.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_WITH_CHECKS_MOCK } from './mocks/fines-con-search-result-defendant-accounts-with-checks.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_RESPONSE_MOCK } from './mocks/fines-con-search-result-defendant-accounts-response.mock';
+import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK } from './mocks/fines-con-search-result-defendant-accounts-company-formatting.mock';
 
 describe('FinesConSearchResultComponent', () => {
   let component: FinesConSearchResultComponent;
@@ -98,6 +99,26 @@ describe('FinesConSearchResultComponent', () => {
 
     expect(component.tableData[0]['CO']).toBe('-');
     expect(component.tableData[0]['P/G']).toBe('-');
+  });
+
+  it('should map company defendant accounts with organisation fields', () => {
+    component.defendantType = 'company';
+    component.defendantAccounts = FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK;
+
+    expect(component.tableData).toEqual([
+      expect.objectContaining({
+        'Account ID': 21,
+        Account: 'COMP001',
+        Name: 'Acme Corporation',
+        Aliases: 'Alpha Ltd\nBravo Ltd',
+        'Address line 1': '21 Company Street',
+        Postcode: 'CO1 2MP',
+        CO: 'Y',
+        ENF: 'distress',
+        Balance: 520.5,
+        Ref: 'COMP-REF-1',
+      }),
+    ]);
   });
 
   it('should open account details in a new tab', () => {

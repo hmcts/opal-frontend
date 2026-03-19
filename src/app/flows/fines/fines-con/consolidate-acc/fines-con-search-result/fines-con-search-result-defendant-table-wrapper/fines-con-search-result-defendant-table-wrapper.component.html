@@ -55,21 +55,23 @@
       >
         Aliases
       </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Date of birth"
-        [sortDirection]="sortStateSignal()['Date of birth']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="3"
-      >
-        Date of birth
-      </th>
+      @if (defendantType === 'individual') {
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Date of birth"
+          [sortDirection]="sortStateSignal()['Date of birth']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="3"
+        >
+          Date of birth
+        </th>
+      }
       <th
         opal-lib-moj-sortable-table-header
         columnKey="Address line 1"
         [sortDirection]="sortStateSignal()['Address line 1']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="4"
+        [dataIndex]="defendantType === 'company' ? 3 : 4"
       >
         Address line 1
       </th>
@@ -78,7 +80,7 @@
         columnKey="Postcode"
         [sortDirection]="sortStateSignal()['Postcode']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="5"
+        [dataIndex]="defendantType === 'company' ? 4 : 5"
       >
         Postcode
       </th>
@@ -87,7 +89,7 @@
         columnKey="CO"
         [sortDirection]="sortStateSignal()['CO']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="6"
+        [dataIndex]="defendantType === 'company' ? 5 : 6"
       >
         CO
       </th>
@@ -96,7 +98,7 @@
         columnKey="ENF"
         [sortDirection]="sortStateSignal()['ENF']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="7"
+        [dataIndex]="defendantType === 'company' ? 6 : 7"
       >
         ENF
       </th>
@@ -105,34 +107,36 @@
         columnKey="Balance"
         [sortDirection]="sortStateSignal()['Balance']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="8"
+        [dataIndex]="defendantType === 'company' ? 7 : 8"
       >
         Balance
       </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="P/G"
-        [sortDirection]="sortStateSignal()['P/G']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="9"
-      >
-        P/G
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="NI number"
-        [sortDirection]="sortStateSignal()['NI number']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="10"
-      >
-        NI number
-      </th>
+      @if (defendantType === 'individual') {
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="P/G"
+          [sortDirection]="sortStateSignal()['P/G']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="9"
+        >
+          P/G
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="NI number"
+          [sortDirection]="sortStateSignal()['NI number']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="10"
+        >
+          NI number
+        </th>
+      }
       <th
         opal-lib-moj-sortable-table-header
         columnKey="Ref"
         [sortDirection]="sortStateSignal()['Ref']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="11"
+        [dataIndex]="defendantType === 'company' ? 8 : 11"
       >
         Ref
       </th>
@@ -196,13 +200,15 @@
               {{ row['Aliases'] }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="defendantDateOfBirth">
-            @if (row['Date of birth'] === null) {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
-              {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
-            }
-          </td>
+          @if (defendantType === 'individual') {
+            <td opal-lib-moj-sortable-table-row-data id="defendantDateOfBirth">
+              @if (row['Date of birth'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
+                {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+              }
+            </td>
+          }
           <td opal-lib-moj-sortable-table-row-data id="defendantAddressLine1">
             @if (row['Address line 1'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
@@ -238,20 +244,22 @@
               {{ row['Balance'] | currency: 'GBP' }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="defendantPayingParentGuardian">
-            @if (row['P/G'] === null) {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
-              {{ row['P/G'] }}
-            }
-          </td>
-          <td opal-lib-moj-sortable-table-row-data id="defendantNationalInsuranceNumber">
-            @if (row['NI number'] === null) {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
-              {{ row['NI number'] | nationalInsurance }}
-            }
-          </td>
+          @if (defendantType === 'individual') {
+            <td opal-lib-moj-sortable-table-row-data id="defendantPayingParentGuardian">
+              @if (row['P/G'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
+                {{ row['P/G'] }}
+              }
+            </td>
+            <td opal-lib-moj-sortable-table-row-data id="defendantNationalInsuranceNumber">
+              @if (row['NI number'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
+                {{ row['NI number'] | nationalInsurance }}
+              }
+            </td>
+          }
           <td opal-lib-moj-sortable-table-row-data id="defendantRef">
             @if (row['Ref'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
@@ -267,7 +275,7 @@
             <td
               opal-lib-moj-sortable-table-row-data
               [id]="getRowDomId(row, $index, 'defendant-checks')"
-              [attr.colspan]="12"
+              [attr.colspan]="getChecksColspan()"
             >
               @for (severity of checkSeverities; track severity) {
                 @let severityChecks = getChecksBySeverity(row, severity);
