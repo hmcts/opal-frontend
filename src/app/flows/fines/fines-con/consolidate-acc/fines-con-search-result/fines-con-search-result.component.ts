@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Output,
+  inject,
+  Input,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -35,10 +44,12 @@ export class FinesConSearchResultComponent implements OnDestroy {
   public tableData: IFinesConSearchResultDefendantTableWrapperTableData[] = [];
   public defendantAccountsData: IFinesConSearchResultDefendantAccount[] = [];
   public checksByAccountId: Record<number, IFinesConSearchResultAccountCheck[]> = {};
+  public invalidResultsState: 'none' | 'noResults' | 'tooManyResults' = 'noResults';
 
   @Input({ required: true })
   public defendantType: FinesConDefendant = 'individual';
   @Input({ required: false }) public alreadyAddedAccountIds: number[] = [];
+  @Output() public navigateToSearch = new EventEmitter<void>();
 
   @Input({ required: false })
   public set searchPayload(searchPayload: IOpalFinesDefendantAccountSearchParams | null) {
@@ -96,18 +107,25 @@ export class FinesConSearchResultComponent implements OnDestroy {
 
   private applyMappedResults(defendantAccounts: IFinesConSearchResultDefendantAccount[]): void {
     if (defendantAccounts.length > this.MAX_RESULTS_WARNING_THRESHOLD) {
-      // eslint-disable-next-line no-console
-      console.log('more than 100 results');
-
       this.defendantAccountsData = [];
       this.tableData = [];
       this.checksByAccountId = {};
+      this.invalidResultsState = 'tooManyResults';
+      return;
+    }
+
+    if (defendantAccounts.length === 0) {
+      this.defendantAccountsData = [];
+      this.tableData = [];
+      this.checksByAccountId = {};
+      this.invalidResultsState = 'noResults';
       return;
     }
 
     this.defendantAccountsData = defendantAccounts;
     this.tableData = this.finesConPayloadService.mapDefendantAccounts(defendantAccounts);
     this.checksByAccountId = this.finesConPayloadService.buildChecksByAccountId(defendantAccounts);
+    this.invalidResultsState = 'none';
   }
 
   /**
@@ -146,6 +164,14 @@ export class FinesConSearchResultComponent implements OnDestroy {
 
     this.finesConStore.addSelectedAccountIds(selectedAccountIds);
     // Navigation to "For consolidation" tab is implemented in a separate ticket.
+  }
+
+  /**
+   * Navigates user back to Search tab in the consolidation flow.
+   */
+  public navigateBackToSearch(event: Event): void {
+    event.preventDefault();
+    this.navigateToSearch.emit();
   }
 
   public ngOnDestroy(): void {
