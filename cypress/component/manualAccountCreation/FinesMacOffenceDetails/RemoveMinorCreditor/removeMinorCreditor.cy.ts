@@ -11,6 +11,10 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { MacOffenceDetailsRemoveMinorCreditorLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { of } from 'rxjs';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacRemoveMinorCreditor', () => {
   let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
   let currentoffenceDetails = 0;
@@ -58,35 +62,67 @@ describe('FinesMacRemoveMinorCreditor', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1) should render the component', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] }, () => {
-    setupComponent();
-  });
-  it('AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] }, () => {
-    setupComponent();
-    cy.get(DOM_ELEMENTS.app).should('exist');
-    cy.get(DOM_ELEMENTS.heading).should('exist');
-    cy.get(DOM_ELEMENTS.name).should('exist');
-    cy.get(DOM_ELEMENTS.address).should('exist');
-    cy.get(DOM_ELEMENTS.paymentMethod).should('exist');
-    cy.get(DOM_ELEMENTS.accountName).should('exist');
-    cy.get(DOM_ELEMENTS.sortCode).should('exist');
-    cy.get(DOM_ELEMENTS.accountNumber).should('exist');
-    cy.get(DOM_ELEMENTS.paymentReference).should('exist');
+  it(
+    '(AC.1) should render the component',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-670',
+        '@JIRA-STORY:PO-671',
+        '@JIRA-STORY:PO-414',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4209',
+      ),
+    },
+    () => {
+      setupComponent();
+    },
+  );
+  it(
+    'AC.1) should render all elements on the page',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-670',
+        '@JIRA-STORY:PO-671',
+        '@JIRA-STORY:PO-414',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4210',
+      ),
+    },
+    () => {
+      setupComponent();
+      cy.get(DOM_ELEMENTS.app).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('exist');
+      cy.get(DOM_ELEMENTS.name).should('exist');
+      cy.get(DOM_ELEMENTS.address).should('exist');
+      cy.get(DOM_ELEMENTS.paymentMethod).should('exist');
+      cy.get(DOM_ELEMENTS.accountName).should('exist');
+      cy.get(DOM_ELEMENTS.sortCode).should('exist');
+      cy.get(DOM_ELEMENTS.accountNumber).should('exist');
+      cy.get(DOM_ELEMENTS.paymentReference).should('exist');
 
-    cy.get(DOM_ELEMENTS.addressKey).should('exist');
-    cy.get(DOM_ELEMENTS.paymentMethodKey).should('exist');
-    cy.get(DOM_ELEMENTS.accountNameKey).should('exist');
-    cy.get(DOM_ELEMENTS.sortCodeKey).should('exist');
-    cy.get(DOM_ELEMENTS.accountNumberKey).should('exist');
-    cy.get(DOM_ELEMENTS.paymentReferenceKey).should('exist');
+      cy.get(DOM_ELEMENTS.addressKey).should('exist');
+      cy.get(DOM_ELEMENTS.paymentMethodKey).should('exist');
+      cy.get(DOM_ELEMENTS.accountNameKey).should('exist');
+      cy.get(DOM_ELEMENTS.sortCodeKey).should('exist');
+      cy.get(DOM_ELEMENTS.accountNumberKey).should('exist');
+      cy.get(DOM_ELEMENTS.paymentReferenceKey).should('exist');
 
-    cy.get(DOM_ELEMENTS.removeCreditorButton).should('exist');
-    cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.removeCreditorButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
 
   it(
     ' AC.2) should load all keys and elements with correct text',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-670',
+        '@JIRA-STORY:PO-671',
+        '@JIRA-STORY:PO-414',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4211',
+      ),
+    },
     () => {
       setupComponent();
 
@@ -105,7 +141,15 @@ describe('FinesMacRemoveMinorCreditor', () => {
 
   it(
     'AC.2) should load all fields with the correct values',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-670',
+        '@JIRA-STORY:PO-671',
+        '@JIRA-STORY:PO-414',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4212',
+      ),
+    },
     () => {
       setupComponent();
 
@@ -125,7 +169,15 @@ describe('FinesMacRemoveMinorCreditor', () => {
 
   it(
     'AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty',
-    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-670',
+        '@JIRA-STORY:PO-671',
+        '@JIRA-STORY:PO-414',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4213',
+      ),
+    },
     () => {
       setupComponent();
 

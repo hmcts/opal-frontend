@@ -5,6 +5,10 @@ import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/
 import { FinesMacSubmitConfirmationComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
 import { of } from 'rxjs';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacSubmitConfirmation', () => {
   let mockFinesService = {
     finesMacState: { ...FINES_MAC_STATE_MOCK },
@@ -35,12 +39,16 @@ describe('FinesMacSubmitConfirmation', () => {
     });
   };
 
-  it('(AC.1,AC.2)should render the component and have all elements ', { tags: ['@PO-973', '@PO-660'] }, () => {
-    setupComponent();
+  it(
+    '(AC.1,AC.2)should render the component and have all elements ',
+    { tags: buildTags('@JIRA-STORY:PO-973', '@JIRA-STORY:PO-660', '@JIRA-KEY:POT-4434') },
+    () => {
+      setupComponent();
 
-    cy.get('opal-lib-govuk-panel').should('contain', "You've submitted this account for review");
-    cy.get('h2').should('contain', 'Next steps');
-    cy.get('a').should('contain', 'Create a new account');
-    cy.get('a').should('contain', 'See all accounts in review');
-  });
+      cy.get('opal-lib-govuk-panel').should('contain', "You've submitted this account for review");
+      cy.get('h2').should('contain', 'Next steps');
+      cy.get('a').should('contain', 'Create a new account');
+      cy.get('a').should('contain', 'See all accounts in review');
+    },
+  );
 });
