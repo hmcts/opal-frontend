@@ -18,6 +18,10 @@ import { DOM_ELEMENTS as DOM } from './constants/defendant_parent_or_guardian_el
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 const componentProperties: IComponentProperties = {
   accountId: '77',
   fragments: 'parent-or-guardian',
@@ -33,7 +37,7 @@ const componentProperties: IComponentProperties = {
 describe('Account Enquiry Parent or Guardian Component', () => {
   it(
     'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',
-    { tags: ['@PO-788'] },
+    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3541') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -94,7 +98,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1bi: should not display Language preferences sub-section when account is not associated with Welsh speaking BU',
-    { tags: ['@PO-788'] },
+    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3542') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -163,7 +167,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1c: should display only Parent or Guardian details sub-section when debtor flag is false',
-    { tags: ['@PO-788'] },
+    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3543') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -221,7 +225,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1d, AC1ci, AC1cii, AC1ciii: should display data fields with correct format and all fields read-only',
-    { tags: ['@PO-788'] },
+    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3544') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -334,88 +338,92 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     },
   );
 
-  it('AC1civ: should display em-dash (—) for fields that have not been provided', { tags: ['@PO-788'] }, () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.parent_guardian_party_id = '1770000001';
-    headerMock.debtor_type = 'Parent/Guardian';
+  it(
+    'AC1civ: should display em-dash (—) for fields that have not been provided',
+    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3545') },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.parent_guardian_party_id = '1770000001';
+      headerMock.debtor_type = 'Parent/Guardian';
 
-    const pgPartyId = headerMock.parent_guardian_party_id;
+      const pgPartyId = headerMock.parent_guardian_party_id;
 
-    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-    defendantDetailsMock.defendant_account_party.is_debtor = true;
-    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
 
-    let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
-    pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
-    // Set debtor flag to true to test that all sub-sections are displayed
-    pgDetailsMock.defendant_account_party.is_debtor = true;
+      let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+      pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
+      // Set debtor flag to true to test that all sub-sections are displayed
+      pgDetailsMock.defendant_account_party.is_debtor = true;
 
-    // Set some fields to null/empty to test em-dash display
-    pgDetailsMock.defendant_account_party.party_details.individual_details!.individual_aliases = null;
-    pgDetailsMock.defendant_account_party.party_details.individual_details!.date_of_birth = null;
-    pgDetailsMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = null;
-    pgDetailsMock.defendant_account_party.vehicle_details!.vehicle_registration = null;
-    pgDetailsMock.defendant_account_party.address!.address_line_4 = null;
-    pgDetailsMock.defendant_account_party.address!.address_line_5 = null;
-    pgDetailsMock.defendant_account_party.party_details.individual_details!.national_insurance_number = null;
+      // Set some fields to null/empty to test em-dash display
+      pgDetailsMock.defendant_account_party.party_details.individual_details!.individual_aliases = null;
+      pgDetailsMock.defendant_account_party.party_details.individual_details!.date_of_birth = null;
+      pgDetailsMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = null;
+      pgDetailsMock.defendant_account_party.vehicle_details!.vehicle_registration = null;
+      pgDetailsMock.defendant_account_party.address!.address_line_4 = null;
+      pgDetailsMock.defendant_account_party.address!.address_line_5 = null;
+      pgDetailsMock.defendant_account_party.party_details.individual_details!.national_insurance_number = null;
 
-    const accountId = headerMock.defendant_account_party_id;
+      const accountId = headerMock.defendant_account_party_id;
 
-    interceptAddNotes();
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '1');
-    interceptPGDetails(accountId, pgPartyId, pgDetailsMock, '1');
+      interceptAddNotes();
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '1');
+      interceptPGDetails(accountId, pgPartyId, pgDetailsMock, '1');
 
-    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-    cy.get('router-outlet').should('exist');
+      cy.get('router-outlet').should('exist');
 
-    // AC1civ: Verify that fields without data display em-dash (—)
-    cy.get('h2').contains('Parent or guardian details').should('be.visible');
+      // AC1civ: Verify that fields without data display em-dash (—)
+      cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
-    // Check that aliases field shows em-dash when null
-    cy.get(DOM.parentOrGuardianDetailsAliases).siblings().should('contain.text', '—');
+      // Check that aliases field shows em-dash when null
+      cy.get(DOM.parentOrGuardianDetailsAliases).siblings().should('contain.text', '—');
 
-    // Check that date of birth field shows em-dash when null
-    cy.get(DOM.parentOrGuardianDetailsDob).siblings().should('contain.text', '—');
+      // Check that date of birth field shows em-dash when null
+      cy.get(DOM.parentOrGuardianDetailsDob).siblings().should('contain.text', '—');
 
-    // Check that vehicle make and model field shows em-dash when null
-    cy.get(DOM.parentOrGuardianDetailsVehicleMake).siblings().should('contain.text', '—');
+      // Check that vehicle make and model field shows em-dash when null
+      cy.get(DOM.parentOrGuardianDetailsVehicleMake).siblings().should('contain.text', '—');
 
-    // Check that vehicle registration field shows em-dash when null
-    cy.get(DOM.parentOrGuardianDetailsVehicleReg).siblings().should('contain.text', '—');
+      // Check that vehicle registration field shows em-dash when null
+      cy.get(DOM.parentOrGuardianDetailsVehicleReg).siblings().should('contain.text', '—');
 
-    // Verify that fields with data still display their values correctly (not em-dash)
-    cy.get(DOM.parentOrGuardianDetailsName).should('contain.text', 'Mr Opal parent2 LNAME');
-    cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey).siblings().should('contain.text', '—');
+      // Verify that fields with data still display their values correctly (not em-dash)
+      cy.get(DOM.parentOrGuardianDetailsName).should('contain.text', 'Mr Opal parent2 LNAME');
+      cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey).siblings().should('contain.text', '—');
 
-    // Check that contact details with data don't show em-dash
-    cy.get(DOM.contactDetailsPrimaryEmailKey)
-      .siblings()
-      .should('contain.text', 'PGemail1@email.com')
-      .should('not.contain.text', '—');
+      // Check that contact details with data don't show em-dash
+      cy.get(DOM.contactDetailsPrimaryEmailKey)
+        .siblings()
+        .should('contain.text', 'PGemail1@email.com')
+        .should('not.contain.text', '—');
 
-    cy.get(DOM.contactDetailsSecondaryEmailKey)
-      .siblings()
-      .should('contain.text', 'PGemail2@test.com')
-      .should('not.contain.text', '—');
+      cy.get(DOM.contactDetailsSecondaryEmailKey)
+        .siblings()
+        .should('contain.text', 'PGemail2@test.com')
+        .should('not.contain.text', '—');
 
-    // Verify that employer details with data don't show em-dash
-    cy.get(DOM.employerDetailsNameKey)
-      .siblings()
-      .should('contain.text', 'employername4')
-      .should('not.contain.text', '—');
+      // Verify that employer details with data don't show em-dash
+      cy.get(DOM.employerDetailsNameKey)
+        .siblings()
+        .should('contain.text', 'employername4')
+        .should('not.contain.text', '—');
 
-    cy.get(DOM.employerDetailsReferenceKey)
-      .siblings()
-      .should('contain.text', 'OT0000002D')
-      .should('not.contain.text', '—');
-  });
+      cy.get(DOM.employerDetailsReferenceKey)
+        .siblings()
+        .should('contain.text', 'OT0000002D')
+        .should('not.contain.text', '—');
+    },
+  );
 
   it(
     'AC2: should display Change button and navigate to change screen when user has Account Maintenance permission in current BU',
-    { tags: ['@PO-788'] },
+    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3546') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -459,7 +467,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2a: should display Change button but navigate to access denied when user lacks permission in current BU',
-    { tags: ['@PO-788'] },
+    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3547') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -502,7 +510,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2b: should not display Change button when user has no Account Maintenance permission in any BU',
-    { tags: ['@PO-788'] },
+    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3548') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';

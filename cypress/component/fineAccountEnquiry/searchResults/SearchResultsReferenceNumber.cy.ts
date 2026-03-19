@@ -9,6 +9,10 @@ import { INDIVIDUAL_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_a
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { BehaviorSubject } from 'rxjs';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('FinesSaResultsComponent - All Account Types', () => {
   let fragmentSubject: BehaviorSubject<string>;
 
@@ -84,22 +88,26 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(tabSelector).should('have.class', 'govuk-tabs__list-item govuk-tabs__list-item--selected');
   };
 
-  it('(AC3a) Displays error message when no search matches are found', { tags: ['PO-709'] }, () => {
-    setupComponent('EMPTY_RESULTS');
+  it(
+    '(AC3a) Displays error message when no search matches are found',
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3789') },
+    () => {
+      setupComponent('EMPTY_RESULTS');
 
-    // AC3a: Verify the error screen is displayed when no search matches are found
-    cy.get(DOM_ELEMENTS.noResultsHeading).should('be.visible');
-    cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
+      // AC3a: Verify the error screen is displayed when no search matches are found
+      cy.get(DOM_ELEMENTS.noResultsHeading).should('be.visible');
+      cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
 
-    cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible');
-    cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
-    // AC3b: Verify 'Check your search' link is clickable and functional
-    cy.get(DOM_ELEMENTS.checkSearchLink).click();
-  });
+      cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible');
+      cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
+      // AC3b: Verify 'Check your search' link is clickable and functional
+      cy.get(DOM_ELEMENTS.checkSearchLink).click();
+    },
+  );
 
   it(
     '(AC4) Displays "There are more than 100 results" message when more than 100 matches found',
-    { tags: ['PO-709'] },
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3790') },
     () => {
       setupComponent('LARGE_RESULTS_REF_NUM');
 
@@ -116,7 +124,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor types and Individual tab is in focus by default',
-    { tags: ['PO-709'] },
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3791') },
     () => {
       setupComponent('WITH_DATA', 'individuals');
 
@@ -161,43 +169,55 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     },
   );
 
-  it('(AC5c) Companies tab displays company defendant account summary data', { tags: ['PO-709'] }, () => {
-    setupComponent('WITH_DATA', 'companies');
+  it(
+    '(AC5c) Companies tab displays company defendant account summary data',
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3792') },
+    () => {
+      setupComponent('WITH_DATA', 'companies');
 
-    switchToTab('companies', DOM_ELEMENTS.companiesTab);
-    verifyTabIsActive(DOM_ELEMENTS.companiesTab);
+      switchToTab('companies', DOM_ELEMENTS.companiesTab);
+      verifyTabIsActive(DOM_ELEMENTS.companiesTab);
 
-    // Verify table exists and headers match design
-    cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
-    cy.get(DOM_ELEMENTS.accountHeader).should('contain', 'Account');
-    cy.get(DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
-    cy.get(DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
-    cy.get(DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.refHeader).should('contain', 'Ref');
-    cy.get(DOM_ELEMENTS.enfHeader).should('contain', 'ENF');
-    cy.get(DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
+      // Verify table exists and headers match design
+      cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
+      cy.get(DOM_ELEMENTS.accountHeader).should('contain', 'Account');
+      cy.get(DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
+      cy.get(DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
+      cy.get(DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
+      cy.get(DOM_ELEMENTS.refHeader).should('contain', 'Ref');
+      cy.get(DOM_ELEMENTS.enfHeader).should('contain', 'ENF');
+      cy.get(DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
 
-    // Verify first row matches mock data
-    cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'ACME LTD');
-    cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '10 Downing Street');
-    cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
-  });
+      // Verify first row matches mock data
+      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'ACME LTD');
+      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '10 Downing Street');
+      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
+    },
+  );
 
-  it('(AC5e, 5d) Only individual tab when only results exist for individual', { tags: ['PO-709'] }, () => {
-    setupComponent('INDIVIDUALS_ONLY_RESULTS');
+  it(
+    '(AC5e, 5d) Only individual tab when only results exist for individual',
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3793') },
+    () => {
+      setupComponent('INDIVIDUALS_ONLY_RESULTS');
 
-    // Verify only individuals and companies tabs are shown
-    cy.get(DOM_ELEMENTS.individualsTab).should('be.visible');
-    cy.get(DOM_ELEMENTS.companiesTab).should('not.exist');
-    cy.get(DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
-  });
+      // Verify only individuals and companies tabs are shown
+      cy.get(DOM_ELEMENTS.individualsTab).should('be.visible');
+      cy.get(DOM_ELEMENTS.companiesTab).should('not.exist');
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
+    },
+  );
 
-  it('(AC5e, 5d) Only company tab when only results exist for company', { tags: ['PO-709'] }, () => {
-    setupComponent('COMPANY_RESULTS_ONLY');
+  it(
+    '(AC5e, 5d) Only company tab when only results exist for company',
+    { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3794') },
+    () => {
+      setupComponent('COMPANY_RESULTS_ONLY');
 
-    // Verify only companies tab are shown
-    cy.get(DOM_ELEMENTS.individualsTab).should('not.exist');
-    cy.get(DOM_ELEMENTS.companiesTab).should('be.visible');
-    cy.get(DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
-  });
+      // Verify only companies tab are shown
+      cy.get(DOM_ELEMENTS.individualsTab).should('not.exist');
+      cy.get(DOM_ELEMENTS.companiesTab).should('be.visible');
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
+    },
+  );
 });

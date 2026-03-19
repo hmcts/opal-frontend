@@ -20,6 +20,10 @@ import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.st
 import { calculateDOB } from 'cypress/support/utils/dateUtils';
 import { of } from 'rxjs';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacPersonalDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
@@ -83,51 +87,63 @@ describe('FinesMacPersonalDetailsComponent', () => {
       };
     });
   });
-  it('(AC.1a) should load all elements on the screen correctly', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.1a) should load all elements on the screen correctly',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4336') },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Personal details');
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Personal details');
 
-    cy.get(DOM_ELEMENTS.firstNameInput).should('exist');
-    cy.get(DOM_ELEMENTS.lastNameInput).should('exist');
-    cy.get(DOM_ELEMENTS.dobInput).should('exist');
-    cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
-    cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
-    cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
-    cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
-    cy.get(DOM_ELEMENTS.niNumberInput).should('exist');
+      cy.get(DOM_ELEMENTS.firstNameInput).should('exist');
+      cy.get(DOM_ELEMENTS.lastNameInput).should('exist');
+      cy.get(DOM_ELEMENTS.dobInput).should('exist');
+      cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
+      cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
+      cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
+      cy.get(DOM_ELEMENTS.niNumberInput).should('exist');
 
-    cy.get(DOM_ELEMENTS.firstNameLabel).should('contain', 'First names');
-    cy.get(DOM_ELEMENTS.lastNameLabel).should('contain', 'Last name');
-    cy.get(DOM_ELEMENTS.dobLabel).should('contain', 'Date of birth');
-    cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
-    cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
-    cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
-    cy.get(DOM_ELEMENTS.postcodeLabel).should('contain', 'Postcode');
-    cy.get(DOM_ELEMENTS.niNumberLabel).should('contain', 'National Insurance number');
-    cy.get(DOM_ELEMENTS.firstNameHint).should('contain', 'Include their middle names');
-    cy.get(DOM_ELEMENTS.DateHint).should('contain', 'For example, 31/01/2023');
-    cy.get(DOM_ELEMENTS.legend).should('contain', 'Address');
+      cy.get(DOM_ELEMENTS.firstNameLabel).should('contain', 'First names');
+      cy.get(DOM_ELEMENTS.lastNameLabel).should('contain', 'Last name');
+      cy.get(DOM_ELEMENTS.dobLabel).should('contain', 'Date of birth');
+      cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
+      cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
+      cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
+      cy.get(DOM_ELEMENTS.postcodeLabel).should('contain', 'Postcode');
+      cy.get(DOM_ELEMENTS.niNumberLabel).should('contain', 'National Insurance number');
+      cy.get(DOM_ELEMENTS.firstNameHint).should('contain', 'Include their middle names');
+      cy.get(DOM_ELEMENTS.DateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.legend).should('contain', 'Address');
 
-    cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    cy.get(DOM_ELEMENTS.aliasAdd).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+      cy.get(DOM_ELEMENTS.aliasAdd).should('exist');
+    },
+  );
 
-  it('(AC.1) should load button for next page for adultOrYouthOnly Defendant', { tags: ['@PO-272', '@PO-433'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    '(AC.1) should load button for next page for adultOrYouthOnly Defendant',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-433', '@JIRA-KEY:POT-4337') },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add contact details');
-  });
+      cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add contact details');
+    },
+  );
 
-  it('(AC.2) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-369'] }, () => {
-    setupComponent(null, 'pgToPay');
+  it(
+    '(AC.2) should load button for next page for AYPG Defendant',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-369', '@JIRA-KEY:POT-4338') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
-  });
+      cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
+    },
+  );
 
   it(
     '(AC.2, AC.3) should display validation error when mandatory fields are missing',
-    { tags: ['@PO-272', '@PO-360'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4339') },
     () => {
       setupComponent(null);
 
@@ -139,22 +155,26 @@ describe('FinesMacPersonalDetailsComponent', () => {
     },
   );
 
-  it('(AC.1b) should not have any asterisks in address lines', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.1b) should not have any asterisks in address lines',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4340') },
+    () => {
+      setupComponent(null);
 
-    finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'asja*';
-    finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'asja*';
-    finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'asja*';
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'asja*';
+      finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'asja*';
+      finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'asja*';
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    for (let i = 1; i <= 3; i++) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK[`addressLine${i}ContainsSpecialCharacters`]);
-    }
-  });
+      for (let i = 1; i <= 3; i++) {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK[`addressLine${i}ContainsSpecialCharacters`]);
+      }
+    },
+  );
 
   it(
     '(AC.1a) should not allow first names,last names and Address lines 1,2 & 3 to have more than max characters',
-    { tags: ['@PO-272', '@PO-360'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4341') },
     () => {
       setupComponent(null);
 
@@ -172,22 +192,26 @@ describe('FinesMacPersonalDetailsComponent', () => {
       }
     },
   );
-  it('(AC.4) should validate the functionality of the Add Aliases tick box', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.4) should validate the functionality of the Add Aliases tick box',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4342') },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasAdd).click();
+      cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 1');
 
-    cy.get(getAliasFirstName(0)).should('exist');
-    cy.get(getAliasLastName(0)).should('exist');
+      cy.get(getAliasFirstName(0)).should('exist');
+      cy.get(getAliasLastName(0)).should('exist');
 
-    cy.get(DOM_ELEMENTS.aliasAddButton).should('exist');
-    cy.get(DOM_ELEMENTS.aliasRemoveButton).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.aliasAddButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('not.exist');
+    },
+  );
 
   it(
     '(AC.5, AC.6, AC.7) should have working alias workflow and remove button',
-    { tags: ['@PO-272', '@PO-360'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4343') },
     () => {
       setupComponent(null);
 
@@ -242,135 +266,167 @@ describe('FinesMacPersonalDetailsComponent', () => {
     },
   );
 
-  it('(AC.8) should validate unticking add aliases removes all aliases', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
-    cy.get(DOM_ELEMENTS.aliasAdd).check();
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-      [`fm_personal_details_alias_forenames_${0}`]: 'AliasFNAME1',
-      [`fm_personal_details_alias_surname_${0}`]: 'AliasLNAME1',
-    });
-    finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-      [`fm_personal_details_alias_forenames_${1}`]: 'AliasFNAME2',
-      [`fm_personal_details_alias_surname_${1}`]: 'AliasLNAME2',
-    });
-    cy.get(getAliasFirstName(0)).should('have.value', 'AliasFNAME1');
-    cy.get(getAliasLastName(0)).should('have.value', 'AliasLNAME1');
-    cy.get(getAliasFirstName(1)).should('have.value', 'AliasFNAME2');
-    cy.get(getAliasLastName(1)).should('have.value', 'AliasLNAME2');
+  it(
+    '(AC.8) should validate unticking add aliases removes all aliases',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4344') },
+    () => {
+      setupComponent(null);
+      cy.get(DOM_ELEMENTS.aliasAdd).check();
+      cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+        [`fm_personal_details_alias_forenames_${0}`]: 'AliasFNAME1',
+        [`fm_personal_details_alias_surname_${0}`]: 'AliasLNAME1',
+      });
+      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+        [`fm_personal_details_alias_forenames_${1}`]: 'AliasFNAME2',
+        [`fm_personal_details_alias_surname_${1}`]: 'AliasLNAME2',
+      });
+      cy.get(getAliasFirstName(0)).should('have.value', 'AliasFNAME1');
+      cy.get(getAliasLastName(0)).should('have.value', 'AliasLNAME1');
+      cy.get(getAliasFirstName(1)).should('have.value', 'AliasFNAME2');
+      cy.get(getAliasLastName(1)).should('have.value', 'AliasLNAME2');
 
-    cy.get(DOM_ELEMENTS.aliasAdd).uncheck();
-    cy.get(DOM_ELEMENTS.aliasAdd).check();
-    cy.get(getAliasFirstName(0)).should('have.value', '');
-    cy.get(getAliasLastName(0)).should('have.value', '');
+      cy.get(DOM_ELEMENTS.aliasAdd).uncheck();
+      cy.get(DOM_ELEMENTS.aliasAdd).check();
+      cy.get(getAliasFirstName(0)).should('have.value', '');
+      cy.get(getAliasLastName(0)).should('have.value', '');
 
-    cy.get(getAliasFirstName(1)).should('not.exist');
-    cy.get(getAliasLastName(1)).should('not.exist');
-  });
+      cy.get(getAliasFirstName(1)).should('not.exist');
+      cy.get(getAliasLastName(1)).should('not.exist');
+    },
+  );
 
-  it('(AC.10) should show error for missing alias', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.10) should show error for missing alias',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4345') },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
-  });
+      cy.get(DOM_ELEMENTS.aliasAdd).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
+    },
+  );
 
-  it('(AC.10) should show error for missing alias last name', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.10) should show error for missing alias last name',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4346') },
+    () => {
+      setupComponent(null);
 
-    finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
-    finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-      fm_personal_details_alias_surname_0: 'Smith',
-    });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
-  });
+      finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+        fm_personal_details_alias_surname_0: 'Smith',
+      });
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
+    },
+  );
 
-  it('(AC.10) should show error for missing alias first name', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.10) should show error for missing alias first name',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4347') },
+    () => {
+      setupComponent(null);
 
-    finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
-    finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-      fm_personal_details_alias_forenames_0: 'John',
-    });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
-  });
+      finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+        fm_personal_details_alias_forenames_0: 'John',
+      });
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
+    },
+  );
 
-  it('(AC.10) should show error for missing additional alias first name', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.10) should show error for missing additional alias first name',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4348') },
+    () => {
+      setupComponent(null);
 
-    finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
-    finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-      fm_personal_details_alias_forenames_0: 'John',
-      fm_personal_details_alias_surname_0: 'Smith',
-    });
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-      fm_personal_details_alias_surname_1: 'Smith',
-    });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+        fm_personal_details_alias_forenames_0: 'John',
+        fm_personal_details_alias_surname_0: 'Smith',
+      });
+      cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+        fm_personal_details_alias_surname_1: 'Smith',
+      });
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameTwo}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameTwo}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameThree}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameThree}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
+    },
+  );
 
-  it('(AC.10) should show error for missing additional alias last name', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.10) should show error for missing additional alias last name',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4349') },
+    () => {
+      setupComponent(null);
 
-    finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
-    finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-      fm_personal_details_alias_forenames_0: 'John',
-      fm_personal_details_alias_surname_0: 'Smith',
-    });
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-      fm_personal_details_alias_forenames_1: 'John',
-    });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+        fm_personal_details_alias_forenames_0: 'John',
+        fm_personal_details_alias_surname_0: 'Smith',
+      });
+      cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+        fm_personal_details_alias_forenames_1: 'John',
+      });
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameTwo}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameTwo}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameThree}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameThree}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
+    },
+  );
 
-  it('(AC.9) should show error for future date of birth', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.9) should show error for future date of birth',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4350') },
+    () => {
+      setupComponent(null);
 
-    finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
-    finesMacState.personalDetails.formData.fm_personal_details_forenames = 'John';
-    finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
-    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/3000';
-    finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Enter a valid date of birth in the past');
-  });
+      finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
+      finesMacState.personalDetails.formData.fm_personal_details_forenames = 'John';
+      finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/3000';
+      finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Enter a valid date of birth in the past');
+    },
+  );
 
-  it('(AC.9) should show error for invalid date format', { tags: ['@PO-272', '@PO-360'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.9) should show error for invalid date format',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4351') },
+    () => {
+      setupComponent(null);
 
-    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/,.';
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
-  });
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/,.';
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
+    },
+  );
 
   it(
     '(AC.11) should not accept national insurance number in the incorrect format',
-    { tags: ['@PO-272', '@PO-360'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4352') },
     () => {
       setupComponent(null);
 
@@ -388,7 +444,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
   it(
     '(AC.12) should show errors for invalid mandatory fields and allow corrections',
-    { tags: ['@PO-272', '@PO-360'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360', '@JIRA-KEY:POT-4353') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -419,7 +475,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
   it(
     '(AC.5) should render vehicle details for adultOrYouthOnly defendant type and validate max length of data',
-    { tags: ['@PO-272', '@PO-502'] },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-502', '@JIRA-KEY:POT-4354') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -438,84 +494,106 @@ describe('FinesMacPersonalDetailsComponent', () => {
       }
     },
   );
-  it('(AC.2) should display age panel when entering a valid age for youth', { tags: ['@PO-272', '@PO-502'] }, () => {
-    setupComponent(null);
-    const age = 17;
-    finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
-    cy.get('.moj-ticket-panel').should('exist');
-    cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
-    cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Youth');
-  });
-  it('(AC.3) should display age panel when entering a valid age for adult', { tags: ['@PO-272', '@PO-502'] }, () => {
-    setupComponent(null);
-    const age = 18;
-    finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
-    cy.get('.moj-ticket-panel').should('exist');
-    cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
-    cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Adult');
-  });
+  it(
+    '(AC.2) should display age panel when entering a valid age for youth',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-502', '@JIRA-KEY:POT-4355') },
+    () => {
+      setupComponent(null);
+      const age = 17;
+      finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
+      cy.get('.moj-ticket-panel').should('exist');
+      cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
+      cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Youth');
+    },
+  );
+  it(
+    '(AC.3) should display age panel when entering a valid age for adult',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-502', '@JIRA-KEY:POT-4356') },
+    () => {
+      setupComponent(null);
+      const age = 18;
+      finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
+      cy.get('.moj-ticket-panel').should('exist');
+      cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
+      cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Adult');
+    },
+  );
 
-  it('(AC.5) should not render vehicle details for AY-PG defendant type', { tags: ['@PO-344', '@PO-505'] }, () => {
-    setupComponent(null, 'pgToPay');
+  it(
+    '(AC.5) should not render vehicle details for AY-PG defendant type',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-505', '@JIRA-KEY:POT-4357') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    // Verify the vehicle details section is not rendered
-    cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('not.exist');
-    cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('not.exist');
-    cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
-    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
-  });
+      // Verify the vehicle details section is not rendered
+      cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('not.exist');
+      cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('not.exist');
+      cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
+    },
+  );
 
-  it('(AC.1) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
-    setupComponent(formSubmitSpy, 'pgToPay');
+  it(
+    '(AC.1) Personal details should capitalise - AYPG',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-1449', '@JIRA-KEY:POT-4358') },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.titleInput).select('Mr');
-    cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
+      cy.get(DOM_ELEMENTS.titleInput).select('Mr');
+      cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
+      cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
-    cy.get(DOM_ELEMENTS.lastNameInput).blur();
-    cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et', { delay: 0 });
-    cy.get(DOM_ELEMENTS.postcodeInput).blur();
-    cy.get(DOM_ELEMENTS.niNumberInput).type('ab712348b', { delay: 0 });
-    cy.get(DOM_ELEMENTS.niNumberInput).blur();
+      cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
+      cy.get(DOM_ELEMENTS.lastNameInput).blur();
+      cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et', { delay: 0 });
+      cy.get(DOM_ELEMENTS.postcodeInput).blur();
+      cy.get(DOM_ELEMENTS.niNumberInput).type('ab712348b', { delay: 0 });
+      cy.get(DOM_ELEMENTS.niNumberInput).blur();
 
-    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'LNAME');
-    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SL86ET');
-    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB712348B');
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(getAliasFirstName(0)).type('alias0fname');
-    cy.get(getAliasLastName(0)).type('alias0lname').should('have.value', 'ALIAS0LNAME');
+      cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'LNAME');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SL86ET');
+      cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB712348B');
+      cy.get(DOM_ELEMENTS.aliasAdd).click();
+      cy.get(getAliasFirstName(0)).type('alias0fname');
+      cy.get(getAliasLastName(0)).type('alias0lname').should('have.value', 'ALIAS0LNAME');
 
-    // Add the remaining four aliases using loop
-    for (let i = 1; i < 5; i++) {
-      cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      cy.get(getAliasFirstName(i)).type(`alias${i + 1}fname`);
-      cy.get(getAliasLastName(i))
-        .type(`alias${i + 1}lname`)
-        .should('have.value', `ALIAS${i + 1}LNAME`);
-    }
+      // Add the remaining four aliases using loop
+      for (let i = 1; i < 5; i++) {
+        cy.get(DOM_ELEMENTS.aliasAddButton).click();
+        cy.get(getAliasFirstName(i)).type(`alias${i + 1}fname`);
+        cy.get(getAliasLastName(i))
+          .type(`alias${i + 1}lname`)
+          .should('have.value', `ALIAS${i + 1}LNAME`);
+      }
 
-    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
-  });
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+    },
+  );
 
-  it('(AC.1) should convert specified fields to uppercase on user input', { tags: ['@PO-272', '@PO-1448'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    '(AC.1) should convert specified fields to uppercase on user input',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-1448', '@JIRA-KEY:POT-4359') },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
-    cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
-    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('xy12 abc', { delay: 0 }).should('have.value', 'XY12 ABC');
-    cy.get(DOM_ELEMENTS.niNumberInput).type('ab123456c', { delay: 0 }).should('have.value', 'AB123456C');
+      cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
+      cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+      cy.get(DOM_ELEMENTS.vehicle_registration_markInput)
+        .type('xy12 abc', { delay: 0 })
+        .should('have.value', 'XY12 ABC');
+      cy.get(DOM_ELEMENTS.niNumberInput).type('ab123456c', { delay: 0 }).should('have.value', 'AB123456C');
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(getAliasLastName(0)).type('alias1', { delay: 0 }).should('have.value', 'ALIAS1');
+      cy.get(DOM_ELEMENTS.aliasAdd).click();
+      cy.get(getAliasLastName(0)).type('alias1', { delay: 0 }).should('have.value', 'ALIAS1');
 
-    // Add the remaining four aliases using a loop
-    for (let i = 1; i < 5; i++) {
-      cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      cy.get(getAliasLastName(i))
-        .type(`alias${i + 1}`, { delay: 0 })
-        .should('have.value', `ALIAS${i + 1}`);
-    }
-  });
+      // Add the remaining four aliases using a loop
+      for (let i = 1; i < 5; i++) {
+        cy.get(DOM_ELEMENTS.aliasAddButton).click();
+        cy.get(getAliasLastName(i))
+          .type(`alias${i + 1}`, { delay: 0 })
+          .should('have.value', `ALIAS${i + 1}`);
+      }
+    },
+  );
 });
