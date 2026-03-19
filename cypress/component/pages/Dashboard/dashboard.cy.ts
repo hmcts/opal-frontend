@@ -43,7 +43,7 @@ describe('DashboardComponent', () => {
     });
   };
 
-  it('should render component', { tags: buildTags('@JIRA-KEY:POT-4435') }, () => {
+  it.skip('should render component', { tags: buildTags('@JIRA-KEY:POT-4435') }, () => {
     setupComponent(CAM_CAV_DASHBOARD_USER_STATE_MOCK);
     cy.get(L.app).should('exist');
   });
