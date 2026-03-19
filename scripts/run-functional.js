@@ -11,12 +11,12 @@ const args = process.argv.slice(2);
 const withTags = args.includes('--tags');
 
 /**
- * Resolve the browser under test, defaulting to chrome when unset.
+ * Resolve the browser under test, defaulting to edge when unset.
  * @returns {string} Normalized browser name.
  */
 const resolveBrowser = () => {
   const raw = (process.env.BROWSER_TO_RUN || '').trim().toLowerCase();
-  return raw || 'chrome';
+  return raw || 'edge';
 };
 
 const browser = resolveBrowser();
@@ -49,14 +49,6 @@ const runYarn = (scriptName) => {
 
 const testExitCode = runYarn('test:functionalOpalParallel');
 runYarn('test:functional:combine:reports');
-
-const cucumberScript =
-  browser === 'edge'
-    ? 'test:functionalEdge:cucumber:combineParallelReport'
-    : browser === 'firefox'
-      ? 'test:functionalFirefox:cucumber:combineParallelReport'
-      : 'test:functional:cucumber:combineParallelReport';
-
-runYarn(cucumberScript);
+runYarn('test:functional:cucumber:combineParallelReport');
 
 process.exit(testExitCode || 0);
