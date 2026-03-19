@@ -24,11 +24,10 @@ import { FinesConDefendant } from '../../types/fines-con-defendant.type';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { IFinesConSearchResultAccountCheck } from './interfaces/fines-con-search-result-account-check.interface';
 import { FinesConPayloadService } from '../../services/fines-con-payload.service';
-import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 
 @Component({
   selector: 'app-fines-con-search-result',
-  imports: [CommonModule, GovukBackLinkComponent, FinesConSearchResultDefendantTableWrapperComponent],
+  imports: [CommonModule, FinesConSearchResultDefendantTableWrapperComponent],
   templateUrl: './fines-con-search-result.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
