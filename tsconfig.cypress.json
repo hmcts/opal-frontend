@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
+    "esModuleInterop": true,
     "types": ["cypress", "node", "@cypress/grep"],
     "typeRoots": ["./node_modules/@types", "./node_modules/@cypress"],
     "paths": {

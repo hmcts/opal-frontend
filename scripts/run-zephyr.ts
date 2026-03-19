@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { runZephyr } from '@hmcts/zephyr-automation-nodejs/cypress';
+import { runZephyr } from '@hmcts/zephyr-automation-nodejs';
 import { createZephyrOptions } from './zephyr-util';
-import path from 'path';
+import * as path from 'node:path';
 
 function getArg(name: string): string {
   const arg = process.argv.slice(2).find((a) => a.startsWith(`--${name}=`));
