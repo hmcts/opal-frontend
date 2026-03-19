@@ -21,6 +21,10 @@ import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.st
 import { nonPermittedSpecialCharacters } from './constants/fines_mac_parent_guardian_details_character_check';
 import { of } from 'rxjs';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacParentGuardianDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
@@ -84,14 +88,34 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     });
   });
 
-  it('should render the ParentGuardianDetails component', () => {
-    setupComponent(null, 'pgToPay');
-    cy.get(DOM_ELEMENTS.app).should('exist');
-  });
+  it(
+    'should render the ParentGuardianDetails component',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-344',
+        '@JIRA-STORY:PO-364',
+        '@JIRA-STORY:PO-436',
+        '@JIRA-STORY:PO-569',
+        '@JIRA-KEY:POT-4243',
+      ),
+    },
+    () => {
+      setupComponent(null, 'pgToPay');
+      cy.get(DOM_ELEMENTS.app).should('exist');
+    },
+  );
 
   it(
     '(AC.1) should load all elements on the screen correctly',
-    { tags: ['@PO-344', '@PO-364', '@PO-436', '@PO-569'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-344',
+        '@JIRA-STORY:PO-364',
+        '@JIRA-STORY:PO-436',
+        '@JIRA-STORY:PO-569',
+        '@JIRA-KEY:POT-4244',
+      ),
+    },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -130,72 +154,100 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it('(AC.1) should have length validation on first name field', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'a'.repeat(31);
+  it(
+    '(AC.1) should have length validation on first name field',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4245') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'a'.repeat(31);
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.firstNameTooLong);
-  });
-  it('(AC.1) should not permit special characters on first name field', { tags: ['@PO-344', '@PO-569'] }, () => {
-    cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
-      cy.then(() => {
-        finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
-        setupComponent(null, 'pgToPay');
-      });
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidFirstNames);
-    });
-  });
-  it('(AC.1) should have length validation on last name field', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'a'.repeat(31);
-
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.lastNameTooLong);
-  });
-
-  it('(AC.1) should not permit special characters on last name field', { tags: ['@PO-344', '@PO-569'] }, () => {
-    cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
-      cy.then(() => {
-        finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;
-        setupComponent(null, 'pgToPay');
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.firstNameTooLong);
+    },
+  );
+  it(
+    '(AC.1) should not permit special characters on first name field',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4246') },
+    () => {
+      cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
+        cy.then(() => {
+          finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
+          setupComponent(null, 'pgToPay');
+        });
+        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidFirstNames);
       });
+    },
+  );
+  it(
+    '(AC.1) should have length validation on last name field',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4247') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'a'.repeat(31);
+
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidLastNames);
-    });
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.lastNameTooLong);
+    },
+  );
 
-  it('(AC.2) should require first name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+  it(
+    '(AC.1) should not permit special characters on last name field',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4248') },
+    () => {
+      cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
+        cy.then(() => {
+          finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;
+          setupComponent(null, 'pgToPay');
+        });
+        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidLastNames);
+      });
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingFirstName);
-  });
+  it(
+    '(AC.2) should require first name field input',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4249') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-  it('(AC.2) should require last name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingFirstName);
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingLastName);
-  });
+  it(
+    '(AC.2) should require last name field input',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4250') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-  it('(AC.3) should validate the functionality of the Add Aliases tick box', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingLastName);
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 1');
+  it(
+    '(AC.3) should validate the functionality of the Add Aliases tick box',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4251') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    cy.get(getAliasFirstName(0)).should('exist');
-    cy.get(getAliasLastName(0)).should('exist');
+      cy.get(DOM_ELEMENTS.aliasAdd).click();
+      cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 1');
 
-    cy.get(DOM_ELEMENTS.aliasAddButton).should('exist');
-    cy.get(DOM_ELEMENTS.aliasRemoveButton).should('not.exist');
-  });
+      cy.get(getAliasFirstName(0)).should('exist');
+      cy.get(getAliasLastName(0)).should('exist');
+
+      cy.get(DOM_ELEMENTS.aliasAddButton).should('exist');
+      cy.get(DOM_ELEMENTS.aliasRemoveButton).should('not.exist');
+    },
+  );
 
   it(
     '(AC.4, AC.5, AC.6) should have working alias workflow and remove button',
-    { tags: ['@PO-344', '@PO-569'] },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4252') },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -250,217 +302,249 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it('(AC.7) should validate unticking add aliases removes all aliases', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-    cy.get(DOM_ELEMENTS.aliasAdd).check();
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      [`fm_parent_guardian_details_alias_forenames_${0}`]: 'AliasFNAME1',
-      [`fm_parent_guardian_details_alias_surname_${0}`]: 'AliasLNAME1',
-    });
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      [`fm_parent_guardian_details_alias_forenames_${1}`]: 'AliasFNAME2',
-      [`fm_parent_guardian_details_alias_surname_${1}`]: 'AliasLNAME2',
-    });
-    cy.get(getAliasFirstName(0)).should('have.value', 'AliasFNAME1');
-    cy.get(getAliasLastName(0)).should('have.value', 'AliasLNAME1');
-    cy.get(getAliasFirstName(1)).should('have.value', 'AliasFNAME2');
-    cy.get(getAliasLastName(1)).should('have.value', 'AliasLNAME2');
-
-    cy.get(DOM_ELEMENTS.aliasAdd).uncheck();
-    cy.get(DOM_ELEMENTS.aliasAdd).check();
-    cy.get(getAliasFirstName(0)).should('have.value', '');
-    cy.get(getAliasLastName(0)).should('have.value', '');
-
-    cy.get(getAliasFirstName(1)).should('not.exist');
-    cy.get(getAliasLastName(1)).should('not.exist');
-  });
-
-  it('(AC.8) should show error for missing alias', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
-  });
-
-  it('(AC.8) should show error for missing alias last name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_surname_0: 'Smith',
-    });
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
-  });
-
-  it('(AC.8) should show error for missing alias first name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_0: 'John',
-    });
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
-  });
-
-  it('(AC.8) should show error for missing additional alias first name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_0: 'John',
-      fm_parent_guardian_details_alias_surname_0: 'Smith',
-    });
-    Cypress._.times(3, () => {
+  it(
+    '(AC.7) should validate unticking add aliases removes all aliases',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4253') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      cy.get(DOM_ELEMENTS.aliasAdd).check();
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    });
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_surname_1: 'Smith',
-    });
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        [`fm_parent_guardian_details_alias_forenames_${0}`]: 'AliasFNAME1',
+        [`fm_parent_guardian_details_alias_surname_${0}`]: 'AliasLNAME1',
+      });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        [`fm_parent_guardian_details_alias_forenames_${1}`]: 'AliasFNAME2',
+        [`fm_parent_guardian_details_alias_surname_${1}`]: 'AliasLNAME2',
+      });
+      cy.get(getAliasFirstName(0)).should('have.value', 'AliasFNAME1');
+      cy.get(getAliasLastName(0)).should('have.value', 'AliasLNAME1');
+      cy.get(getAliasFirstName(1)).should('have.value', 'AliasFNAME2');
+      cy.get(getAliasLastName(1)).should('have.value', 'AliasLNAME2');
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasOne}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
+      cy.get(DOM_ELEMENTS.aliasAdd).uncheck();
+      cy.get(DOM_ELEMENTS.aliasAdd).check();
+      cy.get(getAliasFirstName(0)).should('have.value', '');
+      cy.get(getAliasLastName(0)).should('have.value', '');
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasTwo}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
+      cy.get(getAliasFirstName(1)).should('not.exist');
+      cy.get(getAliasLastName(1)).should('not.exist');
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasThree}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
+  it(
+    '(AC.8) should show error for missing alias',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4254') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFour}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameFour}`);
+      cy.get(DOM_ELEMENTS.aliasAdd).click();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFive}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameFive}`);
-  });
+  it(
+    '(AC.8) should show error for missing alias last name',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4255') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-  it('(AC.8) should show error for missing additional alias last name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    (setupComponent(null), 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_surname_0: 'Smith',
+      });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
+    },
+  );
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_0: 'John',
-      fm_parent_guardian_details_alias_surname_0: 'Smith',
-    });
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_1: 'John',
-    });
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+  it(
+    '(AC.8) should show error for missing alias first name',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4256') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasOne}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_0: 'John',
+      });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasTwo}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
+  it(
+    '(AC.8) should show error for missing additional alias first name',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4257') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasThree}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
-  });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_0: 'John',
+        fm_parent_guardian_details_alias_surname_0: 'Smith',
+      });
+      Cypress._.times(3, () => {
+        cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_surname_1: 'Smith',
+      });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-  it('Should show error for too many characters for alias first and last name', { tags: ['@PO-1679'] }, () => {
-    setupComponent(null, 'pgToPay');
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_0: 'a'.repeat(21),
-      fm_parent_guardian_details_alias_surname_0: 'a'.repeat(31),
-    });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasTwo}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_1: 'a'.repeat(21),
-      fm_parent_guardian_details_alias_surname_1: 'a'.repeat(31),
-    });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasThree}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_2: 'a'.repeat(21),
-      fm_parent_guardian_details_alias_surname_2: 'a'.repeat(31),
-    });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFour}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameFour}`);
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_3: 'a'.repeat(21),
-      fm_parent_guardian_details_alias_surname_3: 'a'.repeat(31),
-    });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFive}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameFive}`);
+    },
+  );
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_4: 'a'.repeat(21),
-      fm_parent_guardian_details_alias_surname_4: 'a'.repeat(31),
-    });
+  it(
+    '(AC.8) should show error for missing additional alias last name',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4258') },
+    () => {
+      (setupComponent(null), 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_0: 'John',
+        fm_parent_guardian_details_alias_surname_0: 'Smith',
+      });
+      cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_1: 'John',
+      });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasOne}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasOne}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameTwo}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasTwo}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasThree}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameThree}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasThree}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasFour}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameFour}`);
+  it(
+    'Should show error for too many characters for alias first and last name',
+    { tags: buildTags('@JIRA-STORY:PO-1679', '@JIRA-KEY:POT-4259') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasFive}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameFive}`);
-  });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_0: 'a'.repeat(21),
+        fm_parent_guardian_details_alias_surname_0: 'a'.repeat(31),
+      });
 
-  it('Should show error for non-alphabetical characters for alias first and last name', { tags: ['@PO-1679'] }, () => {
-    setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_1: 'a'.repeat(21),
+        fm_parent_guardian_details_alias_surname_1: 'a'.repeat(31),
+      });
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_0: 'Aliasfname1',
-      fm_parent_guardian_details_alias_surname_0: 'Aliaslname1',
-    });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_2: 'a'.repeat(21),
+        fm_parent_guardian_details_alias_surname_2: 'a'.repeat(31),
+      });
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_1: 'Fnametwo.',
-      fm_parent_guardian_details_alias_surname_1: 'Lnametwo*',
-    });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_3: 'a'.repeat(21),
+        fm_parent_guardian_details_alias_surname_3: 'a'.repeat(31),
+      });
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_2: 'Fname-three',
-      fm_parent_guardian_details_alias_surname_2: 'Lname_three',
-    });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_4: 'a'.repeat(21),
+        fm_parent_guardian_details_alias_surname_4: 'a'.repeat(31),
+      });
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_3: 'Fname@four',
-      fm_parent_guardian_details_alias_surname_3: 'Lnamefour!',
-    });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-      fm_parent_guardian_details_alias_forenames_4: 'Fname/five',
-      fm_parent_guardian_details_alias_surname_4: 'Lnamefive()',
-    });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameOne}`);
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameTwo}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasOne}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasThree}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameThree}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasOne}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameTwo}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasFour}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameFour}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasThree}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameThree}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasFive}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameFive}`);
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasFour}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameFour}`);
+  it(
+    'Should show error for non-alphabetical characters for alias first and last name',
+    { tags: buildTags('@JIRA-STORY:PO-1679', '@JIRA-KEY:POT-4260') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasFive}`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameFive}`);
-  });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_0: 'Aliasfname1',
+        fm_parent_guardian_details_alias_surname_0: 'Aliaslname1',
+      });
+
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_1: 'Fnametwo.',
+        fm_parent_guardian_details_alias_surname_1: 'Lnametwo*',
+      });
+
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_2: 'Fname-three',
+        fm_parent_guardian_details_alias_surname_2: 'Lname_three',
+      });
+
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_3: 'Fname@four',
+        fm_parent_guardian_details_alias_surname_3: 'Lnamefour!',
+      });
+
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+        fm_parent_guardian_details_alias_forenames_4: 'Fname/five',
+        fm_parent_guardian_details_alias_surname_4: 'Lnamefive()',
+      });
+
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameOne}`);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasOne}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameTwo}`);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasThree}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameThree}`);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasFour}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameFour}`);
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasFive}`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameFive}`);
+    },
+  );
 
   it(
     '(AC.3) should display validation error when date of birth is in the future',
-    { tags: ['@PO-344', '@PO-364'] },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4261') },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -470,17 +554,21 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it('(AC.3) should display validation error when date of birth is invalid', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
+  it(
+    '(AC.3) should display validation error when date of birth is invalid',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4262') },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/abc';
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
-  });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/abc';
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
+    },
+  );
 
   it(
     '(AC.4) should not accept national insurance number in the incorrect format',
-    { tags: ['@PO-344', '@PO-436'] },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-436', '@JIRA-KEY:POT-4263') },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_national_insurance_number = 'AB1234565C';
@@ -490,69 +578,101 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it('(AC.1) should have max length validation for address line 1', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'a'.repeat(31);
+  it(
+    '(AC.1) should have max length validation for address line 1',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4264') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'a'.repeat(31);
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine1TooLong);
-  });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine1TooLong);
+    },
+  );
 
-  it('(AC.1) should not permit asterisks in address line 1', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'addr1*';
+  it(
+    '(AC.1) should not permit asterisks in address line 1',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4265') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'addr1*';
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
-  });
-  it('(AC.1) should have max length validation for address line 2', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'a'.repeat(31);
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
+    },
+  );
+  it(
+    '(AC.1) should have max length validation for address line 2',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4266') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'a'.repeat(31);
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine2TooLong);
-  });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine2TooLong);
+    },
+  );
 
-  it('(AC.1) should not permit asterisks in address line 2', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'addr2*';
+  it(
+    '(AC.1) should not permit asterisks in address line 2',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4267') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'addr2*';
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine2ContainsSpecialCharacters);
-  });
-  it('(AC.9) should have max length validation for address line 3', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'a'.repeat(14);
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine2ContainsSpecialCharacters);
+    },
+  );
+  it(
+    '(AC.9) should have max length validation for address line 3',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4268') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'a'.repeat(14);
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine3TooLong);
-  });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine3TooLong);
+    },
+  );
 
-  it('(AC.1) should not permit asterisks in address line 3', { tags: ['@PO-344', '@PO-436'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'addr3*';
+  it(
+    '(AC.1) should not permit asterisks in address line 3',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-436', '@JIRA-KEY:POT-4269') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'addr3*';
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine3ContainsSpecialCharacters);
-  });
-  it('(AC.1) should have max length validation for postcode', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_post_code = 'a'.repeat(9);
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine3ContainsSpecialCharacters);
+    },
+  );
+  it(
+    '(AC.1) should have max length validation for postcode',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4270') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_post_code = 'a'.repeat(9);
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.postcodeTooLong);
-  });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.postcodeTooLong);
+    },
+  );
 
-  it('(AC.10) should have max length validation for make and model field', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = 'a'.repeat(31);
+  it(
+    '(AC.10) should have max length validation for make and model field',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4271') },
+    () => {
+      setupComponent(null, 'pgToPay');
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = 'a'.repeat(31);
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.vehicleMakeTooLong);
-  });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.vehicleMakeTooLong);
+    },
+  );
   it(
     '(AC.10) should have max length validation for registration number field',
-    { tags: ['@PO-344', '@PO-569'] },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569', '@JIRA-KEY:POT-4272') },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_registration_mark = 'a'.repeat(
@@ -566,7 +686,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.5) should show errors for invalid mandatory fields and allow corrections and submit form',
-    { tags: ['@PO-344', '@PO-364'] },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4273') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -597,7 +717,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.6) should show errors for invalid mandatory fields and allow corrections and submit form',
-    { tags: ['@PO-344', '@PO-364'] },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-KEY:POT-4274') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -614,48 +734,52 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
-    setupComponent(formSubmitSpy, 'pgToPay');
+  it(
+    '(AC.1) Parent or guardian details should capitalise - AYPG',
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-1449', '@JIRA-KEY:POT-4275') },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'pgToPay');
 
-    cy.get(DOM_ELEMENTS.firstNameInput).type('fname', { delay: 0 });
-    cy.get(DOM_ELEMENTS.firstNameInput).blur();
+      cy.get(DOM_ELEMENTS.firstNameInput).type('fname', { delay: 0 });
+      cy.get(DOM_ELEMENTS.firstNameInput).blur();
 
-    cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
-    cy.get(DOM_ELEMENTS.lastNameInput).blur();
+      cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
+      cy.get(DOM_ELEMENTS.lastNameInput).blur();
 
-    cy.get(DOM_ELEMENTS.addressLine1Input).type('12 avenue', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine1Input).blur();
+      cy.get(DOM_ELEMENTS.addressLine1Input).type('12 avenue', { delay: 0 });
+      cy.get(DOM_ELEMENTS.addressLine1Input).blur();
 
-    cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et', { delay: 0 });
-    cy.get(DOM_ELEMENTS.postcodeInput).blur();
+      cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et', { delay: 0 });
+      cy.get(DOM_ELEMENTS.postcodeInput).blur();
 
-    cy.get(DOM_ELEMENTS.niNumberInput).type('ab712348b', { delay: 0 });
-    cy.get(DOM_ELEMENTS.niNumberInput).blur();
+      cy.get(DOM_ELEMENTS.niNumberInput).type('ab712348b', { delay: 0 });
+      cy.get(DOM_ELEMENTS.niNumberInput).blur();
 
-    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('ap12 slu', { delay: 0 });
-    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).blur();
+      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('ap12 slu', { delay: 0 });
+      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).blur();
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(getAliasFirstName(0)).type('aliasfname');
-    cy.get(getAliasLastName(0)).type('aliaslname').should('have.value', 'ALIASLNAME');
-    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'LNAME');
-    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SL86ET');
-    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB712348B');
-    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('have.value', 'AP12 SLU');
+      cy.get(DOM_ELEMENTS.aliasAdd).click();
+      cy.get(getAliasFirstName(0)).type('aliasfname');
+      cy.get(getAliasLastName(0)).type('aliaslname').should('have.value', 'ALIASLNAME');
+      cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'LNAME');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SL86ET');
+      cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB712348B');
+      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('have.value', 'AP12 SLU');
 
-    const aliasNumber = ['one', 'two', 'three', 'four', 'five'];
+      const aliasNumber = ['one', 'two', 'three', 'four', 'five'];
 
-    // Add the remaining four aliases using loop
-    for (let i = 1; i < 5; i++) {
-      cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      cy.get(getAliasFirstName(i)).type(`alias${aliasNumber[i]}fname`);
-      cy.get(getAliasLastName(i))
-        .type(`alias${aliasNumber[i]}lname`)
-        .should('have.value', `ALIAS${aliasNumber[i].toUpperCase()}LNAME`);
-    }
+      // Add the remaining four aliases using loop
+      for (let i = 1; i < 5; i++) {
+        cy.get(DOM_ELEMENTS.aliasAddButton).click();
+        cy.get(getAliasFirstName(i)).type(`alias${aliasNumber[i]}fname`);
+        cy.get(getAliasLastName(i))
+          .type(`alias${aliasNumber[i]}lname`)
+          .should('have.value', `ALIAS${aliasNumber[i].toUpperCase()}LNAME`);
+      }
 
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-  });
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+    },
+  );
 });
