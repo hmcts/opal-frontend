@@ -328,7 +328,7 @@
     <h2 [class]="style.heading">Actions</h2>
     @if (hasEnterEnforcementPermission) {
       <p>
-        <a class="govuk-link" tabindex="0">Add enforcement action</a>
+        <a class="govuk-link">Add enforcement action</a>
       </p>
     }
     @if (
@@ -336,11 +336,11 @@
       !tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
     ) {
       <p>
-        <a class="govuk-link" tabindex="0">Add enforcement override</a>
+        <a class="govuk-link">Add enforcement override</a>
       </p>
     }
     <p>
-      <a class="govuk-link" tabindex="0">Request an HMRC check</a>
+      <a class="govuk-link">Request an HMRC check</a>
     </p>
   </div>
 }

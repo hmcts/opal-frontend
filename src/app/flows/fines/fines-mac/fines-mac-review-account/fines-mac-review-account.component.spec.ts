@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacReviewAccountComponent } from './fines-mac-review-account.component';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -134,6 +134,7 @@ function createTestModule(snapshotData?: any) {
 describe('FinesMacReviewAccountComponent', () => {
   describe('when snapshot has localJusticeAreas, courts, results, and major creditors only', () => {
     let component: FinesMacReviewAccountComponent;
+    let fixture: ComponentFixture<FinesMacReviewAccountComponent>;
     let mockOpalFinesService: Partial<OpalFines>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let mockFinesMacPayloadService: any;
@@ -145,6 +146,7 @@ describe('FinesMacReviewAccountComponent', () => {
     beforeEach(async () => {
       const setup = createTestModule();
       component = setup.component;
+      fixture = setup.fixture;
       mockOpalFinesService = setup.mockOpalFinesService;
       mockFinesMacPayloadService = setup.mockFinesMacPayloadService;
       mockUtilsService = setup.mockUtilsService;
@@ -154,6 +156,33 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should create', () => {
       expect(component).toBeTruthy();
+    });
+
+    it('should enforce current template link semantics for delete account link', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const templateConsts = ((FinesMacReviewAccountComponent as any).ɵcmp?.consts ?? []).filter(
+        (entry: unknown) => Array.isArray(entry),
+      ) as unknown[][];
+      const templateFunction =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ((FinesMacReviewAccountComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+      const actionLinkConsts = templateConsts.filter(
+        (entry) =>
+          entry.includes('govuk-link') &&
+          entry.includes('govuk-error-colour') &&
+          entry.includes('href') &&
+          entry.includes('click'),
+      );
+
+      expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
+      actionLinkConsts.forEach((entry) => {
+        expect(entry).toContain('govuk-link--no-visited-state');
+        expect(entry).toContain('href');
+        expect(entry).toContain('');
+        expect(entry).not.toContain('tabindex');
+      });
+      expect(templateFunction).not.toContain('keydown.enter');
+      expect(templateFunction).not.toContain('keyup.enter');
     });
 
     it('should test setReviewAccountStatus when draft state is null', () => {
@@ -492,6 +521,7 @@ describe('FinesMacReviewAccountComponent', () => {
       component.handleDeleteAccount(mockEvent);
 
       expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
       expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(0);
     });
 
@@ -510,7 +540,31 @@ describe('FinesMacReviewAccountComponent', () => {
       component.handleDeleteAccount(mockEvent);
 
       expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
       expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(1);
+    });
+
+    it('should click delete account link and prevent default via the passed template event', () => {
+      component.isReadOnly = false;
+      finesDraftStore.setDraftAccountId(0);
+      fixture.detectChanges();
+
+      const link = fixture.nativeElement.querySelector('a.govuk-link.govuk-error-colour') as HTMLAnchorElement | null;
+      expect(link).toBeTruthy();
+      if (!link) throw new Error('Delete account link not found');
+
+      expect(link.getAttribute('href')).toBe('');
+      expect(link.getAttribute('tabindex')).toBeNull();
+
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const handlerSpy = vi.spyOn<any, any>(component, 'handleDeleteAccount');
+
+      link.dispatchEvent(event);
+
+      expect(handlerSpy).toHaveBeenCalled();
+      expect(handlerSpy.mock.calls[0][0]).toBe(event);
+      expect(event.defaultPrevented).toBe(true);
     });
 
     it('should scroll to top and return null on handleRequestError', () => {

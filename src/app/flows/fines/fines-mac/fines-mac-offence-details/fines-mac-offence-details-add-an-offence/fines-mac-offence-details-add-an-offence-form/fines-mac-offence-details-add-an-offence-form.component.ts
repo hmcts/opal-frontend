@@ -484,8 +484,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * Navigates to the minor creditor page for the specified row index.
    *
    * @param rowIndex - The index of the row.
+   * @param event - The optional DOM event that triggered the navigation.
    */
-  public goToMinorCreditor(rowIndex: number): void {
+  public goToMinorCreditor(rowIndex: number, event?: Event): void {
+    event?.preventDefault();
     this.finesMacOffenceDetailsStore.setRemoveMinorCreditor(null);
     this.finesMacOffenceDetailsStore.setRowIndex(rowIndex);
 
@@ -497,9 +499,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * Removes the imposition at the specified rowIndex from the form.
    *
    * @param rowIndex - The index of the imposition to be removed.
+   * @param event - The optional DOM event that triggered the removal flow.
    * @returns void
    */
-  public removeImpositionConfirmation(rowIndex: number): void {
+  public removeImpositionConfirmation(rowIndex: number, event?: Event): void {
+    event?.preventDefault();
     this.finesMacOffenceDetailsStore.setRowIndex(rowIndex);
     this.finesMacOffenceDetailsStore.setFormArrayControls(this.formArrayControls);
 

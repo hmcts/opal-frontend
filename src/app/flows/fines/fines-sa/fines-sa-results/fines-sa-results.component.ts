@@ -369,8 +369,11 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
    * This method uses the Angular Router to navigate to the root path defined in `finesSaSearchRoutingPaths`.
    * The navigation is performed relative to the parent of the current activated route.
    * Additionally, it sets the URL fragment to the currently active tab as determined by `finesSaStore.activeTab()`.
+   *
+   * @param event - The optional DOM event that triggered the navigation.
    */
-  public navigateBackToSearch() {
+  public navigateBackToSearch(event?: Event) {
+    event?.preventDefault();
     this['router'].navigate([this.finesSaSearchRoutingPaths.root], {
       relativeTo: this['activatedRoute'].parent,
       fragment: this.finesSaStore.activeTab(),
