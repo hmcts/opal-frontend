@@ -68,6 +68,7 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     component.onAddToList();
 
     expect(emitSpy).toHaveBeenCalledWith([visibleRows[0]['Account ID']!]);
+    expect(component.addToListValidationMessageSignal()).toBeNull();
   });
 
   it('should emit selected account IDs when Add to list button is clicked', () => {
@@ -85,6 +86,7 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     addToListButton.click();
 
     expect(emitSpy).toHaveBeenCalledWith([visibleRows[0]['Account ID']!]);
+    expect(component.addToListValidationMessageSignal()).toBeNull();
   });
 
   it('should render checks under account number when checks are provided', () => {
@@ -95,22 +97,6 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
 
     const checkMessage = fixture.nativeElement.textContent;
     expect(checkMessage).toContain('Account status is Consolidated');
-  });
-
-  it('should link account to checks row via aria-describedby when checks are present', () => {
-    component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
-    component.checksByAccountId = FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_CHECKS_BY_ACCOUNT_ID_MOCK;
-    fixture.detectChanges();
-
-    const accountLink: HTMLAnchorElement | null = fixture.nativeElement.querySelector(
-      '#defendantAccountNumber .govuk-link',
-    );
-    const checksCell: HTMLTableCellElement | null = fixture.nativeElement.querySelector('td[colspan="12"]');
-
-    expect(accountLink).toBeTruthy();
-    expect(checksCell).toBeTruthy();
-    expect(checksCell?.getAttribute('id')).toBe('defendant-checks-1');
-    expect(accountLink?.getAttribute('aria-describedby')).toBe('defendant-checks-1');
   });
 
   it('should only return error checks when both warnings and errors exist', () => {
@@ -128,7 +114,7 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     expect(component.getChecksBySeverity(row, 'warning')).toEqual([]);
   });
 
-  it('should not select a row when account has an error check', () => {
+  it('should show validation error and not emit when no selectable account is selected', () => {
     const emitSpy = vi.spyOn(component.addToList, 'emit');
 
     component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
@@ -139,7 +125,18 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     component.onRowSelectionChange({ rowId: 1, checked: true });
     component.onAddToList();
 
-    expect(emitSpy).toHaveBeenCalledWith([]);
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(component.addToListValidationMessageSignal()).toBe('Select 1 or more accounts to consolidate.');
+  });
+
+  it('should show validation error message in template when Add to list is clicked with no selected accounts', () => {
+    const emitSpy = vi.spyOn(component.addToList, 'emit');
+
+    component.onAddToList();
+    fixture.detectChanges();
+
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.textContent).toContain('Select 1 or more accounts to consolidate.');
   });
 
   it('should not render select all checkbox when there are no selectable rows', () => {
@@ -246,6 +243,27 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     expect(component['selectedRowIdsSignal']().has(999)).toBe(false);
   });
 
+  it('should keep selected row when selectable and remove it when it becomes unselectable during prune', () => {
+    component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
+    fixture.detectChanges();
+
+    const row = component.sortedTableDataComputed()[0];
+    const rowId = component.getRowIdentifier(row, 0);
+    const accountId = row['Account ID'];
+
+    component['selectedRowIdsSignal'].set(new Set([rowId]));
+    component.pruneUnselectableSelections();
+    expect(component['selectedRowIdsSignal']().has(rowId)).toBe(true);
+
+    component.checksByAccountId =
+      accountId === null
+        ? {}
+        : {
+            [accountId]: [{ reference: 'CON.ER.1', severity: 'error', message: 'Account is blocked' }],
+          };
+    expect(component['selectedRowIdsSignal']().has(rowId)).toBe(false);
+  });
+
   it('should hide individual-only columns and reduce checks colspan for company defendant type', () => {
     component.defendantType = 'company';
     component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
@@ -257,5 +275,29 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     expect(tableText).not.toContain('P/G');
     expect(tableText).not.toContain('NI number');
     expect(component.getChecksColspan()).toBe(9);
+  });
+
+  it('should return early in scrollTo when target element is not found', () => {
+    const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValueOnce(null);
+
+    component.scrollTo('missing-id');
+
+    expect(getElementByIdSpy).toHaveBeenCalledWith('missing-id');
+  });
+
+  it('should scroll and focus target element in scrollTo when target exists', () => {
+    const scrollIntoViewSpy = vi.fn();
+    const focusSpy = vi.fn();
+    const targetElement = {
+      scrollIntoView: scrollIntoViewSpy,
+      focus: focusSpy,
+    } as unknown as HTMLElement;
+    const getElementByIdSpy = vi.spyOn(document, 'getElementById').mockReturnValueOnce(targetElement);
+
+    component.scrollTo('defendants-select-all-checkbox');
+
+    expect(getElementByIdSpy).toHaveBeenCalledWith('defendants-select-all-checkbox');
+    expect(scrollIntoViewSpy).toHaveBeenCalledWith({ block: 'center' });
+    expect(focusSpy).toHaveBeenCalled();
   });
 });

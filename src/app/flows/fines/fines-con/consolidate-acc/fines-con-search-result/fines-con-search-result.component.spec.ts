@@ -282,4 +282,24 @@ describe('FinesConSearchResultComponent', () => {
       }),
     ]);
   });
+
+  it('should log selection alert navigation when at least one selected account is already in list', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const addSelectedAccountIdsSpy = vi.spyOn(finesConStore, 'addSelectedAccountIds');
+
+    component.alreadyAddedAccountIds = [11];
+    component.onAddToList([11, 12]);
+
+    expect(logSpy).toHaveBeenCalledWith('PO-2422: navigate to Selection alert screen');
+    expect(addSelectedAccountIdsSpy).not.toHaveBeenCalled();
+  });
+
+  it('should patch selected account ids to store when all selected ids are new', () => {
+    const addSelectedAccountIdsSpy = vi.spyOn(finesConStore, 'addSelectedAccountIds');
+
+    component.alreadyAddedAccountIds = [99];
+    component.onAddToList([11, 12]);
+
+    expect(addSelectedAccountIdsSpy).toHaveBeenCalledWith([11, 12]);
+  });
 });

@@ -25,6 +25,7 @@ describe('FinesConStore', () => {
     expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBeNull();
     expect(store.selectBuForm().formData.fcon_select_bu_defendant_type).toBe('individual');
     expect(store.selectBuForm().nestedFlow).toBe(false);
+    expect(store.selectedAccountIds()).toEqual([]);
   });
 
   it('should update business unit and defendant type', () => {
@@ -58,6 +59,7 @@ describe('FinesConStore', () => {
 
   it('should reset entire consolidation state', () => {
     store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
+    store.addSelectedAccountIds([11, 12]);
     store.resetConsolidationState();
 
     expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(
@@ -67,6 +69,7 @@ describe('FinesConStore', () => {
       FINES_CON_SELECT_BU_FORM.formData.fcon_select_bu_defendant_type,
     );
     expect(store.selectBuForm().nestedFlow).toBe(FINES_CON_SELECT_BU_FORM.nestedFlow);
+    expect(store.selectedAccountIds()).toEqual([]);
   });
 
   it('should compute business unit id correctly', () => {
@@ -122,6 +125,7 @@ describe('FinesConStore', () => {
     const testData = FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData;
 
     store.updateSearchAccountFormTemporary(testData);
+    store.addSelectedAccountIds([11]);
     expect(store.searchAccountForm().fcon_search_account_number).toBe(
       FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData.fcon_search_account_number,
     );
@@ -130,6 +134,14 @@ describe('FinesConStore', () => {
 
     expect(store.searchAccountForm()).toEqual(FINES_CON_SEARCH_ACCOUNT_STATE);
     expect(store.searchAccountForm().fcon_search_account_number).toBeNull();
+    expect(store.selectedAccountIds()).toEqual([]);
+  });
+
+  it('should add selected account ids uniquely', () => {
+    store.addSelectedAccountIds([11, 12, 12]);
+    store.addSelectedAccountIds([12, 13]);
+
+    expect(store.selectedAccountIds()).toEqual([11, 12, 13]);
   });
 
   it('should preserve search account form data when updating', () => {

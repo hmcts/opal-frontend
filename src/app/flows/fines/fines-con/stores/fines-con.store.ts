@@ -14,6 +14,7 @@ export const FinesConStore = signalStore(
     searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
     individualResults: [] as IFinesConSearchResultDefendantAccount[],
     companyResults: [] as IFinesConSearchResultDefendantAccount[],
+    selectedAccountIds: [] as number[],
     activeTab: 'search',
     stateChanges: false,
     unsavedChanges: false,
@@ -26,6 +27,7 @@ export const FinesConStore = signalStore(
           searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
           individualResults: [],
           companyResults: [],
+          selectedAccountIds: [],
           activeTab: 'search',
           stateChanges: false,
           unsavedChanges: false,
@@ -63,6 +65,7 @@ export const FinesConStore = signalStore(
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
         individualResults: [],
         companyResults: [],
+        selectedAccountIds: [],
         stateChanges: true,
       });
     },
@@ -96,6 +99,7 @@ export const FinesConStore = signalStore(
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
         individualResults: [],
         companyResults: [],
+        selectedAccountIds: [],
       });
     },
 
@@ -113,6 +117,15 @@ export const FinesConStore = signalStore(
     },
 
     /**
+     * Adds selected account ids for consolidation, ensuring uniqueness.
+     */
+    addSelectedAccountIds(selectedAccountIds: number[]): void {
+      patchState(store, {
+        selectedAccountIds: Array.from(new Set([...store.selectedAccountIds(), ...selectedAccountIds])),
+      });
+    },
+
+    /**
      * Resets the entire consolidation form state
      */
     resetConsolidationState(): void {
@@ -121,6 +134,7 @@ export const FinesConStore = signalStore(
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
         individualResults: [],
         companyResults: [],
+        selectedAccountIds: [],
         stateChanges: false,
         activeTab: 'search',
         unsavedChanges: false,

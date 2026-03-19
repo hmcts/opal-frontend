@@ -28,6 +28,8 @@ import {
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/national-insurance';
 import { FinesNotProvidedComponent } from '@app/flows/fines/components/fines-not-provided/fines-not-provided.component';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { IFinesConSearchResultAccountCheck } from '../interfaces/fines-con-search-result-account-check.interface';
 import { IFinesConSearchResultDefendantTableWrapperTableData } from './interfaces/fines-con-search-result-defendant-table-wrapper-table-data.interface';
 import { IFinesConSearchResultDefendantTableWrapperTableSort } from './interfaces/fines-con-search-result-defendant-table-wrapper-table-sort.interface';
@@ -51,12 +53,14 @@ import { FinesConDefendant } from '../../../types/fines-con-defendant.type';
     CustomHorizontalScrollPaneComponent,
     FinesNotProvidedComponent,
     MojAlertIconComponent,
+    GovukErrorSummaryComponent,
   ],
   templateUrl: './fines-con-search-result-defendant-table-wrapper.component.html',
   styleUrls: ['./fines-con-search-result-defendant-table-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesConSearchResultDefendantTableWrapperComponent extends AbstractSortableTableComponent {
+  private readonly ADD_TO_LIST_VALIDATION_MESSAGE = 'Select 1 or more accounts to consolidate.';
   private readonly selectedRowIdsSignal = signal<Set<MultiSelectRowIdentifier>>(new Set<MultiSelectRowIdentifier>());
   private readonly checksByAccountIdSignal = signal<Record<number, IFinesConSearchResultAccountCheck[]>>({});
   private readonly rowControls = new Map<MultiSelectRowIdentifier, FormControl<boolean>>();
@@ -71,6 +75,11 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
   );
   public readonly selectedAccountsCountComputed = computed(() => this.selectedRowIdsSignal().size);
   public readonly totalAccountsCountComputed = computed(() => this.sortedTableDataComputed().length);
+  public readonly addToListValidationMessageSignal = signal<string | null>(null);
+  public readonly formErrorSummaryMessageComputed = computed<IAbstractFormBaseFormErrorSummaryMessage[]>(() => {
+    const message = this.addToListValidationMessageSignal();
+    return message ? [{ fieldId: 'defendants-select-all-checkbox', message }] : [];
+  });
   public readonly selectedAccountsHintComputed = computed(() => {
     return `${this.selectedAccountsCountComputed()} to ${this.totalAccountsCountComputed()} accounts selected`;
   });
@@ -336,7 +345,28 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
       .map((row) => row['Account ID'])
       .filter((accountId): accountId is number => accountId !== null);
 
+    if (selectedAccountIds.length === 0) {
+      this.addToListValidationMessageSignal.set(this.ADD_TO_LIST_VALIDATION_MESSAGE);
+      return;
+    }
+
+    this.addToListValidationMessageSignal.set(null);
     this.addToList.emit(Array.from(new Set(selectedAccountIds)));
+  }
+
+  /**
+   * Scrolls/focuses the requested target from the error summary.
+   *
+   * @param fieldId - DOM id to scroll to.
+   */
+  public scrollTo(fieldId: string): void {
+    const targetElement = document.getElementById(fieldId);
+    if (!targetElement) {
+      return;
+    }
+
+    targetElement.scrollIntoView({ block: 'center' });
+    targetElement.focus?.();
   }
 
   /**
