@@ -1,7 +1,7 @@
 <app-fines-acc-summary-header
   [accountStore]="accountStore"
   id="defendant"
-  [hasAddAccountActivityNotePermission]="hasPermission('add-account-activity-notes')"
+  [hasAddAccountActivityNotePermission]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"
 ></app-fines-acc-summary-header>
@@ -149,7 +149,7 @@
     @if (tabAtAGlance$ | async; as tabData) {
       <app-fines-acc-defendant-details-at-a-glance-tab
         [tabData]="tabData"
-        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
       ></app-fines-acc-defendant-details-at-a-glance-tab>
@@ -159,7 +159,7 @@
     @if (tabDefendant$ | async; as tabData) {
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
-        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
@@ -171,7 +171,7 @@
     @if (tabParentOrGuardian$ | async; as tabData) {
       <app-fines-acc-defendant-details-parent-or-guardian-tab
         [tabData]="tabData"
-        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
@@ -191,7 +191,7 @@
     @if (tabPaymentTerms$ | async; as tabData) {
       <app-fines-acc-defendant-details-payment-terms-tab
         [tabData]="tabData"
-        [hasAmendPaymentTermsPermission]="hasPermission('amend-payment-terms')"
+        [hasAmendPaymentTermsPermission]="hasPermission(finesPermissions['amend-payment-terms'])"
         [style]="tabContentStyles"
         (changePaymentTerms)="navigateToAmendPaymentTermsPage()"
         (requestPaymentCard)="navigateToRequestPaymentCardPage()"
@@ -203,8 +203,8 @@
       <app-fines-acc-defendant-details-enforcement-tab
         [tabData]="tabData"
         [isCompanyAccount]="accountData.party_details.organisation_flag"
-        [hasAccountMaintenancePermission]="hasPermission('account-maintenance')"
-        [hasEnterEnforcementPermission]="hasPermission('enter-enforcement')"
+        [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
+        [hasEnterEnforcementPermission]="hasPermission(finesPermissions['enter-enforcement'])"
       ></app-fines-acc-defendant-details-enforcement-tab>
     }
   }

@@ -12,13 +12,17 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 
 describe('FinesAccMinorCreditorDetailsComponent', () => {
   let component: FinesAccMinorCreditorDetailsComponent;
   let fixture: ComponentFixture<FinesAccMinorCreditorDetailsComponent>;
   let routerSpy: Pick<Router, 'navigate'>;
   let activatedRouteStub: Partial<ActivatedRoute>;
-  let mockOpalFinesService: Pick<OpalFines, 'getMinorCreditorAccountHeadingData' | 'clearCache' | 'getResult'>;
+  let mockOpalFinesService: Pick<
+    OpalFines,
+    'getMinorCreditorAccountHeadingData' | 'getMinorCreditorAccountAtAGlance' | 'clearCache' | 'getResult'
+  >;
   let mockPayloadService: Pick<FinesAccPayloadService, 'transformAccountHeaderForStore' | 'transformPayload'>;
 
   beforeEach(async () => {
@@ -49,6 +53,9 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
         .mockReturnValue(of(structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK))),
       clearCache: vi.fn(),
       getResult: vi.fn(),
+      getMinorCreditorAccountAtAGlance: vi
+        .fn()
+        .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK))),
     };
 
     await TestBed.configureTestingModule({
@@ -112,5 +119,27 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });
+  });
+
+  it('should call router.navigate when navigateToAddPaymentHoldPage is called', () => {
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+    component.navigateToAddPaymentHoldPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToRemovePaymentHoldPage is called', () => {
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+    component.navigateToRemovePaymentHoldPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 });
