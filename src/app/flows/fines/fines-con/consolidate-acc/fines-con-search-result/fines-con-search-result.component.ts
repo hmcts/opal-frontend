@@ -1,13 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy } from '@angular/core';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FinesConSearchResultDefendantTableWrapperComponent } from './fines-con-search-result-defendant-table-wrapper/fines-con-search-result-defendant-table-wrapper.component';
 import { IFinesConSearchResultDefendantTableWrapperTableData } from './fines-con-search-result-defendant-table-wrapper/interfaces/fines-con-search-result-defendant-table-wrapper-table-data.interface';
 import { IFinesConSearchResultDefendantAccount } from './interfaces/fines-con-search-result-defendant-account.interface';
+import { IFinesConSearchResultData } from './interfaces/fines-con-search-result-data.interface';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-con-search-result-defendant-table-wrapper/constants/fines-con-search-result-defendant-table-wrapper-table-sort-default.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
@@ -18,23 +19,26 @@ import { FinesConPayloadService } from '../../services/fines-con-payload.service
 
 @Component({
   selector: 'app-fines-con-search-result',
-  imports: [CommonModule, FinesConSearchResultDefendantTableWrapperComponent],
+  imports: [CommonModule, AsyncPipe, FinesConSearchResultDefendantTableWrapperComponent],
   templateUrl: './fines-con-search-result.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesConSearchResultComponent implements OnDestroy {
   private readonly MAX_RESULTS_WARNING_THRESHOLD = 100;
+  private readonly EMPTY_RESULTS: IFinesConSearchResultData = {
+    tableData: [],
+    checksByAccountId: {},
+  };
   private readonly router = inject(Router);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesConStore = inject(FinesConStore);
   private readonly finesConPayloadService = inject(FinesConPayloadService);
-  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly searchResultsSubject = new BehaviorSubject<IFinesConSearchResultData>(this.EMPTY_RESULTS);
   private defendantAccountsSearchSubscription: Subscription | null = null;
 
   public readonly defendantsSort = FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
-  public tableData: IFinesConSearchResultDefendantTableWrapperTableData[] = [];
+  public readonly searchResults$: Observable<IFinesConSearchResultData> = this.searchResultsSubject.asObservable();
   public defendantAccountsData: IFinesConSearchResultDefendantAccount[] = [];
-  public checksByAccountId: Record<number, IFinesConSearchResultAccountCheck[]> = {};
 
   @Input({ required: true })
   public defendantType: FinesConDefendant = 'individual';
@@ -53,7 +57,17 @@ export class FinesConSearchResultComponent implements OnDestroy {
 
   @Input({ required: false })
   public set defendantAccounts(defendantAccounts: IFinesConSearchResultDefendantAccount[] | null) {
-    this.applyMappedResults(defendantAccounts ?? []);
+    const nextDefendantAccounts = defendantAccounts ?? [];
+    this.syncStoreResults(nextDefendantAccounts);
+    this.applyMappedResults(nextDefendantAccounts);
+  }
+
+  public get tableData(): IFinesConSearchResultDefendantTableWrapperTableData[] {
+    return this.searchResultsSubject.value.tableData;
+  }
+
+  public get checksByAccountId(): Record<number, IFinesConSearchResultAccountCheck[]> {
+    return this.searchResultsSubject.value.checksByAccountId;
   }
 
   /**
@@ -64,6 +78,19 @@ export class FinesConSearchResultComponent implements OnDestroy {
       this.defendantType === 'company' ? this.finesConStore.companyResults() : this.finesConStore.individualResults();
 
     this.applyMappedResults(defendantAccounts);
+  }
+
+  /**
+   * Persists the latest raw results in the correct store bucket for the current defendant type.
+   *
+   * @param defendantAccounts - Raw defendant accounts to store.
+   */
+  private syncStoreResults(defendantAccounts: IFinesConSearchResultDefendantAccount[]): void {
+    if (this.defendantType === 'company') {
+      this.finesConStore.updateDefendantResults([], defendantAccounts);
+    } else {
+      this.finesConStore.updateDefendantResults(defendantAccounts, []);
+    }
   }
 
   /**
@@ -81,15 +108,8 @@ export class FinesConSearchResultComponent implements OnDestroy {
       .getDefendantAccounts(payload)
       .subscribe((response) => {
         const defendantAccounts = this.finesConPayloadService.extractDefendantAccounts(response);
+        this.syncStoreResults(defendantAccounts);
         this.applyMappedResults(defendantAccounts);
-
-        if (this.defendantType === 'company') {
-          this.finesConStore.updateDefendantResults([], defendantAccounts);
-        } else {
-          this.finesConStore.updateDefendantResults(defendantAccounts, []);
-        }
-
-        this.cdr.markForCheck();
       });
   }
 
@@ -99,14 +119,16 @@ export class FinesConSearchResultComponent implements OnDestroy {
       console.log('more than 100 results');
 
       this.defendantAccountsData = [];
-      this.tableData = [];
-      this.checksByAccountId = {};
+      this.syncStoreResults([]);
+      this.searchResultsSubject.next(this.EMPTY_RESULTS);
       return;
     }
 
     this.defendantAccountsData = defendantAccounts;
-    this.tableData = this.finesConPayloadService.mapDefendantAccounts(defendantAccounts);
-    this.checksByAccountId = this.finesConPayloadService.buildChecksByAccountId(defendantAccounts);
+    this.searchResultsSubject.next({
+      tableData: this.finesConPayloadService.mapDefendantAccounts(defendantAccounts),
+      checksByAccountId: this.finesConPayloadService.buildChecksByAccountId(defendantAccounts),
+    });
   }
 
   /**
