@@ -140,7 +140,13 @@ describe('FinesAccEnfOverrideAddChangeComponent', () => {
       '1',
       '2002',
     );
-    expect(routerNavigateSpy).toHaveBeenCalledWith(FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details);
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+      false,
+      undefined,
+      null,
+      'enforcement',
+    );
   });
 
   it('should scroll to top on submit error', () => {

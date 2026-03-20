@@ -56,6 +56,8 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS } from '../../fines-acc/fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs.constant';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from './constants/opal-fines-defendant-account-patch-payload-defaults.constant';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -1216,6 +1218,7 @@ describe('OpalFines', () => {
   it('should return a mock response for patching defendant account', () => {
     const accountId = 123456;
     const updatePayload = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       comment_and_notes: {
         account_comment: 'Updated comment',
         free_text_note_1: 'Updated note 1',
@@ -1237,6 +1240,7 @@ describe('OpalFines', () => {
   it('should handle different payload values in mock response for patching defendant account', () => {
     const accountId = 789012;
     const updatePayload = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       version: 5,
       comment_and_notes: {
         account_comment: 'Different comment',

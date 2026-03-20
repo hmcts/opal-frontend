@@ -1,5 +1,11 @@
 export interface IOpalFinesUpdateDefendantAccountEnforcementOverride {
-  enf_override_result_id: string | null;
-  enf_override_enforcer_id: string | null;
-  enf_override_tfo_lja_id: string | null;
+  enforcement_override_result: {
+    enforcement_override_result_id: string;
+  } | null;
+  enforcer: {
+    enforcer_id: string;
+  } | null;
+  lja: {
+    lja_id: string;
+  } | null;
 }

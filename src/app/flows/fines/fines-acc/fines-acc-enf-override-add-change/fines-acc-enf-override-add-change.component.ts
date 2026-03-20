@@ -96,7 +96,7 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
       )
       .subscribe(() => {
         this.finesAccStore.setSuccessMessage('Enforcement override added');
-        this.routerNavigate(this.finesDefendantRoutingPaths.children.details);
+        this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, null, 'enforcement');
       });
   }
 
