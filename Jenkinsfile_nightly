@@ -430,7 +430,7 @@ withNightlyPipeline(type, product, component) {
 
   afterAlways('DependencyCheckNightly') {
     String browserToRun = env.BROWSER_TO_RUN
-    String edgeBrowserToRun = params.RunEdge ? resolvePipelineBrowser(browserEdge) : browserEdge
+    String edgeBrowserToRun = params.RunEdge ? requireInstalledBrowser(browserEdge) : browserEdge
     String firefoxBrowserToRun = params.RunFirefox ? requireInstalledBrowser(browserFirefox) : browserFirefox
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
@@ -479,8 +479,8 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
       'Edge tests failed',
       yarnBuilder,
       [
-        stageName   : edgeBrowserToRun == browserEdge ? 'Edge Tests' : 'Edge Tests (Chrome Fallback)',
-        yarnCommand : edgeBrowserToRun == browserEdge ? 'test:Edge' : 'test:functional',
+        stageName   : 'Edge Tests',
+        yarnCommand : 'test:Edge',
         browserToRun: edgeBrowserToRun,
       ]
     )

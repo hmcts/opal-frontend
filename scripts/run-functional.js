@@ -50,7 +50,7 @@ const runYarn = (scriptName) => {
 const parallelScript = withTags ? 'test:functionalOpalParallel:tagged' : 'test:functionalOpalParallel';
 
 const testExitCode = runYarn(parallelScript);
-runYarn('test:functional:combine:reports');
-runYarn('test:functional:cucumber:combineParallelReport');
+const combineReportsExitCode = runYarn('test:functional:combine:reports');
+const combineCucumberExitCode = runYarn('test:functional:cucumber:combineParallelReport');
 
-process.exit(testExitCode || 0);
+process.exit(testExitCode || combineReportsExitCode || combineCucumberExitCode || 0);
