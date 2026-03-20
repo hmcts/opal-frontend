@@ -50,6 +50,11 @@ package-lock.json
 .codex-plans
 .codex-docs
 
+# Skills
+.codex/skills/opal-flow-lld
+.codex/skills/opal-frontend-review-guidelines
+.codex/skills/execplan
+
 
 # System files
 .DS_Store
@@ -67,3 +72,6 @@ smoke-output
 runner-results
 cypress/parallel/weights
 multi-reporter-config.json
+
+
+
