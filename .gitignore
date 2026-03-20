@@ -49,6 +49,8 @@ package-lock.json
 .nx
 .codex-plans
 .codex-docs
+.codex/
+.claude/
 
 # System files
 .DS_Store
