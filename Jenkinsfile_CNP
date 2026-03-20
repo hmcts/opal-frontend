@@ -11,6 +11,9 @@ String type = 'angular'
 String product = opalName
 String component = 'frontend'
 @Field String masterProjectName = 'HMCTS/opal-frontend/master'
+@Field String browserChrome = 'chrome'
+@Field String browserEdge = 'edge'
+@Field String browserFirefox = 'firefox'
 
 // Secret key for KeyVault lookups
 String secretKey = 'opal-$'.concat('{env}')
@@ -33,15 +36,56 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
 String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
-String defaultBrowser = 'edge'
-env.BROWSER_TO_RUN = (env.BROWSER_TO_RUN ?: defaultBrowser).trim().toLowerCase()
-String browserToRun = env.BROWSER_TO_RUN
-String functionalOutputDir = "functional-output/prod/${browserToRun}/cucumber/"
-String functionalReportFile = "${browserToRun}-report.html"
-String functionalReportName = "Cucumber Functional Test Report (${browserToRun})"
-String smokeOutputDir = "smoke-output/prod/${browserToRun}/cucumber/"
-String smokeReportFile = 'smoke-report.html'
-String smokeReportName = "Cucumber Smoke Test Report (${browserToRun})"
+
+// Build an Azure KeyVault secret entry
+static Map<String, Object> secret(String secretName, String envVar) {
+    return [$class     : 'AzureKeyVaultSecret',
+    secretType : 'Secret',
+    name       : secretName,
+    version    : '',
+    envVariable: envVar
+  ]
+}
+
+// Return the preferred browser for generic pipeline runs.
+String defaultBrowser() {
+    return browserEdge
+}
+
+// Normalize the browser selected for the current pipeline run.
+String resolvedBrowserToRun() {
+    return (env.BROWSER_TO_RUN ?: defaultBrowser()).trim().toLowerCase()
+}
+
+// Resolve the functional report directory for the active browser.
+String functionalOutputDir() {
+    return "functional-output/prod/${resolvedBrowserToRun()}/cucumber/"
+}
+
+// Resolve the functional report filename for the active browser.
+String functionalReportFile() {
+    return "${resolvedBrowserToRun()}-report.html"
+}
+
+// Build the functional report display name for the active browser.
+String functionalReportName() {
+    return "Cucumber Functional Test Report (${resolvedBrowserToRun()})"
+}
+
+// Resolve the smoke report directory for the active browser.
+String smokeOutputDir() {
+    return "smoke-output/prod/${resolvedBrowserToRun()}/cucumber/"
+}
+
+// Return the smoke report filename.
+String smokeReportFile() {
+    return 'smoke-report.html'
+}
+
+// Build the smoke report display name for the active browser.
+String smokeReportName() {
+    return "Cucumber Smoke Test Report (${resolvedBrowserToRun()})"
+}
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
 String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
 String runTagPrefix = 'run_tag:'
@@ -56,19 +100,10 @@ Map<String, Object> secrets = [
   ],
 ]
 
-// Build an Azure KeyVault secret entry
-static Map<String, Object> secret(String secretName, String envVar) {
-    return [$class     : 'AzureKeyVaultSecret',
-    secretType : 'Secret',
-    name       : secretName,
-    version    : '',
-    envVariable: envVar
-  ]
-}
-
 // Yarn helper for build/test commands
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+// Archive pipeline artifacts without failing when none are present.
 void archiveArtifact(String path) {
     archiveArtifacts artifacts: path, allowEmptyArchive: true
 }
@@ -83,6 +118,79 @@ void publishHtmlReport(String dir, String files, String name) {
     reportFiles          : files,
     reportName           : name
   ]
+}
+
+// Check whether the requested browser binary is available on the Jenkins agent.
+boolean isBrowserInstalled(String browser) {
+    return sh(
+    returnStatus: true,
+    script: """
+      case '${browser}' in
+        ${browserEdge})
+          command -v microsoft-edge >/dev/null 2>&1 ||
+          command -v microsoft-edge-stable >/dev/null 2>&1 ||
+          command -v msedge >/dev/null 2>&1 ||
+          [ -x '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge' ]
+          ;;
+        ${browserChrome})
+          command -v google-chrome >/dev/null 2>&1 ||
+          command -v google-chrome-stable >/dev/null 2>&1 ||
+          command -v chrome >/dev/null 2>&1 ||
+          [ -x '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ]
+          ;;
+        ${browserFirefox})
+          command -v firefox >/dev/null 2>&1 ||
+          command -v firefox-bin >/dev/null 2>&1 ||
+          [ -x '/Applications/Firefox.app/Contents/MacOS/firefox' ]
+          ;;
+        *)
+          exit 1
+          ;;
+      esac
+    """
+  ) == 0
+}
+
+// Emit a prominent banner when the pipeline falls back to a different browser.
+void echoBrowserFallbackBanner(String missingBrowser, String fallbackBrowser) {
+    echo """\
+========================================================================
+${missingBrowser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+SWITCHING TO ${fallbackBrowser.toUpperCase()} FOR THIS PIPELINE RUN
+========================================================================
+""".stripIndent()
+}
+
+// Emit a prominent banner when a browser is unavailable on the current agent.
+void echoBrowserMissingBanner(String browser) {
+    echo """\
+========================================================================
+${browser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+${browser.toUpperCase()}-SPECIFIC RUNS WILL NOT BE AVAILABLE ON THIS AGENT
+========================================================================
+""".stripIndent()
+}
+
+// Choose the browser for this run, falling back from Edge to Chrome when needed.
+String resolvePipelineBrowser() {
+    String requestedBrowser = resolvedBrowserToRun()
+
+    if (requestedBrowser == browserEdge && !isBrowserInstalled(browserEdge)) {
+        if (isBrowserInstalled(browserChrome)) {
+            echoBrowserFallbackBanner(browserEdge, browserChrome)
+            return browserChrome
+        }
+
+        error '''\
+========================================================================
+EDGE IS NOT INSTALLED ON THIS JENKINS AGENT
+CHROME IS ALSO NOT AVAILABLE AS A FALLBACK
+INSTALL A SUPPORTED BROWSER OR SET BROWSER_TO_RUN EXPLICITLY
+========================================================================
+'''.stripIndent()
+    }
+
+    return requestedBrowser
 }
 
 // Resolve project/job name (PR vs master)
@@ -341,6 +449,11 @@ if (tagLabel) {
 withPipeline(type, product, component) {
     // Inject KeyVault secrets required for login/setup
     loadVaultSecrets(secrets)
+    if (!isBrowserInstalled(browserFirefox)) {
+        echoBrowserMissingBanner(browserFirefox)
+    }
+    env.BROWSER_TO_RUN = resolvePipelineBrowser()
+    echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
 
     // Configure PR-only deployment knobs before helm installs run
     before('akschartsinstall') {
@@ -406,9 +519,9 @@ withPipeline(type, product, component) {
         } finally {
                     archiveArtifact(functionalArtifactsGlob)
                     publishHtmlReport(
-                    "functional-output/component-html/${browserToRun}/",
+                    "functional-output/component-html/${resolvedBrowserToRun()}/",
                     'component-report.html',
-                    "Component Test Report (${browserToRun})"
+                    "Component Test Report (${resolvedBrowserToRun()})"
                   )
                 }
             }
@@ -450,34 +563,34 @@ withPipeline(type, product, component) {
     // Publish HTML and JSON artifacts for staging functional runs
     afterAlways(stageFunctionalStg) {
         publishHtmlReport(
-        functionalOutputDir,
-        functionalReportFile,
-        functionalReportName
+        functionalOutputDir(),
+        functionalReportFile(),
+        functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
         publishHtmlReport(
-        smokeOutputDir,
-        smokeReportFile,
-        smokeReportName
+        smokeOutputDir(),
+        smokeReportFile(),
+        smokeReportName()
       )
     }
     // Publish HTML and JSON artifacts for dev functional runs
     afterAlways(stageFunctionalDev) {
         publishHtmlReport(
-        functionalOutputDir,
-        functionalReportFile,
-        functionalReportName
+        functionalOutputDir(),
+        functionalReportFile(),
+        functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
 
         publishHtmlReport(
-        smokeOutputDir,
-        smokeReportFile,
-        smokeReportName
+        smokeOutputDir(),
+        smokeReportFile(),
+        smokeReportName()
       )
     }
 }
