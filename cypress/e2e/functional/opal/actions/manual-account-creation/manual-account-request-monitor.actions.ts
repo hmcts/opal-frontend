@@ -2,6 +2,7 @@ import type { Interception } from 'cypress/types/net-stubbing';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('ManualAccountRequestMonitorActions');
+let matchedLocalJusticeAreasRequest: Interception | null = null;
 
 /**
  * Network intercept and assertion helpers for Manual Account Creation journeys.
@@ -15,6 +16,7 @@ export class ManualAccountRequestMonitorActions {
    */
   monitorLocalJusticeAreasRequests(): void {
     log('intercept', 'Monitoring local justice area requests');
+    matchedLocalJusticeAreasRequest = null;
     cy.intercept({ method: 'GET', url: '**/local-justice-areas*' }).as(
       ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS,
     );
@@ -27,9 +29,15 @@ export class ManualAccountRequestMonitorActions {
   assertLatestLocalJusticeAreasRequestIncludes(expectedLjaTypes: string[]): void {
     const normalizedExpected = this.normalizeUniqueValues(expectedLjaTypes).sort();
     this.getCapturedRequests(ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS).then((requests) => {
-      const latestRequest = this.getLatestRequest(requests, 'local justice area');
-      const actualLjaTypes = this.getSearchParams(latestRequest, 'lja_type').sort();
-      expect(actualLjaTypes).to.deep.equal(normalizedExpected);
+      const matchingRequest = this.findLatestRequestWithLjaTypes(requests, normalizedExpected);
+      const actualLjaTypes = matchingRequest ? this.getSearchParams(matchingRequest, 'lja_type').sort() : [];
+
+      expect(
+        actualLjaTypes,
+        `expected a local justice area request with lja_type values [${normalizedExpected.join(', ')}], captured: ${this.describeCapturedLjaTypes(requests)}`,
+      ).to.deep.equal(normalizedExpected);
+
+      matchedLocalJusticeAreasRequest = matchingRequest;
     });
   }
 
@@ -39,15 +47,13 @@ export class ManualAccountRequestMonitorActions {
    */
   assertLatestLocalJusticeAreasRequestExcludes(excludedLjaTypes: string[]): void {
     const normalizedExcluded = this.normalizeUniqueValues(excludedLjaTypes);
-    this.getCapturedRequests(ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS).then((requests) => {
-      const latestRequest = this.getLatestRequest(requests, 'local justice area');
-      const actualLjaTypes = this.getSearchParams(latestRequest, 'lja_type');
+    this.getRequestForExclusionAssertion().then((request) => {
+      const actualLjaTypes = this.getSearchParams(request, 'lja_type');
 
       normalizedExcluded.forEach((excludedType) => {
-        expect(
-          actualLjaTypes,
-          `latest local justice area request should not include lja_type=${excludedType}`,
-        ).to.not.include(excludedType);
+        expect(actualLjaTypes, `local justice area request should not include lja_type=${excludedType}`).to.not.include(
+          excludedType,
+        );
       });
     });
   }
@@ -101,6 +107,36 @@ export class ManualAccountRequestMonitorActions {
   }
 
   /**
+   * Returns the most recent request whose lja_type params exactly match the expected values.
+   * @param requests - Captured interceptions.
+   * @param expectedLjaTypes - Expected lja_type values.
+   * @returns Matching interception, if any.
+   */
+  private findLatestRequestWithLjaTypes(requests: Interception[], expectedLjaTypes: string[]): Interception | null {
+    const expectedKey = JSON.stringify(expectedLjaTypes);
+
+    return (
+      [...requests]
+        .reverse()
+        .find((request) => JSON.stringify(this.getSearchParams(request, 'lja_type').sort()) === expectedKey) ?? null
+    );
+  }
+
+  /**
+   * Returns the request to use for exclusion assertions.
+   * @returns Matching request from the include step, or the latest captured request as a fallback.
+   */
+  private getRequestForExclusionAssertion(): Cypress.Chainable<Interception> {
+    if (matchedLocalJusticeAreasRequest) {
+      return cy.wrap(matchedLocalJusticeAreasRequest, { log: false });
+    }
+
+    return this.getCapturedRequests(ManualAccountRequestMonitorActions.LOCAL_JUSTICE_AREAS_ALIAS).then((requests) =>
+      this.getLatestRequest(requests, 'local justice area'),
+    );
+  }
+
+  /**
    * Extracts unique query parameter values from an intercepted request URL.
    * @param request - Intercepted request.
    * @param key - Query parameter key.
@@ -121,5 +157,23 @@ export class ManualAccountRequestMonitorActions {
       .map((value) => value?.trim())
       .filter(Boolean)
       .filter((value, index, arr) => arr.indexOf(value) === index);
+  }
+
+  /**
+   * Builds a compact debug description of captured lja_type query params.
+   * @param requests - Captured interceptions.
+   * @returns Human-readable summary of captured request params.
+   */
+  private describeCapturedLjaTypes(requests: Interception[]): string {
+    if (!requests.length) {
+      return 'none';
+    }
+
+    return requests
+      .map((request, index) => {
+        const values = this.getSearchParams(request, 'lja_type').sort();
+        return `${index + 1}:[${values.join(', ')}]`;
+      })
+      .join(' ');
   }
 }
