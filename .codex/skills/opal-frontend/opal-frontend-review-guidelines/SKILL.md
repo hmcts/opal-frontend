@@ -48,7 +48,8 @@ Apply these rules when reviewing changes in opal-frontend; focus on P0/P1 blocke
 - Prefer `@if`, `@for`, `@switch` over legacy structural directives in new/changed templates.
 - Use computed signals and pure functions for derived state; avoid methods with side effects in templates.
 - Choose RxJS concurrency intentionally: `switchMap` for latest-only, `exhaustMap` for form submit, `concatMap` when order matters.
-- Avoid nested `subscribe()` calls inside observable chains, especially when the outer stream is consumed by the template or `async` pipe.
+- Prefer the `async` pipe for template-owned subscriptions where possible, rather than subscribing imperatively in the component.
+- Avoid nested `subscribe()` calls inside observable chains, especially when the outer stream is already consumed by the template or `async` pipe.
 - Do not use `tap()` to trigger dependent HTTP requests that mutate component state used for guards, navigation, or rendering.
 - Prefer composing dependent requests into one stream with `switchMap`, `combineLatest`, or `forkJoin`, and ensure derived state is cleared when the source value is absent.
 
