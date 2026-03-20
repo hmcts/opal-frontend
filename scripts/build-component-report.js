@@ -4,7 +4,8 @@
 /**
  * @fileoverview Builds the Jenkins HTML report for Cypress component test results.
  * @description Used after component runs to merge Mochawesome JSON files for the selected browser and to skip
- * report generation cleanly when no component JSON artifacts were produced.
+ * report generation cleanly when no component JSON artifacts were produced. This now reads the reporter's `.jsons`
+ * output folder directly so Jenkins continues to publish component reports after the default-browser fallback work.
  */
 
 const fs = require('node:fs');
@@ -30,37 +31,49 @@ function parseBrowser(args) {
 /**
  * Return the component report paths for the selected browser.
  * @param {string} browser
- * @returns {{ htmlDir: string, inputDir: string }}
+ * @returns {{ htmlDir: string, inputDirs: string[] }}
  */
 function resolvePaths(browser) {
   return {
-    inputDir: path.join('functional-output', 'component-report', browser),
+    inputDirs: [
+      path.join('functional-output', 'component-report', browser, '.jsons'),
+      path.join('functional-output', 'component-report', '.jsons'),
+      path.join('functional-output', 'component-report', browser),
+    ],
     htmlDir: path.join('functional-output', 'component-html', browser),
   };
 }
 
 /**
- * Return the Mochawesome JSON files for the selected browser.
- * @param {string} inputDir
- * @returns {string[]}
+ * Return the first report directory that contains Mochawesome JSON files.
+ * @param {string[]} inputDirs
+ * @returns {{ inputDir: string, reportFiles: string[] }}
  */
-function getReportFiles(inputDir) {
-  if (!fs.existsSync(inputDir)) {
-    return [];
+function getReportFiles(inputDirs) {
+  for (const inputDir of inputDirs) {
+    if (!fs.existsSync(inputDir)) {
+      continue;
+    }
+
+    const reportFiles = fs
+      .readdirSync(inputDir)
+      .filter((filename) => filename.endsWith('.json'))
+      .map((filename) => path.join(inputDir, filename))
+      .sort();
+
+    if (reportFiles.length > 0) {
+      return { inputDir, reportFiles };
+    }
   }
 
-  return fs
-    .readdirSync(inputDir)
-    .filter((filename) => filename.endsWith('.json'))
-    .map((filename) => path.join(inputDir, filename))
-    .sort();
+  return { inputDir: '', reportFiles: [] };
 }
 
 async function main() {
   const requestedBrowser = parseBrowser(process.argv.slice(2));
   const browser = requestedBrowser || resolveGenericBrowser(process.env.BROWSER_TO_RUN);
-  const { inputDir, htmlDir } = resolvePaths(browser);
-  const reportFiles = getReportFiles(inputDir);
+  const { inputDirs, htmlDir } = resolvePaths(browser);
+  const { inputDir, reportFiles } = getReportFiles(inputDirs);
 
   if (reportFiles.length === 0) {
     console.log(
@@ -80,6 +93,7 @@ async function main() {
   });
 
   console.log(`[build-component-report] browser=${browser}`);
+  console.log(`[build-component-report] inputDir=${inputDir}`);
   console.log(`[build-component-report] inputs=${reportFiles.length}`);
 }
 
