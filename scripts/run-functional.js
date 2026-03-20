@@ -47,7 +47,9 @@ const runYarn = (scriptName) => {
   return result.error ? 1 : 0;
 };
 
-const testExitCode = runYarn('test:functionalOpalParallel');
+const parallelScript = withTags ? 'test:functionalOpalParallel:tagged' : 'test:functionalOpalParallel';
+
+const testExitCode = runYarn(parallelScript);
 runYarn('test:functional:combine:reports');
 runYarn('test:functional:cucumber:combineParallelReport');
 
