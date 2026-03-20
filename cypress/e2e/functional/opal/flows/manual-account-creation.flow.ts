@@ -2954,12 +2954,6 @@ export class ManualAccountCreationFlow {
         return;
       }
 
-      if (pathname.includes('/create-account')) {
-        this.createAccount.selectBackLink();
-        this.originatorType.assertOnCreateOrTransferInPage();
-        return;
-      }
-
       this.dashboard.goToManualAccountCreation();
       this.originatorType.assertOnCreateOrTransferInPage();
     });

@@ -11,10 +11,17 @@ const flow = () => new GlobalApiInterceptorFlow();
 const actions = () => new GlobalApiInterceptorActions();
 
 When(
-  'I attempt to open Manual Account Creation and the business units request fails with {int}',
-  (statusCode: number) => {
-    log('step', 'Attempting Manual Account Creation with business units error', { statusCode });
-    flow().openManualAccountCreationWithBusinessUnitsError(statusCode);
+  /^I attempt to open Manual Account Creation and the business units request fails with (\d+|<errorCode>)$/,
+  (statusCode: string) => {
+    if (statusCode === '<errorCode>') {
+      throw new Error('Scenario Outline placeholder <errorCode> was not substituted before execution.');
+    }
+
+    const parsedStatusCode = Number(statusCode);
+    log('step', 'Attempting Manual Account Creation with business units error', {
+      statusCode: parsedStatusCode,
+    });
+    flow().openManualAccountCreationWithBusinessUnitsError(parsedStatusCode);
   },
 );
 
