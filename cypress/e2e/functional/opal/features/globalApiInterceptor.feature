@@ -2,7 +2,7 @@
 Feature: Global API Interceptor shows error banner for all CEP error codes
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
 
   Rule: Manual account creation entrypoint
 

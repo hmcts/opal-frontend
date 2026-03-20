@@ -6,7 +6,7 @@ Feature: Manual account creation - Personal Details
   #Tests for conditional rendering (different defendant types) are contained in the PersonalDetailsComponent.cy.ts component tests
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Personal details" task
     Then I should see the header containing text "Personal details"

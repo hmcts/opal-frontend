@@ -3,7 +3,7 @@ Feature: Accessibility Tests for Fines Consolidation
   # This feature file ensures consolidation entry points meet accessibility standards using Axe-Core.
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
   @JIRA-STORY:PO-2413 @JIRA-KEY:POT-3210

@@ -2,7 +2,7 @@
 Feature: Search and Matches Accessibility
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I am on the Account Search page - Individuals form displayed by default
 
   @JIRA-KEY:POT-3122

@@ -2,7 +2,7 @@
 # Feature: PO-615 – Manual account creation – unauthorised user is shown Access Denied
 
 #   Background:
-#     Given I am logged in with email "opal-test-2@HMCTS.NET"
+#     Given I am logged in with email "opal-test-2@dev.platform.hmcts.net"
 
 #   Scenario: AC1, AC3 – Unauthorised user presented with Access Denied
 #     When I open Manual Account Creation

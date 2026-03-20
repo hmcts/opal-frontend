@@ -2,7 +2,7 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 
 export const CAM_DASHBOARD_USER_STATE_MOCK: IOpalUserState = {
   user_id: 50000000,
-  username: 'testUserCAM@HMCTS.NET',
+  username: 'testUserCAM@dev.platform.hmcts.net',
   name: 'Test User',
   status: 'active',
   version: 1,

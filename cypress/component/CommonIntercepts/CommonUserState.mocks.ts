@@ -2,7 +2,7 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 
 export const USER_STATE_MOCK_NO_PERMISSION: IOpalUserState = {
   user_id: 50000000,
-  username: 'testUserNote@HMCTS.NET',
+  username: 'testUserNote@dev.platform.hmcts.net',
   name: 'Test User',
   status: 'active',
   version: 1,
@@ -34,7 +34,7 @@ export const USER_STATE_MOCK_NO_PERMISSION: IOpalUserState = {
 
 export const USER_STATE_MOCK_PERMISSION_BU17: IOpalUserState = {
   user_id: 50000000,
-  username: 'testUserNote@HMCTS.NET',
+  username: 'testUserNote@dev.platform.hmcts.net',
   name: 'Test User',
   status: 'active',
   version: 1,
@@ -81,7 +81,7 @@ export const USER_STATE_MOCK_PERMISSION_BU17: IOpalUserState = {
 };
 export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
   user_id: 50000000,
-  username: 'testUserNote@HMCTS.NET',
+  username: 'testUserNote@dev.platform.hmcts.net',
   name: 'Test User',
   status: 'active',
   version: 1,
