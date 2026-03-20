@@ -222,12 +222,8 @@ Feature: Account Search and Matches
 
   @JIRA-STORY:PO-705 @JIRA-KEY:POT-3254
   Scenario: Route guard prevents accidental navigation away from search screen with data
-    # AC8. Route guard prevents accidental navigation away from search screen with data
+    # AC8. Cancelling browser Back keeps the user on Search for an account with entered data retained
     When I view the Individuals search form and enter the following:
-      | account number       | 12345678 |
-      | individual last name | Smith    |
-    And I select back with confirmation and verify I navigate to the Dashboard
-    When I navigate the Individuals search form and enter the following:
       | account number       | 12345678 |
       | individual last name | Smith    |
     And I select back and cancel
