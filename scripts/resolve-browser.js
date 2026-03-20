@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
+/**
+ * @fileoverview Resolves the browser to use for generic runs.
+ * @description Defaults to Edge, falls back to Chrome when Edge is unavailable, and fails for unsupported requests.
+ */
+
 const { resolveGenericBrowser } = require('./browser-support');
 
 try {
