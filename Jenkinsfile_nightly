@@ -1,5 +1,6 @@
 #!groovy
 /* groovylint-disable CompileStatic */
+import groovy.transform.Field
 import java.time.DayOfWeek
 import java.time.ZonedDateTime
 
@@ -30,6 +31,9 @@ String product = 'opal'
 String component = 'frontend'
 String failureResult = 'FAILURE'
 String secretKey = 'opal-$'.concat('{env}')
+@Field String browserChrome = 'chrome'
+@Field String browserEdge = 'edge'
+@Field String browserFirefox = 'firefox'
 
 Map<String, List<Map<String, Object>>> secrets = [
   (secretKey): [
@@ -39,6 +43,7 @@ Map<String, List<Map<String, Object>>> secrets = [
   ],
 ]
 
+// Build an Azure KeyVault secret entry.
 static Map<String, Object> secret(String secretName, String envVar) {
   return [$class     : 'AzureKeyVaultSecret',
     secretType : 'Secret',
@@ -51,18 +56,110 @@ static Map<String, Object> secret(String secretName, String envVar) {
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder =
   new uk.gov.hmcts.contino.YarnBuilder(this)
 
+// Return the preferred browser for generic nightly runs.
 String defaultBrowser() {
-  return 'edge'
+  return browserEdge
 }
 
+// Check whether the requested browser binary is available on the Jenkins agent.
+boolean isBrowserInstalled(String browser) {
+  return sh(
+    returnStatus: true,
+    script: """
+      case '${browser}' in
+        ${browserEdge})
+          command -v microsoft-edge >/dev/null 2>&1 ||
+          command -v microsoft-edge-stable >/dev/null 2>&1 ||
+          command -v msedge >/dev/null 2>&1 ||
+          [ -x '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge' ]
+          ;;
+        ${browserChrome})
+          command -v google-chrome >/dev/null 2>&1 ||
+          command -v google-chrome-stable >/dev/null 2>&1 ||
+          command -v chrome >/dev/null 2>&1 ||
+          [ -x '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ]
+          ;;
+        ${browserFirefox})
+          command -v firefox >/dev/null 2>&1 ||
+          command -v firefox-bin >/dev/null 2>&1 ||
+          [ -x '/Applications/Firefox.app/Contents/MacOS/firefox' ]
+          ;;
+        *)
+          exit 1
+          ;;
+      esac
+    """
+  ) == 0
+}
+
+// Emit a prominent banner when the pipeline falls back to a different browser.
+void echoBrowserFallbackBanner(String missingBrowser, String fallbackBrowser) {
+  echo """\
+========================================================================
+${missingBrowser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+SWITCHING TO ${fallbackBrowser.toUpperCase()} FOR THIS PIPELINE RUN
+========================================================================
+""".stripIndent()
+}
+
+// Emit a prominent banner when a browser is unavailable on the current agent.
+void echoBrowserMissingBanner(String browser) {
+  echo """\
+========================================================================
+${browser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+${browser.toUpperCase()}-SPECIFIC RUNS WILL NOT BE AVAILABLE ON THIS AGENT
+========================================================================
+""".stripIndent()
+}
+
+// Choose the browser for this run, falling back from Edge to Chrome when needed.
+String resolvePipelineBrowser(String requestedBrowser) {
+  String normalizedBrowser = (requestedBrowser ?: defaultBrowser()).trim().toLowerCase()
+
+  if (normalizedBrowser == browserEdge && !isBrowserInstalled(browserEdge)) {
+    if (isBrowserInstalled(browserChrome)) {
+      echoBrowserFallbackBanner(browserEdge, browserChrome)
+      return browserChrome
+    }
+
+    error '''\
+========================================================================
+EDGE IS NOT INSTALLED ON THIS JENKINS AGENT
+CHROME IS ALSO NOT AVAILABLE AS A FALLBACK
+INSTALL A SUPPORTED BROWSER OR SET BROWSER_TO_RUN EXPLICITLY
+========================================================================
+'''.stripIndent()
+  }
+
+  return normalizedBrowser
+}
+
+// Require an explicitly requested browser to be present before running its stage.
+String requireInstalledBrowser(String browser) {
+  if (!isBrowserInstalled(browser)) {
+    echoBrowserMissingBanner(browser)
+    error """\
+========================================================================
+${browser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+INSTALL ${browser.toUpperCase()} OR DISABLE THE ${browser.toUpperCase()} RUN
+========================================================================
+""".stripIndent()
+  }
+
+  return browser
+}
+
+// Archive the shared functional output directory used by nightly stages.
 void archiveFunctionalProdArtifacts() {
   archiveArtifact('functional-output/prod/**')
 }
 
+// Archive pipeline artifacts without failing when none are present.
 void archiveArtifact(String path) {
   archiveArtifacts artifacts: path, allowEmptyArchive: true
 }
 
+// Publish an HTML report directory with Jenkins HTML Publisher.
 void publishHtmlReport(String dir, String files, String name) {
   publishHTML target: [
     allowMissing         : true,
@@ -74,6 +171,7 @@ void publishHtmlReport(String dir, String files, String name) {
   ]
 }
 
+// Run a nightly stage with standard error handling and failure reporting.
 void runNightlyStage(
   boolean enabled,
   String stageName,
@@ -96,6 +194,7 @@ void runNightlyStage(
   }
 }
 
+// Archive updated parallel weight files for reuse by later nightly runs.
 void archiveNightlyWeightArtifacts() {
   script {
     String sourceJobName = env.JOB_NAME
@@ -116,6 +215,7 @@ void archiveNightlyWeightArtifacts() {
   }
 }
 
+// Run component tests and publish browser-specific reports and screenshots.
 void runComponentStage(
   boolean enabled,
   String failureResultValue,
@@ -138,6 +238,7 @@ void runComponentStage(
   }
 }
 
+// Run smoke tests and publish browser-specific reports and screenshots.
 void runSmokeStage(
   boolean enabled,
   String failureResultValue,
@@ -159,6 +260,7 @@ void runSmokeStage(
   }
 }
 
+// Run functional tests and publish browser-specific reports and screenshots.
 void runFunctionalStage(
   boolean enabled,
   String failureResultValue,
@@ -182,6 +284,7 @@ void runFunctionalStage(
   }
 }
 
+// Run legacy tests and publish browser-specific reports and screenshots.
 void runLegacyStage(
   boolean enabled,
   String failureResultValue,
@@ -207,6 +310,7 @@ void runLegacyStage(
   }
 }
 
+// Run an explicit browser stage using the provided command and report metadata.
 void runBrowserStage(
   boolean enabled,
   String failureResultValue,
@@ -229,6 +333,7 @@ void runBrowserStage(
   }
 }
 
+// Restore cached parallel weight files from the previous successful nightly run.
 void performArtifactOperations() {
   sh 'mkdir -p cypress/parallel/weights/pipeline'
 
@@ -294,6 +399,8 @@ void performArtifactOperations() {
     ls -l1a cypress/parallel/weights/pipeline/
     '''
 }
+
+// Set the default nightly functional spec glob.
 void setupTestSpecifications() {
   script {
     env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
@@ -302,8 +409,12 @@ void setupTestSpecifications() {
 
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(secrets)
+  if (!isBrowserInstalled(browserFirefox)) {
+    echoBrowserMissingBanner(browserFirefox)
+  }
   env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
-  env.BROWSER_TO_RUN = (env.BROWSER_TO_RUN ?: defaultBrowser()).trim().toLowerCase()
+  env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: defaultBrowser())
+  echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
 
   before('akschartsinstall') {
     onPR {
@@ -319,6 +430,8 @@ withNightlyPipeline(type, product, component) {
 
   afterAlways('DependencyCheckNightly') {
     String browserToRun = env.BROWSER_TO_RUN
+    String edgeBrowserToRun = params.RunEdge ? resolvePipelineBrowser(browserEdge) : browserEdge
+    String firefoxBrowserToRun = params.RunFirefox ? requireInstalledBrowser(browserFirefox) : browserFirefox
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
     echo 'Functional:' + params.Functional
@@ -366,9 +479,9 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
       'Edge tests failed',
       yarnBuilder,
       [
-        stageName   : 'Edge Tests',
-        yarnCommand : 'test:Edge',
-        browserToRun: defaultBrowser(),
+        stageName   : edgeBrowserToRun == browserEdge ? 'Edge Tests' : 'Edge Tests (Chrome Fallback)',
+        yarnCommand : edgeBrowserToRun == browserEdge ? 'test:Edge' : 'test:functional',
+        browserToRun: edgeBrowserToRun,
       ]
     )
     runBrowserStage(
@@ -379,7 +492,7 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
       [
         stageName   : 'Firefox Tests',
         yarnCommand : 'test:Firefox',
-        browserToRun: 'firefox',
+        browserToRun: firefoxBrowserToRun,
       ]
     )
   }
