@@ -409,12 +409,7 @@ void setupTestSpecifications() {
 
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(secrets)
-  if (!isBrowserInstalled(browserFirefox)) {
-    echoBrowserMissingBanner(browserFirefox)
-  }
   env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
-  env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: defaultBrowser())
-  echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
 
   before('akschartsinstall') {
     onPR {
@@ -424,6 +419,11 @@ withNightlyPipeline(type, product, component) {
     }
   }
   afterSuccess('checkout') {
+    if (!isBrowserInstalled(browserFirefox)) {
+      echoBrowserMissingBanner(browserFirefox)
+    }
+    env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: defaultBrowser())
+    echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
     performArtifactOperations()
     setupTestSpecifications()
   }
