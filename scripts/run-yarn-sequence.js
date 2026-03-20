@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
+/**
+ * @fileoverview Runs a sequence of yarn scripts and returns the first non-zero exit code.
+ * @description Optionally validates that an explicitly requested browser is installed before running the sequence.
+ */
+
 const { spawnSync } = require('node:child_process');
 const { requireInstalledBrowser } = require('./browser-support');
 

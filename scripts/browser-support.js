@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
+/**
+ * @fileoverview Shared browser detection and selection helpers for local scripts and Jenkins runs.
+ * @description Handles installed-browser checks, explicit browser validation, and the default Edge-to-Chrome fallback.
+ */
+
 const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
 
@@ -30,7 +35,9 @@ const browserChecks = {
  * @returns {string}
  */
 function normalizeBrowser(browser) {
-  return String(browser || '').trim().toLowerCase();
+  return String(browser || '')
+    .trim()
+    .toLowerCase();
 }
 
 /**
@@ -79,10 +86,7 @@ function isBrowserInstalled(browser) {
     return false;
   }
 
-  return (
-    checks.commands.some(hasCommand) ||
-    checks.executablePaths.some(isExecutable)
-  );
+  return checks.commands.some(hasCommand) || checks.executablePaths.some(isExecutable);
 }
 
 /**
@@ -137,20 +141,12 @@ function resolveGenericBrowser(browser) {
     }
 
     if (isBrowserInstalled(browserChrome)) {
-      console.error(
-        formatBanner([
-          'EDGE IS NOT INSTALLED ON THIS MACHINE',
-          'SWITCHING TO CHROME FOR THIS RUN',
-        ]),
-      );
+      console.error(formatBanner(['EDGE IS NOT INSTALLED ON THIS MACHINE', 'SWITCHING TO CHROME FOR THIS RUN']));
       return browserChrome;
     }
 
     throw new Error(
-      formatBanner([
-        'EDGE IS NOT INSTALLED ON THIS MACHINE',
-        'CHROME IS ALSO NOT AVAILABLE AS A FALLBACK',
-      ]),
+      formatBanner(['EDGE IS NOT INSTALLED ON THIS MACHINE', 'CHROME IS ALSO NOT AVAILABLE AS A FALLBACK']),
     );
   }
 

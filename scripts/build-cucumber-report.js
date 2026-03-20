@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 'use strict';
 
+/**
+ * @fileoverview Builds merged Cucumber ndjson, Zephyr JSON, and Jenkins HTML reports from raw Cypress outputs.
+ * @description Used by smoke, functional, and legacy report-combine scripts after parallel test execution because
+ * the default-browser fallback changes exposed a brittle shell-based report path that could reuse stale merged ndjson
+ * files or mask combine failures, leaving Jenkins to publish blank reports for the selected browser.
+ */
+
 const fs = require('node:fs');
 const path = require('node:path');
 const { Readable } = require('node:stream');
 const { pipeline } = require('node:stream/promises');
-const {
-  resolveGenericBrowser,
-  normalizeBrowser,
-} = require('./browser-support');
+const { resolveGenericBrowser, normalizeBrowser } = require('./browser-support');
 
-const {
-  mergeMessages,
-} = require('../node_modules/@badeball/cypress-cucumber-preprocessor/dist/helpers/merge.js');
+const { mergeMessages } = require('../node_modules/@badeball/cypress-cucumber-preprocessor/dist/helpers/merge.js');
 const {
   createHtmlStream,
   createJsonFormatter,
@@ -171,11 +173,7 @@ function writeZephyrJson(outputPath, messages) {
 async function writeHtmlReport(outputPath, messages) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
-  await pipeline(
-    Readable.from(messages, { objectMode: true }),
-    createHtmlStream(),
-    fs.createWriteStream(outputPath),
-  );
+  await pipeline(Readable.from(messages, { objectMode: true }), createHtmlStream(), fs.createWriteStream(outputPath));
 }
 
 async function main() {
