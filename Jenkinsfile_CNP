@@ -449,11 +449,6 @@ if (tagLabel) {
 withPipeline(type, product, component) {
     // Inject KeyVault secrets required for login/setup
     loadVaultSecrets(secrets)
-    if (!isBrowserInstalled(browserFirefox)) {
-        echoBrowserMissingBanner(browserFirefox)
-    }
-    env.BROWSER_TO_RUN = resolvePipelineBrowser()
-    echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
 
     // Configure PR-only deployment knobs before helm installs run
     before('akschartsinstall') {
@@ -470,6 +465,11 @@ withPipeline(type, product, component) {
 
     // Restore previous parallelization weights and set test spec globs
     afterSuccess('checkout') {
+        if (!isBrowserInstalled(browserFirefox)) {
+            echoBrowserMissingBanner(browserFirefox)
+        }
+        env.BROWSER_TO_RUN = resolvePipelineBrowser()
+        echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
         performArtifactOperations()
         setupTestSpecifications()
         script {
