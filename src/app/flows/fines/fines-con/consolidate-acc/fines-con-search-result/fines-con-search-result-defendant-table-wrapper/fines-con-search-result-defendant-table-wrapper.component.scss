@@ -1,0 +1,28 @@
+:host ::ng-deep tr.defendant-main-row-with-checks > .govuk-table__cell {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+:host ::ng-deep tr.defendant-checks-row > .govuk-table__cell {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.defendant-check-message {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.defendant-check-message__text {
+  margin-top: 0.1rem;
+}
+
+.defendant-check-message-group:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.defendant-check-message-list {
+  margin-bottom: 0;
+  margin-top: 0;
+}

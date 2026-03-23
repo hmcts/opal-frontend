@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 
 describe('FinesConConsolidateAccComponent', () => {
   let component: FinesConConsolidateAccComponent;
@@ -55,9 +56,40 @@ describe('FinesConConsolidateAccComponent', () => {
     expect(finesConStore.activeTab()).toBe('results');
   });
 
+  it('should store transformed search payload for results tab', () => {
+    const activeTabSpy = vi.spyOn(finesConStore, 'setActiveTab');
+    const payload = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+      consolidation_search: true,
+    };
+
+    component.handleSearchPayload(payload);
+
+    expect(component['defendantAccountsSearchPayload']).toEqual(payload);
+    expect(activeTabSpy).toHaveBeenCalledWith('results');
+    expect(mockRouter.navigate).toHaveBeenCalledWith([], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'results',
+      queryParamsHandling: 'preserve',
+      replaceUrl: true,
+    });
+  });
+
   it('should switch to for-consolidation tab when clicked', () => {
     component.handleTabSwitch('for-consolidation');
     expect(finesConStore.activeTab()).toBe('for-consolidation');
+  });
+
+  it('should clear stored search payload when switching away from results tab', () => {
+    const payload = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+      consolidation_search: true,
+    };
+    component.handleSearchPayload(payload);
+
+    component.handleTabSwitch('search');
+
+    expect(component['defendantAccountsSearchPayload']).toBeNull();
   });
 
   it('should get defendant type from store', () => {

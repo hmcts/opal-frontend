@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FinesConSearchAccountFormComponent } from './fines-con-search-account-form/fines-con-search-account-form.component';
 import { IFinesConSearchAccountForm } from './interfaces/fines-con-search-account-form.interface';
 import { FinesConDefendant } from '../../types/fines-con-defendant.type';
 import { FinesConStore } from '../../stores/fines-con.store';
+import { FinesConPayloadService } from '../../services/fines-con-payload.service';
+import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
 
 /**
  * Container component for the search account form.
@@ -18,7 +20,9 @@ import { FinesConStore } from '../../stores/fines-con.store';
 })
 export class FinesConSearchAccountComponent {
   private readonly finesConStore = inject(FinesConStore);
+  private readonly finesConPayloadService = inject(FinesConPayloadService);
   @Input({ required: true }) defendantType: FinesConDefendant = 'individual';
+  @Output() public searchPayload = new EventEmitter<IOpalFinesDefendantAccountSearchParams>();
 
   /**
    * Handles the search account form submission.
@@ -28,8 +32,15 @@ export class FinesConSearchAccountComponent {
    * @param form - The submitted search form data
    */
   public handleSearchAccountSubmit(form: IFinesConSearchAccountForm): void {
+    const payload = this.finesConPayloadService.buildDefendantAccountsSearchPayload(
+      form.formData,
+      this.finesConStore.getBusinessUnitId(),
+      this.defendantType,
+    );
+
     this.finesConStore.updateSearchAccountFormTemporary(form.formData);
     this.finesConStore.setUnsavedChanges(false);
+    this.searchPayload.emit(payload);
   }
 
   /**

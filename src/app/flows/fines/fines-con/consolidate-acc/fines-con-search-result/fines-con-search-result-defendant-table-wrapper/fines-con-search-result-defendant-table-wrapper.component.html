@@ -1,0 +1,309 @@
+<h2 class="govuk-heading-m">Select accounts to consolidate</h2>
+
+<div class="govuk-button-group">
+  <button class="govuk-button" type="button" (click)="onAddToList()">Add to list</button>
+</div>
+
+<p class="govuk-hint">{{ selectedAccountsHintComputed() }}</p>
+
+<opal-lib-custom-horizontal-scroll-pane>
+  <opal-lib-moj-sortable-table>
+    <ng-container head>
+      <th class="govuk-table__header" scope="col" id="defendants-select-all">
+        @if (hasSelectableRowsComputed()) {
+          <opal-lib-govuk-checkboxes fieldSetId="defendants-select-all-group" checkboxClasses="" legendText="">
+            <div
+              class="govuk-checkboxes--small"
+              opal-lib-govuk-checkboxes-item
+              opalLibMojMultiSelectHead
+              [control]="selectAllControl"
+              inputId="defendants-select-all-checkbox"
+              inputName="defendants-select-all-checkbox"
+              labelText=""
+              labelClasses="govuk-!-padding-0"
+              ariaLabel="Select all defendants"
+              [selectAllIndeterminate]="someVisibleRowsSelected()"
+              (toggleAll)="onToggleAll($event)"
+            ></div>
+          </opal-lib-govuk-checkboxes>
+        }
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Account"
+        [sortDirection]="sortStateSignal()['Account']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="0"
+      >
+        Account
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Name"
+        [sortDirection]="sortStateSignal()['Name']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Name
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Aliases"
+        [sortDirection]="sortStateSignal()['Aliases']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="2"
+      >
+        Aliases
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Date of birth"
+        [sortDirection]="sortStateSignal()['Date of birth']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="3"
+      >
+        Date of birth
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Address line 1"
+        [sortDirection]="sortStateSignal()['Address line 1']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="4"
+      >
+        Address line 1
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Postcode"
+        [sortDirection]="sortStateSignal()['Postcode']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="5"
+      >
+        Postcode
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="CO"
+        [sortDirection]="sortStateSignal()['CO']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="6"
+      >
+        CO
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="ENF"
+        [sortDirection]="sortStateSignal()['ENF']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="7"
+      >
+        ENF
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Balance"
+        [sortDirection]="sortStateSignal()['Balance']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="8"
+      >
+        Balance
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="P/G"
+        [sortDirection]="sortStateSignal()['P/G']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="9"
+      >
+        P/G
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="NI number"
+        [sortDirection]="sortStateSignal()['NI number']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="10"
+      >
+        NI number
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Ref"
+        [sortDirection]="sortStateSignal()['Ref']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="11"
+      >
+        Ref
+      </th>
+    </ng-container>
+
+    <ng-container row>
+      @for (row of sortedTableDataComputed(); track row['Account ID'] ?? row['Account'] ?? $index) {
+        <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="getMainRowClasses(row, $index)">
+          <td opal-lib-moj-sortable-table-row-data id="defendantSelect">
+            @if (isRowSelectable(row)) {
+              <opal-lib-govuk-checkboxes
+                [fieldSetId]="'defendant-select-row-' + ($index + 1)"
+                checkboxClasses=""
+                legendText=""
+              >
+                <div
+                  class="govuk-checkboxes--small"
+                  opal-lib-govuk-checkboxes-item
+                  opalLibMojMultiSelectBody
+                  [control]="getRowControl(row, $index)"
+                  [inputId]="getRowDomId(row, $index, 'defendant-select')"
+                  [inputName]="getRowDomId(row, $index, 'defendant-select')"
+                  labelText=""
+                  labelClasses="govuk-!-padding-0"
+                  [rowId]="getRowIdentifier(row, $index)"
+                  [ariaLabel]="'Select ' + (row['Name'] ?? row['Account'] ?? 'row ' + ($index + 1))"
+                  (selectionChange)="onRowSelectionChange($event)"
+                ></div>
+              </opal-lib-govuk-checkboxes>
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantAccountNumber">
+            @if (row['Account'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              @if (row['Account ID']) {
+                <a
+                  class="govuk-link govuk-link--no-visited-state"
+                  tabindex="0"
+                  [attr.aria-describedby]="hasRowChecks(row) ? getRowDomId(row, $index, 'defendant-checks') : null"
+                  (click)="goToAccount(row['Account ID'])"
+                  (keyup.enter)="goToAccount(row['Account ID'])"
+                  >{{ row['Account']! }}</a
+                >
+              } @else {
+                {{ row['Account'] }}
+              }
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantName">
+            @if (row['Name'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Name'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantAliases">
+            @if (row['Aliases'] === null || row['Aliases'].length === 0) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Aliases'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantDateOfBirth">
+            @if (row['Date of birth'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantAddressLine1">
+            @if (row['Address line 1'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Address line 1'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantPostcode">
+            @if (row['Postcode'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Postcode'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantCollectionOrder">
+            @if (row['CO'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['CO'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantEnforcement">
+            @if (row['ENF'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['ENF'] | uppercase }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantBalance">
+            @if (row['Balance'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Balance'] | currency: 'GBP' }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantPayingParentGuardian">
+            @if (row['P/G'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['P/G'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantNationalInsuranceNumber">
+            @if (row['NI number'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['NI number'] | nationalInsurance }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendantRef">
+            @if (row['Ref'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Ref'] }}
+            }
+          </td>
+        </tr>
+
+        @if (hasRowChecks(row)) {
+          <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="'defendant-checks-row'">
+            <td opal-lib-moj-sortable-table-row-data id="defendantChecksSpacer"></td>
+            <td
+              opal-lib-moj-sortable-table-row-data
+              [id]="getRowDomId(row, $index, 'defendant-checks')"
+              [attr.colspan]="12"
+            >
+              @for (severity of checkSeverities; track severity) {
+                @let severityChecks = getChecksBySeverity(row, severity);
+                @if (severityChecks.length > 0) {
+                  <div class="defendant-check-message-group">
+                    <div class="defendant-check-message">
+                      <opal-lib-moj-alert-icon icon [type]="severity" [applyColour]="true"></opal-lib-moj-alert-icon>
+                      @if (severityChecks.length === 1) {
+                        <span class="defendant-check-message__text">{{ severityChecks[0].message }}</span>
+                      } @else {
+                        <ul class="defendant-check-message-list govuk-list govuk-list--bullet">
+                          @for (check of severityChecks; track check.reference + '-' + $index) {
+                            <li>{{ check.message }}</li>
+                          }
+                        </ul>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+            </td>
+          </tr>
+        }
+      }
+    </ng-container>
+
+    <ng-container status>
+      <opal-lib-moj-sortable-table-status
+        class="defendant-table-status"
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      />
+    </ng-container>
+  </opal-lib-moj-sortable-table>
+</opal-lib-custom-horizontal-scroll-pane>
+
+<ng-template #noData>
+  <app-fines-not-provided class="defendant-no-data-provided"></app-fines-not-provided>
+</ng-template>
