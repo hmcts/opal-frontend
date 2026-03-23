@@ -5,7 +5,7 @@ import java.time.DayOfWeek
 import java.time.ZonedDateTime
 
 @Field String legacyUrlDevChoice = 'DEV'
-@Field String stringFalse = String.valueOf(Boolean.FALSE)
+@Field String stringFalse = String.valueOf(false)
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
