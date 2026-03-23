@@ -213,10 +213,10 @@ String getProjectName() {
 // Collect test/skip labels for routing
 List<String> getProjectLabels() {
     List<String> testLabels = []
-    for (String label in cachedPrLabels.findAll { String it -> it.startsWith('test_') }) {
+    for (String label in cachedPrLabels.findAll { String cachedLabel -> cachedLabel.startsWith('test_') }) {
         testLabels.add(label)
     }
-    for (String label in cachedPrLabels.findAll { String it -> it.startsWith('skip_') }) {
+    for (String label in cachedPrLabels.findAll { String cachedLabel -> cachedLabel.startsWith('skip_') }) {
         testLabels.add(label)
     }
     return testLabels
@@ -343,7 +343,7 @@ void determineDevEnvironmentDeployment() {
     env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
 
     if (cachedPrLabels.contains('enable_keep_helm')) {
-        for (label in cachedPrLabels.findAll { String it -> it.startsWith('enable_opal_') }) {
+        for (label in cachedPrLabels.findAll { String cachedLabel -> cachedLabel.startsWith('enable_opal_') }) {
             //Fines service
             if (label ==~ /enable_opal_fines_service.*/) {
                 env.DEV_ENABLE_OPAL_FINES_SERVICE = true
@@ -408,7 +408,7 @@ GithubAPI githubApi = new GithubAPI(this)
 
 try {
     cachedPrLabels = githubApi.getLabels(env.BRANCH_NAME)
-} catch (Exception e) {
+} catch (hudson.AbortException e) {
     error 'Unable to read PR labels from GitHub, so label-driven pipeline behavior cannot be resolved. ' +
       "GitHub label lookup failed with: ${e.message}"
 }

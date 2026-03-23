@@ -51,7 +51,7 @@ String secretKey = 'opal-$'.concat('{env}')
 @Field String smokeStageName = 'Smoke Tests'
 @Field String functionalProdArtifactsPath = 'functional-output/prod/**'
 @Field int zeroIndex = 0
-@Field String legacyGatewayUrlPreProd = 'https://opal.clouddev.online/opal'
+@Field String legacyGatewayUrlPreProd = 'https://cloudgobgateway.test.platform.hmcts.net/opal'
 @Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
 @Field String launchDarklyApiVersion = '20240415'
 @Field String launchDarklyEnvironmentKey = 'test'
@@ -103,10 +103,18 @@ void configureNightlyTags() {
   }
 }
 
+// Determine whether this nightly run includes a legacy-mode test flow.
+boolean legacyModeNightlyRun() {
+  return params.Legacy || params.RunUatTech
+}
+
 // Set the staging legacy gateway URL used by chart templating.
 void configureStagingLegacyGatewayUrl() {
+  boolean shouldUsePreProdLegacyGateway =
+    legacyModeNightlyRun() && params.LEGACY_URL != legacyUrlDevChoice
+
   env.STG_OPAL_LEGACY_GATEWAY_URL =
-    params.LEGACY_URL == legacyUrlDevChoice ? legacyGatewayUrlDev : legacyGatewayUrlPreProd
+    shouldUsePreProdLegacyGateway ? legacyGatewayUrlPreProd : legacyGatewayUrlDev
   echo "STG_OPAL_LEGACY_GATEWAY_URL=${env.STG_OPAL_LEGACY_GATEWAY_URL}"
 }
 
@@ -312,8 +320,9 @@ void restoreLaunchDarklyFlag() {
 
 // Probe the nightly staging health endpoint used before running UAT-Technical tests.
 String getHealthCheckStatus() {
+  String legacyHealthEndpoint = "${env.STG_OPAL_LEGACY_GATEWAY_URL}?actionType=getGmasTest"
   return sh(
-    script: "curl -s -o /dev/null -w '%{http_code}' '${env.TEST_URL}opal?actionType=getGmasTest' || echo '000'",
+    script: "curl -s -o /dev/null -w '%{http_code}' '${legacyHealthEndpoint}' || echo '000'",
     returnStdout: true
   ).trim()
 }
