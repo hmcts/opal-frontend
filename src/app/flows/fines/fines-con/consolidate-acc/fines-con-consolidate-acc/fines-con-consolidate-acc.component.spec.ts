@@ -65,8 +65,7 @@ describe('FinesConConsolidateAccComponent', () => {
 
     component.handleSearchPayload(payload);
 
-    // @ts-expect-error - Testing protected property
-    expect(component.defendantAccountsSearchPayload).toEqual(payload);
+    expect(component['defendantAccountsSearchPayload']).toEqual(payload);
     expect(activeTabSpy).toHaveBeenCalledWith('results');
     expect(mockRouter.navigate).toHaveBeenCalledWith([], {
       relativeTo: mockActivatedRoute,
@@ -90,8 +89,7 @@ describe('FinesConConsolidateAccComponent', () => {
 
     component.handleTabSwitch('search');
 
-    // @ts-expect-error - Testing protected property
-    expect(component.defendantAccountsSearchPayload).toBeNull();
+    expect(component['defendantAccountsSearchPayload']).toBeNull();
   });
 
   it('should get defendant type from store', () => {
