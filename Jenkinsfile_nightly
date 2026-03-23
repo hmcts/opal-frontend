@@ -66,14 +66,6 @@ String failureResult = 'FAILURE'
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
 
-@Field Map<String, List<Map<String, Object>>> baseSecrets = [
-  (secretKey): [
-    secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
-    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
-    secret('jiraAuthToken', 'JIRA_AUTH_TOKEN'),
-  ],
-]
-
 // Build an Azure KeyVault secret entry.
 static Map<String, Object> secret(String secretName, String envVar) {
   return [$class     : 'AzureKeyVaultSecret',
@@ -89,7 +81,11 @@ uk.gov.hmcts.contino.YarnBuilder yarnBuilder =
 
 // Build the nightly secret set, only adding LaunchDarkly credentials for UAT-Technical runs.
 Map<String, List<Map<String, Object>>> nightlySecrets() {
-  List<Map<String, Object>> nightlySecretEntries = new ArrayList<>(baseSecrets[secretKey])
+  List<Map<String, Object>> nightlySecretEntries = [
+    secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
+    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
+    secret('jiraAuthToken', 'JIRA_AUTH_TOKEN'),
+  ]
   if (params.RunUatTech) {
     nightlySecretEntries.add(secret('launch-darkly-api-token', 'LD_API_TOKEN'))
   }
