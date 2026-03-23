@@ -9,5 +9,5 @@ export const FINES_CON_PAYLOAD_SERVICE_DEFENDANT_ACCOUNTS_MOCK: IFinesConSearchR
     checks: {
       errors: [{ reference: 'CON.ER.4', message: 'Account blocked' }],
     },
-  } as IFinesConSearchResultDefendantAccount,
+  } as unknown as IFinesConSearchResultDefendantAccount,
 ];

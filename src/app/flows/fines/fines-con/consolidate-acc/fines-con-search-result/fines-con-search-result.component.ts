@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -125,6 +125,10 @@ export class FinesConSearchResultComponent implements OnDestroy {
       map((response) => this.finesConPayloadService.extractDefendantAccounts(response)),
       tap((defendantAccounts) => this.syncStoreResults(defendantAccounts)),
       map((defendantAccounts) => this.mapResults(defendantAccounts)),
+      catchError(() => {
+        this.defendantAccountsData = [];
+        return of(this.EMPTY_RESULTS);
+      }),
     );
   }
 
