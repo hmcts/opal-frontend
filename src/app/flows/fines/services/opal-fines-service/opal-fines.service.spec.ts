@@ -56,7 +56,6 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FINES_ACC_DEFENDANT_DETAILS_TABS } from '../../fines-acc/fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs.constant';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from './constants/opal-fines-defendant-account-patch-payload-defaults.constant';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 
