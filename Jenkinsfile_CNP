@@ -14,6 +14,7 @@ String component = 'frontend'
 @Field String browserChrome = 'chrome'
 @Field String browserEdge = 'edge'
 @Field String browserFirefox = 'firefox'
+@Field List<String> cachedPrLabels = []
 
 // Secret key for KeyVault lookups
 String secretKey = 'opal-$'.concat('{env}')
@@ -196,12 +197,11 @@ INSTALL A SUPPORTED BROWSER OR SET BROWSER_TO_RUN EXPLICITLY
 // Resolve project/job name (PR vs master)
 String getProjectName() {
     String projectPrefix = 'HMCTS/opal-frontend/'
-    GithubAPI githubApi = new GithubAPI(this)
     echo "Branch name: ${env.BRANCH_NAME}"
-    echo "Labels: ${githubApi.getLabels(env.BRANCH_NAME)}"
-    List<String> candidateLabels = []
-    candidateLabels.addAll(githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-'))
-    candidateLabels.addAll(githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'rel:opal-frontend-pr-'))
+    echo "Labels: ${cachedPrLabels}"
+    List<String> candidateLabels = cachedPrLabels.findAll { String label ->
+        label.startsWith('opal-frontend-pr-') || label.startsWith('rel:opal-frontend-pr-')
+    }
     for (label in candidateLabels) {
         java.util.regex.Matcher matcher = (label =~ /opal-frontend-pr-(\d+)/)
         if (matcher.find()) {
@@ -212,12 +212,11 @@ String getProjectName() {
 }
 // Collect test/skip labels for routing
 List<String> getProjectLabels() {
-    GithubAPI githubApi = new GithubAPI(this)
     List<String> testLabels = []
-    for (String label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'test_')) {
+    for (String label in cachedPrLabels.findAll { String it -> it.startsWith('test_') }) {
         testLabels.add(label)
     }
-    for (String label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'skip_')) {
+    for (String label in cachedPrLabels.findAll { String it -> it.startsWith('skip_') }) {
         testLabels.add(label)
     }
     return testLabels
@@ -343,9 +342,8 @@ void determineDevEnvironmentDeployment() {
     env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
     env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
 
-    GithubAPI githubApi = new GithubAPI(this)
-    if (githubApi.checkForLabel(env.BRANCH_NAME, 'enable_keep_helm')) {
-        for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'enable_opal_')) {
+    if (cachedPrLabels.contains('enable_keep_helm')) {
+        for (label in cachedPrLabels.findAll { String it -> it.startsWith('enable_opal_') }) {
             //Fines service
             if (label ==~ /enable_opal_fines_service.*/) {
                 env.DEV_ENABLE_OPAL_FINES_SERVICE = true
@@ -407,16 +405,15 @@ properties([
 String changeId = env.CHANGE_ID?.trim()
 boolean isPR = changeId != null && !changeId.empty
 GithubAPI githubApi = new GithubAPI(this)
-List<String> allLabels = []
 
 try {
-    allLabels = githubApi.getLabels(env.BRANCH_NAME)
+    cachedPrLabels = githubApi.getLabels(env.BRANCH_NAME)
 } catch (Exception e) {
     error 'Unable to read PR labels from GitHub, so label-driven pipeline behavior cannot be resolved. ' +
       "GitHub label lookup failed with: ${e.message}"
 }
 
-boolean legacyEnabled = allLabels.contains('enable_legacy_mode')
+boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 
 // Safe defaults (current behaviour)
 env.DEV_DEFAULT_APP_MODE = opalName
@@ -437,7 +434,7 @@ echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
 echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
 
 // Find the first label like: run_tag:<expression>
-String tagLabel = allLabels.find { String label -> label.startsWith(runTagPrefix) }
+String tagLabel = cachedPrLabels.find { String label -> label.startsWith(runTagPrefix) }
 String skipTagExpression = 'not @skip'
 String baseTags = tagLabel ? tagLabel.substring(runTagPrefix.length()).trim() : ''
 
