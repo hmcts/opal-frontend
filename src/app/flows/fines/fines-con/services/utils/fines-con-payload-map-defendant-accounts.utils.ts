@@ -3,25 +3,7 @@ import { IFinesConSearchResultDefendantAccount } from '../../consolidate-acc/fin
 import { IFinesConSearchResultAccountCheck } from '../../consolidate-acc/fines-con-search-result/interfaces/fines-con-search-result-account-check.interface';
 import { IFinesConSearchResultDefendantTableWrapperTableData } from '../../consolidate-acc/fines-con-search-result/fines-con-search-result-defendant-table-wrapper/interfaces/fines-con-search-result-defendant-table-wrapper-table-data.interface';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from '../../consolidate-acc/fines-con-search-result/fines-con-search-result-defendant-table-wrapper/constants/fines-con-search-result-defendant-table-wrapper-table-data-empty.constant';
-
-type IRawDefendantAccount = IFinesConSearchResultDefendantAccount & {
-  defendantAccountId?: number | string | null;
-  accountNumber?: string | null;
-  defendantSurname?: string | null;
-  defendantFirstnames?: string | null;
-  birthDate?: string | null;
-  addressLine1?: string | null;
-  postCode?: string | null;
-  collectionOrder?: boolean | null;
-  has_collection_order?: boolean | null;
-  hasCollectionOrder?: boolean | null;
-  lastEnforcement?: string | null;
-  lastEnforcementAction?: string | null;
-  accountBalance?: number | null;
-  hasPayingParentGuardian?: boolean | null;
-  nationalInsuranceNumber?: string | null;
-  prosecutorCaseReference?: string | null;
-};
+import { IFinesConPayloadRawDefendantAccount } from './interfaces/fines-con-payload-raw-defendant-account.interface';
 
 /**
  * Normalises account IDs from number or digit-only string values.
@@ -71,6 +53,31 @@ const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null): strin
     .filter((alias): alias is string => alias !== null);
 
   return aliasText.length > 0 ? aliasText.join('\n') : null;
+};
+
+/**
+ * Resolves whether collection order is present across supported API shapes.
+ */
+const hasCollectionOrder = (account: IFinesConPayloadRawDefendantAccount): boolean => {
+  return (
+    (account.collection_order ??
+      account.collectionOrder ??
+      account.has_collection_order ??
+      account.hasCollectionOrder) === true
+  );
+};
+
+/**
+ * Resolves the latest enforcement value across supported API shapes.
+ */
+const getLastEnforcement = (account: IFinesConPayloadRawDefendantAccount): string | null => {
+  return (
+    account.last_enforcement ??
+    account.lastEnforcement ??
+    account.last_enforcement_action ??
+    account.lastEnforcementAction ??
+    null
+  );
 };
 
 /**
@@ -152,7 +159,7 @@ export const mapDefendantAccounts = (
   defendantAccounts: IFinesConSearchResultDefendantAccount[],
 ): IFinesConSearchResultDefendantTableWrapperTableData[] => {
   return defendantAccounts.map((defendantAccount) => {
-    const account = defendantAccount as IRawDefendantAccount;
+    const account = defendantAccount as IFinesConPayloadRawDefendantAccount;
 
     return {
       ...FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY,
@@ -166,19 +173,8 @@ export const mapDefendantAccounts = (
       'Date of birth': account.birth_date ?? account.birthDate ?? null,
       'Address line 1': account.address_line_1 ?? account.addressLine1 ?? null,
       Postcode: account.postcode ?? account.postCode ?? null,
-      CO:
-        (account.collection_order ??
-          account.collectionOrder ??
-          account.has_collection_order ??
-          account.hasCollectionOrder) === true
-          ? 'Y'
-          : '-',
-      ENF:
-        account.last_enforcement ??
-        account.lastEnforcement ??
-        account.last_enforcement_action ??
-        account.lastEnforcementAction ??
-        null,
+      CO: hasCollectionOrder(account) ? 'Y' : '-',
+      ENF: getLastEnforcement(account),
       Balance: account.account_balance ?? account.accountBalance ?? null,
       'P/G': (account.has_paying_parent_guardian ?? account.hasPayingParentGuardian) === true ? 'Y' : '-',
       'NI number': account.national_insurance_number ?? account.nationalInsuranceNumber ?? null,
@@ -194,7 +190,7 @@ export const buildChecksByAccountId = (
   defendantAccounts: IFinesConSearchResultDefendantAccount[],
 ): Record<number, IFinesConSearchResultAccountCheck[]> => {
   return defendantAccounts.reduce<Record<number, IFinesConSearchResultAccountCheck[]>>((acc, account) => {
-    const rawAccount = account as IRawDefendantAccount;
+    const rawAccount = account as IFinesConPayloadRawDefendantAccount;
     const accountId = normaliseAccountId(rawAccount.defendant_account_id ?? rawAccount.defendantAccountId);
 
     if (accountId === null) {
