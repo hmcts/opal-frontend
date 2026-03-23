@@ -404,10 +404,19 @@ properties([
 ])
 
 // --- Dev legacy toggle (PR label driven) ---
-GithubAPI githubApiForMode = new GithubAPI(this)
-boolean legacyEnabled = githubApiForMode.checkForLabel(env.BRANCH_NAME, 'enable_legacy_mode')
 String changeId = env.CHANGE_ID?.trim()
 boolean isPR = changeId != null && !changeId.empty
+GithubAPI githubApi = new GithubAPI(this)
+List<String> allLabels = []
+
+try {
+    allLabels = githubApi.getLabels(env.BRANCH_NAME)
+} catch (Exception e) {
+    error 'Unable to read PR labels from GitHub, so label-driven pipeline behavior cannot be resolved. ' +
+      "GitHub label lookup failed with: ${e.message}"
+}
+
+boolean legacyEnabled = allLabels.contains('enable_legacy_mode')
 
 // Safe defaults (current behaviour)
 env.DEV_DEFAULT_APP_MODE = opalName
@@ -426,9 +435,6 @@ if (legacyEnabled && isPR) {
 echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
 echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
-
-GithubAPI githubApi = new GithubAPI(this)
-List<String> allLabels = githubApi.getLabels(env.BRANCH_NAME)
 
 // Find the first label like: run_tag:<expression>
 String tagLabel = allLabels.find { String label -> label.startsWith(runTagPrefix) }
