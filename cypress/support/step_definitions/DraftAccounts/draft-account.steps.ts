@@ -77,7 +77,7 @@ function createDraftAndPrepareForPublishing(
   accountType: AccountType,
   table: DataTable,
   status: string = 'Publishing Pending',
-  switchToUser: string = 'opal-test-10@hmcts.net',
+  switchToUser: string = 'opal-test-10@dev.platform.hmcts.net',
   returnToUser: string = '',
 ) {
   const tableWithUniq = applyUniqToDataTable(table);

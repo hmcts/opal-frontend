@@ -2,12 +2,12 @@
 Feature: Account Enquiries - Request Payment Card Accessibility
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
   @JIRA-KEY:POT-3330
   Scenario: Check Request Payment Card confirmation accessibility
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                          |
       | account.defendant.forenames             | Jamie                              |
       | account.defendant.surname               | PayCardAccess{uniq}                |

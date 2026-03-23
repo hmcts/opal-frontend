@@ -3,7 +3,7 @@ Feature: Fines Account Consolidation
   Validate consolidation navigation from select business unit to account search.
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
     Then I open Consolidate accounts
 

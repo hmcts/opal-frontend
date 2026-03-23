@@ -2,7 +2,7 @@
 Feature: Check and Validate - Checker
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
   @JIRA-STORY:PO-594 @JIRA-KEY:POT-3157
@@ -13,7 +13,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Lincoln{uniq}                   |
       | account.defendant.email_address_1       | larry.lincoln{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219385                     |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "LINCOLN{uniqUpper}, Larry" and see header "Mr Larry LINCOLN{uniqUpper}"
     And the draft account status tag is "In review"
@@ -23,15 +23,15 @@ Feature: Check and Validate - Checker
   @JIRA-STORY:PO-594 @UAT-Technical @JIRA-KEY:POT-3158
   Scenario: Approve an in-review draft account from the review screen
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                                            | Submitted                                                                                                                                                                                              |
-      | account.defendant.forenames                               | Larry                                                                                                                                                                                                  |
-      | account.defendant.surname                                 | Lincoln{uniq}                                                                                                                                                                                          |
-      | account.defendant.email_address_1                         | larry.lincoln{uniq}@outlook.com                                                                                                                                                                        |
-      | account.defendant.telephone_number_home                   | 02078219385                                                                                                                                                                                            |
-      | account.defendant.debtor_detail.vehicle_make              | _=+[{]};:'@#~,<.>/?\\\\\|¬`!"£                                                                                                                                                                         |
-      | account.defendant.debtor_detail.vehicle_registration_mark | $%^&*()-                                                                                                                                                                                               |
-      | account.account_notes                                     | [{"account_note_serial":1,"account_note_text":"It's short - note.","note_type":"AC"},{"account_note_serial":2,"account_note_text":"Here's short - note.","note_type":"AA"}]                         |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+      | Account_status                                            | Submitted                                                                                                                                                                   |
+      | account.defendant.forenames                               | Larry                                                                                                                                                                       |
+      | account.defendant.surname                                 | Lincoln{uniq}                                                                                                                                                               |
+      | account.defendant.email_address_1                         | larry.lincoln{uniq}@outlook.com                                                                                                                                             |
+      | account.defendant.telephone_number_home                   | 02078219385                                                                                                                                                                 |
+      | account.defendant.debtor_detail.vehicle_make              | _=+[{]};:'@#~,<.>/?\\\\\|¬`!"£                                                                                                                                              |
+      | account.defendant.debtor_detail.vehicle_registration_mark | $%^&*()-                                                                                                                                                                    |
+      | account.account_notes                                     | [{"account_note_serial":1,"account_note_text":"It's short - note.","note_type":"AC"},{"account_note_serial":2,"account_note_text":"Here's short - note.","note_type":"AA"}] |
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Lincoln{uniq}, Larry" and see header "Mr Larry Lincoln{uniq}"
     And the draft account status tag is "In review"
@@ -48,7 +48,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Potter{uniq}                   |
       | account.defendant.email_address_1       | harry.potter{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219385                    |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
     And the draft account status tag is "In review"
@@ -66,12 +66,12 @@ Feature: Check and Validate - Checker
   @JIRA-STORY:PO-2609 @JIRA-KEY:POT-3160
   Scenario: Inputter cannot delete a rejected account,checker-only deletion post-submission
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted                |
-      | account.defendant.forenames             | Harry                    |
+      | Account_status                          | Submitted                      |
+      | account.defendant.forenames             | Harry                          |
       | account.defendant.surname               | Potter{uniq}                   |
       | account.defendant.email_address_1       | harry.potter{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219385              |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+      | account.defendant.telephone_number_home | 02078219385                    |
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
     And I see the "Delete account" link
@@ -86,7 +86,7 @@ Feature: Check and Validate - Checker
     And the draft account status tag is "Rejected"
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Rejected"
-    And I am logged in with email "opal-test@HMCTS.NET"
+    And I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I open Create and Manage Draft Accounts
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
     And I open the draft account for defendant "Potter{uniq}, Harry"
@@ -94,7 +94,7 @@ Feature: Check and Validate - Checker
     Then I click the "Check account" button
     And I do not see the "Delete account" link
 
-    
+
   @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-KEY:POT-3161
   Scenario: Delete an in-review draft account and verify it on the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
@@ -103,7 +103,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Barnes{uniq}                 |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219334                  |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Barnes{uniq}, Peter" and see header "Mr Peter Barnes{uniq}"
     And the draft account status tag is "In review"
@@ -129,7 +129,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Barn{uniq}                   |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219334                  |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "BARN{uniqUpper}, Peter" and see header "Mr Peter BARN{uniqUpper}"
     When I delete the draft account from review and see the confirmation page
@@ -144,7 +144,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Barn{uniq}                   |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219334                  |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "BARN{uniqUpper}, Peter" and see header "Mr Peter BARN{uniqUpper}"
     When I delete the draft account from review and see the confirmation page
@@ -163,7 +163,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | BLART{uniq}                  |
       | account.defendant.email_address_1       | paul.blart{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219385                  |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     And draft account decision updates fail with status 400
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "BLART{uniqUpper}, Paul" and see header "Mr Paul BLART{uniqUpper}"
@@ -191,7 +191,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Salt{uniq}                  |
       | account.defendant.email_address_1       | paul.salt{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02038219385                 |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     And I set the last created draft account status to "Deleted"
     When I open Check and Validate Draft Accounts
     And I view the "Deleted" tab on the Check and Validate page
@@ -207,7 +207,7 @@ Feature: Check and Validate - Checker
       | Account_status              | Submitted      |
       | account.defendant.forenames | FakeFixed      |
       | account.defendant.surname   | FAKELAST{uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
     When I go back to Check and Validate Draft Accounts
@@ -218,7 +218,7 @@ Feature: Check and Validate - Checker
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "TestFixedPenaltyCompany {uniq}" and see header "TestFixedPenaltyCompany {uniq}"
     When I go back to Check and Validate Draft Accounts
@@ -230,7 +230,7 @@ Feature: Check and Validate - Checker
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "TestFixedPenaltyCompany {uniq}" and see header "TestFixedPenaltyCompany {uniq}"
     When I delete the draft account from review and see the confirmation page
@@ -250,7 +250,7 @@ Feature: Check and Validate - Checker
       | Account_status              | Submitted      |
       | account.defendant.forenames | FakeFixed      |
       | account.defendant.surname   | FAKELAST{uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
     When I delete the draft account from review and see the confirmation page
@@ -269,7 +269,7 @@ Feature: Check and Validate - Checker
       | Account_status              | Submitted      |
       | account.defendant.forenames | FakeFixed      |
       | account.defendant.surname   | FAKELAST{uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
     And the draft account status tag is "In review"
@@ -288,7 +288,7 @@ Feature: Check and Validate - Checker
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "TestFixedPenaltyCompany {uniq}" and see header "TestFixedPenaltyCompany {uniq}"
     And the draft account status tag is "In review"

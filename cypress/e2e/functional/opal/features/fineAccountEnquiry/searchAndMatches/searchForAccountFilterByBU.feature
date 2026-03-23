@@ -2,7 +2,7 @@
 Feature: Filter by Business Unit
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I navigate to the Filter by business unit page
 
   @JIRA-STORY:PO-711 @JIRA-STORY:PO-2610 @AC1a @JIRA-KEY:POT-3203

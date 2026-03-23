@@ -5,7 +5,7 @@
 #     Given I am on the OPAL Frontend
 #     Then I see "Opal" in the header
 
-#     When I sign in as "opal-test-2@HMCTS.NET"
+#     When I sign in as "opal-test-2@dev.platform.hmcts.net"
 #     Then I am on the dashboard
 
 #     When I navigate to Account Enquiry

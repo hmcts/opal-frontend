@@ -5,13 +5,13 @@ Feature: Account Enquiries – View Account Details
   So that I can confirm and, when needed, safely discard edits
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
   Rule: Adult or youth account baseline
     Background:
       # AC1 – Account setup
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                          | Submitted                            |
         | account.defendant.forenames             | John                                 |
         | account.defendant.surname               | AccDetailSurname{uniq}               |
@@ -69,7 +69,7 @@ Feature: Account Enquiries – View Account Details
   Rule: Company account baseline
     Background:
       # AC1 – Account setup
-      Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | account.defendant.company_name    | Accdetail comp{uniq}         |
         | account.defendant.email_address   | Accdetailcomp{uniq}@test.com |
         | account.defendant.post_code       | AB23 4RN                     |
@@ -121,7 +121,7 @@ Feature: Account Enquiries – View Account Details
   Rule: Non-paying defendant account baseline
     Background:
       # AC1 – Account setup
-      Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | account.defendant.forenames           | Jane               |
         | account.defendant.surname             | TestNonPayee{uniq} |
         | account.defendant.dob                 | 2012-06-15         |
@@ -173,7 +173,7 @@ Feature: Account Enquiries – View Account Details
   Rule: Parent or guardian account baseline
     Background:
       # AC1 – Account setup
-      Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                          | Submitted                     |
         | account.defendant.forenames             | Alex                          |
         | account.defendant.surname               | PgPayEdit{uniq}               |

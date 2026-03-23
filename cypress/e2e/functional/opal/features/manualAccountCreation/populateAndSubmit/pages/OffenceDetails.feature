@@ -5,7 +5,7 @@ Feature: Manual account creation - Offence Details
   #Validation tests are contained in the Offence screens component tests
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
     And I view the "Offence details" task
 
