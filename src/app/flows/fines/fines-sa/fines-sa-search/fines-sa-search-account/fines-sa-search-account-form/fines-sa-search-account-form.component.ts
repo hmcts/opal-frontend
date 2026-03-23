@@ -25,7 +25,7 @@ import { FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-sa-sear
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs';
+import { distinctUntilChanged, takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
@@ -169,19 +169,21 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * whenever the fragment changes.
    */
   private setupFragmentListener(): void {
-    (this['activatedRoute'] as ActivatedRoute).fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
-      const resolvedFragment = fragment ?? 'individuals';
+    (this['activatedRoute'] as ActivatedRoute).fragment
+      .pipe(distinctUntilChanged(), takeUntil(this.ngUnsubscribe))
+      .subscribe((fragment) => {
+        const resolvedFragment = fragment ?? 'individuals';
 
-      if (!fragment) {
-        this['router'].navigate([], {
-          relativeTo: this['activatedRoute'],
-          fragment: 'individuals',
-          replaceUrl: true,
-        });
-      }
+        if (!fragment) {
+          this['router'].navigate([], {
+            relativeTo: this['activatedRoute'],
+            fragment: 'individuals',
+            replaceUrl: true,
+          });
+        }
 
-      this.switchTab(resolvedFragment);
-    });
+        this.switchTab(resolvedFragment);
+      });
   }
 
   /**
@@ -238,17 +240,23 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * @param tab Fragment string identifying the tab (the component treats this as a string).
    */
   private switchTab(tab: string | Event): void {
+    const resolvedTab = tab as FinesSaSearchAccountTab;
+
     this.fieldErrors = {
       ...FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS,
-      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTab],
+      ...this.tabFieldErrorMap[resolvedTab],
     } as IFinesSaSearchAccountFieldErrors;
 
     this.setInitialErrorMessages();
 
+    if (this.finesSaStore.activeTab() === resolvedTab) {
+      return;
+    }
+
     // Reset existing values/validation in all tab groups
     this.clearSearchForm();
 
-    this.finesSaStore.setActiveTab(tab as FinesSaSearchAccountTab);
+    this.finesSaStore.setActiveTab(resolvedTab);
   }
 
   /**

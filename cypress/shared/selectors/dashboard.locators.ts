@@ -30,6 +30,9 @@ export const DashboardLocators = {
   /** Inputter navigation link to Create and Manage Draft Accounts. */
   createAndManageDraftAccountsLink: '#finesCavInputterLink',
 
+  /** Legacy direct link to Manual Account Creation when exposed on the dashboard. */
+  manualAccountCreationLink: '#finesMacLink',
+
   /** Checker navigation link to Check and Validate Draft Accounts. */
   checkAndValidateDraftAccountsLink: '#finesCavCheckerLink',
 };

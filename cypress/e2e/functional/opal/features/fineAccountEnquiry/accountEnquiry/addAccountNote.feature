@@ -46,6 +46,7 @@ Feature: Account Enquiries – Add Account Note
       Then I should see the header "Mr James GRAHAMADDNOTESURNAME{uniqUpper}" and the URL should contain "details"
 
   Rule: Company account baseline
+
     Background:
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
         | Account_status                      | Submitted                   |

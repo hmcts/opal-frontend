@@ -1,5 +1,6 @@
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { AccountSearchCompanyActions } from '../actions/search/search.companies.actions';
+import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { AccountSearchNavActions } from '../actions/search/search.nav.actions';
 import { AccountDetailsNotesActions } from '../actions/account-details/details.notes.actions';
 import { ResultsActions } from '../actions/search/search.results.actions';
@@ -56,6 +57,7 @@ export class AccountEnquiryFlow {
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCompany = new AccountSearchCompanyActions();
+  private readonly searchCommon = new AccountSearchCommonActions();
   private readonly searchNav = new AccountSearchNavActions();
   private readonly results = new ResultsActions();
   private readonly defendantDetails = new AccountDetailsDefendantActions();
@@ -109,7 +111,17 @@ export class AccountEnquiryFlow {
     logAE('method', 'searchByLastName()');
     logAE('search', 'Searching by last name', { surname });
     this.ensureOnIndividualSearchPage();
-    this.searchIndividuals.searchByLastName(surname);
+    this.resolveAccountNumberFromAlias().then((accountNumber) => {
+      if (accountNumber) {
+        logAE('search', 'Using exact account number for freshly created account', { accountNumber });
+        this.searchCommon.enterAccountNumber(accountNumber);
+        this.searchCommon.clickSearchButton();
+        this.results.assertOnResults();
+        return;
+      }
+
+      this.searchIndividuals.searchByLastName(surname);
+    });
   }
 
   /**
@@ -733,8 +745,18 @@ export class AccountEnquiryFlow {
     this.searchNav.goToCompaniesTab();
     this.ensureOnCompanySearchPage();
     logAE('search', 'Searching by company name', { companyName });
-    this.searchCompany.byCompanyName(companyName);
-    this.results.assertOnResults();
+    this.resolveAccountNumberFromAlias().then((accountNumber) => {
+      if (accountNumber) {
+        logAE('search', 'Using exact account number for freshly created company account', { accountNumber });
+        this.searchCommon.enterAccountNumber(accountNumber);
+        this.searchCommon.clickSearchButton();
+        this.results.assertOnResults();
+        return;
+      }
+
+      this.searchCompany.byCompanyName(companyName);
+      this.results.assertOnResults();
+    });
   }
 
   /**

@@ -2,29 +2,21 @@ import { Routes } from '@angular/router';
 import { FINES_SA_ROUTING_PATHS } from './constants/fines-sa-routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_SA_ROUTING_TITLES } from './constants/fines-sa-routing-titles.constant';
-import { routing as searchRouting } from '../fines-sa-search/routing/fines-sa-search.routes';
 import { finesSaFlowStateGuard } from '../guards/fines-sa-flow-state/fines-sa-flow-state.guard';
-import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { finesSaMinorCreditorAccountsResolver } from './resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
 import {
   finesSaCompanyDefendantAccountsResolver,
   finesSaIndividualDefendantAccountsResolver,
 } from './resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
+import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 
 export const routing: Routes = [
   {
     path: FINES_SA_ROUTING_PATHS.children.search,
-    loadComponent: () => import('../fines-sa-search/fines-sa-search.component').then((c) => c.FinesSaSearchComponent),
-    children: searchRouting,
-    canActivate: [authGuard],
-    canDeactivate: [canDeactivateGuard],
-    data: {
-      title: FINES_SA_ROUTING_TITLES.children.search,
-    },
-    resolve: {
-      title: TitleResolver,
-    },
+    redirectTo: `/${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}`,
+    pathMatch: 'prefix',
   },
   {
     path: FINES_SA_ROUTING_PATHS.children.results,

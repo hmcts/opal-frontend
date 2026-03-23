@@ -112,12 +112,12 @@ export class ManualOffenceDetailsActions {
     }
 
     log('type', `Setting imposition field ${field}`, { index, value });
-    this.typeAndAssert(selector, value, `${field} (imposition ${index + 1})`);
-
     if (field === 'Result code') {
-      cy.get(L.imposition.resultCodeList(index), this.common.getTimeoutOptions()).should('be.visible');
-      cy.get(L.imposition.resultCodeInput(index)).type('{downarrow}{enter}', { force: true });
+      this.typeAutocomplete(selector, L.imposition.resultCodeList(index), value, `${field} (imposition ${index + 1})`);
+      return;
     }
+
+    this.typeAndAssert(selector, value, `${field} (imposition ${index + 1})`);
   }
 
   /**
@@ -604,6 +604,49 @@ export class ManualOffenceDetailsActions {
       });
 
     log('type', `Set ${label}`, { value });
+  }
+
+  /**
+   * Types into an autocomplete input, waits for options, and selects the best match.
+   * Falls back to the first option when a direct text match is not present.
+   * @param inputSelector Selector for the autocomplete input.
+   * @param listboxSelector Selector for the autocomplete listbox.
+   * @param value Value to type and select.
+   * @param label Logical label for logging and assertions.
+   */
+  private typeAutocomplete(inputSelector: string, listboxSelector: string, value: string, label: string): void {
+    const input = cy.get(inputSelector, this.common.getTimeoutOptions()).first().should('exist');
+
+    input.scrollIntoView().clear({ force: true });
+
+    if (value === '') {
+      log('clear', `${label} autocomplete cleared`);
+      input.should('have.value', '');
+      return;
+    }
+
+    input.type(value, { force: true, delay: 10 }).should('have.value', value);
+    cy.get(listboxSelector, this.common.getTimeoutOptions()).should('be.visible');
+
+    cy.get(`${listboxSelector} li`, this.common.getTimeoutOptions()).then(($options) => {
+      const expected = value.toLowerCase();
+      const matchedOption = Array.from($options).find((option) =>
+        (option.textContent ?? '').toLowerCase().includes(expected),
+      );
+
+      if (matchedOption) {
+        cy.wrap(matchedOption).click({ force: true });
+        return;
+      }
+
+      log('warn', `${label} autocomplete did not return a direct match, falling back to first option`, { value });
+      cy.get(inputSelector, this.common.getTimeoutOptions()).type('{downarrow}{enter}', { force: true });
+    });
+
+    cy.get(inputSelector, this.common.getTimeoutOptions()).should(($input) => {
+      const actual = ($input.val() ?? '').toString().toLowerCase();
+      expect(actual, `${label} autocomplete selected value`).to.include(value.toLowerCase());
+    });
   }
 
   /**
