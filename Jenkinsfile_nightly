@@ -41,10 +41,10 @@ properties([
 
 String type = 'angular'
 @Field String opalName = 'opal'
-String product = opalName
+@Field String product = opalName
 String component = 'frontend'
 String failureResult = 'FAILURE'
-String secretKey = 'opal-$'.concat('{env}')
+@Field String secretKey = 'opal-$'.concat('{env}')
 @Field String browserChrome = 'chrome'
 @Field String browserEdge = 'edge'
 @Field String browserFirefox = 'firefox'
@@ -66,7 +66,7 @@ String secretKey = 'opal-$'.concat('{env}')
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
 
-Map<String, List<Map<String, Object>>> baseSecrets = [
+@Field Map<String, List<Map<String, Object>>> baseSecrets = [
   (secretKey): [
     secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
     secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
