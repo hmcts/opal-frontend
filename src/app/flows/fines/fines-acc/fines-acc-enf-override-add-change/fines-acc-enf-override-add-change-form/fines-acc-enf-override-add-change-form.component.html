@@ -1,0 +1,62 @@
+<opal-lib-govuk-heading-with-caption
+  [captionText]="`${partyName} - ${accountNumber}`"
+  [headingText]="pageTitle"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+>
+</opal-lib-govuk-heading-with-caption>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+  <opal-lib-alphagov-accessible-autocomplete
+    [control]="form.get('fenf_account_enforcement_action')"
+    labelText="Select an enforcement override"
+    labelClasses="govuk-fieldset__legend--m"
+    inputId="fenf_account_enforcement_action"
+    inputName="fenf_account_enforcement_action"
+    label="Select an enforcement override"
+    [autoCompleteItems]="enforcementActionOptions"
+    [errors]="formControlErrorMessages['fenf_account_enforcement_action']"
+    [tabIndex]="0"
+  ></opal-lib-alphagov-accessible-autocomplete>
+  @if (form.controls['fenf_account_enforcement_enforcer'].enabled) {
+    <opal-lib-alphagov-accessible-autocomplete
+      [control]="form.get('fenf_account_enforcement_enforcer')"
+      labelText="Enforcer"
+      labelClasses="govuk-label--s"
+      inputId="fenf_account_enforcement_enforcer"
+      inputName="fenf_account_enforcement_enforcer"
+      label="Enforcer"
+      [autoCompleteItems]="enforcerOptions"
+      [errors]="formControlErrorMessages['fenf_account_enforcement_enforcer']"
+      [tabIndex]="1"
+    ></opal-lib-alphagov-accessible-autocomplete>
+  }
+  @if (form.controls['fenf_account_enforcement_lja'].enabled) {
+    <opal-lib-alphagov-accessible-autocomplete
+      [control]="form.get('fenf_account_enforcement_lja')"
+      labelText="Local Justice Area (LJA)"
+      labelClasses="govuk-label--s"
+      inputId="fenf_account_enforcement_lja"
+      inputName="fenf_account_enforcement_lja"
+      label="Local Justice Area (LJA)"
+      [autoCompleteItems]="localJusticeAreaOptions"
+      [errors]="formControlErrorMessages['fenf_account_enforcement_lja']"
+      [tabIndex]="2"
+    ></opal-lib-alphagov-accessible-autocomplete>
+  }
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit" buttonClasses="nested-flow govuk-button--primary">
+        Add override
+      </opal-lib-govuk-button>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details)"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</form>

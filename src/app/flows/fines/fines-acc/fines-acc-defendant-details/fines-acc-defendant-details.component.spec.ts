@@ -68,7 +68,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       getDefendantAccountHistoryAndNotesTabData: vi
         .fn()
         .mockName('OpalFines.getDefendantAccountHistoryAndNotesTabData'),
-      getDefendantAccountEnforcementTabData: vi.fn().mockName('OpalFines.getDefendantAccountEnforcementTabData'),
+      getDefendantAccountEnforcementStatus: vi.fn().mockName('OpalFines.getDefendantAccountEnforcementStatus'),
       getDefendantAccountPaymentTermsLatest: vi.fn().mockName('OpalFines.getDefendantAccountPaymentTermsLatest'),
       getDefendantAccountParty: vi.fn().mockName('OpalFines.getDefendantAccountParty'),
       getParentOrGuardianAccountParty: vi.fn().mockName('OpalFines.getParentOrGuardianAccountParty'),
@@ -87,7 +87,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     mockOpalFinesService.getDefendantAccountFixedPenalty.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountEnforcementTabData.mockReturnValue(
+    mockOpalFinesService.getDefendantAccountEnforcementStatus.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
     );
     mockOpalFinesService.getDefendantAccountPaymentTermsLatest.mockReturnValue(
@@ -158,6 +158,16 @@ describe('FinesAccDefendantDetailsComponent', () => {
     });
   });
 
+  it('should call router.navigate when navigateToAddEnforcementOverridePage is called', () => {
+    component.navigateToAddEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/add`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
   it('should fetch the defendant tab data when fragment is changed to defendant', () => {
     component['refreshFragment$'].next('defendant');
     // Subscribe to trigger the pipe execution
@@ -186,7 +196,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component['refreshFragment$'].next('enforcement');
     // Subscribe to trigger the pipe execution
     component.tabEnforcement$.subscribe();
-    expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
+    expect(mockOpalFinesService.getDefendantAccountEnforcementStatus).toHaveBeenCalled();
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
