@@ -51,4 +51,18 @@ export const routing: Routes = [
     },
     resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
+  {
+    path: FINES_CON_ROUTING_PATHS.children.searchError,
+    loadComponent: () =>
+      import('../consolidate-acc/fines-con-search-error/fines-con-search-error.component').then(
+        (c) => c.FinesConSearchErrorComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard, finesConFlowStateGuard],
+    data: {
+      routePermissionId: [consolidationRootPermissionIds['consolidate']],
+      permission: 'CONSOLIDATE',
+      title: FINES_CON_ROUTING_TITLES.children.searchError,
+    },
+    resolve: { title: TitleResolver },
+  },
 ];

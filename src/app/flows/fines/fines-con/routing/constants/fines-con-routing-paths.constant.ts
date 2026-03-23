@@ -5,5 +5,6 @@ export const FINES_CON_ROUTING_PATHS: IFinesConRoutingPaths = {
   children: {
     selectBusinessUnit: 'select-business-unit',
     consolidateAcc: 'consolidate-accounts',
+    searchError: 'search-error',
   },
 };

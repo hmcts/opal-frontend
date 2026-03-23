@@ -1,0 +1,15 @@
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l">There is a problem</h1>
+  <p class="govuk-body">
+    Reference data and account information cannot be entered together when searching for an account. Search using
+    either:
+  </p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>account number, or</li>
+    @if (defendantType === 'individual') {
+      <li>National Insurance number, or</li>
+    }
+    <li>advanced search</li>
+  </ul>
+  <a class="govuk-link" (click)="goBack($event)" href="">Go back</a>
+</div>
