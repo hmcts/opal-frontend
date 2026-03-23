@@ -4,6 +4,9 @@ import groovy.transform.Field
 import java.time.DayOfWeek
 import java.time.ZonedDateTime
 
+@Field String legacyUrlDevChoice = 'DEV'
+@Field String stringFalse = String.valueOf(Boolean.FALSE)
+
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
     pipelineTriggers([cron('H 07 * * 1-5')]),
@@ -15,6 +18,11 @@ properties([
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
     booleanParam(name: 'RunEdge', defaultValue: false, description: 'Run Edge tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
+    booleanParam(
+      name: 'RunUatTech',
+      defaultValue: false,
+      description: 'Run UAT-Technical stage (staging -> pre-prod legacy checks)'
+    ),
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
     string(
       name: 'TAGS',
@@ -23,7 +31,7 @@ properties([
     ),
     choice(
       name: 'LEGACY_URL',
-      choices: ['PRE-PROD', 'DEV'],
+      choices: ['PRE-PROD', legacyUrlDevChoice],
       description: 'Determines the URL to use for legacy tests.'
     ),
   ])
@@ -32,19 +40,38 @@ properties([
 @Library('Infrastructure')
 
 String type = 'angular'
-String product = 'opal'
+@Field String opalName = 'opal'
+String product = opalName
 String component = 'frontend'
 String failureResult = 'FAILURE'
 String secretKey = 'opal-$'.concat('{env}')
 @Field String browserChrome = 'chrome'
 @Field String browserEdge = 'edge'
 @Field String browserFirefox = 'firefox'
+@Field String smokeStageName = 'Smoke Tests'
+@Field String functionalProdArtifactsPath = 'functional-output/prod/**'
+@Field int zeroIndex = 0
+@Field String legacyGatewayUrlPreProd = 'https://opal.clouddev.online/opal'
+@Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+@Field String launchDarklyApiVersion = '20240415'
+@Field String launchDarklyEnvironmentKey = 'test'
+@Field String launchDarklyFlagKey = 'app-mode'
+@Field String launchDarklyOpalVariationName = opalName
+@Field String launchDarklyLegacyVariationName = 'legacy'
+@Field List<String> launchDarklyVariationOrder = [
+  launchDarklyLegacyVariationName,
+  launchDarklyOpalVariationName,
+]
+@Field String uatTechnicalTagFilter = '(@UAT-Technical) and not @skip'
+@Field int uatHealthCheckIntervalSeconds = 5
+@Field int uatHealthCheckTimeoutMinutes = 1
 
 Map<String, List<Map<String, Object>>> secrets = [
   (secretKey): [
     secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
     secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
     secret('jiraAuthToken', 'JIRA_AUTH_TOKEN'),
+    secret('launch-darkly-api-token', 'LD_API_TOKEN'),
   ],
 ]
 
@@ -61,17 +88,12 @@ static Map<String, Object> secret(String secretName, String envVar) {
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder =
   new uk.gov.hmcts.contino.YarnBuilder(this)
 
-// Resolve any optional nightly tag expression from parameters or inherited environment.
-String resolveNightlyTags() {
-  return (params.TAGS ?: env.TAGS ?: '').trim()
-}
-
 // Configure shared tag-filter environment variables for nightly test runs.
 void configureNightlyTags() {
-  String tagExpression = resolveNightlyTags()
+  String tagExpression = (params.TAGS ?: env.TAGS ?: '').trim()
   env.TAGS = tagExpression
   env.CYPRESS_TAGS = tagExpression
-  env.SKIP_SMOKE = tagExpression ? 'true' : 'false'
+  env.SKIP_SMOKE = tagExpression ? 'true' : stringFalse
 
   if (tagExpression) {
     echo "Running nightly with TAGS=${tagExpression}"
@@ -81,9 +103,11 @@ void configureNightlyTags() {
   }
 }
 
-// Return the preferred browser for generic nightly runs.
-String defaultBrowser() {
-  return browserEdge
+// Set the staging legacy gateway URL used by chart templating.
+void configureStagingLegacyGatewayUrl() {
+  env.STG_OPAL_LEGACY_GATEWAY_URL =
+    params.LEGACY_URL == legacyUrlDevChoice ? legacyGatewayUrlDev : legacyGatewayUrlPreProd
+  echo "STG_OPAL_LEGACY_GATEWAY_URL=${env.STG_OPAL_LEGACY_GATEWAY_URL}"
 }
 
 // Check whether the requested browser binary is available on the Jenkins agent.
@@ -114,7 +138,7 @@ boolean isBrowserInstalled(String browser) {
           ;;
       esac
     """
-  ) == 0
+  ) == zeroIndex
 }
 
 // Emit a prominent banner when the pipeline falls back to a different browser.
@@ -139,7 +163,7 @@ ${browser.toUpperCase()}-SPECIFIC RUNS WILL NOT BE AVAILABLE ON THIS AGENT
 
 // Choose the browser for this run, falling back from Edge to Chrome when needed.
 String resolvePipelineBrowser(String requestedBrowser) {
-  String normalizedBrowser = (requestedBrowser ?: defaultBrowser()).trim().toLowerCase()
+  String normalizedBrowser = (requestedBrowser ?: browserEdge).trim().toLowerCase()
 
   if (normalizedBrowser == browserEdge && !isBrowserInstalled(browserEdge)) {
     if (isBrowserInstalled(browserChrome)) {
@@ -172,11 +196,6 @@ INSTALL ${browser.toUpperCase()} OR DISABLE THE ${browser.toUpperCase()} RUN
   }
 
   return browser
-}
-
-// Archive the shared functional output directory used by nightly stages.
-void archiveFunctionalProdArtifacts() {
-  archiveArtifact('functional-output/prod/**')
 }
 
 // Archive pipeline artifacts without failing when none are present.
@@ -219,6 +238,117 @@ void runNightlyStage(
   }
 }
 
+// Resolve the LaunchDarkly variation index for the requested app-mode variation.
+int resolveLaunchDarklyVariationIndex(String variationName) {
+  int variationIndex = launchDarklyVariationOrder.indexOf(variationName)
+  if (variationIndex < zeroIndex) {
+    error "Unsupported LaunchDarkly variation name '${variationName}'. Expected one of ${launchDarklyVariationOrder}."
+  }
+  return variationIndex
+}
+
+// Patch the LaunchDarkly app-mode flag for the nightly staging environment.
+void patchLaunchDarklyFlagState(boolean enabled, String variationName, String actionMessage) {
+  int variationIndex = resolveLaunchDarklyVariationIndex(variationName)
+  String patchPayload =
+    '{"patch":[' +
+    "{\"op\":\"replace\",\"path\":\"/environments/${launchDarklyEnvironmentKey}/on\",\"value\":${enabled}}," +
+    "{\"op\":\"replace\",\"path\":\"/environments/${launchDarklyEnvironmentKey}/fallthrough/variation\"," +
+    "\"value\":${variationIndex}}" +
+    ']}'
+
+  sh """
+    echo '${actionMessage}'
+    set +x
+    if [ -z "\$LD_API_TOKEN" ]; then
+      echo 'Missing required LaunchDarkly secret env var: LD_API_TOKEN'
+      exit 1
+    fi
+    LD_URL="https://app.launchdarkly.com/api/v2/flags/${product}/${launchDarklyFlagKey}"
+    LD_HTTP_CODE=\$(curl -s -o ld_patch_response.json -w '%{http_code}' -X PATCH \\
+      -H "Authorization: \$LD_API_TOKEN" \\
+      -H "LD-API-Version: ${launchDarklyApiVersion}" \\
+      -H "Content-Type: application/json" \\
+      -d '${patchPayload}' \\
+      "\$LD_URL")
+    LD_CURL_EXIT=\$?
+    echo "LaunchDarkly PATCH HTTP status: \$LD_HTTP_CODE"
+    if [ -s ld_patch_response.json ]; then
+      echo 'LaunchDarkly PATCH response body:'
+      cat ld_patch_response.json
+    fi
+    if [ "\$LD_CURL_EXIT" -ne 0 ]; then
+      echo 'LaunchDarkly PATCH request failed to execute.'
+      exit 1
+    fi
+    if ! echo "\$LD_HTTP_CODE" | grep -Eq '^[0-9]{3}\$'; then
+      echo 'LaunchDarkly PATCH returned an invalid status code.'
+      exit 1
+    fi
+    if [ "\$LD_HTTP_CODE" -lt 200 ] || [ "\$LD_HTTP_CODE" -ge 300 ]; then
+      echo 'LaunchDarkly PATCH failed with non-2xx status.'
+      exit 1
+    fi
+  """
+}
+
+// Switch the staging app-mode flag to the legacy variation for UAT-Technical.
+void setLaunchDarklyFlagToLegacy() {
+  patchLaunchDarklyFlagState(
+    true,
+    launchDarklyLegacyVariationName,
+    'Setting LaunchDarkly flag to legacy for staging...'
+  )
+}
+
+// Restore the staging app-mode flag back to the standard Opal variation.
+void restoreLaunchDarklyFlag() {
+  patchLaunchDarklyFlagState(
+    true,
+    launchDarklyOpalVariationName,
+    'Restoring LaunchDarkly flag to opal for staging...'
+  )
+}
+
+// Probe the nightly staging health endpoint used before running UAT-Technical tests.
+String getHealthCheckStatus() {
+  return sh(
+    script: "curl -s -o /dev/null -w '%{http_code}' '${env.TEST_URL}opal?actionType=getGmasTest' || echo '000'",
+    returnStdout: true
+  ).trim()
+}
+
+// Wait until the staging health endpoint responds successfully after toggling app mode.
+void waitForUatHealthCheck() {
+  timeout(time: uatHealthCheckTimeoutMinutes, unit: 'MINUTES') {
+    script {
+      boolean healthy = false
+      int maxAttempts = Math.max(
+        1,
+        (int) Math.ceil((uatHealthCheckTimeoutMinutes * 60.0d) / uatHealthCheckIntervalSeconds)
+      )
+
+      for (int attemptIndex = zeroIndex; attemptIndex < maxAttempts; attemptIndex++) {
+        String statusCode = healthCheckStatus
+        if (statusCode.startsWith('2')) {
+          echo "Health check OK (HTTP ${statusCode})"
+          healthy = true
+          break
+        }
+
+        int attemptNumber = attemptIndex + 1
+        echo "Health check returned ${statusCode}, waiting ${uatHealthCheckIntervalSeconds}s " +
+          "(attempt ${attemptNumber}/${maxAttempts})..."
+        sleep uatHealthCheckIntervalSeconds
+      }
+
+      if (!healthy) {
+        error 'Health check did not succeed in time'
+      }
+    }
+  }
+}
+
 // Archive updated parallel weight files for reuse by later nightly runs.
 void archiveNightlyWeightArtifacts() {
   script {
@@ -240,6 +370,27 @@ void archiveNightlyWeightArtifacts() {
   }
 }
 
+// Copy generated UAT-Technical report artifacts into a dedicated directory for publishing.
+void prepareUatTechnicalArtifacts(String browserToRun) {
+  sh """
+    UAT_DIR='functional-output/prod/${browserToRun}/uat-technical'
+    UAT_CUCUMBER_DIR="\$UAT_DIR/cucumber"
+    SOURCE_CUCUMBER_DIR='functional-output/prod/${browserToRun}/cucumber'
+    SOURCE_JUNIT_PATH='functional-output/prod/${browserToRun}/${browserToRun}-test-result.xml'
+    mkdir -p "\$UAT_CUCUMBER_DIR"
+
+    if [ -f "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.html" ]; then
+      cp "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.html" "\$UAT_CUCUMBER_DIR/uat-technical-report.html"
+    fi
+    if [ -f "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.ndjson" ]; then
+      cp "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.ndjson" "\$UAT_CUCUMBER_DIR/uat-technical-report.ndjson"
+    fi
+    if [ -f "\$SOURCE_JUNIT_PATH" ]; then
+      cp "\$SOURCE_JUNIT_PATH" "\$UAT_DIR/uat-technical-test-result.xml"
+    fi
+  """
+}
+
 // Run component tests and publish browser-specific reports and screenshots.
 void runComponentStage(
   boolean enabled,
@@ -252,13 +403,58 @@ void runComponentStage(
     try {
       builder.yarn(shouldRunWithZephyr ? 'zephyr:test:opalComponent' : 'test:opalComponent')
     } finally {
-      archiveFunctionalProdArtifacts()
+      archiveArtifact(functionalProdArtifactsPath)
       archiveArtifact("functional-output/screenshots/${browserToRun}/component/**")
       publishHtmlReport(
         "functional-output/component-html/${browserToRun}/",
         'component-report.html',
         "Component Test Report (${browserToRun})"
       )
+    }
+  }
+}
+
+// Run the UAT-Technical staging checks against legacy app mode and publish a dedicated report.
+void runUatTechnicalStage(
+  boolean enabled,
+  String failureResultValue,
+  String browserToRun
+) {
+  runNightlyStage(enabled, 'UAT-Technical', failureResultValue, 'UAT-Technical failed') {
+    boolean launchDarklyFlagPatched = false
+
+    try {
+      echo "Running UAT-Technical scenarios with TAGS=${uatTechnicalTagFilter}"
+      setLaunchDarklyFlagToLegacy()
+      launchDarklyFlagPatched = true
+      waitForUatHealthCheck()
+      sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
+
+      withEnv([
+        "TAGS=${uatTechnicalTagFilter}",
+        "CYPRESS_TAGS=${uatTechnicalTagFilter}",
+        'DEFAULT_APP_MODE=legacy',
+        'LEGACY_ENABLED=true',
+        "BROWSER_TO_RUN=${browserToRun}",
+      ]) {
+        sh 'node scripts/run-yarn-sequence.js test:functional:tags'
+      }
+
+      prepareUatTechnicalArtifacts(browserToRun)
+    } finally {
+      archiveArtifact(functionalProdArtifactsPath)
+      archiveArtifact('functional-output/account_evidence/created-accounts.json')
+      archiveArtifact('functional-output/account_evidence/**')
+      archiveArtifact("functional-output/screenshots/${browserToRun}/**")
+      archiveArtifact("functional-output/prod/${browserToRun}/uat-technical/**")
+      publishHtmlReport(
+        "functional-output/prod/${browserToRun}/uat-technical/cucumber/",
+        'uat-technical-report.html',
+        "UAT-Technical Functional Test Report (${browserToRun})"
+      )
+      if (launchDarklyFlagPatched) {
+        restoreLaunchDarklyFlag()
+      }
     }
   }
 }
@@ -270,14 +466,14 @@ void runSmokeStage(
   uk.gov.hmcts.contino.YarnBuilder builder,
   String browserToRun
 ) {
-  if (enabled && (env.SKIP_SMOKE ?: 'false').toBoolean()) {
-    stage('Smoke Tests') {
+  if (enabled && (env.SKIP_SMOKE ?: stringFalse).toBoolean()) {
+    stage(smokeStageName) {
       echo "Skipping smoke tests because TAGS=${env.TAGS}"
     }
     return
   }
 
-  runNightlyStage(enabled, 'Smoke Tests', failureResultValue, 'Smoke tests failed') {
+  runNightlyStage(enabled, smokeStageName, failureResultValue, 'Smoke tests failed') {
     try {
       builder.yarn('test:smoke')
     } finally {
@@ -304,7 +500,7 @@ void runFunctionalStage(
     try {
       builder.yarn(shouldRunWithZephyr ? 'zephyr:test:functional' : 'test:functional')
     } finally {
-      archiveFunctionalProdArtifacts()
+      archiveArtifact(functionalProdArtifactsPath)
       archiveArtifact("functional-output/screenshots/${browserToRun}/**")
       publishHtmlReport(
         "functional-output/prod/${browserToRun}/cucumber/",
@@ -442,6 +638,7 @@ void setupTestSpecifications() {
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
+  configureStagingLegacyGatewayUrl()
 
   before('akschartsinstall') {
     onPR {
@@ -455,7 +652,7 @@ withNightlyPipeline(type, product, component) {
       echoBrowserMissingBanner(browserFirefox)
     }
     configureNightlyTags()
-    env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: defaultBrowser())
+    env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: browserEdge)
     echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
     performArtifactOperations()
     setupTestSpecifications()
@@ -471,6 +668,8 @@ withNightlyPipeline(type, product, component) {
     echo 'Legacy:' + params.Legacy
     echo 'RunEdge:' + params.RunEdge
     echo 'RunFirefox:' + params.RunFirefox
+    echo 'RunUatTech:' + params.RunUatTech
+    echo 'LegacyUrl:' + params.LEGACY_URL
 
     DayOfWeek today = ZonedDateTime.now().dayOfWeek
     boolean shouldRunWithZephyr = params.ZephyrExecution || today == DayOfWeek.FRIDAY
@@ -505,6 +704,7 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
       shouldRunWithZephyr,
       browserToRun
     )
+    runUatTechnicalStage(params.RunUatTech, failureResult, browserToRun)
     runLegacyStage(params.Legacy, failureResult, yarnBuilder, browserToRun)
     runBrowserStage(
       params.RunEdge,
