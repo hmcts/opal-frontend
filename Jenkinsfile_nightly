@@ -16,7 +16,7 @@ properties([
     booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
     booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
-    booleanParam(name: 'RunEdge', defaultValue: false, description: 'Run Edge tests'),
+    booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
     booleanParam(
       name: 'RunUatTech',
@@ -66,12 +66,11 @@ String secretKey = 'opal-$'.concat('{env}')
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
 
-Map<String, List<Map<String, Object>>> secrets = [
+Map<String, List<Map<String, Object>>> baseSecrets = [
   (secretKey): [
     secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
     secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
     secret('jiraAuthToken', 'JIRA_AUTH_TOKEN'),
-    secret('launch-darkly-api-token', 'LD_API_TOKEN'),
   ],
 ]
 
@@ -88,6 +87,17 @@ static Map<String, Object> secret(String secretName, String envVar) {
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder =
   new uk.gov.hmcts.contino.YarnBuilder(this)
 
+// Build the nightly secret set, only adding LaunchDarkly credentials for UAT-Technical runs.
+Map<String, List<Map<String, Object>>> nightlySecrets() {
+  List<Map<String, Object>> nightlySecretEntries = new ArrayList<>(baseSecrets[secretKey])
+  if (params.RunUatTech) {
+    nightlySecretEntries.add(secret('launch-darkly-api-token', 'LD_API_TOKEN'))
+  }
+  return [
+    (secretKey): nightlySecretEntries,
+  ]
+}
+
 // Configure shared tag-filter environment variables for nightly test runs.
 void configureNightlyTags() {
   String tagExpression = (params.TAGS ?: env.TAGS ?: '').trim()
@@ -103,15 +113,10 @@ void configureNightlyTags() {
   }
 }
 
-// Determine whether this nightly run includes a legacy-mode test flow.
-boolean legacyModeNightlyRun() {
-  return params.Legacy || params.RunUatTech
-}
-
 // Set the staging legacy gateway URL used by chart templating.
 void configureStagingLegacyGatewayUrl() {
   boolean shouldUsePreProdLegacyGateway =
-    legacyModeNightlyRun() && params.LEGACY_URL != legacyUrlDevChoice
+    (params.Legacy || params.RunUatTech) && params.LEGACY_URL != legacyUrlDevChoice
 
   env.STG_OPAL_LEGACY_GATEWAY_URL =
     shouldUsePreProdLegacyGateway ? legacyGatewayUrlPreProd : legacyGatewayUrlDev
@@ -300,24 +305,6 @@ void patchLaunchDarklyFlagState(boolean enabled, String variationName, String ac
   """
 }
 
-// Switch the staging app-mode flag to the legacy variation for UAT-Technical.
-void setLaunchDarklyFlagToLegacy() {
-  patchLaunchDarklyFlagState(
-    true,
-    launchDarklyLegacyVariationName,
-    'Setting LaunchDarkly flag to legacy for staging...'
-  )
-}
-
-// Restore the staging app-mode flag back to the standard Opal variation.
-void restoreLaunchDarklyFlag() {
-  patchLaunchDarklyFlagState(
-    true,
-    launchDarklyOpalVariationName,
-    'Restoring LaunchDarkly flag to opal for staging...'
-  )
-}
-
 // Probe the nightly staging health endpoint used before running UAT-Technical tests.
 String getHealthCheckStatus() {
   String legacyHealthEndpoint = "${env.STG_OPAL_LEGACY_GATEWAY_URL}?actionType=getGmasTest"
@@ -434,7 +421,11 @@ void runUatTechnicalStage(
 
     try {
       echo "Running UAT-Technical scenarios with TAGS=${uatTechnicalTagFilter}"
-      setLaunchDarklyFlagToLegacy()
+      patchLaunchDarklyFlagState(
+        true,
+        launchDarklyLegacyVariationName,
+        'Setting LaunchDarkly flag to legacy for staging...'
+      )
       launchDarklyFlagPatched = true
       waitForUatHealthCheck()
       sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
@@ -462,7 +453,11 @@ void runUatTechnicalStage(
         "UAT-Technical Functional Test Report (${browserToRun})"
       )
       if (launchDarklyFlagPatched) {
-        restoreLaunchDarklyFlag()
+        patchLaunchDarklyFlagState(
+          true,
+          launchDarklyOpalVariationName,
+          'Restoring LaunchDarkly flag to opal for staging...'
+        )
       }
     }
   }
@@ -645,7 +640,7 @@ void setupTestSpecifications() {
 }
 
 withNightlyPipeline(type, product, component) {
-  loadVaultSecrets(secrets)
+  loadVaultSecrets(nightlySecrets())
   env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
   configureStagingLegacyGatewayUrl()
 
@@ -669,13 +664,13 @@ withNightlyPipeline(type, product, component) {
 
   afterAlways('DependencyCheckNightly') {
     String browserToRun = env.BROWSER_TO_RUN
-    String edgeBrowserToRun = params.RunEdge ? requireInstalledBrowser(browserEdge) : browserEdge
+    String chromeBrowserToRun = params.RunChrome ? requireInstalledBrowser(browserChrome) : browserChrome
     String firefoxBrowserToRun = params.RunFirefox ? requireInstalledBrowser(browserFirefox) : browserFirefox
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
     echo 'Functional:' + params.Functional
     echo 'Legacy:' + params.Legacy
-    echo 'RunEdge:' + params.RunEdge
+    echo 'RunChrome:' + params.RunChrome
     echo 'RunFirefox:' + params.RunFirefox
     echo 'RunUatTech:' + params.RunUatTech
     echo 'LegacyUrl:' + params.LEGACY_URL
@@ -716,14 +711,14 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
     runUatTechnicalStage(params.RunUatTech, failureResult, browserToRun)
     runLegacyStage(params.Legacy, failureResult, yarnBuilder, browserToRun)
     runBrowserStage(
-      params.RunEdge,
+      params.RunChrome,
       failureResult,
-      'Edge tests failed',
+      'Chrome tests failed',
       yarnBuilder,
       [
-        stageName   : 'Edge Tests',
-        yarnCommand : 'test:Edge',
-        browserToRun: edgeBrowserToRun,
+        stageName   : 'Chrome Tests',
+        yarnCommand : 'test:Chrome',
+        browserToRun: chromeBrowserToRun,
       ]
     )
     runBrowserStage(
