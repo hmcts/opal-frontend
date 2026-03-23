@@ -15,7 +15,10 @@ const { resolveGenericBrowser } = require('./browser-support');
 const browser = resolveGenericBrowser(process.env.BROWSER_TO_RUN);
 const tagExpression = (process.env.CYPRESS_TAGS || process.env.TAGS || '').trim();
 const hasTagFiltering = Boolean(tagExpression);
-const skipSmoke = String(process.env.SKIP_SMOKE || '').trim().toLowerCase() === 'true';
+const skipSmoke =
+  String(process.env.SKIP_SMOKE || '')
+    .trim()
+    .toLowerCase() === 'true';
 const yarnCmd = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
 
 process.env.BROWSER_TO_RUN = browser;
