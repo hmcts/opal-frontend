@@ -20,6 +20,18 @@ export const AccountSearchLocators = {
   quickSearchHeading: 'h2.govuk-heading-m.govuk-\\!-margin-top-4',
   advancedSearchHeading: 'h2.govuk-heading-m',
 
+  // Results headings and actions
+  resultsHeading: 'h2.govuk-heading-m',
+  addToListButton: 'button.govuk-button[type="button"]',
+  selectedAccountsHint: 'p.govuk-hint',
+
+  // Results table
+  resultsTable: 'table.govuk-table',
+  resultsTableBody: 'table.govuk-table tbody',
+  resultsRows: 'table.govuk-table tbody > tr.govuk-table__row',
+  resultAccountLink: 'td#defendantAccountNumber a.govuk-link',
+  resultNameCell: 'td#defendantName',
+
   // Individuals search fields
   accountNumberInput: '#fcon_search_account_number',
   nationalInsuranceNumberInput: '#fcon_search_account_national_insurance_number',
@@ -55,4 +67,10 @@ export const AccountSearchLocators = {
   searchButton: 'button[buttonId="submitForm"]',
   clearSearchLink: 'a.govuk-link',
   errorSummary: '.govuk-error-summary',
+
+  // Results row helpers
+  resultRowWithAccount: (accountNumber: string) =>
+    `tr.govuk-table__row:has(td#defendantAccountNumber a:contains("${accountNumber}"))`,
+  resultAccountLinkByNumber: (accountNumber: string) =>
+    `td#defendantAccountNumber a.govuk-link:contains("${accountNumber}")`,
 };
