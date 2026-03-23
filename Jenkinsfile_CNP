@@ -87,6 +87,11 @@ String smokeReportFile() {
 String smokeReportName() {
     return "Cucumber Smoke Test Report (${resolvedBrowserToRun()})"
 }
+
+// Return whether smoke execution/report publishing is enabled for this run.
+boolean shouldPublishSmokeReport() {
+    return (env.SKIP_SMOKE ?: 'false').trim().toLowerCase() != 'true'
+}
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
 String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
 String runTagPrefix = 'run_tag:'
@@ -582,11 +587,15 @@ withPipeline(type, product, component) {
         archiveArtifact(functionalArtifactsGlob)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
-        publishHtmlReport(
-        smokeOutputDir(),
-        smokeReportFile(),
-        smokeReportName()
-      )
+        if (shouldPublishSmokeReport()) {
+            publishHtmlReport(
+            smokeOutputDir(),
+            smokeReportFile(),
+            smokeReportName()
+          )
+        } else {
+            echo "Skipping smoke report publishing because SKIP_SMOKE=${env.SKIP_SMOKE}"
+        }
     }
     // Publish HTML and JSON artifacts for dev functional runs
     afterAlways(stageFunctionalDev) {
@@ -599,10 +608,14 @@ withPipeline(type, product, component) {
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
 
-        publishHtmlReport(
-        smokeOutputDir(),
-        smokeReportFile(),
-        smokeReportName()
-      )
+        if (shouldPublishSmokeReport()) {
+            publishHtmlReport(
+            smokeOutputDir(),
+            smokeReportFile(),
+            smokeReportName()
+          )
+        } else {
+            echo "Skipping smoke report publishing because SKIP_SMOKE=${env.SKIP_SMOKE}"
+        }
     }
 }
