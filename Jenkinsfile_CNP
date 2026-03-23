@@ -438,10 +438,13 @@ if (tagLabel) {
     String baseTags = tagLabel.substring(runTagPrefix.length()).trim()
     env.TAGS = baseTags ? "(${baseTags}) and ${skipTagExpression}" : skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
+    env.SKIP_SMOKE = 'true'
     echo "Running scenarios matching TAGS=${env.TAGS}"
+    echo "Skipping smoke tests for tagged run: ${tagLabel}"
 } else {
     env.TAGS = skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
+    env.SKIP_SMOKE = 'false'
     echo "Running all scenarios except @skip (TAGS=${env.TAGS})"
 }
 

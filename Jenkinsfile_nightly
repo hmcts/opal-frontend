@@ -16,6 +16,11 @@ properties([
     booleanParam(name: 'RunEdge', defaultValue: false, description: 'Run Edge tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
+    string(
+      name: 'TAGS',
+      defaultValue: '',
+      description: 'Optional Cypress tag expression for targeted nightly runs. When set, smoke tests are skipped.'
+    ),
     choice(
       name: 'LEGACY_URL',
       choices: ['PRE-PROD', 'DEV'],
@@ -55,6 +60,26 @@ static Map<String, Object> secret(String secretName, String envVar) {
 
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder =
   new uk.gov.hmcts.contino.YarnBuilder(this)
+
+// Resolve any optional nightly tag expression from parameters or inherited environment.
+String resolveNightlyTags() {
+  return (params.TAGS ?: env.TAGS ?: '').trim()
+}
+
+// Configure shared tag-filter environment variables for nightly test runs.
+void configureNightlyTags() {
+  String tagExpression = resolveNightlyTags()
+  env.TAGS = tagExpression
+  env.CYPRESS_TAGS = tagExpression
+  env.SKIP_SMOKE = tagExpression ? 'true' : 'false'
+
+  if (tagExpression) {
+    echo "Running nightly with TAGS=${tagExpression}"
+    echo 'Skipping smoke tests for tagged nightly run.'
+  } else {
+    echo 'Running nightly without tag filtering.'
+  }
+}
 
 // Return the preferred browser for generic nightly runs.
 String defaultBrowser() {
@@ -245,6 +270,13 @@ void runSmokeStage(
   uk.gov.hmcts.contino.YarnBuilder builder,
   String browserToRun
 ) {
+  if (enabled && (env.SKIP_SMOKE ?: 'false').toBoolean()) {
+    stage('Smoke Tests') {
+      echo "Skipping smoke tests because TAGS=${env.TAGS}"
+    }
+    return
+  }
+
   runNightlyStage(enabled, 'Smoke Tests', failureResultValue, 'Smoke tests failed') {
     try {
       builder.yarn('test:smoke')
@@ -422,6 +454,7 @@ withNightlyPipeline(type, product, component) {
     if (!isBrowserInstalled(browserFirefox)) {
       echoBrowserMissingBanner(browserFirefox)
     }
+    configureNightlyTags()
     env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: defaultBrowser())
     echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
     performArtifactOperations()
