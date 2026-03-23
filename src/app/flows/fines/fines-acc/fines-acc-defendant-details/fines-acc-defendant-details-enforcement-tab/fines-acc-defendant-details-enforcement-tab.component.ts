@@ -44,7 +44,8 @@ export class FinesAccDefendantDetailsEnforcementTab {
    * Emits an event to add an enforcement override if the user has the necessary permissions and there is no existing enforcement override result.
    * @returns void
    */
-  public handleAddEnforcementOverride(): void {
+  public handleAddEnforcementOverride(event: Event): void {
+    event.preventDefault();
     if (
       this.hasAccountMaintenancePermission &&
       !this.tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id

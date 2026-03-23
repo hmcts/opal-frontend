@@ -340,12 +340,7 @@
       !tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
     ) {
       <p>
-        <a
-          class="govuk-link"
-          tabindex="0"
-          class="govuk-link govuk-link--no-visited-state"
-          (click)="handleAddEnforcementOverride()"
-          (keyup.enter)="handleAddEnforcementOverride()"
+        <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddEnforcementOverride($event)"
           >Add enforcement override</a
         >
       </p>

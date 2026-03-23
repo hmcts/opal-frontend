@@ -24,9 +24,11 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
   it('should handleAddEnforcementOverride when add enforcement override button is clicked', () => {
     const eventEmitterSpy = vi.spyOn(component.addEnforcementOverride, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
     component.hasAccountMaintenancePermission = true;
     component.tabData.enforcement_override = null; // Ensure there is no existing enforcement override result
-    component.handleAddEnforcementOverride();
+    component.handleAddEnforcementOverride(event);
+    expect(event.preventDefault).toHaveBeenCalled();
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 });

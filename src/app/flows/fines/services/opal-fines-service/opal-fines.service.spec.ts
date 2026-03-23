@@ -58,6 +58,7 @@ import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from '../../fines-acc/fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs.constant';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from './constants/opal-fines-defendant-account-patch-payload-defaults.constant';
+import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -282,14 +283,7 @@ describe('OpalFines', () => {
   it('should send a GET request to enforcers ref data API', () => {
     const mockEnforcers: IOpalFinesEnforcersRefData = {
       count: 1,
-      refData: [
-        {
-          enforcer_id: 101,
-          enforcer_code: 202,
-          name: 'Enforcer One',
-          name_cy: null,
-        },
-      ],
+      refData: [OPAL_FINES_ENFORCER_MOCK],
     };
     const expectedUrl = `${OPAL_FINES_PATHS.enforcersRefData}`;
 
@@ -305,14 +299,7 @@ describe('OpalFines', () => {
   it('should return cached response for enforcers ref data', () => {
     const mockEnforcers: IOpalFinesEnforcersRefData = {
       count: 1,
-      refData: [
-        {
-          enforcer_id: 101,
-          enforcer_code: 202,
-          name: 'Enforcer One',
-          name_cy: null,
-        },
-      ],
+      refData: [OPAL_FINES_ENFORCER_MOCK],
     };
     const expectedUrl = `${OPAL_FINES_PATHS.enforcersRefData}`;
 
@@ -332,12 +319,7 @@ describe('OpalFines', () => {
   });
 
   it('should return the enforcer name and code in a pretty format', () => {
-    const enforcer: IOpalFinesEnforcer = {
-      enforcer_id: 101,
-      enforcer_code: 202,
-      name: 'Enforcer One',
-      name_cy: null,
-    };
+    const enforcer: IOpalFinesEnforcer = OPAL_FINES_ENFORCER_MOCK;
 
     const result = service.getEnforcerPrettyName(enforcer);
 
@@ -928,9 +910,6 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountImpositionsTabData', () => {
-    // const account_id: number = 77;
-    // const business_unit_id: string = '12';
-    // const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK;
 
     service.getDefendantAccountImpositionsTabData().subscribe((response) => {
@@ -974,9 +953,6 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountHistoryAndNotesTabData', () => {
-    // const account_id: number = 77;
-    // const business_unit_id: string = '12';
-    // const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK;
 
     service.getDefendantAccountHistoryAndNotesTabData().subscribe((response) => {
