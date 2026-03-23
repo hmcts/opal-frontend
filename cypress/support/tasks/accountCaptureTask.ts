@@ -7,8 +7,8 @@
  * - UI submit: status is "Created" for new drafts, "Updated" for resubmits; updatedAt is set on updates only.
  * - Failures: go to accounts.failed with httpStatus + errorSummary; no created entry is written.
  */
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 
 type Source = 'api' | 'ui';
 type SourceCombined = `${Source}+${Source}`;

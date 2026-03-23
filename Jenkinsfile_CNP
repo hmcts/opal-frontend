@@ -1,4 +1,5 @@
 #!groovy
+/* groovylint-disable CompileStatic */
 import groovy.transform.Field
 import uk.gov.hmcts.contino.GithubAPI
 
@@ -10,6 +11,10 @@ String type = 'angular'
 String product = opalName
 String component = 'frontend'
 @Field String masterProjectName = 'HMCTS/opal-frontend/master'
+@Field String browserChrome = 'chrome'
+@Field String browserEdge = 'edge'
+@Field String browserFirefox = 'firefox'
+@Field List<String> cachedPrLabels = []
 
 // Secret key for KeyVault lookups
 String secretKey = 'opal-$'.concat('{env}')
@@ -32,23 +37,56 @@ String skipLabelComponent = 'skip_opal_component'
 @Field String copyFunctionalToPipelineCmd = "cp -r ${weightsRoot}/${functionalWeights} ${pipelineWeightsDir}/"
 String smokeXmlReport = 'cypress/reports/smokeXmlReport.html'
 String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
-String defaultBrowser = 'chrome'
-String browserToRun = (env.BROWSER_TO_RUN ?: defaultBrowser).trim().toLowerCase()
-String functionalOutputDir =
-  browserToRun == defaultBrowser
-    ? 'functional-output/prod/cucumber/'
-    : "functional-output/prod/${browserToRun}/cucumber/"
-String functionalReportFile =
-  browserToRun == defaultBrowser
-    ? 'functional-report.html'
-    : "${browserToRun}-report.html"
-String functionalReportName =
-  browserToRun == defaultBrowser
-    ? 'Cucumber Functional Test Report'
-    : "Cucumber Functional Test Report (${browserToRun})"
-String smokeOutputDir = 'smoke-output/prod/cucumber/'
-String smokeReportFile = 'smoke-report.html'
-String smokeReportName = 'Cucumber Smoke Test Report'
+
+// Build an Azure KeyVault secret entry
+static Map<String, Object> secret(String secretName, String envVar) {
+    return [$class     : 'AzureKeyVaultSecret',
+    secretType : 'Secret',
+    name       : secretName,
+    version    : '',
+    envVariable: envVar
+  ]
+}
+
+// Return the preferred browser for generic pipeline runs.
+String defaultBrowser() {
+    return browserEdge
+}
+
+// Normalize the browser selected for the current pipeline run.
+String resolvedBrowserToRun() {
+    return (env.BROWSER_TO_RUN ?: defaultBrowser()).trim().toLowerCase()
+}
+
+// Resolve the functional report directory for the active browser.
+String functionalOutputDir() {
+    return "functional-output/prod/${resolvedBrowserToRun()}/cucumber/"
+}
+
+// Resolve the functional report filename for the active browser.
+String functionalReportFile() {
+    return "${resolvedBrowserToRun()}-report.html"
+}
+
+// Build the functional report display name for the active browser.
+String functionalReportName() {
+    return "Cucumber Functional Test Report (${resolvedBrowserToRun()})"
+}
+
+// Resolve the smoke report directory for the active browser.
+String smokeOutputDir() {
+    return "smoke-output/prod/${resolvedBrowserToRun()}/cucumber/"
+}
+
+// Return the smoke report filename.
+String smokeReportFile() {
+    return 'smoke-report.html'
+}
+
+// Build the smoke report display name for the active browser.
+String smokeReportName() {
+    return "Cucumber Smoke Test Report (${resolvedBrowserToRun()})"
+}
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
 String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
 String runTagPrefix = 'run_tag:'
@@ -63,19 +101,10 @@ Map<String, Object> secrets = [
   ],
 ]
 
-// Build an Azure KeyVault secret entry
-static Map<String, Object> secret(String secretName, String envVar) {
-    return [$class     : 'AzureKeyVaultSecret',
-    secretType : 'Secret',
-    name       : secretName,
-    version    : '',
-    envVariable: envVar
-  ]
-}
-
 // Yarn helper for build/test commands
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+// Archive pipeline artifacts without failing when none are present.
 void archiveArtifact(String path) {
     archiveArtifacts artifacts: path, allowEmptyArchive: true
 }
@@ -92,15 +121,87 @@ void publishHtmlReport(String dir, String files, String name) {
   ]
 }
 
+// Check whether the requested browser binary is available on the Jenkins agent.
+boolean isBrowserInstalled(String browser) {
+    return sh(
+    returnStatus: true,
+    script: """
+      case '${browser}' in
+        ${browserEdge})
+          command -v microsoft-edge >/dev/null 2>&1 ||
+          command -v microsoft-edge-stable >/dev/null 2>&1 ||
+          command -v msedge >/dev/null 2>&1 ||
+          [ -x '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge' ]
+          ;;
+        ${browserChrome})
+          command -v google-chrome >/dev/null 2>&1 ||
+          command -v google-chrome-stable >/dev/null 2>&1 ||
+          command -v chrome >/dev/null 2>&1 ||
+          [ -x '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ]
+          ;;
+        ${browserFirefox})
+          command -v firefox >/dev/null 2>&1 ||
+          command -v firefox-bin >/dev/null 2>&1 ||
+          [ -x '/Applications/Firefox.app/Contents/MacOS/firefox' ]
+          ;;
+        *)
+          exit 1
+          ;;
+      esac
+    """
+  ) == 0
+}
+
+// Emit a prominent banner when the pipeline falls back to a different browser.
+void echoBrowserFallbackBanner(String missingBrowser, String fallbackBrowser) {
+    echo """\
+========================================================================
+${missingBrowser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+SWITCHING TO ${fallbackBrowser.toUpperCase()} FOR THIS PIPELINE RUN
+========================================================================
+""".stripIndent()
+}
+
+// Emit a prominent banner when a browser is unavailable on the current agent.
+void echoBrowserMissingBanner(String browser) {
+    echo """\
+========================================================================
+${browser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+${browser.toUpperCase()}-SPECIFIC RUNS WILL NOT BE AVAILABLE ON THIS AGENT
+========================================================================
+""".stripIndent()
+}
+
+// Choose the browser for this run, falling back from Edge to Chrome when needed.
+String resolvePipelineBrowser() {
+    String requestedBrowser = resolvedBrowserToRun()
+
+    if (requestedBrowser == browserEdge && !isBrowserInstalled(browserEdge)) {
+        if (isBrowserInstalled(browserChrome)) {
+            echoBrowserFallbackBanner(browserEdge, browserChrome)
+            return browserChrome
+        }
+
+        error '''\
+========================================================================
+EDGE IS NOT INSTALLED ON THIS JENKINS AGENT
+CHROME IS ALSO NOT AVAILABLE AS A FALLBACK
+INSTALL A SUPPORTED BROWSER OR SET BROWSER_TO_RUN EXPLICITLY
+========================================================================
+'''.stripIndent()
+    }
+
+    return requestedBrowser
+}
+
 // Resolve project/job name (PR vs master)
 String getProjectName() {
     String projectPrefix = 'HMCTS/opal-frontend/'
-    GithubAPI githubApi = new GithubAPI(this)
     echo "Branch name: ${env.BRANCH_NAME}"
-    echo "Labels: ${githubApi.getLabels(env.BRANCH_NAME)}"
-    List<String> candidateLabels = []
-    candidateLabels.addAll(githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-'))
-    candidateLabels.addAll(githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'rel:opal-frontend-pr-'))
+    echo "Labels: ${cachedPrLabels}"
+    List<String> candidateLabels = cachedPrLabels.findAll { String label ->
+        label.startsWith('opal-frontend-pr-') || label.startsWith('rel:opal-frontend-pr-')
+    }
     for (label in candidateLabels) {
         java.util.regex.Matcher matcher = (label =~ /opal-frontend-pr-(\d+)/)
         if (matcher.find()) {
@@ -111,12 +212,11 @@ String getProjectName() {
 }
 // Collect test/skip labels for routing
 List<String> getProjectLabels() {
-    GithubAPI githubApi = new GithubAPI(this)
     List<String> testLabels = []
-    for (String label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'test_')) {
+    for (String label in cachedPrLabels.findAll { String cachedLabel -> cachedLabel.startsWith('test_') }) {
         testLabels.add(label)
     }
-    for (String label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'skip_')) {
+    for (String label in cachedPrLabels.findAll { String cachedLabel -> cachedLabel.startsWith('skip_') }) {
         testLabels.add(label)
     }
     return testLabels
@@ -242,9 +342,8 @@ void determineDevEnvironmentDeployment() {
     env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
     env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
 
-    GithubAPI githubApi = new GithubAPI(this)
-    if (githubApi.checkForLabel(env.BRANCH_NAME, 'enable_keep_helm')) {
-        for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'enable_opal_')) {
+    if (cachedPrLabels.contains('enable_keep_helm')) {
+        for (label in cachedPrLabels.findAll { String cachedLabel -> cachedLabel.startsWith('enable_opal_') }) {
             //Fines service
             if (label ==~ /enable_opal_fines_service.*/) {
                 env.DEV_ENABLE_OPAL_FINES_SERVICE = true
@@ -303,10 +402,18 @@ properties([
 ])
 
 // --- Dev legacy toggle (PR label driven) ---
-GithubAPI githubApiForMode = new GithubAPI(this)
-boolean legacyEnabled = githubApiForMode.checkForLabel(env.BRANCH_NAME, 'enable_legacy_mode')
 String changeId = env.CHANGE_ID?.trim()
 boolean isPR = changeId != null && !changeId.empty
+GithubAPI githubApi = new GithubAPI(this)
+
+try {
+    cachedPrLabels = githubApi.getLabels(env.BRANCH_NAME)
+} catch (hudson.AbortException e) {
+    error 'Unable to read PR labels from GitHub, so label-driven pipeline behavior cannot be resolved. ' +
+      "GitHub label lookup failed with: ${e.message}"
+}
+
+boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 
 // Safe defaults (current behaviour)
 env.DEV_DEFAULT_APP_MODE = opalName
@@ -326,21 +433,27 @@ echo "DEV_DEFAULT_APP_MODE=${env.DEV_DEFAULT_APP_MODE}"
 echo "DEV_OPAL_LEGACY_GATEWAY_URL=${env.DEV_OPAL_LEGACY_GATEWAY_URL}"
 echo "OPAL_LOG_LEVEL=${env.OPAL_LOG_LEVEL}"
 
-GithubAPI githubApi = new GithubAPI(this)
-List<String> allLabels = githubApi.getLabels(env.BRANCH_NAME)
-
 // Find the first label like: run_tag:<expression>
-String tagLabel = allLabels.find { String label -> label.startsWith(runTagPrefix) }
+String tagLabel = cachedPrLabels.find { String label -> label.startsWith(runTagPrefix) }
 String skipTagExpression = 'not @skip'
+String baseTags = tagLabel ? tagLabel.substring(runTagPrefix.length()).trim() : ''
+
+// Guard: legacy mode must explicitly scope tests via run_tag:<expression>
+if (legacyEnabled && isPR && !baseTags) {
+    error 'Legacy mode requires a populated run_tag:<expression> label ' +
+      '(e.g. run_tag:@UAT-Technical) to avoid running the full suite.'
+}
 
 if (tagLabel) {
-    String baseTags = tagLabel.substring(runTagPrefix.length()).trim()
     env.TAGS = baseTags ? "(${baseTags}) and ${skipTagExpression}" : skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
+    env.SKIP_SMOKE = 'true'
     echo "Running scenarios matching TAGS=${env.TAGS}"
+    echo "Skipping smoke tests for tagged run: ${tagLabel}"
 } else {
     env.TAGS = skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
+    env.SKIP_SMOKE = 'false'
     echo "Running all scenarios except @skip (TAGS=${env.TAGS})"
 }
 
@@ -364,6 +477,11 @@ withPipeline(type, product, component) {
 
     // Restore previous parallelization weights and set test spec globs
     afterSuccess('checkout') {
+        if (!isBrowserInstalled(browserFirefox)) {
+            echoBrowserMissingBanner(browserFirefox)
+        }
+        env.BROWSER_TO_RUN = resolvePipelineBrowser()
+        echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
         performArtifactOperations()
         setupTestSpecifications()
         script {
@@ -412,7 +530,11 @@ withPipeline(type, product, component) {
                     currentBuild.result = 'FAILURE'
         } finally {
                     archiveArtifact(functionalArtifactsGlob)
-                    publishHtmlReport('functional-output/component-report/', 'index.html', 'Component Test Report')
+                    publishHtmlReport(
+                    "functional-output/component-html/${resolvedBrowserToRun()}/",
+                    'component-report.html',
+                    "Component Test Report (${resolvedBrowserToRun()})"
+                  )
                 }
             }
         }
@@ -453,34 +575,34 @@ withPipeline(type, product, component) {
     // Publish HTML and JSON artifacts for staging functional runs
     afterAlways(stageFunctionalStg) {
         publishHtmlReport(
-        functionalOutputDir,
-        functionalReportFile,
-        functionalReportName
+        functionalOutputDir(),
+        functionalReportFile(),
+        functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
         publishHtmlReport(
-        smokeOutputDir,
-        smokeReportFile,
-        smokeReportName
+        smokeOutputDir(),
+        smokeReportFile(),
+        smokeReportName()
       )
     }
     // Publish HTML and JSON artifacts for dev functional runs
     afterAlways(stageFunctionalDev) {
         publishHtmlReport(
-        functionalOutputDir,
-        functionalReportFile,
-        functionalReportName
+        functionalOutputDir(),
+        functionalReportFile(),
+        functionalReportName()
       )
         archiveArtifact(functionalArtifactsGlob)
         archiveArtifact(accountArtifactPath)
         archiveArtifact(accountEvidenceArtifacts)
 
         publishHtmlReport(
-        smokeOutputDir,
-        smokeReportFile,
-        smokeReportName
+        smokeOutputDir(),
+        smokeReportFile(),
+        smokeReportName()
       )
     }
 }
