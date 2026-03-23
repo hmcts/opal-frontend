@@ -114,6 +114,159 @@ When('I go to the Defendant details section and the header is {string}', (expect
   flow().goToDefendantDetailsAndAssert(expectedWithUniq);
 });
 
+Then('I should see the convert to company account action', () => {
+  log('assert', 'Convert to company account action is visible');
+  flow().assertConvertToCompanyActionVisible();
+});
+
+Then('I should see the convert to individual account action', () => {
+  log('assert', 'Convert to individual account action is visible');
+  flow().assertConvertToIndividualActionVisible();
+});
+
+Then('I should not see the convert to company account action', () => {
+  log('assert', 'Convert to company account action is absent');
+  flow().assertConvertToCompanyActionNotPresent();
+});
+
+Then('I should not see the convert to company account text', () => {
+  log('assert', 'Convert to company account text is absent from the visible action');
+  flow().assertConvertToCompanyActionTextNotPresent();
+});
+
+When('I start converting the account to a company account', () => {
+  log('step', 'Start converting account to company');
+  flow().openConvertToCompanyConfirmation();
+});
+
+Then(
+  'I should see the convert to company confirmation screen for defendant {string}',
+  (expectedCaptionName: string) => {
+    const expectedCaptionNameWithUniq = applyUniqPlaceholder(expectedCaptionName);
+    log('assert', 'Convert to company confirmation screen is visible', {
+      expectedCaptionName: expectedCaptionNameWithUniq,
+    });
+    flow().assertOnConvertToCompanyConfirmation(expectedCaptionNameWithUniq);
+  },
+);
+
+When('I continue converting the account to a company account', () => {
+  log('step', 'Continue converting account to company');
+  flow().confirmConvertToCompanyAccount();
+});
+
+Then('I should be on the Company details convert route', () => {
+  log('assert', 'Company details convert route is active');
+  flow().assertOnCompanyDetailsConvertRoute();
+});
+
+When('I cancel converting the account to a company account', () => {
+  log('step', 'Cancel converting account to company');
+  flow().cancelConvertToCompanyAccount();
+});
+
+Then('the Company details form should be pre-populated with:', (table: DataTable) => {
+  const expectedFieldValues = Object.fromEntries(
+    Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [fieldName, applyUniqPlaceholder(fieldValue)]),
+  );
+  log('assert', 'Company details form is pre-populated', expectedFieldValues);
+  flow().assertCompanyDetailsPrefilledValues(expectedFieldValues);
+});
+
+When('I start converting the account to an individual account', () => {
+  log('step', 'Start converting account to individual');
+  flow().openConvertToIndividualConfirmation();
+});
+
+Then(
+  'I should see the convert to individual confirmation screen for company {string}',
+  (expectedCaptionName: string) => {
+    const expectedCaptionNameWithUniq = applyUniqPlaceholder(expectedCaptionName);
+    log('assert', 'Convert to individual confirmation screen is visible', {
+      expectedCaptionName: expectedCaptionNameWithUniq,
+    });
+    flow().assertOnConvertToIndividualConfirmation(expectedCaptionNameWithUniq);
+  },
+);
+
+When('I continue converting the account to an individual account', () => {
+  log('step', 'Continue converting account to individual');
+  flow().confirmConvertToIndividualAccount();
+});
+
+Then('I should be on the Defendant details convert route', () => {
+  log('assert', 'Defendant details convert route is active');
+  flow().assertOnDefendantDetailsConvertRoute();
+});
+
+When('I cancel converting the account to an individual account', () => {
+  log('step', 'Cancel converting account to individual');
+  flow().cancelConvertToIndividualAccount();
+});
+
+Then('the Defendant details form should be pre-populated with:', (table: DataTable) => {
+  const expectedFieldValues = Object.fromEntries(
+    Object.entries(rowsHashSafe(table)).map(([fieldName, fieldValue]) => [fieldName, applyUniqPlaceholder(fieldValue)]),
+  );
+  log('assert', 'Defendant details form is pre-populated', expectedFieldValues);
+  flow().assertDefendantDetailsPrefilledValues(expectedFieldValues);
+});
+
+When('I complete converting the account to a company with company name {string}', (companyName: string) => {
+  const companyNameWithUniq = applyUniqPlaceholder(companyName);
+  log('step', 'Complete converting account to company', { companyName: companyNameWithUniq });
+  flow().completeConvertToCompany(companyNameWithUniq);
+});
+
+When(
+  'I complete converting the account to an individual with title {string}, first name {string}, and last name {string}',
+  (title: string, firstName: string, lastName: string) => {
+    const firstNameWithUniq = applyUniqPlaceholder(firstName);
+    const lastNameWithUniq = applyUniqPlaceholder(lastName);
+    log('step', 'Complete converting account to individual', {
+      title,
+      firstName: firstNameWithUniq,
+      lastName: lastNameWithUniq,
+    });
+    flow().completeConvertToIndividual({
+      title,
+      firstName: firstNameWithUniq,
+      lastName: lastNameWithUniq,
+    });
+  },
+);
+
+Then('I should see the account conversion success message {string}', (expected: string) => {
+  log('assert', 'Account conversion success message is visible', { expected });
+  flow().assertAccountConversionSuccessMessage(expected);
+});
+
+Then('I should see the company summary card', () => {
+  log('assert', 'Company summary card is visible');
+  flow().assertCompanySummaryVisible();
+});
+
+Then('I should not see the company summary card', () => {
+  log('assert', 'Company summary card is absent');
+  flow().assertCompanySummaryNotPresent();
+});
+
+Then('I should see the defendant summary card', () => {
+  log('assert', 'Defendant summary card is visible');
+  flow().assertDefendantSummaryVisible();
+});
+
+Then('I should not see the defendant summary card', () => {
+  log('assert', 'Defendant summary card is absent');
+  flow().assertDefendantSummaryNotPresent();
+});
+
+Then('I should see the primary email address contains {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Primary email address contains', { expected: expectedWithUniq });
+  flow().assertPrimaryEmailContains(expectedWithUniq);
+});
+
 /**
  * @step Navigates to the Parent or guardian details section and validates the header text.
  *

@@ -125,6 +125,12 @@ export const AccountNavDetailsLocators = {
     addCommentsLink: 'a.govuk-link[href*="comments"], a.govuk-link:contains("Add comments")',
   },
 
+  /** Page-level banner messages rendered above the account details header. */
+  banners: {
+    success: 'opal-lib-moj-alert[type="success"]',
+    successText: 'opal-lib-moj-alert-content-text',
+  },
+
   // ──────────────────────────────
   // Shell-level widgets
   // ──────────────────────────────

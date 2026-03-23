@@ -179,6 +179,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     }
   }
 
+  private hasAccountMaintenancePermissionInBusinessUnit(): boolean {
+    return this.permissionsService.hasBusinessUnitPermissionAccess(
+      FINES_PERMISSIONS['account-maintenance'],
+      Number(this.accountStore.business_unit_id()!),
+      this.userState.business_unit_users,
+    );
+  }
+
   /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
@@ -391,14 +399,20 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * @param partyType
    */
   public navigateToAmendPartyDetailsPage(partyType: string): void {
-    if (
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['account-maintenance'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
+    if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
       this['router'].navigate([`../party/${partyType}/amend`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
+  }
+
+  public navigateToConvertAccountPage(targetPartyType: string): void {
+    if (this.hasAccountMaintenancePermissionInBusinessUnit() && targetPartyType) {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${targetPartyType}`], {
         relativeTo: this.activatedRoute,
       });
     } else {

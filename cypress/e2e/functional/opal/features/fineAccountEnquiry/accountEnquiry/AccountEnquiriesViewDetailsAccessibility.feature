@@ -23,8 +23,13 @@ Feature: Account Enquiries - View Account Details Accessibility
     ## Check Accessibility on Search Results Page
     Then I check the page for accessibility
     And I select the latest published account and verify the header is "Mr John ACCDETAILSURNAME{uniqUpper}"
-    ## Check Accessibility on Account Details Page
+    And I go to the Defendant details section and the header is "Defendant details"
+    And I should see the convert to company account action
+    ## Check Accessibility on Defendant Details Page
     Then I check the page for accessibility
+    When I start converting the account to a company account
+    Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
+    And I check the page for accessibility
 
   @JIRA-KEY:POT-3117
   Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
@@ -41,6 +46,12 @@ Feature: Account Enquiries - View Account Details Accessibility
     When I search for the account by company name "Accdetail comp{uniq}"
     # Check Accessibility on Company Search Results Page
     Then I check the page for accessibility
-    # Check Accessibility on Company Account Details Page
+    # Check Accessibility on Company Defendant Details Page
     And I select the latest published account and verify the header is "Accdetail comp{uniqUpper}"
+    And I go to the Defendant details section and the header is "Company details"
+    And I should see the convert to individual account action
+    And I should not see the convert to company account text
     Then I check the page for accessibility
+    When I start converting the account to an individual account
+    Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
+    And I check the page for accessibility

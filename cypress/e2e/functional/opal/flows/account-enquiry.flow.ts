@@ -17,6 +17,7 @@ import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
+import { AccountConvertActions } from '../actions/account-details/convert.account.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
@@ -71,6 +72,7 @@ export class AccountEnquiryFlow {
   private readonly editCompanyDetailsActions = new EditCompanyDetailsActions();
   private readonly editParentGuardianActions = new EditParentGuardianDetailsActions();
   private readonly paymentTerms = new AccountDetailsPaymentTermsActions();
+  private readonly accountConvert = new AccountConvertActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -211,6 +213,223 @@ export class AccountEnquiryFlow {
     logAE('navigate', 'Navigating to Defendant tab and asserting section header', { headerText });
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader(headerText);
+  }
+
+  /**
+   * Asserts the Defendant tab shows the convert-to-company action.
+   */
+  public assertConvertToCompanyActionVisible(): void {
+    logAE('method', 'assertConvertToCompanyActionVisible()');
+    this.defendantDetails.assertConvertToCompanyActionVisible();
+  }
+
+  /**
+   * Asserts the Defendant tab shows the convert-to-individual action.
+   */
+  public assertConvertToIndividualActionVisible(): void {
+    logAE('method', 'assertConvertToIndividualActionVisible()');
+    this.defendantDetails.assertConvertToIndividualActionVisible();
+  }
+
+  /**
+   * Asserts the Defendant tab does not show the convert-to-company action.
+   */
+  public assertConvertToCompanyActionNotPresent(): void {
+    logAE('method', 'assertConvertToCompanyActionNotPresent()');
+    this.defendantDetails.assertConvertToCompanyActionNotPresent();
+  }
+
+  /**
+   * Asserts the visible convert action is not the company-convert label.
+   */
+  public assertConvertToCompanyActionTextNotPresent(): void {
+    logAE('method', 'assertConvertToCompanyActionTextNotPresent()');
+    this.defendantDetails.assertConvertToCompanyActionTextNotPresent();
+  }
+
+  /**
+   * Opens the convert-to-company confirmation page from the Defendant tab.
+   */
+  public openConvertToCompanyConfirmation(): void {
+    logAE('method', 'openConvertToCompanyConfirmation()');
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.startConvertToCompanyAccount();
+  }
+
+  /**
+   * Opens the convert-to-individual confirmation page from the Defendant tab.
+   */
+  public openConvertToIndividualConfirmation(): void {
+    logAE('method', 'openConvertToIndividualConfirmation()');
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.startConvertToIndividualAccount();
+  }
+
+  /**
+   * Asserts the convert-to-company confirmation page.
+   *
+   * @param expectedCaptionName - Expected defendant name shown in the caption.
+   */
+  public assertOnConvertToCompanyConfirmation(expectedCaptionName: string): void {
+    logAE('method', 'assertOnConvertToCompanyConfirmation()', { expectedCaptionName });
+    this.accountConvert.assertOnConvertToCompanyConfirmation(expectedCaptionName);
+  }
+
+  /**
+   * Confirms the convert-to-company action.
+   */
+  public confirmConvertToCompanyAccount(): void {
+    logAE('method', 'confirmConvertToCompanyAccount()');
+    this.accountConvert.confirmConvertToCompany();
+  }
+
+  /**
+   * Cancels the convert-to-company action.
+   */
+  public cancelConvertToCompanyAccount(): void {
+    logAE('method', 'cancelConvertToCompanyAccount()');
+    this.accountConvert.cancelConvertToCompany();
+  }
+
+  /**
+   * Asserts the convert-to-individual confirmation page.
+   *
+   * @param expectedCaptionName - Expected company name shown in the caption.
+   */
+  public assertOnConvertToIndividualConfirmation(expectedCaptionName: string): void {
+    logAE('method', 'assertOnConvertToIndividualConfirmation()', { expectedCaptionName });
+    this.accountConvert.assertOnConvertToIndividualConfirmation(expectedCaptionName);
+  }
+
+  /**
+   * Confirms the convert-to-individual action.
+   */
+  public confirmConvertToIndividualAccount(): void {
+    logAE('method', 'confirmConvertToIndividualAccount()');
+    this.accountConvert.confirmConvertToIndividual();
+  }
+
+  /**
+   * Cancels the convert-to-individual action.
+   */
+  public cancelConvertToIndividualAccount(): void {
+    logAE('method', 'cancelConvertToIndividualAccount()');
+    this.accountConvert.cancelConvertToIndividual();
+  }
+
+  /**
+   * Asserts the Company details form contains the expected pre-populated values.
+   *
+   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
+   */
+  public assertCompanyDetailsPrefilledValues(expectedFieldValues: Record<string, string>): void {
+    logAE('method', 'assertCompanyDetailsPrefilledValues()', expectedFieldValues);
+    this.editCompanyDetailsActions.assertPrefilledFieldValues(expectedFieldValues);
+  }
+
+  /**
+   * Asserts the convert flow lands on the Company details convert route.
+   */
+  public assertOnCompanyDetailsConvertRoute(): void {
+    logAE('method', 'assertOnCompanyDetailsConvertRoute()');
+    this.editCompanyDetailsActions.assertOnConvertRoute();
+  }
+
+  /**
+   * Asserts the convert flow lands on the Defendant details convert route.
+   */
+  public assertOnDefendantDetailsConvertRoute(): void {
+    logAE('method', 'assertOnDefendantDetailsConvertRoute()');
+    this.editDefendantDetailsActions.assertOnConvertRoute();
+  }
+
+  /**
+   * Asserts the Defendant details form contains the expected pre-populated values.
+   *
+   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
+   */
+  public assertDefendantDetailsPrefilledValues(expectedFieldValues: Record<string, string>): void {
+    logAE('method', 'assertDefendantDetailsPrefilledValues()', expectedFieldValues);
+    this.editDefendantDetailsActions.assertPrefilledFieldValues(expectedFieldValues);
+  }
+
+  /**
+   * Completes the convert-to-company form by providing a company name and saving the form.
+   *
+   * @param companyName - Company name to use for the converted account.
+   */
+  public completeConvertToCompany(companyName: string): void {
+    logAE('method', 'completeConvertToCompany()', { companyName });
+    this.editCompanyDetailsActions.editCompanyName(companyName);
+    this.editCompanyDetailsActions.saveChanges();
+  }
+
+  /**
+   * Completes the convert-to-individual form by filling the required personal details and saving.
+   *
+   * @param details - Title and name fields required for the converted individual account.
+   * @param details.title - Title to select for the converted individual account.
+   * @param details.firstName - First name to enter for the converted individual account.
+   * @param details.lastName - Last name to enter for the converted individual account.
+   */
+  public completeConvertToIndividual(details: { title: string; firstName: string; lastName: string }): void {
+    logAE('method', 'completeConvertToIndividual()', details);
+    this.editDefendantDetailsActions.selectTitle(details.title);
+    this.editDefendantDetailsActions.updateFirstName(details.firstName);
+    this.editDefendantDetailsActions.updateSurname(details.lastName);
+    this.editDefendantDetailsActions.saveChanges();
+  }
+
+  /**
+   * Asserts the account details success banner contains the expected conversion message.
+   *
+   * @param expected - Expected banner text.
+   */
+  public assertAccountConversionSuccessMessage(expected: string): void {
+    logAE('method', 'assertAccountConversionSuccessMessage()', { expected });
+    this.detailsNav.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the company summary card is visible in the Defendant tab.
+   */
+  public assertCompanySummaryVisible(): void {
+    logAE('method', 'assertCompanySummaryVisible()');
+    this.editCompanyDetailsActions.assertCompanySummaryVisible();
+  }
+
+  /**
+   * Asserts the company summary card is not visible in the Defendant tab.
+   */
+  public assertCompanySummaryNotPresent(): void {
+    logAE('method', 'assertCompanySummaryNotPresent()');
+    this.editCompanyDetailsActions.assertCompanySummaryNotPresent();
+  }
+
+  /**
+   * Asserts the defendant summary card is visible in the Defendant tab.
+   */
+  public assertDefendantSummaryVisible(): void {
+    logAE('method', 'assertDefendantSummaryVisible()');
+    this.defendantDetails.assertDefendantSummaryVisible();
+  }
+
+  /**
+   * Asserts the defendant summary card is not visible in the Defendant tab.
+   */
+  public assertDefendantSummaryNotPresent(): void {
+    logAE('method', 'assertDefendantSummaryNotPresent()');
+    this.defendantDetails.assertDefendantSummaryNotPresent();
+  }
+
+  /**
+   * Asserts the primary email address shown in the contact card contains the expected value.
+   *
+   * @param expected - Expected email text.
+   */
+  public assertPrimaryEmailContains(expected: string): void {
+    logAE('method', 'assertPrimaryEmailContains()', { expected });
+    this.defendantDetails.assertPrimaryEmailContains(expected);
   }
 
   /**

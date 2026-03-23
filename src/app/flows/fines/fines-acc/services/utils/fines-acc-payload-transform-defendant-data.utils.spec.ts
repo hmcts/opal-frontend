@@ -809,8 +809,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
     });
 
-    it('should handle company data with individual flag correctly when partyType is specified', () => {
-      // Test edge case: organisation_flag is false but partyType is "company"
+    it('should ignore organisation-only fields when the source is flagged as individual', () => {
       const mockMixedData = {
         ...mockDefendantData,
         defendant_account_party: {
@@ -828,10 +827,124 @@ describe('transformDefendantAccountPartyPayload', () => {
 
       const result = transformDefendantAccountPartyPayload(mockMixedData, 'company', true);
 
-      // Should respect partyType parameter over organisation_flag
-      expect(result.facc_party_add_amend_convert_organisation_name).toBe('Override Company');
+      // Organisation-only fields should not be carried across from an individual source record.
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(false);
       expect(result.facc_party_add_amend_convert_title).toBeNull();
       expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+    });
+
+    it('should preserve only the shared company-compatible fields when converting an individual account to company', () => {
+      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'company', true);
+
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull();
+      expect(result.facc_party_add_amend_convert_surname).toBeNull();
+      expect(result.facc_party_add_amend_convert_dob).toBeNull();
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBeNull();
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBeNull();
+
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_address_line_2).toBe('Flat 2B');
+      expect(result.facc_party_add_amend_convert_address_line_3).toBeNull();
+      expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe('sarah.thompson@example.com');
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe('sarah.t@example.com');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe('07123 456789');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe('01234 567890');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe('09876 543210');
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe('XY21 ABC');
+    });
+
+    it('should preserve only shared fields when converting a company account to individual', () => {
+      const mockCompanyData = {
+        ...mockDefendantData,
+        defendant_account_party: {
+          ...mockDefendantData.defendant_account_party,
+          party_details: {
+            ...mockDefendantData.defendant_account_party.party_details,
+            organisation_flag: true,
+            organisation_details: {
+              organisation_name: 'Convert Me Ltd',
+              organisation_aliases: [
+                {
+                  alias_id: 'ORG-1',
+                  sequence_number: 1,
+                  organisation_name: 'Convert Alias Ltd',
+                },
+              ],
+            },
+            individual_details: null,
+          },
+          employer_details: null,
+        },
+      };
+
+      const result = transformDefendantAccountPartyPayload(mockCompanyData, 'individual', true);
+
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(false);
+
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull();
+      expect(result.facc_party_add_amend_convert_surname).toBeNull();
+      expect(result.facc_party_add_amend_convert_dob).toBeNull();
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBeNull();
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_reference).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_email_address).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_telephone_number).toBeNull();
+
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_address_line_2).toBe('Flat 2B');
+      expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe('sarah.thompson@example.com');
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe('sarah.t@example.com');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe('07123 456789');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe('01234 567890');
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe('09876 543210');
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe('XY21 ABC');
+    });
+
+    it('should trim non-debtor-only fields when converting a non-debtor company account to individual', () => {
+      const mockCompanyData = {
+        ...mockDefendantData,
+        defendant_account_party: {
+          ...mockDefendantData.defendant_account_party,
+          is_debtor: false,
+          party_details: {
+            ...mockDefendantData.defendant_account_party.party_details,
+            organisation_flag: true,
+            organisation_details: {
+              organisation_name: 'Convert Me Ltd',
+              organisation_aliases: [],
+            },
+            individual_details: null,
+          },
+          employer_details: null,
+        },
+      };
+
+      const result = transformDefendantAccountPartyPayload(mockCompanyData, 'individual', false);
+
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBeNull();
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBeNull();
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBeNull();
+      expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBeNull();
+      expect(result.facc_party_add_amend_convert_language_preferences_hearing_language).toBeNull();
     });
   });
 });
