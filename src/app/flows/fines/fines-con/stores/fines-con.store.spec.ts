@@ -8,6 +8,7 @@ import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from '../select-business-unit/f
 import { FINES_CON_SEARCH_ACCOUNT_STATE } from '../consolidate-acc/fines-con-search-account/constants/fines-con-search-account-state.constant';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK } from '../consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-account-number.mock';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_MOCK } from '../consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-individuals.mock';
+import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK } from '../consolidate-acc/fines-con-search-result/mocks/fines-con-search-result-defendant-accounts-formatting.mock';
 
 describe('FinesConStore', () => {
   let store: InstanceType<typeof FinesConStore>;
@@ -134,7 +135,6 @@ describe('FinesConStore', () => {
 
     expect(store.searchAccountForm()).toEqual(FINES_CON_SEARCH_ACCOUNT_STATE);
     expect(store.searchAccountForm().fcon_search_account_number).toBeNull();
-    expect(store.selectedAccountIds()).toEqual([]);
   });
 
   it('should add selected account ids uniquely', () => {
@@ -142,6 +142,15 @@ describe('FinesConStore', () => {
     store.addSelectedAccountIds([12, 13]);
 
     expect(store.selectedAccountIds()).toEqual([11, 12, 13]);
+  });
+
+  it('should preserve cached results when resetting search account form', () => {
+    store.updateDefendantResults(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK, []);
+
+    store.resetSearchAccountForm();
+
+    expect(store.individualResults()).toEqual(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK);
+    expect(store.companyResults()).toEqual([]);
   });
 
   it('should preserve search account form data when updating', () => {

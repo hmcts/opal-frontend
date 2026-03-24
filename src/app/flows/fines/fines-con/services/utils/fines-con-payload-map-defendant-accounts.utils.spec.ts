@@ -49,6 +49,40 @@ describe('fines-con-payload-map-defendant-accounts utils', () => {
     );
   });
 
+  it('should map enforcement using fallback properties', () => {
+    const mapped = mapDefendantAccounts([
+      {
+        defendantAccountId: '77',
+        lastEnforcementAction: 'reminder',
+      },
+    ] as never);
+
+    expect(mapped[0]).toEqual(
+      expect.objectContaining({
+        'Account ID': 77,
+        ENF: 'reminder',
+      }),
+    );
+  });
+
+  it('should default collection order to hyphen when no supported flag is true', () => {
+    const mapped = mapDefendantAccounts([
+      {
+        defendantAccountId: '88',
+        collectionOrder: false,
+        has_collection_order: null,
+        hasCollectionOrder: null,
+      },
+    ] as never);
+
+    expect(mapped[0]).toEqual(
+      expect.objectContaining({
+        'Account ID': 88,
+        CO: '-',
+      }),
+    );
+  });
+
   it('should build checks map from snake_case and camelCase IDs and ignore missing IDs', () => {
     const result = buildChecksByAccountId(FINES_CON_PAYLOAD_MAP_DEFENDANT_ACCOUNTS_CHECKS_MIXED_IDS_MOCK);
 
