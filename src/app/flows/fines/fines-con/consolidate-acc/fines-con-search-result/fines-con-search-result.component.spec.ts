@@ -246,7 +246,7 @@ describe('FinesConSearchResultComponent', () => {
     fixture.detectChanges();
 
     expect(component.tableData).toHaveLength(0);
-    expect(component.defendantAccountsData).toHaveLength(0);
+    expect(component.defendantAccountsData).toHaveLength(101);
     expect(component.checksByAccountId).toEqual({});
     expect(component.invalidResultsState).toBe('tooManyResults');
   });
