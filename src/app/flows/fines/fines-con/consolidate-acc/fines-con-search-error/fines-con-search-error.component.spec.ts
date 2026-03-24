@@ -48,7 +48,8 @@ describe('FinesConSearchErrorComponent', () => {
   });
 
   it('should navigate back to consolidate accounts search when goBack is called', () => {
-    component.goBack();
+    const event = new Event('click');
+    component.goBack(event);
 
     expect(routerSpy.navigate).toHaveBeenCalledWith([FINES_CON_ROUTING_PATHS.children.consolidateAcc], {
       relativeTo: component['activatedRoute'].parent,

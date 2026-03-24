@@ -27,7 +27,8 @@ export class FinesConSearchErrorComponent {
   /**
    * Navigates back to the consolidate accounts page (Search tab).
    */
-  public goBack(): void {
+  public goBack(event: Event): void {
+    event.preventDefault();
     this.router.navigate([FINES_CON_ROUTING_PATHS.children.consolidateAcc], {
       relativeTo: this.activatedRoute.parent,
       fragment: 'search',

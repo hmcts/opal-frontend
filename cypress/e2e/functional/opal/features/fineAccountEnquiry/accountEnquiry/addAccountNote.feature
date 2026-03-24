@@ -1,3 +1,4 @@
+@JIRA-LABEL:account-enquiry
 Feature: Account Enquiries – Add Account Note
   As a caseworker
   I want to record and discard defendant account notes safely
@@ -24,22 +25,22 @@ Feature: Account Enquiries – Add Account Note
       When I search for the account by last name "GrahamAddNoteSurname{uniq}" and open the latest result
       Then I should see the page header contains "Mr James GRAHAMADDNOTESURNAME{uniqUpper}"
 
-    @PO-771 @807
+    @JIRA-STORY:PO-771 @JIRA-STORY:PO-807 @JIRA-KEY:POT-3080
     Scenario: Saving a defendant account note returns to account details
       When I record an account note "Valid test account note"
       Then I should see the header "Mr James GRAHAMADDNOTESURNAME{uniqUpper}" and the URL should contain "details"
 
-    @PO-771 @807
+    @JIRA-STORY:PO-771 @JIRA-STORY:PO-807 @JIRA-KEY:POT-3081
     Scenario: Cancelling an empty account note keeps the defendant summary
       When I start an account note and cancel without saving
       Then I should see the header "Mr James GRAHAMADDNOTESURNAME{uniqUpper}" and the URL should contain "details"
 
-    @PO-771 @807
+    @JIRA-STORY:PO-771 @JIRA-STORY:PO-807 @JIRA-KEY:POT-3082
     Scenario: Cancelling a populated account note discards the draft
       When I start an account note with "This is a test account note for validation" and cancel
       Then I should see the header containing text "Mr James GRAHAMADDNOTESURNAME{uniqUpper}"
 
-    @PO-771 @807
+    @JIRA-STORY:PO-771 @JIRA-STORY:PO-807 @JIRA-KEY:POT-3083
     Scenario: Navigating back from a populated account note discards the draft
       When I start an account note with "This is a test account note for back button" and confirm browser back
       Then I should see the header "Mr James GRAHAMADDNOTESURNAME{uniqUpper}" and the URL should contain "details"
@@ -59,18 +60,22 @@ Feature: Account Enquiries – Add Account Note
       When I open the company account details for "AccNote comp{uniq}"
       Then I should see the account header contains "AccNote comp{uniqUpper}"
 
+    @JIRA-KEY:POT-3084
     Scenario: Saving a company account note returns to account details
       When I record an account note "Valid test account note"
       Then the URL should contain "details"
 
+    @JIRA-KEY:POT-3085
     Scenario: Cancelling an empty company account note keeps the summary
       When I start an account note and cancel without saving
       Then the URL should contain "details"
 
+    @JIRA-KEY:POT-3086
     Scenario: Cancelling a populated company account note discards the draft
       When I start an account note with "This is a test account note for validation" and cancel
       Then I should see the header containing text "AccNote comp{uniqUpper}"
 
+    @JIRA-KEY:POT-3087
     Scenario: Navigating back from a populated company account note discards the draft
       When I start an account note with "This is a test account note for back button" and confirm browser back
       Then I should see the header "AccNote comp{uniqUpper}" and the URL should contain "details"
