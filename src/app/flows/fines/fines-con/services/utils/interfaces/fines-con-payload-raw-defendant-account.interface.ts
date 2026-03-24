@@ -17,4 +17,6 @@ export interface IFinesConPayloadRawDefendantAccount extends IFinesConSearchResu
   hasPayingParentGuardian: boolean | null;
   nationalInsuranceNumber: string | null;
   prosecutorCaseReference: string | null;
+  organisationFlag?: boolean | null;
+  organisationName?: string | null;
 }
