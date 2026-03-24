@@ -5,7 +5,7 @@ export interface IFinesConSearchResultDefendantAccount extends IOpalFinesDefenda
   last_enforcement?: string | null;
   has_paying_parent_guardian?: boolean | null;
   checks?: {
-    errors?: Array<{ reference?: string; message?: string }>;
-    warnings?: Array<{ reference?: string; message?: string }>;
-  } | null;
+    errors: Array<{ reference: string; message: string }> | [];
+    warnings: Array<{ reference: string; message: string }> | [];
+  };
 }

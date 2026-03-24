@@ -1,11 +1,12 @@
-@PO-777
+@JIRA-LABEL:account-enquiry
+@JIRA-STORY:PO-777
 Feature: View Defendant Account Summary - Add Comments
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
     And I clear all approved accounts
 
-  @PO-777
+  @JIRA-STORY:PO-777 @JIRA-KEY:POT-3173
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality
     # AC1 - Create → set Publishing Pending → search → open → verify header
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
@@ -52,7 +53,7 @@ Feature: View Defendant Account Summary - Add Comments
       | Line 2  | Line2 Test   |
       | Line 3  | Line3 Test   |
 
-  @PO-777
+  @JIRA-STORY:PO-777 @JIRA-KEY:POT-3174
   Scenario: Complete View Defendant Company Account Summary and Comments functionality
     # AC4 - Create & publish a company account then view header summary
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
@@ -93,7 +94,7 @@ Feature: View Defendant Account Summary - Add Comments
       | Line 2  | Company Line2   |
       | Line 3  | Company Line3   |
 
-  @PO-777
+  @JIRA-STORY:PO-777 @JIRA-KEY:POT-3175
   Scenario: Complete View Defendant Adult or Youth with Parent Guardian to Pay Account Summary and Comments functionality
     # Create & publish a pgToPay account then view header summary
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
@@ -135,7 +136,7 @@ Feature: View Defendant Account Summary - Add Comments
       | Line 2  | Parent Guardian Line2   |
       | Line 3  | Parent Guardian Line3   |
 
-  @PO-1112
+  @JIRA-STORY:PO-1112 @JIRA-KEY:POT-3176
   Scenario: As a user I can view account details of a Parent/Guardian account
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status                          | Submitted                      |

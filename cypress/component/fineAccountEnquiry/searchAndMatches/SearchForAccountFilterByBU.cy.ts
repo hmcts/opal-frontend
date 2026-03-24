@@ -14,6 +14,10 @@ import { FinesSaSearchFilterBusinessUnitComponent } from 'src/app/flows/fines/fi
 // Unit-test refData (resolver payload)
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('Filter by Business Unit (CT)', () => {
   let resolverPayload: typeof OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
   let preselectedIds: number[];
@@ -111,63 +115,71 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC1c ----------------
 
-  it('AC1c: shows tabs, master label, Fines list alphabetical (A→Z), and Save/Cancel controls', () => {
-    setupComponent();
+  it(
+    'AC1c: shows tabs, master label, Fines list alphabetical (A→Z), and Save/Cancel controls',
+    { tags: buildTags('@JIRA-KEY:POT-3748') },
+    () => {
+      setupComponent();
 
-    // Tabs exist by visible text
-    cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.finesTabText).should('exist');
-    cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.confiscationTabText).should('exist');
+      // Tabs exist by visible text
+      cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.finesTabText).should('exist');
+      cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.confiscationTabText).should('exist');
 
-    // Master checkbox label (Fines)
-    cy.get(DOM_ELEMENTS.masterCheckboxLabel)
-      .invoke('text')
-      .then((t) => expect(t.trim()).to.eq(DOM_ELEMENTS.finesMasterText));
+      // Master checkbox label (Fines)
+      cy.get(DOM_ELEMENTS.masterCheckboxLabel)
+        .invoke('text')
+        .then((t) => expect(t.trim()).to.eq(DOM_ELEMENTS.finesMasterText));
 
-    // Fines BU labels in the table
-    getRowLabels().then(($labels) => {
-      const actual = extractLabels($labels);
-      expect(norm(actual), 'Fines members match').to.deep.equal(norm(expectedFinesNames));
-      expect(actual, 'Fines alphabetical (A→Z)').to.deep.equal(norm(actual));
-    });
-
-    // Controls
-    cy.get(DOM_ELEMENTS.saveButton)
-      .invoke('text')
-      .then((t) => {
-        expect(t.trim()).to.match(/^Save selection/);
+      // Fines BU labels in the table
+      getRowLabels().then(($labels) => {
+        const actual = extractLabels($labels);
+        expect(norm(actual), 'Fines members match').to.deep.equal(norm(expectedFinesNames));
+        expect(actual, 'Fines alphabetical (A→Z)').to.deep.equal(norm(actual));
       });
-    cy.get(DOM_ELEMENTS.cancelLink).should('have.text', 'Cancel');
-  });
+
+      // Controls
+      cy.get(DOM_ELEMENTS.saveButton)
+        .invoke('text')
+        .then((t) => {
+          expect(t.trim()).to.match(/^Save selection/);
+        });
+      cy.get(DOM_ELEMENTS.cancelLink).should('have.text', 'Cancel');
+    },
+  );
 
   // ---------------- AC1ci ----------------
 
-  it('AC1ci: all business units are selected when filter is set to "All business units" (Fines tab)', () => {
-    // Preselect all Fines IDs
-    preselectedIds = resolverPayload.refData
-      .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
-      .map((bu) => bu.business_unit_id);
+  it(
+    'AC1ci: all business units are selected when filter is set to "All business units" (Fines tab)',
+    { tags: buildTags('@JIRA-KEY:POT-3749') },
+    () => {
+      // Preselect all Fines IDs
+      preselectedIds = resolverPayload.refData
+        .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
+        .map((bu) => bu.business_unit_id);
 
-    setupComponent();
+      setupComponent();
 
-    getRowCheckboxes()
-      .should('have.length', preselectedIds.length)
-      .each(($input) => {
-        expect(($input[0] as HTMLInputElement).checked, 'row is checked').to.eq(true);
-      });
+      getRowCheckboxes()
+        .should('have.length', preselectedIds.length)
+        .each(($input) => {
+          expect(($input[0] as HTMLInputElement).checked, 'row is checked').to.eq(true);
+        });
 
-    // “n of n selected”
-    cy.get(DOM_ELEMENTS.selectedCounter)
-      .invoke('text')
-      .then((t) => {
-        const txt = t.trim();
-        const n = preselectedIds.length;
-        expect(txt).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
-      });
-  });
+      // “n of n selected”
+      cy.get(DOM_ELEMENTS.selectedCounter)
+        .invoke('text')
+        .then((t) => {
+          const txt = t.trim();
+          const n = preselectedIds.length;
+          expect(txt).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
+        });
+    },
+  );
 
   // ---------------- AC2a ----------------
 
-  it('AC2a: shows two tabs – Fines and Confiscation', () => {
+  it('AC2a: shows two tabs – Fines and Confiscation', { tags: buildTags('@JIRA-KEY:POT-3750') }, () => {
     setupComponent();
     cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.finesTabText).should('exist');
     cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.confiscationTabText).should('exist');
@@ -175,174 +187,202 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2 (Fines) ----------------
 
-  it('AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z', () => {
-    setupComponent();
-    clickTabByText(DOM_ELEMENTS.finesTabText);
-
-    getRowLabels().then(($labels) => {
-      const actual = extractLabels($labels);
-      expect(norm(actual), 'Fines membership').to.deep.equal(norm(expectedFinesNames));
-      actual.forEach((label) => expect(expectedFinesNames, 'label equals BU name').to.include(label));
-      expect(actual, 'Fines alphabetical').to.deep.equal(norm(actual));
-    });
-  });
-
-  // ---------------- AC2 (Confiscation) ----------------
-
-  it('AC2aii/2b/2c (Confiscation): only Confiscation units, labels equal names, alphabetical A→Z', () => {
-    setupComponent();
-    // Drive fragment to switch tab in CT
-    fragment$.next('confiscation');
-
-    cy.wrap(null).then(() => {
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('exist');
+  it(
+    'AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z',
+    { tags: buildTags('@JIRA-KEY:POT-3751') },
+    () => {
+      setupComponent();
+      clickTabByText(DOM_ELEMENTS.finesTabText);
 
       getRowLabels().then(($labels) => {
         const actual = extractLabels($labels);
-
-        // membership + exact names (ignoring order)
-        expect(norm(actual), 'confiscation membership/names match').to.deep.equal(norm(expectedConfNames));
-
-        // alphabetical
-        expect(actual, 'confiscation alphabetical (A→Z)').to.deep.equal(norm(actual));
+        expect(norm(actual), 'Fines membership').to.deep.equal(norm(expectedFinesNames));
+        actual.forEach((label) => expect(expectedFinesNames, 'label equals BU name').to.include(label));
+        expect(actual, 'Fines alphabetical').to.deep.equal(norm(actual));
       });
-    });
-  });
+    },
+  );
+
+  // ---------------- AC2 (Confiscation) ----------------
+
+  it(
+    'AC2aii/2b/2c (Confiscation): only Confiscation units, labels equal names, alphabetical A→Z',
+    { tags: buildTags('@JIRA-KEY:POT-3752') },
+    () => {
+      setupComponent();
+      // Drive fragment to switch tab in CT
+      fragment$.next('confiscation');
+
+      cy.wrap(null).then(() => {
+        cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('exist');
+
+        getRowLabels().then(($labels) => {
+          const actual = extractLabels($labels);
+
+          // membership + exact names (ignoring order)
+          expect(norm(actual), 'confiscation membership/names match').to.deep.equal(norm(expectedConfNames));
+
+          // alphabetical
+          expect(actual, 'confiscation alphabetical (A→Z)').to.deep.equal(norm(actual));
+        });
+      });
+    },
+  );
 
   // ---------------- AC3 (Fines select-all) ----------------
 
-  it('AC3a (Fines): master checkbox selects all fines units and counter shows n of n', () => {
-    preselectedIds = [];
-    setupComponent();
+  it(
+    'AC3a (Fines): master checkbox selects all fines units and counter shows n of n',
+    { tags: buildTags('@JIRA-KEY:POT-3753') },
+    () => {
+      preselectedIds = [];
+      setupComponent();
 
-    clickTabByText(DOM_ELEMENTS.finesTabText);
-    const n = expectedFinesNames.length;
+      clickTabByText(DOM_ELEMENTS.finesTabText);
+      const n = expectedFinesNames.length;
 
-    // Toggle ON via label
-    cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).click();
+      // Toggle ON via label
+      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).click();
 
-    // All checked
-    getRowCheckboxes()
-      .should('have.length', n)
-      .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
-
-    // Counter "n of n"
-    cy.get(DOM_ELEMENTS.selectedCounter)
-      .invoke('text')
-      .then((txt) => {
-        expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
-      });
-  });
-
-  it('AC3ai (Fines): unticking master checkbox clears all fines units and counter shows 0 of n', () => {
-    preselectedIds = resolverPayload.refData
-      .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
-      .map((bu) => bu.business_unit_id);
-
-    setupComponent();
-
-    clickTabByText(DOM_ELEMENTS.finesTabText);
-    const n = expectedFinesNames.length;
-
-    // Toggle OFF
-    cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).click();
-
-    // All unchecked
-    getRowCheckboxes()
-      .should('have.length', n)
-      .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(false));
-
-    // Counter "0 of n"
-    cy.get(DOM_ELEMENTS.selectedCounter)
-      .invoke('text')
-      .then((txt) => {
-        expect(txt.trim()).to.match(new RegExp(`^\\s*0\\s+of\\s+${n}\\s+selected\\s*$`));
-      });
-  });
-
-  // ---------------- AC4 (Confiscation select-all) ----------------
-
-  it('AC4a (Confiscation): master checkbox selects all confiscation units and counter shows n of n', () => {
-    preselectedIds = [];
-    setupComponent();
-
-    fragment$.next('confiscation');
-    cy.wrap(null).then(() => {
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('exist');
-
-      const n = expectedConfNames.length;
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).click();
-
+      // All checked
       getRowCheckboxes()
         .should('have.length', n)
         .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
 
+      // Counter "n of n"
       cy.get(DOM_ELEMENTS.selectedCounter)
         .invoke('text')
         .then((txt) => {
           expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
         });
-    });
-  });
+    },
+  );
 
-  it('AC4ai (Confiscation): unticking master checkbox clears all confiscation units and counter shows 0 of n', () => {
-    preselectedIds = resolverPayload.refData
-      .filter((bu) => String(bu.opal_domain).toLowerCase() === 'confiscation')
-      .map((bu) => bu.business_unit_id);
+  it(
+    'AC3ai (Fines): unticking master checkbox clears all fines units and counter shows 0 of n',
+    { tags: buildTags('@JIRA-KEY:POT-3754') },
+    () => {
+      preselectedIds = resolverPayload.refData
+        .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
+        .map((bu) => bu.business_unit_id);
 
-    setupComponent();
+      setupComponent();
 
-    fragment$.next('confiscation');
-    cy.wrap(null).then(() => {
-      const n = expectedConfNames.length;
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).click();
+      clickTabByText(DOM_ELEMENTS.finesTabText);
+      const n = expectedFinesNames.length;
 
+      // Toggle OFF
+      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).click();
+
+      // All unchecked
       getRowCheckboxes()
         .should('have.length', n)
         .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(false));
 
+      // Counter "0 of n"
       cy.get(DOM_ELEMENTS.selectedCounter)
         .invoke('text')
         .then((txt) => {
           expect(txt.trim()).to.match(new RegExp(`^\\s*0\\s+of\\s+${n}\\s+selected\\s*$`));
         });
-      cy.log('AC4ai – all unchecked');
-    });
-  });
+    },
+  );
+
+  // ---------------- AC4 (Confiscation select-all) ----------------
+
+  it(
+    'AC4a (Confiscation): master checkbox selects all confiscation units and counter shows n of n',
+    { tags: buildTags('@JIRA-KEY:POT-3755') },
+    () => {
+      preselectedIds = [];
+      setupComponent();
+
+      fragment$.next('confiscation');
+      cy.wrap(null).then(() => {
+        cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('exist');
+
+        const n = expectedConfNames.length;
+        cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).click();
+
+        getRowCheckboxes()
+          .should('have.length', n)
+          .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
+
+        cy.get(DOM_ELEMENTS.selectedCounter)
+          .invoke('text')
+          .then((txt) => {
+            expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
+          });
+      });
+    },
+  );
+
+  it(
+    'AC4ai (Confiscation): unticking master checkbox clears all confiscation units and counter shows 0 of n',
+    { tags: buildTags('@JIRA-KEY:POT-3756') },
+    () => {
+      preselectedIds = resolverPayload.refData
+        .filter((bu) => String(bu.opal_domain).toLowerCase() === 'confiscation')
+        .map((bu) => bu.business_unit_id);
+
+      setupComponent();
+
+      fragment$.next('confiscation');
+      cy.wrap(null).then(() => {
+        const n = expectedConfNames.length;
+        cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).click();
+
+        getRowCheckboxes()
+          .should('have.length', n)
+          .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(false));
+
+        cy.get(DOM_ELEMENTS.selectedCounter)
+          .invoke('text')
+          .then((txt) => {
+            expect(txt.trim()).to.match(new RegExp(`^\\s*0\\s+of\\s+${n}\\s+selected\\s*$`));
+          });
+        cy.log('AC4ai – all unchecked');
+      });
+    },
+  );
 
   // ---------------- AC5 (Save count across tabs) ----------------
 
-  it('AC5: Save button count shows total across Fines + Confiscation and updates dynamically', () => {
-    setupComponent();
+  it(
+    'AC5: Save button count shows total across Fines + Confiscation and updates dynamically',
+    { tags: buildTags('@JIRA-KEY:POT-3757') },
+    () => {
+      setupComponent();
 
-    // Start on Fines – 0 selected
-    assertSaveCount(0);
+      // Start on Fines – 0 selected
+      assertSaveCount(0);
 
-    // Tick two Fines rows
-    ensureAtLeastNRows(2);
-    getRowCheckboxes().eq(0).check({ force: true });
-    assertSaveCount(1);
-    getRowCheckboxes().eq(1).check({ force: true });
-    assertSaveCount(2);
+      // Tick two Fines rows
+      ensureAtLeastNRows(2);
+      getRowCheckboxes().eq(0).check({ force: true });
+      assertSaveCount(1);
+      getRowCheckboxes().eq(1).check({ force: true });
+      assertSaveCount(2);
 
-    // Switch to Confiscation and tick one more
-    switchToConfiscation();
-    getRowCheckboxes().first().check({ force: true });
-    assertSaveCount(3);
+      // Switch to Confiscation and tick one more
+      switchToConfiscation();
+      getRowCheckboxes().first().check({ force: true });
+      assertSaveCount(3);
 
-    // Uncheck it -> total back to 2
-    getRowCheckboxes().first().uncheck({ force: true });
-    assertSaveCount(2);
+      // Uncheck it -> total back to 2
+      getRowCheckboxes().first().uncheck({ force: true });
+      assertSaveCount(2);
 
-    // Back to Fines; total should persist
-    clickTabByText(DOM_ELEMENTS.finesTabText);
-    cy.then(() => {
-      fragment$.next('fines');
-      window.location.hash = '#fines';
-      window.dispatchEvent(new HashChangeEvent('hashchange'));
-    });
-    assertSaveCount(2);
-  });
+      // Back to Fines; total should persist
+      clickTabByText(DOM_ELEMENTS.finesTabText);
+      cy.then(() => {
+        fragment$.next('fines');
+        window.location.hash = '#fines';
+        window.dispatchEvent(new HashChangeEvent('hashchange'));
+      });
+      assertSaveCount(2);
+    },
+  );
 
   // ============ AC6 (error when saving with no selection) ============
 
@@ -366,42 +406,50 @@ describe('Filter by Business Unit (CT)', () => {
     });
   };
 
-  it('AC6a (Fines): shows an error when clicking Save with no business units selected', () => {
-    // Start clean (no preselectedIds)
-    preselectedIds = [];
-    setupComponent();
+  it(
+    'AC6a (Fines): shows an error when clicking Save with no business units selected',
+    { tags: buildTags('@JIRA-KEY:POT-3758') },
+    () => {
+      // Start clean (no preselectedIds)
+      preselectedIds = [];
+      setupComponent();
 
-    // Sanity: Save shows (0)
-    assertSaveCount(0);
+      // Sanity: Save shows (0)
+      assertSaveCount(0);
 
-    // Click Save with nothing selected
-    clickSave();
+      // Click Save with nothing selected
+      clickSave();
 
-    // Error summary appears with message
-    assertErrorSummaryVisible();
+      // Error summary appears with message
+      assertErrorSummaryVisible();
 
-    // Still on Fines tab (header unchanged)
-    cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).should('be.visible');
-  });
+      // Still on Fines tab (header unchanged)
+      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).should('be.visible');
+    },
+  );
 
-  it('AC6b (Confiscation): shows an error when clicking Save with no business units selected', () => {
-    preselectedIds = [];
-    setupComponent();
+  it(
+    'AC6b (Confiscation): shows an error when clicking Save with no business units selected',
+    { tags: buildTags('@JIRA-KEY:POT-3759') },
+    () => {
+      preselectedIds = [];
+      setupComponent();
 
-    // Switch to Confiscation
-    fragment$.next('confiscation');
-    cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('be.visible');
+      // Switch to Confiscation
+      fragment$.next('confiscation');
+      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('be.visible');
 
-    // Sanity: Save shows (0)
-    assertSaveCount(0);
+      // Sanity: Save shows (0)
+      assertSaveCount(0);
 
-    // Click Save with nothing selected
-    clickSave();
+      // Click Save with nothing selected
+      clickSave();
 
-    // Error summary appears with a message
-    assertErrorSummaryVisible();
+      // Error summary appears with a message
+      assertErrorSummaryVisible();
 
-    // Still on Confiscation tab (header unchanged)
-    cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('be.visible');
-  });
+      // Still on Confiscation tab (header unchanged)
+      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('be.visible');
+    },
+  );
 });

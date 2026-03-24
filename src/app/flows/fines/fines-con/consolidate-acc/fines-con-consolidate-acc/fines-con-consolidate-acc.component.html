@@ -62,19 +62,15 @@
     ></app-fines-con-search-account>
   }
   @case ('results') {
-    <div class="govuk-grid-column-full">
       <app-fines-con-search-result
         [defendantType]="getDefendantType()"
         [searchPayload]="defendantAccountsSearchPayload"
         [alreadyAddedAccountIds]="finesConStore.selectedAccountIds()"
       ></app-fines-con-search-result>
-    </div>
   }
   @case ('for-consolidation') {
-    <div class="govuk-grid-column-full">
-      <div class="tab-content">
-        <!-- For consolidation tab content will be loaded here from routing -->
-      </div>
+    <div class="tab-content">
+      <!-- For consolidation tab content will be loaded here from routing -->
     </div>
   }
 }
