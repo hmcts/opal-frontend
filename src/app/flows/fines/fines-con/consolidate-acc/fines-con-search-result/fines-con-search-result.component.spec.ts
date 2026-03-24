@@ -274,7 +274,9 @@ describe('FinesConSearchResultComponent', () => {
   });
 
   it('should emit empty results when defendant account search fails', () => {
+    finesConStore.updateDefendantResults(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK, []);
     opalFines.getDefendantAccounts.mockReturnValue(throwError(() => new Error('Request failed')));
+    component.defendantType = 'individual';
 
     component.searchPayload = {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
@@ -285,5 +287,11 @@ describe('FinesConSearchResultComponent', () => {
     expect(component.tableData).toEqual([]);
     expect(component.checksByAccountId).toEqual({});
     expect(component.defendantAccountsData).toEqual([]);
+
+    component.searchPayload = null;
+    fixture.detectChanges();
+
+    expect(component.tableData).toEqual([]);
+    expect(finesConStore.individualResults()).toEqual([]);
   });
 });

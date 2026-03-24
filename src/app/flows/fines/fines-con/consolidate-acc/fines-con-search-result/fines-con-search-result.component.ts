@@ -127,6 +127,7 @@ export class FinesConSearchResultComponent implements OnDestroy {
       map((defendantAccounts) => this.mapResults(defendantAccounts)),
       catchError(() => {
         this.defendantAccountsData = [];
+        this.syncStoreResults([]);
         return of(this.EMPTY_RESULTS);
       }),
     );
