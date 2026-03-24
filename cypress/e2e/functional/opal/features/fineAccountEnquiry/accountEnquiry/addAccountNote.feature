@@ -5,12 +5,12 @@ Feature: Account Enquiries – Add Account Note
   So that notes are captured without losing existing account context
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
   Rule: Adult or youth defendant baseline
     Background:
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                          | Submitted                                 |
         | account.defendant.forenames             | James                                     |
         | account.defendant.surname               | GrahamAddNoteSurname{uniq}                |
@@ -47,7 +47,7 @@ Feature: Account Enquiries – Add Account Note
 
   Rule: Company account baseline
     Background:
-      Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                      | Submitted                   |
         | account.defendant.company_name      | AccNote comp{uniq}          |
         | account.defendant.email_address_1   | AAccNotecomp{uniq}@test.com |
