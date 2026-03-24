@@ -66,6 +66,7 @@
       [defendantType]="getDefendantType()"
       [searchPayload]="defendantAccountsSearchPayload"
       [alreadyAddedAccountIds]="finesConStore.selectedAccountIds()"
+      (navigateToSearch)="handleTabSwitch('search')"
     ></app-fines-con-search-result>
   }
   @case ('for-consolidation') {
