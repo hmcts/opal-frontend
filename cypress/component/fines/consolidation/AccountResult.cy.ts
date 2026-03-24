@@ -182,12 +182,12 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertRowCellText('ACC002', AccountSearchLocators.resultDateOfBirthCell, EM_DASH);
         assertRowCellText('ACC002', AccountSearchLocators.resultAddressLine1Cell, EM_DASH);
         assertRowCellText('ACC002', AccountSearchLocators.resultPostcodeCell, EM_DASH);
-        // AC5d. CO displays an em dash when collection order is false.
-        assertRowCellText('ACC002', AccountSearchLocators.resultCollectionOrderCell, EM_DASH);
+        // AC5d. CO displays an '-' when collection order is false.
+        assertRowCellText('ACC002', AccountSearchLocators.resultCollectionOrderCell, '-');
         assertRowCellText('ACC002', AccountSearchLocators.resultEnforcementCell, EM_DASH);
         assertRowCellText('ACC002', AccountSearchLocators.resultBalanceCell, EM_DASH);
-        // AC5g. P/G displays an em dash when there is no paying parent or guardian.
-        assertRowCellText('ACC002', AccountSearchLocators.resultPayingParentGuardianCell, EM_DASH);
+        // AC5g. P/G displays an '-' when there is no paying parent or guardian.
+        assertRowCellText('ACC002', AccountSearchLocators.resultPayingParentGuardianCell, '-');
         assertRowCellText('ACC002', AccountSearchLocators.resultNationalInsuranceNumberCell, EM_DASH);
         assertRowCellText('ACC002', AccountSearchLocators.resultRefCell, EM_DASH);
 
@@ -357,7 +357,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertRowCellText('COMP002', AccountSearchLocators.resultAliasesCell, EM_DASH);
         assertRowCellText('COMP002', AccountSearchLocators.resultAddressLine1Cell, EM_DASH);
         assertRowCellText('COMP002', AccountSearchLocators.resultPostcodeCell, EM_DASH);
-        assertRowCellText('COMP002', AccountSearchLocators.resultCollectionOrderCell, EM_DASH);
+        assertRowCellText('COMP002', AccountSearchLocators.resultCollectionOrderCell, '-');
         assertRowCellText('COMP002', AccountSearchLocators.resultEnforcementCell, EM_DASH);
         assertRowCellText('COMP002', AccountSearchLocators.resultBalanceCell, EM_DASH);
         assertRowCellText('COMP002', AccountSearchLocators.resultRefCell, EM_DASH);
@@ -462,6 +462,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         assertResultsSummary();
 
+        // AC3. Each row includes a checkbox for selecting or unselecting the account.
         cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11))
           .should('exist')
           .and('be.enabled')
@@ -472,10 +473,12 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
           .uncheck({ force: true })
           .should('not.be.checked');
 
+        // AC3a. Accounts that contain one or more errors have their checkbox hidden.
         cy.get(AccountSearchLocators.resultRowWithAccount('ACC005'))
           .find(AccountSearchLocators.resultRowCheckboxByAccountId(15))
           .should('not.exist');
 
+        // AC3b. Accounts that contain warnings keep their checkbox enabled.
         cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(16)).should('exist').and('be.enabled');
       },
     );
@@ -490,14 +493,20 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent();
 
         assertResultsSummary();
+
+        // AC4. A top-level checkbox is displayed above the table to allow bulk selection.
+        // AC5a, AC5b. The dynamic counter shows selected accounts against the total returned results.
         cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
 
+        // AC4a. Selecting the top-level checkbox selects all enabled accounts in the results.
         cy.get(AccountSearchLocators.resultSelectAllCheckbox)
           .should('exist')
           .and('not.be.checked')
           .check({ force: true })
           .should('be.checked');
 
+        // AC4b. Accounts with one or more errors are not selected.
+        // AC5c. The counter updates automatically as accounts are selected.
         cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '2 of 3 accounts selected');
         cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11)).should('be.checked');
         cy.get(AccountSearchLocators.resultRowWithAccount('ACC005'))
@@ -505,6 +514,8 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
           .should('not.exist');
         cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(16)).should('be.checked');
 
+        // AC4c. Deselecting the top-level checkbox deselects all currently selected accounts.
+        // AC5c. The counter updates automatically as accounts are deselected.
         cy.get(AccountSearchLocators.resultSelectAllCheckbox).uncheck({ force: true }).should('not.be.checked');
 
         cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
@@ -523,6 +534,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         assertResultsSummary();
 
+        // AC6. An Add to list button is displayed above the counter.
         cy.get(AccountSearchLocators.addToListButton)
           .should('be.visible')
           .and('contain', 'Add to list')
@@ -532,6 +544,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
             });
           });
 
+        // AC6a, AC6b. Selecting Add to list validates the selected accounts and shows an error when none are selected.
         cy.get(AccountSearchLocators.addToListButton).click();
 
         cy.get(AccountSearchLocators.errorSummary)
