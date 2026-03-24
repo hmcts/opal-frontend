@@ -3,7 +3,7 @@ Feature: Accessibility Tests for Check and Validate Screens
   # This feature file ensures that all screens in the Check and Validate flow meet accessibility standards using Axe-Core.
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I open Create and Manage Draft Accounts
 
   @JIRA-KEY:POT-3191

@@ -6,7 +6,7 @@ Feature: Manual account creation - Payment Terms
   #Tests for conditional rendering (different defendant types) are contained in the PaymentTermsComponent.cy.ts component tests
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I provide manual personal details from account details:
       | title          | Mr    |
