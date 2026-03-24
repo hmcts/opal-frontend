@@ -81,7 +81,7 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
     return message ? [{ fieldId: 'defendants-select-all-checkbox', message }] : [];
   });
   public readonly selectedAccountsHintComputed = computed(() => {
-    return `${this.selectedAccountsCountComputed()} to ${this.totalAccountsCountComputed()} accounts selected`;
+    return `${this.selectedAccountsCountComputed()} of ${this.totalAccountsCountComputed()} accounts selected`;
   });
 
   /**
