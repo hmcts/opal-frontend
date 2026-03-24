@@ -18,6 +18,10 @@ import {
 } from './mocks/account_results_mock';
 
 const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
+const CONSOLIDATION_EPIC_TAG = '@JIRA-STORY:PO-2294';
+const INDIVIDUAL_STORY_TAG = '@JIRA-STORY:PO-2415';
+const COMPANY_STORY_TAG = '@JIRA-STORY:PO-2421';
+const RESULTS_TAB_FUNCTIONALITY_STORY_TAG = '@JIRA-STORY:PO-2416';
 const EM_DASH = '—';
 const individualResultsTableHeaders = [
   'Account',
@@ -46,6 +50,11 @@ const companyResultsTableHeaders = [
 ];
 
 const buildTags = (...tags: string[]): string[] => [...tags, CONSOLIDATION_JIRA_LABEL];
+const buildIndividualTags = (...tags: string[]): string[] =>
+  buildTags(CONSOLIDATION_EPIC_TAG, INDIVIDUAL_STORY_TAG, ...tags);
+const buildCompanyTags = (...tags: string[]): string[] => buildTags(CONSOLIDATION_EPIC_TAG, COMPANY_STORY_TAG, ...tags);
+const buildResultsTabFunctionalityTags = (...tags: string[]): string[] =>
+  buildTags(CONSOLIDATION_EPIC_TAG, RESULTS_TAB_FUNCTIONALITY_STORY_TAG, ...tags);
 const normaliseText = (value: string): string => value.replace(/\s+/g, ' ').trim();
 
 describe('FinesConConsolidateAccComponent - Account Results', () => {
@@ -91,7 +100,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1, AC1a, AC1b. should render the individual account results tab with populated mock data',
-      { tags: buildTags() },
+      { tags: buildIndividualTags() },
       () => {
         setupComponent();
 
@@ -117,7 +126,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2, AC2a, AC5a, AC5b, AC5c, AC5d, AC5e, AC5f, AC5g, AC5h, AC5i. should display the individual results columns in the AC order and format populated data',
-      { tags: buildTags() },
+      { tags: buildIndividualTags() },
       () => {
         defendantAccountResults[0].has_paying_parent_guardian = true; // Set to true to confirm Y is displayed in the relevant cell
         defendantAccountResults[0].checks = { errors: [], warnings: [] }; //checks should be empty for check boxes to appear
@@ -157,7 +166,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2b, AC2c, AC5b, AC5d, AC5fi, AC5g. should display an em dash for optional or unavailable account data',
-      { tags: buildTags() },
+      { tags: buildIndividualTags() },
       () => {
         defendantAccountResults.push(createFalseyResult(), createZeroBalanceResult());
 
@@ -190,7 +199,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2d, AC2e. should display a maximum of 100 accounts on a single scrollable page with no pagination',
-      { tags: buildTags() },
+      { tags: buildIndividualTags() },
       () => {
         defendantAccountResults = createMaxResultsMock();
 
@@ -207,21 +216,25 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
       },
     );
 
-    it('AC7. should display warning and error checks beneath the relevant account row', { tags: buildTags() }, () => {
-      setupComponent();
+    it(
+      'AC7. should display warning and error checks beneath the relevant account row',
+      { tags: buildIndividualTags() },
+      () => {
+        setupComponent();
 
-      assertResultsSummary();
-      // AC7. Checks are displayed beneath the relevant account row.
-      cy.get(AccountSearchLocators.resultRowWithAccount('ACC001'))
-        .next(AccountSearchLocators.resultTableRow)
-        .find(AccountSearchLocators.resultChecksCellByAccountId(11))
-        .should('be.visible')
-        .and('contain', 'Account has days in default');
-    });
+        assertResultsSummary();
+        // AC7. Checks are displayed beneath the relevant account row.
+        cy.get(AccountSearchLocators.resultRowWithAccount('ACC001'))
+          .next(AccountSearchLocators.resultTableRow)
+          .find(AccountSearchLocators.resultChecksCellByAccountId(11))
+          .should('be.visible')
+          .and('contain', 'Account has days in default');
+      },
+    );
 
     it(
       'AC7a, AC7b. should show only errors when both errors and warnings exist, listing multiple errors as bullets',
-      { tags: buildTags() },
+      { tags: buildIndividualTags() },
       () => {
         defendantAccountResults = [createMultipleErrorsAndWarningsResult()];
 
@@ -245,7 +258,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7c. should display all warnings when multiple warnings apply and no errors exist',
-      { tags: buildTags() },
+      { tags: buildIndividualTags() },
       () => {
         defendantAccountResults = [createMultipleWarningsResult()];
 
@@ -272,7 +285,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1, AC1a, AC1b. should render the company account results tab with populated mock data',
-      { tags: buildTags() },
+      { tags: buildCompanyTags() },
       () => {
         setupComponent({ defendantType: 'company' });
 
@@ -296,7 +309,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2, AC2a, AC5a, AC5b, AC5d, AC5e, AC5f, AC5i. should display the company results columns in the AC order and format populated data',
-      { tags: buildTags() },
+      { tags: buildCompanyTags() },
       () => {
         setupComponent({ defendantType: 'company' });
 
@@ -330,7 +343,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2b, AC2c, AC5b, AC5d, AC5fi. should display an em dash for unavailable company account data',
-      { tags: buildTags() },
+      { tags: buildCompanyTags() },
       () => {
         defendantAccountResults.push(createCompanyFalseyResult(), createCompanyZeroBalanceResult());
 
@@ -356,7 +369,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2d, AC2e. should display a maximum of 100 company accounts on a single scrollable page with no pagination',
-      { tags: buildTags() },
+      { tags: buildCompanyTags() },
       () => {
         defendantAccountResults = createCompanyMaxResultsMock();
 
@@ -372,7 +385,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7. should display warning and error checks beneath the relevant company account row',
-      { tags: buildTags() },
+      { tags: buildCompanyTags() },
       () => {
         defendantAccountResults[0].checks = {
           errors: [{ reference: 'CON.ER.4', message: 'Account has days in default' }],
@@ -392,7 +405,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7a, AC7b. should show only errors for company results when both errors and warnings exist, listing multiple errors as bullets',
-      { tags: buildTags() },
+      { tags: buildCompanyTags() },
       () => {
         defendantAccountResults = [createCompanyMultipleErrorsAndWarningsResult()];
 
@@ -414,7 +427,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7c. should display all warnings for company results when multiple warnings apply and no errors exist',
-      { tags: buildTags() },
+      { tags: buildCompanyTags() },
       () => {
         defendantAccountResults = [createCompanyMultipleWarningsResult()];
 
@@ -429,6 +442,104 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountSearchLocators.resultChecksCellByAccountId(26))
           .find(AccountSearchLocators.resultChecksBulletItems)
           .should('have.length', 2);
+      },
+    );
+  });
+
+  describe('Results tab functionality tests', () => {
+    beforeEach(() => {
+      defendantAccountResults = structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK);
+    });
+
+    it(
+      'AC3, AC3a, AC3b. should show row checkboxes for selectable accounts, hide them for errors, and keep warning rows enabled',
+      { tags: buildResultsTabFunctionalityTags() },
+      () => {
+        defendantAccountResults[0].checks = { errors: [], warnings: [] };
+        defendantAccountResults.push(createMultipleErrorsAndWarningsResult(), createMultipleWarningsResult());
+
+        setupComponent();
+
+        assertResultsSummary();
+
+        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11))
+          .should('exist')
+          .and('be.enabled')
+          .and('not.be.checked')
+          .check({ force: true })
+          .should('be.checked');
+        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11))
+          .uncheck({ force: true })
+          .should('not.be.checked');
+
+        cy.get(AccountSearchLocators.resultRowWithAccount('ACC005'))
+          .find(AccountSearchLocators.resultRowCheckboxByAccountId(15))
+          .should('not.exist');
+
+        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(16)).should('exist').and('be.enabled');
+      },
+    );
+
+    it(
+      'AC4, AC4a, AC4b, AC4c, AC5a, AC5b, AC5c. should bulk select and deselect all enabled accounts while excluding accounts with errors',
+      { tags: buildResultsTabFunctionalityTags() },
+      () => {
+        defendantAccountResults[0].checks = { errors: [], warnings: [] };
+        defendantAccountResults.push(createMultipleErrorsAndWarningsResult(), createMultipleWarningsResult());
+
+        setupComponent();
+
+        assertResultsSummary();
+        cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
+
+        cy.get(AccountSearchLocators.resultSelectAllCheckbox)
+          .should('exist')
+          .and('not.be.checked')
+          .check({ force: true })
+          .should('be.checked');
+
+        cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '2 of 3 accounts selected');
+        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11)).should('be.checked');
+        cy.get(AccountSearchLocators.resultRowWithAccount('ACC005'))
+          .find(AccountSearchLocators.resultRowCheckboxByAccountId(15))
+          .should('not.exist');
+        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(16)).should('be.checked');
+
+        cy.get(AccountSearchLocators.resultSelectAllCheckbox).uncheck({ force: true }).should('not.be.checked');
+
+        cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
+        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11)).should('not.be.checked');
+        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(16)).should('not.be.checked');
+      },
+    );
+
+    it(
+      'AC6, AC6a, AC6b. should display Add to list above the counter and show a validation error when no accounts are selected',
+      { tags: buildResultsTabFunctionalityTags() },
+      () => {
+        defendantAccountResults[0].checks = { errors: [], warnings: [] };
+
+        setupComponent();
+
+        assertResultsSummary();
+
+        cy.get(AccountSearchLocators.addToListButton)
+          .should('be.visible')
+          .and('contain', 'Add to list')
+          .then(($button) => {
+            cy.get(AccountSearchLocators.selectedAccountsHint).then(($hint) => {
+              expect($button[0].compareDocumentPosition($hint[0]) & Node.DOCUMENT_POSITION_FOLLOWING).to.not.equal(0);
+            });
+          });
+
+        cy.get(AccountSearchLocators.addToListButton).click();
+
+        cy.get(AccountSearchLocators.errorSummary)
+          .should('be.visible')
+          .and('contain', 'Select 1 or more accounts to consolidate.');
+        cy.get(AccountSearchLocators.addToListErrorMessage)
+          .should('be.visible')
+          .and('contain', 'Select 1 or more accounts to consolidate.');
       },
     );
   });

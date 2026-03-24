@@ -49,6 +49,7 @@ export const AccountSearchLocators = {
   resultRefCell: 'td#defendantRef',
   resultChecksBulletItems: 'ul.defendant-check-message-list > li',
   resultTableRow: 'tr.govuk-table__row',
+  addToListErrorMessage: '#defendants-select-all-error-message',
 
   // Individuals search fields
   accountNumberInput: '#fcon_search_account_number',
@@ -92,4 +93,5 @@ export const AccountSearchLocators = {
   resultAccountLinkByNumber: (accountNumber: string) =>
     `td#defendantAccountNumber a.govuk-link:contains("${accountNumber}")`,
   resultChecksCellByAccountId: (accountId: number | string) => `#defendant-checks-${accountId}`,
+  resultRowCheckboxByAccountId: (accountId: number | string) => `#defendant-select-${accountId}`,
 };
