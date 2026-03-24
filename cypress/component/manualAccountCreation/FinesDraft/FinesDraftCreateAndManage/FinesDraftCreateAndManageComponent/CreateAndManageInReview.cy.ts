@@ -15,6 +15,10 @@ import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over
 import { interceptGetInReviewAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesDraftCreateAndManageInReviewComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
@@ -42,122 +46,141 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     });
   };
 
-  it('(AC.1) render all the fields In review account', { tags: ['@PO-584'] }, () => {
-    const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+  it(
+    '(AC.1) render all the fields In review account',
+    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3917') },
+    () => {
+      const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptGetInReviewAccounts(200, inReviewAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetInReviewAccounts(200, inReviewAccountsMockData);
 
-    setupComponent();
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
 
-    for (const link of NAVIGATION_LINKS) {
-      if (link === 'In review') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist').should('have.attr', 'aria-current', 'page');
-      } else {
-        cy.get(DOM_ELEMENTS.navigationLinks)
-          .contains(link)
-          .should('exist')
-          .should('not.have.attr', 'aria-current', 'page');
+      for (const link of NAVIGATION_LINKS) {
+        if (link === 'In review') {
+          cy.get(DOM_ELEMENTS.navigationLinks)
+            .contains(link)
+            .should('exist')
+            .should('have.attr', 'aria-current', 'page');
+        } else {
+          cy.get(DOM_ELEMENTS.navigationLinks)
+            .contains(link)
+            .should('exist')
+            .should('not.have.attr', 'aria-current', 'page');
+        }
       }
-    }
-  });
+    },
+  );
 
-  it('AC.2 When user has not associated accounts, that are in review', { tags: ['@PO-584'] }, () => {
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
+  it(
+    'AC.2 When user has not associated accounts, that are in review',
+    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3918') },
+    () => {
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
 
-    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
-    cy.get('p').should('exist').and('contain', 'You have no accounts in review');
-    cy.get(DOM_ELEMENTS.table).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
+      cy.get('p').should('exist').and('contain', 'You have no accounts in review');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+    },
+  );
 
-  it('AC.3 verify the table of headers in review tab', { tags: ['@PO-584'] }, () => {
-    const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+  it(
+    'AC.3 verify the table of headers in review tab',
+    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3919') },
+    () => {
+      const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptGetInReviewAccounts(200, inReviewAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetInReviewAccounts(200, inReviewAccountsMockData);
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
 
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('Defendant').should('exist');
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('Date of birth').should('exist');
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('Account type').should('exist');
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('Business unit').should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('Defendant').should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('Date of birth').should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('Account type').should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('Business unit').should('exist');
 
-    //Check table row data in row 1
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(0)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.dob).contains('—');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
-      });
+      //Check table row data in row 1
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(0)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.dob).contains('—');
+          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+        });
 
-    //Check table row data in row 2
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(1)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
-      });
-  });
+      //Check table row data in row 2
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(1)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+          cy.get(DOM_ELEMENTS.created).contains('Today');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+        });
+    },
+  );
 
-  it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584'] }, () => {
-    const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+  it(
+    '(AC.4a) The table should have the correct default ordering',
+    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3920') },
+    () => {
+      const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptGetInReviewAccounts(200, inReviewAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetInReviewAccounts(200, inReviewAccountsMockData);
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
 
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(0)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-      });
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(1)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
-      });
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(0)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+        });
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(1)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.created).contains('Today');
+        });
 
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'descending');
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
+      cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'descending');
 
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(0)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
-      });
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(0)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.created).contains('Today');
+        });
 
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(1)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-      });
-  });
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(1)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+        });
+    },
+  );
 
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
-    { tags: ['@PO-584'] },
+    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3921') },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 

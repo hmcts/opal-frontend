@@ -97,9 +97,6 @@ export const FinesConStore = signalStore(
     resetSearchAccountForm(): void {
       patchState(store, {
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
-        individualResults: [],
-        companyResults: [],
-        selectedAccountIds: [],
       });
     },
 
