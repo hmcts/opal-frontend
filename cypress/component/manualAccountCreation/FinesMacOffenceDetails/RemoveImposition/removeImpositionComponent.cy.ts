@@ -12,6 +12,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { MacOffenceDetailsRemoveImpositionLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesRemoveImpositionComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
   let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
@@ -62,31 +66,63 @@ describe('FinesRemoveImpositionComponent', () => {
     });
   };
 
-  it('(AC.1)should render the component correctly', () => {
-    setupComponent();
+  it(
+    '(AC.1)should render the component correctly',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-418',
+        '@JIRA-STORY:PO-672',
+        '@JIRA-STORY:PO-673',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4205',
+      ),
+    },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.app).should('exist');
+    },
+  );
 
-  it('(AC.1)(AC.2)should render all elements correctly', { tags: ['@PO-418', '@PO-672', '@PO-673', '@PO-545'] }, () => {
-    setupComponent();
+  it(
+    '(AC.1)(AC.2)should render all elements correctly',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-418',
+        '@JIRA-STORY:PO-672',
+        '@JIRA-STORY:PO-673',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4206',
+      ),
+    },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.heading).should('exist');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
 
-    cy.get(DOM_ELEMENTS.impositionType).should('exist');
-    cy.get(DOM_ELEMENTS.creditor).should('exist');
-    cy.get(DOM_ELEMENTS.amountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.amountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
+      cy.get(DOM_ELEMENTS.impositionType).should('exist');
+      cy.get(DOM_ELEMENTS.creditor).should('exist');
+      cy.get(DOM_ELEMENTS.amountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.amountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
 
-    cy.get(DOM_ELEMENTS.removeImpositionButton).should('exist');
-    cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.removeImpositionButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
 
   it(
     '(AC.2)should have correct field labels and names in the elements when loading data',
-    { tags: ['@PO-418', '@PO-672', '@PO-673', '@PO-545'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-418',
+        '@JIRA-STORY:PO-672',
+        '@JIRA-STORY:PO-673',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4207',
+      ),
+    },
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this imposition?');
@@ -107,7 +143,15 @@ describe('FinesRemoveImpositionComponent', () => {
 
   it(
     '(AC.4)should set values to defaults or null after pressing the remove imposition button',
-    { tags: ['@PO-418', '@PO-672', '@PO-673', '@PO-545'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-418',
+        '@JIRA-STORY:PO-672',
+        '@JIRA-STORY:PO-673',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4208',
+      ),
+    },
     () => {
       setupComponent();
 

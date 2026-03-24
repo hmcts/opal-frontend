@@ -13,6 +13,10 @@ import { MacOffenceDetailsRemoveOffenceAndImpositionsLocators as DOM_ELEMENTS } 
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/fines-mac-offence-details-form.mock';
 import { FINES_MAC_STATE_MOCK } from 'src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('RemoveOffenceAndImpositionsComponent', () => {
   let finesMacState = FINES_MAC_STATE_MOCK;
   finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
@@ -74,33 +78,65 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1) should render component', { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] }, () => {
-    setupComponent();
-    cy.get(DOM_ELEMENTS.app).should('exist');
-  });
-  it('(AC.1) should load all elements on the page', () => {
-    setupComponent();
+  it(
+    '(AC.1) should render component',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4214',
+      ),
+    },
+    () => {
+      setupComponent();
+      cy.get(DOM_ELEMENTS.app).should('exist');
+    },
+  );
+  it(
+    '(AC.1) should load all elements on the page',
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4215',
+      ),
+    },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.heading).should('exist');
-    cy.get(DOM_ELEMENTS.caption).should('exist');
-    cy.get(DOM_ELEMENTS.captionText).should('exist');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
-    cy.get(DOM_ELEMENTS.impositionType).should('exist');
-    cy.get(DOM_ELEMENTS.creditor).should('exist');
-    cy.get(DOM_ELEMENTS.amountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.amountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
-    cy.get(DOM_ELEMENTS.totalHeading).should('exist');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
-    cy.get(DOM_ELEMENTS.removeImpositionButton).should('exist');
-    cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.heading).should('exist');
+      cy.get(DOM_ELEMENTS.caption).should('exist');
+      cy.get(DOM_ELEMENTS.captionText).should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
+      cy.get(DOM_ELEMENTS.impositionType).should('exist');
+      cy.get(DOM_ELEMENTS.creditor).should('exist');
+      cy.get(DOM_ELEMENTS.amountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.amountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
+      cy.get(DOM_ELEMENTS.totalHeading).should('exist');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
+      cy.get(DOM_ELEMENTS.removeImpositionButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
 
   it(
     '(AC.2, AC.3) should have appropriate text for each element',
-    { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] },
+    {
+      tags: buildTags(
+        '@JIRA-STORY:PO-416',
+        '@JIRA-STORY:PO-682',
+        '@JIRA-STORY:PO-680',
+        '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-4216',
+      ),
+    },
     () => {
       setupComponent();
 
@@ -132,7 +168,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     },
   );
 
-  it('should have only one h1 element', { tags: ['@PO-2717'] }, () => {
+  it('should have only one h1 element', { tags: buildTags('@JIRA-STORY:PO-2717', '@JIRA-KEY:POT-4217') }, () => {
     setupComponent();
     cy.get('h1').should('have.length', 1);
   });

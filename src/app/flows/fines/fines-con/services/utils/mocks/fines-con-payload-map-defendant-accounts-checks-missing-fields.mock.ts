@@ -8,5 +8,5 @@ export const FINES_CON_PAYLOAD_MAP_DEFENDANT_ACCOUNTS_CHECKS_MISSING_FIELDS_MOCK
         errors: [{ reference: '', message: 'Error text' }],
         warnings: [{ reference: 'CON.WN.9', message: '' }],
       },
-    } as IFinesConSearchResultDefendantAccount,
+    } as unknown as IFinesConSearchResultDefendantAccount,
   ];
