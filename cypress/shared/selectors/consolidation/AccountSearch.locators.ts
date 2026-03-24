@@ -47,6 +47,8 @@ export const AccountSearchLocators = {
   resultPayingParentGuardianCell: 'td#defendantPayingParentGuardian',
   resultNationalInsuranceNumberCell: 'td#defendantNationalInsuranceNumber',
   resultRefCell: 'td#defendantRef',
+  resultChecksBulletItems: 'ul.defendant-check-message-list > li',
+  resultTableRow: 'tr.govuk-table__row',
 
   // Individuals search fields
   accountNumberInput: '#fcon_search_account_number',
@@ -89,4 +91,5 @@ export const AccountSearchLocators = {
     `tr.govuk-table__row:has(td#defendantAccountNumber a:contains("${accountNumber}"))`,
   resultAccountLinkByNumber: (accountNumber: string) =>
     `td#defendantAccountNumber a.govuk-link:contains("${accountNumber}")`,
+  resultChecksCellByAccountId: (accountId: number | string) => `#defendant-checks-${accountId}`,
 };
