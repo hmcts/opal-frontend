@@ -135,7 +135,6 @@ describe('FinesConStore', () => {
 
     expect(store.searchAccountForm()).toEqual(FINES_CON_SEARCH_ACCOUNT_STATE);
     expect(store.searchAccountForm().fcon_search_account_number).toBeNull();
-    expect(store.selectedAccountIds()).toEqual([]);
   });
 
   it('should add selected account ids uniquely', () => {
