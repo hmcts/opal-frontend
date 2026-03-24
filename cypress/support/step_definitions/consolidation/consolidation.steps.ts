@@ -34,6 +34,16 @@ Then('I am on the consolidation Search tab for Companies', () => {
   consolidationFlow().assertSearchTabForCompanies();
 });
 
+When('I open the consolidation Results tab', () => {
+  log('step', 'Opening the consolidation Results tab');
+  consolidationFlow().openResultsTab();
+});
+
+Then('I am on the consolidation Results tab', () => {
+  log('step', 'Verifying consolidation Results tab is active');
+  consolidationFlow().assertResultsTab();
+});
+
 When('I enter the following consolidation search details:', (table: DataTable) => {
   log('step', 'Entering consolidation search details');
   consolidationFlow().enterConsolidationSearchDetails(table);

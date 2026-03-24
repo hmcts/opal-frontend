@@ -6,6 +6,7 @@
 import { SelectBusinessUnitLocators } from '../../../../../shared/selectors/consolidation/SelectBusinessUnit.locators';
 import { AccountSearchLocators } from '../../../../../shared/selectors/consolidation/AccountSearch.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 const log = createScopedLogger('ConsolidationActions');
 
@@ -124,6 +125,22 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.companyNameInput).should('be.visible');
   }
 
+  /** Clicks the Results tab from the consolidation flow. */
+  public openResultsTab(): void {
+    log('navigate', 'Opening consolidation Results tab');
+    cy.get(AccountSearchLocators.resultsTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /** Asserts the user is on the consolidation Results tab. */
+  public assertOnResultsTab(): void {
+    log('assert', 'Verifying user is on consolidation Results tab');
+
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/consolidate-accounts');
+    cy.get(AccountSearchLocators.resultsTab, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
+    cy.get(AccountSearchLocators.searchButton).should('not.exist');
+    cy.get(AccountSearchLocators.resultsTable, { timeout: 10_000 }).should('be.visible');
+  }
+
   /**
    * Populates fields on the consolidation Search tab from key/value details.
    * @param details - Search details keyed by user-facing field labels.
@@ -136,16 +153,17 @@ export class ConsolidationActions {
 
     Object.entries(details).forEach(([rawKey, value]) => {
       const key = rawKey.trim().toLowerCase();
+      const resolvedValue = applyUniqPlaceholder(value);
 
       if (activeTextMap[key]) {
         const selector = activeTextMap[key];
-        cy.get(selector).clear().type(value);
+        cy.get(selector).clear().type(resolvedValue);
         return;
       }
 
       if (activeCheckboxMap[key]) {
         const selector = activeCheckboxMap[key];
-        const shouldCheck = this.parseCheckboxValue(value);
+        const shouldCheck = this.parseCheckboxValue(resolvedValue);
         if (shouldCheck) {
           cy.get(selector).check({ force: true });
         } else {
@@ -200,16 +218,17 @@ export class ConsolidationActions {
 
     Object.entries(details).forEach(([rawKey, value]) => {
       const key = rawKey.trim().toLowerCase();
+      const resolvedValue = applyUniqPlaceholder(value);
 
       if (activeTextMap[key]) {
         const selector = activeTextMap[key];
-        cy.get(selector).should('have.value', value);
+        cy.get(selector).should('have.value', resolvedValue);
         return;
       }
 
       if (activeCheckboxMap[key]) {
         const selector = activeCheckboxMap[key];
-        const shouldCheck = this.parseCheckboxValue(value);
+        const shouldCheck = this.parseCheckboxValue(resolvedValue);
         if (shouldCheck) {
           cy.get(selector).should('be.checked');
         } else {

@@ -53,6 +53,18 @@ export class ConsolidationFlow {
     this.consolidation.assertOnSearchTabForCompanies();
   }
 
+  /** Opens the consolidation Results tab. */
+  public openResultsTab(): void {
+    log('flow', 'Opening consolidation Results tab');
+    this.consolidation.openResultsTab();
+  }
+
+  /** Asserts consolidation account search lands on the Results tab. */
+  public assertResultsTab(): void {
+    log('flow', 'Asserting consolidation account search is on the Results tab');
+    this.consolidation.assertOnResultsTab();
+  }
+
   /**
    * Enters consolidation account-search details from a two-column data table.
    * @param table - Data table in key/value form.
