@@ -3,7 +3,7 @@
 Feature: Draft Accounts — ETag/If-Match Concurrency
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
   @JIRA-STORY:PO-2117 @JIRA-KEY:POT-3212
@@ -12,7 +12,7 @@ Feature: Draft Accounts — ETag/If-Match Concurrency
       | account_status              | Submitted |
       | account.defendant.forenames | Dave      |
       | account.defendant.surname   | Tag{uniq} |
-    Then I am logged in with email "opal-test-10@hmcts.net"
+    Then I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I set the last created draft account status to "Publishing Pending"
     Then the last draft update should return a new strong ETag
 
@@ -22,7 +22,7 @@ Feature: Draft Accounts — ETag/If-Match Concurrency
       | account_status              | Submitted      |
       | account.defendant.forenames | Jim            |
       | account.defendant.surname   | Conflict{uniq} |
-    Then I am logged in with email "opal-test-10@hmcts.net"
+    Then I am logged in with email "opal-test-10@dev.platform.hmcts.net"
 
     When I attempt a stale If-Match update on the last draft account with status "Publishing Pending"
     Then the stale If-Match update should return a conflict
