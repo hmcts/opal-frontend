@@ -14,6 +14,8 @@ String component = 'frontend'
 @Field String browserChrome = 'chrome'
 @Field String browserEdge = 'edge'
 @Field String browserFirefox = 'firefox'
+@Field String stringTrue = String.valueOf(true)
+@Field String stringFalse = String.valueOf(false)
 @Field List<String> cachedPrLabels = []
 
 // Secret key for KeyVault lookups
@@ -90,7 +92,7 @@ String smokeReportName() {
 
 // Return whether smoke execution/report publishing is enabled for this run.
 boolean shouldPublishSmokeReport() {
-    return (env.SKIP_SMOKE ?: 'false').trim().toLowerCase() != 'true'
+    return (env.SKIP_SMOKE ?: stringFalse).trim().toLowerCase() != stringTrue
 }
 String accountArtifactPath = 'functional-output/account_evidence/created-accounts.json'
 String accountEvidenceArtifacts = 'functional-output/account_evidence/**'
@@ -452,13 +454,13 @@ if (legacyEnabled && isPR && !baseTags) {
 if (tagLabel) {
     env.TAGS = baseTags ? "(${baseTags}) and ${skipTagExpression}" : skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
-    env.SKIP_SMOKE = 'true'
+    env.SKIP_SMOKE = stringTrue
     echo "Running scenarios matching TAGS=${env.TAGS}"
     echo "Skipping smoke tests for tagged run: ${tagLabel}"
 } else {
     env.TAGS = skipTagExpression
     env.CYPRESS_TAGS = env.TAGS
-    env.SKIP_SMOKE = 'false'
+    env.SKIP_SMOKE = stringFalse
     echo "Running all scenarios except @skip (TAGS=${env.TAGS})"
 }
 
