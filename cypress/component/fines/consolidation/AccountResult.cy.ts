@@ -1,4 +1,5 @@
 import { AccountSearchLocators } from '../../../shared/selectors/consolidation/AccountSearch.locators';
+import { AccountResultsLocators } from '../../../shared/selectors/consolidation/AccountResults.locators';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-result/mocks/fines-con-search-result-defendant-accounts-company-formatting.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-result/mocks/fines-con-search-result-defendant-accounts-formatting.mock';
 import { IFinesConSearchResultDefendantAccount } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-result/interfaces/fines-con-search-result-defendant-account.interface';
@@ -82,11 +83,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant type');
     cy.get(AccountSearchLocators.defendantTypeValue).should('contain', defendantType);
     cy.get(AccountSearchLocators.resultsTab).should('have.attr', 'aria-current', 'page');
-    cy.get(AccountSearchLocators.resultsTable).should('be.visible');
+    cy.get(AccountResultsLocators.resultsTable).should('be.visible');
   };
 
   const assertRowCellText = (accountNumber: string, cellSelector: string, expectedText: string) => {
-    cy.get(AccountSearchLocators.resultRowWithAccount(accountNumber))
+    cy.get(AccountResultsLocators.resultRowWithAccount(accountNumber))
       .find(cellSelector)
       .should(($cell) => {
         expect(normaliseText($cell.text())).to.equal(expectedText);
@@ -113,13 +114,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountSearchLocators.resultsTab).should('have.attr', 'aria-current', 'page');
 
         // AC1. Results tab content renders with the results table and actions.
-        cy.get(AccountSearchLocators.resultsHeading).should('contain', 'Select accounts to consolidate');
-        cy.get(AccountSearchLocators.addToListButton).should('contain', 'Add to list');
-        cy.get(AccountSearchLocators.selectedAccountsHint).should('be.visible');
-        cy.get(AccountSearchLocators.resultsTable).should('be.visible');
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('ACC001')).should('be.visible');
-        cy.get(AccountSearchLocators.resultRowWithAccount('ACC001'))
-          .find(AccountSearchLocators.resultNameCell)
+        cy.get(AccountResultsLocators.resultsHeading).should('contain', 'Select accounts to consolidate');
+        cy.get(AccountResultsLocators.addToListButton).should('contain', 'Add to list');
+        cy.get(AccountResultsLocators.selectedAccountsHint).should('be.visible');
+        cy.get(AccountResultsLocators.resultsTable).should('be.visible');
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC001')).should('be.visible');
+        cy.get(AccountResultsLocators.resultRowWithAccount('ACC001'))
+          .find(AccountResultsLocators.resultNameCell)
           .should('contain', 'SMITH, John James');
       },
     );
@@ -133,34 +134,34 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent();
 
         assertResultsSummary();
-        cy.get(AccountSearchLocators.resultSelectAllCheckbox).should('exist');
+        cy.get(AccountResultsLocators.resultSelectAllCheckbox).should('exist');
         // AC2a. Results table displays the named columns in the required order.
-        cy.get(AccountSearchLocators.resultsTableNamedHeaders).then(($headers) => {
+        cy.get(AccountResultsLocators.resultsTableNamedHeaders).then(($headers) => {
           const headers = [...$headers].map((header) => normaliseText(header.textContent ?? ''));
           expect(headers).to.deep.equal(individualResultsTableHeaders);
         });
 
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('ACC001')).should('be.visible');
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC001')).should('be.visible');
         // AC5a. Name displays SURNAME, Forename.
-        assertRowCellText('ACC001', AccountSearchLocators.resultNameCell, 'SMITH, John James');
+        assertRowCellText('ACC001', AccountResultsLocators.resultNameCell, 'SMITH, John James');
         // AC5b. Aliases display in ascending alias order when one or more aliases exist.
-        assertRowCellText('ACC001', AccountSearchLocators.resultAliasesCell, 'ADAMS, Amy BAKER, Ben');
+        assertRowCellText('ACC001', AccountResultsLocators.resultAliasesCell, 'ADAMS, Amy BAKER, Ben');
         // AC5c. Date of birth displays as DD Mon YYYY.
-        assertRowCellText('ACC001', AccountSearchLocators.resultDateOfBirthCell, '03 Jan 1990');
-        assertRowCellText('ACC001', AccountSearchLocators.resultAddressLine1Cell, '1 Main Street');
-        assertRowCellText('ACC001', AccountSearchLocators.resultPostcodeCell, 'AB1 2CD');
+        assertRowCellText('ACC001', AccountResultsLocators.resultDateOfBirthCell, '03 Jan 1990');
+        assertRowCellText('ACC001', AccountResultsLocators.resultAddressLine1Cell, '1 Main Street');
+        assertRowCellText('ACC001', AccountResultsLocators.resultPostcodeCell, 'AB1 2CD');
         // AC5d. CO displays Y when collection order is true.
-        assertRowCellText('ACC001', AccountSearchLocators.resultCollectionOrderCell, 'Y');
+        assertRowCellText('ACC001', AccountResultsLocators.resultCollectionOrderCell, 'Y');
         // AC5e. ENF displays the most recent enforcement action code.
-        assertRowCellText('ACC001', AccountSearchLocators.resultEnforcementCell, 'DISTRESS');
+        assertRowCellText('ACC001', AccountResultsLocators.resultEnforcementCell, 'DISTRESS');
         // AC5f. Balance displays with a pound sign and currency formatting.
-        assertRowCellText('ACC001', AccountSearchLocators.resultBalanceCell, '£120.50');
+        assertRowCellText('ACC001', AccountResultsLocators.resultBalanceCell, '£120.50');
         // AC5g. P/G displays Y when a paying parent or guardian exists.
-        assertRowCellText('ACC001', AccountSearchLocators.resultPayingParentGuardianCell, 'Y');
+        assertRowCellText('ACC001', AccountResultsLocators.resultPayingParentGuardianCell, 'Y');
         // AC5h. NI number displays in the standard formatted layout.
-        assertRowCellText('ACC001', AccountSearchLocators.resultNationalInsuranceNumberCell, 'QQ 12 34 56 C');
+        assertRowCellText('ACC001', AccountResultsLocators.resultNationalInsuranceNumberCell, 'QQ 12 34 56 C');
         // AC5i. Ref displays the prosecutor case reference when present.
-        assertRowCellText('ACC001', AccountSearchLocators.resultRefCell, 'REF-1');
+        assertRowCellText('ACC001', AccountResultsLocators.resultRefCell, 'REF-1');
       },
     );
 
@@ -173,27 +174,27 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent();
 
         assertResultsSummary();
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('ACC002')).should('be.visible');
-        cy.get(AccountSearchLocators.resultRowWithAccount('ACC002'))
-          .find(AccountSearchLocators.resultNameCell)
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC002')).should('be.visible');
+        cy.get(AccountResultsLocators.resultRowWithAccount('ACC002'))
+          .find(AccountResultsLocators.resultNameCell)
           .should('contain', EM_DASH);
         // AC5b. Aliases display only when aliases exist; otherwise the no-data marker is shown.
-        assertRowCellText('ACC002', AccountSearchLocators.resultAliasesCell, EM_DASH);
-        assertRowCellText('ACC002', AccountSearchLocators.resultDateOfBirthCell, EM_DASH);
-        assertRowCellText('ACC002', AccountSearchLocators.resultAddressLine1Cell, EM_DASH);
-        assertRowCellText('ACC002', AccountSearchLocators.resultPostcodeCell, EM_DASH);
+        assertRowCellText('ACC002', AccountResultsLocators.resultAliasesCell, EM_DASH);
+        assertRowCellText('ACC002', AccountResultsLocators.resultDateOfBirthCell, EM_DASH);
+        assertRowCellText('ACC002', AccountResultsLocators.resultAddressLine1Cell, EM_DASH);
+        assertRowCellText('ACC002', AccountResultsLocators.resultPostcodeCell, EM_DASH);
         // AC5d. CO displays an '-' when collection order is false.
-        assertRowCellText('ACC002', AccountSearchLocators.resultCollectionOrderCell, '-');
-        assertRowCellText('ACC002', AccountSearchLocators.resultEnforcementCell, EM_DASH);
-        assertRowCellText('ACC002', AccountSearchLocators.resultBalanceCell, EM_DASH);
+        assertRowCellText('ACC002', AccountResultsLocators.resultCollectionOrderCell, '-');
+        assertRowCellText('ACC002', AccountResultsLocators.resultEnforcementCell, EM_DASH);
+        assertRowCellText('ACC002', AccountResultsLocators.resultBalanceCell, EM_DASH);
         // AC5g. P/G displays an '-' when there is no paying parent or guardian.
-        assertRowCellText('ACC002', AccountSearchLocators.resultPayingParentGuardianCell, '-');
-        assertRowCellText('ACC002', AccountSearchLocators.resultNationalInsuranceNumberCell, EM_DASH);
-        assertRowCellText('ACC002', AccountSearchLocators.resultRefCell, EM_DASH);
+        assertRowCellText('ACC002', AccountResultsLocators.resultPayingParentGuardianCell, '-');
+        assertRowCellText('ACC002', AccountResultsLocators.resultNationalInsuranceNumberCell, EM_DASH);
+        assertRowCellText('ACC002', AccountResultsLocators.resultRefCell, EM_DASH);
 
         // AC5fi. Zero balance accounts are filtered out of the displayed results.
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('ACC003')).should('not.exist');
-        cy.get(AccountSearchLocators.resultsRows).should('have.length', 2);
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC003')).should('not.exist');
+        cy.get(AccountResultsLocators.resultsRows).should('have.length', 2);
       },
     );
 
@@ -207,12 +208,12 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         assertResultsSummary();
         // AC2e. Results are displayed on a single scrollable page.
-        cy.get(AccountSearchLocators.resultsScrollPane).should('exist');
+        cy.get(AccountResultsLocators.resultsScrollPane).should('exist');
         // AC2e. No pagination is displayed.
-        cy.get(AccountSearchLocators.resultsPagination).should('not.exist');
+        cy.get(AccountResultsLocators.resultsPagination).should('not.exist');
         // AC2d. A maximum of 100 accounts are displayed per search.
-        cy.get(AccountSearchLocators.resultAccountLink).should('have.length', 100);
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('ACC100')).should('be.visible');
+        cy.get(AccountResultsLocators.resultAccountLink).should('have.length', 100);
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC100')).should('be.visible');
       },
     );
 
@@ -224,9 +225,9 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         assertResultsSummary();
         // AC7. Checks are displayed beneath the relevant account row.
-        cy.get(AccountSearchLocators.resultRowWithAccount('ACC001'))
-          .next(AccountSearchLocators.resultTableRow)
-          .find(AccountSearchLocators.resultChecksCellByAccountId(11))
+        cy.get(AccountResultsLocators.resultRowWithAccount('ACC001'))
+          .next(AccountResultsLocators.resultTableRow)
+          .find(AccountResultsLocators.resultChecksCellByAccountId(11))
           .should('be.visible')
           .and('contain', 'Account has days in default');
       },
@@ -242,16 +243,16 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         assertResultsSummary();
         // AC7a. Only errors are displayed when both errors and warnings exist.
-        cy.get(AccountSearchLocators.resultRowWithAccount('ACC005'))
-          .next(AccountSearchLocators.resultTableRow)
-          .find(AccountSearchLocators.resultChecksCellByAccountId(15))
+        cy.get(AccountResultsLocators.resultRowWithAccount('ACC005'))
+          .next(AccountResultsLocators.resultTableRow)
+          .find(AccountResultsLocators.resultChecksCellByAccountId(15))
           .should('contain', 'Account status is CS')
           .and('contain', 'Account is blocked for consolidation')
           .and('not.contain', 'Account has uncleared cheque payments')
           .and('not.contain', 'Account has linked cases');
         // AC7b. Multiple errors are displayed as bullet points.
-        cy.get(AccountSearchLocators.resultChecksCellByAccountId(15))
-          .find(AccountSearchLocators.resultChecksBulletItems)
+        cy.get(AccountResultsLocators.resultChecksCellByAccountId(15))
+          .find(AccountResultsLocators.resultChecksBulletItems)
           .should('have.length', 2);
       },
     );
@@ -266,13 +267,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         assertResultsSummary();
         // AC7c. Multiple warnings are displayed when no errors apply.
-        cy.get(AccountSearchLocators.resultRowWithAccount('ACC006'))
-          .next(AccountSearchLocators.resultTableRow)
-          .find(AccountSearchLocators.resultChecksCellByAccountId(16))
+        cy.get(AccountResultsLocators.resultRowWithAccount('ACC006'))
+          .next(AccountResultsLocators.resultTableRow)
+          .find(AccountResultsLocators.resultChecksCellByAccountId(16))
           .should('contain', 'Account has uncleared cheque payments')
           .and('contain', 'Account has linked cases');
-        cy.get(AccountSearchLocators.resultChecksCellByAccountId(16))
-          .find(AccountSearchLocators.resultChecksBulletItems)
+        cy.get(AccountResultsLocators.resultChecksCellByAccountId(16))
+          .find(AccountResultsLocators.resultChecksBulletItems)
           .should('have.length', 2);
       },
     );
@@ -296,13 +297,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountSearchLocators.defendantTypeValue).should('contain', 'Company');
         cy.get(AccountSearchLocators.resultsTab).should('have.attr', 'aria-current', 'page');
 
-        cy.get(AccountSearchLocators.resultsHeading).should('contain', 'Select accounts to consolidate');
-        cy.get(AccountSearchLocators.addToListButton).should('contain', 'Add to list');
-        cy.get(AccountSearchLocators.selectedAccountsHint).should('be.visible');
-        cy.get(AccountSearchLocators.resultsTable).should('be.visible');
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('COMP001')).should('be.visible');
-        cy.get(AccountSearchLocators.resultRowWithAccount('COMP001'))
-          .find(AccountSearchLocators.resultNameCell)
+        cy.get(AccountResultsLocators.resultsHeading).should('contain', 'Select accounts to consolidate');
+        cy.get(AccountResultsLocators.addToListButton).should('contain', 'Add to list');
+        cy.get(AccountResultsLocators.selectedAccountsHint).should('be.visible');
+        cy.get(AccountResultsLocators.resultsTable).should('be.visible');
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP001')).should('be.visible');
+        cy.get(AccountResultsLocators.resultRowWithAccount('COMP001'))
+          .find(AccountResultsLocators.resultNameCell)
           .should('contain', 'Acme Corporation');
       },
     );
@@ -314,29 +315,29 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent({ defendantType: 'company' });
 
         assertResultsSummary('Company');
-        cy.get(AccountSearchLocators.resultSelectAllCheckbox).should('exist');
-        cy.get(AccountSearchLocators.resultsTableNamedHeaders).then(($headers) => {
+        cy.get(AccountResultsLocators.resultSelectAllCheckbox).should('exist');
+        cy.get(AccountResultsLocators.resultsTableNamedHeaders).then(($headers) => {
           const headers = [...$headers].map((header) => normaliseText(header.textContent ?? ''));
           expect(headers).to.deep.equal(companyResultsTableHeaders);
         });
 
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('COMP001')).should('be.visible');
-        assertRowCellText('COMP001', AccountSearchLocators.resultNameCell, 'Acme Corporation');
-        assertRowCellText('COMP001', AccountSearchLocators.resultAliasesCell, 'Alpha Ltd Bravo Ltd');
-        assertRowCellText('COMP001', AccountSearchLocators.resultAddressLine1Cell, '21 Company Street');
-        assertRowCellText('COMP001', AccountSearchLocators.resultPostcodeCell, 'CO1 2MP');
-        assertRowCellText('COMP001', AccountSearchLocators.resultCollectionOrderCell, 'Y');
-        assertRowCellText('COMP001', AccountSearchLocators.resultEnforcementCell, 'DISTRESS');
-        assertRowCellText('COMP001', AccountSearchLocators.resultBalanceCell, '£520.50');
-        assertRowCellText('COMP001', AccountSearchLocators.resultRefCell, 'COMP-REF-1');
-        cy.get(AccountSearchLocators.resultRowWithAccount('COMP001'))
-          .find(AccountSearchLocators.resultDateOfBirthCell)
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP001')).should('be.visible');
+        assertRowCellText('COMP001', AccountResultsLocators.resultNameCell, 'Acme Corporation');
+        assertRowCellText('COMP001', AccountResultsLocators.resultAliasesCell, 'Alpha Ltd Bravo Ltd');
+        assertRowCellText('COMP001', AccountResultsLocators.resultAddressLine1Cell, '21 Company Street');
+        assertRowCellText('COMP001', AccountResultsLocators.resultPostcodeCell, 'CO1 2MP');
+        assertRowCellText('COMP001', AccountResultsLocators.resultCollectionOrderCell, 'Y');
+        assertRowCellText('COMP001', AccountResultsLocators.resultEnforcementCell, 'DISTRESS');
+        assertRowCellText('COMP001', AccountResultsLocators.resultBalanceCell, '£520.50');
+        assertRowCellText('COMP001', AccountResultsLocators.resultRefCell, 'COMP-REF-1');
+        cy.get(AccountResultsLocators.resultRowWithAccount('COMP001'))
+          .find(AccountResultsLocators.resultDateOfBirthCell)
           .should('not.exist');
-        cy.get(AccountSearchLocators.resultRowWithAccount('COMP001'))
-          .find(AccountSearchLocators.resultPayingParentGuardianCell)
+        cy.get(AccountResultsLocators.resultRowWithAccount('COMP001'))
+          .find(AccountResultsLocators.resultPayingParentGuardianCell)
           .should('not.exist');
-        cy.get(AccountSearchLocators.resultRowWithAccount('COMP001'))
-          .find(AccountSearchLocators.resultNationalInsuranceNumberCell)
+        cy.get(AccountResultsLocators.resultRowWithAccount('COMP001'))
+          .find(AccountResultsLocators.resultNationalInsuranceNumberCell)
           .should('not.exist');
       },
     );
@@ -350,20 +351,20 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent({ defendantType: 'company' });
 
         assertResultsSummary('Company');
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('COMP002')).should('be.visible');
-        cy.get(AccountSearchLocators.resultRowWithAccount('COMP002'))
-          .find(AccountSearchLocators.resultNameCell)
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP002')).should('be.visible');
+        cy.get(AccountResultsLocators.resultRowWithAccount('COMP002'))
+          .find(AccountResultsLocators.resultNameCell)
           .should('contain', EM_DASH);
-        assertRowCellText('COMP002', AccountSearchLocators.resultAliasesCell, EM_DASH);
-        assertRowCellText('COMP002', AccountSearchLocators.resultAddressLine1Cell, EM_DASH);
-        assertRowCellText('COMP002', AccountSearchLocators.resultPostcodeCell, EM_DASH);
-        assertRowCellText('COMP002', AccountSearchLocators.resultCollectionOrderCell, '-');
-        assertRowCellText('COMP002', AccountSearchLocators.resultEnforcementCell, EM_DASH);
-        assertRowCellText('COMP002', AccountSearchLocators.resultBalanceCell, EM_DASH);
-        assertRowCellText('COMP002', AccountSearchLocators.resultRefCell, EM_DASH);
+        assertRowCellText('COMP002', AccountResultsLocators.resultAliasesCell, EM_DASH);
+        assertRowCellText('COMP002', AccountResultsLocators.resultAddressLine1Cell, EM_DASH);
+        assertRowCellText('COMP002', AccountResultsLocators.resultPostcodeCell, EM_DASH);
+        assertRowCellText('COMP002', AccountResultsLocators.resultCollectionOrderCell, '-');
+        assertRowCellText('COMP002', AccountResultsLocators.resultEnforcementCell, EM_DASH);
+        assertRowCellText('COMP002', AccountResultsLocators.resultBalanceCell, EM_DASH);
+        assertRowCellText('COMP002', AccountResultsLocators.resultRefCell, EM_DASH);
 
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('COMP003')).should('not.exist');
-        cy.get(AccountSearchLocators.resultsRows).should('have.length', 2);
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP003')).should('not.exist');
+        cy.get(AccountResultsLocators.resultsRows).should('have.length', 2);
       },
     );
 
@@ -376,10 +377,10 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent({ defendantType: 'company' });
 
         assertResultsSummary('Company');
-        cy.get(AccountSearchLocators.resultsScrollPane).should('exist');
-        cy.get(AccountSearchLocators.resultsPagination).should('not.exist');
-        cy.get(AccountSearchLocators.resultAccountLink).should('have.length', 100);
-        cy.get(AccountSearchLocators.resultAccountLinkByNumber('COMP100')).should('be.visible');
+        cy.get(AccountResultsLocators.resultsScrollPane).should('exist');
+        cy.get(AccountResultsLocators.resultsPagination).should('not.exist');
+        cy.get(AccountResultsLocators.resultAccountLink).should('have.length', 100);
+        cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP100')).should('be.visible');
       },
     );
 
@@ -395,9 +396,9 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent({ defendantType: 'company' });
 
         assertResultsSummary('Company');
-        cy.get(AccountSearchLocators.resultRowWithAccount('COMP001'))
-          .next(AccountSearchLocators.resultTableRow)
-          .find(AccountSearchLocators.resultChecksCellByAccountId(21))
+        cy.get(AccountResultsLocators.resultRowWithAccount('COMP001'))
+          .next(AccountResultsLocators.resultTableRow)
+          .find(AccountResultsLocators.resultChecksCellByAccountId(21))
           .should('be.visible')
           .and('contain', 'Account has days in default');
       },
@@ -412,15 +413,15 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent({ defendantType: 'company' });
 
         assertResultsSummary('Company');
-        cy.get(AccountSearchLocators.resultRowWithAccount('COMP005'))
-          .next(AccountSearchLocators.resultTableRow)
-          .find(AccountSearchLocators.resultChecksCellByAccountId(25))
+        cy.get(AccountResultsLocators.resultRowWithAccount('COMP005'))
+          .next(AccountResultsLocators.resultTableRow)
+          .find(AccountResultsLocators.resultChecksCellByAccountId(25))
           .should('contain', 'Account status is CS')
           .and('contain', 'Account is blocked for consolidation')
           .and('not.contain', 'Account has uncleared cheque payments')
           .and('not.contain', 'Account has linked cases');
-        cy.get(AccountSearchLocators.resultChecksCellByAccountId(25))
-          .find(AccountSearchLocators.resultChecksBulletItems)
+        cy.get(AccountResultsLocators.resultChecksCellByAccountId(25))
+          .find(AccountResultsLocators.resultChecksBulletItems)
           .should('have.length', 2);
       },
     );
@@ -434,13 +435,13 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         setupComponent({ defendantType: 'company' });
 
         assertResultsSummary('Company');
-        cy.get(AccountSearchLocators.resultRowWithAccount('COMP006'))
-          .next(AccountSearchLocators.resultTableRow)
-          .find(AccountSearchLocators.resultChecksCellByAccountId(26))
+        cy.get(AccountResultsLocators.resultRowWithAccount('COMP006'))
+          .next(AccountResultsLocators.resultTableRow)
+          .find(AccountResultsLocators.resultChecksCellByAccountId(26))
           .should('contain', 'Account has uncleared cheque payments')
           .and('contain', 'Account has linked cases');
-        cy.get(AccountSearchLocators.resultChecksCellByAccountId(26))
-          .find(AccountSearchLocators.resultChecksBulletItems)
+        cy.get(AccountResultsLocators.resultChecksCellByAccountId(26))
+          .find(AccountResultsLocators.resultChecksBulletItems)
           .should('have.length', 2);
       },
     );
@@ -463,23 +464,23 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertResultsSummary();
 
         // AC3. Each row includes a checkbox for selecting or unselecting the account.
-        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11))
+        cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(11))
           .should('exist')
           .and('be.enabled')
           .and('not.be.checked')
           .check({ force: true })
           .should('be.checked');
-        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11))
+        cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(11))
           .uncheck({ force: true })
           .should('not.be.checked');
 
         // AC3a. Accounts that contain one or more errors have their checkbox hidden.
-        cy.get(AccountSearchLocators.resultRowWithAccount('ACC005'))
-          .find(AccountSearchLocators.resultRowCheckboxByAccountId(15))
+        cy.get(AccountResultsLocators.resultRowWithAccount('ACC005'))
+          .find(AccountResultsLocators.resultRowCheckboxByAccountId(15))
           .should('not.exist');
 
         // AC3b. Accounts that contain warnings keep their checkbox enabled.
-        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(16)).should('exist').and('be.enabled');
+        cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(16)).should('exist').and('be.enabled');
       },
     );
 
@@ -496,10 +497,10 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         // AC4. A top-level checkbox is displayed above the table to allow bulk selection.
         // AC5a, AC5b. The dynamic counter shows selected accounts against the total returned results.
-        cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
+        cy.get(AccountResultsLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
 
         // AC4a. Selecting the top-level checkbox selects all enabled accounts in the results.
-        cy.get(AccountSearchLocators.resultSelectAllCheckbox)
+        cy.get(AccountResultsLocators.resultSelectAllCheckbox)
           .should('exist')
           .and('not.be.checked')
           .check({ force: true })
@@ -507,20 +508,20 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         // AC4b. Accounts with one or more errors are not selected.
         // AC5c. The counter updates automatically as accounts are selected.
-        cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '2 of 3 accounts selected');
-        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11)).should('be.checked');
-        cy.get(AccountSearchLocators.resultRowWithAccount('ACC005'))
-          .find(AccountSearchLocators.resultRowCheckboxByAccountId(15))
+        cy.get(AccountResultsLocators.selectedAccountsHint).should('contain', '2 of 3 accounts selected');
+        cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(11)).should('be.checked');
+        cy.get(AccountResultsLocators.resultRowWithAccount('ACC005'))
+          .find(AccountResultsLocators.resultRowCheckboxByAccountId(15))
           .should('not.exist');
-        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(16)).should('be.checked');
+        cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(16)).should('be.checked');
 
         // AC4c. Deselecting the top-level checkbox deselects all currently selected accounts.
         // AC5c. The counter updates automatically as accounts are deselected.
-        cy.get(AccountSearchLocators.resultSelectAllCheckbox).uncheck({ force: true }).should('not.be.checked');
+        cy.get(AccountResultsLocators.resultSelectAllCheckbox).uncheck({ force: true }).should('not.be.checked');
 
-        cy.get(AccountSearchLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
-        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(11)).should('not.be.checked');
-        cy.get(AccountSearchLocators.resultRowCheckboxByAccountId(16)).should('not.be.checked');
+        cy.get(AccountResultsLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
+        cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(11)).should('not.be.checked');
+        cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(16)).should('not.be.checked');
       },
     );
 
@@ -535,22 +536,22 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertResultsSummary();
 
         // AC6. An Add to list button is displayed above the counter.
-        cy.get(AccountSearchLocators.addToListButton)
+        cy.get(AccountResultsLocators.addToListButton)
           .should('be.visible')
           .and('contain', 'Add to list')
           .then(($button) => {
-            cy.get(AccountSearchLocators.selectedAccountsHint).then(($hint) => {
+            cy.get(AccountResultsLocators.selectedAccountsHint).then(($hint) => {
               expect($button[0].compareDocumentPosition($hint[0]) & Node.DOCUMENT_POSITION_FOLLOWING).to.not.equal(0);
             });
           });
 
         // AC6a, AC6b. Selecting Add to list validates the selected accounts and shows an error when none are selected.
-        cy.get(AccountSearchLocators.addToListButton).click();
+        cy.get(AccountResultsLocators.addToListButton).click();
 
         cy.get(AccountSearchLocators.errorSummary)
           .should('be.visible')
           .and('contain', 'Select 1 or more accounts to consolidate.');
-        cy.get(AccountSearchLocators.addToListErrorMessage)
+        cy.get(AccountResultsLocators.addToListErrorMessage)
           .should('be.visible')
           .and('contain', 'Select 1 or more accounts to consolidate.');
       },

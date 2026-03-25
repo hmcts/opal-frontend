@@ -5,6 +5,7 @@
 
 import { SelectBusinessUnitLocators } from '../../../../../shared/selectors/consolidation/SelectBusinessUnit.locators';
 import { AccountSearchLocators } from '../../../../../shared/selectors/consolidation/AccountSearch.locators';
+import { AccountResultsLocators } from '../../../../../shared/selectors/consolidation/AccountResults.locators';
 import { ErrorPageLocators } from '../../../../../shared/selectors/consolidation/ErrorPage.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
@@ -147,7 +148,7 @@ export class ConsolidationActions {
     cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/consolidate-accounts');
     cy.get(AccountSearchLocators.resultsTab, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
     cy.get(AccountSearchLocators.searchButton).should('not.exist');
-    cy.get(AccountSearchLocators.resultsTable, { timeout: 10_000 }).should('be.visible');
+    cy.get(AccountResultsLocators.resultsTable, { timeout: 10_000 }).should('be.visible');
   }
 
   /**
