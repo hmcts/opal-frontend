@@ -14,6 +14,11 @@ const log = createScopedLogger('ConsolidationActions');
 
 export type ConsolidationDefendantType = 'Individual' | 'Company';
 type SearchDetails = Record<string, string>;
+type CreatedAccountAlias = {
+  accountId?: number | string | null;
+  accountNumber?: string | null;
+};
+const SELECTED_BUSINESS_UNIT_ALIAS = 'selectedConsolidationBusinessUnit';
 
 /** Actions and assertions for the Consolidation flow screens. */
 export class ConsolidationActions {
@@ -58,14 +63,59 @@ export class ConsolidationActions {
   }
 
   /**
+   * Resolves the last created account id/number stored on the shared @etagUpdate alias.
+   * This alias is set by the draft account creation helpers.
+   */
+  private getCreatedAccountAlias(): Cypress.Chainable<{ accountId: number; accountNumber: string }> {
+    return cy.get<CreatedAccountAlias>('@etagUpdate').then((etagUpdate) => {
+      const accountId = Number(etagUpdate?.accountId);
+      const accountNumber = String(etagUpdate?.accountNumber ?? '').trim();
+
+      if (!Number.isFinite(accountId) || accountId <= 0) {
+        throw new Error('Expected @etagUpdate to contain a valid accountId for consolidation result assertions.');
+      }
+
+      if (!accountNumber) {
+        throw new Error('Expected @etagUpdate to contain a valid accountNumber for consolidation result assertions.');
+      }
+
+      return { accountId, accountNumber };
+    });
+  }
+
+  /** Stores the selected consolidation business unit so later assertions can verify the actual chosen value. */
+  private setSelectedBusinessUnitAlias(businessUnitName: string): void {
+    cy.wrap(String(businessUnitName).trim(), { log: false }).as(SELECTED_BUSINESS_UNIT_ALIAS);
+  }
+
+  /** Resolves the selected consolidation business unit captured during the select BU step. */
+  private getSelectedBusinessUnitAlias(): Cypress.Chainable<string> {
+    return cy.get<string>(`@${SELECTED_BUSINESS_UNIT_ALIAS}`).then((businessUnitName) => String(businessUnitName).trim());
+  }
+
+  /**
    * Selects a business unit when the selector is present.
    * If a single business unit is auto-selected, verifies the informational message instead.
    */
   public selectBusinessUnitIfRequired(): void {
+    // Wait for the select business unit form to render before deciding whether
+    // we are in the single-BU or autocomplete path.
+    cy.get(SelectBusinessUnitLocators.continueButton, { timeout: 10_000 }).should('be.visible');
+
     cy.get('body').then(($body) => {
       if ($body.find(SelectBusinessUnitLocators.businessUnitInput).length === 0) {
         log('info', 'Business unit input not shown; using auto-selected single business unit');
-        cy.get(SelectBusinessUnitLocators.singleBusinessUnitMessage, { timeout: 10_000 }).should('be.visible');
+        cy.contains(
+          SelectBusinessUnitLocators.singleBusinessUnitMessage,
+          'The consolidation will be processed in',
+          { timeout: 10_000 },
+        )
+          .should('be.visible')
+          .invoke('text')
+          .then((text) => {
+            const businessUnitName = text.replace('The consolidation will be processed in', '').trim();
+            this.setSelectedBusinessUnitAlias(businessUnitName);
+          });
         return;
       }
 
@@ -75,7 +125,11 @@ export class ConsolidationActions {
         .should('be.visible')
         .find('li')
         .first()
-        .click();
+        .then(($item) => {
+          const businessUnitName = $item.text().trim();
+          this.setSelectedBusinessUnitAlias(businessUnitName);
+          cy.wrap($item).click();
+        });
     });
   }
 
@@ -135,6 +189,18 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.companyNameInput).should('be.visible');
   }
 
+  /** Asserts the page-header back link is displayed on the consolidation shell. */
+  public assertBackLinkIsDisplayed(): void {
+    log('assert', 'Verifying consolidation page-header back link is displayed');
+    cy.get(AccountSearchLocators.backLink, { timeout: 10_000 }).should('be.visible').and('contain.text', 'Back');
+  }
+
+  /** Clicks the page-header back link on the consolidation shell. */
+  public clickBackLink(): void {
+    log('click', 'Clicking consolidation page-header back link');
+    cy.get(AccountSearchLocators.backLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+  }
+
   /** Clicks the Results tab from the consolidation flow. */
   public openResultsTab(): void {
     log('navigate', 'Opening consolidation Results tab');
@@ -149,6 +215,109 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.resultsTab, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
     cy.get(AccountSearchLocators.searchButton).should('not.exist');
     cy.get(AccountResultsLocators.resultsTable, { timeout: 10_000 }).should('be.visible');
+  }
+
+  /**
+   * Asserts the user is on the consolidation Results tab with the expected summary values.
+   * Covers the active tab plus the displayed business unit and defendant type rows.
+   */
+  public assertOnResultsTabForDefendantType(defendantType: ConsolidationDefendantType): void {
+    this.assertOnResultsTab();
+    this.getSelectedBusinessUnitAlias().then((businessUnitName) => {
+      cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business unit');
+      cy.get(AccountSearchLocators.businessUnitValue).should('contain', businessUnitName);
+      cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant type');
+      cy.get(AccountSearchLocators.defendantTypeValue).should('contain', defendantType);
+    });
+  }
+
+  /** Asserts the no matching results state is shown with the Check your search hyperlink. */
+  public assertNoMatchingResultsState(): void {
+    log('assert', 'Verifying consolidation no matching results state');
+
+    cy.get(AccountResultsLocators.resultsTable).should('not.exist');
+    cy.get(AccountResultsLocators.invalidResultsHeading, { timeout: 10_000 }).should(
+      'contain',
+      'There are no matching results.',
+    );
+    cy.get(AccountResultsLocators.invalidResultsBody)
+      .invoke('text')
+      .then((text) => {
+        const normalisedText = text.replace(/\s+/g, ' ').trim();
+        expect(normalisedText).to.equal('Check your search and try again');
+      });
+    cy.contains(AccountResultsLocators.invalidResultsLink, 'Check your search', { timeout: 10_000 }).should('be.visible');
+  }
+
+  /**
+   * Asserts no consolidation result row displays the supplied balance.
+   * @param balance - Forbidden rendered balance value, e.g. "£0.00"
+   */
+  public assertResultsExcludeBalance(balance: string): void {
+    const forbiddenBalance = balance.trim();
+
+    log('assert', 'Verifying consolidation results exclude balance', { forbiddenBalance });
+
+    cy.get(AccountResultsLocators.resultsRows, { timeout: 10_000 }).its('length').should('be.gte', 1);
+    cy.get(AccountResultsLocators.resultBalanceCell, { timeout: 10_000 }).each(($cell) => {
+      const renderedBalance = $cell.text().replace(/\s+/g, ' ').trim();
+      expect(renderedBalance).to.not.equal(forbiddenBalance);
+    });
+  }
+
+  /** Clicks the Check your search hyperlink from the no matching results state. */
+  public clickCheckYourSearchFromNoMatchingResults(): void {
+    log('click', 'Clicking Check your search from consolidation no matching results state');
+    cy.contains(AccountResultsLocators.invalidResultsLink, 'Check your search', { timeout: 10_000 })
+      .should('be.visible')
+      .click();
+  }
+
+  /** Asserts the newly created account number is displayed as a hyperlink in the results table. */
+  public assertCreatedAccountLinkIsDisplayed(): void {
+    this.getCreatedAccountAlias().then(({ accountNumber }) => {
+      log('assert', 'Verifying created consolidation result account is displayed as a hyperlink', { accountNumber });
+
+      cy.get(AccountResultsLocators.resultAccountLinkByNumber(accountNumber), { timeout: 10_000 })
+        .should('be.visible')
+        .and('have.class', 'govuk-link')
+        .then(($link) => {
+          expect($link.prop('tagName')).to.equal('A');
+        });
+    });
+  }
+
+  /** Opens the created consolidation result account and asserts it is opened in a new tab to the FAE details route. */
+  public openCreatedAccountFromResultsInNewTab(): void {
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary').as('consolidationHeaderSummary');
+
+    this.getCreatedAccountAlias().then(({ accountNumber }) => {
+      log('open', 'Opening created consolidation result account from results', { accountNumber });
+
+      cy.window().then((win) => {
+        cy.stub(win, 'open')
+          .callsFake((url?: string | URL, target?: string) => {
+            expect(target).to.equal('_blank');
+            win.location.href = String(url);
+          })
+          .as('consolidationWindowOpen');
+      });
+
+      cy.get(AccountResultsLocators.resultAccountLinkByNumber(accountNumber), { timeout: 10_000 })
+        .should('be.visible')
+        .click();
+
+      cy.get('@consolidationWindowOpen').then((windowOpenStub) => {
+        const stub = windowOpenStub as any;
+        expect(stub.calledOnce).to.equal(true);
+
+        const [openedUrl, target] = stub.getCall(0).args as [string, string];
+        expect(target).to.equal('_blank');
+        expect(String(openedUrl)).to.match(/\/fines\/account\/defendant\/\d+\/details$/);
+      });
+
+      cy.wait('@consolidationHeaderSummary', { timeout: 15_000 }).its('response.statusCode').should('eq', 200);
+    });
   }
 
   /**

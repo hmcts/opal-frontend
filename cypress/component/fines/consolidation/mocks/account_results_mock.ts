@@ -100,6 +100,26 @@ export const createMaxResultsMock = (): IFinesConSearchResultDefendantAccount[] 
     },
   }));
 
+export const createTooManyResultsMock = (): IFinesConSearchResultDefendantAccount[] => [
+  ...createMaxResultsMock(),
+  {
+    ...structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK[0]),
+    defendant_account_id: 101,
+    account_number: 'ACC101',
+    aliases: null,
+    prosecutor_case_reference: 'REF-101',
+    defendant_firstnames: 'First101',
+    defendant_surname: 'Surname101',
+    birth_date: '1990-01-03',
+    account_balance: 150,
+    has_paying_parent_guardian: false,
+    checks: {
+      errors: [],
+      warnings: [],
+    },
+  },
+];
+
 export const createCompanyMaxResultsMock = (): IFinesConSearchResultDefendantAccount[] =>
   Array.from({ length: 100 }, (_, index) => ({
     ...structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK[0]),
@@ -114,6 +134,23 @@ export const createCompanyMaxResultsMock = (): IFinesConSearchResultDefendantAcc
       warnings: [],
     },
   }));
+
+export const createCompanyTooManyResultsMock = (): IFinesConSearchResultDefendantAccount[] => [
+  ...createCompanyMaxResultsMock(),
+  {
+    ...structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK[0]),
+    defendant_account_id: 101,
+    account_number: 'COMP101',
+    aliases: null,
+    prosecutor_case_reference: 'COMP-REF-101',
+    organisation_name: 'Company 101',
+    account_balance: 600,
+    checks: {
+      errors: [],
+      warnings: [],
+    },
+  },
+];
 
 export const createMultipleErrorsAndWarningsResult = (): IFinesConSearchResultDefendantAccount => ({
   ...structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK[0]),

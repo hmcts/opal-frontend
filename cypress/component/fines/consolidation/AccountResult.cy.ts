@@ -8,11 +8,13 @@ import { IComponentProperties } from './setup/setupComponent.interface';
 import {
   createCompanyFalseyResult,
   createCompanyMaxResultsMock,
+  createCompanyTooManyResultsMock,
   createCompanyMultipleErrorsAndWarningsResult,
   createCompanyMultipleWarningsResult,
   createCompanyZeroBalanceResult,
   createFalseyResult,
   createMaxResultsMock,
+  createTooManyResultsMock,
   createMultipleErrorsAndWarningsResult,
   createMultipleWarningsResult,
   createZeroBalanceResult,
@@ -23,6 +25,7 @@ const CONSOLIDATION_EPIC_TAG = '@JIRA-STORY:PO-2294';
 const INDIVIDUAL_STORY_TAG = '@JIRA-STORY:PO-2415';
 const COMPANY_STORY_TAG = '@JIRA-STORY:PO-2421';
 const RESULTS_TAB_FUNCTIONALITY_STORY_TAG = '@JIRA-STORY:PO-2416';
+const INVALID_RESULTS_STORY_TAG = '@JIRA-STORY:PO-2420';
 const EM_DASH = '—';
 const individualResultsTableHeaders = [
   'Account',
@@ -56,6 +59,8 @@ const buildIndividualTags = (...tags: string[]): string[] =>
 const buildCompanyTags = (...tags: string[]): string[] => buildTags(CONSOLIDATION_EPIC_TAG, COMPANY_STORY_TAG, ...tags);
 const buildResultsTabFunctionalityTags = (...tags: string[]): string[] =>
   buildTags(CONSOLIDATION_EPIC_TAG, RESULTS_TAB_FUNCTIONALITY_STORY_TAG, ...tags);
+const buildInvalidResultsTags = (...tags: string[]): string[] =>
+  buildTags(CONSOLIDATION_EPIC_TAG, INVALID_RESULTS_STORY_TAG, ...tags);
 const normaliseText = (value: string): string => value.replace(/\s+/g, ' ').trim();
 
 describe('FinesConConsolidateAccComponent - Account Results', () => {
@@ -76,14 +81,42 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     });
   };
 
-  const assertResultsSummary = (defendantType: 'Individual' | 'Company' = 'Individual') => {
+  const assertResultsTabSummary = (defendantType: 'Individual' | 'Company' = 'Individual') => {
     cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
     cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business unit');
     cy.get(AccountSearchLocators.businessUnitValue).should('contain', 'Historical Debt');
     cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant type');
     cy.get(AccountSearchLocators.defendantTypeValue).should('contain', defendantType);
     cy.get(AccountSearchLocators.resultsTab).should('have.attr', 'aria-current', 'page');
+  };
+
+  const assertResultsSummary = (defendantType: 'Individual' | 'Company' = 'Individual') => {
+    assertResultsTabSummary(defendantType);
     cy.get(AccountResultsLocators.resultsTable).should('be.visible');
+  };
+
+  const assertNoMatchingResultsState = (defendantType: 'Individual' | 'Company' = 'Individual') => {
+    assertResultsTabSummary(defendantType);
+    cy.get(AccountResultsLocators.resultsTable).should('not.exist');
+    cy.get(AccountResultsLocators.invalidResultsHeading).should('contain', 'There are no matching results.');
+    cy.get(AccountResultsLocators.invalidResultsBody)
+      .invoke('text')
+      .then((text) => {
+        expect(normaliseText(text)).to.equal('Check your search and try again');
+      });
+    cy.get(AccountResultsLocators.invalidResultsLink).should('contain', 'Check your search');
+  };
+
+  const assertTooManyResultsState = (defendantType: 'Individual' | 'Company' = 'Individual') => {
+    assertResultsTabSummary(defendantType);
+    cy.get(AccountResultsLocators.resultsTable).should('not.exist');
+    cy.get(AccountResultsLocators.invalidResultsHeading).should('contain', 'There are more than 100 results');
+    cy.get(AccountResultsLocators.invalidResultsBody)
+      .invoke('text')
+      .then((text) => {
+        expect(normaliseText(text)).to.equal('Try adding more information to your search');
+      });
+    cy.get(AccountResultsLocators.invalidResultsLink).should('contain', 'Try adding more information');
   };
 
   const assertRowCellText = (accountNumber: string, cellSelector: string, expectedText: string) => {
@@ -214,6 +247,30 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         // AC2d. A maximum of 100 accounts are displayed per search.
         cy.get(AccountResultsLocators.resultAccountLink).should('have.length', 100);
         cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC100')).should('be.visible');
+      },
+    );
+
+    it(
+      'AC3, AC3a, AC3b, AC3c. should display the individual over-100 results state with the try adding more information link',
+      { tags: buildInvalidResultsTags() },
+      () => {
+        defendantAccountResults = createTooManyResultsMock();
+
+        setupComponent();
+
+        assertTooManyResultsState();
+      },
+    );
+
+    it(
+      'AC2, AC2a, AC2b, AC2c. should display the individual no-results state with the check your search link',
+      { tags: buildInvalidResultsTags() },
+      () => {
+        defendantAccountResults = [];
+
+        setupComponent();
+
+        assertNoMatchingResultsState();
       },
     );
 
@@ -381,6 +438,30 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultsPagination).should('not.exist');
         cy.get(AccountResultsLocators.resultAccountLink).should('have.length', 100);
         cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP100')).should('be.visible');
+      },
+    );
+
+    it(
+      'AC3, AC3a, AC3b, AC3c. should display the company over-100 results state with the try adding more information link',
+      { tags: buildInvalidResultsTags() },
+      () => {
+        defendantAccountResults = createCompanyTooManyResultsMock();
+
+        setupComponent({ defendantType: 'company' });
+
+        assertTooManyResultsState('Company');
+      },
+    );
+
+    it(
+      'AC2, AC2a, AC2b, AC2c. should display the company no-results state with the check your search link',
+      { tags: buildInvalidResultsTags() },
+      () => {
+        defendantAccountResults = [];
+
+        setupComponent({ defendantType: 'company' });
+
+        assertNoMatchingResultsState('Company');
       },
     );
 

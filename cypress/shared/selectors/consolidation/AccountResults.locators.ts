@@ -3,6 +3,9 @@ export const AccountResultsLocators = {
   resultsHeading: 'h2.govuk-heading-m',
   addToListButton: 'button.govuk-button[type="button"]',
   selectedAccountsHint: 'p.govuk-hint',
+  invalidResultsHeading: 'h2.govuk-heading-m',
+  invalidResultsBody: 'p.govuk-body-m',
+  invalidResultsLink: 'p.govuk-body-m a.govuk-link',
 
   // Results table
   resultsTable: 'table.govuk-table',
