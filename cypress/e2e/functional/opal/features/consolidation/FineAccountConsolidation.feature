@@ -108,7 +108,7 @@ Feature: Fines Account Consolidation
     When I open the created consolidation result account in a new tab
     Then I should see the account header contains "Mr Consolidation RESULTLINK{uniqUpper}"
 
-  @JIRA-STORY:PO-2413 @JIRA-KEY:POT-3328 @only
+  @JIRA-STORY:PO-2413 @JIRA-KEY:POT-3328
   Scenario: Consolidation search excludes zero balance accounts for Individuals
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
       | Account_status                               | Submitted                                 |

@@ -90,7 +90,9 @@ export class ConsolidationActions {
 
   /** Resolves the selected consolidation business unit captured during the select BU step. */
   private getSelectedBusinessUnitAlias(): Cypress.Chainable<string> {
-    return cy.get<string>(`@${SELECTED_BUSINESS_UNIT_ALIAS}`).then((businessUnitName) => String(businessUnitName).trim());
+    return cy
+      .get<string>(`@${SELECTED_BUSINESS_UNIT_ALIAS}`)
+      .then((businessUnitName) => String(businessUnitName).trim());
   }
 
   /**
@@ -105,11 +107,9 @@ export class ConsolidationActions {
     cy.get('body').then(($body) => {
       if ($body.find(SelectBusinessUnitLocators.businessUnitInput).length === 0) {
         log('info', 'Business unit input not shown; using auto-selected single business unit');
-        cy.contains(
-          SelectBusinessUnitLocators.singleBusinessUnitMessage,
-          'The consolidation will be processed in',
-          { timeout: 10_000 },
-        )
+        cy.contains(SelectBusinessUnitLocators.singleBusinessUnitMessage, 'The consolidation will be processed in', {
+          timeout: 10_000,
+        })
           .should('be.visible')
           .invoke('text')
           .then((text) => {
@@ -246,7 +246,9 @@ export class ConsolidationActions {
         const normalisedText = text.replace(/\s+/g, ' ').trim();
         expect(normalisedText).to.equal('Check your search and try again');
       });
-    cy.contains(AccountResultsLocators.invalidResultsLink, 'Check your search', { timeout: 10_000 }).should('be.visible');
+    cy.contains(AccountResultsLocators.invalidResultsLink, 'Check your search', { timeout: 10_000 }).should(
+      'be.visible',
+    );
   }
 
   /**
