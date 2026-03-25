@@ -5,6 +5,7 @@
 
 import { SelectBusinessUnitLocators } from '../../../../../shared/selectors/consolidation/SelectBusinessUnit.locators';
 import { AccountSearchLocators } from '../../../../../shared/selectors/consolidation/AccountSearch.locators';
+import { ErrorPageLocators } from '../../../../../shared/selectors/consolidation/ErrorPage.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
@@ -104,6 +105,14 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.searchButton, { timeout: 10_000 }).should('be.visible').click();
   }
 
+  /** Clicks the Clear search link on the consolidation Search tab. */
+  public clearSearch(): void {
+    log('click', 'Clearing consolidation account search form');
+    cy.contains(AccountSearchLocators.clearSearchLink, 'Clear search', { timeout: 10_000 })
+      .should('be.visible')
+      .click();
+  }
+
   /** Asserts the user is on Consolidation account search for Individuals, Search tab active. */
   public assertOnSearchTabForIndividuals(): void {
     log('assert', 'Verifying user is on consolidation Search tab for Individuals');
@@ -139,6 +148,44 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.resultsTab, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
     cy.get(AccountSearchLocators.searchButton).should('not.exist');
     cy.get(AccountSearchLocators.resultsTable, { timeout: 10_000 }).should('be.visible');
+  }
+
+  /**
+   * Asserts the consolidation search error page content for the given defendant type.
+   * @param defendantType - "Individual" or "Company"
+   */
+  public assertSearchErrorPage(defendantType: ConsolidationDefendantType): void {
+    const expectedBulletItems =
+      defendantType === 'Individual'
+        ? ['account number, or', 'national insurance number, or', 'advanced search']
+        : ['account number, or', 'advanced search'];
+
+    log('assert', 'Verifying consolidation search error page', { defendantType, expectedBulletItems });
+
+    cy.get(ErrorPageLocators.root, { timeout: 10_000 }).should('be.visible');
+    cy.get(`${ErrorPageLocators.root} ${ErrorPageLocators.heading}`).should('have.text', 'There is a problem');
+    cy.get(`${ErrorPageLocators.root} ${ErrorPageLocators.message}`)
+      .should('be.visible')
+      .invoke('text')
+      .then((text) => {
+        const normalisedText = text.replace(/\s+/g, ' ').trim();
+        expect(normalisedText).to.equal(
+          'Reference data and account information cannot be entered together when searching for an account. Search using either:',
+        );
+      });
+
+    cy.get(`${ErrorPageLocators.root} ${ErrorPageLocators.bulletItems}`).then(($items) => {
+      const items = [...$items].map((item) => item.textContent?.replace(/\s+/g, ' ').trim().toLowerCase());
+      expect(items).to.deep.equal(expectedBulletItems);
+    });
+  }
+
+  /** Clicks the Go back link on the consolidation search error page. */
+  public goBackFromSearchError(): void {
+    log('click', 'Going back from consolidation search error page');
+    cy.contains(`${ErrorPageLocators.root} ${ErrorPageLocators.backLink}`, 'Go back', { timeout: 10_000 })
+      .should('be.visible')
+      .click();
   }
 
   /**

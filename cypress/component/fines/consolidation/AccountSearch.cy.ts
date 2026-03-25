@@ -1,6 +1,7 @@
 import { AccountSearchLocators } from '../../../shared/selectors/consolidation/AccountSearch.locators';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-empty.mock';
 import { IFinesConSearchAccountState } from 'src/app/flows/fines/fines-con/consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
+import { FINES_CON_ROUTING_PATHS } from 'src/app/flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
 import { setupConsolidationComponent as mountConsolidationComponent } from './setup/SetupComponent';
 import { ConsolidationTabFragment, IComponentProperties } from './setup/setupComponent.interface';
 
@@ -33,6 +34,17 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   const assertValidationError = (message: string, inlineSelector: string) => {
     cy.get(AccountSearchLocators.errorSummary).should('be.visible').and('contain', message);
     cy.get(inlineSelector).should('be.visible').and('contain', message);
+  };
+
+  const assertSearchErrorRedirect = (expectedFormData: Partial<IFinesConSearchAccountState>) => {
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', [FINES_CON_ROUTING_PATHS.children.searchError], {
+      relativeTo: {},
+    });
+
+    cy.get('@finesConStore').then((store: any) => {
+      const searchAccountForm = store.searchAccountForm();
+      expect(searchAccountForm).to.deep.include(expectedFormData);
+    });
   };
 
   const switchToTab = (tab: ConsolidationTabFragment) => {
@@ -722,6 +734,84 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
       // cy.get(AccountSearchLocators.forConsolidationTab).click();
       // cy.get(AccountSearchLocators.forConsolidationTab).should('have.attr', 'aria-current', 'page');
+    },
+  );
+
+  it(
+    'AC1a. Individual searches route to Search error when quick search and other account details are combined',
+    { tags: buildTags('@JIRA-KEY:POT-3882') },
+    () => {
+      const updateSearchSpy = Cypress.sinon.spy();
+      finesConSearchAccountFormData = {
+        ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
+        fcon_search_account_number: '12345678',
+        fcon_search_account_individuals_search_criteria: {
+          fcon_search_account_individuals_last_name: 'Smith',
+          fcon_search_account_individuals_last_name_exact_match: false,
+          fcon_search_account_individuals_first_names: null,
+          fcon_search_account_individuals_first_names_exact_match: false,
+          fcon_search_account_individuals_include_aliases: false,
+          fcon_search_account_individuals_date_of_birth: null,
+          fcon_search_account_individuals_address_line_1: null,
+          fcon_search_account_individuals_post_code: null,
+        },
+      };
+
+      setupConsolidationComponent({ updateSearchSpy, setupRouterSpy: true });
+      cy.get(AccountSearchLocators.searchButton).click();
+
+      cy.then(() => {
+        expect(updateSearchSpy).to.have.been.calledOnce;
+      });
+      assertSearchErrorRedirect({
+        fcon_search_account_number: '12345678',
+        fcon_search_account_individuals_search_criteria: {
+          fcon_search_account_individuals_last_name: 'Smith',
+          fcon_search_account_individuals_last_name_exact_match: false,
+          fcon_search_account_individuals_first_names: null,
+          fcon_search_account_individuals_first_names_exact_match: false,
+          fcon_search_account_individuals_include_aliases: false,
+          fcon_search_account_individuals_date_of_birth: null,
+          fcon_search_account_individuals_address_line_1: null,
+          fcon_search_account_individuals_post_code: null,
+        },
+      });
+    },
+  );
+
+  it(
+    'AC1b. Company searches route to Search error when account number and other account details are combined',
+    { tags: buildTags('@JIRA-KEY:POT-3883') },
+    () => {
+      const updateSearchSpy = Cypress.sinon.spy();
+      finesConSearchAccountFormData = {
+        ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
+        fcon_search_account_number: '12345678',
+        fcon_search_account_companies_search_criteria: {
+          fcon_search_account_companies_company_name: 'Test Company',
+          fcon_search_account_companies_company_name_exact_match: false,
+          fcon_search_account_companies_include_aliases: false,
+          fcon_search_account_companies_address_line_1: null,
+          fcon_search_account_companies_post_code: null,
+        },
+      };
+
+      setupConsolidationComponent({ updateSearchSpy, defendantType: 'company', setupRouterSpy: true });
+      cy.get(AccountSearchLocators.searchButton).click();
+
+      cy.then(() => {
+        expect(updateSearchSpy).to.have.been.calledOnce;
+      });
+      assertSearchErrorRedirect({
+        fcon_search_account_number: '12345678',
+        fcon_search_account_companies_search_criteria: {
+          fcon_search_account_companies_company_name: 'Test Company',
+          fcon_search_account_companies_company_name_exact_match: false,
+          fcon_search_account_companies_include_aliases: false,
+          fcon_search_account_companies_address_line_1: null,
+          fcon_search_account_companies_post_code: null,
+        },
+      });
     },
   );
 });

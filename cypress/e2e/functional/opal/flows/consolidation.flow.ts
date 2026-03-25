@@ -41,6 +41,12 @@ export class ConsolidationFlow {
     this.consolidation.clickSearch();
   }
 
+  /** Clears the consolidation account-search form. */
+  public clearConsolidationSearch(): void {
+    log('flow', 'Clearing consolidation account-search form');
+    this.consolidation.clearSearch();
+  }
+
   /** Asserts consolidation account search lands on Search tab for Individuals. */
   public assertSearchTabForIndividuals(): void {
     log('flow', 'Asserting consolidation account search is on Search tab for Individuals');
@@ -63,6 +69,21 @@ export class ConsolidationFlow {
   public assertResultsTab(): void {
     log('flow', 'Asserting consolidation account search is on the Results tab');
     this.consolidation.assertOnResultsTab();
+  }
+
+  /**
+   * Asserts the consolidation search error page for the given defendant type.
+   * @param defendantType - "Individual" or "Company"
+   */
+  public assertSearchErrorPage(defendantType: ConsolidationDefendantType): void {
+    log('flow', 'Asserting consolidation search error page', { defendantType });
+    this.consolidation.assertSearchErrorPage(defendantType);
+  }
+
+  /** Clicks the back link on the consolidation search error page. */
+  public goBackFromSearchError(): void {
+    log('flow', 'Going back from consolidation search error page');
+    this.consolidation.goBackFromSearchError();
   }
 
   /**

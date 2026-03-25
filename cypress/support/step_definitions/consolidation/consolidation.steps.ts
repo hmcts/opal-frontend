@@ -24,6 +24,11 @@ When('I click Search on consolidation account search', () => {
   consolidationFlow().clickConsolidationSearch();
 });
 
+When('I clear the consolidation search', () => {
+  log('step', 'Clearing the consolidation search form');
+  consolidationFlow().clearConsolidationSearch();
+});
+
 Then('I am on the consolidation Search tab for Individuals', () => {
   log('step', 'Verifying consolidation account search defaults for Individuals');
   consolidationFlow().assertSearchTabForIndividuals();
@@ -42,6 +47,16 @@ When('I open the consolidation Results tab', () => {
 Then('I am on the consolidation Results tab', () => {
   log('step', 'Verifying consolidation Results tab is active');
   consolidationFlow().assertResultsTab();
+});
+
+Then('I see the consolidation search error page for {string}', (defendantType: ConsolidationDefendantType) => {
+  log('step', 'Verifying consolidation search error page', { defendantType });
+  consolidationFlow().assertSearchErrorPage(defendantType);
+});
+
+When('I go back from the consolidation search error page', () => {
+  log('step', 'Going back from the consolidation search error page');
+  consolidationFlow().goBackFromSearchError();
 });
 
 When('I enter the following consolidation search details:', (table: DataTable) => {
