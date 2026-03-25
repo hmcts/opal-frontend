@@ -5,7 +5,7 @@ Feature: Manual account creation - Language preferences
   # Manual Account Creation journey that cannot be exercised in the component tests #
 
   Background:
-    Given I am logged in with email "opal-test-8@hmcts.net"
+    Given I am logged in with email "opal-test-8@dev.platform.hmcts.net"
     And I start a fine manual account using the default business unit with defendant type "Adult or youth only"
 
 
