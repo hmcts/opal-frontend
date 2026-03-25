@@ -6,7 +6,7 @@ Feature: Manual account creation - Employer Details
   #Tests for conditional rendering (different defendant types) are contained in the EmployerDetailsComponent.cy.ts component tests
 
   Background:
-    Given I am logged in with email "opal-test@hmcts.net"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Employer details" task
 

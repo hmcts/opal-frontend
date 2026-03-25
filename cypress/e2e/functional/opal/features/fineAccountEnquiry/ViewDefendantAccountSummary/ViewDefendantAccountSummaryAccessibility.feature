@@ -3,13 +3,13 @@
 Feature: View Defendant Account Summary - Add Comments Accessibility
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
   @JIRA-STORY:PO-777 @JIRA-KEY:POT-3314
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |
       | account.defendant.forenames             | John                                 |
       | account.defendant.surname               | AccDetailSurname{uniq}               |
@@ -39,7 +39,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
   @JIRA-KEY:POT-3315
   Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a company account then check accessibility
-    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                    |
       | account.defendant.company_name      | Accdetail comp{uniq}         |
       | account.defendant.email_address_1   | Accdetailcomp{uniq}@test.com |
@@ -67,7 +67,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
   @JIRA-KEY:POT-3316
   Scenario: Check View Defendant Parent Guardian Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a pgToPay account then check accessibility
-    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                             |
       | account.defendant.forenames             | Michael                               |
       | account.defendant.surname               | ParentGuardianSurname{uniq}           |

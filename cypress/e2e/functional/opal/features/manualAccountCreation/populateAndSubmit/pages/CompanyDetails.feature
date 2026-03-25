@@ -5,7 +5,7 @@ Feature: Manual account creation - Company Details
   #Validation tests are contained in the CompanyDetailsComponent.cy.ts component tests
 
   Background:
-    Given I am logged in with email "opal-test@hmcts.net"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I view the "Company details" task
 
