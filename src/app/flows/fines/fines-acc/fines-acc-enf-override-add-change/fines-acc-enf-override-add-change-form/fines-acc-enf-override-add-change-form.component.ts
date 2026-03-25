@@ -47,9 +47,11 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
   @Input({ required: true }) partyName!: string;
   @Input({ required: true }) accountNumber!: string;
   @Input({ required: true }) pageTitle!: string;
+  @Input({ required: true }) formValues!: IFinesAccEnfOverrideAddChangeFormState;
 
   /**
    * Sets up the enforcement override add/change form with the necessary form controls.
+   * Populates the form with any existing enforcement override values if they are present.
    * @return void
    */
   private setupEnforcementOverrideAddChangeForm(): void {
@@ -58,8 +60,14 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
       fenf_account_enforcement_enforcer: new FormControl<string | null>(null, Validators.required),
       fenf_account_enforcement_lja: new FormControl<string | null>(null, Validators.required),
     });
-    this.disableFormControl('fenf_account_enforcement_enforcer');
-    this.disableFormControl('fenf_account_enforcement_lja');
+    this.form.patchValue(this.formValues);
+    if (!this.formValues.fenf_account_enforcement_enforcer) {
+      this.disableFormControl('fenf_account_enforcement_enforcer');
+    }
+    if (!this.formValues.fenf_account_enforcement_lja) {
+      this.disableFormControl('fenf_account_enforcement_lja');
+    }
+    this.form.updateValueAndValidity();
   }
 
   /**
@@ -113,7 +121,7 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
    * @returns void
    */
   private disableFormControl(controlName: string): void {
-    this.form.get(controlName)?.reset();
+    this.form.get(controlName)?.reset(null);
     this.form.get(controlName)?.disable();
   }
 
@@ -130,10 +138,18 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
 
   /**
    * Handles the change enforcement action event emitted from the form when a new enforcement action is selected.
+   * If an id is not provided (form value is cleared), the enforcer and local justice area form controls are disabled.
+   * If an id is provided, the enforcement action result is fetched and appropriate form controls are enabled/disabled.
    * @param id The result ID for the enforcement action that has been selected in the form
    * @returns void
    */
   public handleChangeEnforcementAction(id: string): void {
-    this.getEnforcementActionResult(id);
+    if (id) {
+      this.getEnforcementActionResult(id);
+    } else {
+      this.disableFormControl('fenf_account_enforcement_enforcer');
+      this.disableFormControl('fenf_account_enforcement_lja');
+      this.form.updateValueAndValidity();
+    }
   }
 }

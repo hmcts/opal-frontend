@@ -172,6 +172,40 @@ describe('FinesAccEnfOverrideAddChangeComponent', () => {
     expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(true);
   });
 
+  it('should set formValues from existing enforcement override when present in route data', () => {
+    (
+      mockRoute.snapshot.data as {
+        enforcementStatus?: { enforcement_override?: unknown };
+      }
+    ).enforcementStatus = {
+      enforcement_override: {
+        enforcement_override_result: {
+          enforcement_override_result_id: 'R2',
+        },
+        enforcer: {
+          enforcer_id: 'E2',
+        },
+        lja: {
+          lja_id: 'L2',
+        },
+      },
+    };
+
+    component.formValues = {
+      fenf_account_enforcement_action: null,
+      fenf_account_enforcement_enforcer: null,
+      fenf_account_enforcement_lja: null,
+    };
+
+    component.ngOnInit();
+
+    expect(component.formValues).toEqual({
+      fenf_account_enforcement_action: 'R2',
+      fenf_account_enforcement_enforcer: 'E2',
+      fenf_account_enforcement_lja: 'L2',
+    });
+  });
+
   it('should complete ngUnsubscribe on destroy', () => {
     const subject = (component as unknown as { ngUnsubscribe: { isStopped: boolean } }).ngUnsubscribe;
     component.ngOnDestroy();

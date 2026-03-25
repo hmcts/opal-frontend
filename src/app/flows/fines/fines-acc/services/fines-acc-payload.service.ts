@@ -183,6 +183,7 @@ export class FinesAccPayloadService {
   public buildEnforcementOverrideFormPayload(
     formState: IFinesAccEnfOverrideAddChangeFormState,
   ): IOpalFinesUpdateDefendantAccountPayload {
+    console.log('Building enforcement override payload with form state:', formState);
     const {
       fenf_account_enforcement_action: enforcement_override_result_id,
       fenf_account_enforcement_enforcer: enforcer_id,
@@ -191,21 +192,17 @@ export class FinesAccPayloadService {
     return {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       enforcement_override: {
-        enforcement_override_result: enforcement_override_result_id
-          ? {
-              enforcement_override_result_id,
-            }
-          : null,
-        enforcer: enforcer_id
-          ? {
-              enforcer_id,
-            }
-          : null,
-        lja: lja_id
-          ? {
-              lja_id,
-            }
-          : null,
+        enforcement_override_result: {
+          enforcement_override_result_id: enforcement_override_result_id,
+        },
+        enforcer: {
+          enforcer_id: enforcer_id ?? null,
+          enforcer_name: null,
+        },
+        lja: {
+          lja_id: lja_id ?? null,
+          lja_name: null,
+        },
       },
     };
   }
