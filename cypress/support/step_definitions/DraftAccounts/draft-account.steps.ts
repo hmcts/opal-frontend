@@ -210,6 +210,83 @@ Given('a {string} draft account exists with:', (accountType: AccountType, table:
 });
 
 /**
+ * @step Creates a published account whose first imposition contains an individual minor creditor.
+ * @description
+ * Seeds a `pgToPay` account at API level and sets it to `Publishing Pending`, overriding the
+ * first imposition's `minor_creditor` fields from a small search-oriented setup table.
+ *
+ * Supported table keys:
+ * - prosecutor case reference
+ * - title
+ * - first name / first names
+ * - last name
+ * - address line 1
+ * - postcode
+ *
+ * @example
+ *   Given a published account exists with an individual minor creditor:
+ *     | prosecutor case reference | PCRJRNYMIN{uniqUpper} |
+ *     | first name                | Mina                  |
+ *     | last name                 | JourneyMinor{uniq}    |
+ *     | address line 1            | 1 High Street         |
+ *     | postcode                  | MC1 1AA               |
+ */
+Given('a published account exists with an individual minor creditor:', (table: DataTable) => {
+  const values = Object.fromEntries(
+    table.raw().map(([key, value]) => [
+      String(key ?? '')
+        .trim()
+        .toLowerCase(),
+      withUniq(String(value ?? '').trim()),
+    ]),
+  );
+
+  const prosecutorCaseReference = values['prosecutor case reference'] ?? values['pcr'];
+  const firstNames = values['first name'] ?? values['first names'];
+  const lastName = values['last name'];
+  const addressLine1 = values['address line 1'];
+  const postcode = values['postcode'];
+  const title = values['title'] ?? 'Mr';
+
+  if (!prosecutorCaseReference || !firstNames || !lastName || !addressLine1 || !postcode) {
+    throw new Error(
+      'Expected prosecutor case reference, first name, last name, address line 1 and postcode for minor creditor',
+    );
+  }
+
+  const payloadTable = buildDataTable([
+    ['account.prosecutor_case_reference', prosecutorCaseReference],
+    ['account.defendant.forenames', 'Minor'],
+    ['account.defendant.surname', `Creditor Seed ${lastName}`],
+    ['account.defendant.parent_guardian.dob', '1980-02-15'],
+    ['account.offences.0.impositions.0.minor_creditor.company_flag', 'false'],
+    ['account.offences.0.impositions.0.minor_creditor.title', title],
+    ['account.offences.0.impositions.0.minor_creditor.forenames', firstNames],
+    ['account.offences.0.impositions.0.minor_creditor.surname', lastName],
+    ['account.offences.0.impositions.0.minor_creditor.address_line_1', addressLine1],
+    ['account.offences.0.impositions.0.minor_creditor.post_code', postcode],
+  ]);
+
+  log('step', 'Creating published account with individual minor creditor', {
+    prosecutorCaseReference,
+    firstNames,
+    lastName,
+    addressLine1,
+    postcode,
+  });
+
+  return captureSignedInUserEmail().then((existingUser: string) =>
+    createDraftAndPrepareForPublishing(
+      'pgToPay',
+      payloadTable,
+      'Publishing Pending',
+      'opal-test-10@dev.platform.hmcts.net',
+      existingUser,
+    ),
+  );
+});
+
+/**
  * @step Clears approved draft account listings to start from an empty state.
  * @description Stubs the approved drafts API to return zero results to avoid cross-test leakage.
  *

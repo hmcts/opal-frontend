@@ -202,6 +202,20 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the most recent account from the Companies results tab and asserts navigation.
+   */
+  public openMostRecentFromCompaniesResults(): void {
+    logAE('method', 'openMostRecentFromCompaniesResults()');
+    logAE('open', 'Opening most recent account from Companies results');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.selectCompaniesTab();
+    this.results.assertCompaniesTabSelected();
+    this.results.openLatestPublished();
+  }
+
+  /**
    * Navigates to the Defendant tab and asserts a specific section header.
    *
    * @param headerText - Expected section header text.
