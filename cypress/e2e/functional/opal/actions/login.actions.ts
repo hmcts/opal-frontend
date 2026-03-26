@@ -66,6 +66,7 @@ export function performLogin(email: string): void {
       });
     },
     {
+      cacheAcrossSpecs: true,
       validate() {
         // Session validation logic
         log('assert', 'Validating restored session');
