@@ -3,7 +3,7 @@ import { IFinesAccEnfOverrideAddChangeFieldErrors } from '../interfaces/fines-ac
 export const FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FIELD_ERRORS: IFinesAccEnfOverrideAddChangeFieldErrors = {
   fenf_account_enforcement_action: {
     required: {
-      message: `Select an enforcement action`,
+      message: `Select an enforcement override`,
       priority: 1,
     },
   },
