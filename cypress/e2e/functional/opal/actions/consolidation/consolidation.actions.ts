@@ -65,6 +65,7 @@ export class ConsolidationActions {
   /**
    * Resolves the last created account id/number stored on the shared @etagUpdate alias.
    * This alias is set by the draft account creation helpers.
+   * @returns Chainable yielding the created account id and account number.
    */
   private getCreatedAccountAlias(): Cypress.Chainable<{ accountId: number; accountNumber: string }> {
     return cy.get<CreatedAccountAlias>('@etagUpdate').then((etagUpdate) => {
@@ -83,12 +84,18 @@ export class ConsolidationActions {
     });
   }
 
-  /** Stores the selected consolidation business unit so later assertions can verify the actual chosen value. */
+  /**
+   * Stores the selected consolidation business unit so later assertions can verify the actual chosen value.
+   * @param businessUnitName - Business unit label captured from the UI.
+   */
   private setSelectedBusinessUnitAlias(businessUnitName: string): void {
     cy.wrap(String(businessUnitName).trim(), { log: false }).as(SELECTED_BUSINESS_UNIT_ALIAS);
   }
 
-  /** Resolves the selected consolidation business unit captured during the select BU step. */
+  /**
+   * Resolves the selected consolidation business unit captured during the select BU step.
+   * @returns Chainable yielding the trimmed business unit name.
+   */
   private getSelectedBusinessUnitAlias(): Cypress.Chainable<string> {
     return cy
       .get<string>(`@${SELECTED_BUSINESS_UNIT_ALIAS}`)
@@ -220,6 +227,7 @@ export class ConsolidationActions {
   /**
    * Asserts the user is on the consolidation Results tab with the expected summary values.
    * Covers the active tab plus the displayed business unit and defendant type rows.
+   * @param defendantType - Expected defendant type shown in the summary.
    */
   public assertOnResultsTabForDefendantType(defendantType: ConsolidationDefendantType): void {
     this.assertOnResultsTab();
