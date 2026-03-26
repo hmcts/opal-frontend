@@ -2,13 +2,13 @@
 Feature: Add Account Note - View Defendant Account Details Accessibility
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
   @JIRA-KEY:POT-3114
   Scenario: Check Add Account Note Accessibility with Axe-Core for Individual Account
 
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                                 |
       | account.defendant.forenames             | James                                     |
       | account.defendant.surname               | GrahamAddNoteSurname{uniq}                |
@@ -33,7 +33,7 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
 
   @JIRA-KEY:POT-3115
   Scenario: Check Add Account Note Accessibility with Axe-Core for Company Account
-    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                   |
       | account.defendant.company_name      | AccNote comp{uniq}          |
       | account.defendant.email_address_1   | AAccNotecomp{uniq}@test.com |

@@ -2,7 +2,7 @@
 Feature: Navigate and edit sections from task list
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I open Create and Manage Draft Accounts
 
   @JIRA-STORY:PO-640 @JIRA-STORY:PO-618 @JIRA-KEY:POT-3071

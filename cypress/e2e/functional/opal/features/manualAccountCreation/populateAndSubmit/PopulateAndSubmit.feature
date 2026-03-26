@@ -2,7 +2,7 @@
 Feature: Manual account creation - Create Draft Account
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
 
   @JIRA-STORY:PO-2763
   #AC-6 click cancel

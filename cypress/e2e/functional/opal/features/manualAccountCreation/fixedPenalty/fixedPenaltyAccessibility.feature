@@ -5,7 +5,7 @@ Feature: Accessibility Tests for Fixed Penalty Screens
   ## Review account screen is covered in the Populate and Submit accessibility tests.
 
   Background:
-    Given I am logged in with email "opal-test@hmcts.net"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
   Scenario Outline: Fixed Penalty details page is accessible for <defendant_type>
