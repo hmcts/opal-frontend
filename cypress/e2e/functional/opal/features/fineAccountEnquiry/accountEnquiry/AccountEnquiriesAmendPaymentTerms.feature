@@ -5,12 +5,12 @@ Feature: Account Enquiries - Amend Payment Terms
   So that updates are saved and reflected in account enquiry
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
   Rule: Adult or youth account
     Background:
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted                 |
         | account.defendant.forenames                     | John                      |
         | account.defendant.surname                       | AmendPayTerms{uniq}       |
@@ -53,7 +53,7 @@ Feature: Account Enquiries - Amend Payment Terms
 
   Rule: Company account
     Background:
-      Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted               |
         | account.defendant.company_name                  | Amend Co{uniq}          |
         | account.defendant.email_address_1               | amend.co{uniq}@test.com |
@@ -94,7 +94,7 @@ Feature: Account Enquiries - Amend Payment Terms
 
   Rule: Parent or guardian account
     Background:
-      Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                                  | Submitted              |
         | account.defendant.forenames                     | Alex                   |
         | account.defendant.surname                       | AmendPG{uniq}          |

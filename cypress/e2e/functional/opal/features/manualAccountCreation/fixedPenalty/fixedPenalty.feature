@@ -3,7 +3,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
   Rule: Adult or youth fixed penalty review
     Background:
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field                  | Value                                 |
@@ -84,14 +84,14 @@ Feature: Manual fixed penalty account creation - Create Draft Account
   Rule: Fixed penalty cancel behaviour
     @JIRA-STORY:PO-857 @JIRA-KEY:POT-3220
     Scenario: Cancel without entering details returns to start
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I cancel fixed penalty details choosing "Ok"
       Then I should see the header containing text "Create account"
 
     @JIRA-STORY:PO-857 @JIRA-KEY:POT-3221
     Scenario: Cancel after entering details returns to start
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field       | Value |
@@ -102,7 +102,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     @JIRA-STORY:PO-857 @JIRA-KEY:POT-3222
     Scenario: Cancel after entering details keeps data on page
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field       | Value |
@@ -116,7 +116,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     @JIRA-STORY:PO-857 @JIRA-KEY:POT-3223
     Scenario: Validation error persists after dismissing cancel warning
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field                  | Value                        |
@@ -145,7 +145,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
   Rule: Fixed penalty route guard when navigating back
     @JIRA-STORY:PO-857 @JIRA-KEY:POT-3224
     Scenario: Back navigation confirms leaving fixed penalty details
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field          | Value |
@@ -157,7 +157,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     @JIRA-STORY:PO-857 @JIRA-KEY:POT-3225
     Scenario: Back navigation can be cancelled to stay on fixed penalty details
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Adult or youth only" and originator type "New"
       And I complete fixed penalty details:
         | Section          | Field          | Value |
@@ -173,7 +173,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
   Rule: Company fixed penalty review
     Background:
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       When I start a fixed penalty account for business unit "West London", defendant type "Company" and originator type "New"
       And I complete fixed penalty details:
         | Section         | Field                  | Value                         |
@@ -252,7 +252,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     @JIRA-STORY:PO-1800 @JIRA-KEY:POT-3232
     Scenario: Input user can view Fixed Penalty accounts in Create and Manage Draft Accounts
-      Given I am logged in with email "opal-test@hmcts.net"
+      Given I am logged in with email "opal-test@dev.platform.hmcts.net"
       And I stub fixed penalty draft account listings
       When I open Create and Manage Draft Accounts
       And I view the "In review" tab on the Create and Manage Draft Accounts page
@@ -267,7 +267,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     @JIRA-STORY:PO-1800 @JIRA-KEY:POT-3233
     Scenario: Checker user can view Fixed Penalty accounts in Check and Validate Draft Accounts
-      Given I am logged in with email "opal-test-4@hmcts.net"
+      Given I am logged in with email "opal-test-4@dev.platform.hmcts.net"
       And I stub fixed penalty draft account listings
       When I open Check and Validate Draft Accounts
       And I view the "To review" tab on the Check and Validate page
