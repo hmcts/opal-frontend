@@ -11,6 +11,7 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
 const log = createScopedLogger('ConsolidationActions');
+const SINGLE_BUSINESS_UNIT_MESSAGE_PREFIX = 'The consolidation will be processed in';
 
 export type ConsolidationDefendantType = 'Individual' | 'Company';
 type SearchDetails = Record<string, string>;
@@ -103,24 +104,52 @@ export class ConsolidationActions {
   }
 
   /**
+   * Waits until the select business unit screen has rendered either the autocomplete
+   * input or the single-business-unit informational message.
+   * @returns Chainable yielding the rendered business unit selection mode.
+   */
+  private waitForBusinessUnitSelectionMode(): Cypress.Chainable<'single' | 'multiple'> {
+    return cy
+      .get('body', { timeout: 10_000 })
+      .should(($body) => {
+        const hasBusinessUnitInput = $body.find(SelectBusinessUnitLocators.businessUnitInput).length > 0;
+        const hasSingleBusinessUnitMessage = $body
+          .find(SelectBusinessUnitLocators.singleBusinessUnitMessage)
+          .toArray()
+          .some((element) => Cypress.$(element).text().includes(SINGLE_BUSINESS_UNIT_MESSAGE_PREFIX));
+
+        expect(
+          hasBusinessUnitInput || hasSingleBusinessUnitMessage,
+          'business unit autocomplete or single business unit message',
+        ).to.be.true;
+      })
+      .then(($body) => {
+        const hasBusinessUnitInput = $body.find(SelectBusinessUnitLocators.businessUnitInput).length > 0;
+        return hasBusinessUnitInput ? 'multiple' : 'single';
+      });
+  }
+
+  /**
    * Selects a business unit when the selector is present.
    * If a single business unit is auto-selected, verifies the informational message instead.
    */
   public selectBusinessUnitIfRequired(): void {
-    // Wait for the select business unit form to render before deciding whether
-    // we are in the single-BU or autocomplete path.
+    // Wait for the select business unit form and its business unit branch to finish rendering
+    // before deciding whether we are in the single-BU or autocomplete path.
+    cy.get(SelectBusinessUnitLocators.heading, { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');
+    cy.get(SelectBusinessUnitLocators.defendantTypeHeading, { timeout: 10_000 }).should('contain.text', 'Defendant type');
     cy.get(SelectBusinessUnitLocators.continueButton, { timeout: 10_000 }).should('be.visible');
 
-    cy.get('body').then(($body) => {
-      if ($body.find(SelectBusinessUnitLocators.businessUnitInput).length === 0) {
+    this.waitForBusinessUnitSelectionMode().then((mode) => {
+      if (mode === 'single') {
         log('info', 'Business unit input not shown; using auto-selected single business unit');
-        cy.contains(SelectBusinessUnitLocators.singleBusinessUnitMessage, 'The consolidation will be processed in', {
+        cy.contains(SelectBusinessUnitLocators.singleBusinessUnitMessage, SINGLE_BUSINESS_UNIT_MESSAGE_PREFIX, {
           timeout: 10_000,
         })
           .should('be.visible')
           .invoke('text')
           .then((text) => {
-            const businessUnitName = text.replace('The consolidation will be processed in', '').trim();
+            const businessUnitName = text.replace(SINGLE_BUSINESS_UNIT_MESSAGE_PREFIX, '').trim();
             this.setSelectedBusinessUnitAlias(businessUnitName);
           });
         return;
@@ -148,17 +177,44 @@ export class ConsolidationActions {
     log('select', `Selecting defendant type: ${defendantType}`);
 
     if (defendantType === 'Individual') {
-      cy.get(SelectBusinessUnitLocators.individualInput).check({ force: true });
+      cy.get(SelectBusinessUnitLocators.individualInput, { timeout: 10_000 })
+        .should('exist')
+        .and('not.be.disabled')
+        .check({ force: true });
       return;
     }
 
-    cy.get(SelectBusinessUnitLocators.companyInput).check({ force: true });
+    cy.get(SelectBusinessUnitLocators.companyInput, { timeout: 10_000 })
+      .should('exist')
+      .and('not.be.disabled')
+      .check({ force: true });
   }
 
   /** Clicks Continue on the Select Business Unit screen. */
   public continueFromSelectBusinessUnit(): void {
     log('click', 'Clicking Continue on consolidation select business unit page');
-    cy.get(SelectBusinessUnitLocators.continueButton, { timeout: 10_000 }).should('be.visible').click();
+    cy.get(SelectBusinessUnitLocators.continueButton, { timeout: 10_000 })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+  }
+
+  /**
+   * Waits for the consolidation account search screen to finish rendering after continuing
+   * from the select business unit page.
+   * @param defendantType - Expected defendant type shown on the search summary.
+   */
+  public waitForAccountSearchScreen(defendantType: ConsolidationDefendantType): void {
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/consolidate-accounts');
+    cy.get(AccountSearchLocators.heading, { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');
+    cy.get(AccountSearchLocators.summaryList, { timeout: 10_000 }).should('be.visible');
+    cy.get(AccountSearchLocators.searchTabLink, { timeout: 10_000 }).should('have.attr', 'aria-current', 'page');
+    cy.get(AccountSearchLocators.defendantTypeValue, { timeout: 10_000 }).should('contain', defendantType);
+    cy.get(AccountSearchLocators.accountNumberInput, { timeout: 10_000 }).should('be.visible');
+
+    if (defendantType === 'Company') {
+      cy.get(AccountSearchLocators.companyNameInput, { timeout: 10_000 }).should('be.visible');
+    }
   }
 
   /** Asserts the user is on the consolidation business unit and defendant type selection screen. */

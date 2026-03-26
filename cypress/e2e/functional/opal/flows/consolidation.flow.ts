@@ -31,6 +31,7 @@ export class ConsolidationFlow {
     this.consolidation.selectBusinessUnitIfRequired();
     this.consolidation.selectDefendantType(defendantType);
     this.consolidation.continueFromSelectBusinessUnit();
+    this.consolidation.waitForAccountSearchScreen(defendantType);
   }
 
   /**
