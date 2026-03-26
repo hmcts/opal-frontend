@@ -137,7 +137,10 @@ export class ConsolidationActions {
     // Wait for the select business unit form and its business unit branch to finish rendering
     // before deciding whether we are in the single-BU or autocomplete path.
     cy.get(SelectBusinessUnitLocators.heading, { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');
-    cy.get(SelectBusinessUnitLocators.defendantTypeHeading, { timeout: 10_000 }).should('contain.text', 'Defendant type');
+    cy.get(SelectBusinessUnitLocators.defendantTypeHeading, { timeout: 10_000 }).should(
+      'contain.text',
+      'Defendant type',
+    );
     cy.get(SelectBusinessUnitLocators.continueButton, { timeout: 10_000 }).should('be.visible');
 
     this.waitForBusinessUnitSelectionMode().then((mode) => {
