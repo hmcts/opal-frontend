@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { IOpalFinesOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences.interface';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Injectable({
@@ -53,6 +54,16 @@ export class FinesMacOffenceDetailsService {
         child.formData.fm_offence_details_imposition_position--;
       }
     }
+  }
+
+  /**
+   * Extracts the offence code from a ref-data item.
+   *
+   * @param offence - The offence ref-data item.
+   * @returns The offence code when present.
+   */
+  private getOffenceCode(offence: IOpalFinesOffences & { cjs_code?: string }): string | undefined {
+    return offence.get_cjs_code ?? offence.cjs_code;
   }
 
   /**
@@ -116,6 +127,32 @@ export class FinesMacOffenceDetailsService {
   }
 
   /**
+   * Finds the exact offence match for a supplied offence code from the returned offence reference data.
+   *
+   * Supports both `get_cjs_code` and `cjs_code` shaped response objects so the caller does not need
+   * to care about the source format.
+   *
+   * @param response - The offence lookup response.
+   * @param offenceCode - The offence code entered by the user.
+   * @returns The matching offence entry, if one exists.
+   */
+  public findExactOffenceMatch(
+    response: IOpalFinesOffencesRefData | null | undefined,
+    offenceCode: string | null | undefined,
+  ): IOpalFinesOffences | undefined {
+    if (!response?.refData?.length || !offenceCode) {
+      return undefined;
+    }
+
+    const normalisedOffenceCode = offenceCode.trim().toUpperCase();
+
+    return response.refData.find((offence) => {
+      const returnedCode = this.getOffenceCode(offence as IOpalFinesOffences & { cjs_code?: string });
+      return returnedCode?.trim().toUpperCase() === normalisedOffenceCode;
+    });
+  }
+
+  /**
    * Initializes the offence code listener for a form control.
    * @param form - The FormGroup containing the controls.
    * @param codeControlName - The name of the control for the offence code.
@@ -144,8 +181,10 @@ export class FinesMacOffenceDetailsService {
       if (code?.length >= 7 && code?.length <= 8) {
         const result$ = getOffenceByCjsCode(code).pipe(
           tap((response) => {
-            codeControl.setErrors(response.count === 0 ? { invalidOffenceCode: true } : null, { emitEvent: false });
-            idControl.setValue(response.count === 1 ? response.refData[0].offence_id : null, { emitEvent: false });
+            const exactMatch = this.findExactOffenceMatch(response, code);
+
+            codeControl.setErrors(exactMatch ? null : { invalidOffenceCode: true }, { emitEvent: false });
+            idControl.setValue(exactMatch?.offence_id ?? null, { emitEvent: false });
 
             if (typeof onResult === 'function') {
               onResult(response);

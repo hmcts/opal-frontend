@@ -132,7 +132,7 @@ describe('FinesMacOffenceDetailsService', () => {
 
     it('should call populateHint immediately if initial code is present', () => {
       vi.useFakeTimers();
-      form.get('code')?.setValue('ab12345');
+      form.get('code')?.setValue('ak123456');
 
       service.initOffenceCodeListener(
         form,
@@ -166,13 +166,13 @@ describe('FinesMacOffenceDetailsService', () => {
         onConfirmChangeSpy,
       );
 
-      form.get('code')?.setValue('xy98765');
+      form.get('code')?.setValue('ak123456');
       form.get('code')?.updateValueAndValidity();
 
       vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
-      expect(uppercaseAllLettersSpy).toHaveBeenCalledWith('xy98765');
-      expect(form.get('code')?.value).toBe('XY98765');
+      expect(uppercaseAllLettersSpy).toHaveBeenCalledWith('ak123456');
+      expect(form.get('code')?.value).toBe('AK123456');
       expect(form.get('id')?.value).toBe(314441);
       expect(onResultSpy).toHaveBeenCalled();
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
@@ -199,6 +199,125 @@ describe('FinesMacOffenceDetailsService', () => {
       expect(form.get('code')?.errors).toEqual({ invalidOffenceCode: true });
       expect(form.get('id')?.value).toBeNull();
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should populate the offence id when an exact match exists in a multi-result response', () => {
+      vi.useFakeTimers();
+      const multiResultResponse: IOpalFinesOffencesRefData = {
+        count: 4,
+        refData: [
+          {
+            offence_id: 41799,
+            get_cjs_code: 'CD71039',
+            business_unit_id: 52,
+            offence_title: 'Criminal damage to property valued under £5000',
+            offence_title_cy: null,
+            date_used_from: '1997-11-16T00:00:00Z',
+            date_used_to: null,
+            offence_oas: 'Contrary to sections 1(1) and 4 of the Criminal Damage Act 1971.',
+            offence_oas_cy: null,
+          },
+          {
+            offence_id: 30733,
+            get_cjs_code: 'CD71039A',
+            business_unit_id: 52,
+            offence_title: 'Attempt criminal damage to property valued under £5000',
+            offence_title_cy: null,
+            date_used_from: '1971-01-01T00:00:00Z',
+            date_used_to: null,
+            offence_oas: 'Contrary to section 1(1) of the Criminal Attempts Act 1981.',
+            offence_oas_cy: null,
+          },
+          {
+            offence_id: 30734,
+            get_cjs_code: 'CD71039B',
+            business_unit_id: 52,
+            offence_title: 'Aid, abet, counsel and procure damage under £5000',
+            offence_title_cy: null,
+            date_used_from: '1971-01-01T00:00:00Z',
+            date_used_to: null,
+            offence_oas: 'Contrary to sections 1(1) and 4 of the Criminal Damage Act 1971.',
+            offence_oas_cy: null,
+          },
+          {
+            offence_id: 30735,
+            get_cjs_code: 'CD71039C',
+            business_unit_id: 52,
+            offence_title: 'Conspiracy to destroy or damage property under £5000',
+            offence_title_cy: null,
+            date_used_from: '1971-01-01T00:00:00Z',
+            date_used_to: '2004-12-25T00:00:00Z',
+            offence_oas: 'Contrary to section 1 of the Criminal Law Act 1977.',
+            offence_oas_cy: null,
+          },
+        ],
+      };
+      getOffenceByCjsCode = () => of(multiResultResponse);
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('cd71039');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(form.get('code')?.errors).toBeNull();
+      expect(form.get('id')?.value).toBe(41799);
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should mark code as invalid when results are returned but none match exactly', () => {
+      vi.useFakeTimers();
+      const nonExactResponse: IOpalFinesOffencesRefData = {
+        count: 2,
+        refData: [
+          {
+            offence_id: 1,
+            get_cjs_code: 'TEST123A',
+            business_unit_id: 52,
+            offence_title: 'Test A',
+            offence_title_cy: null,
+            date_used_from: '1971-01-01T00:00:00Z',
+            date_used_to: null,
+            offence_oas: 'Test A',
+            offence_oas_cy: null,
+          },
+          {
+            offence_id: 2,
+            get_cjs_code: 'TEST123B',
+            business_unit_id: 52,
+            offence_title: 'Test B',
+            offence_title_cy: null,
+            date_used_from: '1971-01-01T00:00:00Z',
+            date_used_to: null,
+            offence_oas: 'Test B',
+            offence_oas_cy: null,
+          },
+        ],
+      };
+      getOffenceByCjsCode = () => of(nonExactResponse);
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('TEST123');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(form.get('code')?.errors).toEqual({ invalidOffenceCode: true });
+      expect(form.get('id')?.value).toBeNull();
     });
 
     it('should not call populateHint for short code', () => {

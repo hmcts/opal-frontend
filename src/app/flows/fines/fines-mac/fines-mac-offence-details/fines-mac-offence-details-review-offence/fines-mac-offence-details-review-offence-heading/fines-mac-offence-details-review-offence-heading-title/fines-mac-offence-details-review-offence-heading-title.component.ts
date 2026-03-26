@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
   GovukSummaryListRowActionItemComponent,
   GovukSummaryListRowActionsComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { FinesMacOffenceDetailsService } from '../../../services/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-heading-title',
@@ -20,6 +21,8 @@ import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/in
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent implements OnInit {
+  private readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
+
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: true }) public offenceRefData!: IOpalFinesOffencesRefData;
   @Input({ required: false }) public showActions!: boolean;
@@ -41,7 +44,8 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent implements
    * Retrieves the offence title from the offence reference data and assigns it to the `offenceTitle` property.
    */
   public getOffenceTitle(): void {
-    this.offenceTitle = this.offenceRefData.refData[0].offence_title;
+    const exactMatch = this.offenceDetailsService.findExactOffenceMatch(this.offenceRefData, this.offenceCode);
+    this.offenceTitle = exactMatch?.offence_title ?? this.offenceRefData.refData[0]?.offence_title ?? '';
   }
 
   public ngOnInit(): void {

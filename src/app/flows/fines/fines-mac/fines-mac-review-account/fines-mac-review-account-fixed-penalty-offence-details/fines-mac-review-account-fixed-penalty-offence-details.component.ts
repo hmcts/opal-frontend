@@ -13,6 +13,7 @@ import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.co
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
+import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-review-account-fixed-penalty-offence-details',
@@ -30,6 +31,7 @@ import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 })
 export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
+  private readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
   @Input({ required: true }) public offenceDetails!: IFinesMacFixedPenaltyDetailsStoreState;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeOffenceDetails = new EventEmitter<void>();
@@ -56,7 +58,9 @@ export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements
    */
   public getOffence(offenceCode: string): void {
     this.opalFinesService.getOffenceByCjsCode(offenceCode).subscribe((offence: IOpalFinesOffencesRefData) => {
-      this.offence = `${offence.refData[0].offence_title} (${offenceCode})`;
+      const exactMatch = this.offenceDetailsService.findExactOffenceMatch(offence, offenceCode);
+      const offenceTitle = exactMatch?.offence_title ?? offence.refData[0]?.offence_title ?? offenceCode;
+      this.offence = `${offenceTitle} (${offenceCode})`;
     });
   }
 
