@@ -16,6 +16,7 @@ import { AccountSearchCommonActions } from '../actions/search/search.common.acti
 import { ResultsActions } from '../actions/search/search.results.actions';
 import { CommonActions } from '../actions/common/common.actions';
 import { MinorCreditorType } from '../../../../support/utils/macFieldResolvers';
+import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 
 /**
  * Normalised Minor Creditor types used in flow processing.
@@ -58,7 +59,7 @@ export class AccountSearchFlow {
     const out: Record<string, string> = {};
 
     for (const [k, v] of Object.entries(raw)) {
-      out[k.trim()] = v;
+      out[k.trim()] = applyUniqPlaceholder(String(v ?? '').trim());
     }
 
     return out;
@@ -71,6 +72,23 @@ export class AccountSearchFlow {
    */
   private normalize(s: string): string {
     return s.trim().toLowerCase();
+  }
+
+  /**
+   * Resolves the account number of the last created/published account from `@etagUpdate`.
+   *
+   * @returns Cypress chainable resolving to a non-empty account number.
+   */
+  private resolveLastCreatedAccountNumber(): Cypress.Chainable<string> {
+    return cy.get('@etagUpdate').then((etag: any) => {
+      const accountNumber = typeof etag?.accountNumber === 'string' ? etag.accountNumber.trim() : '';
+
+      if (!accountNumber) {
+        throw new Error('Expected @etagUpdate to contain a non-empty accountNumber for last created account search.');
+      }
+
+      return accountNumber;
+    });
   }
 
   /**
@@ -898,6 +916,22 @@ export class AccountSearchFlow {
   }
 
   /**
+   * Searches using the account number of the last created/published account.
+   *
+   * This is intended for end-to-end journey scenarios that seed an account via the
+   * draft-account API helpers, which expose the created metadata through `@etagUpdate`.
+   */
+  public searchForLastCreatedAccountByAccountNumber(): void {
+    log('flow', 'Searching for last created account by account number');
+
+    this.resolveLastCreatedAccountNumber().then((accountNumber) => {
+      log('input', 'Entering last created account number into search', { accountNumber });
+      this.commonSearch.enterAccountNumber(accountNumber);
+      this.submitSearchAndWaitForResults();
+    });
+  }
+
+  /**
    * Submits the account search request and waits for the application
    * to transition to the results page.
    *
@@ -1106,7 +1140,7 @@ export class AccountSearchFlow {
   /**
    * Flow:
    *  - Assert the Search results page header is visible.
-   *  - Assert the "Individuals" tab is selected.
+   *  - Assert the Individuals table structure is correct for the current view.
    *  - Assert there is a row in the Individuals results whose columns
    *    match all key/value pairs from the provided table.
    *
@@ -1118,18 +1152,38 @@ export class AccountSearchFlow {
   public assertIndividualsResultsForReference(table: DataTable): void {
     const expectations = this.buildExpectationMap(table);
 
-    log('verify', 'Verifying Individuals search results header, tab and row match', {
+    log('verify', 'Verifying Individuals search results header, structure and row match', {
       expectations,
     });
 
     // Header + base results assertion
     this.results.assertOnResults();
 
-    // Tab state
-    this.results.assertIndividualsTabSelected();
+    this.results.assertIndividualsResultsTableStructure();
 
     // Row match (single row that satisfies all column/value pairs)
     this.results.assertResultsRowMatchesColumns(expectations);
+  }
+
+  /**
+   * Flow:
+   *  - Resolve the last created account number from `@etagUpdate`.
+   *  - Assert the Search results page is displayed.
+   *  - Assert the Individuals table structure is correct for the current view.
+   *  - Assert there is a row whose Account column matches that account number.
+   */
+  public assertIndividualsResultsForLastCreatedAccount(): void {
+    this.resolveLastCreatedAccountNumber().then((accountNumber) => {
+      const expectations = { Account: accountNumber };
+
+      log('verify', 'Verifying Individuals results for last created account', {
+        expectations,
+      });
+
+      this.results.assertOnResults();
+      this.results.assertIndividualsResultsTableStructure();
+      this.results.assertResultsRowMatchesColumns(expectations);
+    });
   }
 
   /**
@@ -1147,7 +1201,7 @@ export class AccountSearchFlow {
   public assertCompaniesResultsWithTabSwitch(table: DataTable): void {
     const expectations = this.buildExpectationMap(table);
 
-    log('verify', 'Verifying Companies search results header, tab and row match', {
+    log('verify', 'Verifying Companies search results header, tab, structure and row match', {
       expectations,
     });
 
@@ -1156,16 +1210,17 @@ export class AccountSearchFlow {
 
     // Tab state
     this.results.assertCompaniesTabSelected();
+    this.results.assertCompaniesResultsTableStructure();
 
     // Row match (same semantics as Individuals)
     this.results.assertResultsRowMatchesColumns(expectations);
   }
 
   /**
-   * Positive results verification for pages where ONLY the Companies tab exists.
+   * Positive results verification for single-type Companies searches.
    *
    * - Asserts the Search results header.
-   * - Asserts the Companies tab is already selected.
+   * - Asserts the Companies table structure matches the single-type results view.
    * - Asserts at least one row matches the provided expectations.
    *
    * @param table Two-column Cucumber table of column/value pairs to assert.
@@ -1176,10 +1231,31 @@ export class AccountSearchFlow {
   public assertCompaniesResultsAlreadyOnCompanies(table: DataTable): void {
     const expectations = this.buildExpectationMap(table);
 
-    log('verify', 'Verifying Companies results (no tab switching)', { expectations });
+    log('verify', 'Verifying Companies results structure and row match', { expectations });
 
     this.results.assertOnResults();
-    this.results.assertCompaniesTabSelected();
+    this.results.assertCompaniesResultsTableStructure();
+    this.results.assertResultsRowMatchesColumns(expectations);
+  }
+
+  /**
+   * Positive results verification for Minor creditors searches.
+   *
+   * - Asserts the Search results header.
+   * - Asserts at least one row matches the provided expectations.
+   *
+   * @param table Two-column Cucumber table of column/value pairs to assert.
+   * @example
+   *   Then I see the Minor creditors search results:
+   *     | Ref | PCRAUTO011 |
+   */
+  public assertMinorCreditorsResults(table: DataTable): void {
+    const expectations = this.buildExpectationMap(table);
+
+    log('verify', 'Verifying Minor creditors results', { expectations });
+
+    this.results.assertOnResults();
+    this.results.assertMinorCreditorResultsTableStructure();
     this.results.assertResultsRowMatchesColumns(expectations);
   }
 
@@ -1217,7 +1293,6 @@ export class AccountSearchFlow {
   /**
    * Flow:
    *  - Asserts the Search results page is displayed.
-   *  - Asserts the "Companies" tab is selected.
    *  - Asserts there is NO row in the results whose columns match all
    *    key/value pairs from the provided table.
    *
@@ -1236,9 +1311,6 @@ export class AccountSearchFlow {
 
     // We should already be on the results page.
     this.results.assertOnResults();
-
-    // For this scenario there is only a Companies tab; still assert it.
-    this.results.assertCompaniesTabSelected();
 
     // Assert that no row matches the forbidden values.
     this.results.assertNoResultsRowMatchesColumns(expectations);

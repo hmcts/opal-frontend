@@ -86,6 +86,26 @@ When('I search for the account by last name {string} and open the latest result'
 });
 
 /**
+ * @step Opens the latest matching account from the current Search results page.
+ *
+ * @remarks
+ * - Intended for journey scenarios where the results page has already been asserted.
+ * - Delegates to the shared AccountEnquiryFlow/ResultsActions open helper.
+ */
+When('I open the latest matching result from the search results', () => {
+  log('step', 'Opening latest matching result from search results');
+  flow().openMostRecentFromResults();
+});
+
+/**
+ * @step Opens the latest matching account from the Companies tab on the Search results page.
+ */
+When('I open the latest matching result from the Companies search results', () => {
+  log('step', 'Opening latest matching result from Companies search results');
+  flow().openMostRecentFromCompaniesResults();
+});
+
+/**
  * @step Verifies that any page/account/summary header contains the given string.
  *
  * @remarks

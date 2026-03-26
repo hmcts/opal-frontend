@@ -116,8 +116,17 @@ export const AccountEnquiryResultsLocators = {
     /** TD element for the account cell, if text extraction is needed. */
     accountCell: 'td#defendantAccountNumber',
 
+    /** Minor creditor clickable account link cell (anchors only). */
+    minorCreditorAccountLink: 'td#minorCreditorAccountNumber a.govuk-link',
+
+    /** TD element for the minor creditor account cell, if text extraction is needed. */
+    minorCreditorAccountCell: 'td#minorCreditorAccountNumber',
+
     /** Defendant name column. */
     name: 'td#defendantName',
+
+    /** Minor creditor name column. */
+    minorCreditorName: 'td#minorCreditorName',
 
     /** Aliases column (if present). */
     aliases: 'td#defendantAliases',
@@ -128,8 +137,14 @@ export const AccountEnquiryResultsLocators = {
     /** Address line 1 column. */
     addr1: 'td#defendantAddressLine1',
 
+    /** Minor creditor address line 1 column. */
+    minorCreditorAddr1: 'td#minorCreditorAddressLine1',
+
     /** Postcode column. */
     postcode: 'td#defendantPostcode',
+
+    /** Minor creditor postcode column. */
+    minorCreditorPostcode: 'td#minorCreditorPostcode',
 
     /** National Insurance number column. */
     ni: 'td#defendantNationalInsuranceNumber',
@@ -140,6 +155,9 @@ export const AccountEnquiryResultsLocators = {
     /** Business unit column. */
     businessUnit: 'td#defendantBusinessUnit',
 
+    /** Minor creditor business unit column. */
+    minorCreditorBusinessUnit: 'td#minorCreditorBusinessUnit',
+
     /** Reference column. */
     ref: 'td#defendantRef',
 
@@ -148,6 +166,12 @@ export const AccountEnquiryResultsLocators = {
 
     /** Balance column. */
     balance: 'td#defendantBalance',
+
+    /** Minor creditor linked defendant column. */
+    minorCreditorDefendant: 'td#minorCreditorDefendant',
+
+    /** Minor creditor balance column. */
+    minorCreditorBalance: 'td#minorCreditorBalance',
   },
 
   // ──────────────────────────────
