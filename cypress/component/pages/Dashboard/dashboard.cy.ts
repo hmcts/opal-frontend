@@ -55,7 +55,7 @@ describe('DashboardComponent', () => {
     { tags: buildTags('@JIRA-STORY:PO-604', '@JIRA-IGNORE') },
     () => {
       setupComponent(CAV_DASHBOARD_USER_STATE_MOCK);
-      cy.get('span').contains('testUserCAV@HMCTS.NET').should('exist');
+      cy.get('span').contains('testUserCAV@dev.platform.hmcts.net').should('exist');
       cy.get(CMDLocators.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
       cy.get(L.checkAndValidateDraftAccountsLink).contains('Check and Validate Draft Accounts').should('exist');
       cy.get(L.createAndManageDraftAccountsLink).should('not.exist');
@@ -67,7 +67,7 @@ describe('DashboardComponent', () => {
     { tags: buildTags('@JIRA-STORY:PO-604', '@JIRA-IGNORE') },
     () => {
       setupComponent(CAM_DASHBOARD_USER_STATE_MOCK);
-      cy.get('span').contains('testUserCAM@HMCTS.NET').should('exist');
+      cy.get('span').contains('testUserCAM@dev.platform.hmcts.net').should('exist');
       cy.get(CMDLocators.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
       cy.get(L.createAndManageDraftAccountsLink).contains('Create and Manage Draft Accounts').should('exist');
       cy.get(L.checkAndValidateDraftAccountsLink).should('not.exist');
@@ -79,7 +79,7 @@ describe('DashboardComponent', () => {
     { tags: buildTags('@JIRA-STORY:PO-604', '@JIRA-IGNORE') },
     () => {
       setupComponent(CAM_CAV_DASHBOARD_USER_STATE_MOCK);
-      cy.get('span').contains('testUserCAM_CAV@HMCTS.NET').should('exist');
+      cy.get('span').contains('testUserCAM_CAV@dev.platform.hmcts.net').should('exist');
       cy.get(CMDLocators.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
       cy.get(L.createAndManageDraftAccountsLink).contains('Create and Manage Draft Accounts').should('exist');
       cy.get(L.checkAndValidateDraftAccountsLink).contains('Check and Validate Draft Accounts').should('exist');
@@ -91,7 +91,7 @@ describe('DashboardComponent', () => {
     { tags: buildTags('@JIRA-STORY:PO-604', '@JIRA-IGNORE') },
     () => {
       setupComponent(NO_PERMS_DASHBOARD_USER_STATE_MOCK);
-      cy.get('span').contains('noPermissionsTestUser@HMCTS.NET').should('exist');
+      cy.get('span').contains('noPermissionsTestUser@dev.platform.hmcts.net').should('exist');
       cy.get(CMDLocators.manualAccountCreationLink).contains('Manual Account Creation').should('exist');
       cy.get(L.createAndManageDraftAccountsLink).should('not.exist');
       cy.get(L.checkAndValidateDraftAccountsLink).should('not.exist');
