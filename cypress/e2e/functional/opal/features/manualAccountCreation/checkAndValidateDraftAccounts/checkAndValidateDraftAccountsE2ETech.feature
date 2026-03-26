@@ -2,7 +2,7 @@
 Feature: Check and Validate Draft Accounts - Extra E2E Technical Scenarios
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
   @JIRA-STORY:PO-2243
@@ -10,7 +10,7 @@ Feature: Check and Validate Draft Accounts - Extra E2E Technical Scenarios
     Given a "<draftType>" draft account exists with:
       | Account_status    | Submitted         |
       | <identifierField> | <identifierValue> |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "<listName>" and see header "<header>"
     And the draft account status tag is "In review"
