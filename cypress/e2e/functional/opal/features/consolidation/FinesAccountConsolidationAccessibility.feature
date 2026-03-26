@@ -8,7 +8,7 @@ Feature: Accessibility Tests for Fines Consolidation
 
   @JIRA-STORY:PO-2413 @JIRA-STORY:PO-2415 @JIRA-STORY:PO-2417 @JIRA-KEY:POT-3210
   Scenario: Consolidate Accessibility for Individuals
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                                  |
       | account.defendant.forenames             | Consolidation                              |
       | account.defendant.surname               | Accessibility{uniq}                        |
@@ -43,7 +43,7 @@ Feature: Accessibility Tests for Fines Consolidation
 
   @JIRA-STORY:PO-2414 @JIRA-STORY:PO-2421 @JIRA-STORY:PO-2417 @JIRA-KEY:POT-3211
   Scenario: Consolidate Accessibility for Companies
-    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                                |
       | account.defendant.company_name      | Consolidation Access Comp {uniq}         |
       | account.defendant.email_address_1   | consolidation.access.comp{uniq}@test.com |
@@ -59,7 +59,7 @@ Feature: Accessibility Tests for Fines Consolidation
     Then I am on the consolidation Search tab for Companies
     And I check the page for accessibility
     And I enter the following consolidation search details:
-      | account number | 12345678                        |
+      | account number | 12345678                         |
       | company name   | Consolidation Access Comp {uniq} |
     When I click Search on consolidation account search
     Then I see the consolidation search error page for "Company"
