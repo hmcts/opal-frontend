@@ -151,6 +151,12 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     expect(selectAllCheckbox).toBeNull();
   });
 
+  it('should render accessible text for the select all header', () => {
+    const selectAllHeader: HTMLElement | null = fixture.nativeElement.querySelector('#defendants-select-all');
+
+    expect(selectAllHeader?.textContent).toContain('Select accounts to consolidate');
+  });
+
   it('should remove stale row controls when table data shrinks', () => {
     component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
     fixture.detectChanges();
