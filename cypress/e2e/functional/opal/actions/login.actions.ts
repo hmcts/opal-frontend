@@ -68,10 +68,12 @@ export function performLogin(email: string): void {
     {
       cacheAcrossSpecs: true,
       validate() {
-        // Session validation logic
-        log('assert', 'Validating restored session');
-        cy.visit('/sign-in');
-        cy.get(L.signOutLink).should('be.visible');
+        log('assert', 'Validating restored session via signed-in user API', { email });
+
+        captureSignedInUserEmail().then((signedInEmail) => {
+          expect(signedInEmail.trim().toLowerCase()).to.eq(email.trim().toLowerCase());
+        });
+
         log('done', 'Session validation succeeded', { email });
       },
     },
