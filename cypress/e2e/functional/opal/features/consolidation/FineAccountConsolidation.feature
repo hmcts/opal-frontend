@@ -222,3 +222,37 @@ Feature: Fines Account Consolidation
     And the created consolidation result account number is displayed as a hyperlink
     When I open the created consolidation result account in a new tab
     Then I should see the account header contains "Consolidation Result Co {uniqUpper}"
+
+  @JIRA-STORY:PO-2414 @JIRA-KEY:POT-3329
+  Scenario: Consolidation search excludes zero balance accounts for Company
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                               | Submitted                                    |
+      | account.defendant.company_name               | Consolidation Zero Balance Co {uniq}         |
+      | account.defendant.email_address_1            | consolidation.zero.balance.co{uniq}@test.com |
+      | account.defendant.post_code                  | AB23 4RN                                     |
+      | account.prosecutor_case_reference            | CONS-ZERO-BAL-COMP-A-{uniq}                  |
+      | account.account_type                         | Fine                                         |
+      | account.collection_order_made                | false                                        |
+      | account.collection_order_made_today          | false                                        |
+      | account.payment_card_request                 | false                                        |
+      | account.offences.0.impositions.0.amount_paid | 125                                          |
+    And I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                      | Submitted                                       |
+      | account.defendant.company_name      | Consolidation Zero Balance Co {uniq}            |
+      | account.defendant.email_address_1   | consolidation.visible.balance.co{uniq}@test.com |
+      | account.defendant.post_code         | AB23 4RN                                        |
+      | account.prosecutor_case_reference   | CONS-ZERO-BAL-COMP-B-{uniq}                     |
+      | account.account_type                | Fine                                            |
+      | account.collection_order_made       | false                                           |
+      | account.collection_order_made_today | false                                           |
+      | account.payment_card_request        | false                                           |
+    When I open Consolidate accounts
+    And I continue to the consolidation account search as an "Company" defendant
+    Then I am on the consolidation Search tab for Companies
+    And I enter the following consolidation search details:
+      | company name       | Consolidation Zero Balance Co {uniq} |
+      | Search exact match | true                                 |
+    And I click Search on consolidation account search
+    Then I am on the consolidation Results tab for Companies
+    And the created consolidation result account number is displayed as a hyperlink
+    And the consolidation results exclude accounts with a balance of "£0.00"
