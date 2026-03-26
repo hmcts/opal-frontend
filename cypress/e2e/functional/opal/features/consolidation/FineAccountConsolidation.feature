@@ -71,16 +71,13 @@ Feature: Fines Account Consolidation
     Then I see the consolidation no matching results state
     # AC4 - A Back button will be displayed in the page header
     Then the consolidation page header back link is displayed
-    # AC4a - Selecting Back will return the user to the Consolidate accounts Search tab with all previously entered search data retained
+    # AC4 - Selecting Back will return the user to the BU and defendant type selection screen
     When I click the consolidation page header back link
-    Then I am on the consolidation Search tab for Individuals
-    And the consolidation search details are retained:
-      | last name             | NoMatchBack |
-      | last name exact match | true        |
+    Then I am on the consolidation business unit and defendant type selection screen
 
   @JIRA-STORY:PO-2413 @JIRA-KEY:POT-3328
   Scenario: Consolidation Successful account search for Individuals
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
       | account.defendant.forenames             | Consolidation                       |
       | account.defendant.surname               | ResultLink{uniq}                    |
@@ -110,7 +107,7 @@ Feature: Fines Account Consolidation
 
   @JIRA-STORY:PO-2413 @JIRA-KEY:POT-3328
   Scenario: Consolidation search excludes zero balance accounts for Individuals
-    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                               | Submitted                                 |
       | account.defendant.forenames                  | Zero                                      |
       | account.defendant.surname                    | ConsolidationZeroBalance{uniq}            |
@@ -123,7 +120,7 @@ Feature: Fines Account Consolidation
       | account.payment_card_request                 | false                                     |
       | account.defendant.dob                        | 2001-05-15                                |
       | account.offences.0.impositions.0.amount_paid | 125                                       |
-    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                                    |
       | account.defendant.forenames             | Visible                                      |
       | account.defendant.surname               | ConsolidationZeroBalance{uniq}               |
@@ -196,17 +193,14 @@ Feature: Fines Account Consolidation
     Then I see the consolidation no matching results state
     # AC4 - A Back button will be displayed in the page header
     Then the consolidation page header back link is displayed
-    # AC4a - Selecting Back will return the user to the Consolidate accounts Search tab with all previously entered search data retained
+    # AC4 - Selecting Back will return the user to the BU and defendant type selection screen
     When I click the consolidation page header back link
-    Then I am on the consolidation Search tab for Companies
-    And the consolidation search details are retained:
-      | company name       | No Match Back Co |
-      | Search exact match | true             |
+    Then I am on the consolidation business unit and defendant type selection screen
 
 
   @JIRA-STORY:PO-2413 @JIRA-KEY:POT-3328
   Scenario: Consolidation Successful account search for Company
-    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                    | Submitted                              |
       | account.defendant.company_name    | Consolidation Result Co {uniq}         |
       | account.defendant.email_address   | consolidation.result.co{uniq}@test.com |

@@ -53,6 +53,12 @@ export class ConsolidationFlow {
     this.consolidation.assertOnSearchTabForIndividuals();
   }
 
+  /** Asserts the user is on the consolidation business unit and defendant type selection screen. */
+  public assertSelectBusinessUnitScreen(): void {
+    log('flow', 'Asserting consolidation select business unit screen is displayed');
+    this.consolidation.assertOnSelectBusinessUnitScreen();
+  }
+
   /** Asserts consolidation account search lands on Search tab for Companies. */
   public assertSearchTabForCompanies(): void {
     log('flow', 'Asserting consolidation account search is on Search tab for Companies');

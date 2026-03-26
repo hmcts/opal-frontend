@@ -34,6 +34,11 @@ Then('I am on the consolidation Search tab for Individuals', () => {
   consolidationFlow().assertSearchTabForIndividuals();
 });
 
+Then('I am on the consolidation business unit and defendant type selection screen', () => {
+  log('step', 'Verifying consolidation business unit and defendant type selection screen');
+  consolidationFlow().assertSelectBusinessUnitScreen();
+});
+
 Then('I am on the consolidation Search tab for Companies', () => {
   log('step', 'Verifying consolidation account search defaults for Companies');
   consolidationFlow().assertSearchTabForCompanies();

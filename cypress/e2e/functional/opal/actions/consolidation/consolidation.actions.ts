@@ -161,6 +161,15 @@ export class ConsolidationActions {
     cy.get(SelectBusinessUnitLocators.continueButton, { timeout: 10_000 }).should('be.visible').click();
   }
 
+  /** Asserts the user is on the consolidation business unit and defendant type selection screen. */
+  public assertOnSelectBusinessUnitScreen(): void {
+    log('assert', 'Verifying user is on consolidation select business unit screen');
+
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/select-business-unit');
+    cy.get(SelectBusinessUnitLocators.heading, { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');
+    cy.get(SelectBusinessUnitLocators.defendantTypeHeading).should('contain.text', 'Defendant type');
+  }
+
   /** Clicks Search on the consolidation Search tab. */
   public clickSearch(): void {
     log('click', 'Clicking Search on consolidation account search page');

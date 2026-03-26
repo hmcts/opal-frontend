@@ -47,6 +47,25 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     });
   };
 
+  const assertNoSearchUpdate = (updateSearchSpy: sinon.SinonSpy) => {
+    cy.then(() => {
+      expect(updateSearchSpy).to.not.have.been.called;
+    });
+  };
+
+  const findSubmittedFormData = (
+    updateSearchSpy: sinon.SinonSpy,
+    predicate: (formData: IFinesConSearchAccountState) => boolean,
+  ): IFinesConSearchAccountState => {
+    const matchingCall = updateSearchSpy
+      .getCalls()
+      .map((call) => call.args[0] as IFinesConSearchAccountState)
+      .find(predicate);
+
+    expect(matchingCall, 'matching search payload').to.exist;
+    return matchingCall!;
+  };
+
   const switchToTab = (tab: ConsolidationTabFragment) => {
     cy.get('@finesConStore').then((store: any) => {
       store.setActiveTab(tab);
@@ -81,18 +100,18 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
       //AC1a. Business unit displays the selected BU and is read-only'
 
-      cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business Unit');
+      cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business unit');
       cy.get(AccountSearchLocators.businessUnitValue).should('contain', 'Historical Debt');
 
       //AC1b. Defendant type displays 'Individual'
-      cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant Type');
+      cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant type');
       cy.get(AccountSearchLocators.defendantTypeValue).should('contain', 'Individual');
 
       //AC1c. Search screen mirrors expected field types, headings and actions
       cy.get(AccountSearchLocators.tabsNav).should('be.visible');
       cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
       cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
-      cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For Consolidation');
+      cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For consolidation');
 
       cy.get(AccountSearchLocators.quickSearchHeading).should('contain', 'Quick search');
       cy.contains(AccountSearchLocators.advancedSearchHeading, 'Advanced Search').should('be.visible');
@@ -139,14 +158,63 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   );
 
   it(
-    'AC3. Invalid search criteria display the expected errors and no search update occurs',
+    'AC3a. Invalid account number format displays the expected error and no search update occurs',
+    { tags: buildTags('@JIRA-KEY:POT-3869') },
+    () => {
+      const updateSearchSpy = Cypress.sinon.spy();
+      finesConSearchAccountFormData.fcon_search_account_number = '1234567';
+
+      setupConsolidationComponent({ updateSearchSpy });
+      cy.get(AccountSearchLocators.searchButton).click();
+
+      assertValidationError(
+        'Enter account number in the correct format such as 12345678 or 12345678A',
+        AccountSearchLocators.accountNumberError,
+      );
+      assertNoSearchUpdate(updateSearchSpy);
+    },
+  );
+
+  it(
+    'AC3b. Invalid National Insurance number format displays the expected error and no search update occurs',
+    { tags: buildTags('@JIRA-KEY:POT-3869') },
+    () => {
+      const updateSearchSpy = Cypress.sinon.spy();
+      finesConSearchAccountFormData.fcon_search_account_national_insurance_number = 'AB12345$C';
+
+      setupConsolidationComponent({ updateSearchSpy });
+      cy.get(AccountSearchLocators.searchButton).click();
+
+      assertValidationError(
+        'Enter a National Insurance number in the format AANNNNNNA',
+        AccountSearchLocators.nationalInsuranceNumberError,
+      );
+      assertNoSearchUpdate(updateSearchSpy);
+    },
+  );
+
+  it(
+    'AC4a. Account number max length displays the expected error and no search update occurs',
+    { tags: buildTags('@JIRA-KEY:POT-3870') },
+    () => {
+      const updateSearchSpy = Cypress.sinon.spy();
+      finesConSearchAccountFormData.fcon_search_account_number = '123456789A';
+
+      setupConsolidationComponent({ updateSearchSpy });
+      cy.get(AccountSearchLocators.searchButton).click();
+
+      assertValidationError('Account number must be 9 characters or fewer', AccountSearchLocators.accountNumberError);
+      assertNoSearchUpdate(updateSearchSpy);
+    },
+  );
+
+  it(
+    'AC3. Invalid advanced search criteria display the expected errors and no search update occurs',
     { tags: buildTags('@JIRA-KEY:POT-3869') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
-        fcon_search_account_number: '1234567',
-        fcon_search_account_national_insurance_number: 'AB12345$C',
         fcon_search_account_individuals_search_criteria: {
           fcon_search_account_individuals_last_name: 'Smith',
           fcon_search_account_individuals_last_name_exact_match: false,
@@ -162,14 +230,6 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       const expectedValidationErrors = [
-        {
-          message: 'Enter account number in the correct format such as 12345678 or 12345678A',
-          selector: AccountSearchLocators.accountNumberError,
-        },
-        {
-          message: 'Enter a National Insurance number in the format AANNNNNNA',
-          selector: AccountSearchLocators.nationalInsuranceNumberError,
-        },
         {
           message: 'Date of birth must be in the format DD/MM/YYYY',
           selector: AccountSearchLocators.dateOfBirthError,
@@ -188,21 +248,17 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         assertValidationError(message, selector);
       });
 
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
   it(
-    'AC4. Max length validation errors display expected messages and no search update occurs',
+    'AC4. Advanced search max length validation errors display expected messages and no search update occurs',
     { tags: buildTags('@JIRA-KEY:POT-3870') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
-        fcon_search_account_number: '123456789A',
-        fcon_search_account_national_insurance_number: 'AB1234567C',
         fcon_search_account_individuals_search_criteria: {
           fcon_search_account_individuals_last_name: 'A'.repeat(31),
           fcon_search_account_individuals_last_name_exact_match: false,
@@ -219,20 +275,12 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
       const expectedValidationErrors = [
         {
-          message: 'Account number must be 9 characters or fewer',
-          selector: AccountSearchLocators.accountNumberError,
-        },
-        {
           message: 'Last name must be 30 characters or fewer',
           selector: AccountSearchLocators.lastNameError,
         },
         {
           message: 'First names must be 20 characters or fewer',
           selector: AccountSearchLocators.firstNamesError,
-        },
-        {
-          message: 'Enter a National Insurance number in the format AANNNNNNA',
-          selector: AccountSearchLocators.nationalInsuranceNumberError,
         },
         {
           message: 'Address line 1 must be 30 characters or fewer',
@@ -248,9 +296,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         assertValidationError(message, selector);
       });
 
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
@@ -266,9 +312,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       assertValidationError('Enter last name', AccountSearchLocators.lastNameError);
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
@@ -283,9 +327,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       assertValidationError('Enter last name', AccountSearchLocators.lastNameError);
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
@@ -299,9 +341,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       assertValidationError('Enter last name', AccountSearchLocators.lastNameError);
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
@@ -316,9 +356,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       assertValidationError('Enter last name', AccountSearchLocators.lastNameError);
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
@@ -333,8 +371,10 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       cy.then(() => {
-        expect(updateSearchSpy).to.have.been.calledOnce;
-        const submittedFormData = updateSearchSpy.firstCall.args[0] as IFinesConSearchAccountState;
+        const submittedFormData = findSubmittedFormData(
+          updateSearchSpy,
+          (formData) => formData.fcon_search_account_number === '12345678',
+        );
 
         expect(submittedFormData.fcon_search_account_number).to.equal('12345678');
         expect(submittedFormData.fcon_search_account_national_insurance_number).to.be.null;
@@ -363,8 +403,10 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       cy.then(() => {
-        expect(updateSearchSpy).to.have.been.calledOnce;
-        const submittedFormData = updateSearchSpy.firstCall.args[0] as IFinesConSearchAccountState;
+        const submittedFormData = findSubmittedFormData(
+          updateSearchSpy,
+          (formData) => formData.fcon_search_account_national_insurance_number === 'AB123456C',
+        );
 
         expect(submittedFormData.fcon_search_account_national_insurance_number).to.equal('AB123456C');
         expect(submittedFormData.fcon_search_account_number).to.be.null;
@@ -461,14 +503,14 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
       //AC1a. Business unit displays the selected BU and is read-only'
 
-      cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business Unit');
+      cy.get(AccountSearchLocators.businessUnitKey).should('contain', 'Business unit');
       cy.get(AccountSearchLocators.businessUnitValue)
         .should('contain', 'Historical Debt')
         .find('input, select, textarea')
         .should('not.exist');
 
       //AC1b. Defendant type displays 'Company'
-      cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant Type');
+      cy.get(AccountSearchLocators.defendantTypeKey).should('contain', 'Defendant type');
       cy.get(AccountSearchLocators.defendantTypeValue)
         .should('contain', 'Company')
         .find('input, select, textarea')
@@ -478,7 +520,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.tabsNav).should('be.visible');
       cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
       cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
-      cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For Consolidation');
+      cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For consolidation');
 
       cy.get(AccountSearchLocators.quickSearchHeading).should('contain', 'Quick search');
       cy.contains(AccountSearchLocators.advancedSearchHeading, 'Advanced Search').should('be.visible');
@@ -521,13 +563,45 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   );
 
   it(
-    'AC3. Invalid search criteria display the expected errors and no search update occurs',
+    'AC3a. Invalid company account number format displays the expected error and no search update occurs',
+    { tags: buildTags('@JIRA-KEY:POT-3869') },
+    () => {
+      const updateSearchSpy = Cypress.sinon.spy();
+      finesConSearchAccountFormData.fcon_search_account_number = '1234567';
+
+      setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
+      cy.get(AccountSearchLocators.searchButton).click();
+
+      assertValidationError(
+        'Enter account number in the correct format such as 12345678 or 12345678A',
+        AccountSearchLocators.accountNumberError,
+      );
+      assertNoSearchUpdate(updateSearchSpy);
+    },
+  );
+
+  it(
+    'AC4a. Company account number max length displays the expected error and no search update occurs',
+    { tags: buildTags('@JIRA-KEY:POT-3879') },
+    () => {
+      const updateSearchSpy = Cypress.sinon.spy();
+      finesConSearchAccountFormData.fcon_search_account_number = '123456789A';
+
+      setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
+      cy.get(AccountSearchLocators.searchButton).click();
+
+      assertValidationError('Account number must be 9 characters or fewer', AccountSearchLocators.accountNumberError);
+      assertNoSearchUpdate(updateSearchSpy);
+    },
+  );
+
+  it(
+    'AC3. Invalid advanced search criteria display the expected errors and no search update occurs',
     { tags: buildTags('@JIRA-KEY:POT-3869') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
-        fcon_search_account_number: '1234567',
         fcon_search_account_companies_search_criteria: {
           fcon_search_account_companies_company_name: 'Testing!!!',
           fcon_search_account_companies_company_name_exact_match: false,
@@ -540,11 +614,6 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       const expectedValidationErrors = [
-        {
-          //AC3a. User enters value that is not in correct format and the following error is produced
-          message: 'Enter account number in the correct format such as 12345678 or 12345678A',
-          selector: AccountSearchLocators.accountNumberError,
-        },
         {
           //AC3b. User enters non-alphabetical or special characters and the following error is produced
           message: 'Company name must only include letters a to z, hyphens, spaces and apostrophes',
@@ -567,20 +636,17 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       });
 
       //AC3 Following selecting 'search' the system remains on the same screen
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
   it(
-    'AC4. Max length search validation displays the expected errors and no search update occurs',
+    'AC4. Advanced search max length validation displays the expected errors and no search update occurs',
     { tags: buildTags('@JIRA-KEY:POT-3879') },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
-        fcon_search_account_number: '1234567890',
         fcon_search_account_companies_search_criteria: {
           fcon_search_account_companies_company_name: 'QwertyuiopQwertyuiopQwertyuiopQwertyuiopQwertyuiopQ',
           fcon_search_account_companies_company_name_exact_match: false,
@@ -593,11 +659,6 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       const expectedValidationErrors = [
-        {
-          //AC4a. User enters value exceeding the max characters. Error isnt in line with others/conflicts this one first. Confirmed in ..field-errors.constant that it should be 'Account number must be 9 characters or fewer',. Pri 3. How to reach?
-          message: 'Account number must be 9 characters or fewer',
-          selector: AccountSearchLocators.accountNumberError,
-        },
         {
           //AC4b. User enters value exceeding the max characters.
           message: 'Company name must be 50 characters or fewer',
@@ -620,9 +681,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       });
 
       //AC4 Following selecting 'search' the system remains on the same screen
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
@@ -658,9 +717,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       });
 
       //AC5 Following selecting 'search' the system remains on the same screen
-      cy.then(() => {
-        expect(updateSearchSpy).to.not.have.been.called;
-      });
+      assertNoSearchUpdate(updateSearchSpy);
     },
   );
 
@@ -675,8 +732,10 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       cy.then(() => {
-        expect(updateSearchSpy).to.have.been.calledOnce;
-        const submittedFormData = updateSearchSpy.firstCall.args[0] as IFinesConSearchAccountState;
+        const submittedFormData = findSubmittedFormData(
+          updateSearchSpy,
+          (formData) => formData.fcon_search_account_number === '12345678',
+        );
 
         expect(submittedFormData.fcon_search_account_number).to.equal('12345678');
         expect(submittedFormData.fcon_search_account_companies_search_criteria).to.deep.equal({
@@ -761,7 +820,13 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       cy.then(() => {
-        expect(updateSearchSpy).to.have.been.calledOnce;
+        findSubmittedFormData(
+          updateSearchSpy,
+          (formData) =>
+            formData.fcon_search_account_number === '12345678' &&
+            formData.fcon_search_account_individuals_search_criteria?.fcon_search_account_individuals_last_name ===
+              'Smith',
+        );
       });
       assertSearchErrorRedirect({
         fcon_search_account_number: '12345678',
@@ -800,7 +865,13 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.get(AccountSearchLocators.searchButton).click();
 
       cy.then(() => {
-        expect(updateSearchSpy).to.have.been.calledOnce;
+        findSubmittedFormData(
+          updateSearchSpy,
+          (formData) =>
+            formData.fcon_search_account_number === '12345678' &&
+            formData.fcon_search_account_companies_search_criteria?.fcon_search_account_companies_company_name ===
+              'Test Company',
+        );
       });
       assertSearchErrorRedirect({
         fcon_search_account_number: '12345678',

@@ -11,13 +11,11 @@ import {
   createCompanyTooManyResultsMock,
   createCompanyMultipleErrorsAndWarningsResult,
   createCompanyMultipleWarningsResult,
-  createCompanyZeroBalanceResult,
   createFalseyResult,
   createMaxResultsMock,
   createTooManyResultsMock,
   createMultipleErrorsAndWarningsResult,
   createMultipleWarningsResult,
-  createZeroBalanceResult,
 } from './mocks/account_results_mock';
 
 const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
@@ -202,7 +200,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
       'AC2b, AC2c, AC5b, AC5d, AC5fi, AC5g. should display an em dash for optional or unavailable account data',
       { tags: buildIndividualTags() },
       () => {
-        defendantAccountResults.push(createFalseyResult(), createZeroBalanceResult());
+        defendantAccountResults.push(createFalseyResult());
 
         setupComponent();
 
@@ -224,10 +222,6 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertRowCellText('ACC002', AccountResultsLocators.resultPayingParentGuardianCell, '-');
         assertRowCellText('ACC002', AccountResultsLocators.resultNationalInsuranceNumberCell, EM_DASH);
         assertRowCellText('ACC002', AccountResultsLocators.resultRefCell, EM_DASH);
-
-        // AC5fi. Zero balance accounts are filtered out of the displayed results.
-        cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC003')).should('not.exist');
-        cy.get(AccountResultsLocators.resultsRows).should('have.length', 2);
       },
     );
 
@@ -403,7 +397,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
       'AC2b, AC2c, AC5b, AC5d, AC5fi. should display an em dash for unavailable company account data',
       { tags: buildCompanyTags() },
       () => {
-        defendantAccountResults.push(createCompanyFalseyResult(), createCompanyZeroBalanceResult());
+        defendantAccountResults.push(createCompanyFalseyResult());
 
         setupComponent({ defendantType: 'company' });
 
@@ -419,9 +413,6 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertRowCellText('COMP002', AccountResultsLocators.resultEnforcementCell, EM_DASH);
         assertRowCellText('COMP002', AccountResultsLocators.resultBalanceCell, EM_DASH);
         assertRowCellText('COMP002', AccountResultsLocators.resultRefCell, EM_DASH);
-
-        cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP003')).should('not.exist');
-        cy.get(AccountResultsLocators.resultsRows).should('have.length', 2);
       },
     );
 
