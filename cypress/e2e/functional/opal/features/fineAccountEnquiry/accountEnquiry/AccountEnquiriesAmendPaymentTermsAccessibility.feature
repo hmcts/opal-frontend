@@ -2,9 +2,9 @@
 Feature: Account Enquiries - Amend Payment Terms Accessibility
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                 |
       | account.defendant.forenames                     | John                      |
       | account.defendant.surname                       | AmendPayTerms{uniq}       |

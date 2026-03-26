@@ -4,7 +4,7 @@ Feature: Manual account creation - Local justice area filtering
   Verifies that local justice area requests include the correct lja_type filters by journey.
 
   Background:
-    Given I am logged in with email "opal-test@hmcts.net"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I open Manual Account Creation
     And I monitor local justice areas requests
 

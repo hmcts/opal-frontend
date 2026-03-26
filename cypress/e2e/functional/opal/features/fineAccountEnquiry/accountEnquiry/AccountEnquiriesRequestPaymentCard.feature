@@ -5,12 +5,12 @@ Feature: Account Enquiries – Request Payment Card
   So that I can confirm or cancel the request
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
   Rule: Eligible account baseline
     Background:
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                          | Submitted                           |
         | account.defendant.forenames             | Jamie                               |
         | account.defendant.surname               | PayCardRequest{uniq}                |
