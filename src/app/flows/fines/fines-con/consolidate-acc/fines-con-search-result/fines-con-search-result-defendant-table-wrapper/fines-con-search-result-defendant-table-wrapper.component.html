@@ -21,6 +21,7 @@
     <opal-lib-moj-sortable-table>
       <ng-container head>
         <th class="govuk-table__header" scope="col" id="defendants-select-all">
+          <span class="govuk-visually-hidden">Select accounts to consolidate</span>
           @if (hasSelectableRowsComputed()) {
             <opal-lib-govuk-checkboxes fieldSetId="defendants-select-all-group" checkboxClasses="" legendText="">
               <div
