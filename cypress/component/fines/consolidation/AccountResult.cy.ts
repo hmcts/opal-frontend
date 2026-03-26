@@ -245,24 +245,28 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     );
 
     it(
-      'AC3, AC3a, AC3b, AC3c. should display the individual over-100 results state with the try adding more information link',
+      'AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the individual over-100 results state with the try adding more information link',
       { tags: buildInvalidResultsTags() },
       () => {
         defendantAccountResults = createTooManyResultsMock();
 
         setupComponent();
+        // AC1a, AC1b. The Business unit row displays the Business Unit used in the search The Defendant type row displays the defendant type used in the search.
+        assertResultsTabSummary();
 
         assertTooManyResultsState();
       },
     );
 
     it(
-      'AC2, AC2a, AC2b, AC2c. should display the individual no-results state with the check your search link',
+      'AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the individual no-results state with the check your search link',
       { tags: buildInvalidResultsTags() },
       () => {
         defendantAccountResults = [];
 
         setupComponent();
+        // AC1a, AC1b. The Business unit row displays the Business Unit used in the search The Defendant type row displays the defendant type used in the search.
+        assertResultsTabSummary();
 
         assertNoMatchingResultsState();
       },
@@ -433,25 +437,29 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     );
 
     it(
-      'AC3, AC3a, AC3b, AC3c. should display the company over-100 results state with the try adding more information link',
+      'AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the company over-100 results state with the try adding more information link',
       { tags: buildInvalidResultsTags() },
       () => {
         defendantAccountResults = createCompanyTooManyResultsMock();
 
         setupComponent({ defendantType: 'company' });
 
+        // AC1a, AC1b. The Business unit row displays the Business Unit used in the search The Defendant type row displays the defendant type used in the search.
+        assertResultsTabSummary('Company');
         assertTooManyResultsState('Company');
       },
     );
 
     it(
-      'AC2, AC2a, AC2b, AC2c. should display the company no-results state with the check your search link',
+      'AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the company no-results state with the check your search link',
       { tags: buildInvalidResultsTags() },
       () => {
         defendantAccountResults = [];
 
         setupComponent({ defendantType: 'company' });
 
+        // AC1a, AC1b. The Business unit row displays the Business Unit used in the search The Defendant type row displays the defendant type used in the search.
+        assertResultsTabSummary('Company');
         assertNoMatchingResultsState('Company');
       },
     );

@@ -35,6 +35,14 @@ Feature: Accessibility Tests for Fines Consolidation
     Then I am on the consolidation Search tab for Individuals
     When I clear the consolidation search
     And I enter the following consolidation search details:
+      | last name             | Nobody |
+      | last name exact match | true   |
+    When I click Search on consolidation account search
+    Then I see the consolidation no matching results state
+    Then I check the page for accessibility
+    When I click Check your search on consolidation no matching results
+    Then I am on the consolidation Search tab for Individuals
+    And I enter the following consolidation search details:
       | last name             | Accessibility{uniq} |
       | last name exact match | true                |
     When I click Search on consolidation account search
@@ -65,6 +73,15 @@ Feature: Accessibility Tests for Fines Consolidation
     Then I see the consolidation search error page for "Company"
     And I check the page for accessibility
     When I go back from the consolidation search error page
+    Then I am on the consolidation Search tab for Companies
+    When I clear the consolidation search
+    And I enter the following consolidation search details:
+      | company name       | Nobody |
+      | Search exact match | true   |
+    When I click Search on consolidation account search
+    Then I see the consolidation no matching results state
+    Then I check the page for accessibility
+    When I click Check your search on consolidation no matching results
     Then I am on the consolidation Search tab for Companies
     When I clear the consolidation search
     And I enter the following consolidation search details:
