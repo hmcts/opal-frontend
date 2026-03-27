@@ -89,6 +89,11 @@ Then('the consolidation results exclude accounts with a balance of {string}', (b
   consolidationFlow().assertResultsExcludeBalance(balance);
 });
 
+Then('the consolidation results are displayed in this order:', (table: DataTable) => {
+  log('step', 'Verifying consolidation results against expected order');
+  consolidationFlow().assertResultsOrder(table);
+});
+
 When('I click Check your search on consolidation no matching results', () => {
   log('step', 'Clicking Check your search on consolidation no matching results');
   consolidationFlow().clickCheckYourSearchFromNoMatchingResults();

@@ -15,6 +15,7 @@ const SINGLE_BUSINESS_UNIT_MESSAGE_PREFIX = 'The consolidation will be processed
 
 export type ConsolidationDefendantType = 'Individual' | 'Company';
 type SearchDetails = Record<string, string>;
+type ConsolidationExpectedResultRow = Record<string, string>;
 type CreatedAccountAlias = {
   accountId?: number | string | null;
   accountNumber?: string | null;
@@ -61,6 +62,35 @@ export class ConsolidationActions {
     if (['true', 'yes'].includes(normalised)) return true;
     if (['false', 'no'].includes(normalised)) return false;
     throw new Error(`Unsupported checkbox value "${value}". Use true/false (or yes/no).`);
+  }
+
+  /**
+   * Collapses repeated whitespace before text assertions.
+   * @param value - Raw rendered text.
+   * @returns Trimmed single-spaced text.
+   */
+  private normaliseText(value: string): string {
+    return value.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Maps a supported expected results-table column to the rendered UI value for a row.
+   * @param row - Table row element.
+   * @param column - Normalised expected column name.
+   * @returns Rendered text value for the requested column.
+   */
+  private getRenderedResultValue(row: JQuery<HTMLElement>, column: string): string {
+    switch (column) {
+      case 'account':
+      case 'account number':
+        return this.normaliseText(row.find(AccountResultsLocators.resultAccountLink).text());
+      case 'name':
+        return this.normaliseText(row.find(AccountResultsLocators.resultNameCell).text());
+      case 'date of birth':
+        return this.normaliseText(row.find(AccountResultsLocators.resultDateOfBirthCell).text());
+      default:
+        throw new Error(`Unsupported consolidation results expectation column "${column}".`);
+    }
   }
 
   /**
@@ -340,6 +370,33 @@ export class ConsolidationActions {
     cy.get(AccountResultsLocators.resultBalanceCell, { timeout: 10_000 }).each(($cell) => {
       const renderedBalance = $cell.text().replace(/\s+/g, ' ').trim();
       expect(renderedBalance).to.not.equal(forbiddenBalance);
+    });
+  }
+
+  /**
+   * Asserts consolidation results match the expected displayed order.
+   * @param expectedRows - Expected result rows from the feature data table.
+   */
+  public assertResultsOrder(expectedRows: ConsolidationExpectedResultRow[]): void {
+    log('assert', 'Verifying consolidation results against expected order', { expectedRows });
+
+    const expectedColumns = Object.keys(expectedRows[0] ?? {});
+
+    if (expectedColumns.length === 0) {
+      throw new Error('Expected at least one consolidation results column in the data table.');
+    }
+
+    cy.get(AccountResultsLocators.resultAccountLink, { timeout: 10_000 }).its('length').should('eq', expectedRows.length);
+    cy.get(AccountResultsLocators.resultAccountLink, { timeout: 10_000 }).then(($accountLinks) => {
+      const actualRows = [...$accountLinks].map((accountLink) => {
+        const row = Cypress.$(accountLink).closest('tr');
+
+        return Object.fromEntries(
+          expectedColumns.map((column) => [column, this.getRenderedResultValue(row, column)]),
+        ) as ConsolidationExpectedResultRow;
+      });
+
+      expect(actualRows).to.deep.equal(expectedRows);
     });
   }
 

@@ -6,6 +6,7 @@
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { ConsolidationActions, ConsolidationDefendantType } from '../actions/consolidation/consolidation.actions';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 
 const log = createScopedLogger('ConsolidationFlow');
 
@@ -20,6 +21,23 @@ export class ConsolidationFlow {
    */
   private tableToHash(table: DataTable): Record<string, string> {
     return table.rowsHash();
+  }
+
+  /**
+   * Converts a headered Cucumber table into normalised rows for expected results assertions.
+   * @param table - Data table with a header row followed by expected data rows.
+   * @returns Array of rows keyed by lower-cased header names.
+   */
+  private tableToRows(table: DataTable): Record<string, string>[] {
+    const [headers = [], ...rows] = table
+      .raw()
+      .map((row) => row.map((cell) => applyUniqPlaceholder(String(cell ?? '').trim())));
+
+    const normalisedHeaders = headers.map((header) => header.toLowerCase());
+
+    return rows
+      .filter((row) => row.some((cell) => cell !== ''))
+      .map((row) => Object.fromEntries(normalisedHeaders.map((header, index) => [header, row[index] ?? ''])));
   }
 
   /**
@@ -121,6 +139,16 @@ export class ConsolidationFlow {
   public assertResultsExcludeBalance(balance: string): void {
     log('flow', 'Asserting consolidation results exclude balance', { balance });
     this.consolidation.assertResultsExcludeBalance(balance);
+  }
+
+  /**
+   * Asserts consolidation results match the expected displayed order.
+   * @param table - Data table of expected displayed rows.
+   */
+  public assertResultsOrder(table: DataTable): void {
+    const expectedRows = this.tableToRows(table);
+    log('flow', 'Asserting consolidation results order', { expectedRows });
+    this.consolidation.assertResultsOrder(expectedRows);
   }
 
   /** Clicks the Check your search hyperlink from the consolidation no matching results state. */
