@@ -2,9 +2,9 @@
  * @file screenshot.ts
  * @description Plugin-side tasks for moving Cypress screenshots into the shared account evidence folder when invoked from browser helpers.
  */
-import fs from 'node:fs/promises';
+import * as fs from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
-import path from 'node:path';
+import * as path from 'node:path';
 
 const evidenceDir = path.join(process.cwd(), 'functional-output', 'account_evidence');
 let screenshotsRoot = path.join(process.cwd(), 'cypress', 'screenshots');
