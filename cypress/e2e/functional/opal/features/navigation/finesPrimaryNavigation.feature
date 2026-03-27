@@ -1,7 +1,7 @@
 
 Feature: Fines primary navigation
   Background:
-    Given I am logged in on the Fines Search landing page with email "opal-test@HMCTS.NET"
+    Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
 
   @2611
   Scenario: AC1a AC1b AC1c AC2a AC2b AC3a AC3b - The Fines Search landing page is shown by default after login
