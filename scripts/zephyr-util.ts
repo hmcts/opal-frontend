@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { ZephyrCliOptions } from '@hmcts/zephyr-automation-nodejs/cypress';
-import path from 'node:path';
+import { ZephyrCliOptions } from '@hmcts/zephyr-automation-nodejs';
+import * as path from 'node:path';
 
 export function createZephyrOptions(actionType: string, processType: string, reportPath: string): ZephyrCliOptions {
   const jiraToken = process.env['JIRA_AUTH_TOKEN'];
