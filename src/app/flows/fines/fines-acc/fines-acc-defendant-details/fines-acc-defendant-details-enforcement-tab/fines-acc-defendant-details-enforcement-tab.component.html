@@ -14,7 +14,12 @@
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="collection_order_status"
-            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            [actionEnabled]="
+              hasAccountMaintenancePermission &&
+              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
+                ? true
+                : false
+            "
           >
             <ng-container name>Collection Order status</ng-container>
             <ng-container value>

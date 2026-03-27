@@ -134,6 +134,12 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
    * @returns void
    */
   public handleChangeEnforcementAction(id: string): void {
-    this.getEnforcementActionResult(id);
+    if (id) {
+      this.getEnforcementActionResult(id);
+    } else {
+      this.disableFormControl('fenf_account_enforcement_enforcer');
+      this.disableFormControl('fenf_account_enforcement_lja');
+      this.form.updateValueAndValidity();
+    }
   }
 }
