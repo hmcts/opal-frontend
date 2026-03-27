@@ -19,9 +19,9 @@ export class AccountDetailsEnforcementActions {
    */
   public assertEnforcementTabVisible(): void {
     log('assert', 'Enforcement tab is visible');
-    cy.contains(ENF.tableTitle, 'Enforcement overview', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-      'be.visible',
-    );
+    cy.contains(ENF.tableTitle, 'Enforcement overview', {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).should('be.visible');
   }
 
   /**
