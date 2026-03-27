@@ -242,17 +242,9 @@ Code coverage can then be found in the `coverage` folder of the repository local
 
 ## Running end-to-end tests
 
-We are using [cypress](https://www.cypress.io/) for our end-to-end tests (Cucumber `.feature` files).
+We are using [cypress](https://www.cypress.io/) for our end to end tests.
 
-### Prerequisites
-
-- Start the SSR app locally. The default base URL is `http://localhost:4000/`.
-- Override the base URL with `TEST_URL` if needed, for example when running against a deployed environment.
-- Generic test runs default to `edge`. In CI, the pipeline falls back to `chrome` if Edge is unavailable. Explicit browser runs still fail if the requested browser is not installed.
-
-### Opal mode (default)
-
-Run `yarn test:smoke` to execute the end-to-end smoke tests in Opal mode.
+Run `yarn test:smoke` to execute the end-to-end smoke tests.
 
 ```bash
 
@@ -260,7 +252,7 @@ yarn test:smoke
 
 ```
 
-Run `yarn test:functional` to execute the end-to-end functional tests in Opal mode.
+Run `yarn test:functional` to execute the end-to-end functional tests.
 
 ```bash
 
@@ -268,41 +260,13 @@ yarn test:functional
 
 ```
 
-To filter scenarios by tag locally, set `TAGS` and use the tagged runner:
-
-```bash
-
-TAGS=@UAT-Technical yarn test:functional:tags
-
-```
-
-### Legacy mode
-
-To run Opal functional tests in legacy app mode, used for UAT-Technical coverage:
-
-```bash
-
-yarn test:functional:uat-legacy
-
-```
-
-### Dev-JCDE (CI / PR builds)
-
-For PR builds, the `enable_legacy_mode` label switches the dev environment to legacy mode and points the legacy gateway at JCDE. When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, to scope the suite. The pipeline always appends `not @skip`.
-
-### Debugging
-
-Run `yarn cypress` to open the Cypress console.
+Run `yarn cypress` to open the cypress console, very useful for debugging tests.
 
 ```bash
 
 yarn cypress
 
 ```
-
-### Reports
-
-Artifacts and reports are written to `smoke-output/` and `functional-output/`, using browser-specific subdirectories where applicable.
 
 ## Running accessibility tests
 

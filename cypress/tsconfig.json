@@ -1,5 +1,11 @@
 {
-  "extends": "../tsconfig.cypress.json",
-  "include": ["./**/*.ts", "./**/*.tsx", "../cypress.config.ts"],
-  "exclude": ["../node_modules", "./e2e"]
+  "extends": "../tsconfig.json",
+  "include": ["node_modules/cypress", "node_modules/cypress-axe", "**/*.ts"],
+  "compilerOptions": {
+    "noEmit": false,
+    "sourceMap": false,
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress", "cypress-axe", "node"]
+  }
 }

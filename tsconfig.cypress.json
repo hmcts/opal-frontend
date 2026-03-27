@@ -2,30 +2,28 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "esModuleInterop": true,
-    "baseUrl": ".",
     "types": ["cypress", "node", "@cypress/grep"],
+    "typeRoots": ["./node_modules/@types", "./node_modules/@cypress"],
     "paths": {
-      "@app/*": ["./src/app/*"],
       "@constants/*": ["./src/app/constants/*"],
       "@services/fines/*": ["./src/app/flows/fines/services/*"],
       "@routing/pages/*": ["./src/app/pages/routing/*"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*"],
       "@routing/flows/*": ["./src/app/flows/routing/*"]
     },
+
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "skipLibCheck": true
+    "noUnusedParameters": false
   },
   "include": [
-    "cypress/component/**/*.ts",
-    "cypress/component/**/*.tsx",
-    "cypress/shared/**/*.ts",
-    "cypress/support/**/*.ts",
-    "cypress/**/*.d.ts",
+    "cypress",
+    "cypress/**/*.ts",
+    "cypress/**/*.tsx",
+    "cypress/**/*.js",
+    "cypress/**/*.jsx",
+    "src/**/*.ts",
     "cypress.config.ts",
-    "src/**/*.d.ts"
+    "node_modules/cypress"
   ],
-  "exclude": ["node_modules", "cypress/e2e", "src/**/*.spec.ts", "src/test-setup.ts"]
+  "exclude": ["node_modules"]
 }
