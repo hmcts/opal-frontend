@@ -343,6 +343,30 @@ describe('OpalFines', () => {
     expect(result).toBeNull();
   });
 
+  it('should return the item value for a given configuration item name on non-snake-case business unit', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK;
+    const itemName = 'Item1';
+
+    const result = service.getConfigurationItemValue(businessUnit, itemName);
+
+    expect(result).toEqual('Item1');
+  });
+
+  it('should return null for non-snake-case business unit when item exists but itemValue is null', () => {
+    const businessUnit = structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK);
+    businessUnit.configurationItems = [
+      {
+        itemName: 'Item1',
+        itemValue: null,
+        itemValues: [],
+      },
+    ];
+
+    const result = service.getConfigurationItemValue(businessUnit, 'Item1');
+
+    expect(result).toBeNull();
+  });
+
   it('should send a GET request to results ref data API', () => {
     const resultIds = ['1', '2', '3'];
     const expectedResponse: IOpalFinesResultsRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
@@ -1235,6 +1259,58 @@ describe('OpalFines', () => {
     req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
   });
 
+  describe('patchDefendantAccount headers', () => {
+    it('should include If-Match and Business-Unit-Id headers when both are provided', () => {
+      const accountId = 123456;
+      const payload = OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS;
+      const version = '10';
+      const businessUnitId = '2002';
+
+      service.patchDefendantAccount(accountId, payload, version, businessUnitId).subscribe((response) => {
+        expect(response).toEqual({ defendant_account_id: accountId });
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      req.flush({ defendant_account_id: accountId });
+    });
+
+    it('should include only Business-Unit-Id when version is not provided', () => {
+      const accountId = 123456;
+      const payload = OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS;
+      const businessUnitId = '2002';
+
+      service.patchDefendantAccount(accountId, payload, undefined, businessUnitId).subscribe((response) => {
+        expect(response).toEqual({ defendant_account_id: accountId });
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      req.flush({ defendant_account_id: accountId });
+    });
+
+    it('should not include If-Match and should include Business-Unit-Id when version is empty string and business unit is empty string', () => {
+      const accountId = 123456;
+      const payload = OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS;
+      const version = '';
+      const businessUnitId = '';
+
+      service.patchDefendantAccount(accountId, payload, version, businessUnitId).subscribe((response) => {
+        expect(response).toEqual({ defendant_account_id: accountId });
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe('');
+      req.flush({ defendant_account_id: accountId });
+    });
+  });
+
   describe('putDefendantAccountPaymentTerms', () => {
     it('should send a PUT request to amend payment terms for a defendant account', () => {
       const defendantAccountId = 123456;
@@ -1280,6 +1356,54 @@ describe('OpalFines', () => {
       expect(req.request.headers.has('If-Match')).toBe(false);
 
       req.flush(mockPayload);
+    });
+  });
+
+  describe('putDefendantAccountParty', () => {
+    it('should send a PUT request to amend defendant account party with optional headers', () => {
+      const defendantAccountId = 123456;
+      const defendantAccountPartyId = 'PARTY-123';
+      const version = '8';
+      const businessUnitId = '61';
+      const payload = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party;
+      const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
+
+      service
+        .putDefendantAccountParty(defendantAccountId, defendantAccountPartyId, payload, version, businessUnitId)
+        .subscribe((response) => {
+          expect(response).toEqual(expectedResponse);
+        });
+
+      const expectedUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`;
+      const req = httpMock.expectOne(expectedUrl);
+
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+
+      req.flush(expectedResponse);
+    });
+
+    it('should send a PUT request without optional headers when version and businessUnitId are not provided', () => {
+      const defendantAccountId = 123456;
+      const defendantAccountPartyId = 'PARTY-123';
+      const payload = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party;
+      const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
+
+      service.putDefendantAccountParty(defendantAccountId, defendantAccountPartyId, payload).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      const expectedUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`;
+      const req = httpMock.expectOne(expectedUrl);
+
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+
+      req.flush(expectedResponse);
     });
   });
 

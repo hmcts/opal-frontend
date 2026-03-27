@@ -43,10 +43,13 @@ describe('FinesAccEnfOverrideAddChangeFormComponent', () => {
     expect(ljaControl?.disabled).toBe(true);
   });
 
-  it('should call handleChangeEnforcementAction on enforcement action change', () => {
+  it('should call handleChangeEnforcementAction for both selected and cleared enforcement action values', () => {
     const spy = vi.spyOn(component, 'handleChangeEnforcementAction');
     component.form.get('fenf_account_enforcement_action')?.setValue('R1');
-    expect(spy).toHaveBeenCalledWith('R1');
+    component.form.get('fenf_account_enforcement_action')?.setValue(null);
+
+    expect(spy).toHaveBeenNthCalledWith(1, 'R1');
+    expect(spy).toHaveBeenNthCalledWith(2, '');
   });
 
   it('should enable only enforcer control when result requires enforcer', () => {
