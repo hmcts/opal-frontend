@@ -1,28 +1,32 @@
-// Stable selectors / visible text hooks for the Defendant Details page.
-
-export const accACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
+/**
+ * @file account.enquiry.enforcement.locators.ts
+ * @description
+ * Selector map for the **Account Enquiry – Enforcement** tab.
+ * Covers page structure, summary cards, action links, and enforcement detail rows.
+ *
+ * @remarks
+ * - Use these selectors in Cypress component and e2e tests to avoid local duplication.
+ * - This map preserves the legacy selector keys used by the existing enforcement spec.
+ */
+export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
   headingName: 'h1.govuk-heading-l',
   pageHeader: 'opal-lib-custom-page-header',
   headerLabel: '[opal-lib-custom-account-information-item-label]',
   headerValue: '[opal-lib-custom-account-information-item-value]',
 
-  // Buttons
   addNoteButton: 'button[id$="addAccountNote"]',
 
-  // Info sections
   summaryMetricBar: 'opal-lib-custom-summary-metric-bar',
   accountInfo: 'opal-lib-custom-account-information',
   parentGuardianTag: '#status',
 
-  // Tabs
   tabName: '[subnavitemid="enforcement-tab"] > .moj-sub-navigation__link',
 
-  // Links
   enforcementStatusLink: '.govuk-link',
+  addEnforcementOverrideLink: '.govuk-link:contains("Add enforcement override")',
   detailsLink: '.govuk-details__summary-text',
 
-  // Table labels
   tableTitle: '.govuk-summary-card__title',
   collectionOrderStatus: '#enforcementOverviewDetailsCollection_order_statusKey',
   daysInDefault: '#enforcementOverviewDetailsDays_in_defaultKey',
@@ -33,13 +37,13 @@ export const accACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   warrantNumber: '#lastEnforcementActionDetailsWarrant_numberKey',
   dateAdded: '#lastEnforcementActionDetailsDate_addedKey',
   enforcementOverride: '#enforcementOverrideDetailsEnforcement_overrideKey',
+  enforcementOverrideValue: '#enforcementOverrideDetailsEnforcement_overrideValue',
   enfOverrideEnforcer: '#enforcementOverrideDetailsEnforcerKey',
   localJusticeArea: '#enforcementOverrideDetailsLocal_justice_areaKey',
+  localJusticeAreaValue: '#enforcementOverrideDetailsLocal_justice_areaValue',
 
-  //Last enforcement action details section
   detailsDaysInDefault: '[id="enforcementActionDetailsDays in defaultKey"]',
   detailsReason: '#enforcementActionDetailsReasonKey',
 
-  // Actions column
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
-};
+} as const;

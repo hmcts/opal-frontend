@@ -141,6 +141,22 @@ When('I open the amend payment terms form', () => {
 });
 
 /**
+ * @step Navigates to the Enforcement tab.
+ */
+When('I go to the Enforcement tab', () => {
+  log('step', 'Navigate to Enforcement tab');
+  flow().goToEnforcementTab();
+});
+
+/**
+ * @step Opens the add enforcement override form from the Enforcement tab.
+ */
+When('I open the add enforcement override form', () => {
+  log('step', 'Open add enforcement override form');
+  flow().openAddEnforcementOverrideForm();
+});
+
+/**
  * @step Submits instalments-only payment terms with a payment card request.
  */
 When('I submit instalments only payment terms with a payment card request', () => {

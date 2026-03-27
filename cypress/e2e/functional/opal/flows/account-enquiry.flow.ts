@@ -17,6 +17,7 @@ import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
+import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
@@ -71,6 +72,7 @@ export class AccountEnquiryFlow {
   private readonly editCompanyDetailsActions = new EditCompanyDetailsActions();
   private readonly editParentGuardianActions = new EditParentGuardianDetailsActions();
   private readonly paymentTerms = new AccountDetailsPaymentTermsActions();
+  private readonly enforcement = new AccountDetailsEnforcementActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -250,6 +252,26 @@ export class AccountEnquiryFlow {
     logAE('method', 'openPaymentTermsAmendForm()');
     this.paymentTerms.openChangeLink();
     this.paymentTerms.assertAmendFormVisible();
+  }
+
+  /**
+   * Navigates to the Enforcement tab and asserts it is active.
+   */
+  public goToEnforcementTab(): void {
+    logAE('method', 'goToEnforcementTab()');
+    logAE('navigate', 'Navigating to Enforcement tab');
+    this.detailsNav.goToEnforcementTab();
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Opens the add enforcement override form from the Enforcement tab.
+   */
+  public openAddEnforcementOverrideForm(): void {
+    logAE('method', 'openAddEnforcementOverrideForm()');
+    this.enforcement.openAddEnforcementOverrideForm();
+    this.enforcement.assertAddEnforcementOverrideFormVisible();
   }
 
   /**
