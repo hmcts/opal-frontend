@@ -83,6 +83,23 @@ const extractSafeErrorDetails = (payload: unknown): Record<string, unknown> => {
   return details;
 };
 
+const summarizeResponseBodyForLog = (payload: unknown): string => {
+  if (payload === undefined) {
+    return '(empty response body)';
+  }
+
+  try {
+    const serialized = JSON.stringify(payload);
+    if (typeof serialized === 'string') {
+      return serialized.slice(0, 500);
+    }
+  } catch {
+    // Fall through to String(payload) when JSON serialization fails.
+  }
+
+  return String(payload).slice(0, 500);
+};
+
 /**
  * Removes any account-status override coming from DataTable payload overrides.
  *
@@ -368,7 +385,7 @@ export function createDraftAndSetStatus(
               body: postResp.body,
               requestBody,
             });
-            cy.log(`POST /draft-accounts -> ${postResp.status}: ${JSON.stringify(postResp.body).slice(0, 500)}`);
+            cy.log(`POST /draft-accounts -> ${postResp.status}: ${summarizeResponseBodyForLog(postResp.body)}`);
             createdAtFromApi = extractCreatedTimestamp(postResp.body as unknown) ?? createdAtFromApi;
             // Capture failures in evidence even before assertions.
             if (postResp.status !== 201) {
