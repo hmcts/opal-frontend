@@ -25,9 +25,42 @@ import { cleanupEmptyScreenshotDirs, registerScreenshotTasks } from './cypress/s
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const angularWorkspace = require('./angular.json') as {
+  projects?: Record<
+    string,
+    {
+      root?: string;
+      sourceRoot?: string;
+      architect?: {
+        build?: {
+          options?: Record<string, unknown>;
+          configurations?: {
+            development?: Record<string, unknown>;
+          };
+        };
+      };
+    }
+  >;
+};
 
 const resolveBrowserToRun = (): string => (process.env.BROWSER_TO_RUN || 'edge').trim().toLowerCase();
 const resolvedBrowserToRun = resolveBrowserToRun();
+const angularProject = angularWorkspace.projects?.['opal-frontend'];
+
+if (!angularProject?.architect?.build?.options || !angularProject.sourceRoot) {
+  throw new Error('Unable to load Angular build configuration for component tests from angular.json.');
+}
+
+const componentProjectConfig = {
+  root: angularProject.root ?? '',
+  sourceRoot: angularProject.sourceRoot,
+  buildOptions: {
+    ...angularProject.architect.build.options,
+    ...(angularProject.architect.build.configurations?.development ?? {}),
+    tsConfig: 'tsconfig.cypress.json',
+  },
+};
 
 /**
  * Register browser launch hooks to standardize window size in headless runs.
@@ -264,6 +297,9 @@ export default defineConfig({
     devServer: {
       framework: 'angular',
       bundler: 'webpack',
+      options: {
+        projectConfig: componentProjectConfig,
+      },
       webpackConfig: {
         devServer: {
           port: Number(`809${process.env.CYPRESS_THREAD || '0'}`),
