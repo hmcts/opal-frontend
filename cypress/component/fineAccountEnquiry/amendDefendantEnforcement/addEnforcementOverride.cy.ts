@@ -59,6 +59,7 @@ function setupAddEnforcementOverride(
     interceptResultByCode(code),
   );
   interceptPatchDefendantAccount();
+  cy.intercept('/opal-fines-service/results/').as('getResults');
 
   setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
   cy.get(ENF.addEnforcementOverrideLink).click();
@@ -132,6 +133,8 @@ describe(
 
       cy.press(Cypress.Keyboard.Keys.TAB);
       cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
+
+      cy.get('@getResults.all').should('have.length', 0);
     });
 
     it('AC2. Enforcer dropdown for valid override', () => {
@@ -379,6 +382,8 @@ describe(
 
         cy.press(Cypress.Keyboard.Keys.TAB);
         cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
+
+        cy.get('@getResults.all').should('have.length', 0);
       },
     );
   },
