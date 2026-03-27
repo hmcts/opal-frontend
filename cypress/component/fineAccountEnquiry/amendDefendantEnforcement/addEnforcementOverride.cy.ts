@@ -91,14 +91,14 @@ describe(
   'Add Enforcement Override - Parent/Guardian',
   { tags: ['@JIRA-STORY:PO-1866', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with title', () => {
+    it('AC1a, AC1b. Should render the form with title', {tags: ['@JIRA-KEY:POT-4440']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Mr Robert THOMSON - 177A');
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
     });
 
-    it('AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link', () => {
+    it('AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link', {tags: ['@JIRA-KEY:POT-4441']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -121,7 +121,7 @@ describe(
       cy.get(ENF_OVR.cancelLink).should('exist');
     });
 
-    it('Should support forward keyboard navigation across the add enforcement override form', () => {
+    it('Should support forward keyboard navigation across the add enforcement override form', {tags: ['@JIRA-KEY:POT-4442']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
@@ -137,7 +137,7 @@ describe(
       cy.get('@getResults.all').should('have.length', 0);
     });
 
-    it('AC2. Enforcer dropdown for valid override', () => {
+    it('AC2. Enforcer dropdown for valid override', {tags: ['@JIRA-KEY:POT-4443']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -164,7 +164,7 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
     });
 
-    it('AC3. LJA dropdown for valid override', () => {
+    it('AC3. LJA dropdown for valid override', {tags: ['@JIRA-KEY:POT-4444']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -178,7 +178,7 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
     });
 
-    it('AC4a. Error when no enforcement override is selected', () => {
+    it('AC4a. Error when no enforcement override is selected', {tags: ['@JIRA-KEY:POT-4445']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -190,7 +190,7 @@ describe(
         .should('contain.text', 'Select an enforcement override');
     });
 
-    it('AC4b. Error when no enforcer is selected', () => {
+    it('AC4b. Error when no enforcer is selected', {tags: ['@JIRA-KEY:POT-4446']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -209,7 +209,7 @@ describe(
         .should('contain.text', 'Select an enforcer');
     });
 
-    it('AC4c. Error when no LJA is selected', () => {
+    it('AC4c. Error when no LJA is selected', {tags: ['@JIRA-KEY:POT-4447']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -227,7 +227,7 @@ describe(
         .should('contain.text', 'Select a Local Justice Area');
     });
 
-    it('AC5. Valid submission returns to Enforcement tab with success banner and new override panel', () => {
+    it('AC5. Valid submission returns to Enforcement tab with success banner and new override panel', {tags: ['@JIRA-KEY:POT-4448']}, () => {
       const { accountId } = commonSetup();
       const updatedEnforcementMock = structuredClone(
         OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK,
@@ -287,7 +287,7 @@ describe(
       cy.get(ENF.localJusticeAreaValue).should('exist').and('contain.text', "Bedfordshire Magistrates' Court(4165)");
     });
 
-    it('AC6a. Cancel without changes returns away from the add override page without confirmation', () => {
+    it('AC6a. Cancel without changes returns away from the add override page without confirmation', {tags: ['@JIRA-KEY:POT-4449']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
@@ -305,7 +305,7 @@ describe(
       cy.get(ENF_OVR.enfOverrideDropdown).should('not.exist');
     });
 
-    it('AC6b. Cancel after selecting a value shows confirmation before navigating away', () => {
+    it('AC6b. Cancel after selecting a value shows confirmation before navigating away', {tags: ['@JIRA-KEY:POT-4450']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
@@ -330,7 +330,7 @@ describe(
       cy.get(ENF_OVR.enfOverrideDropdown).should('not.exist');
     });
 
-    it('AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page', () => {
+    it('AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page', {tags: ['@JIRA-KEY:POT-4451']}, () => {
       commonSetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
@@ -360,17 +360,14 @@ describe(
   'Add Enforcement Override - Company',
   { tags: ['@JIRA-STORY:PO-1867', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with company title', () => {
+    it('AC1a, AC1b. Should render the form with company title', {tags: ['@JIRA-KEY:POT-4452']}, () => {
       companySetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Test Org Ltd - 177A');
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
     });
 
-    it(
-      'Should support forward keyboard navigation across the company add enforcement override form',
-      { tags: ['@JIRA-LABEL:accessibility'] },
-      () => {
+    it('Should support forward keyboard navigation across the company add enforcement override form', { tags: ['@JIRA-LABEL:accessibility', '@JIRA-KEY:POT-4453'] }, () => {
         companySetup();
 
         cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
@@ -384,7 +381,6 @@ describe(
         cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
 
         cy.get('@getResults.all').should('have.length', 0);
-      },
-    );
+      });
   },
 );
