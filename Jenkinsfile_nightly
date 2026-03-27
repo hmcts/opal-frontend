@@ -1,6 +1,11 @@
 #!groovy
+/* groovylint-disable CompileStatic */
+import groovy.transform.Field
 import java.time.DayOfWeek
 import java.time.ZonedDateTime
+
+@Field String legacyUrlDevChoice = 'DEV'
+@Field String stringFalse = String.valueOf(false)
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -11,12 +16,22 @@ properties([
     booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
     booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
     booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
-    booleanParam(name: 'RunEdge', defaultValue: false, description: 'Run Edge tests'),
+    booleanParam(name: 'RunChrome', defaultValue: false, description: 'Run Chrome tests'),
     booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
+    booleanParam(
+      name: 'RunUatTech',
+      defaultValue: false,
+      description: 'Run UAT-Technical stage (staging -> pre-prod legacy checks)'
+    ),
     booleanParam(name: 'ZephyrExecution', defaultValue: false, description: 'Create Zephyr Execution'),
+    string(
+      name: 'TAGS',
+      defaultValue: '',
+      description: 'Optional Cypress tag expression for targeted nightly runs. When set, smoke tests are skipped.'
+    ),
     choice(
       name: 'LEGACY_URL',
-      choices: ['PRE-PROD', 'DEV'],
+      choices: ['PRE-PROD', legacyUrlDevChoice],
       description: 'Determines the URL to use for legacy tests.'
     ),
   ])
@@ -24,20 +39,36 @@ properties([
 
 @Library('Infrastructure')
 
-def type = 'angular'
-def product = 'opal'
-def component = 'frontend'
-
-def secrets = [
-  'opal-${env}': [
-    secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
-    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
-    secret('jiraAuthToken', 'JIRA_AUTH_TOKEN'),
-  ],
+String type = 'angular'
+@Field String opalName = 'opal'
+@Field String product = opalName
+String component = 'frontend'
+String failureResult = 'FAILURE'
+@Field String secretKey = 'opal-$'.concat('{env}')
+@Field String browserChrome = 'chrome'
+@Field String browserEdge = 'edge'
+@Field String browserFirefox = 'firefox'
+@Field String smokeStageName = 'Smoke Tests'
+@Field String functionalProdArtifactsPath = 'functional-output/prod/**'
+@Field int zeroIndex = 0
+@Field String legacyGatewayUrlPreProd = 'https://cloudgobgateway.test.platform.hmcts.net/opal'
+@Field String legacyGatewayUrlDev = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+@Field String launchDarklyApiVersion = '20240415'
+@Field String launchDarklyEnvironmentKey = 'test'
+@Field String launchDarklyFlagKey = 'app-mode'
+@Field String launchDarklyOpalVariationName = opalName
+@Field String launchDarklyLegacyVariationName = 'legacy'
+@Field List<String> launchDarklyVariationOrder = [
+  launchDarklyLegacyVariationName,
+  launchDarklyOpalVariationName,
 ]
+@Field String uatTechnicalTagFilter = '(@UAT-Technical) and not @skip'
+@Field int uatHealthCheckIntervalSeconds = 5
+@Field int uatHealthCheckTimeoutMinutes = 1
 
-static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [$class     : 'AzureKeyVaultSecret',
+// Build an Azure KeyVault secret entry.
+static Map<String, Object> secret(String secretName, String envVar) {
+  return [$class     : 'AzureKeyVaultSecret',
     secretType : 'Secret',
     name       : secretName,
     version    : '',
@@ -45,9 +76,493 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+uk.gov.hmcts.contino.YarnBuilder yarnBuilder =
+  new uk.gov.hmcts.contino.YarnBuilder(this)
 
-def performArtifactOperations() {
+// Build the nightly secret set, only adding LaunchDarkly credentials for UAT-Technical runs.
+Map<String, List<Map<String, Object>>> nightlySecrets() {
+  List<Map<String, Object>> nightlySecretEntries = [
+    secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
+    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD'),
+    secret('jiraAuthToken', 'JIRA_AUTH_TOKEN'),
+  ]
+  if (params.RunUatTech) {
+    nightlySecretEntries.add(secret('launch-darkly-api-token', 'LD_API_TOKEN'))
+  }
+  return [
+    (secretKey): nightlySecretEntries,
+  ]
+}
+
+// Configure shared tag-filter environment variables for nightly test runs.
+void configureNightlyTags() {
+  String tagExpression = (params.TAGS ?: env.TAGS ?: '').trim()
+  env.TAGS = tagExpression
+  env.CYPRESS_TAGS = tagExpression
+  env.SKIP_SMOKE = tagExpression ? 'true' : stringFalse
+
+  if (tagExpression) {
+    echo "Running nightly with TAGS=${tagExpression}"
+    echo 'Skipping smoke tests for tagged nightly run.'
+  } else {
+    echo 'Running nightly without tag filtering.'
+  }
+}
+
+// Set the staging legacy gateway URL used by chart templating.
+void configureStagingLegacyGatewayUrl() {
+  boolean shouldUsePreProdLegacyGateway =
+    (params.Legacy || params.RunUatTech) && params.LEGACY_URL != legacyUrlDevChoice
+
+  env.STG_OPAL_LEGACY_GATEWAY_URL =
+    shouldUsePreProdLegacyGateway ? legacyGatewayUrlPreProd : legacyGatewayUrlDev
+  echo "STG_OPAL_LEGACY_GATEWAY_URL=${env.STG_OPAL_LEGACY_GATEWAY_URL}"
+}
+
+// Check whether the requested browser binary is available on the Jenkins agent.
+boolean isBrowserInstalled(String browser) {
+  return sh(
+    returnStatus: true,
+    script: """
+      case '${browser}' in
+        ${browserEdge})
+          command -v microsoft-edge >/dev/null 2>&1 ||
+          command -v microsoft-edge-stable >/dev/null 2>&1 ||
+          command -v msedge >/dev/null 2>&1 ||
+          [ -x '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge' ]
+          ;;
+        ${browserChrome})
+          command -v google-chrome >/dev/null 2>&1 ||
+          command -v google-chrome-stable >/dev/null 2>&1 ||
+          command -v chrome >/dev/null 2>&1 ||
+          [ -x '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ]
+          ;;
+        ${browserFirefox})
+          command -v firefox >/dev/null 2>&1 ||
+          command -v firefox-bin >/dev/null 2>&1 ||
+          [ -x '/Applications/Firefox.app/Contents/MacOS/firefox' ]
+          ;;
+        *)
+          exit 1
+          ;;
+      esac
+    """
+  ) == zeroIndex
+}
+
+// Emit a prominent banner when the pipeline falls back to a different browser.
+void echoBrowserFallbackBanner(String missingBrowser, String fallbackBrowser) {
+  echo """\
+========================================================================
+${missingBrowser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+SWITCHING TO ${fallbackBrowser.toUpperCase()} FOR THIS PIPELINE RUN
+========================================================================
+""".stripIndent()
+}
+
+// Emit a prominent banner when a browser is unavailable on the current agent.
+void echoBrowserMissingBanner(String browser) {
+  echo """\
+========================================================================
+${browser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+${browser.toUpperCase()}-SPECIFIC RUNS WILL NOT BE AVAILABLE ON THIS AGENT
+========================================================================
+""".stripIndent()
+}
+
+// Choose the browser for this run, falling back from Edge to Chrome when needed.
+String resolvePipelineBrowser(String requestedBrowser) {
+  String normalizedBrowser = (requestedBrowser ?: browserEdge).trim().toLowerCase()
+
+  if (normalizedBrowser == browserEdge && !isBrowserInstalled(browserEdge)) {
+    if (isBrowserInstalled(browserChrome)) {
+      echoBrowserFallbackBanner(browserEdge, browserChrome)
+      return browserChrome
+    }
+
+    error '''\
+========================================================================
+EDGE IS NOT INSTALLED ON THIS JENKINS AGENT
+CHROME IS ALSO NOT AVAILABLE AS A FALLBACK
+INSTALL A SUPPORTED BROWSER OR SET BROWSER_TO_RUN EXPLICITLY
+========================================================================
+'''.stripIndent()
+  }
+
+  return normalizedBrowser
+}
+
+// Require an explicitly requested browser to be present before running its stage.
+String requireInstalledBrowser(String browser) {
+  if (!isBrowserInstalled(browser)) {
+    echoBrowserMissingBanner(browser)
+    error """\
+========================================================================
+${browser.toUpperCase()} IS NOT INSTALLED ON THIS JENKINS AGENT
+INSTALL ${browser.toUpperCase()} OR DISABLE THE ${browser.toUpperCase()} RUN
+========================================================================
+""".stripIndent()
+  }
+
+  return browser
+}
+
+// Archive pipeline artifacts without failing when none are present.
+void archiveArtifact(String path) {
+  archiveArtifacts artifacts: path, allowEmptyArchive: true
+}
+
+// Publish an HTML report directory with Jenkins HTML Publisher.
+void publishHtmlReport(String dir, String files, String name) {
+  publishHTML target: [
+    allowMissing         : true,
+    alwaysLinkToLastBuild: true,
+    keepAll              : true,
+    reportDir            : dir,
+    reportFiles          : files,
+    reportName           : name
+  ]
+}
+
+// Run a nightly stage with standard error handling and failure reporting.
+void runNightlyStage(
+  boolean enabled,
+  String stageName,
+  String failureResultValue,
+  String failureMessage,
+  Closure body
+) {
+  if (!enabled) {
+    return
+  }
+
+  stage(stageName) {
+    catchError(
+      buildResult: failureResultValue,
+      stageResult: failureResultValue,
+      message: failureMessage
+    ) {
+      body.call()
+    }
+  }
+}
+
+// Resolve the LaunchDarkly variation index for the requested app-mode variation.
+int resolveLaunchDarklyVariationIndex(String variationName) {
+  int variationIndex = launchDarklyVariationOrder.indexOf(variationName)
+  if (variationIndex < zeroIndex) {
+    error "Unsupported LaunchDarkly variation name '${variationName}'. Expected one of ${launchDarklyVariationOrder}."
+  }
+  return variationIndex
+}
+
+// Patch the LaunchDarkly app-mode flag for the nightly staging environment.
+void patchLaunchDarklyFlagState(boolean enabled, String variationName, String actionMessage) {
+  int variationIndex = resolveLaunchDarklyVariationIndex(variationName)
+  String patchPayload =
+    '{"patch":[' +
+    "{\"op\":\"replace\",\"path\":\"/environments/${launchDarklyEnvironmentKey}/on\",\"value\":${enabled}}," +
+    "{\"op\":\"replace\",\"path\":\"/environments/${launchDarklyEnvironmentKey}/fallthrough/variation\"," +
+    "\"value\":${variationIndex}}" +
+    ']}'
+
+  sh """
+    echo '${actionMessage}'
+    set +x
+    if [ -z "\$LD_API_TOKEN" ]; then
+      echo 'Missing required LaunchDarkly secret env var: LD_API_TOKEN'
+      exit 1
+    fi
+    LD_URL="https://app.launchdarkly.com/api/v2/flags/${product}/${launchDarklyFlagKey}"
+    LD_HTTP_CODE=\$(curl -s -o ld_patch_response.json -w '%{http_code}' -X PATCH \\
+      -H "Authorization: \$LD_API_TOKEN" \\
+      -H "LD-API-Version: ${launchDarklyApiVersion}" \\
+      -H "Content-Type: application/json" \\
+      -d '${patchPayload}' \\
+      "\$LD_URL")
+    LD_CURL_EXIT=\$?
+    echo "LaunchDarkly PATCH HTTP status: \$LD_HTTP_CODE"
+    if [ -s ld_patch_response.json ]; then
+      echo 'LaunchDarkly PATCH response body:'
+      cat ld_patch_response.json
+    fi
+    if [ "\$LD_CURL_EXIT" -ne 0 ]; then
+      echo 'LaunchDarkly PATCH request failed to execute.'
+      exit 1
+    fi
+    if ! echo "\$LD_HTTP_CODE" | grep -Eq '^[0-9]{3}\$'; then
+      echo 'LaunchDarkly PATCH returned an invalid status code.'
+      exit 1
+    fi
+    if [ "\$LD_HTTP_CODE" -lt 200 ] || [ "\$LD_HTTP_CODE" -ge 300 ]; then
+      echo 'LaunchDarkly PATCH failed with non-2xx status.'
+      exit 1
+    fi
+  """
+}
+
+// Probe the nightly staging health endpoint used before running UAT-Technical tests.
+String getHealthCheckStatus() {
+  String legacyHealthEndpoint = "${env.STG_OPAL_LEGACY_GATEWAY_URL}?actionType=getGmasTest"
+  return sh(
+    script: "curl -s -o /dev/null -w '%{http_code}' '${legacyHealthEndpoint}' || echo '000'",
+    returnStdout: true
+  ).trim()
+}
+
+// Wait until the staging health endpoint responds successfully after toggling app mode.
+void waitForUatHealthCheck() {
+  timeout(time: uatHealthCheckTimeoutMinutes, unit: 'MINUTES') {
+    script {
+      boolean healthy = false
+      int maxAttempts = Math.max(
+        1,
+        (int) Math.ceil((uatHealthCheckTimeoutMinutes * 60.0d) / uatHealthCheckIntervalSeconds)
+      )
+
+      for (int attemptIndex = zeroIndex; attemptIndex < maxAttempts; attemptIndex++) {
+        String statusCode = healthCheckStatus
+        if (statusCode.startsWith('2')) {
+          echo "Health check OK (HTTP ${statusCode})"
+          healthy = true
+          break
+        }
+
+        int attemptNumber = attemptIndex + 1
+        echo "Health check returned ${statusCode}, waiting ${uatHealthCheckIntervalSeconds}s " +
+          "(attempt ${attemptNumber}/${maxAttempts})..."
+        sleep uatHealthCheckIntervalSeconds
+      }
+
+      if (!healthy) {
+        error 'Health check did not succeed in time'
+      }
+    }
+  }
+}
+
+// Archive updated parallel weight files for reuse by later nightly runs.
+void archiveNightlyWeightArtifacts() {
+  script {
+    String sourceJobName = env.JOB_NAME
+    String pipelineDir = 'cypress/parallel/weights/pipeline'
+    String weightsDir = 'cypress/parallel/weights'
+    String smokeWeights = 'smoke-parallel-weights.json'
+    String functionalWeights = 'functional-parallel-weights.json'
+
+    sh "mkdir -p ${pipelineDir}"
+    sh "cp -r ${weightsDir}/${smokeWeights} ${pipelineDir}/"
+    sh "cp -r ${weightsDir}/${functionalWeights} ${pipelineDir}/"
+
+    sh "echo 'Archiving weight files in ${sourceJobName}'"
+    archiveArtifact("${pipelineDir}/${smokeWeights}")
+    archiveArtifact("${pipelineDir}/${functionalWeights}")
+    archiveArtifact('cypress/reports/smokeXmlReport.html')
+    archiveArtifact('cypress/reports/functionalXmlReport.html')
+  }
+}
+
+// Copy generated UAT-Technical report artifacts into a dedicated directory for publishing.
+void prepareUatTechnicalArtifacts(String browserToRun) {
+  sh """
+    UAT_DIR='functional-output/prod/${browserToRun}/uat-technical'
+    UAT_CUCUMBER_DIR="\$UAT_DIR/cucumber"
+    SOURCE_CUCUMBER_DIR='functional-output/prod/${browserToRun}/cucumber'
+    SOURCE_JUNIT_PATH='functional-output/prod/${browserToRun}/${browserToRun}-test-result.xml'
+    mkdir -p "\$UAT_CUCUMBER_DIR"
+
+    if [ -f "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.html" ]; then
+      cp "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.html" "\$UAT_CUCUMBER_DIR/uat-technical-report.html"
+    fi
+    if [ -f "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.ndjson" ]; then
+      cp "\$SOURCE_CUCUMBER_DIR/${browserToRun}-report.ndjson" "\$UAT_CUCUMBER_DIR/uat-technical-report.ndjson"
+    fi
+    if [ -f "\$SOURCE_JUNIT_PATH" ]; then
+      cp "\$SOURCE_JUNIT_PATH" "\$UAT_DIR/uat-technical-test-result.xml"
+    fi
+  """
+}
+
+// Run component tests and publish browser-specific reports and screenshots.
+void runComponentStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  boolean shouldRunWithZephyr,
+  String browserToRun
+) {
+  runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
+    try {
+      builder.yarn(shouldRunWithZephyr ? 'zephyr:test:opalComponent' : 'test:opalComponent')
+    } finally {
+      archiveArtifact(functionalProdArtifactsPath)
+      archiveArtifact("functional-output/screenshots/${browserToRun}/component/**")
+      publishHtmlReport(
+        "functional-output/component-html/${browserToRun}/",
+        'component-report.html',
+        "Component Test Report (${browserToRun})"
+      )
+    }
+  }
+}
+
+// Run the UAT-Technical staging checks against legacy app mode and publish a dedicated report.
+void runUatTechnicalStage(
+  boolean enabled,
+  String failureResultValue,
+  String browserToRun
+) {
+  runNightlyStage(enabled, 'UAT-Technical', failureResultValue, 'UAT-Technical failed') {
+    boolean launchDarklyFlagPatched = false
+
+    try {
+      echo "Running UAT-Technical scenarios with TAGS=${uatTechnicalTagFilter}"
+      patchLaunchDarklyFlagState(
+        true,
+        launchDarklyLegacyVariationName,
+        'Setting LaunchDarkly flag to legacy for staging...'
+      )
+      launchDarklyFlagPatched = true
+      waitForUatHealthCheck()
+      sh 'echo "Waiting 30s for system warmup..." ; sleep 30'
+
+      withEnv([
+        "TAGS=${uatTechnicalTagFilter}",
+        "CYPRESS_TAGS=${uatTechnicalTagFilter}",
+        'DEFAULT_APP_MODE=legacy',
+        'LEGACY_ENABLED=true',
+        "BROWSER_TO_RUN=${browserToRun}",
+      ]) {
+        sh 'node scripts/run-yarn-sequence.js test:functional:tags'
+      }
+
+      prepareUatTechnicalArtifacts(browserToRun)
+    } finally {
+      archiveArtifact(functionalProdArtifactsPath)
+      archiveArtifact('functional-output/account_evidence/created-accounts.json')
+      archiveArtifact('functional-output/account_evidence/**')
+      archiveArtifact("functional-output/screenshots/${browserToRun}/**")
+      archiveArtifact("functional-output/prod/${browserToRun}/uat-technical/**")
+      publishHtmlReport(
+        "functional-output/prod/${browserToRun}/uat-technical/cucumber/",
+        'uat-technical-report.html',
+        "UAT-Technical Functional Test Report (${browserToRun})"
+      )
+      if (launchDarklyFlagPatched) {
+        patchLaunchDarklyFlagState(
+          true,
+          launchDarklyOpalVariationName,
+          'Restoring LaunchDarkly flag to opal for staging...'
+        )
+      }
+    }
+  }
+}
+
+// Run smoke tests and publish browser-specific reports and screenshots.
+void runSmokeStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  String browserToRun
+) {
+  if (enabled && (env.SKIP_SMOKE ?: stringFalse).toBoolean()) {
+    stage(smokeStageName) {
+      echo "Skipping smoke tests because TAGS=${env.TAGS}"
+    }
+    return
+  }
+
+  runNightlyStage(enabled, smokeStageName, failureResultValue, 'Smoke tests failed') {
+    try {
+      builder.yarn('test:smoke')
+    } finally {
+      archiveArtifact('smoke-output/prod/**')
+      archiveArtifact("smoke-output/screenshots/${browserToRun}/**")
+      publishHtmlReport(
+        "smoke-output/prod/${browserToRun}/cucumber/",
+        'smoke-report.html',
+        "${browserToRun.capitalize()} Smoke Test Report"
+      )
+    }
+  }
+}
+
+// Run functional tests and publish browser-specific reports and screenshots.
+void runFunctionalStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  boolean shouldRunWithZephyr,
+  String browserToRun
+) {
+  runNightlyStage(enabled, 'Functional Tests', failureResultValue, 'Functional tests failed') {
+    try {
+      builder.yarn(shouldRunWithZephyr ? 'zephyr:test:functional' : 'test:functional')
+    } finally {
+      archiveArtifact(functionalProdArtifactsPath)
+      archiveArtifact("functional-output/screenshots/${browserToRun}/**")
+      publishHtmlReport(
+        "functional-output/prod/${browserToRun}/cucumber/",
+        "${browserToRun}-report.html",
+        "${browserToRun.capitalize()} Functional Test Report"
+      )
+      archiveNightlyWeightArtifacts()
+    }
+  }
+}
+
+// Run legacy tests and publish browser-specific reports and screenshots.
+void runLegacyStage(
+  boolean enabled,
+  String failureResultValue,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  String browserToRun
+) {
+  runNightlyStage(enabled, 'Legacy Tests', failureResultValue, 'Legacy tests failed') {
+    try {
+      builder.yarn(
+        'yarn test:functionalLegacy ; ' +
+        'yarn test:functionalLegacy:combine:reports ; ' +
+        'yarn test:functionalLegacy:cucumber:combineParallelReport'
+      )
+    } finally {
+      archiveArtifact("functional-output/prod/${browserToRun}/legacy/**")
+      archiveArtifact("functional-output/screenshots/${browserToRun}/legacy/**")
+      publishHtmlReport(
+        "functional-output/prod/${browserToRun}/legacy/cucumber/",
+        'legacy-report.html',
+        "${browserToRun.capitalize()} Legacy Functional Test Report"
+      )
+    }
+  }
+}
+
+// Run an explicit browser stage using the provided command and report metadata.
+void runBrowserStage(
+  boolean enabled,
+  String failureResultValue,
+  String failureMessage,
+  uk.gov.hmcts.contino.YarnBuilder builder,
+  Map<String, String> stageConfig
+) {
+  runNightlyStage(enabled, stageConfig.stageName, failureResultValue, failureMessage) {
+    try {
+      builder.yarn(stageConfig.yarnCommand)
+    } finally {
+      archiveArtifact("functional-output/prod/${stageConfig.browserToRun}/**")
+      archiveArtifact("functional-output/screenshots/${stageConfig.browserToRun}/**")
+      publishHtmlReport(
+        "functional-output/prod/${stageConfig.browserToRun}/cucumber/",
+        "${stageConfig.browserToRun}-report.html",
+        "${stageConfig.browserToRun.capitalize()} Functional Test Report"
+      )
+    }
+  }
+}
+
+// Restore cached parallel weight files from the previous successful nightly run.
+void performArtifactOperations() {
   sh 'mkdir -p cypress/parallel/weights/pipeline'
 
   sh '''
@@ -57,42 +572,52 @@ def performArtifactOperations() {
     '''
 
   script {
-        def projectName = 'HMCTS_Nightly/opal-frontend/master'
-        try {
-      copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
-        } catch (Exception e) {
+    String projectName = 'HMCTS_Nightly/opal-frontend/master'
+    try {
+      copyArtifacts(
+        projectName: projectName,
+        selector: lastSuccessful(),
+        filter: '**/cypress/parallel/weights/pipeline/*'
+      )
+    } catch (hudson.AbortException e) {
       echo "Error copying artifacts: ${e}"
-        }
+    }
 
-        sh '''
-        echo "Listing all artifacts after copy artifacts:"
-        ls -l1a cypress/parallel/weights/
-        ls -l1a cypress/parallel/weights/pipeline/
-        '''
+    sh '''
+      echo "Listing all artifacts after copy artifacts:"
+      ls -l1a cypress/parallel/weights/
+      ls -l1a cypress/parallel/weights/pipeline/
+      '''
   }
 
   try {
     sh '''
-        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+        PIPELINE_DIR='cypress/parallel/weights/pipeline'
+        WEIGHTS_DIR='cypress/parallel/weights'
+
+        if [ -f "$PIPELINE_DIR/smoke-parallel-weights.json" ]; then
+            mv "$PIPELINE_DIR/smoke-parallel-weights.json" \
+              "$WEIGHTS_DIR/smoke-parallel-weights.json"
             echo "Moved smoke-parallel-weights.json"
         else
             echo "smoke-parallel-weights.json not found, skipping move"
         fi
-        if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+        if [ -f "$PIPELINE_DIR/functional-parallel-weights.json" ]; then
+            mv "$PIPELINE_DIR/functional-parallel-weights.json" \
+              "$WEIGHTS_DIR/functional-parallel-weights.json"
             echo "Moved functional-parallel-weights.json"
         else
             echo "functional-parallel-weights.json not found, skipping move"
         fi
-        if [ -f cypress/parallel/weights/pipeline/component-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/component-parallel-weights.json cypress/parallel/weights/component-parallel-weights.json
+        if [ -f "$PIPELINE_DIR/component-parallel-weights.json" ]; then
+            mv "$PIPELINE_DIR/component-parallel-weights.json" \
+              "$WEIGHTS_DIR/component-parallel-weights.json"
             echo "Moved component-parallel-weights.json"
         else
             echo "component-parallel-weights.json not found, skipping move"
         fi
         '''
-    } catch (Exception e) {
+  } catch (hudson.AbortException e) {
     echo "Artifacts not found or copy failed: ${e}"
   }
 
@@ -102,15 +627,18 @@ def performArtifactOperations() {
     ls -l1a cypress/parallel/weights/pipeline/
     '''
 }
-def setupTestSpecifications() {
+
+// Set the default nightly functional spec glob.
+void setupTestSpecifications() {
   script {
-      env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
+    env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
   }
 }
 
 withNightlyPipeline(type, product, component) {
-  loadVaultSecrets(secrets)
+  loadVaultSecrets(nightlySecrets())
   env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
+  configureStagingLegacyGatewayUrl()
 
   before('akschartsinstall') {
     onPR {
@@ -120,175 +648,85 @@ withNightlyPipeline(type, product, component) {
     }
   }
   afterSuccess('checkout') {
+    if (!isBrowserInstalled(browserFirefox)) {
+      echoBrowserMissingBanner(browserFirefox)
+    }
+    configureNightlyTags()
+    env.BROWSER_TO_RUN = resolvePipelineBrowser(env.BROWSER_TO_RUN ?: browserEdge)
+    echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
     performArtifactOperations()
     setupTestSpecifications()
   }
 
   afterAlways('DependencyCheckNightly') {
+    String browserToRun = env.BROWSER_TO_RUN
+    String chromeBrowserToRun = params.RunChrome ? requireInstalledBrowser(browserChrome) : browserChrome
+    String firefoxBrowserToRun = params.RunFirefox ? requireInstalledBrowser(browserFirefox) : browserFirefox
     echo 'Component:' + params.Component
     echo 'Smoke:' + params.Smoke
     echo 'Functional:' + params.Functional
     echo 'Legacy:' + params.Legacy
-    echo 'RunEdge:' + params.RunEdge
+    echo 'RunChrome:' + params.RunChrome
     echo 'RunFirefox:' + params.RunFirefox
+    echo 'RunUatTech:' + params.RunUatTech
+    echo 'LegacyUrl:' + params.LEGACY_URL
 
-    def today = ZonedDateTime.now().getDayOfWeek()
-    def shouldRunWithZephyr = params.ZephyrExecution || today == DayOfWeek.FRIDAY;
+    DayOfWeek today = ZonedDateTime.now().dayOfWeek
+    boolean shouldRunWithZephyr = params.ZephyrExecution || today == DayOfWeek.FRIDAY
     if (shouldRunWithZephyr) {
+      String buildDescription =
+        "Nightly execution for commit ${env.GIT_COMMIT} on environment ${env.ENVIRONMENT_NAME}.\n"
+      String buildUrl =
+        "https://sds-build.hmcts.net/job/HMCTS_Nightly/job/opal-frontend/job/master/${env.BUILD_NUMBER}/"
+
       env.EXECUTION_BUILD = env.GIT_COMMIT
       env.EXECUTION_ENVIRONMENT = env.ENVIRONMENT_NAME
-      env.EXECUTION_CYCLE_DESCRIPTION = "Nightly execution for commit ${env.GIT_COMMIT} on environment ${env.ENVIRONMENT_NAME}.\n" +
-          "https://sds-build.hmcts.net/job/HMCTS_Nightly/job/opal-frontend/job/master/${env.BUILD_NUMBER}/"
-      echo "Zephyr execution will be created with the following details:\n" +
-          "Build: ${env.EXECUTION_BUILD}\n" +
-          "Environment: ${env.EXECUTION_ENVIRONMENT}\n" +
-          "Description: ${env.EXECUTION_CYCLE_DESCRIPTION}"
+      env.EXECUTION_CYCLE_DESCRIPTION = buildDescription + buildUrl
+      echo """\
+Zephyr execution will be created with the following details:
+Build: ${env.EXECUTION_BUILD}
+Environment: ${env.EXECUTION_ENVIRONMENT}
+Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
+""".stripIndent()
     }
-    if (params.Component) {
-      stage('Component Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Component tests failed') {
-          try {
-            if (shouldRunWithZephyr) {
-              yarnBuilder.yarn('zephyr:test:opalComponent')
-            } else {
-              yarnBuilder.yarn('test:opalComponent')
-            }
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/component/**', allowEmptyArchive: true
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/component-report/',
-              reportFiles          : 'index.html',
-              reportName           : 'Component Test Report'
-            ]
-          }
-        }
-      }
-    }
-    if (params.Smoke) {
-      stage('Smoke Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Smoke tests failed') {
-          try {
-            yarnBuilder.yarn('test:smoke')
-          } finally {
-            archiveArtifacts artifacts: 'smoke-output/prod/cucumber/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'smoke-output/screenshots/smoke/**', allowEmptyArchive: true
-
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'smoke-output/prod/cucumber/',
-              reportFiles          : 'smoke-report.html',
-              reportName           : 'Cucumber Smoke Test Report'
-            ]
-          }
-        }
-      }
-    }
-    if (params.Functional) {
-      stage('Functional Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Functional tests failed') {
-          try {
-            if (shouldRunWithZephyr) {
-              yarnBuilder.yarn('zephyr:test:functional')
-            } else {
-              yarnBuilder.yarn('test:functional')
-            }
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/functional/**', allowEmptyArchive: true
-
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/prod/cucumber/',
-              reportFiles          : 'functional-report.html',
-              reportName           : 'Cucumber Functional Test Report'
-            ]
-
-            script {
-              def sourceJobName = env.JOB_NAME
-              sh' mkdir -p cypress/parallel/weights/pipeline'
-              sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
-              sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
-
-              sh"echo 'Archiving weight files in ${sourceJobName}'"
-              archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
-              archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
-              archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
-              archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
-            }
-          }
-        }
-      }
-    }
-    if (params.Legacy) {
-      stage('Legacy Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Legacy tests failed') {
-          try {
-            yarnBuilder.yarn('yarn test:functionalLegacy ; yarn test:functionalLegacy:combine:reports ; yarn test:functionalLegacy:cucumber:combineParallelReport')
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/legacy/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/legacy/**', allowEmptyArchive: true
-
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/prod/legacy/',
-              reportFiles          : 'legacy-report.html',
-              reportName           : 'Legacy Functional Test Report'
-            ]
-          }
-        }
-      }
-    }
-    if (params.RunEdge) {
-      stage('Edge Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Edge tests failed') {
-          try {
-            yarnBuilder.yarn('test:Edge')
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/edge/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/edge/**', allowEmptyArchive: true
-
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/prod/edge/cucumber/',
-              reportFiles          : 'edge-report.html',
-              reportName           : 'Edge Functional Test Report'
-            ]
-          }
-        }
-      }
-    }
-    if (params.RunFirefox) {
-      stage('Firefox Tests') {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Firefox tests failed') {
-          try {
-            yarnBuilder.yarn('test:Firefox')
-          } finally {
-            archiveArtifacts artifacts: 'functional-output/prod/firefox/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'functional-output/screenshots/firefox/**', allowEmptyArchive: true
-
-            publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/prod/firefox/',
-              reportFiles          : 'opal-mode-test-output-[hash].xml',
-              reportName           : 'Firefox Functional Test Report'
-            ]
-          }
-        }
-      }
-    }
+    runComponentStage(
+      params.Component,
+      failureResult,
+      yarnBuilder,
+      shouldRunWithZephyr,
+      browserToRun
+    )
+    runSmokeStage(params.Smoke, failureResult, yarnBuilder, browserToRun)
+    runFunctionalStage(
+      params.Functional,
+      failureResult,
+      yarnBuilder,
+      shouldRunWithZephyr,
+      browserToRun
+    )
+    runUatTechnicalStage(params.RunUatTech, failureResult, browserToRun)
+    runLegacyStage(params.Legacy, failureResult, yarnBuilder, browserToRun)
+    runBrowserStage(
+      params.RunChrome,
+      failureResult,
+      'Chrome tests failed',
+      yarnBuilder,
+      [
+        stageName   : 'Chrome Tests',
+        yarnCommand : 'test:Chrome',
+        browserToRun: chromeBrowserToRun,
+      ]
+    )
+    runBrowserStage(
+      params.RunFirefox,
+      failureResult,
+      'Firefox tests failed',
+      yarnBuilder,
+      [
+        stageName   : 'Firefox Tests',
+        yarnCommand : 'test:Firefox',
+        browserToRun: firefoxBrowserToRun,
+      ]
+    )
   }
 }
