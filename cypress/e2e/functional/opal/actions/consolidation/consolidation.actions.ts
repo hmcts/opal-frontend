@@ -386,7 +386,9 @@ export class ConsolidationActions {
       throw new Error('Expected at least one consolidation results column in the data table.');
     }
 
-    cy.get(AccountResultsLocators.resultAccountLink, { timeout: 10_000 }).its('length').should('eq', expectedRows.length);
+    cy.get(AccountResultsLocators.resultAccountLink, { timeout: 10_000 })
+      .its('length')
+      .should('eq', expectedRows.length);
     cy.get(AccountResultsLocators.resultAccountLink, { timeout: 10_000 }).then(($accountLinks) => {
       const actualRows = [...$accountLinks].map((accountLink) => {
         const row = Cypress.$(accountLink).closest('tr');

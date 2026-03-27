@@ -231,12 +231,12 @@ Feature: Fines Account Consolidation
   @JIRA-STORY:PO-2413 @JIRA-STORY:PO-2421 @JIRA-KEY:POT-3328
   Scenario: Consolidation Successful account search for Company
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
-      | Account_status                    | Submitted                              |
-      | account.defendant.company_name    | Consolidation Result Co {uniq} Alpha   |
+      | Account_status                    | Submitted                                |
+      | account.defendant.company_name    | Consolidation Result Co {uniq} Alpha     |
       | account.defendant.email_address   | consolidation.result.co.a{uniq}@test.com |
-      | account.defendant.post_code       | AB23 4RN                               |
-      | account.prosecutor_case_reference | CONS-RESULT-COMP-A-{uniq}              |
-      | account.account_type              | Fine                                   |
+      | account.defendant.post_code       | AB23 4RN                                 |
+      | account.prosecutor_case_reference | CONS-RESULT-COMP-A-{uniq}                |
+      | account.account_type              | Fine                                     |
     And I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                    | Submitted                                |
       | account.defendant.company_name    | Consolidation Result Co {uniq} Beta      |
@@ -263,7 +263,7 @@ Feature: Fines Account Consolidation
     Then I am on the consolidation Results tab for Companies
     # AC3 - Results are ordered by Name ascending, then Account number ascending
     And the consolidation results are displayed in this order:
-      | Name                               |
+      | Name                                 |
       | Consolidation Result Co {uniq} Alpha |
       | Consolidation Result Co {uniq} Beta  |
       | Consolidation Result Co {uniq} Gamma |
