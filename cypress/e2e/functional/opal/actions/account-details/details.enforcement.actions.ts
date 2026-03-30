@@ -28,7 +28,9 @@ export class AccountDetailsEnforcementActions {
       .type('{selectall}{backspace}', { force: true })
       .type(query, { delay: 0 });
 
-    cy.contains(ENF_OVR.dropdownOptions, optionText, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).click();
+    cy.contains(ENF_OVR.dropdownOptions, optionText, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).click();
     cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('contain.value', optionText);
   }
 
@@ -111,7 +113,9 @@ export class AccountDetailsEnforcementActions {
    */
   public cancelAddEnforcementOverride(): void {
     log('action', 'Cancelling add enforcement override form');
-    cy.get(ENF_OVR.cancelLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).contains(/^Cancel$/i).click();
+    cy.get(ENF_OVR.cancelLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .contains(/^Cancel$/i)
+      .click();
   }
 
   /**

@@ -191,12 +191,15 @@ When('I add the enforcement override', () => {
 /**
  * @step Completes the add enforcement override form with the provided values and submits it.
  */
-When('I add the enforcement override {string} with the Local Justice Area {string}', (resultCode: string, lja: string) => {
-  log('step', 'Add enforcement override with Local Justice Area', { resultCode, lja });
-  flow().selectEnforcementOverride(resultCode);
-  flow().selectEnforcementOverrideLocalJusticeArea(lja);
-  flow().submitAddEnforcementOverride();
-});
+When(
+  'I add the enforcement override {string} with the Local Justice Area {string}',
+  (resultCode: string, lja: string) => {
+    log('step', 'Add enforcement override with Local Justice Area', { resultCode, lja });
+    flow().selectEnforcementOverride(resultCode);
+    flow().selectEnforcementOverrideLocalJusticeArea(lja);
+    flow().submitAddEnforcementOverride();
+  },
+);
 
 /**
  * @step Completes the add enforcement override form with the provided values and submits it.

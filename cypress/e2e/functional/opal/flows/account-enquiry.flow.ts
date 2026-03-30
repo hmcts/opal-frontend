@@ -371,7 +371,11 @@ export class AccountEnquiryFlow {
    * @param expected.enforcerId - Expected enforcer id.
    * @param expected.ljaId - Expected local justice area id.
    */
-  public assertEnforcementOverrideSaveRequest(expected: { overrideId?: string; enforcerId?: string; ljaId?: string }): void {
+  public assertEnforcementOverrideSaveRequest(expected: {
+    overrideId?: string;
+    enforcerId?: string;
+    ljaId?: string;
+  }): void {
     logAE('method', 'assertEnforcementOverrideSaveRequest()', expected);
 
     cy.get('@enforcementOverrideSaveBody').then((body: any) => {
