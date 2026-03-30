@@ -60,6 +60,11 @@ const buildResultsTabFunctionalityTags = (...tags: string[]): string[] =>
 const buildInvalidResultsTags = (...tags: string[]): string[] =>
   buildTags(CONSOLIDATION_EPIC_TAG, INVALID_RESULTS_STORY_TAG, ...tags);
 const normaliseText = (value: string): string => value.replace(/\s+/g, ' ').trim();
+type ExpectedResultsOrderRow = {
+  account: string;
+  name: string;
+  dateOfBirth?: string;
+};
 
 describe('FinesConConsolidateAccComponent - Account Results', () => {
   let defendantAccountResults: IFinesConSearchResultDefendantAccount[] = structuredClone(
@@ -124,6 +129,52 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         expect(normaliseText($cell.text())).to.equal(expectedText);
       });
   };
+
+  const assertDisplayedResultsOrder = (expectedRows: ExpectedResultsOrderRow[]) => {
+    cy.get(AccountResultsLocators.resultAccountLink)
+      .should('have.length', expectedRows.length)
+      .then(($accountLinks) => {
+        const actualRows = [...$accountLinks].map((accountLink) => {
+          const row = Cypress.$(accountLink).closest('tr');
+          const actualRow: ExpectedResultsOrderRow = {
+            account: normaliseText(accountLink.textContent ?? ''),
+            name: normaliseText(row.find(AccountResultsLocators.resultNameCell).text()),
+          };
+
+          if ('dateOfBirth' in expectedRows[0]) {
+            actualRow.dateOfBirth = normaliseText(row.find(AccountResultsLocators.resultDateOfBirthCell).text());
+          }
+
+          return actualRow;
+        });
+
+        expect(actualRows).to.deep.equal(expectedRows);
+      });
+  };
+
+  const buildIndividualResult = (
+    overrides: Partial<IFinesConSearchResultDefendantAccount>,
+  ): IFinesConSearchResultDefendantAccount => ({
+    ...structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK[0]),
+    aliases: null,
+    checks: {
+      errors: [],
+      warnings: [],
+    },
+    ...overrides,
+  });
+
+  const buildCompanyResult = (
+    overrides: Partial<IFinesConSearchResultDefendantAccount>,
+  ): IFinesConSearchResultDefendantAccount => ({
+    ...structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK[0]),
+    aliases: null,
+    checks: {
+      errors: [],
+      warnings: [],
+    },
+    ...overrides,
+  });
 
   describe('Individual tests', () => {
     beforeEach(() => {
@@ -241,6 +292,53 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         // AC2d. A maximum of 100 accounts are displayed per search.
         cy.get(AccountResultsLocators.resultAccountLink).should('have.length', 100);
         cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC100')).should('be.visible');
+      },
+    );
+
+    it(
+      'AC3. should display individual results in Name, Date of birth, then Account number ascending order',
+      { tags: buildIndividualTags() },
+      () => {
+        defendantAccountResults = [
+          buildIndividualResult({
+            defendant_account_id: 14,
+            account_number: 'ACC003',
+            defendant_surname: 'Resultlink',
+            defendant_firstnames: 'Aaron',
+            birth_date: '2003-05-15',
+          }),
+          buildIndividualResult({
+            defendant_account_id: 11,
+            account_number: 'ACC001',
+            defendant_surname: 'Resultlink',
+            defendant_firstnames: 'Consolidation',
+            birth_date: '2001-05-15',
+          }),
+          buildIndividualResult({
+            defendant_account_id: 12,
+            account_number: 'ACC002',
+            defendant_surname: 'Resultlink',
+            defendant_firstnames: 'Consolidation',
+            birth_date: '2001-05-15',
+          }),
+          buildIndividualResult({
+            defendant_account_id: 13,
+            account_number: 'ACC004',
+            defendant_surname: 'Resultlink',
+            defendant_firstnames: 'Consolidation',
+            birth_date: '2002-05-15',
+          }),
+        ];
+
+        setupComponent();
+
+        assertResultsSummary();
+        assertDisplayedResultsOrder([
+          { account: 'ACC003', name: 'RESULTLINK, Aaron', dateOfBirth: '15 May 2003' },
+          { account: 'ACC001', name: 'RESULTLINK, Consolidation', dateOfBirth: '15 May 2001' },
+          { account: 'ACC002', name: 'RESULTLINK, Consolidation', dateOfBirth: '15 May 2001' },
+          { account: 'ACC004', name: 'RESULTLINK, Consolidation', dateOfBirth: '15 May 2002' },
+        ]);
       },
     );
 
@@ -433,6 +531,45 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultsPagination).should('not.exist');
         cy.get(AccountResultsLocators.resultAccountLink).should('have.length', 100);
         cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP100')).should('be.visible');
+      },
+    );
+
+    it(
+      'AC3. should display company results in Name, then Account number ascending order',
+      { tags: buildCompanyTags() },
+      () => {
+        defendantAccountResults = [
+          buildCompanyResult({
+            defendant_account_id: 24,
+            account_number: 'COMP003',
+            organisation_name: 'Alpha Holdings',
+          }),
+          buildCompanyResult({
+            defendant_account_id: 21,
+            account_number: 'COMP001',
+            organisation_name: 'Beta Holdings',
+          }),
+          buildCompanyResult({
+            defendant_account_id: 22,
+            account_number: 'COMP002',
+            organisation_name: 'Beta Holdings',
+          }),
+          buildCompanyResult({
+            defendant_account_id: 23,
+            account_number: 'COMP004',
+            organisation_name: 'Gamma Holdings',
+          }),
+        ];
+
+        setupComponent({ defendantType: 'company' });
+
+        assertResultsSummary('Company');
+        assertDisplayedResultsOrder([
+          { account: 'COMP003', name: 'Alpha Holdings' },
+          { account: 'COMP001', name: 'Beta Holdings' },
+          { account: 'COMP002', name: 'Beta Holdings' },
+          { account: 'COMP004', name: 'Gamma Holdings' },
+        ]);
       },
     );
 
