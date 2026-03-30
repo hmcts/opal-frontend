@@ -13,9 +13,6 @@
  */
 
 import merge from 'lodash/merge';
-import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
-
-import { convertDataTableToNestedObject } from '../../../../../support/utils/table';
 import { getDraftPayloadFile, type DraftPayloadType } from '../../../../../support/utils/payloads';
 import { readDraftIdFromBody, recordCreatedId } from '../../../../../support/draftAccounts';
 import {
@@ -266,7 +263,7 @@ export interface EtagConflictResult {
  *
  * @param draftType - Draft account type from payloads.ts (e.g., company, pgToPay, fixedPenalty).
  * @param newStatus - Target status after creation (e.g., "Submitted", "In review", "Rejected").
- * @param table - Cucumber DataTable of overrides (values can include Account_status).
+ * @param overrides - Nested override object for the draft payload (values can include Account_status).
  * @param user - Identifier for the user performing the publishing action (for logging/evidence).
  * @param returnToUser - Identifier for the user to return to after status update (for logging/evidence).
  * @returns A Cypress chainable that resolves when the draft is created and updated
@@ -279,7 +276,7 @@ export interface EtagConflictResult {
 export function createDraftAndSetStatus(
   draftType: DraftPayloadType,
   newStatus: string,
-  table: DataTable,
+  overrides: Record<string, unknown>,
   user: string,
   returnToUser: string,
 ): Cypress.Chainable<void> {
@@ -324,10 +321,9 @@ export function createDraftAndSetStatus(
   /** Resolve the final API-compatible status and PATCH behavior */
   const { canonicalStatus, skipPatch } = resolveTargetStatus(newStatus);
   /**
-   * Convert the Cucumber DataTable into a nested object structure
-   * used to override fields in the draft payload
+   * Sanitize the override object before merging it into the draft payload.
    */
-  const overrides = stripAccountStatusOverride(convertDataTableToNestedObject(table));
+  const sanitizedOverrides = stripAccountStatusOverride(overrides);
 
   /** Load the base draft payload fixture for the specified draft type */
   const draftFixture = getDraftPayloadFile(draftType);
@@ -336,7 +332,7 @@ export function createDraftAndSetStatus(
     draftType,
     newStatus,
     canonicalStatus,
-    overrides,
+    overrides: sanitizedOverrides,
     user,
     returnToUser,
   });
@@ -365,7 +361,7 @@ export function createDraftAndSetStatus(
       // Load base fixture and merge overrides before creating the draft.
       .fixture(`draftAccounts/${draftFixture}`)
       .then((base) => {
-        requestBody = merge({}, base, overrides);
+        requestBody = merge({}, base, sanitizedOverrides);
       })
 
       // 1) POST create the draft account.

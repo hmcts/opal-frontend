@@ -27,6 +27,7 @@ import { AccountDetailsNavActions } from '../../..//e2e/functional/opal/actions/
 import { EditParentGuardianDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
 import { log } from '../../utils/log.helper';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 
 // Factory functions so each step gets a fresh instance with its own Cypress chain
 const flow = () => new AccountEnquiryFlow();
@@ -174,6 +175,45 @@ When('I submit instalments only payment terms with a payment card request', () =
 When('I cancel payment terms amendments', () => {
   log('step', 'Cancel payment terms amendments');
   flow().cancelPaymentTermsAmendment();
+});
+
+/**
+ * @step Asserts the At a glance tab is active.
+ */
+Then('the At a glance tab should be selected by default', () => {
+  log('assert', 'At a glance tab is active by default');
+  navActions().assertAtAGlanceTabIsActive();
+});
+
+/**
+ * @step Asserts the expected read-only sections are visible on the At a glance tab.
+ */
+Then('I should see the read only sections on the At a glance tab:', (table: DataTable) => {
+  const rows = normalizeTableRows(table);
+  const expectedSections = rows.map((row) => row[0] ?? '').filter(Boolean);
+
+  log('assert', 'Asserting read only sections on the At a glance tab', { expectedSections });
+  atAGlanceDetails().assertReadOnlySections(expectedSections);
+});
+
+/**
+ * @step Asserts the account header summary values displayed above the details tabs.
+ */
+Then('I should see the account header summary values:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting account header summary values', { expectedValues });
+  atAGlanceDetails().assertAccountHeaderSummaryValues(expectedValues);
+});
+
+/**
+ * @step Asserts the language preferences shown on the At a glance tab.
+ */
+Then('I should see the following language preferences on the At a glance tab:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting language preferences on the At a glance tab', { expectedValues });
+  atAGlanceDetails().assertLanguagePreferences(expectedValues);
 });
 
 /**

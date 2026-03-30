@@ -48,9 +48,21 @@ import { DraftPayloadType } from '../../../support/utils/payloads';
 import { log } from '../../utils/log.helper';
 import { DraftAccountsFlow } from '../../../e2e/functional/opal/flows/draft-accounts.flow';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { convertDataTableToNestedObject } from '../../utils/table';
 import { captureSignedInUserEmail } from 'cypress/e2e/functional/opal/actions/login.actions';
 
 type AccountType = DraftPayloadType;
+type DraftOverrideValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | DraftOverrideValue[]
+  | { [key: string]: DraftOverrideValue };
+type DraftOverrides = Record<string, DraftOverrideValue>;
+const DEFAULT_DRAFT_STATUS = 'Publishing Pending';
+const DEFAULT_PUBLISHING_USER = 'opal-test-10@dev.platform.hmcts.net';
 const inputter = () => new CreateManageDraftsActions();
 const checker = () => new CheckAndValidateDraftsActions();
 const checkerReview = () => new CheckAndValidateReviewActions();
@@ -60,11 +72,117 @@ const tabs = () => new DraftTabsActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 
 /**
+ * Normalizes a two-column setup table into a case-insensitive key/value map.
+ * @param table - Source setup table from the feature file.
+ * @returns A plain object keyed by normalized table labels.
+ */
+function parseSeedValues(table: DataTable): Record<string, string> {
+  return Object.fromEntries(
+    table.raw().map(([key, value]) => [
+      String(key ?? '')
+        .trim()
+        .toLowerCase(),
+      withUniq(String(value ?? '').trim()),
+    ]),
+  );
+}
+
+/**
+ * Resolves feature-file language values into the API language codes used by debtor detail.
+ * @param value - Raw language value supplied by the scenario table.
+ * @param fallback - Default language code when no value is supplied.
+ * @returns The normalized two-letter language code.
+ */
+function resolveLanguageCode(value: string | undefined, fallback: 'CY' | 'EN' = 'CY'): string {
+  if (!value) return fallback;
+
+  const normalized = value.trim().toUpperCase();
+  if (normalized === 'WELSH AND ENGLISH') return 'CY';
+  if (normalized === 'ENGLISH ONLY') return 'EN';
+
+  return normalized;
+}
+
+/**
+ * Parses the business unit id from setup-table input.
+ * @param value - Raw business unit id from the feature file.
+ * @param fallback - Default business unit id when no value is supplied.
+ * @returns The numeric business unit id to send to the draft API.
+ */
+function resolveBusinessUnitId(value: string | undefined, fallback: number = 77): number {
+  if (!value) return fallback;
+
+  const parsed = Number(value.trim());
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`Expected business unit id to be numeric, received "${value}".`);
+  }
+
+  return parsed;
+}
+
+/**
+ * Resolves the user who should perform the publishing/approval action for a seeded account.
+ * @param values - Normalized seed table values.
+ * @returns Email/username to use when moving the draft into the published state.
+ */
+function resolvePublishingUser(values: Record<string, string>): string {
+  return (
+    values['publishing user'] ??
+    values['approving user'] ??
+    values['approval user'] ??
+    values['published by user'] ??
+    DEFAULT_PUBLISHING_USER
+  );
+}
+
+/**
+ * Recursively expands `{uniq}` tokens within nested draft override objects.
+ * @param input - Override value or object graph to normalize.
+ * @returns A clone-safe value with placeholder tokens expanded.
+ */
+function applyUniqToOverrides(input: DraftOverrideValue): DraftOverrideValue {
+  if (typeof input === 'string') {
+    return applyUniqPlaceholder(input);
+  }
+
+  if (Array.isArray(input)) {
+    return input.map((item) => applyUniqToOverrides(item));
+  }
+
+  if (input && typeof input === 'object') {
+    const overrides = input as DraftOverrides;
+    return Object.fromEntries(
+      Object.entries(overrides).map(([key, value]) => [key, applyUniqToOverrides(value)]),
+    ) as DraftOverrides;
+  }
+
+  return input;
+}
+
+/**
+ * Converts a Gherkin DataTable into nested draft overrides and expands any `{uniq}` tokens.
+ * @param table - Source table containing draft override paths and values.
+ * @returns A nested override object ready to merge into the fixture payload.
+ */
+function convertTableToDraftOverrides(table: DataTable): Record<string, unknown> {
+  return applyUniqToOverrides(convertDataTableToNestedObject(table) as DraftOverrides) as DraftOverrides;
+}
+
+/**
+ * Resolves the currently signed-in user so draft setup can restore that identity afterwards.
+ * @param action - Callback that performs the next Cypress action with the current user email.
+ * @returns The callback result wrapped in the Cypress command chain.
+ */
+function withSignedInUser<T>(action: (existingUser: string) => Cypress.Chainable<T>): Cypress.Chainable<T> {
+  return captureSignedInUserEmail().then((existingUser: string) => action(existingUser));
+}
+
+/**
  * Unified implementation used by all step aliases.
  *
  * @param accountType - Draft payload type (e.g., company, pgToPay).
- * @param table - A Cucumber DataTable defining the account fields and values.
- * @param status - The target status after creation (defaults to "Publishing Pending").
+ * @param overrides - Nested override object defining the account fields and values.
+ * @param status - The target status after creation (defaults to the publishing-pending status).
  * @param switchToUser - User to perform the status update (for logging/evidence).
  * @param returnToUser - User to return to after status update (for logging/evidence).
  * @returns Cypress.Chainable
@@ -75,14 +193,11 @@ const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
  */
 function createDraftAndPrepareForPublishing(
   accountType: AccountType,
-  table: DataTable,
-  status: string = 'Publishing Pending',
-  switchToUser: string = 'opal-test-10@dev.platform.hmcts.net',
+  overrides: Record<string, unknown>,
+  status: string = DEFAULT_DRAFT_STATUS,
+  switchToUser: string = DEFAULT_PUBLISHING_USER,
   returnToUser: string = '',
 ) {
-  const tableWithUniq = applyUniqToDataTable(table);
-  const details = tableWithUniq.hashes?.() ?? [];
-
   log(
     'step',
     `Creating ${accountType} draft → ${status} using user ${switchToUser}, returning to user ${returnToUser}`,
@@ -91,59 +206,47 @@ function createDraftAndPrepareForPublishing(
       status,
       user: switchToUser,
       returnToUser,
-      fields: details,
-      rowCount: details.length,
+      fields: overrides,
     },
   );
 
-  return createDraftAndSetStatus(accountType, status, tableWithUniq, switchToUser, returnToUser);
+  return createDraftAndSetStatus(accountType, status, overrides, switchToUser, returnToUser);
 }
 
 /**
- * Extracts an `account_status` override and returns the remaining table rows.
+ * Creates a published draft account while preserving the currently signed-in user for the remainder of the scenario.
+ * @param accountType - Draft payload type to create.
+ * @param overrides - Nested override object merged into the draft fixture.
+ * @param publishingUser - User who should approve/publish the seeded account.
+ * @returns Cypress.Chainable
+ */
+function createPublishedDraftAccount(
+  accountType: AccountType,
+  overrides: Record<string, unknown>,
+  publishingUser: string = DEFAULT_PUBLISHING_USER,
+): Cypress.Chainable<void> {
+  return withSignedInUser((existingUser: string) =>
+    createDraftAndPrepareForPublishing(
+      accountType,
+      overrides,
+      DEFAULT_DRAFT_STATUS,
+      publishingUser,
+      existingUser,
+    ),
+  );
+}
+
+/**
+ * Extracts an `account_status` override and converts the remaining rows into nested overrides.
  * @param table Source DataTable that may include an Account_status row.
- * @returns The parsed status and a filtered DataTable without the status row.
+ * @returns The parsed status and nested override object.
  */
-function extractStatusAndTable(table: DataTable): { status: string; filteredTable: DataTable } {
-  const rawWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
-  const statusRowIndex = rawWithUniq.findIndex(([key]) => key?.trim().toLowerCase() === 'account_status');
-  const status = statusRowIndex >= 0 ? (rawWithUniq[statusRowIndex][1] ?? '').trim() : 'Publishing Pending';
-  const filteredRows = statusRowIndex >= 0 ? rawWithUniq.filter((_, index) => index !== statusRowIndex) : rawWithUniq;
+function extractStatusAndOverrides(table: DataTable): { status: string; overrides: Record<string, unknown> } {
+  const values = parseSeedValues(table);
+  const status = values['account_status'] ?? DEFAULT_DRAFT_STATUS;
+  const overrides = convertTableToDraftOverrides(table);
 
-  const filteredTable: DataTable = buildDataTable(filteredRows);
-
-  return { status: status || 'Publishing Pending', filteredTable };
-}
-
-/**
- * Applies `{uniq}` replacement to all values in a DataTable.
- * @param table - Source DataTable to clone.
- * @returns New DataTable with `{uniq}` tokens expanded.
- */
-function applyUniqToDataTable(table: DataTable): DataTable {
-  const rowsWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
-  return buildDataTable(rowsWithUniq);
-}
-
-/**
- * Builds a Cucumber DataTable-like object from raw rows.
- * @param rawRows - 2D array of key/value rows.
- * @returns New DataTable instance backed by the provided rows.
- */
-function buildDataTable(rawRows: string[][]): DataTable {
-  const filteredRows = rawRows;
-
-  const filteredTable: DataTable = {
-    raw: () => filteredRows,
-    rows: () => filteredRows,
-    rowsHash: () =>
-      Object.fromEntries(filteredRows.filter(([key]) => Boolean(key)).map(([key, value]) => [key, value ?? ''])),
-    hashes: () => filteredRows.filter(([key]) => Boolean(key)).map(([key, value]) => ({ [key]: value ?? '' })),
-    transpose: () => filteredTable,
-    toString: () => JSON.stringify(filteredRows),
-  } as DataTable;
-
-  return filteredTable;
+  return { status: status || DEFAULT_DRAFT_STATUS, overrides };
 }
 
 /**
@@ -169,9 +272,15 @@ Given(
   (accountType: AccountType, status: string, table: DataTable) => {
     const data = table.rows();
     log('step', `Create ${accountType} draft, status ${status}`, { accountType, status, data });
-    return captureSignedInUserEmail().then((existingUser: string) => {
-      return createDraftAndPrepareForPublishing(accountType, table, status, existingUser, existingUser);
-    });
+    return withSignedInUser((existingUser: string) =>
+      createDraftAndPrepareForPublishing(
+        accountType,
+        convertTableToDraftOverrides(table),
+        status,
+        existingUser,
+        existingUser,
+      ),
+    );
   },
 );
 
@@ -185,9 +294,9 @@ Given(
       user,
       data,
     });
-    return captureSignedInUserEmail().then((existingUser: string) => {
-      return createDraftAndPrepareForPublishing(accountType, table, status, user, existingUser);
-    });
+    return withSignedInUser((existingUser: string) =>
+      createDraftAndPrepareForPublishing(accountType, convertTableToDraftOverrides(table), status, user, existingUser),
+    );
   },
 );
 
@@ -202,11 +311,171 @@ Given(
  *     | account.defendant.surname   | Smith     |
  */
 Given('a {string} draft account exists with:', (accountType: AccountType, table: DataTable) => {
-  const { status, filteredTable } = extractStatusAndTable(table);
+  const { status, overrides } = extractStatusAndOverrides(table);
   log('step', 'Create draft with table-provided status', { accountType, status });
-  return captureSignedInUserEmail().then((existingUser: string) => {
-    return createDraftAndPrepareForPublishing(accountType, filteredTable, status, existingUser, existingUser);
+  return withSignedInUser((existingUser: string) =>
+    createDraftAndPrepareForPublishing(accountType, overrides, status, existingUser, existingUser),
+  );
+});
+
+/**
+ * @step Creates a published adult or youth defendant account.
+ * @description
+ * Seeds an `adultOrYouthOnly` account at API level and sets it to `Publishing Pending`.
+ * This is intended as a reusable published-account setup step for journeys that need a
+ * defendant account without coupling the seed to a specific epic or screen.
+ *
+ * Supported table keys:
+ * - prosecutor case reference / pcr
+ * - title
+ * - first name / first names
+ * - last name
+ * - date of birth / dob
+ * - business unit id
+ * - publishing user / approving user / approval user
+ *
+ * @example
+ *   Given a published adult or youth defendant account exists:
+ *     | first name                | Jordan               |
+ *     | last name                 | SummaryAdult{uniq}   |
+ *     | prosecutor case reference | PCRR1BSUM{uniqUpper} |
+ *     | date of birth             | 2001-05-15           |
+ */
+Given('a published adult or youth defendant account exists:', (table: DataTable) => {
+  const values = parseSeedValues(table);
+
+  const prosecutorCaseReference = values['prosecutor case reference'] ?? values['pcr'];
+  const firstNames = values['first name'] ?? values['first names'];
+  const lastName = values['last name'];
+  const dateOfBirth = values['date of birth'] ?? values['dob'] ?? '2001-05-15';
+  const title = values['title'] ?? 'Mr';
+  const businessUnitId = resolveBusinessUnitId(values['business unit id']);
+  const publishingUser = resolvePublishingUser(values);
+
+  if (!prosecutorCaseReference || !firstNames || !lastName) {
+    throw new Error('Expected prosecutor case reference, first name and last name for adult or youth defendant seed.');
+  }
+
+  const overrides = {
+    business_unit_id: businessUnitId,
+    account: {
+      prosecutor_case_reference: prosecutorCaseReference,
+      collection_order_made: false,
+      collection_order_made_today: false,
+      payment_card_request: false,
+      defendant: {
+        title,
+        forenames: firstNames,
+        surname: lastName,
+        dob: dateOfBirth,
+      },
+    },
+  };
+
+  log('step', 'Creating published adult or youth defendant account', {
+    prosecutorCaseReference,
+    firstNames,
+    lastName,
+    dateOfBirth,
+    businessUnitId,
+    publishingUser,
   });
+
+  return createPublishedDraftAccount('adultOrYouthOnly', overrides, publishingUser);
+});
+
+/**
+ * @step Creates a published Welsh-speaking parent or guardian account.
+ * @description
+ * Seeds a `pgToPay` account at API level and sets it to `Publishing Pending`, applying Welsh
+ * language preferences to the parent or guardian debtor detail so summary journeys can assert
+ * the Language preferences section.
+ *
+ * Supported table keys:
+ * - prosecutor case reference / pcr
+ * - title
+ * - first name / first names
+ * - last name
+ * - date of birth / dob
+ * - business unit id
+ * - parent or guardian title
+ * - parent or guardian first name / first names
+ * - parent or guardian last name
+ * - document language / document language code
+ * - court hearing language / hearing language / court hearing language code
+ * - publishing user / approving user / approval user
+ *
+ * @example
+ *   Given a published Welsh-speaking parent or guardian account exists:
+ *     | first name                | Megan                  |
+ *     | last name                 | SummaryWelshPG{uniq}   |
+ *     | prosecutor case reference | PCRR1BWPG{uniqUpper}   |
+ */
+Given('a published Welsh-speaking parent or guardian account exists:', (table: DataTable) => {
+  const values = parseSeedValues(table);
+
+  const prosecutorCaseReference = values['prosecutor case reference'] ?? values['pcr'];
+  const firstNames = values['first name'] ?? values['first names'];
+  const lastName = values['last name'];
+  const dateOfBirth = values['date of birth'] ?? values['dob'] ?? '2010-01-01';
+  const title = values['title'] ?? 'Ms';
+  const businessUnitId = resolveBusinessUnitId(values['business unit id']);
+  const publishingUser = resolvePublishingUser(values);
+  const parentGuardianTitle = values['parent or guardian title'] ?? 'Mrs';
+  const parentGuardianFirstNames =
+    values['parent or guardian first name'] ?? values['parent or guardian first names'] ?? 'Parent';
+  const parentGuardianLastName = values['parent or guardian last name'] ?? `${lastName} Parent`;
+  const documentLanguage = resolveLanguageCode(values['document language'] ?? values['document language code']);
+  const hearingLanguage = resolveLanguageCode(
+    values['court hearing language'] ?? values['hearing language'] ?? values['court hearing language code'],
+  );
+
+  if (!prosecutorCaseReference || !firstNames || !lastName) {
+    throw new Error(
+      'Expected prosecutor case reference, first name and last name for Welsh-speaking parent or guardian seed.',
+    );
+  }
+
+  const overrides = {
+    business_unit_id: businessUnitId,
+    account: {
+      originator_name: "North East Wales Magistrates' Court",
+      prosecutor_case_reference: prosecutorCaseReference,
+      collection_order_made: false,
+      collection_order_made_today: false,
+      payment_card_request: false,
+      defendant: {
+        title,
+        forenames: firstNames,
+        surname: lastName,
+        dob: dateOfBirth,
+        parent_guardian: {
+          title: parentGuardianTitle,
+          forenames: parentGuardianFirstNames,
+          surname: parentGuardianLastName,
+          debtor_detail: {
+            document_language: documentLanguage,
+            hearing_language: hearingLanguage,
+          },
+        },
+      },
+    },
+  };
+
+  log('step', 'Creating published Welsh-speaking parent or guardian account', {
+    prosecutorCaseReference,
+    firstNames,
+    lastName,
+    dateOfBirth,
+    businessUnitId,
+    parentGuardianFirstNames,
+    parentGuardianLastName,
+    documentLanguage,
+    hearingLanguage,
+    publishingUser,
+  });
+
+  return createPublishedDraftAccount('pgToPay', overrides, publishingUser);
 });
 
 /**
@@ -222,6 +491,7 @@ Given('a {string} draft account exists with:', (accountType: AccountType, table:
  * - last name
  * - address line 1
  * - postcode
+ * - publishing user / approving user / approval user
  *
  * @example
  *   Given a published account exists with an individual minor creditor:
@@ -232,14 +502,7 @@ Given('a {string} draft account exists with:', (accountType: AccountType, table:
  *     | postcode                  | MC1 1AA               |
  */
 Given('a published account exists with an individual minor creditor:', (table: DataTable) => {
-  const values = Object.fromEntries(
-    table.raw().map(([key, value]) => [
-      String(key ?? '')
-        .trim()
-        .toLowerCase(),
-      withUniq(String(value ?? '').trim()),
-    ]),
-  );
+  const values = parseSeedValues(table);
 
   const prosecutorCaseReference = values['prosecutor case reference'] ?? values['pcr'];
   const firstNames = values['first name'] ?? values['first names'];
@@ -247,6 +510,7 @@ Given('a published account exists with an individual minor creditor:', (table: D
   const addressLine1 = values['address line 1'];
   const postcode = values['postcode'];
   const title = values['title'] ?? 'Mr';
+  const publishingUser = resolvePublishingUser(values);
 
   if (!prosecutorCaseReference || !firstNames || !lastName || !addressLine1 || !postcode) {
     throw new Error(
@@ -254,18 +518,34 @@ Given('a published account exists with an individual minor creditor:', (table: D
     );
   }
 
-  const payloadTable = buildDataTable([
-    ['account.prosecutor_case_reference', prosecutorCaseReference],
-    ['account.defendant.forenames', 'Minor'],
-    ['account.defendant.surname', `Creditor Seed ${lastName}`],
-    ['account.defendant.parent_guardian.dob', '1980-02-15'],
-    ['account.offences.0.impositions.0.minor_creditor.company_flag', 'false'],
-    ['account.offences.0.impositions.0.minor_creditor.title', title],
-    ['account.offences.0.impositions.0.minor_creditor.forenames', firstNames],
-    ['account.offences.0.impositions.0.minor_creditor.surname', lastName],
-    ['account.offences.0.impositions.0.minor_creditor.address_line_1', addressLine1],
-    ['account.offences.0.impositions.0.minor_creditor.post_code', postcode],
-  ]);
+  const overrides = {
+    account: {
+      prosecutor_case_reference: prosecutorCaseReference,
+      defendant: {
+        forenames: 'Minor',
+        surname: `Creditor Seed ${lastName}`,
+        parent_guardian: {
+          dob: '1980-02-15',
+        },
+      },
+      offences: [
+        {
+          impositions: [
+            {
+              minor_creditor: {
+                company_flag: false,
+                title,
+                forenames: firstNames,
+                surname: lastName,
+                address_line_1: addressLine1,
+                post_code: postcode,
+              },
+            },
+          ],
+        },
+      ],
+    },
+  };
 
   log('step', 'Creating published account with individual minor creditor', {
     prosecutorCaseReference,
@@ -273,17 +553,10 @@ Given('a published account exists with an individual minor creditor:', (table: D
     lastName,
     addressLine1,
     postcode,
+    publishingUser,
   });
 
-  return captureSignedInUserEmail().then((existingUser: string) =>
-    createDraftAndPrepareForPublishing(
-      'pgToPay',
-      payloadTable,
-      'Publishing Pending',
-      'opal-test-10@dev.platform.hmcts.net',
-      existingUser,
-    ),
-  );
+  return createPublishedDraftAccount('pgToPay', overrides, publishingUser);
 });
 
 /**
@@ -297,6 +570,7 @@ Given('a published account exists with an individual minor creditor:', (table: D
  * - company name
  * - address line 1
  * - postcode
+ * - publishing user / approving user / approval user
  *
  * @example
  *   Given a published account exists with a company minor creditor:
@@ -306,19 +580,13 @@ Given('a published account exists with an individual minor creditor:', (table: D
  *     | postcode                  | MC1 1AB                 |
  */
 Given('a published account exists with a company minor creditor:', (table: DataTable) => {
-  const values = Object.fromEntries(
-    table.raw().map(([key, value]) => [
-      String(key ?? '')
-        .trim()
-        .toLowerCase(),
-      withUniq(String(value ?? '').trim()),
-    ]),
-  );
+  const values = parseSeedValues(table);
 
   const prosecutorCaseReference = values['prosecutor case reference'] ?? values['pcr'];
   const companyName = values['company name'];
   const addressLine1 = values['address line 1'];
   const postcode = values['postcode'];
+  const publishingUser = resolvePublishingUser(values);
 
   if (!prosecutorCaseReference || !companyName || !addressLine1 || !postcode) {
     throw new Error(
@@ -326,33 +594,42 @@ Given('a published account exists with a company minor creditor:', (table: DataT
     );
   }
 
-  const payloadTable = buildDataTable([
-    ['account.prosecutor_case_reference', prosecutorCaseReference],
-    ['account.defendant.forenames', 'Minor'],
-    ['account.defendant.surname', `Creditor Seed ${companyName}`],
-    ['account.defendant.parent_guardian.dob', '1980-02-15'],
-    ['account.offences.0.impositions.0.minor_creditor.company_flag', 'true'],
-    ['account.offences.0.impositions.0.minor_creditor.company_name', companyName],
-    ['account.offences.0.impositions.0.minor_creditor.address_line_1', addressLine1],
-    ['account.offences.0.impositions.0.minor_creditor.post_code', postcode],
-  ]);
+  const overrides = {
+    account: {
+      prosecutor_case_reference: prosecutorCaseReference,
+      defendant: {
+        forenames: 'Minor',
+        surname: `Creditor Seed ${companyName}`,
+        parent_guardian: {
+          dob: '1980-02-15',
+        },
+      },
+      offences: [
+        {
+          impositions: [
+            {
+              minor_creditor: {
+                company_flag: true,
+                company_name: companyName,
+                address_line_1: addressLine1,
+                post_code: postcode,
+              },
+            },
+          ],
+        },
+      ],
+    },
+  };
 
   log('step', 'Creating published account with company minor creditor', {
     prosecutorCaseReference,
     companyName,
     addressLine1,
     postcode,
+    publishingUser,
   });
 
-  return captureSignedInUserEmail().then((existingUser: string) =>
-    createDraftAndPrepareForPublishing(
-      'pgToPay',
-      payloadTable,
-      'Publishing Pending',
-      'opal-test-10@dev.platform.hmcts.net',
-      existingUser,
-    ),
-  );
+  return createPublishedDraftAccount('pgToPay', overrides, publishingUser);
 });
 
 /**

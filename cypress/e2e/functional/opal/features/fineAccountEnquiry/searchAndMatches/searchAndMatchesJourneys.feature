@@ -8,7 +8,7 @@ Feature: Account Search and Matches - End-to-end journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @skip @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541
+  @skip @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541
   Scenario: Search for an individual defendant account and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                              | Submitted                        |
@@ -39,7 +39,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYIND{uniqUpper}"
 
-  @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707
+  @R1B @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707
   Scenario: Search for a company defendant account and open the matching record
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                 |
@@ -64,7 +64,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the search results
     Then I should see the account header contains "Journey Co {uniq}"
 
-  @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708
+  @R1B @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708
   Scenario: Search for a minor creditor account and review the matching results
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRJRNYMIN{uniqUpper} |
@@ -85,7 +85,7 @@ Feature: Account Search and Matches - End-to-end journeys
       | Name           | JourneyMinor{uniq}, Mina |
       | Address line 1 | 1 High Street            |
 
-  @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708
+  @R1B @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708
   Scenario: Search for a company minor creditor account and review the matching results
     Given a published account exists with a company minor creditor:
       | prosecutor case reference | PCRJRNYMINCO{uniqUpper} |
@@ -104,7 +104,7 @@ Feature: Account Search and Matches - End-to-end journeys
       | Name           | Journey Minor Co {uniq} |
       | Address line 1 | 2 High Street           |
 
-  @JIRA-STORY:PO-709 @JIRA-STORY:PO-706
+  @R1B @JIRA-STORY:PO-709 @JIRA-STORY:PO-706
   Scenario: Search by prosecutor case reference and review results across defendant tabs
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                       |
@@ -139,7 +139,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the Companies search results
     Then I should see the account header contains "Journey Ref Co {uniq}"
 
-  @JIRA-STORY:PO-706
+  @R1B @JIRA-STORY:PO-706
   Scenario: Search by account number and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
@@ -163,7 +163,7 @@ Feature: Account Search and Matches - End-to-end journeys
   # Legacy-data scenarios are scaffolds.
   # Replace the LEGACY_* placeholders with real seeded data values before executing them.
 
-  @skip @LegacyData @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717
+  @skip @LegacyData @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717
   # Minimum data set required: one individual defendant account with searchable surname LEGACY_INDIVIDUAL_LAST_NAME, prosecutor case reference LEGACY_INDIVIDUAL_REFERENCE, and summary header text LEGACY_INDIVIDUAL_SUMMARY_HEADER.
   Scenario: Search for an individual defendant account from legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -175,7 +175,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "LEGACY_INDIVIDUAL_SUMMARY_HEADER"
 
-  @skip @LegacyData @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707
+  @skip @LegacyData @R1B @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707
   # Minimum data set required: one company defendant account with company name LEGACY_COMPANY_NAME, prosecutor case reference LEGACY_COMPANY_REFERENCE, and account header text LEGACY_COMPANY_HEADER.
   Scenario: Search for a company defendant account from legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
@@ -188,7 +188,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the search results
     Then I should see the account header contains "LEGACY_COMPANY_HEADER"
 
-  @skip @LegacyData @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708
+  @skip @LegacyData @R1B @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708
   # Minimum data set required: one individual minor creditor with last name LEGACY_MINOR_CREDITOR_LAST_NAME, display name LEGACY_MINOR_CREDITOR_NAME, and address line 1 LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1.
   Scenario: Search for a minor creditor account from legacy data and review the matching results
     Given I am on the Account Search page - Individuals form displayed by default
@@ -202,7 +202,7 @@ Feature: Account Search and Matches - End-to-end journeys
       | Name           | LEGACY_MINOR_CREDITOR_NAME           |
       | Address line 1 | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
 
-  @skip @LegacyData @JIRA-STORY:PO-709 @JIRA-STORY:PO-706
+  @skip @LegacyData @R1B @JIRA-STORY:PO-709 @JIRA-STORY:PO-706
   # Minimum data set required: one individual defendant account and one company defendant account sharing prosecutor case reference LEGACY_SHARED_REFERENCE, with the company account header text LEGACY_SHARED_REFERENCE_COMPANY_HEADER.
   Scenario: Search by prosecutor case reference in legacy data and review results across defendant tabs
     Given I am on the Account Search page - Individuals form displayed by default
@@ -216,7 +216,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the Companies search results
     Then I should see the account header contains "LEGACY_SHARED_REFERENCE_COMPANY_HEADER"
 
-  @skip @LegacyData @JIRA-STORY:PO-706
+  @skip @LegacyData @R1B @JIRA-STORY:PO-706
   # Minimum data set required: one individual defendant account with account number LEGACY_ACCOUNT_NUMBER and summary header text LEGACY_ACCOUNT_SUMMARY_HEADER.
   Scenario: Search by account number in legacy data and open the matching record
     Given I am on the Account Search page - Individuals form displayed by default
