@@ -42,6 +42,9 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   localJusticeArea: '#enforcementOverrideDetailsLocal_justice_areaKey',
   localJusticeAreaValue: '#enforcementOverrideDetailsLocal_justice_areaValue',
 
+  successBanner: 'opal-lib-moj-alert[type="success"]',
+  successBannerText: 'opal-lib-moj-alert-content-text',
+
   detailsDaysInDefault: '[id="enforcementActionDetailsDays in defaultKey"]',
   detailsReason: '#enforcementActionDetailsReasonKey',
 

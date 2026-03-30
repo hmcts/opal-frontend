@@ -275,6 +275,126 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Selects an enforcement override code on the add form.
+   *
+   * @param resultCode - Enforcement override result code.
+   */
+  public selectEnforcementOverride(resultCode: string): void {
+    logAE('method', 'selectEnforcementOverride()', { resultCode });
+    this.enforcement.selectEnforcementOverride(resultCode);
+  }
+
+  /**
+   * Selects a Local Justice Area on the add form.
+   *
+   * @param localJusticeArea - Visible LJA option text.
+   */
+  public selectEnforcementOverrideLocalJusticeArea(localJusticeArea: string): void {
+    logAE('method', 'selectEnforcementOverrideLocalJusticeArea()', { localJusticeArea });
+    this.enforcement.selectLocalJusticeArea(localJusticeArea);
+  }
+
+  /**
+   * Selects an enforcer on the add form.
+   *
+   * @param enforcer - Visible enforcer option text.
+   */
+  public selectEnforcementOverrideEnforcer(enforcer: string): void {
+    logAE('method', 'selectEnforcementOverrideEnforcer()', { enforcer });
+    this.enforcement.selectEnforcer(enforcer);
+  }
+
+  /**
+   * Submits the add enforcement override form and stores the request body for later assertions.
+   */
+  public submitAddEnforcementOverride(): void {
+    logAE('method', 'submitAddEnforcementOverride()');
+
+    this.interceptEnforcementOverrideSave();
+    this.enforcement.submitAddEnforcementOverride();
+
+    cy.wait('@enforcementOverrideSave').then(({ request }) => {
+      cy.wrap(request.body, { log: false }).as('enforcementOverrideSaveBody');
+    });
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Cancels the add enforcement override form after confirming unsaved changes should be discarded.
+   */
+  public cancelAddEnforcementOverrideAndDiscardChanges(): void {
+    logAE('method', 'cancelAddEnforcementOverrideAndDiscardChanges()');
+
+    this.common.confirmNextUnsavedChanges(true);
+    this.enforcement.cancelAddEnforcementOverride();
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Asserts the Enforcement tab is active and visible.
+   */
+  public assertEnforcementTabIsActive(): void {
+    logAE('method', 'assertEnforcementTabIsActive()');
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Asserts the enforcement override success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementOverrideSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the intercepted enforcement override save payload.
+   *
+   * @param expected - Expected payload values.
+   * @param expected.overrideId - Expected enforcement override result id.
+   * @param expected.enforcerId - Expected enforcer id.
+   * @param expected.ljaId - Expected local justice area id.
+   */
+  public assertEnforcementOverrideSaveRequest(expected: { overrideId?: string; enforcerId?: string; ljaId?: string }): void {
+    logAE('method', 'assertEnforcementOverrideSaveRequest()', expected);
+
+    cy.get('@enforcementOverrideSaveBody').then((body: any) => {
+      if (expected.overrideId) {
+        expect(body).to.have.nested.property(
+          'enforcement_override.enforcement_override_result.enforcement_override_result_id',
+          expected.overrideId,
+        );
+      }
+
+      if (expected.ljaId) {
+        expect(String(body?.enforcement_override?.lja?.lja_id)).to.eq(expected.ljaId);
+      }
+
+      if (expected.enforcerId) {
+        expect(String(body?.enforcement_override?.enforcer?.enforcer_id)).to.eq(expected.enforcerId);
+      }
+    });
+  }
+
+  /**
+   * Asserts the enforcement override summary card values.
+   *
+   * @param expected - Expected summary values.
+   * @param expected.override - Expected enforcement override display text.
+   * @param expected.enforcer - Expected enforcer display text.
+   * @param expected.lja - Expected LJA display text.
+   */
+  public assertEnforcementOverrideSummary(expected: { override?: string; enforcer?: string; lja?: string }): void {
+    logAE('method', 'assertEnforcementOverrideSummary()', expected);
+    this.enforcement.assertEnforcementOverrideSummary(expected);
+  }
+
+  /**
    * Submits instalments-only payment terms with a payment card request.
    * Stores the POST request body for later assertions.
    */
@@ -627,6 +747,13 @@ export class AccountEnquiryFlow {
    */
   private interceptPaymentTermsSave(): void {
     cy.intercept('POST', '**/defendant-accounts/*/payment-terms').as('paymentTermsSave');
+  }
+
+  /**
+   * Intercepts the enforcement override save request for later assertions.
+   */
+  private interceptEnforcementOverrideSave(): void {
+    cy.intercept('PATCH', '**/defendant-accounts/*').as('enforcementOverrideSave');
   }
 
   /**
