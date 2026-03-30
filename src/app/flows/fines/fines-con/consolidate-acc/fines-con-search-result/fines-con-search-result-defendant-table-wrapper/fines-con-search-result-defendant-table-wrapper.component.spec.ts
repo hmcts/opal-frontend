@@ -99,6 +99,25 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     expect(checkMessage).toContain('Account status is Consolidated');
   });
 
+  it('should bold delimited text in rendered check messages', () => {
+    component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
+    component.checksByAccountId = {
+      1: [
+        {
+          reference: 'CON.WN.1',
+          severity: 'warning',
+          message: 'Last enforcement action on the account is `Application made for Benefit Deductions(ABDC)`',
+        },
+      ],
+    };
+
+    fixture.detectChanges();
+
+    const boldText: HTMLElement | null = fixture.nativeElement.querySelector('.defendant-check-message__text strong');
+    expect(boldText?.textContent).toBe('Application made for Benefit Deductions(ABDC)');
+    expect(fixture.nativeElement.textContent).toContain('Last enforcement action on the account is');
+  });
+
   it('should only return error checks when both warnings and errors exist', () => {
     const row = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1)[0];
     component.checksByAccountId =
@@ -112,6 +131,13 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
       }),
     ]);
     expect(component.getChecksBySeverity(row, 'warning')).toEqual([]);
+  });
+
+  it('should split delimited check messages into emphasised parts', () => {
+    expect(component.getFormattedCheckMessageParts('Account status is `CS`')).toEqual([
+      { text: 'Account status is ', emphasized: false },
+      { text: 'CS', emphasized: true },
+    ]);
   });
 
   it('should show validation error and not emit when no selectable account is selected', () => {
