@@ -3,7 +3,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
   # This feature file ensures that key populate and submit screens meet accessibility standards using Axe-Core.
 
   Background:
-    Given I am logged in with email "opal-test@hmcts.net"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
   @JIRA-KEY:POT-3298
