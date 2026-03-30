@@ -11,6 +11,8 @@ import {
   type Decision,
 } from '../actions/draft-account/check-and-validate-review.actions';
 import { CommonActions } from '../actions/common/common.actions';
+import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
+import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { recordCreatedAccount } from '../../../../support/utils/accountCapture';
 import { captureScenarioScreenshot } from '../../../../support/utils/screenshot';
 import { isEvidenceCaptureEnabled } from '../../../../support/utils/evidenceMode';
@@ -34,6 +36,8 @@ export class DraftAccountsFlow {
   private readonly checker = new CheckAndValidateDraftsActions();
   private readonly review = new CheckAndValidateReviewActions();
   private readonly common = new CommonActions();
+  private readonly searchIndividuals = new AccountSearchIndividualsActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
   /** Max attempts to poll for a publish status after approval. */
   private readonly publishWaitAttempts = 10;
   /** Delay between publish status polls (ms). */
@@ -182,7 +186,10 @@ export class DraftAccountsFlow {
    */
   openCheckAndValidateWithHeader(): void {
     log('navigate', 'Opening Check and Validate with header assertion');
-    this.checker.openPage();
+    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.chooseItem('Accounts');
+    this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
+    this.checker.openPageFromAccounts();
     this.common.assertHeaderContains('Review accounts');
     // If the failed-drafts stub alias exists, wait for it so tab counts render before assertions.
     const aliases = ((Cypress as any).state?.('aliases') ?? {}) as Record<string, unknown>;

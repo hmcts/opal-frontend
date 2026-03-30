@@ -81,8 +81,9 @@ export class AccountEnquiryFlow {
     cy.get('body').then(($b) => {
       const onSearch = $b.find(L.root).length > 0;
       if (!onSearch) {
-        logAE('navigate', 'Navigating to Account Search dashboard (Individuals)');
-        this.searchIndividuals.openSearchFromAuthenticatedHome();
+        logAE('navigate', 'Returning to Search landing page via HMCTS link (Individuals)');
+        this.common.clickHmctsHomeLink();
+        this.searchIndividuals.assertOnSearchLandingPage();
       }
     });
   }
@@ -579,8 +580,9 @@ export class AccountEnquiryFlow {
     cy.get('body').then(($b) => {
       const onSearch = $b.find(C.root).length > 0;
       if (!onSearch) {
-        logAE('navigate', 'Navigating to Account Search dashboard (Companies)');
-        this.searchIndividuals.openSearchFromAuthenticatedHome();
+        logAE('navigate', 'Returning to Search landing page via HMCTS link (Companies)');
+        this.common.clickHmctsHomeLink();
+        this.searchIndividuals.assertOnSearchLandingPage();
         this.searchNav.goToCompaniesTab();
       }
     });
@@ -739,9 +741,8 @@ export class AccountEnquiryFlow {
    */
   public searchByCompanyName(companyName: string): void {
     logAE('method', 'searchByCompanyName()');
-    this.searchIndividuals.openSearchFromAuthenticatedHome();
-    this.searchNav.goToCompaniesTab();
     this.ensureOnCompanySearchPage();
+    this.searchNav.goToCompaniesTab();
     logAE('search', 'Searching by company name', { companyName });
     this.resolveAccountNumberFromAlias().then((accountNumber) => {
       if (accountNumber) {

@@ -36,5 +36,5 @@ import { AccountSearchIndividualsActions } from '../actions/search/search.indivi
  */
 export function loginAndLandOnDashboard(email: string): void {
   performLogin(email);
-  new AccountSearchIndividualsActions().assertAuthenticatedHome();
+  new AccountSearchIndividualsActions().assertOnSearchLandingPage();
 }

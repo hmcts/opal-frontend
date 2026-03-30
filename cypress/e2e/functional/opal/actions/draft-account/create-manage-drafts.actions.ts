@@ -4,7 +4,6 @@
  */
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CreateManageDraftsLocators as L } from '../../../../../shared/selectors/create-manage-drafts.locators';
-import { PrimaryNavigationLocators as PN } from '../../../../../shared/selectors/primary-navigation.locators';
 import { DraftAccountsCommonActions } from './draft-accounts-common.actions';
 
 export type CreateManageTab = 'In review' | 'Rejected' | 'Approved' | 'Deleted';
@@ -17,32 +16,20 @@ const CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK = '#finesCavInputterLink';
  */
 export class CreateManageDraftsActions extends DraftAccountsCommonActions {
   /**
-   * Switches the current authenticated home area to the Accounts landing page when needed.
+   * Opens the Create and Manage Draft Accounts page from the Accounts landing page.
    */
-  private ensureAccountsLandingPage(): void {
-    cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
-      if (pathname.includes('/fines/dashboard/accounts')) {
-        return;
-      }
-
-      log('navigate', 'Switching to Accounts landing page');
-      cy.contains(`${PN.container} .moj-primary-navigation__link`, 'Accounts', this.common.getTimeoutOptions())
-        .should('be.visible')
-        .click();
-
-      cy.location('pathname', this.common.getPathTimeoutOptions()).should('include', '/fines/dashboard/accounts');
-      this.common.assertHeaderContains('Accounts');
-    });
+  openPageFromAccounts(): void {
+    log('navigate', 'Opening Create and Manage Draft Accounts');
+    cy.get(CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
+    this.assertOnPage();
   }
 
   /**
-   * Opens the Create and Manage Draft Accounts page from the dashboard.
+   * Asserts the Create and Manage Draft Accounts page is displayed.
    */
-  openPage(): void {
-    log('navigate', 'Opening Create and Manage Draft Accounts');
-    this.ensureAccountsLandingPage();
-    cy.get(CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
+  assertOnPage(): void {
     this.common.assertHeaderContains('Create accounts');
+    cy.get(L.tabs.container, this.common.getTimeoutOptions()).should('be.visible');
   }
 
   /**

@@ -76,7 +76,7 @@ export class AccountSearchFlow {
    */
   public navigateAndVerifySearchFromDashboard(): void {
     log('navigate', 'Go to Account Search from dashboard');
-    this.individuals.openSearchFromAuthenticatedHome();
+    this.individuals.assertOnSearchLandingPage();
 
     log('assert', 'Verify Individuals form is active by default');
     this.individuals.assertDefaultIndividualsActive();
@@ -650,7 +650,7 @@ export class AccountSearchFlow {
    */
   public navigateAndEnterIndividualsFormWithoutSubmit(table: DataTable): void {
     log('navigate', 'Go to Account Search and enter Individuals form (no submit)');
-    this.individuals.openSearchFromAuthenticatedHome();
+    this.individuals.assertOnSearchLandingPage();
 
     // Reuse existing helper to populate all text-like fields
     this.enterIndividualsFormWithoutSubmit(table);
@@ -1270,6 +1270,6 @@ export class AccountSearchFlow {
   public returnToDashboardViaHmctsLink(): void {
     log('navigate', 'Returning to dashboard via HMCTS header link');
     this.common.clickHmctsHomeLink();
-    this.individuals.assertAuthenticatedHome();
+    this.individuals.assertOnSearchLandingPage();
   }
 }

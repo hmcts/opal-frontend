@@ -21,7 +21,7 @@ export class DraftTabsActions {
    */
   openInputterTabs(): void {
     log('navigate', 'Opening Create and Manage Draft Accounts');
-    this.createManageDrafts.openPage();
+    this.createManageDrafts.openPageFromAccounts();
     this.common.assertHeaderContains('Create accounts');
   }
 
@@ -30,7 +30,7 @@ export class DraftTabsActions {
    */
   openCheckerTabs(): void {
     log('navigate', 'Opening Check and Validate Draft Accounts');
-    this.checkAndValidateDrafts.openPage();
+    this.checkAndValidateDrafts.openPageFromAccounts();
     this.common.assertHeaderContains('Review accounts');
   }
 

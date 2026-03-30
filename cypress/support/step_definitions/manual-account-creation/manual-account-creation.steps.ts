@@ -76,7 +76,7 @@ installDraftAccountCleanup();
  */
 Then('I should be on the dashboard', () => {
   log('assert', 'Asserting dashboard is visible');
-  home().assertAuthenticatedHome();
+  home().assertOnSearchLandingPage();
 });
 /**
  * @step Starts a fine manual account with a specific business unit and defendant type.

@@ -568,7 +568,7 @@ When('I select back with confirmation and verify I navigate to the Dashboard', (
 
   // Assert we reached Dashboard
   log('step', 'Verify Dashboard is displayed');
-  searchIndividualActions().assertAuthenticatedHome();
+  searchIndividualActions().assertOnSearchLandingPage();
 });
 
 /**

@@ -5,6 +5,7 @@
 import { MacFixedPenaltyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { typeAndSelectAutocompleteOption } from '../common/autocomplete.helper';
 
 type OffenceType = 'vehicle' | 'non-vehicle';
 
@@ -449,19 +450,13 @@ export class FixedPenaltyDetailsActions {
    * @param label - Field label for logging.
    */
   private typeAutocomplete(inputSelector: string, listboxSelector: string, value: string, label: string): void {
-    const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
-    input.scrollIntoView().clear({ force: true });
-
-    if (value === '') {
-      input.should('have.value', '');
-      return;
-    }
-
-    input.type(value, { force: true, delay: 0 }).should('have.value', value);
-    cy.get(listboxSelector, this.common.getTimeoutOptions()).should('exist');
-    cy.get(inputSelector).type('{downarrow}{enter}', { force: true });
-    cy.get(inputSelector, this.common.getTimeoutOptions()).invoke('val').should('not.be.empty');
-    log('select', `Selected autocomplete option for ${label}`, { value });
+    typeAndSelectAutocompleteOption({
+      inputSelector,
+      listboxSelector,
+      value,
+      label,
+      timeoutOptions: this.common.getTimeoutOptions(),
+    });
   }
 
   /**

@@ -3,15 +3,13 @@
  * @description Encapsulates business unit selection, account type/defendant type selection, and navigation to task list.
  */
 import { MacCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.create-account.locators';
-import { PrimaryNavigationLocators as PN } from '../../../../../shared/selectors/primary-navigation.locators';
-import { CreateManageDraftsLocators as CAM } from '../../../../../shared/selectors/create-manage-drafts.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { AccountType } from '../../../../../support/utils/payloads';
+import { CreateManageDraftsActions } from '../draft-account/create-manage-drafts.actions';
 
 const log = createScopedLogger('ManualCreateAccountActions');
 const DIRECT_MANUAL_ACCOUNT_CREATION_LINK = '#finesMacLink';
-const CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK = '#finesCavInputterLink';
 
 export type DefendantType =
   | 'Adult or youth'
@@ -23,116 +21,23 @@ export type DefendantType =
 /** Actions for the Manual Account Creation landing page. */
 export class ManualCreateAccountActions {
   private readonly common = new CommonActions();
+  private readonly createManageDrafts = new CreateManageDraftsActions();
 
   /**
-   * Checks whether the current route is already inside the MAC originator step.
-   * @param pathname - Current browser pathname.
-   * @returns True when the pathname already points at the create/transfer originator route.
-   */
-  private isOnMacOriginatorPage(pathname: string): boolean {
-    return pathname.includes('/originator-type') || pathname.includes('/create-or-transfer-in');
-  }
-
-  /**
-   * Switches the current authenticated home area to the Accounts landing page when needed.
-   */
-  private ensureAccountsLandingPage(): void {
-    cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
-      if (pathname.includes('/fines/dashboard/accounts')) {
-        return;
-      }
-
-      log('navigate', 'Switching to Accounts landing page');
-      cy.contains(`${PN.container} .moj-primary-navigation__link`, 'Accounts', this.common.getTimeoutOptions())
-        .should('be.visible')
-        .click();
-
-      cy.location('pathname', this.common.getPathTimeoutOptions()).should('include', '/fines/dashboard/accounts');
-      this.common.assertHeaderContains('Accounts');
-    });
-  }
-
-  /**
-   * Navigates into Manual Account Creation using the provided home-area selector.
-   * @param linkSelector - Selector for the entry link to click from the Accounts landing page.
-   * @param missingLinkMessage - Log/error message used when the entry link is missing before refresh.
-   * @param afterLinkClick - Optional callback for follow-up navigation after the entry link is clicked.
-   */
-  private navigateToMac(linkSelector: string, missingLinkMessage: string, afterLinkClick?: () => void): void {
-    const clickRoute = () => {
-      cy.get(linkSelector, { timeout: 20_000 }).first().should('be.visible').click({ force: true });
-      if (afterLinkClick) afterLinkClick();
-    };
-
-    const verifyAfterFailedRetry = () => {
-      cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
-        if (this.isOnMacOriginatorPage(pathname)) {
-          log('navigate', 'Navigation link not visible after refresh, but already on originator page');
-          return;
-        }
-
-        throw new Error(
-          `Manual Account Creation navigation failed: "${linkSelector}" was not found after refresh ` +
-            `(path: ${pathname}).`,
-        );
-      });
-    };
-
-    cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
-      if (this.isOnMacOriginatorPage(pathname)) {
-        log('navigate', 'Already on the Manual Account Creation originator page');
-        return;
-      }
-
-      cy.get('body', { timeout: 20_000 })
-        .should('be.visible')
-        .then(($body) => {
-          if ($body.find(linkSelector).length) {
-            clickRoute();
-            return;
-          }
-
-          log('navigate', missingLinkMessage);
-          cy.reload();
-
-          cy.get('body', { timeout: 20_000 })
-            .should('be.visible')
-            .then(($bodyAfterRefresh) => {
-              if ($bodyAfterRefresh.find(linkSelector).length) {
-                clickRoute();
-                return;
-              }
-
-              verifyAfterFailedRetry();
-            });
-        });
-    });
-  }
-
-  /**
-   * Opens Manual Account Creation from the authenticated home area.
+   * Opens Manual Account Creation from the Accounts landing page.
    * @param route - `direct` uses the legacy direct link; `cam` uses Create and Manage Draft Accounts first.
    */
-  openFromAuthenticatedHome(route: 'direct' | 'cam' = 'cam'): void {
-    this.ensureAccountsLandingPage();
-
+  openFromAccountsPage(route: 'direct' | 'cam' = 'cam'): void {
     if (route === 'direct') {
-      log('navigate', 'Opening Manual Account Creation using direct home-area link');
-      this.navigateToMac(
-        DIRECT_MANUAL_ACCOUNT_CREATION_LINK,
-        'Direct Manual Account Creation link not found; refreshing and retrying once',
-      );
+      log('navigate', 'Opening Manual Account Creation using direct Accounts-page link');
+      cy.get(DIRECT_MANUAL_ACCOUNT_CREATION_LINK, { timeout: 20_000 }).should('be.visible').click({ force: true });
       return;
     }
 
     log('navigate', 'Opening Manual Account Creation using Create and Manage Draft Accounts route');
-    this.navigateToMac(
-      CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK,
-      'Create and Manage Draft Accounts link not found; refreshing and retrying once',
-      () => {
-        cy.get(CAM.createAccountButton, { timeout: 20_000 }).should('be.visible').click({ force: true });
-      },
-    );
+    this.createManageDrafts.openPageFromAccounts();
+    this.createManageDrafts.assertOnPage();
+    this.createManageDrafts.clickCreateAccount();
   }
 
   /**

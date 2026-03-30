@@ -9,6 +9,7 @@ import { FixedPenaltyReviewActions } from '../actions/manual-account-creation/fi
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { ManualCreateOrTransferInActions } from '../actions/manual-account-creation/create-transfer.actions';
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
+import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 
 const log = createScopedLogger('FixedPenaltyFlow');
 
@@ -17,6 +18,7 @@ const log = createScopedLogger('FixedPenaltyFlow');
  */
 export class FixedPenaltyFlow {
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
   private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly details = new FixedPenaltyDetailsActions();
@@ -33,8 +35,10 @@ export class FixedPenaltyFlow {
     originatorType: 'New' | 'Transfer in',
   ): void {
     log('flow', 'Starting Fixed Penalty account', { businessUnit, defendantType });
-    this.searchIndividuals.assertAuthenticatedHome();
-    this.createAccount.openFromAuthenticatedHome();
+    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.chooseItem('Accounts');
+    this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
+    this.createAccount.openFromAccountsPage();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType(originatorType);
     this.originatorType.continueToCreateAccount();

@@ -5,9 +5,7 @@
 
 import { SelectBusinessUnitLocators } from '../../../../../shared/selectors/consolidation/SelectBusinessUnit.locators';
 import { AccountSearchLocators } from '../../../../../shared/selectors/consolidation/AccountSearch.locators';
-import { PrimaryNavigationLocators as PN } from '../../../../../shared/selectors/primary-navigation.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
-import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('ConsolidationActions');
 const CONSOLIDATION_LINK = '#finesConsolidationLink';
@@ -17,7 +15,6 @@ type SearchDetails = Record<string, string>;
 
 /** Actions and assertions for the Consolidation flow screens. */
 export class ConsolidationActions {
-  private readonly common = new CommonActions();
   private readonly textFieldSelectorMap: Record<string, string> = {
     'account number': AccountSearchLocators.accountNumberInput,
     'national insurance number': AccountSearchLocators.nationalInsuranceNumberInput,
@@ -47,30 +44,10 @@ export class ConsolidationActions {
   };
 
   /**
-   * Switches the current authenticated home area to the Accounts landing page when needed.
+   * Opens Consolidate accounts from the Accounts landing page.
    */
-  private ensureAccountsLandingPage(): void {
-    cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
-      if (pathname.includes('/fines/dashboard/accounts')) {
-        return;
-      }
-
-      log('navigate', 'Switching to Accounts landing page');
-      cy.contains(`${PN.container} .moj-primary-navigation__link`, 'Accounts', this.common.getTimeoutOptions())
-        .should('be.visible')
-        .click();
-
-      cy.location('pathname', this.common.getPathTimeoutOptions()).should('include', '/fines/dashboard/accounts');
-      this.common.assertHeaderContains('Accounts');
-    });
-  }
-
-  /**
-   * Opens Consolidate accounts from the authenticated home area.
-   */
-  public openFromAuthenticatedHome(): void {
+  public openFromAccountsPage(): void {
     log('navigate', 'Navigating to Consolidate accounts');
-    this.ensureAccountsLandingPage();
     cy.get(CONSOLIDATION_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
     cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/select-business-unit');
     cy.get('h1.govuk-heading-l', { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');

@@ -37,7 +37,7 @@ export class SearchFilterByBUFlow {
    *   3. Open the Business Unit filter via the “Change” link
    *
    * Delegates:
-   *   - AccountSearchIndividualsActions.openSearchFromAuthenticatedHome()
+   *   - AccountSearchIndividualsActions.assertOnSearchLandingPage()
    *   - AccountSearchIndividualsActions.assertDefaultIndividualsActive()
    *   - AccountSearchCommonActions.openBusinessUnitFilter()
    *
@@ -46,7 +46,7 @@ export class SearchFilterByBUFlow {
    */
   navigateToFilterByBusinessUnit(): void {
     log('navigate', 'Go to Account Search from dashboard');
-    this.searchIndividuals.openSearchFromAuthenticatedHome();
+    this.searchIndividuals.assertOnSearchLandingPage();
 
     log('assert', 'Verify Individuals form is active by default');
     this.searchIndividuals.assertDefaultIndividualsActive();

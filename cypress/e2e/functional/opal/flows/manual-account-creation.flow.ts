@@ -66,6 +66,7 @@ import {
   OriginatorType,
 } from '../actions/manual-account-creation/create-transfer.actions';
 import { ManualAccountRequestMonitorActions } from '../actions/manual-account-creation/manual-account-request-monitor.actions';
+import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -132,6 +133,7 @@ type CompositeEntry = {
  */
 export class ManualAccountCreationFlow {
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly accountDetails = new ManualAccountDetailsActions();
@@ -1430,7 +1432,9 @@ export class ManualAccountCreationFlow {
    */
   goToManualAccountCreationFromDashboard(): void {
     log('flow', 'Navigate to Manual Account Creation from dashboard');
-    this.searchIndividuals.assertAuthenticatedHome();
+    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.chooseItem('Accounts');
+    this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
     this.ensureOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -2944,8 +2948,9 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * Ensures the create or transfer in page is loaded.
-   * If currently on Create account, navigates back; otherwise navigates from dashboard.
+   * Ensures the create-or-transfer-in page is loaded from the Accounts landing page.
+   * If we are not already on that page, the flow returns to Accounts via primary navigation
+   * and reopens Manual Account Creation using the deterministic Accounts-page entry.
    */
   private ensureOnCreateOrTransferInPage(): void {
     cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
@@ -2954,7 +2959,9 @@ export class ManualAccountCreationFlow {
         return;
       }
 
-      this.createAccount.openFromAuthenticatedHome();
+      this.primaryNavigation.chooseItem('Accounts');
+      this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
+      this.createAccount.openFromAccountsPage();
       this.originatorType.assertOnCreateOrTransferInPage();
     });
   }

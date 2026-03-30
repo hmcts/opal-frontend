@@ -6,7 +6,6 @@ import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CheckAndValidateDraftsLocators as L } from '../../../../../shared/selectors/manual-account-creation/check-and-validate/check-and-validate.drafts.locators';
 import { CheckAndValidateReviewLocators } from '../../../../../shared/selectors/manual-account-creation/check-and-validate/check-and-validate.review.locators';
 import { DraftAccountsTableLocators } from '../../../../../shared/selectors/draft-accounts-table.locators';
-import { PrimaryNavigationLocators as PN } from '../../../../../shared/selectors/primary-navigation.locators';
 import { DraftAccountsCommonActions } from './draft-accounts-common.actions';
 import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 
@@ -20,32 +19,20 @@ const CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_LINK = '#finesCavCheckerLink';
  */
 export class CheckAndValidateDraftsActions extends DraftAccountsCommonActions {
   /**
-   * Switches the current authenticated home area to the Accounts landing page when needed.
+   * Opens the Check and Validate Draft Accounts page from the Accounts landing page.
    */
-  private ensureAccountsLandingPage(): void {
-    cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
-      if (pathname.includes('/fines/dashboard/accounts')) {
-        return;
-      }
-
-      log('navigate', 'Switching to Accounts landing page');
-      cy.contains(`${PN.container} .moj-primary-navigation__link`, 'Accounts', this.common.getTimeoutOptions())
-        .should('be.visible')
-        .click();
-
-      cy.location('pathname', this.common.getPathTimeoutOptions()).should('include', '/fines/dashboard/accounts');
-      this.common.assertHeaderContains('Accounts');
-    });
+  openPageFromAccounts(): void {
+    log('navigate', 'Opening Check and Validate Draft Accounts');
+    cy.get(CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
+    this.assertOnPage();
   }
 
   /**
-   * Opens the Check and Validate Draft Accounts page from the authenticated home area.
+   * Asserts the Check and Validate Draft Accounts page is displayed.
    */
-  openPage(): void {
-    log('navigate', 'Opening Check and Validate Draft Accounts');
-    this.ensureAccountsLandingPage();
-    cy.get(CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
+  assertOnPage(): void {
     this.common.assertHeaderContains('Review accounts');
+    cy.get(L.tabs.container, this.common.getTimeoutOptions()).should('be.visible');
   }
 
   /**

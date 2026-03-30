@@ -17,6 +17,7 @@ import { GlobalApiInterceptorActions } from '../actions/global-api-interceptor.a
 import { ManualCreateOrTransferInActions } from '../actions/manual-account-creation/create-transfer.actions';
 import { ManualCreateAccountActions } from '../actions/manual-account-creation/create-account.actions';
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
+import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 
 const log = createScopedLogger('GlobalApiInterceptorFlow');
 
@@ -28,6 +29,7 @@ const ACCOUNT_SEARCH_NON_RETRIABLE_HEADER = 'Sorry, there is a problem with the 
 export class GlobalApiInterceptorFlow {
   private readonly actions = new GlobalApiInterceptorActions();
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly common = new CommonActions();
@@ -44,9 +46,11 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithBusinessUnitsError(statusCode: number): void {
     log('flow', 'Opening Manual Account Creation with business units error', { statusCode });
-    this.searchIndividuals.assertAuthenticatedHome();
+    this.searchIndividuals.assertOnSearchLandingPage();
     this.actions.stubBusinessUnitsError(statusCode);
-    this.createAccount.openFromAuthenticatedHome();
+    this.primaryNavigation.chooseItem('Accounts');
+    this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
+    this.createAccount.openFromAccountsPage();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -63,9 +67,11 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithRetriableBusinessUnitsError(statusCode: number): void {
     log('flow', 'Opening Manual Account Creation with retriable business units error', { statusCode });
-    this.searchIndividuals.assertAuthenticatedHome();
+    this.searchIndividuals.assertOnSearchLandingPage();
     this.actions.stubBusinessUnitsRetriableError(statusCode);
-    this.createAccount.openFromAuthenticatedHome();
+    this.primaryNavigation.chooseItem('Accounts');
+    this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
+    this.createAccount.openFromAccountsPage();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -86,9 +92,11 @@ export class GlobalApiInterceptorFlow {
       statusCode,
       expectedHeader,
     });
-    this.searchIndividuals.assertAuthenticatedHome();
+    this.searchIndividuals.assertOnSearchLandingPage();
     this.actions.stubBusinessUnitsNonRetriableError(statusCode);
-    this.createAccount.openFromAuthenticatedHome();
+    this.primaryNavigation.chooseItem('Accounts');
+    this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
+    this.createAccount.openFromAccountsPage();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -104,9 +112,11 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithBusinessUnitsNetworkFailure(): void {
     log('flow', 'Opening Manual Account Creation with business units network failure');
-    this.searchIndividuals.assertAuthenticatedHome();
+    this.searchIndividuals.assertOnSearchLandingPage();
     this.actions.stubBusinessUnitsNetworkFailure();
-    this.createAccount.openFromAuthenticatedHome();
+    this.primaryNavigation.chooseItem('Accounts');
+    this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
+    this.createAccount.openFromAccountsPage();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();

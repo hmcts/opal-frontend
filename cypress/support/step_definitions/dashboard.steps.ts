@@ -26,10 +26,12 @@ import { When } from '@badeball/cypress-cucumber-preprocessor';
 import { ManualCreateAccountActions } from '../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { AccountSearchIndividualsActions } from '../../e2e/functional/opal/actions/search/search.individuals.actions';
 import { ConsolidationActions } from '../../e2e/functional/opal/actions/consolidation/consolidation.actions';
+import { PrimaryNavigationActions } from '../../e2e/functional/opal/actions/primary-navigation.actions';
 
 const createAccount = () => new ManualCreateAccountActions();
 const searchIndividuals = () => new AccountSearchIndividualsActions();
 const consolidation = () => new ConsolidationActions();
+const primaryNavigation = () => new PrimaryNavigationActions();
 
 /**
  * @step Opens the **Manual Account Creation** page via the dashboard.
@@ -44,7 +46,10 @@ const consolidation = () => new ConsolidationActions();
  * ```
  */
 When('I open Manual Account Creation', () => {
-  createAccount().openFromAuthenticatedHome();
+  searchIndividuals().assertOnSearchLandingPage();
+  primaryNavigation().chooseItem('Accounts');
+  primaryNavigation().assertLandingPage('Accounts', '/fines/dashboard/accounts');
+  createAccount().openFromAccountsPage();
 });
 
 /**
@@ -60,7 +65,7 @@ When('I open Manual Account Creation', () => {
  * ```
  */
 When('I open Search for an Account', () => {
-  searchIndividuals().openSearchFromAuthenticatedHome();
+  searchIndividuals().assertOnSearchLandingPage();
 });
 
 /**
@@ -75,5 +80,8 @@ When('I open Search for an Account', () => {
  * ```
  */
 When('I open Consolidate accounts', () => {
-  consolidation().openFromAuthenticatedHome();
+  searchIndividuals().assertOnSearchLandingPage();
+  primaryNavigation().chooseItem('Accounts');
+  primaryNavigation().assertLandingPage('Accounts', '/fines/dashboard/accounts');
+  consolidation().openFromAccountsPage();
 });
