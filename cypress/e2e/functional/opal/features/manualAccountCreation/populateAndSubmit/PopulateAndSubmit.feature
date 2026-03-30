@@ -18,7 +18,7 @@ Feature: Manual account creation - Create Draft Account
   Scenario: Clicking Cancel without entering details returns to the Inputter Dashboard
     When I open Manual Account Creation
     Then I cancel without entering data
-    Then I should be on the dashboard
+    Then I should see the header containing text "Search for an account"
 
   @JIRA-STORY:PO-1448 @JIRA-STORY:PO-1638 @JIRA-STORY:PO-1872 @JIRA-KEY:POT-3126
   Scenario: Mixed creditors offence review shows correct totals and summary

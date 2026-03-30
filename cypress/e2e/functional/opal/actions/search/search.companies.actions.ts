@@ -17,6 +17,9 @@ const log = createScopedLogger('AccountSearchCompanyActions');
 
 /** Actions for the Companies tab within Account Search. */
 export class AccountSearchCompanyActions {
+  /** Canonical dashboard route for the search-first account search journey. */
+  private static readonly SEARCH_PATH = '/fines/dashboard/search';
+
   private readonly accountSearchCommonActions = new AccountSearchCommonActions();
   private readonly commonActions = new CommonActions();
 
@@ -34,8 +37,11 @@ export class AccountSearchCompanyActions {
   public assertRemainsOnSearchFormNoNavigation(): void {
     log('assert', 'Asserting we remain on the Search Companies form (no navigation)');
 
-    // 1) Path check. The canonical search path used elsewhere in the suite.
-    cy.location('pathname', this.commonActions.getTimeoutOptions()).should('include', '/fines/search-accounts/search');
+    // 1) Path check for the search-first landing route.
+    cy.location('pathname', this.commonActions.getTimeoutOptions()).should(
+      'include',
+      AccountSearchCompanyActions.SEARCH_PATH,
+    );
 
     // 2) Ensure Companies search form panel is visible
     if (!L.searchFormRoot) {

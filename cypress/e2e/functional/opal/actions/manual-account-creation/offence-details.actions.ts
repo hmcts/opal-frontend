@@ -8,6 +8,7 @@ import {
 } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { typeAndSelectAutocompleteOption } from '../common/autocomplete.helper';
 
 const log = createScopedLogger('ManualOffenceDetailsActions');
 
@@ -112,12 +113,19 @@ export class ManualOffenceDetailsActions {
     }
 
     log('type', `Setting imposition field ${field}`, { index, value });
-    this.typeAndAssert(selector, value, `${field} (imposition ${index + 1})`);
-
     if (field === 'Result code') {
-      cy.get(L.imposition.resultCodeList(index), this.common.getTimeoutOptions()).should('be.visible');
-      cy.get(L.imposition.resultCodeInput(index)).type('{downarrow}{enter}', { force: true });
+      typeAndSelectAutocompleteOption({
+        inputSelector: selector,
+        listboxSelector: L.imposition.resultCodeList(index),
+        value,
+        label: `${field} (imposition ${index + 1})`,
+        timeoutOptions: this.common.getTimeoutOptions(),
+        typeDelay: 10,
+      });
+      return;
     }
+
+    this.typeAndAssert(selector, value, `${field} (imposition ${index + 1})`);
   }
 
   /**
