@@ -23,7 +23,6 @@ import {
   ManualEmployerFieldKey,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/employer-details.actions';
 import { ManualPaymentTermsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/payment-terms.actions';
-import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard.actions';
 import { log } from '../../utils/log.helper';
 import { ManualAccountDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-details.actions';
 import { ManualAccountTaskNavigationActions } from '../../../e2e/functional/opal/actions/manual-account-creation/task-navigation.actions';
@@ -53,11 +52,12 @@ import { AccountType, ApprovedAccountType } from '../../utils/payloads';
 import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { installDraftAccountCleanup } from 'cypress/support/draftAccounts';
+import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
 const paymentTerms = () => new ManualPaymentTermsActions();
-const dashboard = () => new DashboardActions();
+const home = () => new AccountSearchIndividualsActions();
 const details = () => new ManualAccountDetailsActions();
 const nav = () => new ManualAccountTaskNavigationActions();
 const companyDetails = () => new ManualCompanyDetailsActions();
@@ -76,7 +76,7 @@ installDraftAccountCleanup();
  */
 Then('I should be on the dashboard', () => {
   log('assert', 'Asserting dashboard is visible');
-  dashboard().assertDashboard();
+  home().assertOnSearchLandingPage();
 });
 /**
  * @step Starts a fine manual account with a specific business unit and defendant type.
