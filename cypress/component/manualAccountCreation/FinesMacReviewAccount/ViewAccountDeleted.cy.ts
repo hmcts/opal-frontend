@@ -22,6 +22,10 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from 'src/app/flows/fines/fines-mac/ser
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
   let finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE_DELETE);
@@ -87,7 +91,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
   it(
     '(AC.2,AC.2d) The Reason for Deletion screen will be created as per the design artefact',
-    { tags: ['@PO-603', '@PO-2767'] },
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-STORY:PO-2767', '@JIRA-KEY:POT-4372') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -102,232 +106,264 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     },
   );
 
-  it('AC.3 - should render Delete History section correctly', { tags: ['PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
+  it(
+    'AC.3 - should render Delete History section correctly',
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4373') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
 
-    fetchMap.finesMacDraft.timeline_data.pop();
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'User.testone',
-      status: 'Submitted',
-      status_date: '2025-01-01',
-      reason_text: '',
-    });
+      fetchMap.finesMacDraft.timeline_data.pop();
+      fetchMap.finesMacDraft.timeline_data.push({
+        username: 'User.testone',
+        status: 'Submitted',
+        status_date: '2025-01-01',
+        reason_text: '',
+      });
 
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'Admin.testone',
-      status: 'Deleted',
-      status_date: '2025-01-01',
-      reason_text: 'Missing aliases',
-    });
+      fetchMap.finesMacDraft.timeline_data.push({
+        username: 'Admin.testone',
+        status: 'Deleted',
+        status_date: '2025-01-01',
+        reason_text: 'Missing aliases',
+      });
 
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'User.testone',
-      status: 'Resubmitted',
-      status_date: '2025-01-02',
-      reason_text: '',
-    });
+      fetchMap.finesMacDraft.timeline_data.push({
+        username: 'User.testone',
+        status: 'Resubmitted',
+        status_date: '2025-01-02',
+        reason_text: '',
+      });
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
-    cy.get(DOM_ELEMENTS.timeLine).should('exist');
-    cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
-    cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');
-    cy.get(DOM_ELEMENTS.timelineDate).should('exist');
-    cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
+      cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
+      cy.get(DOM_ELEMENTS.timeLine).should('exist');
+      cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
+      cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');
+      cy.get(DOM_ELEMENTS.timelineDate).should('exist');
+      cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'User.testone');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Resubmitted');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', '');
+      cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'User.testone');
+      cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 January 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Resubmitted');
+      cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', '');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin.testone');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Deleted');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'Missing aliases');
+      cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin.testone');
+      cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 January 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Deleted');
+      cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'Missing aliases');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(2).should('contain.text', 'User.testone');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(2).should('contain.text', '01 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Submitted');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
-  });
+      cy.get(DOM_ELEMENTS.timelineAuthor).eq(2).should('contain.text', 'User.testone');
+      cy.get(DOM_ELEMENTS.timelineDate).eq(2).should('contain.text', '01 January 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Submitted');
+      cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
+    },
+  );
 
-  it('AC.2,4 should render summary tables under review account for AY', { tags: ['@PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
+  it(
+    'AC.2,4 should render summary tables under review account for AY',
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4374') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#personal-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#employer-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#personal-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#employer-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
 
-    cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
-    cy.get('#company-details-summary-card-list').should('not.exist');
-    cy.get('#defendant-details-summary-card-list').should('not.exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
+      cy.get('#company-details-summary-card-list').should('not.exist');
+      cy.get('#defendant-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
 
-  it('(AC2,.5) should render all elements on the screen for AYPG', { tags: ['@PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+  it(
+    '(AC2,.5) should render all elements on the screen for AYPG',
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4375') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#defendant-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#employer-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
-    cy.get('#parent-guardian-details-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#defendant-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#employer-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('exist');
 
-    cy.get('#company-details-summary-card-list').should('not.exist');
-    cy.get('#personal-details-summary-card-list').should('not.exist');
+      cy.get('#company-details-summary-card-list').should('not.exist');
+      cy.get('#personal-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
 
-  it('(AC.6) should render all elements on the screen for company defendant type', { tags: ['@PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+  it(
+    '(AC.6) should render all elements on the screen for company defendant type',
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4376') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'test company');
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'test company');
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#company-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#company-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
 
-    cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
-    cy.get('#personal-details-summary-card-list').should('not.exist');
-    cy.get('#employer-details-summary-card-list').should('not.exist');
-    cy.get('#defendant-details-summary-card-list').should('not.exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
+      cy.get('#personal-details-summary-card-list').should('not.exist');
+      cy.get('#employer-details-summary-card-list').should('not.exist');
+      cy.get('#defendant-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
-  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
-    fetchMap.finesMacState.businessUnit.welsh_language = true;
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
+  it(
+    'AC4ai - should show language preferences if business unit is welsh speaking - AY',
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4377') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+      fetchMap.finesMacState.businessUnit.welsh_language = true;
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-  });
-  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG', { tags: ['PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
-    fetchMap.finesMacState.businessUnit.welsh_language = true;
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+    },
+  );
+  it(
+    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4378') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+      fetchMap.finesMacState.businessUnit.welsh_language = true;
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-  });
-  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP', { tags: ['PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
-    fetchMap.finesMacState.businessUnit.welsh_language = true;
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+    },
+  );
+  it(
+    'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4379') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+      fetchMap.finesMacState.businessUnit.welsh_language = true;
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+    },
+  );
 
-  it('AC.7 - should show em-dash for empty values', { tags: ['PO-603'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Deleted';
-    fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
+  it(
+    'AC.7 - should show em-dash for empty values',
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4380') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Deleted';
+      fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
 
-    fetchMap.finesMacState.offenceDetails.push({
-      formData: {
-        fm_offence_details_date_of_sentence: getToday(),
-        fm_offence_details_impositions: [
+      fetchMap.finesMacState.offenceDetails.push({
+        formData: {
+          fm_offence_details_date_of_sentence: getToday(),
+          fm_offence_details_impositions: [
+            {
+              fm_offence_details_imposition_id: 0,
+              fm_offence_details_result_id: 'FCOST',
+              fm_offence_details_amount_imposed: 400,
+              fm_offence_details_amount_paid: 50,
+              fm_offence_details_balance_remaining: 350,
+              fm_offence_details_needs_creditor: true,
+              fm_offence_details_creditor: 'minor',
+              fm_offence_details_major_creditor_id: null,
+            },
+          ],
+          fm_offence_details_id: 1,
+          fm_offence_details_offence_cjs_code: 'AK123456',
+          fm_offence_details_offence_id: 123,
+        },
+        nestedFlow: false,
+        childFormData: [
           {
-            fm_offence_details_imposition_id: 0,
-            fm_offence_details_result_id: 'FCOST',
-            fm_offence_details_amount_imposed: 400,
-            fm_offence_details_amount_paid: 50,
-            fm_offence_details_balance_remaining: 350,
-            fm_offence_details_needs_creditor: true,
-            fm_offence_details_creditor: 'minor',
-            fm_offence_details_major_creditor_id: null,
+            formData: {
+              fm_offence_details_imposition_position: 0,
+              fm_offence_details_minor_creditor_creditor_type: 'individual',
+              fm_offence_details_minor_creditor_title: 'Mr',
+              fm_offence_details_minor_creditor_forenames: 'James',
+              fm_offence_details_minor_creditor_surname: 'LNAME',
+              fm_offence_details_minor_creditor_company_name: null,
+              fm_offence_details_minor_creditor_address_line_1: '1 Testing Lane',
+              fm_offence_details_minor_creditor_address_line_2: 'Test Town',
+              fm_offence_details_minor_creditor_address_line_3: 'Testing',
+              fm_offence_details_minor_creditor_post_code: 'TE12 3ST',
+              fm_offence_details_minor_creditor_pay_by_bacs: false,
+              fm_offence_details_minor_creditor_bank_account_name: 'John Doe',
+              fm_offence_details_minor_creditor_bank_sort_code: '123456',
+              fm_offence_details_minor_creditor_bank_account_number: '12345678',
+              fm_offence_details_minor_creditor_bank_account_ref: 'Testing',
+            },
+            nestedFlow: false,
           },
         ],
-        fm_offence_details_id: 1,
-        fm_offence_details_offence_cjs_code: 'AK123456',
-        fm_offence_details_offence_id: 123,
-      },
-      nestedFlow: false,
-      childFormData: [
-        {
-          formData: {
-            fm_offence_details_imposition_position: 0,
-            fm_offence_details_minor_creditor_creditor_type: 'individual',
-            fm_offence_details_minor_creditor_title: 'Mr',
-            fm_offence_details_minor_creditor_forenames: 'James',
-            fm_offence_details_minor_creditor_surname: 'LNAME',
-            fm_offence_details_minor_creditor_company_name: null,
-            fm_offence_details_minor_creditor_address_line_1: '1 Testing Lane',
-            fm_offence_details_minor_creditor_address_line_2: 'Test Town',
-            fm_offence_details_minor_creditor_address_line_3: 'Testing',
-            fm_offence_details_minor_creditor_post_code: 'TE12 3ST',
-            fm_offence_details_minor_creditor_pay_by_bacs: false,
-            fm_offence_details_minor_creditor_bank_account_name: 'John Doe',
-            fm_offence_details_minor_creditor_bank_sort_code: '123456',
-            fm_offence_details_minor_creditor_bank_account_number: '12345678',
-            fm_offence_details_minor_creditor_bank_account_ref: 'Testing',
-          },
-          nestedFlow: false,
-        },
-      ],
-    });
-    setupComponent(fetchMap);
+      });
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
 
-    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
 
-    cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
-  });
+      cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
+    },
+  );
 });

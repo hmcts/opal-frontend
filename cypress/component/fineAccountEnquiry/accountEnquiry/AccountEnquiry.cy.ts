@@ -82,7 +82,7 @@
 // //Needs deleting this was just an example file
 
 // // describe('Account Enquiry Component', () => {
-// //   it('should mount the component', { tags: ['@PO-784'] }, () => {
+// //   it('should mount the component', { tags: ['@JIRA-STORY:PO-784'] }, () => {
 // //     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
 
 // //     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);

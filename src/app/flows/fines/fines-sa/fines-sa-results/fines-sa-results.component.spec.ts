@@ -10,6 +10,8 @@ import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-se
 import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -115,7 +117,7 @@ describe('FinesSaResultsComponent', () => {
     router.serializeUrl.mockReturnValue(mockUrl);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(window, 'open');
+    vi.spyOn<any, any>(globalThis, 'open');
     component.onAccountIdClick(1);
 
     expect(router.serializeUrl).toHaveBeenCalled();
@@ -268,10 +270,17 @@ describe('FinesSaResultsComponent', () => {
 
     component.navigateBackToSearch();
 
-    expect(router.navigate).toHaveBeenCalledWith([component['finesSaSearchRoutingPaths'].root], {
-      relativeTo: component['activatedRoute'].parent,
-      fragment: 'individuals',
-    });
+    expect(router.navigate).toHaveBeenCalledWith(
+      [
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.children.search,
+      ],
+      {
+        fragment: 'individuals',
+      },
+    );
   });
 
   it('should return mapped individual defendant data with aliases', () => {

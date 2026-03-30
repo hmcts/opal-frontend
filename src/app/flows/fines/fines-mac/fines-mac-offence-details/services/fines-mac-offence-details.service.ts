@@ -7,7 +7,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class FinesMacOffenceDetailsService {
   public utilsService = inject(UtilsService);
