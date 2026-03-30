@@ -100,7 +100,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
     cy.get(AccountResultsLocators.invalidResultsBody)
       .invoke('text')
       .then((text) => {
-        expect(normaliseText(text)).to.equal('Check your search and try again');
+        expect(normaliseText(text)).to.equal('Check your search and try again.');
       });
     cy.get(AccountResultsLocators.invalidResultsLink).should('contain', 'Check your search');
   };
@@ -108,11 +108,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
   const assertTooManyResultsState = (defendantType: 'Individual' | 'Company' = 'Individual') => {
     assertResultsTabSummary(defendantType);
     cy.get(AccountResultsLocators.resultsTable).should('not.exist');
-    cy.get(AccountResultsLocators.invalidResultsHeading).should('contain', 'There are more than 100 results');
+    cy.get(AccountResultsLocators.invalidResultsHeading).should('contain', 'There are more than 100 results.');
     cy.get(AccountResultsLocators.invalidResultsBody)
       .invoke('text')
       .then((text) => {
-        expect(normaliseText(text)).to.equal('Try adding more information to your search');
+        expect(normaliseText(text)).to.equal('Try adding more information to your search.');
       });
     cy.get(AccountResultsLocators.invalidResultsLink).should('contain', 'Try adding more information');
   };
