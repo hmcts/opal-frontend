@@ -3,7 +3,8 @@
  * @description Cypress configuration, plugin wiring, and reporting setup for Opal.
  */
 import { defineConfig } from 'cypress';
-import webpack from '@cypress/webpack-preprocessor';
+import { mergeZephyrReports, cleanZephyrReports } from '@hmcts/zephyr-automation-nodejs';
+
 import {
   addCucumberPreprocessorPlugin,
   beforeRunHandler,
@@ -21,6 +22,12 @@ import {
   releaseEvidenceResetLock,
 } from './cypress/support/tasks/accountCaptureTask';
 import { cleanupEmptyScreenshotDirs, registerScreenshotTasks } from './cypress/support/tasks/screenshotTask';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+
+const resolveBrowserToRun = (): string => (process.env.BROWSER_TO_RUN || 'edge').trim().toLowerCase();
+const resolvedBrowserToRun = resolveBrowserToRun();
 
 /**
  * Register browser launch hooks to standardize window size in headless runs.
@@ -111,7 +118,7 @@ async function setupNodeEvents(
 
   on(
     'file:preprocessor',
-    webpack({
+    webpackPreprocessor({
       webpackOptions: {
         // IMPORTANT: use a valid sourcemap mode, not false,
         // to avoid broken Base64 / "length must be multiple of 4" errors.
@@ -201,13 +208,17 @@ async function setupNodeEvents(
     return afterScreenshotHandler(config, details);
   });
 
-  // messagesOutput logic (unchanged)
-  if (process.env.TEST_MODE === 'OPAL' && process.env.BROWSER_TO_RUN === 'chrome') {
-    config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
-  } else if (process.env.TEST_MODE === 'OPAL' && process.env.BROWSER_TO_RUN !== 'chrome') {
-    config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/${process.env.BROWSER_TO_RUN}/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
+  const browserToRun = resolveBrowserToRun();
+  const testStage = (process.env.TEST_STAGE || '').trim().toLowerCase();
+
+  // OPAL runs keep browser-specific artifacts for all browsers and stages.
+  if (process.env.TEST_MODE === 'OPAL') {
+    const baseOutputDir = `${process.env.TEST_STAGE}-output/prod/${browserToRun}`;
+    config.env.messagesOutput = `${baseOutputDir}/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   } else if (process.env.TEST_MODE === 'LEGACY') {
-    config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/legacy/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
+    config.env.messagesOutput =
+      `${process.env.TEST_STAGE}-output/prod/${browserToRun}/legacy/cucumber/` +
+      `${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   }
 
   return config;
@@ -217,8 +228,8 @@ export default defineConfig({
   viewportWidth: 2560,
   viewportHeight: 2560,
   reporter: 'junit',
-  // Keep failure screenshots in the default functional output location.
-  screenshotsFolder: 'functional-output/screenshots/opal',
+  // Keep failure screenshots in a browser-specific output location by default.
+  screenshotsFolder: `functional-output/screenshots/${resolvedBrowserToRun}`,
 
   e2e: {
     baseUrl: process.env.TEST_URL || 'http://localhost:4000/',
@@ -270,13 +281,14 @@ export default defineConfig({
     specPattern: 'cypress/component/**/*.cy.ts',
     reporter: 'cypress-multi-reporters',
     reporterOptions: {
-      reporterEnabled: 'cypress-mochawesome-reporter, mocha-junit-reporter',
+      reporterEnabled:
+        'cypress-mochawesome-reporter, mocha-junit-reporter, @hmcts/zephyr-automation-nodejs/cypress/ZephyrReporter',
       mochaJunitReporterReporterOptions: {
-        mochaFile: 'functional-output/prod/component-test-output-[hash].xml',
+        mochaFile: `functional-output/prod/${resolvedBrowserToRun}/component/component-test-output-[hash].xml`,
         toConsole: false,
       },
       cypressMochawesomeReporterReporterOptions: {
-        reportDir: 'functional-output/component-report',
+        reportDir: `functional-output/component-report/${resolvedBrowserToRun}`,
         overwrite: false,
         html: false,
         json: true,
@@ -296,6 +308,17 @@ export default defineConfig({
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       require('cypress-mochawesome-reporter/plugin')(on);
 
+      on('before:run', () => {
+        cleanZephyrReports({
+          rootDir: 'functional-output',
+        });
+      });
+      on('after:run', () => {
+        mergeZephyrReports({
+          rootDir: 'functional-output',
+          dedupe: true,
+        });
+      });
       config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
       return config;
     },
