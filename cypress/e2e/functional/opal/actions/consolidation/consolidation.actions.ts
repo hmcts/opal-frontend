@@ -350,7 +350,7 @@ export class ConsolidationActions {
       .invoke('text')
       .then((text) => {
         const normalisedText = text.replace(/\s+/g, ' ').trim();
-        expect(normalisedText).to.equal('Check your search and try again');
+        expect(normalisedText).to.equal('Check your search and try again.');
       });
     cy.contains(AccountResultsLocators.invalidResultsLink, 'Check your search', { timeout: 10_000 }).should(
       'be.visible',
