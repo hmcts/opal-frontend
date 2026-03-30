@@ -10,6 +10,23 @@
       }
     </opal-lib-moj-header-navigation-item>
   </opal-lib-moj-header>
+  @if (globalStore.authenticated() && globalStore.userState().status === 'active') {
+    <opal-lib-moj-primary-navigation
+      primaryNavigationId="primaryNavigation"
+      [useFragmentNavigation]="false"
+      (navigationItemSelected)="onPrimaryNavSelected($event)"
+    >
+      @for (navigationItem of navigationItems; track navigationItem.key) {
+        <li
+          opal-lib-moj-primary-navigation-item
+          [primaryNavigationItemId]="navigationItem.key"
+          [primaryNavigationItemFragment]="navigationItem.key"
+          [activeItemFragment]="activeNavigationItem()"
+          [primaryNavigationItemText]="navigationItem.value"
+        ></li>
+      }
+    </opal-lib-moj-primary-navigation>
+  }
 
   <div class="content-wrapper">
     <div class="govuk-width-container">
