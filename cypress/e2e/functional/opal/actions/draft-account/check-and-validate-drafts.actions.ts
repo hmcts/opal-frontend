@@ -19,6 +19,9 @@ const CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_LINK = '#finesCavCheckerLink';
  * Actions for the **Check and Validate Draft Accounts** page (checker view).
  */
 export class CheckAndValidateDraftsActions extends DraftAccountsCommonActions {
+  /**
+   * Switches the current authenticated home area to the Accounts landing page when needed.
+   */
   private ensureAccountsLandingPage(): void {
     cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
       if (pathname.includes('/fines/dashboard/accounts')) {

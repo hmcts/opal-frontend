@@ -16,6 +16,9 @@ const CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK = '#finesCavInputterLink';
  * Actions for the **Create and Manage Draft Accounts** page (inputter view).
  */
 export class CreateManageDraftsActions extends DraftAccountsCommonActions {
+  /**
+   * Switches the current authenticated home area to the Accounts landing page when needed.
+   */
   private ensureAccountsLandingPage(): void {
     cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
       if (pathname.includes('/fines/dashboard/accounts')) {

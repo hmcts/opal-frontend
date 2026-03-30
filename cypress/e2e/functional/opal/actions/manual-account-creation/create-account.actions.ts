@@ -24,10 +24,18 @@ export type DefendantType =
 export class ManualCreateAccountActions {
   private readonly common = new CommonActions();
 
+  /**
+   * Checks whether the current route is already inside the MAC originator step.
+   * @param pathname - Current browser pathname.
+   * @returns True when the pathname already points at the create/transfer originator route.
+   */
   private isOnMacOriginatorPage(pathname: string): boolean {
     return pathname.includes('/originator-type') || pathname.includes('/create-or-transfer-in');
   }
 
+  /**
+   * Switches the current authenticated home area to the Accounts landing page when needed.
+   */
   private ensureAccountsLandingPage(): void {
     cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
       if (pathname.includes('/fines/dashboard/accounts')) {
@@ -44,6 +52,12 @@ export class ManualCreateAccountActions {
     });
   }
 
+  /**
+   * Navigates into Manual Account Creation using the provided home-area selector.
+   * @param linkSelector - Selector for the entry link to click from the Accounts landing page.
+   * @param missingLinkMessage - Log/error message used when the entry link is missing before refresh.
+   * @param afterLinkClick - Optional callback for follow-up navigation after the entry link is clicked.
+   */
   private navigateToMac(linkSelector: string, missingLinkMessage: string, afterLinkClick?: () => void): void {
     const clickRoute = () => {
       cy.get(linkSelector, { timeout: 20_000 }).first().should('be.visible').click({ force: true });

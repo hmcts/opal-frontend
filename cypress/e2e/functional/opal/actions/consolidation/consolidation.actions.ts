@@ -46,6 +46,9 @@ export class ConsolidationActions {
     'include aliases': AccountSearchLocators.companyIncludeAliasesCheckbox,
   };
 
+  /**
+   * Switches the current authenticated home area to the Accounts landing page when needed.
+   */
   private ensureAccountsLandingPage(): void {
     cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
       if (pathname.includes('/fines/dashboard/accounts')) {
