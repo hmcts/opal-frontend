@@ -30,7 +30,7 @@ export const AccountEnquiryResultsLocators = {
 
   /** Elements that exist at the page level (outside the table). */
   page: {
-    /** The main page heading (e.g., “Search results”). */
+    /** The main page heading (for example, "Search results"). */
     heading: 'h1.govuk-heading-l',
 
     /** Back link to return to the Account Search page. */
@@ -56,17 +56,20 @@ export const AccountEnquiryResultsLocators = {
 
   /** Root, head, body, and row selectors for the results table. */
   table: {
-    /** Root table element inside its wrapper component. */
-    root: 'table.govuk-table',
+    /** Root results wrapper for defendant/company result tables. */
+    root: 'app-fines-sa-results-defendant-table-wrapper, app-fines-sa-results-minor-creditor-table-wrapper',
 
-    /** Table head (sortable columns). */
-    head: 'table.govuk-table thead',
+    /** Sortable table host rendered inside the results wrapper. */
+    sortableTable: 'opal-lib-moj-sortable-table',
 
-    /** Table body containing all result rows. */
-    body: 'table.govuk-table tbody',
+    /** Header cells rendered by the sortable table component. */
+    head: 'opal-lib-moj-sortable-table th[opal-lib-moj-sortable-table-header]',
 
-    /** All visible result rows within the table body. */
-    rows: 'table.govuk-table tbody > tr.govuk-table__row',
+    /** Row container elements rendered by the sortable table component. */
+    body: 'opal-lib-moj-sortable-table tr[opal-lib-moj-sortable-table-row]',
+
+    /** All visible result rows within the rendered results wrapper. */
+    rows: 'opal-lib-moj-sortable-table tr[opal-lib-moj-sortable-table-row]',
   },
 
   // ──────────────────────────────

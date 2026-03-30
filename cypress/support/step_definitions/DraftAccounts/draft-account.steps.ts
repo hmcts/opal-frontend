@@ -50,6 +50,8 @@ import { DraftAccountsFlow } from '../../../e2e/functional/opal/flows/draft-acco
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { convertDataTableToNestedObject } from '../../utils/table';
 import { captureSignedInUserEmail } from 'cypress/e2e/functional/opal/actions/login.actions';
+import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
+import { PrimaryNavigationActions } from '../../../e2e/functional/opal/actions/primary-navigation.actions';
 
 type AccountType = DraftPayloadType;
 type DraftOverrideValue =
@@ -69,6 +71,8 @@ const checkerReview = () => new CheckAndValidateReviewActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const draftsFlow = () => new DraftAccountsFlow();
 const tabs = () => new DraftTabsActions();
+const searchIndividuals = () => new AccountSearchIndividualsActions();
+const primaryNavigation = () => new PrimaryNavigationActions();
 const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 
 /**
@@ -651,7 +655,10 @@ Given('I clear all approved accounts', () => {
  */
 When('I open Create and Manage Draft Accounts', () => {
   log('navigate', 'Opening Create and Manage Draft Accounts');
-  inputter().openPage();
+  searchIndividuals().assertOnSearchLandingPage();
+  primaryNavigation().chooseItem('Accounts');
+  primaryNavigation().assertLandingPage('Accounts', '/fines/dashboard/accounts');
+  inputter().openPageFromAccounts();
 });
 
 /**

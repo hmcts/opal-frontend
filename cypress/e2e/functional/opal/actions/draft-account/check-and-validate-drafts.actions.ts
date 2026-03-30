@@ -12,11 +12,29 @@ import { applyUniqPlaceholder } from '../../../../../support/utils/stringUtils';
 export type CheckAndValidateTab = 'To review' | 'Rejected' | 'Deleted' | 'Failed';
 
 const log = createScopedLogger('CheckAndValidateDraftsActions');
+const CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_LINK = '#finesCavCheckerLink';
 
 /**
  * Actions for the **Check and Validate Draft Accounts** page (checker view).
  */
 export class CheckAndValidateDraftsActions extends DraftAccountsCommonActions {
+  /**
+   * Opens the Check and Validate Draft Accounts page from the Accounts landing page.
+   */
+  openPageFromAccounts(): void {
+    log('navigate', 'Opening Check and Validate Draft Accounts');
+    cy.get(CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
+    this.assertOnPage();
+  }
+
+  /**
+   * Asserts the Check and Validate Draft Accounts page is displayed.
+   */
+  assertOnPage(): void {
+    this.common.assertHeaderContains('Review accounts');
+    cy.get(L.tabs.container, this.common.getTimeoutOptions()).should('be.visible');
+  }
+
   /**
    * Switches to the specified checker tab.
    * @param tab - Tab name (To review | Rejected | Deleted | Failed)
