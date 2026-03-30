@@ -37,7 +37,8 @@ const primaryNavigation = () => new PrimaryNavigationActions();
  * @step Opens the **Manual Account Creation** page via the dashboard.
  *
  * @details
- * - Calls `ManualCreateAccountActions.openFromAuthenticatedHome()` internally.
+ * - Asserts the Search landing page, navigates to Accounts, and then calls
+ *   `ManualCreateAccountActions.openFromAccountsPage()`.
  * - Typically used at the start of scenarios that create new accounts.
  *
  * @example
@@ -56,8 +57,8 @@ When('I open Manual Account Creation', () => {
  * @step Opens the **Search for an Account** page via the dashboard.
  *
  * @details
- * - Calls `AccountSearchIndividualsActions.openSearchFromAuthenticatedHome()` internally.
- * - Useful for scenarios that need to land on Account Search from the dashboard.
+ * - Asserts the Search landing page is already displayed.
+ * - Useful for scenarios that need to confirm they are on Account Search.
  *
  * @example
  * ```gherkin
@@ -72,7 +73,8 @@ When('I open Search for an Account', () => {
  * @step Opens the **Consolidate accounts** page via the dashboard.
  *
  * @details
- * - Calls `ConsolidationActions.openFromAuthenticatedHome()` internally.
+ * - Asserts the Search landing page, navigates to Accounts, and then calls
+ *   `ConsolidationActions.openFromAccountsPage()`.
  *
  * @example
  * ```gherkin

@@ -7,10 +7,10 @@
 
 import { AccountSearchIndividualsLocators as L } from '../../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
-import { PrimaryNavigationLocators as PN } from '../../../../../shared/selectors/primary-navigation.locators';
 import { ResultsActions } from './search.results.actions';
 import { CommonActions } from '../common/common.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { PrimaryNavigationActions } from '../primary-navigation.actions';
 
 const log = createScopedLogger('AccountSearchIndividualsActions');
 const AUTHENTICATED_HOME_USERNAME = '.govuk-grid-column-two-thirds ul li span';
@@ -19,6 +19,7 @@ const AUTHENTICATED_HOME_USERNAME = '.govuk-grid-column-two-thirds ul li span';
 export class AccountSearchIndividualsActions {
   private readonly results = new ResultsActions();
   private readonly common = new CommonActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
 
   /**
    * Asserts the authenticated landing page is the Search route.
@@ -43,10 +44,7 @@ export class AccountSearchIndividualsActions {
    */
   public openSearchFromAccountsPage(): void {
     log('navigate', 'Navigating to Search for an Account from Accounts');
-    cy.contains(`${PN.container} .moj-primary-navigation__link`, 'Search', this.common.getTimeoutOptions())
-      .should('be.visible')
-      .click();
-
+    this.primaryNavigation.chooseItem('Search');
     this.assertOnSearchLandingPage();
   }
 

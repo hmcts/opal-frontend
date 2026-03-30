@@ -1261,7 +1261,7 @@ export class AccountSearchFlow {
    * - Delegates the actual DOM interaction to CommonActions.clickHmctsHomeLink(),
    *   which owns all locator logic for the HMCTS brand link.
    * - Asserts that the dashboard is displayed after navigation via
-   *   AccountSearchIndividualsActions.assertAuthenticatedHome().
+   *   AccountSearchIndividualsActions.assertOnSearchLandingPage().
    *
    * Notes:
    * - Flow method is intentionally small to satisfy Sonar and keep responsibilities clear.

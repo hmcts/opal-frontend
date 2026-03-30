@@ -829,7 +829,8 @@ Then('I see there are no matching results and I check my search', () => {
  *
  * Behaviour:
  *   - Uses CommonActions.clickHmctsHomeLink() to perform the navigation.
- *   - Verifies arrival on the authenticated home landing using AccountSearchIndividualsActions.assertAuthenticatedHome().
+ *   - Verifies arrival on the Search landing page using
+ *     AccountSearchIndividualsActions.assertOnSearchLandingPage().
  *   - Does not alter any search state (navigation only).
  *
  * Example:
