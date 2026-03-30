@@ -3,6 +3,7 @@ import { finesSaFlowStateGuard } from './fines-sa-flow-state.guard';
 import { FinesSaStore } from '../../stores/fines-sa.store';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_SA_ROUTING_PATHS } from '../../routing/constants/fines-sa-routing-paths.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../../constants/fines-dashboard-routing-paths.constant';
 import { FinesSaStoreType } from '../../stores/types/fines-sa.type';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../../fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
 import { getGuardWithDummyUrl } from '@hmcts/opal-frontend-common/guards/helpers';
@@ -19,8 +20,8 @@ describe('finesSaFlowStateGuard', () => {
   let mockRouter: any;
   let mockFinesSaStore: FinesSaStoreType;
 
-  const urlPath = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.sa.root}/${FINES_SA_ROUTING_PATHS.children.search}`;
-  const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.sa.root}/${FINES_SA_ROUTING_PATHS.children.search}`;
+  const urlPath = `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}/${FINES_SA_ROUTING_PATHS.children.results}`;
+  const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.search}`;
 
   beforeEach(() => {
     mockRouter = createSpyObj(finesSaFlowStateGuard, ['navigate', 'createUrlTree', 'parseUrl']);

@@ -8,6 +8,7 @@ import { AccountSearchLocators } from '../../../../../shared/selectors/consolida
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('ConsolidationActions');
+const CONSOLIDATION_LINK = '#finesConsolidationLink';
 
 export type ConsolidationDefendantType = 'Individual' | 'Company';
 type SearchDetails = Record<string, string>;
@@ -41,6 +42,16 @@ export class ConsolidationActions {
     'search exact match': AccountSearchLocators.companyNameExactMatchCheckbox,
     'include aliases': AccountSearchLocators.companyIncludeAliasesCheckbox,
   };
+
+  /**
+   * Opens Consolidate accounts from the Accounts landing page.
+   */
+  public openFromAccountsPage(): void {
+    log('navigate', 'Navigating to Consolidate accounts');
+    cy.get(CONSOLIDATION_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/consolidation/select-business-unit');
+    cy.get('h1.govuk-heading-l', { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');
+  }
 
   /**
    * Normalizes supported checkbox text values to booleans.

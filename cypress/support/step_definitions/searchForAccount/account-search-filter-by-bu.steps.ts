@@ -25,7 +25,7 @@ const searchCommonActions = new AccountSearchCommonActions();
  *       Business Units → Filter-by-Business-Unit page.
  * @precondition User is authenticated (via background step).
  * @details Delegates to:
- *          - DashboardActions.goToAccountSearch()
+ *          - AccountSearchIndividualsActions.openSearchFromAuthenticatedHome()
  *          - AccountSearchIndividualsActions.assertDefaultIndividualsActive()
  *          - AccountSearchCommonActions.openBusinessUnitFilter()
  * @example
