@@ -39,7 +39,7 @@ const formatName = (surname: string | null, forenames: string | null): string | 
 /**
  * Sorts aliases by alias number and formats each alias on a new line.
  */
-const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null): string | null => {
+const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null, isOrganisation: boolean): string | null => {
   if (!aliases?.length) {
     return null;
   }
@@ -49,7 +49,13 @@ const formatAliases = (aliases: IOpalFinesDefendantAccountAlias[] | null): strin
   );
 
   const aliasText = orderedAliases
-    .map((alias) => formatName(alias.surname, alias.forenames))
+    .map((alias) => {
+      if (isOrganisation) {
+        return alias.organisation_name?.trim() || null;
+      }
+
+      return formatName(alias.surname, alias.forenames);
+    })
     .filter((alias): alias is string => alias !== null);
 
   return aliasText.length > 0 ? aliasText.join('\n') : null;
@@ -160,16 +166,20 @@ export const mapDefendantAccounts = (
 ): IFinesConSearchResultDefendantTableWrapperTableData[] => {
   return defendantAccounts.map((defendantAccount) => {
     const account = defendantAccount as IFinesConPayloadRawDefendantAccount;
+    const organisationName = account.organisation_name ?? account.organisationName ?? null;
+    const isOrganisation = (account.organisation_flag ?? account.organisationFlag) === true || !!organisationName;
 
     return {
       ...FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY,
       'Account ID': normaliseAccountId(account.defendant_account_id ?? account.defendantAccountId ?? null),
       Account: account.account_number ?? account.accountNumber ?? null,
-      Name: formatName(
-        account.defendant_surname ?? account.defendantSurname ?? null,
-        account.defendant_firstnames ?? account.defendantFirstnames ?? null,
-      ),
-      Aliases: formatAliases(account.aliases),
+      Name: isOrganisation
+        ? organisationName
+        : formatName(
+            account.defendant_surname ?? account.defendantSurname ?? null,
+            account.defendant_firstnames ?? account.defendantFirstnames ?? null,
+          ),
+      Aliases: formatAliases(account.aliases, isOrganisation),
       'Date of birth': account.birth_date ?? account.birthDate ?? null,
       'Address line 1': account.address_line_1 ?? account.addressLine1 ?? null,
       Postcode: account.postcode ?? account.postCode ?? null,

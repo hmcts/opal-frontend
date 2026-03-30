@@ -12,6 +12,7 @@ import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK } from './mo
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FALSEY_VALUES_MOCK } from './mocks/fines-con-search-result-defendant-accounts-falsey-values.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_WITH_CHECKS_MOCK } from './mocks/fines-con-search-result-defendant-accounts-with-checks.mock';
 import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_RESPONSE_MOCK } from './mocks/fines-con-search-result-defendant-accounts-response.mock';
+import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK } from './mocks/fines-con-search-result-defendant-accounts-company-formatting.mock';
 
 describe('FinesConSearchResultComponent', () => {
   let component: FinesConSearchResultComponent;
@@ -100,6 +101,26 @@ describe('FinesConSearchResultComponent', () => {
 
     expect(component.tableData[0]['CO']).toBe('-');
     expect(component.tableData[0]['P/G']).toBe('-');
+  });
+
+  it('should map company defendant accounts with organisation fields', () => {
+    component.defendantType = 'company';
+    component.defendantAccounts = FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK;
+
+    expect(component.tableData).toEqual([
+      expect.objectContaining({
+        'Account ID': 21,
+        Account: 'COMP001',
+        Name: 'Acme Corporation',
+        Aliases: 'Alpha Ltd\nBravo Ltd',
+        'Address line 1': '21 Company Street',
+        Postcode: 'CO1 2MP',
+        CO: 'Y',
+        ENF: 'distress',
+        Balance: 520.5,
+        Ref: 'COMP-REF-1',
+      }),
+    ]);
   });
 
   it('should open account details in a new tab', () => {
@@ -213,8 +234,7 @@ describe('FinesConSearchResultComponent', () => {
     ]);
   });
 
-  it('should log and not display results when more than 100 results are provided', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  it('should set tooManyResults state and not display table when more than 100 results are provided', () => {
     const defendantAccounts = Array.from({ length: 101 }, (_, index) => ({
       defendant_account_id: index + 1,
       account_number: `ACC-${index + 1}`,
@@ -226,9 +246,33 @@ describe('FinesConSearchResultComponent', () => {
     fixture.detectChanges();
 
     expect(component.tableData).toHaveLength(0);
+    expect(component.defendantAccountsData).toHaveLength(101);
+    expect(component.checksByAccountId).toEqual({});
+    expect(component.invalidResultsState).toBe('tooManyResults');
+  });
+
+  it('should set noResults state when no accounts are provided', () => {
+    component.defendantAccounts = [];
+
+    expect(component.tableData).toHaveLength(0);
     expect(component.defendantAccountsData).toHaveLength(0);
     expect(component.checksByAccountId).toEqual({});
-    expect(logSpy).toHaveBeenCalledWith('more than 100 results');
+    expect(component.invalidResultsState).toBe('noResults');
+  });
+
+  it('should set table state when result set is valid', () => {
+    component.defendantAccounts = FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK;
+
+    expect(component.tableData.length).toBeGreaterThan(0);
+    expect(component.invalidResultsState).toBe('none');
+  });
+
+  it('should emit navigateToSearch when navigateBackToSearch is called', () => {
+    const navigateToSearchSpy = vi.spyOn(component.navigateToSearch, 'emit');
+
+    component.navigateBackToSearch();
+
+    expect(navigateToSearchSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should ignore stale in-flight response when a newer search is triggered', () => {
@@ -273,6 +317,25 @@ describe('FinesConSearchResultComponent', () => {
     ]);
   });
 
+  it('should log selection alert navigation when at least one selected account is already in list', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const addSelectedAccountIdsSpy = vi.spyOn(finesConStore, 'addSelectedAccountIds');
+
+    component.alreadyAddedAccountIds = [11];
+    component.onAddToList([11, 12]);
+
+    expect(logSpy).toHaveBeenCalledWith('PO-2422: navigate to Selection alert screen');
+    expect(addSelectedAccountIdsSpy).not.toHaveBeenCalled();
+  });
+
+  it('should patch selected account ids to store when all selected ids are new', () => {
+    const addSelectedAccountIdsSpy = vi.spyOn(finesConStore, 'addSelectedAccountIds');
+
+    component.alreadyAddedAccountIds = [99];
+    component.onAddToList([11, 12]);
+
+    expect(addSelectedAccountIdsSpy).toHaveBeenCalledWith([11, 12]);
+  });
   it('should emit empty results when defendant account search fails', () => {
     finesConStore.updateDefendantResults(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK, []);
     opalFines.getDefendantAccounts.mockReturnValue(throwError(() => new Error('Request failed')));
