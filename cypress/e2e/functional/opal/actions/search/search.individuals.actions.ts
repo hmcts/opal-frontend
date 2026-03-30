@@ -7,16 +7,79 @@
 
 import { AccountSearchIndividualsLocators as L } from '../../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
+import { PrimaryNavigationLocators as PN } from '../../../../../shared/selectors/primary-navigation.locators';
 import { ResultsActions } from './search.results.actions';
 import { CommonActions } from '../common/common.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountSearchIndividualsActions');
+const AUTHENTICATED_HOME_HEADERS = ['Dashboard', 'Search for an account', 'Accounts', 'Transfer in'] as const;
+const AUTHENTICATED_HOME_USERNAME = '.govuk-grid-column-two-thirds ul li span';
 
 /** Actions for the Individuals tab within Account Search. */
 export class AccountSearchIndividualsActions {
   private readonly results = new ResultsActions();
   private readonly common = new CommonActions();
+
+  /**
+   * Asserts the user has landed on a valid authenticated home page.
+   * @param username - Optional username text to assert when it is rendered.
+   */
+  public assertAuthenticatedHome(username?: string): void {
+    log('assert', 'Asserting authenticated home landing page is visible');
+
+    cy.get('h1[class*="govuk-heading"], h1', { timeout: 10_000 })
+      .filter(':visible')
+      .first()
+      .should('be.visible')
+      .invoke('text')
+      .then((text) => text.trim())
+      .should((headingText) => {
+        expect([...AUTHENTICATED_HOME_HEADERS]).to.include(
+          headingText as (typeof AUTHENTICATED_HOME_HEADERS)[number],
+        );
+      });
+
+    if (username) {
+      cy.get(AUTHENTICATED_HOME_USERNAME, this.common.getTimeoutOptions())
+        .invoke('text')
+        .should((text) => {
+          expect(text.trim().toLowerCase()).to.contain(username.toLowerCase());
+        });
+    }
+  }
+
+  /**
+   * Navigates from the authenticated home area to Account Search.
+   */
+  public openSearchFromAuthenticatedHome(): void {
+    log('navigate', 'Navigating to Search for an Account');
+
+    cy.get('body', { timeout: 20_000 })
+      .should('be.visible')
+      .then(($body) => {
+        const activeSearchNavItem = Cypress.$($body).find(
+          `${PN.container} .moj-primary-navigation__link[aria-current="page"]`,
+        );
+        const activeItemText = activeSearchNavItem.text().trim();
+        const pageText = $body.text();
+        const alreadyOnSearchPage = activeItemText === 'Search' && pageText.includes('Search for an account');
+
+        if (alreadyOnSearchPage) {
+          log('navigate', 'Already on Search for an Account landing page');
+          return;
+        }
+
+        cy.contains(`${PN.container} .moj-primary-navigation__link`, 'Search', this.common.getTimeoutOptions())
+          .should('be.visible')
+          .click();
+      });
+
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/dashboard/search');
+    cy.contains('h1.govuk-heading-l, h1.govuk-heading-m, h1', 'Search for an account', { timeout: 10_000 }).should(
+      'be.visible',
+    );
+  }
 
   // ──────────────────────────────
   // Navigation / page-level asserts

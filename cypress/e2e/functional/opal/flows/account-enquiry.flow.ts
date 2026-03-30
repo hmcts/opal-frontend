@@ -10,7 +10,6 @@ import { AccountDetailsCommentsActions } from '../actions/account-details/detail
 import { AccountDetailsAtAGlanceActions } from '../actions/account-details/details.at-a-glance.actions';
 import { AccountDetailsParentGuardianActions } from '../actions/account-details/details.parent.guardian.actions';
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
-import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -66,7 +65,6 @@ export class AccountEnquiryFlow {
   private readonly detailsNav = new AccountDetailsNavActions();
   private readonly notes = new AccountDetailsNotesActions();
   private readonly comments = new AccountDetailsCommentsActions();
-  private readonly dashboard = new DashboardActions();
   private readonly common = new CommonActions();
   private readonly atAGlanceDetails = new AccountDetailsAtAGlanceActions();
   private readonly editDefendantDetailsActions = new EditDefendantDetailsActions();
@@ -84,7 +82,7 @@ export class AccountEnquiryFlow {
       const onSearch = $b.find(L.root).length > 0;
       if (!onSearch) {
         logAE('navigate', 'Navigating to Account Search dashboard (Individuals)');
-        this.dashboard.goToAccountSearch();
+        this.searchIndividuals.openSearchFromAuthenticatedHome();
       }
     });
   }
@@ -582,7 +580,7 @@ export class AccountEnquiryFlow {
       const onSearch = $b.find(C.root).length > 0;
       if (!onSearch) {
         logAE('navigate', 'Navigating to Account Search dashboard (Companies)');
-        this.dashboard.goToAccountSearch();
+        this.searchIndividuals.openSearchFromAuthenticatedHome();
         this.searchNav.goToCompaniesTab();
       }
     });
@@ -741,7 +739,7 @@ export class AccountEnquiryFlow {
    */
   public searchByCompanyName(companyName: string): void {
     logAE('method', 'searchByCompanyName()');
-    this.dashboard.goToAccountSearch();
+    this.searchIndividuals.openSearchFromAuthenticatedHome();
     this.searchNav.goToCompaniesTab();
     this.ensureOnCompanySearchPage();
     logAE('search', 'Searching by company name', { companyName });

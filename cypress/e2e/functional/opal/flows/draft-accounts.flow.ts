@@ -11,7 +11,6 @@ import {
   type Decision,
 } from '../actions/draft-account/check-and-validate-review.actions';
 import { CommonActions } from '../actions/common/common.actions';
-import { DashboardActions } from '../actions/dashboard.actions';
 import { recordCreatedAccount } from '../../../../support/utils/accountCapture';
 import { captureScenarioScreenshot } from '../../../../support/utils/screenshot';
 import { isEvidenceCaptureEnabled } from '../../../../support/utils/evidenceMode';
@@ -32,7 +31,6 @@ type RequestPayloadEntry = {
  * Flow helpers that orchestrate draft account actions.
  */
 export class DraftAccountsFlow {
-  private readonly dashboard = new DashboardActions();
   private readonly checker = new CheckAndValidateDraftsActions();
   private readonly review = new CheckAndValidateReviewActions();
   private readonly common = new CommonActions();
@@ -184,7 +182,7 @@ export class DraftAccountsFlow {
    */
   openCheckAndValidateWithHeader(): void {
     log('navigate', 'Opening Check and Validate with header assertion');
-    this.dashboard.goToCheckAndValidateDraftAccounts();
+    this.checker.openPage();
     this.common.assertHeaderContains('Review accounts');
     // If the failed-drafts stub alias exists, wait for it so tab counts render before assertions.
     const aliases = ((Cypress as any).state?.('aliases') ?? {}) as Record<string, unknown>;

@@ -1,5 +1,5 @@
-import { DashboardActions } from '../actions/dashboard.actions';
 import { ManualCreateAccountActions, DefendantType } from '../actions/manual-account-creation/create-account.actions';
+import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { AccountType } from '../../../../support/utils/payloads';
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
@@ -131,7 +131,7 @@ type CompositeEntry = {
  * feature so Cucumber steps remain intent-driven and thin.
  */
 export class ManualAccountCreationFlow {
-  private readonly dashboard = new DashboardActions();
+  private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly accountDetails = new ManualAccountDetailsActions();
@@ -1430,7 +1430,7 @@ export class ManualAccountCreationFlow {
    */
   goToManualAccountCreationFromDashboard(): void {
     log('flow', 'Navigate to Manual Account Creation from dashboard');
-    this.dashboard.assertDashboard();
+    this.searchIndividuals.assertAuthenticatedHome();
     this.ensureOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -2954,7 +2954,7 @@ export class ManualAccountCreationFlow {
         return;
       }
 
-      this.dashboard.goToManualAccountCreation();
+      this.createAccount.openFromAuthenticatedHome();
       this.originatorType.assertOnCreateOrTransferInPage();
     });
   }

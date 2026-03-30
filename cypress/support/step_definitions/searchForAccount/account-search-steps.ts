@@ -16,7 +16,6 @@ import { AccountSearchCommonActions } from '../../..//e2e/functional/opal/action
 import { AccountSearchProblemActions } from '../../..//e2e/functional/opal/actions/search/search.problem.actions';
 import { ResultsActions } from '../../..//e2e/functional/opal/actions/search/search.results.actions';
 import { CommonActions } from '../../..//e2e/functional/opal/actions/common/common.actions';
-import { DashboardActions } from '../../..//e2e/functional/opal/actions/dashboard.actions';
 import { MinorCreditorType } from '../../utils/macFieldResolvers';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 
@@ -30,7 +29,6 @@ const searchMinorCreditorsActions = () => new AccountSearchMinorCreditorsActions
 const searchCommonActions = () => new AccountSearchCommonActions();
 const searchProblemActions = () => new AccountSearchProblemActions();
 const commonActions = () => new CommonActions();
-const dashboardActions = () => new DashboardActions();
 const resultsActions = () => new ResultsActions();
 const applyUniqToDataTable = (table: DataTable): DataTable => {
   const rawWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
@@ -570,7 +568,7 @@ When('I select back with confirmation and verify I navigate to the Dashboard', (
 
   // Assert we reached Dashboard
   log('step', 'Verify Dashboard is displayed');
-  dashboardActions().assertDashboard();
+  searchIndividualActions().assertAuthenticatedHome();
 });
 
 /**
@@ -831,7 +829,7 @@ Then('I see there are no matching results and I check my search', () => {
  *
  * Behaviour:
  *   - Uses CommonActions.clickHmctsHomeLink() to perform the navigation.
- *   - Verifies arrival on the dashboard using DashboardActions.assertOnDashboard().
+ *   - Verifies arrival on the authenticated home landing using AccountSearchIndividualsActions.assertAuthenticatedHome().
  *   - Does not alter any search state (navigation only).
  *
  * Example:

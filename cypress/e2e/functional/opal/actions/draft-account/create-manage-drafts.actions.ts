@@ -2,27 +2,43 @@
  * @file Actions for the Create and Manage Draft Accounts (inputter) page.
  * @description Provides navigation, tab switching, and table assertions for draft listings.
  */
-import { DashboardActions } from '../dashboard.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CreateManageDraftsLocators as L } from '../../../../../shared/selectors/create-manage-drafts.locators';
+import { PrimaryNavigationLocators as PN } from '../../../../../shared/selectors/primary-navigation.locators';
 import { DraftAccountsCommonActions } from './draft-accounts-common.actions';
 
 export type CreateManageTab = 'In review' | 'Rejected' | 'Approved' | 'Deleted';
 
 const log = createScopedLogger('CreateManageDraftsActions');
+const CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK = '#finesCavInputterLink';
 
 /**
  * Actions for the **Create and Manage Draft Accounts** page (inputter view).
  */
 export class CreateManageDraftsActions extends DraftAccountsCommonActions {
-  private readonly dashboard = new DashboardActions();
+  private ensureAccountsLandingPage(): void {
+    cy.location('pathname', { timeout: 10_000 }).then((pathname) => {
+      if (pathname.includes('/fines/dashboard/accounts')) {
+        return;
+      }
+
+      log('navigate', 'Switching to Accounts landing page');
+      cy.contains(`${PN.container} .moj-primary-navigation__link`, 'Accounts', this.common.getTimeoutOptions())
+        .should('be.visible')
+        .click();
+
+      cy.location('pathname', this.common.getPathTimeoutOptions()).should('include', '/fines/dashboard/accounts');
+      this.common.assertHeaderContains('Accounts');
+    });
+  }
 
   /**
    * Opens the Create and Manage Draft Accounts page from the dashboard.
    */
   openPage(): void {
     log('navigate', 'Opening Create and Manage Draft Accounts');
-    this.dashboard.goToCreateAndManageDraftAccounts();
+    this.ensureAccountsLandingPage();
+    cy.get(CREATE_AND_MANAGE_DRAFT_ACCOUNTS_LINK, { timeout: 10_000 }).should('be.visible').click({ force: true });
     this.common.assertHeaderContains('Create accounts');
   }
 

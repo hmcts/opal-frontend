@@ -9,13 +9,14 @@
  * flow.openManualAccountCreationWithBusinessUnitsError(400);
  */
 import { createScopedLogger } from '../../../../support/utils/log.helper';
-import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchFlow } from './account-search.flow';
 import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { AccountSearchCompanyActions } from '../actions/search/search.companies.actions';
 import { CommonActions } from '../actions/common/common.actions';
 import { GlobalApiInterceptorActions } from '../actions/global-api-interceptor.actions';
 import { ManualCreateOrTransferInActions } from '../actions/manual-account-creation/create-transfer.actions';
+import { ManualCreateAccountActions } from '../actions/manual-account-creation/create-account.actions';
+import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 
 const log = createScopedLogger('GlobalApiInterceptorFlow');
 
@@ -26,7 +27,8 @@ const ACCOUNT_SEARCH_NON_RETRIABLE_HEADER = 'Sorry, there is a problem with the 
  */
 export class GlobalApiInterceptorFlow {
   private readonly actions = new GlobalApiInterceptorActions();
-  private readonly dashboard = new DashboardActions();
+  private readonly searchIndividuals = new AccountSearchIndividualsActions();
+  private readonly createAccount = new ManualCreateAccountActions();
   private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly common = new CommonActions();
   private readonly accountSearchFlow = new AccountSearchFlow();
@@ -42,9 +44,9 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithBusinessUnitsError(statusCode: number): void {
     log('flow', 'Opening Manual Account Creation with business units error', { statusCode });
-    this.dashboard.assertDashboard();
+    this.searchIndividuals.assertAuthenticatedHome();
     this.actions.stubBusinessUnitsError(statusCode);
-    this.dashboard.goToManualAccountCreation();
+    this.createAccount.openFromAuthenticatedHome();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -61,9 +63,9 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithRetriableBusinessUnitsError(statusCode: number): void {
     log('flow', 'Opening Manual Account Creation with retriable business units error', { statusCode });
-    this.dashboard.assertDashboard();
+    this.searchIndividuals.assertAuthenticatedHome();
     this.actions.stubBusinessUnitsRetriableError(statusCode);
-    this.dashboard.goToManualAccountCreation();
+    this.createAccount.openFromAuthenticatedHome();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -84,9 +86,9 @@ export class GlobalApiInterceptorFlow {
       statusCode,
       expectedHeader,
     });
-    this.dashboard.assertDashboard();
+    this.searchIndividuals.assertAuthenticatedHome();
     this.actions.stubBusinessUnitsNonRetriableError(statusCode);
-    this.dashboard.goToManualAccountCreation();
+    this.createAccount.openFromAuthenticatedHome();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -102,9 +104,9 @@ export class GlobalApiInterceptorFlow {
    */
   public openManualAccountCreationWithBusinessUnitsNetworkFailure(): void {
     log('flow', 'Opening Manual Account Creation with business units network failure');
-    this.dashboard.assertDashboard();
+    this.searchIndividuals.assertAuthenticatedHome();
     this.actions.stubBusinessUnitsNetworkFailure();
-    this.dashboard.goToManualAccountCreation();
+    this.createAccount.openFromAuthenticatedHome();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();

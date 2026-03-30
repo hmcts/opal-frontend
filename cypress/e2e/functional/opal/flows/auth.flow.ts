@@ -7,7 +7,7 @@
  *
  * @remarks
  * - This flow provides a single entry point for test setup steps that require authentication.
- * - Delegates login logic to {@link performLogin} and post-login assertions to {@link DashboardActions}.
+ * - Delegates login logic to {@link performLogin} and post-login assertions to {@link AccountSearchIndividualsActions}.
  * - Used by step definitions in `auth.steps.ts` for reusable Gherkin scenarios.
  *
  * @example
@@ -17,11 +17,11 @@
  * ```
  *
  * @see {@link performLogin}
- * @see {@link DashboardActions}
+ * @see {@link AccountSearchIndividualsActions}
  */
 
 import { performLogin } from '../actions/login.actions';
-import { DashboardActions } from '../actions/dashboard.actions';
+import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 
 /**
  * Logs in using either SSO or local authentication
@@ -31,10 +31,10 @@ import { DashboardActions } from '../actions/dashboard.actions';
  *
  * @details
  * - Calls {@link performLogin} to complete the login process.
- * - Instantiates {@link DashboardActions} to confirm that the authenticated
+ * - Instantiates {@link AccountSearchIndividualsActions} to confirm that the authenticated
  *   user lands on a valid post-login home page for the current journey.
  */
 export function loginAndLandOnDashboard(email: string): void {
   performLogin(email);
-  new DashboardActions().assertDashboard();
+  new AccountSearchIndividualsActions().assertAuthenticatedHome();
 }

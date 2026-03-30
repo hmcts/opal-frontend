@@ -1,6 +1,7 @@
-import { DashboardActions } from './dashboard.actions';
 import { CommonActions } from './common/common.actions';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
+import { CreateManageDraftsActions } from './draft-account/create-manage-drafts.actions';
+import { CheckAndValidateDraftsActions } from './draft-account/check-and-validate-drafts.actions';
 
 export type InputterTab = 'In review' | 'Rejected' | 'Approved' | 'Deleted';
 export type CheckerTab = 'To review' | 'Rejected' | 'Deleted' | 'Failed';
@@ -11,7 +12,8 @@ const log = createScopedLogger('DraftTabsActions');
  * Actions for navigating draft account tab views for inputters and checkers.
  */
 export class DraftTabsActions {
-  private readonly dashboard = new DashboardActions();
+  private readonly createManageDrafts = new CreateManageDraftsActions();
+  private readonly checkAndValidateDrafts = new CheckAndValidateDraftsActions();
   private readonly common = new CommonActions();
 
   /**
@@ -19,7 +21,7 @@ export class DraftTabsActions {
    */
   openInputterTabs(): void {
     log('navigate', 'Opening Create and Manage Draft Accounts');
-    this.dashboard.goToCreateAndManageDraftAccounts();
+    this.createManageDrafts.openPage();
     this.common.assertHeaderContains('Create accounts');
   }
 
@@ -28,7 +30,7 @@ export class DraftTabsActions {
    */
   openCheckerTabs(): void {
     log('navigate', 'Opening Check and Validate Draft Accounts');
-    this.dashboard.goToCheckAndValidateDraftAccounts();
+    this.checkAndValidateDrafts.openPage();
     this.common.assertHeaderContains('Review accounts');
   }
 

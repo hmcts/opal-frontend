@@ -1,14 +1,14 @@
 /**
  * @file fixed-penalty.flow.ts
  * @description Flow helpers for the Fixed Penalty journey (Manual Account Creation), orchestrating
- * dashboard navigation, details entry, review, and submission helpers.
+ * authenticated-home navigation, details entry, review, and submission helpers.
  */
-import { DashboardActions } from '../actions/dashboard.actions';
 import { DefendantType, ManualCreateAccountActions } from '../actions/manual-account-creation/create-account.actions';
 import { FixedPenaltyDetailsActions } from '../actions/manual-account-creation/fixed-penalty-details.actions';
 import { FixedPenaltyReviewActions } from '../actions/manual-account-creation/fixed-penalty-review.actions';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { ManualCreateOrTransferInActions } from '../actions/manual-account-creation/create-transfer.actions';
+import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 
 const log = createScopedLogger('FixedPenaltyFlow');
 
@@ -16,7 +16,7 @@ const log = createScopedLogger('FixedPenaltyFlow');
  * Flow helpers for the Fixed Penalty journey.
  */
 export class FixedPenaltyFlow {
-  private readonly dashboard = new DashboardActions();
+  private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly details = new FixedPenaltyDetailsActions();
@@ -33,8 +33,8 @@ export class FixedPenaltyFlow {
     originatorType: 'New' | 'Transfer in',
   ): void {
     log('flow', 'Starting Fixed Penalty account', { businessUnit, defendantType });
-    this.dashboard.assertDashboard();
-    this.dashboard.goToManualAccountCreation();
+    this.searchIndividuals.assertAuthenticatedHome();
+    this.createAccount.openFromAuthenticatedHome();
     this.originatorType.assertOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType(originatorType);
     this.originatorType.continueToCreateAccount();

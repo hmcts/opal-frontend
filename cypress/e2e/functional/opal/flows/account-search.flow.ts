@@ -6,7 +6,6 @@
 
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchNavActions } from '../actions/search/search.nav.actions';
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { AccountSearchCompanyActions } from '../actions/search/search.companies.actions';
@@ -35,7 +34,6 @@ const log = createScopedLogger('AccountSearchFlow');
  * - All logging uses shared `log()` helper for consistent output.
  */
 export class AccountSearchFlow {
-  private readonly dashboard = new DashboardActions();
   private readonly nav = new AccountSearchNavActions();
   private readonly individuals = new AccountSearchIndividualsActions();
   private readonly companies = new AccountSearchCompanyActions();
@@ -78,7 +76,7 @@ export class AccountSearchFlow {
    */
   public navigateAndVerifySearchFromDashboard(): void {
     log('navigate', 'Go to Account Search from dashboard');
-    this.dashboard.goToAccountSearch();
+    this.individuals.openSearchFromAuthenticatedHome();
 
     log('assert', 'Verify Individuals form is active by default');
     this.individuals.assertDefaultIndividualsActive();
@@ -652,7 +650,7 @@ export class AccountSearchFlow {
    */
   public navigateAndEnterIndividualsFormWithoutSubmit(table: DataTable): void {
     log('navigate', 'Go to Account Search and enter Individuals form (no submit)');
-    this.dashboard.goToAccountSearch();
+    this.individuals.openSearchFromAuthenticatedHome();
 
     // Reuse existing helper to populate all text-like fields
     this.enterIndividualsFormWithoutSubmit(table);
@@ -1263,7 +1261,7 @@ export class AccountSearchFlow {
    * - Delegates the actual DOM interaction to CommonActions.clickHmctsHomeLink(),
    *   which owns all locator logic for the HMCTS brand link.
    * - Asserts that the dashboard is displayed after navigation via
-   *   DashboardActions.assertOnDashboard().
+   *   AccountSearchIndividualsActions.assertAuthenticatedHome().
    *
    * Notes:
    * - Flow method is intentionally small to satisfy Sonar and keep responsibilities clear.
@@ -1272,6 +1270,6 @@ export class AccountSearchFlow {
   public returnToDashboardViaHmctsLink(): void {
     log('navigate', 'Returning to dashboard via HMCTS header link');
     this.common.clickHmctsHomeLink();
-    this.dashboard.assertDashboard();
+    this.individuals.assertAuthenticatedHome();
   }
 }
