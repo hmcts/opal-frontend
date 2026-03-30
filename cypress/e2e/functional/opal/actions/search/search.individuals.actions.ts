@@ -10,13 +10,43 @@ import { AccountSearchCommonLocators as C } from '../../../../../shared/selector
 import { ResultsActions } from './search.results.actions';
 import { CommonActions } from '../common/common.actions';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { PrimaryNavigationActions } from '../primary-navigation.actions';
 
 const log = createScopedLogger('AccountSearchIndividualsActions');
+const AUTHENTICATED_HOME_USERNAME = '.govuk-grid-column-two-thirds ul li span';
 
 /** Actions for the Individuals tab within Account Search. */
 export class AccountSearchIndividualsActions {
   private readonly results = new ResultsActions();
   private readonly common = new CommonActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
+
+  /**
+   * Asserts the authenticated landing page is the Search route.
+   * @param username - Optional username text to assert when it is rendered.
+   */
+  public assertOnSearchLandingPage(username?: string): void {
+    log('assert', 'Asserting Search landing page is visible');
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should('include', '/fines/dashboard/search');
+    this.common.assertHeaderContains('Search for an account');
+
+    if (username) {
+      cy.get(AUTHENTICATED_HOME_USERNAME, this.common.getTimeoutOptions())
+        .invoke('text')
+        .should((text) => {
+          expect(text.trim().toLowerCase()).to.contain(username.toLowerCase());
+        });
+    }
+  }
+
+  /**
+   * Opens Search using the primary navigation from the Accounts landing page.
+   */
+  public openSearchFromAccountsPage(): void {
+    log('navigate', 'Navigating to Search for an Account from Accounts');
+    this.primaryNavigation.chooseItem('Search');
+    this.assertOnSearchLandingPage();
+  }
 
   // ──────────────────────────────
   // Navigation / page-level asserts
@@ -34,7 +64,7 @@ export class AccountSearchIndividualsActions {
    */
   public assertOnSearchPage(): void {
     log('assert', 'Verifying Search for an Account page URL');
-    cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/search-accounts/search');
+    cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/dashboard/search');
 
     log('assert', 'Ensuring search form is visible');
     cy.get(L.searchFormRoot, this.common.getTimeoutOptions()).should('be.visible');
@@ -57,7 +87,7 @@ export class AccountSearchIndividualsActions {
     log('assert', 'Asserting we remain on the Search Individuals form (no navigation)');
 
     // 1) Path check. The canonical search path used elsewhere in the suite.
-    cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/search-accounts/search');
+    cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/dashboard/search');
 
     // 2) Ensure Individuals search form panel is visible
     if (!L.searchFormRoot) {
