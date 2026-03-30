@@ -6,6 +6,7 @@ import { FinesConStore } from '../../stores/fines-con.store';
 import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
+import { Observable, of } from 'rxjs';
 
 describe('FinesConConsolidateAccComponent', () => {
   let component: FinesConConsolidateAccComponent;
@@ -13,7 +14,8 @@ describe('FinesConConsolidateAccComponent', () => {
   let mockRouter: { navigate: ReturnType<typeof vi.fn> };
   let mockActivatedRoute: {
     parent: Record<string, unknown>;
-    snapshot: { data: Record<string, unknown> };
+    fragment: Observable<string | null>;
+    snapshot: { data: Record<string, unknown>; fragment?: string | null };
   };
   let finesConStore: InstanceType<FinesConStoreType>;
 
@@ -23,7 +25,9 @@ describe('FinesConConsolidateAccComponent', () => {
     const parentActivatedRoute = {};
     mockActivatedRoute = {
       parent: parentActivatedRoute,
+      fragment: of('search'),
       snapshot: {
+        fragment: null,
         data: {
           businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
         },
@@ -54,6 +58,20 @@ describe('FinesConConsolidateAccComponent', () => {
   it('should switch to results tab when clicked', () => {
     component.handleTabSwitch('results');
     expect(finesConStore.activeTab()).toBe('results');
+  });
+
+  it('should not navigate to update fragment when selected tab matches current fragment', () => {
+    mockActivatedRoute.snapshot.fragment = 'results';
+
+    component.handleTabSwitch('results');
+
+    expect(finesConStore.activeTab()).toBe('results');
+    expect(mockRouter.navigate).not.toHaveBeenCalledWith([], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'results',
+      queryParamsHandling: 'preserve',
+      replaceUrl: true,
+    });
   });
 
   it('should store transformed search payload for results tab', () => {
