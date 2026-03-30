@@ -35,9 +35,7 @@ export class AccountSearchIndividualsActions {
       .invoke('text')
       .then((text) => text.trim())
       .should((headingText) => {
-        expect([...AUTHENTICATED_HOME_HEADERS]).to.include(
-          headingText as (typeof AUTHENTICATED_HOME_HEADERS)[number],
-        );
+        expect([...AUTHENTICATED_HOME_HEADERS]).to.include(headingText as (typeof AUTHENTICATED_HOME_HEADERS)[number]);
       });
 
     if (username) {
