@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, EMPTY, map, merge, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, EMPTY, map, merge, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -222,22 +222,24 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         case 'payment-terms':
           this.tabPaymentTerms$ = this.fetchTabData(
             this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id).pipe(
-              tap((data) => {
-                if (data.last_enforcement) {
-                  this.opalFinesService
-                    .getResult(data.last_enforcement)
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe((result) => {
+              switchMap(
+                (data): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> =>
+                  (data.last_enforcement
+                    ? this.opalFinesService.getResult(data.last_enforcement)
+                    : of<IOpalFinesResultRefData | null>(null)
+                  ).pipe(
+                    tap((result: IOpalFinesResultRefData | null) => {
                       this.lastEnforcement = result;
-                    });
-                }
-              }),
+                    }),
+                    map((): IOpalFinesAccountDefendantDetailsPaymentTermsLatest => data),
+                  ),
+              ),
             ),
           );
           break;
         case 'enforcement':
           this.tabEnforcement$ = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountEnforcementTabData(account_id),
+            this.opalFinesService.getDefendantAccountEnforcementStatus(account_id),
           );
           break;
         case 'impositions':
@@ -446,5 +448,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         },
       );
     }
+  }
+
+  /**
+   * Navigates to the add enforcement override page or access denied page based on user permissions.
+   */
+  public navigateToAddEnforcementOverridePage(): void {
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/add`], {
+      relativeTo: this.activatedRoute,
+    });
   }
 }
