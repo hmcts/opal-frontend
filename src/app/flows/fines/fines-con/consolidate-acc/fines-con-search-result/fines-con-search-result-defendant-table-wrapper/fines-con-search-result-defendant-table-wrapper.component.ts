@@ -151,6 +151,27 @@ export class FinesConSearchResultDefendantTableWrapperComponent extends Abstract
   }
 
   /**
+   * Splits check messages into plain and emphasised parts when the API wraps values in backticks.
+   *
+   * @param message - Raw check message.
+   * @returns Message parts with emphasis metadata for template rendering.
+   */
+  public getFormattedCheckMessageParts(message: string): { text: string; emphasized: boolean }[] {
+    const parts = message.split('`');
+
+    if (parts.length < 3 || parts.length % 2 === 0) {
+      return [{ text: message, emphasized: false }];
+    }
+
+    return parts
+      .filter((part) => part.length > 0)
+      .map((text, index) => ({
+        text,
+        emphasized: index % 2 === 1,
+      }));
+  }
+
+  /**
    * Emits selected account id for parent-level navigation handling.
    *
    * @param accountID - Account id to emit.
