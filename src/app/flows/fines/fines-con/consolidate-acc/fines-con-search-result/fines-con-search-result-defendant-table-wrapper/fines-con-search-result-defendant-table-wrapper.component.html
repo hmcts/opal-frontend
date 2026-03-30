@@ -21,6 +21,7 @@
     <opal-lib-moj-sortable-table>
       <ng-container head>
         <th class="govuk-table__header" scope="col" id="defendants-select-all">
+          <span class="govuk-visually-hidden">Select accounts to consolidate</span>
           @if (hasSelectableRowsComputed()) {
             <opal-lib-govuk-checkboxes fieldSetId="defendants-select-all-group" checkboxClasses="" legendText="">
               <div
@@ -295,11 +296,33 @@
                       <div class="defendant-check-message">
                         <opal-lib-moj-alert-icon icon [type]="severity" [applyColour]="true"></opal-lib-moj-alert-icon>
                         @if (severityChecks.length === 1) {
-                          <span class="defendant-check-message__text">{{ severityChecks[0].message }}</span>
+                          <span class="defendant-check-message__text">
+                            @for (
+                              part of getFormattedCheckMessageParts(severityChecks[0].message);
+                              track part.text + '-' + $index
+                            ) {
+                              @if (part.emphasized) {
+                                <strong>{{ part.text }}</strong>
+                              } @else {
+                                <ng-container>{{ part.text }}</ng-container>
+                              }
+                            }
+                          </span>
                         } @else {
                           <ul class="defendant-check-message-list govuk-list govuk-list--bullet">
                             @for (check of severityChecks; track check.reference + '-' + $index) {
-                              <li>{{ check.message }}</li>
+                              <li>
+                                @for (
+                                  part of getFormattedCheckMessageParts(check.message);
+                                  track part.text + '-' + $index
+                                ) {
+                                  @if (part.emphasized) {
+                                    <strong>{{ part.text }}</strong>
+                                  } @else {
+                                    <ng-container>{{ part.text }}</ng-container>
+                                  }
+                                }
+                              </li>
                             }
                           </ul>
                         }
