@@ -56,7 +56,6 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from './constants/opal-fines-defendant-account-patch-payload-defaults.constant';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 
 describe('OpalFines', () => {
@@ -1217,7 +1216,6 @@ describe('OpalFines', () => {
   it('should return a mock response for patching defendant account', () => {
     const accountId = 123456;
     const updatePayload = {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       comment_and_notes: {
         account_comment: 'Updated comment',
         free_text_note_1: 'Updated note 1',
@@ -1239,7 +1237,6 @@ describe('OpalFines', () => {
   it('should handle different payload values in mock response for patching defendant account', () => {
     const accountId = 789012;
     const updatePayload = {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       version: 5,
       comment_and_notes: {
         account_comment: 'Different comment',
@@ -1262,7 +1259,15 @@ describe('OpalFines', () => {
   describe('patchDefendantAccount headers', () => {
     it('should include If-Match and Business-Unit-Id headers when both are provided', () => {
       const accountId = 123456;
-      const payload = OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS;
+      const payload = {
+        version: 10,
+        comment_and_notes: {
+          account_comment: 'Test comment',
+          free_text_note_1: null,
+          free_text_note_2: null,
+          free_text_note_3: null,
+        },
+      };
       const version = '10';
       const businessUnitId = '2002';
 
@@ -1279,7 +1284,15 @@ describe('OpalFines', () => {
 
     it('should include only Business-Unit-Id when version is not provided', () => {
       const accountId = 123456;
-      const payload = OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS;
+      const payload = {
+        version: 10,
+        comment_and_notes: {
+          account_comment: 'Test comment',
+          free_text_note_1: null,
+          free_text_note_2: null,
+          free_text_note_3: null,
+        },
+      };
       const businessUnitId = '2002';
 
       service.patchDefendantAccount(accountId, payload, undefined, businessUnitId).subscribe((response) => {
@@ -1295,7 +1308,15 @@ describe('OpalFines', () => {
 
     it('should not include If-Match and should include Business-Unit-Id when version is empty string and business unit is empty string', () => {
       const accountId = 123456;
-      const payload = OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS;
+      const payload = {
+        version: 10,
+        comment_and_notes: {
+          account_comment: 'Test comment',
+          free_text_note_1: null,
+          free_text_note_2: null,
+          free_text_note_3: null,
+        },
+      };
       const version = '';
       const businessUnitId = '';
 
