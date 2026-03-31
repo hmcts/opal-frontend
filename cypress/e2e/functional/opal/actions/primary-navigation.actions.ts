@@ -135,7 +135,11 @@ export class PrimaryNavigationActions {
   }
 
   /**
-   * Asserts the user is back on the sign-in page.
+   * Asserts sign-out redirects to the expected authentication entry point.
+   *
+   * For local/PR environments this verifies the app-owned `/sign-in` page.
+   * For higher environments it verifies the browser has been redirected to the
+   * Microsoft sign-in domain without asserting Microsoft-owned page content.
    */
   public assertSignInPageVisible(): void {
     log('assert', 'Checking the sign-in page is displayed');
