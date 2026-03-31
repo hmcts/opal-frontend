@@ -2,6 +2,7 @@ import { IOpalFinesDefendantAccountSearchParams } from '../interfaces/opal-fines
 
 export const OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS: IOpalFinesDefendantAccountSearchParams = {
   active_accounts_only: false,
+  consolidation_search: false,
   business_unit_ids: null,
   reference_number: null,
   defendant: null,

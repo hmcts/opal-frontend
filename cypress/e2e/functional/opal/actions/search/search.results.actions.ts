@@ -57,13 +57,13 @@ export class ResultsActions {
    * Asserts we are on the results route and the table contains at least one row.
    *
    * Steps:
-   *  - Wait for `/fines/search-accounts/results` in the pathname
+   *  - Wait for `/fines/dashboard/search/results` in the pathname
    *  - Assert heading contains "Search results"
    *  - Assert results table is visible and has at least 1 row
    */
   public assertOnResults(): void {
     log('assert', 'Asserting on results route and non-empty table');
-    cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should('include', '/fines/search-accounts/results');
+    cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should('include', '/fines/dashboard/search/results');
     cy.get(R.page.heading, { timeout: ResultsActions.WAIT_MS }).should('contain.text', 'Search results');
     cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
     cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).should('have.length.greaterThan', 0);
@@ -385,7 +385,7 @@ export class ResultsActions {
     // Generic safety check: we should no longer be on the `/results` route
     cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should(
       'not.include',
-      '/fines/search-accounts/results',
+      '/fines/dashboard/search/results',
     );
 
     log('done', 'Returned from results via back link');

@@ -35,6 +35,7 @@ export const MacAccountDetailsLocators = {
   backLink: 'a.govuk-back-link',
   pageTitle: 'h1.govuk-heading-l',
   pageHeader: 'h1.govuk-heading-l',
+  entryType: 'div[summaryListRowId="entryType"]',
   businessUnit: 'div[summaryListRowId="businessUnit"]',
   accountType: 'div[summaryListRowId="accountType"]',
   defendantType: 'div[summaryListRowId="defendantType"]',

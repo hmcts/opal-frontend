@@ -555,6 +555,21 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       // If the reset ran again, firstNames would be cleared to null; ensure it stayed intact
       expect(individual.get('fsa_search_account_minor_creditors_first_names')?.value).toBe('Will Persist');
     });
+
+    it('revalidates company required data when company fields are cleared and type control is pristine', () => {
+      const { type, companyName } = getControls(component.form);
+
+      type.setValue('company');
+      type.markAsPristine();
+
+      companyName.setValue('ACME Ltd');
+      type.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+      expect(type.errors).toBeNull();
+
+      companyName.setValue('');
+
+      expect(type.errors).toEqual(expect.objectContaining({ requiredCompanyMinorCreditorData: true }));
+    });
   });
 
   describe('reset utilities clear values and errors', () => {

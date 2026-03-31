@@ -10,11 +10,11 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
-import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';
+import { FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE } from '../../constants/fines-mac-court-details-copy.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
@@ -26,6 +26,8 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { IFinesAccountTypes } from '@app/flows/fines/interfaces/fines-account-types.interface';
+import { IFinesMacCourtDetailsCopy } from '../../interfaces/fines-mac-court-details-copy.interface';
 
 //regex pattern validators for the form controls
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -48,8 +50,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  private readonly finesMacStore = inject(FinesMacStore);
-
+  protected readonly finesMacStore = inject(FinesMacStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
@@ -58,7 +59,47 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   @Input({ required: true }) public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-  override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
+
+  private get currentCourtDetailsCopy(): IFinesMacCourtDetailsCopy {
+    const accountType = this.finesMacStore.accountDetails().formData.fm_create_account_account_type;
+    const accountTypeKey = accountType as keyof IFinesAccountTypes;
+
+    return (
+      FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE[accountTypeKey] ?? FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE.Fine
+    );
+  }
+
+  public get sectionHeading(): string {
+    return this.currentCourtDetailsCopy.sectionHeading;
+  }
+
+  public get originatorIdLabelText(): string {
+    return this.currentCourtDetailsCopy.originatorLabel;
+  }
+
+  public get originatorHintText(): string {
+    return this.currentCourtDetailsCopy.originatorHint;
+  }
+
+  /**
+   * Sets field-specific error messages for the court details form.
+   * Merges default field error definitions with account-type specific copy
+   * for the originator ID field.
+   *
+   * @private
+   */
+  private setFieldErrors(): void {
+    this.fieldErrors = {
+      ...FINES_MAC_COURT_DETAILS_FIELD_ERRORS,
+      fm_court_details_originator_id: {
+        ...FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_originator_id,
+        required: {
+          ...FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_originator_id['required'],
+          message: this.currentCourtDetailsCopy.originatorRequiredError,
+        },
+      },
+    };
+  }
 
   /**
    * Sets up the court details form with the necessary form controls.
@@ -115,6 +156,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   private initialCourtDetailsSetup(): void {
     const { formData } = this.finesMacStore.courtDetails();
     this.setupCourtDetailsForm();
+    this.setFieldErrors();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
   }

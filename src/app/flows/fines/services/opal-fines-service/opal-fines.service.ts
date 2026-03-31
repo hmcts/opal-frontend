@@ -52,6 +52,9 @@ import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc/fin
 import { IOpalFinesAccountRequestPaymentCardResponse } from './interfaces/opal-fines-account-request-payment-card-response.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from './interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from './mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
+import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.interface';
+import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
+import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -133,6 +136,16 @@ export class OpalFines {
   }
 
   /**
+   * Clears multiple cache items.
+   *
+   * @param cacheKeys - The cache keys to clear.
+   * @param nestedKey - An optional specific key within each cache item to be deleted.
+   */
+  private clearCaches(cacheKeys: (keyof IOpalFinesCache)[], nestedKey?: string): void {
+    cacheKeys.forEach((cacheKey) => this.clearCache(cacheKey, nestedKey));
+  }
+
+  /**
    * Clears reference data caches to force fresh fetches.
    */
   private clearReferenceDataCaches(): void {
@@ -141,6 +154,7 @@ export class OpalFines {
       'businessUnitsCache$',
       'businessUnitsPermissionCache$',
       'localJusticeAreasCache$',
+      'localJusticeAreasLjaTypeCache$',
       'resultsCache$',
       'resultCache$',
       'offenceCodesCache$',
@@ -148,7 +162,7 @@ export class OpalFines {
       'prosecutorDataCache$',
     ];
 
-    referenceCaches.forEach((cacheKey) => this.clearCache(cacheKey));
+    this.clearCaches(referenceCaches);
   }
 
   /**
@@ -231,12 +245,46 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the local justice areas.
-   * If the local justice areas are not already cached, it makes an HTTP request to fetch them and caches the result.
-   * Subsequent calls to this method will return the cached data.
-   * @returns An Observable that emits the local justice areas.
+   * Retrieves local justice areas reference data from the API.
+   * Results are cached to avoid redundant HTTP requests.
+   *
+   * @param lja_type - Optional filter parameters to retrieve local justice areas by type.
+   *                  When provided, results are cached separately per type combination.
+   *                  When omitted, returns all local justice areas.
+   *
+   * @returns An Observable that emits the local justice areas reference data.
+   *          The observable is shared and replayed to ensure cached data is reused
+   *          across multiple subscriptions.
+   *
+   * @example
+   * // Get all local justice areas
+   * this.opalFinesService.getLocalJusticeAreas().subscribe(data => {
+   *   console.log(data);
+   * });
+   *
+   * @example
+   * // Get local justice areas filtered by type list
+   * this.opalFinesService.getLocalJusticeAreas(['type1', 'type2']).subscribe(data => {
+   *   console.log(data);
+   * });
    */
-  public getLocalJusticeAreas(): Observable<IOpalFinesLocalJusticeAreaRefData> {
+  public getLocalJusticeAreas(lja_type?: string[]): Observable<IOpalFinesLocalJusticeAreaRefData> {
+    const ljaTypes = [...new Set((lja_type ?? []).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+
+    if (ljaTypes.length) {
+      const cacheKey = JSON.stringify(ljaTypes);
+
+      if (!this.cache.localJusticeAreasLjaTypeCache$[cacheKey]) {
+        this.cache.localJusticeAreasLjaTypeCache$[cacheKey] = this.http
+          .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData, {
+            params: { lja_type: ljaTypes },
+          })
+          .pipe(shareReplay(1));
+      }
+
+      return this.cache.localJusticeAreasLjaTypeCache$[cacheKey];
+    }
+
     if (!this.cache.localJusticeAreasCache$) {
       this.cache.localJusticeAreasCache$ = this.http
         .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
@@ -274,12 +322,18 @@ export class OpalFines {
   /**
    * Retrieves the Opal fines results based on the provided result IDs.
    * @param result_ids - An array of result IDs.
+   * @param params - The parameters for fetching the results.
    * @returns An Observable that emits the Opal fines results reference data.
    */
-  public getResults(result_ids: string[]): Observable<IOpalFinesResultsRefData> {
+  public getResults(
+    result_ids: string[],
+    params: IOpalFinesResultsParams | null = null,
+  ): Observable<IOpalFinesResultsRefData> {
     if (!this.cache.resultsCache$) {
       this.cache.resultsCache$ = this.http
-        .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, { params: { result_ids } })
+        .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, {
+          params: { result_ids, ...params },
+        })
         .pipe(shareReplay(1));
     }
 
@@ -442,14 +496,14 @@ export class OpalFines {
       'defendantAccountFixedPenaltyCache$',
     ];
 
-    accountCaches.forEach((cacheKey) => this.clearCache(cacheKey));
+    this.clearCaches(accountCaches);
   }
 
   /**
    * Clears all cached draft account responses.
    */
   public clearDraftAccountsCache(): void {
-    this.clearCache('draftAccountsCache$');
+    this.clearCaches(['draftAccountsCache$']);
   }
 
   /**
@@ -563,6 +617,31 @@ export class OpalFines {
     }
 
     return this.cache.prosecutorDataCache$[business_unit];
+  }
+
+  /**
+   * Retrieves the prosecutor data for a specific business unit.
+   * If the prosecutor data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * @param business_unit - The business unit for which to retrieve the prosecutor data.
+   * @returns An Observable that emits the prosecutor data for the specified business unit.
+   */
+  public getEnforcers(): Observable<IOpalFinesEnforcersRefData> {
+    if (!this.cache.enforcersCache$) {
+      this.cache.enforcersCache$ = this.http
+        .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.enforcersCache$;
+  }
+
+  /**
+   * Returns the pretty name of an enforcer.
+   * @param enforcer - The enforcer object.
+   * @returns The pretty name of the enforcer.
+   */
+  public getEnforcerPrettyName(enforcer: IOpalFinesEnforcer): string {
+    return `${enforcer.name} (${enforcer.enforcer_code})`;
   }
 
   /**
@@ -685,13 +764,13 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the defendant account details enforcement tab data.
-   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * Retrieves the defendant account details enforcement status.
+   * If the account details for the enforcement status are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
-   * @returns An Observable that emits the account details at a glance for the specified tab.
+   * @returns An Observable of the defendants enforcement status.
    */
-  public getDefendantAccountEnforcementTabData(
+  public getDefendantAccountEnforcementStatus(
     account_id: number | null,
   ): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
     if (!this.cache.defendantAccountEnforcementCache$) {

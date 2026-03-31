@@ -15,6 +15,10 @@ import {
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_matches_minor_creditors_mock';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
 describe('FinesSaResultsComponent - Minor Creditors', () => {
   let searchResultState = {
     searchAccount: MINOR_CREDITORS_SEARCH_STATE_MOCK,
@@ -64,52 +68,64 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     });
   };
 
-  it('Search results component is created correctly for minor creditors', { tags: ['PO-708'] }, () => {
-    setupComponent();
+  it(
+    'Search results component is created correctly for minor creditors',
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3782') },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+    },
+  );
 
-  it('(AC2) Displays error message when no minor creditor search matches are found', { tags: ['PO-708'] }, () => {
-    setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
+  it(
+    '(AC2) Displays error message when no minor creditor search matches are found',
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3783') },
+    () => {
+      setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
-    cy.get(DOM_ELEMENTS.noResultsHeading).should('be.visible');
-    cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(DOM_ELEMENTS.noResultsHeading).should('be.visible');
+      cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
 
-    cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible');
-    cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
+      cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible');
+      cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
 
-    //(AC2b) Check your search link is clickable and functional
-    // Test that the link is clickable (Full Test to be implemented when API complete)
-    cy.get(DOM_ELEMENTS.checkSearchLink).should('have.class', 'govuk-link');
-    cy.get(DOM_ELEMENTS.checkSearchLink).click();
-  });
+      //(AC2b) Check your search link is clickable and functional
+      // Test that the link is clickable (Full Test to be implemented when API complete)
+      cy.get(DOM_ELEMENTS.checkSearchLink).should('have.class', 'govuk-link');
+      cy.get(DOM_ELEMENTS.checkSearchLink).click();
+    },
+  );
 
-  it('(AC3) Handles more than 100 minor creditor search matches correctly', { tags: ['PO-708'] }, () => {
-    setupComponent(LARGE_SEARCH_RESULTS_MOCK);
+  it(
+    '(AC3) Handles more than 100 minor creditor search matches correctly',
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3784') },
+    () => {
+      setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
 
-    // Should show too many results message when more than 100 results
-    cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('be.visible');
-    cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      // Should show too many results message when more than 100 results
+      cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('be.visible');
+      cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('contain', 'There are more than 100 results');
 
-    cy.get(DOM_ELEMENTS.addMoreInfoLink).should('be.visible');
-    cy.get(DOM_ELEMENTS.addMoreInfoLink).should('contain', 'Try adding more information');
+      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('be.visible');
+      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('contain', 'Try adding more information');
 
-    cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
+      cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
 
-    //(AC3b) Try adding more information link is clickable and functional
-    // Test that the link is clickable (Full Test to be implemented when API complete)
-    cy.get(DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
-    cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
-  });
+      //(AC3b) Try adding more information link is clickable and functional
+      // Test that the link is clickable (Full Test to be implemented when API complete)
+      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
+      cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
+    },
+  );
 
   it(
     '(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting',
-    { tags: ['PO-708'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3785') },
     () => {
       setupComponent(INDIVIDUAL_SEARCH_RESULTS_MOCK);
 
@@ -158,7 +174,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting',
-    { tags: ['PO-708'] },
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3786') },
     () => {
       setupComponent(COMPANY_SEARCH_RESULTS_MOCK);
 
@@ -203,130 +219,138 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     },
   );
 
-  it('(AC4d) Displays pagination with 25 results per page for maximum of 100 results', { tags: ['PO-708'] }, () => {
-    // Using LARGE_SEARCH_RESULTS_MOCK but limiting to 100 results for pagination testing
-    const paginationMock = {
-      count: 100,
-      creditor_accounts: LARGE_SEARCH_RESULTS_MOCK.creditor_accounts.slice(0, 100),
-    };
+  it(
+    '(AC4d) Displays pagination with 25 results per page for maximum of 100 results',
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3787') },
+    () => {
+      // Using LARGE_SEARCH_RESULTS_MOCK but limiting to 100 results for pagination testing
+      const paginationMock = {
+        count: 100,
+        creditor_accounts: LARGE_SEARCH_RESULTS_MOCK.creditor_accounts.slice(0, 100),
+      };
 
-    setupComponent(paginationMock);
+      setupComponent(paginationMock);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-    cy.get(DOM_ELEMENTS.paginationElement).should('exist');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 total results');
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(DOM_ELEMENTS.paginationElement).should('exist');
+      cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 total results');
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
 
-    // Verify pagination shows 4 pages total
-    cy.get(DOM_ELEMENTS.paginationList).within(() => {
-      cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
-      cy.contains('1').should('exist');
-      cy.contains('2').should('exist');
-      cy.get(DOM_ELEMENTS.paginationListItemEllipses).should('exist');
-      cy.contains('4').should('exist');
-    });
+      // Verify pagination shows 4 pages total
+      cy.get(DOM_ELEMENTS.paginationList).within(() => {
+        cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
+        cy.contains('1').should('exist');
+        cy.contains('2').should('exist');
+        cy.get(DOM_ELEMENTS.paginationListItemEllipses).should('exist');
+        cy.contains('4').should('exist');
+      });
 
-    cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
 
-    cy.get(DOM_ELEMENTS.paginationPageNumber(2)).click();
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
-    cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(DOM_ELEMENTS.paginationPageNumber(2)).click();
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
+      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
 
-    cy.get(DOM_ELEMENTS.paginationPageNumber(4)).click();
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
-    cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(DOM_ELEMENTS.paginationPageNumber(4)).click();
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
+      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
 
-    cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
-    cy.get(DOM_ELEMENTS.nextPageButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
+      cy.get(DOM_ELEMENTS.nextPageButton).should('not.exist');
 
-    cy.get(DOM_ELEMENTS.previousPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
-    cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(DOM_ELEMENTS.previousPageButton).click();
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
+      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
 
-    cy.get(DOM_ELEMENTS.nextPageButton).should('exist');
-    cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
-  });
+      cy.get(DOM_ELEMENTS.nextPageButton).should('exist');
+      cy.get(DOM_ELEMENTS.nextPageButton).click();
+      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
+    },
+  );
 
-  it('(AC4f) Should sort by each column - ascending then descending', { tags: ['PO-708'] }, () => {
-    setupComponent(SORTING_MINOR_CREDITORS_MOCK);
+  it(
+    '(AC4f) Should sort by each column - ascending then descending',
+    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3788') },
+    () => {
+      setupComponent(SORTING_MINOR_CREDITORS_MOCK);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
-    cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
 
-    // Initially account number in descending order
-    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14005MC');
-    cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14001MC');
+      // Initially account number in descending order
+      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14005MC');
+      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14001MC');
 
-    // Test Account column sorting - sort ascending
-    cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14001MC');
-    cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14005MC');
+      // Test Account column sorting - sort ascending
+      cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14001MC');
+      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14005MC');
 
-    // sort descending
-    cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14005MC');
-    cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14001MC');
+      // sort descending
+      cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14005MC');
+      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14001MC');
 
-    // Test Name column sorting - sort ascending
-    cy.get(DOM_ELEMENTS.nameHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'ANDERSON, Lisa');
-    cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'WILLIAMS, Sarah');
+      // Test Name column sorting - sort ascending
+      cy.get(DOM_ELEMENTS.nameHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'ANDERSON, Lisa');
+      cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'WILLIAMS, Sarah');
 
-    // sort descending
-    cy.get(DOM_ELEMENTS.nameHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'WILLIAMS, Sarah');
-    cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'ANDERSON, Lisa');
+      // sort descending
+      cy.get(DOM_ELEMENTS.nameHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'WILLIAMS, Sarah');
+      cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'ANDERSON, Lisa');
 
-    // Test Address column sorting - sort ascending
-    cy.get(DOM_ELEMENTS.addressHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '1 High Street');
-    cy.get(DOM_ELEMENTS.addressCell).eq(4).should('contain', '8 Park Avenue');
+      // Test Address column sorting - sort ascending
+      cy.get(DOM_ELEMENTS.addressHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '1 High Street');
+      cy.get(DOM_ELEMENTS.addressCell).eq(4).should('contain', '8 Park Avenue');
 
-    // sort descending
-    cy.get(DOM_ELEMENTS.addressHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '8 Park Avenue');
-    cy.get(DOM_ELEMENTS.addressCell).eq(4).should('contain', '1 High Street');
+      // sort descending
+      cy.get(DOM_ELEMENTS.addressHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '8 Park Avenue');
+      cy.get(DOM_ELEMENTS.addressCell).eq(4).should('contain', '1 High Street');
 
-    // Test Postcode column sorting - sort ascending
-    cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'B2 4TY');
-    cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'RG1 9RT');
+      // Test Postcode column sorting - sort ascending
+      cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'B2 4TY');
+      cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'RG1 9RT');
 
-    // sort descending
-    cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'RG1 9RT');
-    cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'B2 4TY');
+      // sort descending
+      cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'RG1 9RT');
+      cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'B2 4TY');
 
-    // Test Balance column sorting - sort ascending
-    cy.get(DOM_ELEMENTS.balanceHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£310.00');
-    cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£890.00');
+      // Test Balance column sorting - sort ascending
+      cy.get(DOM_ELEMENTS.balanceHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£310.00');
+      cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£890.00');
 
-    // sort descending
-    cy.get(DOM_ELEMENTS.balanceHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£890.00');
-    cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£310.00');
+      // sort descending
+      cy.get(DOM_ELEMENTS.balanceHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£890.00');
+      cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£310.00');
 
-    // Test Business unit column sorting - sort ascending
-    cy.get(DOM_ELEMENTS.businessUnitHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Central Unit');
-    cy.get(DOM_ELEMENTS.businessUnitCell).eq(4).should('contain', 'West Unit');
+      // Test Business unit column sorting - sort ascending
+      cy.get(DOM_ELEMENTS.businessUnitHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Central Unit');
+      cy.get(DOM_ELEMENTS.businessUnitCell).eq(4).should('contain', 'West Unit');
 
-    // sort descending
-    cy.get(DOM_ELEMENTS.businessUnitHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'West Unit');
-    cy.get(DOM_ELEMENTS.businessUnitCell).eq(4).should('contain', 'Central Unit');
+      // sort descending
+      cy.get(DOM_ELEMENTS.businessUnitHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'West Unit');
+      cy.get(DOM_ELEMENTS.businessUnitCell).eq(4).should('contain', 'Central Unit');
 
-    // Test Defendant column sorting - sort ascending
-    cy.get(DOM_ELEMENTS.defendantHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'ANDERSON, Lisa');
-    cy.get(DOM_ELEMENTS.defendantCell).eq(4).should('contain', 'WILLIAMS, Sarah');
+      // Test Defendant column sorting - sort ascending
+      cy.get(DOM_ELEMENTS.defendantHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'ANDERSON, Lisa');
+      cy.get(DOM_ELEMENTS.defendantCell).eq(4).should('contain', 'WILLIAMS, Sarah');
 
-    // sort descending
-    cy.get(DOM_ELEMENTS.defendantHeader).find('button').click();
-    cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'WILLIAMS, Sarah');
-    cy.get(DOM_ELEMENTS.defendantCell).eq(4).should('contain', 'ANDERSON, Lisa');
-  });
+      // sort descending
+      cy.get(DOM_ELEMENTS.defendantHeader).find('button').click();
+      cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'WILLIAMS, Sarah');
+      cy.get(DOM_ELEMENTS.defendantCell).eq(4).should('contain', 'ANDERSON, Lisa');
+    },
+  );
 });

@@ -166,7 +166,12 @@ When('I record imposition financial details:', (table: DataTable) => {
     amountPaid: normalize(row['Amount paid']),
   }));
 
-  upsertImpositionFinancialRows(rows);
+  log('flow', 'Recording imposition financial details', { rows });
+  flow().recordImpositionFinancialDetails(rows);
+  const lastImposition = rows[rows.length - 1]?.imposition;
+  if (lastImposition && !Number.isNaN(lastImposition)) {
+    setCurrentImpositionIndex(lastImposition - 1);
+  }
 });
 
 /**
@@ -517,22 +522,18 @@ Then('I see the following offence detail fields:', (table: DataTable) => {
 
  */
 When('I set imposition creditor types:', (table: DataTable) => {
-  const rows = table.hashes();
-  rows.forEach((row) => {
-    const index = Number(row['Imposition']) - 1;
-    setCurrentImpositionIndex(index);
-    const type = (row['Creditor type'] || '').toLowerCase();
-    const search = row['Creditor search'];
+  const normalize = (value?: string) => (value ?? '').toString().trim();
+  const rows = table.hashes().map((row) => ({
+    imposition: Number(normalize(row['Imposition'])),
+    creditorType: normalize(row['Creditor type']),
+    creditorSearch: normalize(row['Creditor search']),
+  }));
 
-    if (type.includes('major')) {
-      offenceDetails().selectCreditorType(index, 'major');
-      if (search) {
-        offenceDetails().setMajorCreditor(index, search);
-      }
-    } else if (type.includes('minor')) {
-      offenceDetails().selectCreditorType(index, 'minor');
-    }
-  });
+  flow().setImpositionCreditorTypes(rows);
+  const lastImposition = rows[rows.length - 1]?.imposition;
+  if (lastImposition && !Number.isNaN(lastImposition)) {
+    setCurrentImpositionIndex(lastImposition - 1);
+  }
 });
 
 /**

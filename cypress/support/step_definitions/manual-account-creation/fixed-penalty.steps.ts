@@ -229,15 +229,15 @@ Then('I see a fixed penalty error {string} for {string}', (message: string, fiel
 });
 
 /**
- * @step Navigates browser back from Fixed Penalty details, handling unsaved changes.
- * @description Triggers browser back and responds to the confirm dialog with the given choice.
+ * @step Navigates back from Fixed Penalty details, handling unsaved changes.
+ * @description Uses the page back link and responds to the confirm dialog with the given choice.
  * @param choice - "Ok" to leave or "Cancel" to stay.
  */
 When('I navigate back from fixed penalty details choosing {string}', (choice: 'Ok' | 'Cancel') => {
   const accept = choice.toLowerCase() === 'ok';
-  log('navigate', 'Browser back from fixed penalty details', { choice });
+  log('navigate', 'Back link from fixed penalty details', { choice });
   common().confirmNextUnsavedChanges(accept);
-  cy.go('back');
+  details().clickBackLink();
 });
 
 /**
