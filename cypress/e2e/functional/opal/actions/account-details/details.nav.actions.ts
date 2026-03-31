@@ -83,6 +83,35 @@ export class AccountDetailsNavActions {
   }
 
   /**
+   * Navigates to the "Fixed penalty" tab within the Account Details shell.
+   *
+   * @description
+   * Clicks the “Fixed penalty” sub-navigation tab and prepares for assertions
+   * or further content checks within the tab panel.
+   */
+  goToFixedPenaltyTab(): void {
+    log('navigate', 'Navigating to "Fixed penalty" tab');
+
+    cy.get(N.subNav.fixedPenaltyTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
+   * Asserts that the "Fixed penalty" tab is visible within the Account Details shell.
+   *
+   * @description
+   * Confirms that the fixed-penalty sub-navigation tab is rendered and available to the user.
+   *
+   * @example
+   *  const nav = new AccountDetailsNavActions();
+   *  nav.assertFixedPenaltyTabIsVisible();
+   */
+  assertFixedPenaltyTabIsVisible(): void {
+    log('assert', 'Asserting "Fixed penalty" tab is visible');
+
+    cy.get(N.subNav.fixedPenaltyTab, { timeout: 10_000 }).should('be.visible').and('contain.text', 'Fixed penalty');
+  }
+
+  /**
    * Navigates to the "Payment terms" tab within the Account Details shell.
    *
    * @description
