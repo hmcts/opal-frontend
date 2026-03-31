@@ -41,7 +41,7 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       priority: 5,
     },
     offenceCodeValidationPending: {
-      message: 'Wait for offence code validation to complete',
+      message: 'Offence code still being validated',
       priority: 6,
     },
     invalidOffenceCode: {
