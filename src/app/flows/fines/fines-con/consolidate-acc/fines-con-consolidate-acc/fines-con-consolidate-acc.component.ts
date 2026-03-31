@@ -20,6 +20,8 @@ import { FinesConSearchAccountComponent } from '../fines-con-search-account/fine
 import { FinesConDefendant } from '../../types/fines-con-defendant.type';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
+import { FinesConSearchResultComponent } from '@app/flows/fines/fines-con/consolidate-acc/fines-con-search-result/fines-con-search-result.component';
+import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
 
 @Component({
   selector: 'app-fines-con-consolidate-acc',
@@ -33,6 +35,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
     GovukBackLinkComponent,
     GovukCancelLinkComponent,
     FinesConSearchAccountComponent,
+    FinesConSearchResultComponent,
   ],
   templateUrl: './fines-con-consolidate-acc.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,6 +46,25 @@ export class FinesConConsolidateAccComponent implements OnInit {
   protected readonly finesConStore = inject(FinesConStore);
   protected readonly tabs: IFinesConConsolidateAccTabs = FINES_CON_CONSOLIDATE_ACC_TABS;
   protected businessUnitRefData: IOpalFinesBusinessUnit[] = [];
+  protected defendantAccountsSearchPayload: IOpalFinesDefendantAccountSearchParams | null = null;
+
+  /**
+   * Keeps URL fragment in sync with the current tab for moj sub-navigation state.
+   *
+   * @param tabFragment - Active tab fragment.
+   */
+  private syncTabFragment(tabFragment: string): void {
+    if (this.activatedRoute.snapshot.fragment === tabFragment) {
+      return;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      fragment: tabFragment,
+      queryParamsHandling: 'preserve',
+      replaceUrl: true,
+    });
+  }
 
   /**
    * Retrieves business unit reference data from the route resolver.
@@ -98,7 +120,20 @@ export class FinesConConsolidateAccComponent implements OnInit {
    * Handles tab switch by updating the active tab in the store
    */
   public handleTabSwitch(tabFragment: string): void {
+    if (tabFragment !== 'results') {
+      this.defendantAccountsSearchPayload = null;
+    }
+
     this.finesConStore.setActiveTab(tabFragment);
+    this.syncTabFragment(tabFragment);
+  }
+
+  /**
+   * Stores the transformed defendant account search payload emitted from the search tab.
+   */
+  public handleSearchPayload(payload: IOpalFinesDefendantAccountSearchParams): void {
+    this.defendantAccountsSearchPayload = payload;
+    this.handleTabSwitch('results');
   }
 
   /**

@@ -31,6 +31,7 @@ export class ConsolidationFlow {
     this.consolidation.selectBusinessUnitIfRequired();
     this.consolidation.selectDefendantType(defendantType);
     this.consolidation.continueFromSelectBusinessUnit();
+    this.consolidation.waitForAccountSearchScreen(defendantType);
   }
 
   /**
@@ -41,16 +42,112 @@ export class ConsolidationFlow {
     this.consolidation.clickSearch();
   }
 
+  /** Clears the consolidation account-search form. */
+  public clearConsolidationSearch(): void {
+    log('flow', 'Clearing consolidation account-search form');
+    this.consolidation.clearSearch();
+  }
+
   /** Asserts consolidation account search lands on Search tab for Individuals. */
   public assertSearchTabForIndividuals(): void {
     log('flow', 'Asserting consolidation account search is on Search tab for Individuals');
     this.consolidation.assertOnSearchTabForIndividuals();
   }
 
+  /** Asserts the user is on the consolidation business unit and defendant type selection screen. */
+  public assertSelectBusinessUnitScreen(): void {
+    log('flow', 'Asserting consolidation select business unit screen is displayed');
+    this.consolidation.assertOnSelectBusinessUnitScreen();
+  }
+
   /** Asserts consolidation account search lands on Search tab for Companies. */
   public assertSearchTabForCompanies(): void {
     log('flow', 'Asserting consolidation account search is on Search tab for Companies');
     this.consolidation.assertOnSearchTabForCompanies();
+  }
+
+  /** Asserts the page-header back link is displayed on the consolidation shell. */
+  public assertBackLinkIsDisplayed(): void {
+    log('flow', 'Asserting consolidation page-header back link is displayed');
+    this.consolidation.assertBackLinkIsDisplayed();
+  }
+
+  /** Clicks the page-header back link on the consolidation shell. */
+  public clickBackLink(): void {
+    log('flow', 'Clicking consolidation page-header back link');
+    this.consolidation.clickBackLink();
+  }
+
+  /** Opens the consolidation Results tab. */
+  public openResultsTab(): void {
+    log('flow', 'Opening consolidation Results tab');
+    this.consolidation.openResultsTab();
+  }
+
+  /** Asserts consolidation account search lands on the Results tab. */
+  public assertResultsTab(): void {
+    log('flow', 'Asserting consolidation account search is on the Results tab');
+    this.consolidation.assertOnResultsTab();
+  }
+
+  /** Asserts consolidation account search lands on the Results tab for Individuals with the correct summary values. */
+  public assertResultsTabForIndividuals(): void {
+    log('flow', 'Asserting consolidation account search is on the Results tab for Individuals');
+    this.consolidation.assertOnResultsTabForDefendantType('Individual');
+  }
+
+  /** Asserts consolidation account search lands on the Results tab for Companies with the correct summary values. */
+  public assertResultsTabForCompanies(): void {
+    log('flow', 'Asserting consolidation account search is on the Results tab for Companies');
+    this.consolidation.assertOnResultsTabForDefendantType('Company');
+  }
+
+  /** Asserts the created account number is rendered as a hyperlink in consolidation results. */
+  public assertCreatedAccountLinkIsDisplayed(): void {
+    log('flow', 'Asserting created consolidation result account is displayed as a hyperlink');
+    this.consolidation.assertCreatedAccountLinkIsDisplayed();
+  }
+
+  /** Asserts the consolidation no matching results state is displayed. */
+  public assertNoMatchingResultsState(): void {
+    log('flow', 'Asserting consolidation no matching results state');
+    this.consolidation.assertNoMatchingResultsState();
+  }
+
+  /**
+   * Asserts the consolidation results do not contain the supplied balance.
+   * @param balance - Forbidden rendered balance value.
+   */
+  public assertResultsExcludeBalance(balance: string): void {
+    log('flow', 'Asserting consolidation results exclude balance', { balance });
+    this.consolidation.assertResultsExcludeBalance(balance);
+  }
+
+  /** Clicks the Check your search hyperlink from the consolidation no matching results state. */
+  public clickCheckYourSearchFromNoMatchingResults(): void {
+    log('flow', 'Clicking Check your search from consolidation no matching results state');
+    this.consolidation.clickCheckYourSearchFromNoMatchingResults();
+  }
+
+  /** Opens the created consolidation result account and verifies the new-tab FAE details navigation. */
+  public openCreatedAccountFromResultsInNewTab(): void {
+    log('flow', 'Opening created consolidation result account in a new tab');
+    this.consolidation.openCreatedAccountFromResultsInNewTab();
+  }
+
+  /**
+   * Asserts the consolidation search error page for the given defendant type.
+   * @param defendantType - "Individual" or "Company"
+   */
+  public assertSearchErrorPage(defendantType: ConsolidationDefendantType): void {
+    log('flow', 'Asserting consolidation search error page', { defendantType });
+    this.consolidation.assertSearchErrorPage(defendantType);
+  }
+
+  /** Clicks the back link on the consolidation search error page. */
+  public goBackFromSearchError(): void {
+    log('flow', 'Going back from consolidation search error page');
+    this.consolidation.goBackFromSearchError();
   }
 
   /**

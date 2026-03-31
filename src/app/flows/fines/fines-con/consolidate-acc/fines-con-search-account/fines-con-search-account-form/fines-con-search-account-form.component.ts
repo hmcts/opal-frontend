@@ -16,6 +16,7 @@ import { consolidateSearchAccountFormValidator } from './validators/fines-con-se
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-con-search-account-form-individuals/constants/fines-con-search-account-form-individuals-field-errors.constant';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-con-search-account-form-companies/constants/fines-con-search-account-form-companies-field-errors.constant';
+import { FINES_CON_ROUTING_PATHS } from '../../../routing/constants/fines-con-routing-paths.constant';
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   ACCOUNT_NUMBER_PATTERN,
@@ -57,6 +58,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValida
 })
 export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponent {
   private readonly finesConStore = inject(FinesConStore);
+  private readonly finesConRoutingPaths = FINES_CON_ROUTING_PATHS;
 
   @Output() protected override formSubmit = new EventEmitter<IFinesConSearchAccountForm>();
   override fieldErrors: IFinesConSearchAccountFieldErrors = {
@@ -65,6 +67,30 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
     ...FINES_CON_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
   };
   @Input({ required: true }) defendantType: FinesConDefendant = 'individual';
+
+  /**
+   * Pre-submit guard for mixed quick + advanced criteria.
+   * Navigates to the search error screen when mutually exclusive criteria are combined.
+   *
+   * @returns `true` when submission should continue, otherwise `false`.
+   */
+  private handleFormSubmission(): boolean {
+    this.form.updateValueAndValidity({ emitEvent: false });
+
+    if (this.form.errors?.['atLeastOneCriteriaRequired']) {
+      this.setSearchAccountTemporary();
+      this['router'].navigate([this.finesConRoutingPaths.children.searchError], {
+        relativeTo: this['activatedRoute'].parent,
+      });
+      return false;
+    }
+
+    if (this.form.errors?.['formEmpty']) {
+      return false;
+    }
+
+    return true;
+  }
 
   /**
    * Creates the form with quick search fields and detail search fields.
@@ -134,6 +160,19 @@ export class FinesConSearchAccountFormComponent extends AbstractFormBaseComponen
   public override ngOnInit(): void {
     this.initialFormSetup();
     super.ngOnInit();
+  }
+
+  /**
+   * Runs pre-submit guards, then delegates to the base submit flow.
+   *
+   * @param event - Native submit event.
+   */
+  public override handleFormSubmit(event: SubmitEvent): void {
+    if (!this.handleFormSubmission()) {
+      return;
+    }
+
+    super.handleFormSubmit(event);
   }
 
   /**
