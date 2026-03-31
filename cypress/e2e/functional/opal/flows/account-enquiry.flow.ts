@@ -1,5 +1,6 @@
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { AccountSearchCompanyActions } from '../actions/search/search.companies.actions';
+import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { AccountSearchNavActions } from '../actions/search/search.nav.actions';
 import { AccountDetailsNotesActions } from '../actions/account-details/details.notes.actions';
 import { ResultsActions } from '../actions/search/search.results.actions';
@@ -57,6 +58,7 @@ export class AccountEnquiryFlow {
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCompany = new AccountSearchCompanyActions();
   private readonly searchNav = new AccountSearchNavActions();
+  private readonly searchCommon = new AccountSearchCommonActions();
   private readonly results = new ResultsActions();
   private readonly defendantDetails = new AccountDetailsDefendantActions();
   private readonly parentGuardianDetails = new AccountDetailsParentGuardianActions();
