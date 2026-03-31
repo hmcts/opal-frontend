@@ -13,6 +13,7 @@ import { IComponentProperties } from './setupComponent.interface';
 export const setupConsolidationComponent = (componentProperties: IComponentProperties = {}) => {
   const fragment = componentProperties.fragments ?? 'search';
   const defendantType = componentProperties.defendantType ?? 'individual';
+  const initialResults = structuredClone(componentProperties.initialResults ?? []);
 
   const finesConSelectBuFormData =
     defendantType === 'company'
@@ -32,6 +33,11 @@ export const setupConsolidationComponent = (componentProperties: IComponentPrope
           const store = new FinesConStore();
           store.updateSelectBuForm(finesConSelectBuFormData);
           store.updateSearchAccountFormTemporary(searchAccountFormData);
+          if (defendantType === 'company') {
+            store.updateDefendantResults([], initialResults);
+          } else {
+            store.updateDefendantResults(initialResults, []);
+          }
           store.setActiveTab(fragment);
 
           if (componentProperties.updateSearchSpy) {

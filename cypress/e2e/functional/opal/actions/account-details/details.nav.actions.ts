@@ -133,6 +133,19 @@ export class AccountDetailsNavActions {
   }
 
   /**
+   * Navigates to the "Enforcement" tab within the Account Details shell.
+   *
+   * @description
+   * Clicks the “Enforcement” sub-navigation tab and prepares for assertions
+   * or further content checks within the tab panel.
+   */
+  goToEnforcementTab(): void {
+    log('navigate', 'Navigating to "Enforcement" tab');
+
+    cy.get(N.subNav.enforcementTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
    * Asserts that the "Parent or guardian" tab is currently active.
    *
    * @description
@@ -209,5 +222,21 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Payment terms');
+  }
+
+  /**
+   * Asserts that the "Enforcement" tab is currently active.
+   *
+   * @description
+   * Confirms that the active tab link displays “Enforcement”
+   * and has the `aria-current="page"` attribute.
+   */
+  assertEnforcementTabIsActive(): void {
+    log('assert', 'Asserting "Enforcement" tab is active');
+
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Enforcement');
   }
 }

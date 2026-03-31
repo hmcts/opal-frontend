@@ -3,6 +3,7 @@ import { IOpalFinesDefendantAccountSearchParamsReference } from './opal-fines-de
 
 export interface IOpalFinesDefendantAccountSearchParams {
   active_accounts_only: boolean | null;
+  consolidation_search: boolean | null;
   business_unit_ids: number[] | null;
   reference_number: IOpalFinesDefendantAccountSearchParamsReference | null;
   defendant: IOpalFinesDefendantAccountSearchParamsDefendant | null;

@@ -10,5 +10,6 @@ export interface IFinesAccDefendantRoutingPaths extends IChildRoutingPaths {
     'payment-terms': string;
     party: string;
     'payment-card': string;
+    enforcement: string;
   };
 }

@@ -1,1 +1,153 @@
-{"cypress/e2e/functional/opal/features/consolidation/FineAccountConsolidation.feature":{"time":7474,"weight":2},"cypress/e2e/functional/opal/features/consolidation/FinesAccountConsolidationAccessibility.feature":{"time":3936,"weight":1},"cypress/e2e/functional/opal/features/fineAccountEnquiry/ViewDefendantAccountSummary/ViewDefendantAccountSummary.feature":{"time":28957,"weight":8},"cypress/e2e/functional/opal/features/fineAccountEnquiry/ViewDefendantAccountSummary/ViewDefendantAccountSummaryAccessibility.feature":{"time":17577,"weight":5},"cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesAmendPaymentTerms.feature":{"time":37239,"weight":11},"cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesAmendPaymentTermsAccessibility.feature":{"time":6364,"weight":1},"cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesRequestPaymentCard.feature":{"time":7121,"weight":2},"cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesRequestPaymentCardAccessibility.feature":{"time":4756,"weight":1},"cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesViewDetails.feature":{"time":82030,"weight":25},"cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesViewDetailsAccessibility.feature":{"time":9542,"weight":2},"cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/addAccountNote.feature":{"time":34967,"weight":10},"cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/addAccountNoteAccessibility.feature":{"time":9934,"weight":3},"cypress/e2e/functional/opal/features/fineAccountEnquiry/searchAndMatches/searchAndMatches.feature":{"time":80949,"weight":24},"cypress/e2e/functional/opal/features/fineAccountEnquiry/searchAndMatches/searchAndMatchesAccessibility.feature":{"time":5258,"weight":1},"cypress/e2e/functional/opal/features/fineAccountEnquiry/searchAndMatches/searchForAccountFilterByBU.feature":{"time":10590,"weight":3},"cypress/e2e/functional/opal/features/globalApiInterceptor.feature":{"time":69290,"weight":21},"cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidateDraftAccounts/checkAndValidateDraftAccounts.feature":{"time":64452,"weight":19},"cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidateDraftAccounts/checkAndValidateDraftAccountsE2ETech.feature":{"time":39210,"weight":12},"cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidateDraftAccounts/draftAccountsConcurrency.feature":{"time":5873,"weight":1},"cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidate/checkAndValidate.feature":{"time":84527,"weight":26},"cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidate/checkAndValidateAccessibility.feature":{"time":24446,"weight":7},"cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidate/fixedPenaltyFailedAccounts.feature":{"time":13363,"weight":4},"cypress/e2e/functional/opal/features/manualAccountCreation/fixedPenalty/fixedPenalty.feature":{"time":96356,"weight":29},"cypress/e2e/functional/opal/features/manualAccountCreation/fixedPenalty/fixedPenaltyAccessibility.feature":{"time":4383,"weight":1},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/PopulateAndSubmit.feature":{"time":131521,"weight":40},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/PopulateAndSubmitAccessibility.feature":{"time":31259,"weight":9},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/AccountCommentsAndNotes.feature":{"time":15202,"weight":4},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/CompanyDetails.feature":{"time":17140,"weight":5},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/ContactDetails.feature":{"time":15888,"weight":4},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/CourtDetails.feature":{"time":19951,"weight":6},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/EmployerDetails.feature":{"time":20164,"weight":6},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/LanguagePreferences.feature":{"time":10036,"weight":3},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/LocalJusticeAreasFiltering.feature":{"time":8075,"weight":2},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/OffenceDetails.feature":{"time":155188,"weight":47},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/ParentGuardianDetails.feature":{"time":23548,"weight":7},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/PaymentTerms.feature":{"time":23056,"weight":7},"cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/PersonalDetails.feature":{"time":25554,"weight":7},"cypress/e2e/functional/opal/features/navigation/finesPrimaryNavigation.feature":{"time":13479,"weight":4},"cypress/e2e/functional/opal/features/reciprocalMaintenance/dummyTest.feature":{"time":5246,"weight":1}}
+{
+  "cypress/e2e/functional/opal/features/consolidation/FineAccountConsolidation.feature": { "time": 6262, "weight": 2 },
+  "cypress/e2e/functional/opal/features/consolidation/FinesAccountConsolidationAccessibility.feature": {
+    "time": 3397,
+    "weight": 1
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/ViewDefendantAccountSummary/ViewDefendantAccountSummary.feature": {
+    "time": 18108,
+    "weight": 8
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/ViewDefendantAccountSummary/ViewDefendantAccountSummaryAccessibility.feature": {
+    "time": 13270,
+    "weight": 5
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesAddEnforcementOverride.feature": {
+    "time": 7392,
+    "weight": 3
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesAmendPaymentTerms.feature": {
+    "time": 25066,
+    "weight": 11
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesAmendPaymentTermsAccessibility.feature": {
+    "time": 3132,
+    "weight": 1
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesRequestPaymentCard.feature": {
+    "time": 3277,
+    "weight": 1
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesRequestPaymentCardAccessibility.feature": {
+    "time": 2905,
+    "weight": 1
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesViewDetails.feature": {
+    "time": 46493,
+    "weight": 20
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/AccountEnquiriesViewDetailsAccessibility.feature": {
+    "time": 6675,
+    "weight": 2
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/FineAccountEnquiryAccessibility.feature": {
+    "time": 16998,
+    "weight": 7
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/addAccountNote.feature": {
+    "time": 26186,
+    "weight": 11
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/accountEnquiry/addAccountNoteAccessibility.feature": {
+    "time": 7724,
+    "weight": 3
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/searchAndMatches/searchAndMatches.feature": {
+    "time": 63683,
+    "weight": 28
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/searchAndMatches/searchAndMatchesAccessibility.feature": {
+    "time": 3650,
+    "weight": 1
+  },
+  "cypress/e2e/functional/opal/features/fineAccountEnquiry/searchAndMatches/searchForAccountFilterByBU.feature": {
+    "time": 7899,
+    "weight": 3
+  },
+  "cypress/e2e/functional/opal/features/globalApiInterceptor.feature": { "time": 44363, "weight": 19 },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidateDraftAccounts/checkAndValidateDraftAccounts.feature": {
+    "time": 27448,
+    "weight": 12
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidateDraftAccounts/checkAndValidateDraftAccountsE2ETech.feature": {
+    "time": 10012,
+    "weight": 4
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidateDraftAccounts/draftAccountsConcurrency.feature": {
+    "time": 2426,
+    "weight": 1
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidate/checkAndValidate.feature": {
+    "time": 39955,
+    "weight": 17
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidate/checkAndValidateAccessibility.feature": {
+    "time": 12920,
+    "weight": 5
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/checkAndValidate/fixedPenaltyFailedAccounts.feature": {
+    "time": 10577,
+    "weight": 4
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/fixedPenalty/fixedPenalty.feature": {
+    "time": 74293,
+    "weight": 33
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/fixedPenalty/fixedPenaltyAccessibility.feature": {
+    "time": 3166,
+    "weight": 1
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/PopulateAndSubmit.feature": {
+    "time": 98678,
+    "weight": 44
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/PopulateAndSubmitAccessibility.feature": {
+    "time": 23971,
+    "weight": 10
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/AccountCommentsAndNotes.feature": {
+    "time": 12522,
+    "weight": 5
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/CompanyDetails.feature": {
+    "time": 15870,
+    "weight": 7
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/ContactDetails.feature": {
+    "time": 14275,
+    "weight": 6
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/CourtDetails.feature": {
+    "time": 15399,
+    "weight": 6
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/EmployerDetails.feature": {
+    "time": 15351,
+    "weight": 6
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/LanguagePreferences.feature": {
+    "time": 5857,
+    "weight": 2
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/LocalJusticeAreasFiltering.feature": {
+    "time": 6333,
+    "weight": 2
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/OffenceDetails.feature": {
+    "time": 140263,
+    "weight": 62
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/ParentGuardianDetails.feature": {
+    "time": 20200,
+    "weight": 9
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/PaymentTerms.feature": {
+    "time": 19376,
+    "weight": 8
+  },
+  "cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/PersonalDetails.feature": {
+    "time": 18238,
+    "weight": 8
+  },
+  "cypress/e2e/functional/opal/features/reciprocalMaintenance/dummyTest.feature": { "time": 679, "weight": 0 }
+}
