@@ -18,6 +18,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['src/test-setup.ts'],
     exclude: [
+      'node_modules/**',
       'cypress/**',
       '**/*.cy.ts',
       'src/**/*.component.html',
@@ -33,6 +34,7 @@ export default defineConfig({
       reporter: ['text', 'html', 'lcov', 'json'],
       reportsDirectory: 'coverage',
       exclude: [
+        'node_modules/**',
         'cypress/**',
         '**/*.cy.ts',
         'src/**/*.component.html',

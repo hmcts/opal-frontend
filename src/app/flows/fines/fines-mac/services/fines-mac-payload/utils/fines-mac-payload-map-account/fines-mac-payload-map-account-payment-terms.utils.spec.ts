@@ -1,7 +1,7 @@
 import { finesMacPayloadMapAccountPaymentTerms } from './fines-mac-payload-map-account-payment-terms.utils';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
-import { FINES_PAYMENT_TERMS_OPTIONS } from 'src/app/flows/fines/constants/fines-payment-terms-options.constant';
+import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../../../constants/fines-payment-terms-options.constant';
 import { describe, beforeEach, afterAll, it, expect } from 'vitest';
 
 describe('finesMacPayloadMapAccountPaymentTerms', () => {
