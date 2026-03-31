@@ -88,7 +88,7 @@ describe('FinesMacSubmitConfirmationComponent', () => {
     expect(templateFunction).not.toContain('keyup.enter');
   });
 
-  it('should navigate to create account on createNewAccount', () => {
+  it('should navigate to originator type on createNewAccount', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
@@ -119,7 +119,7 @@ describe('FinesMacSubmitConfirmationComponent', () => {
     expect(event.defaultPrevented).toBe(true);
   });
 
-  it('should prevent default and navigate when createNewAccount is called with an event', () => {
+  it('should prevent default and navigate to originator type when createNewAccount is called with an event', () => {
     const event = new Event('click');
     const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -128,7 +128,7 @@ describe('FinesMacSubmitConfirmationComponent', () => {
     component.createNewAccount(event);
 
     expect(preventDefaultSpy).toHaveBeenCalled();
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.createAccount], {
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.originatorType], {
       relativeTo: component['activatedRoute'].parent,
     });
   });

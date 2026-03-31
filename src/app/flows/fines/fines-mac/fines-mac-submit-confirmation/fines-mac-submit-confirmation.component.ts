@@ -19,10 +19,10 @@ export class FinesMacSubmitConfirmationComponent {
   private readonly finesMacStore = inject(FinesMacStore);
 
   /**
-   * Navigates to the create account page within the fines MAC flow.
+   * Navigates to the originator type step within the fines MAC flow.
    *
    * This method uses the Angular Router to navigate to the route specified
-   * by `FINES_MAC_ROUTING_PATHS.children.createAccount`. The navigation is
+   * by `FINES_MAC_ROUTING_PATHS.children.originatorType`. The navigation is
    * relative to the parent route of the current activated route.
    *
    * @param event - The optional DOM event that triggered the navigation.
