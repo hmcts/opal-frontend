@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FinesConStore } from '../../stores/fines-con.store';
 import { FinesConStoreType } from '../../stores/types/fines-con-store.type';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 
 describe('FinesConConsolidateAccComponent', () => {
   let component: FinesConConsolidateAccComponent;
@@ -94,7 +96,9 @@ describe('FinesConConsolidateAccComponent', () => {
 
     await Promise.resolve();
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['dashboard']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      `/${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}`,
+    ]);
     expect(resetSpy).toHaveBeenCalled();
   });
 
@@ -106,7 +110,9 @@ describe('FinesConConsolidateAccComponent', () => {
 
     await Promise.resolve();
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['dashboard']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      `/${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}`,
+    ]);
     expect(resetSpy).not.toHaveBeenCalled();
   });
 

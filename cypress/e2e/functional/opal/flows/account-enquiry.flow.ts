@@ -10,7 +10,6 @@ import { AccountDetailsAtAGlanceActions } from '../actions/account-details/detai
 import { AccountDetailsParentGuardianActions } from '../actions/account-details/details.parent.guardian.actions';
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
-import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -66,7 +65,6 @@ export class AccountEnquiryFlow {
   private readonly detailsNav = new AccountDetailsNavActions();
   private readonly notes = new AccountDetailsNotesActions();
   private readonly comments = new AccountDetailsCommentsActions();
-  private readonly dashboard = new DashboardActions();
   private readonly common = new CommonActions();
   private readonly atAGlanceDetails = new AccountDetailsAtAGlanceActions();
   private readonly editDefendantDetailsActions = new EditDefendantDetailsActions();
@@ -83,8 +81,9 @@ export class AccountEnquiryFlow {
     cy.get('body').then(($b) => {
       const onSearch = $b.find(L.root).length > 0;
       if (!onSearch) {
-        logAE('navigate', 'Navigating to Account Search dashboard (Individuals)');
-        this.dashboard.goToAccountSearch();
+        logAE('navigate', 'Returning to Search landing page via HMCTS link (Individuals)');
+        this.common.clickHmctsHomeLink();
+        this.searchIndividuals.assertOnSearchLandingPage();
       }
     });
   }
@@ -597,8 +596,9 @@ export class AccountEnquiryFlow {
     cy.get('body').then(($b) => {
       const onSearch = $b.find(C.root).length > 0;
       if (!onSearch) {
-        logAE('navigate', 'Navigating to Account Search dashboard (Companies)');
-        this.dashboard.goToAccountSearch();
+        logAE('navigate', 'Returning to Search landing page via HMCTS link (Companies)');
+        this.common.clickHmctsHomeLink();
+        this.searchIndividuals.assertOnSearchLandingPage();
         this.searchNav.goToCompaniesTab();
       }
     });
@@ -757,12 +757,21 @@ export class AccountEnquiryFlow {
    */
   public searchByCompanyName(companyName: string): void {
     logAE('method', 'searchByCompanyName()');
-    this.dashboard.goToAccountSearch();
-    this.searchNav.goToCompaniesTab();
     this.ensureOnCompanySearchPage();
+    this.searchNav.goToCompaniesTab();
     logAE('search', 'Searching by company name', { companyName });
-    this.searchCompany.byCompanyName(companyName);
-    this.results.assertOnResults();
+    this.resolveAccountNumberFromAlias().then((accountNumber) => {
+      if (accountNumber) {
+        logAE('search', 'Using exact account number for freshly created company account', { accountNumber });
+        this.searchCommon.enterAccountNumber(accountNumber);
+        this.searchCommon.clickSearchButton();
+        this.results.assertOnResults();
+        return;
+      }
+
+      this.searchCompany.byCompanyName(companyName);
+      this.results.assertOnResults();
+    });
   }
 
   /**

@@ -97,6 +97,29 @@ describe('FinesSaSearchAccountFormComponent', () => {
     });
   });
 
+  it('should navigate to the problem page when reference or case number is entered with last name', () => {
+    component.form.get('fsa_search_account_reference_case_number')?.setValue('REF123');
+    expect(component.searchCriteriaForm.get('fsa_search_account_individuals_last_name')).toBeTruthy();
+    component.searchCriteriaForm.get('fsa_search_account_individuals_last_name')?.setValue('Smith');
+    component.form.updateValueAndValidity({ emitEvent: false });
+
+    expect(component.form.errors?.['atLeastOneCriteriaRequired']).toBe(true);
+
+    component.handleFormSubmit(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['problem'], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+    expect(mockFinesSaStore.searchAccount()).toEqual(
+      expect.objectContaining({
+        fsa_search_account_reference_case_number: 'REF123',
+        fsa_search_account_individuals_search_criteria: expect.objectContaining({
+          fsa_search_account_individuals_last_name: 'Smith',
+        }),
+      }),
+    );
+  });
+
   it('should clear all tab-specific form groups and should clear all error messages', () => {
     const tabKeys = [
       'fsa_search_account_individuals_search_criteria',
@@ -136,6 +159,17 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(component.form.valid).toBe(true);
   });
 
+  it('should not clear the current tab controls when the same tab fragment is resolved again', () => {
+    component.searchCriteriaForm.get('fsa_search_account_individuals_last_name')?.setValue('Smith');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const clearSearchFormSpy = vi.spyOn<any, any>(component, 'clearSearchForm');
+
+    component['switchTab']('individuals');
+
+    expect(clearSearchFormSpy).not.toHaveBeenCalled();
+    expect(component.searchCriteriaForm.get('fsa_search_account_individuals_last_name')?.value).toBe('Smith');
+  });
+
   it('should trigger setSearchAccountTemporary and navigate to filter business units', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component as any, 'handleRoute');
@@ -157,6 +191,31 @@ describe('FinesSaSearchAccountFormComponent', () => {
       fragment: 'individuals',
       replaceUrl: true,
     });
+  });
+
+  it('should restore the reference number and last name when the form is recreated after the problem page', () => {
+    mockFinesSaStore.setActiveTab('individuals');
+    mockFinesSaStore.setSearchAccountTemporary({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.map(
+        (businessUnit) => businessUnit.business_unit_id,
+      ),
+      fsa_search_account_reference_case_number: 'REF123',
+      fsa_search_account_individuals_search_criteria: {
+        ...FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+        fsa_search_account_individuals_last_name: 'Smith',
+      },
+    });
+
+    const restoredFixture = TestBed.createComponent(FinesSaSearchAccountFormComponent);
+    const restoredComponent = restoredFixture.componentInstance;
+    restoredComponent.businessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+    restoredComponent.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
+
+    restoredFixture.detectChanges();
+
+    expect(restoredComponent.form.get('fsa_search_account_reference_case_number')?.value).toBe('REF123');
+    expect(restoredComponent.searchCriteriaForm.get('fsa_search_account_individuals_last_name')?.value).toBe('Smith');
   });
 
   it('should return companies FormGroup when activeTab is companies', () => {

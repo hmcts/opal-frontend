@@ -808,7 +808,10 @@ Given('I clear all approved accounts', () => {
  */
 When('I open Create and Manage Draft Accounts', () => {
   log('navigate', 'Opening Create and Manage Draft Accounts');
-  inputter().openPage();
+  searchIndividuals().assertOnSearchLandingPage();
+  primaryNavigation().chooseItem('Accounts');
+  primaryNavigation().assertLandingPage('Accounts', '/fines/dashboard/accounts');
+  inputter().openPageFromAccounts();
 });
 
 /**

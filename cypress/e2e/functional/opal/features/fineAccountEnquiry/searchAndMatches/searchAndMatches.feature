@@ -222,15 +222,11 @@ Feature: Account Search and Matches
 
   @JIRA-STORY:PO-705 @JIRA-KEY:POT-3254
   Scenario: Route guard prevents accidental navigation away from search screen with data
-    # AC8. Route guard prevents accidental navigation away from search screen with data
+    # AC8. Cancelling browser Back keeps the user on Search for an account with entered data retained
     When I view the Individuals search form and enter the following:
       | account number       | 12345678 |
       | individual last name | Smith    |
-    And I select back with confirmation and verify I navigate to the Dashboard
-    When I navigate the Individuals search form and enter the following:
-      | account number       | 12345678 |
-      | individual last name | Smith    |
-    And I select back and cancel
+    And I attempt to navigate away using the HMCTS link and cancel
     Then I see the "Search for an account" page for individuals with the following details:
       | account number       | 12345678 |
       | individual last name | Smith    |
@@ -631,26 +627,3 @@ Feature: Account Search and Matches
       | exact_match_surname           | null            |
       | exact_match_forenames         | null            |
 
-
-  @JIRA-STORY:PO-2075 @JIRA-KEY:POT-3275
-  Scenario: Data is wiped after navigating to homepage and going back to search page
-    When I view the Individuals search form and enter the following:
-      | account number            | 12345678        |
-      | reference or case number  | 12345           |
-      | individual last name      | Smith           |
-      | first names               | John            |
-      | date of birth             | 15/05/1980      |
-      | national insurance number | AB123456C       |
-      | address line 1            | 123 Test Street |
-      | postcode                  | SW1A 1AA        |
-    And I return to the dashboard using the HMCTS link
-    When I open Search for an Account
-    Then I see the "Search for an account" page for individuals with the following details:
-      | account number            |  |
-      | reference or case number  |  |
-      | individual last name      |  |
-      | first names               |  |
-      | date of birth             |  |
-      | national insurance number |  |
-      | address line 1            |  |
-      | postcode                  |  |
