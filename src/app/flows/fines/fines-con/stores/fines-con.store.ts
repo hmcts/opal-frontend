@@ -5,12 +5,16 @@ import { IFinesConSelectBuForm } from '../select-business-unit/fines-con-select-
 import { FINES_CON_SELECT_BU_FORM } from '../select-business-unit/fines-con-select-bu/constants/fines-con-select-bu-form.constant';
 import { IFinesConSearchAccountState } from '../consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
 import { FINES_CON_SEARCH_ACCOUNT_STATE } from '../consolidate-acc/fines-con-search-account/constants/fines-con-search-account-state.constant';
+import { IFinesConSearchResultDefendantAccount } from '../consolidate-acc/fines-con-search-result/interfaces/fines-con-search-result-defendant-account.interface';
 
 export const FinesConStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
     selectBuForm: FINES_CON_SELECT_BU_FORM,
     searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+    individualResults: [] as IFinesConSearchResultDefendantAccount[],
+    companyResults: [] as IFinesConSearchResultDefendantAccount[],
+    selectedAccountIds: [] as number[],
     activeTab: 'search',
     stateChanges: false,
     unsavedChanges: false,
@@ -21,6 +25,9 @@ export const FinesConStore = signalStore(
         patchState(store, {
           selectBuForm: FINES_CON_SELECT_BU_FORM,
           searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+          individualResults: [],
+          companyResults: [],
+          selectedAccountIds: [],
           activeTab: 'search',
           stateChanges: false,
           unsavedChanges: false,
@@ -56,6 +63,9 @@ export const FinesConStore = signalStore(
           formData,
         },
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+        individualResults: [],
+        companyResults: [],
+        selectedAccountIds: [],
         stateChanges: true,
       });
     },
@@ -91,12 +101,37 @@ export const FinesConStore = signalStore(
     },
 
     /**
+     * Updates both individual and company search result buckets.
+     */
+    updateDefendantResults(
+      individualResults: IFinesConSearchResultDefendantAccount[],
+      companyResults: IFinesConSearchResultDefendantAccount[],
+    ): void {
+      patchState(store, {
+        individualResults,
+        companyResults,
+      });
+    },
+
+    /**
+     * Adds selected account ids for consolidation, ensuring uniqueness.
+     */
+    addSelectedAccountIds(selectedAccountIds: number[]): void {
+      patchState(store, {
+        selectedAccountIds: Array.from(new Set([...store.selectedAccountIds(), ...selectedAccountIds])),
+      });
+    },
+
+    /**
      * Resets the entire consolidation form state
      */
     resetConsolidationState(): void {
       patchState(store, {
         selectBuForm: FINES_CON_SELECT_BU_FORM,
         searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+        individualResults: [],
+        companyResults: [],
+        selectedAccountIds: [],
         stateChanges: false,
         activeTab: 'search',
         unsavedChanges: false,
