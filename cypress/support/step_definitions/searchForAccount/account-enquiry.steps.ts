@@ -141,6 +141,85 @@ When('I open the amend payment terms form', () => {
 });
 
 /**
+ * @step Navigates to the Enforcement tab.
+ */
+When('I go to the Enforcement tab', () => {
+  log('step', 'Navigate to Enforcement tab');
+  flow().goToEnforcementTab();
+});
+
+/**
+ * @step Opens the add enforcement override form from the Enforcement tab.
+ */
+When('I open the add enforcement override form', () => {
+  log('step', 'Open add enforcement override form');
+  flow().openAddEnforcementOverrideForm();
+});
+
+/**
+ * @step Selects an enforcement override on the add form.
+ */
+When('I choose the enforcement override {string}', (resultCode: string) => {
+  log('step', 'Choose enforcement override', { resultCode });
+  flow().selectEnforcementOverride(resultCode);
+});
+
+/**
+ * @step Selects a Local Justice Area on the add form.
+ */
+When('I choose the Local Justice Area {string}', (localJusticeArea: string) => {
+  log('step', 'Choose Local Justice Area', { localJusticeArea });
+  flow().selectEnforcementOverrideLocalJusticeArea(localJusticeArea);
+});
+
+/**
+ * @step Selects an enforcer on the add form.
+ */
+When('I choose the enforcer {string}', (enforcer: string) => {
+  log('step', 'Choose enforcer', { enforcer });
+  flow().selectEnforcementOverrideEnforcer(enforcer);
+});
+
+/**
+ * @step Submits the add enforcement override form.
+ */
+When('I add the enforcement override', () => {
+  log('step', 'Submit add enforcement override form');
+  flow().submitAddEnforcementOverride();
+});
+
+/**
+ * @step Completes the add enforcement override form with the provided values and submits it.
+ */
+When(
+  'I add the enforcement override {string} with the Local Justice Area {string}',
+  (resultCode: string, lja: string) => {
+    log('step', 'Add enforcement override with Local Justice Area', { resultCode, lja });
+    flow().selectEnforcementOverride(resultCode);
+    flow().selectEnforcementOverrideLocalJusticeArea(lja);
+    flow().submitAddEnforcementOverride();
+  },
+);
+
+/**
+ * @step Completes the add enforcement override form with the provided values and submits it.
+ */
+When('I add the enforcement override {string} with the enforcer {string}', (resultCode: string, enforcer: string) => {
+  log('step', 'Add enforcement override with enforcer', { resultCode, enforcer });
+  flow().selectEnforcementOverride(resultCode);
+  flow().selectEnforcementOverrideEnforcer(enforcer);
+  flow().submitAddEnforcementOverride();
+});
+
+/**
+ * @step Cancels the add enforcement override form and discards changes.
+ */
+When('I cancel the add enforcement override form and discard changes', () => {
+  log('step', 'Cancel add enforcement override form and discard changes');
+  flow().cancelAddEnforcementOverrideAndDiscardChanges();
+});
+
+/**
  * @step Submits instalments-only payment terms with a payment card request.
  */
 When('I submit instalments only payment terms with a payment card request', () => {
@@ -162,6 +241,49 @@ When('I cancel payment terms amendments', () => {
 Then('I should return to the Payment terms tab', () => {
   log('assert', 'Payment terms tab is active');
   flow().assertPaymentTermsTabIsActive();
+});
+
+/**
+ * @step Asserts the Enforcement tab is active.
+ */
+Then('I should return to the Enforcement tab', () => {
+  log('assert', 'Enforcement tab is active');
+  flow().assertEnforcementTabIsActive();
+});
+
+/**
+ * @step Asserts the enforcement override success banner text.
+ */
+Then('the enforcement override success banner is {string}', (expected: string) => {
+  log('assert', 'Enforcement override success banner text', { expected });
+  flow().assertEnforcementOverrideSuccessBanner(expected);
+});
+
+/**
+ * @step Asserts the intercepted enforcement override save request body.
+ */
+Then('the enforcement override save request shows:', (table: DataTable) => {
+  const rows = rowsHashSafe(table);
+  const overrideId =
+    rows['enforcement override result id'] ?? rows['enforcement override'] ?? rows['override result id'] ?? '';
+  const enforcerId = rows['enforcer id'] ?? '';
+  const ljaId = rows['lja id'] ?? rows['local justice area id'] ?? '';
+
+  log('assert', 'Enforcement override save request payload', { overrideId, enforcerId, ljaId });
+  flow().assertEnforcementOverrideSaveRequest({ overrideId, enforcerId, ljaId });
+});
+
+/**
+ * @step Asserts the enforcement override summary card values.
+ */
+Then('the enforcement override summary shows:', (table: DataTable) => {
+  const rows = rowsHashSafe(table);
+  const override = rows['enforcement override'] ?? '';
+  const enforcer = rows['enforcer'] ?? '';
+  const lja = rows['local justice area'] ?? rows['local justice area (lja)'] ?? '';
+
+  log('assert', 'Enforcement override summary values', { override, enforcer, lja });
+  flow().assertEnforcementOverrideSummary({ override, enforcer, lja });
 });
 
 /**

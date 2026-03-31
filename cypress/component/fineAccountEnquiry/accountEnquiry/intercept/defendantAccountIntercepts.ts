@@ -237,3 +237,12 @@ export function interceptEnforcementStatus(
     })
     .as('getEnforcementStatus');
 }
+
+export function interceptPatchDefendantAccount() {
+  return cy
+    .intercept('PATCH', `/opal-fines-service/defendant-accounts/*`, {
+      statusCode: 200,
+      body: {},
+    })
+    .as('patchDefendantAccount');
+}

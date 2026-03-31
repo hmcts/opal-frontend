@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { FinesConStore } from './stores/fines-con.store';
 
 @Component({
   selector: 'app-fines-consolidation',
@@ -7,4 +8,10 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './fines-con.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesConComponent {}
+export class FinesConComponent implements OnDestroy {
+  private readonly finesConStore = inject(FinesConStore);
+
+  public ngOnDestroy(): void {
+    this.finesConStore.resetConsolidationState();
+  }
+}
