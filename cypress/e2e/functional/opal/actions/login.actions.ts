@@ -8,6 +8,7 @@
 
 import { LoginLocators as L } from '../../../../shared/selectors/login.locators';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
+import { isLocalOrPrEnvironment } from './auth-environment.actions';
 
 const log = createScopedLogger('LoginActions');
 
@@ -27,7 +28,7 @@ export function performLogin(email: string): void {
       cy.visit('/');
 
       cy.location('href').then((href) => {
-        const isLocalOrPR = href.includes('pr-') || href.includes('localhost');
+        const isLocalOrPR = isLocalOrPrEnvironment();
 
         if (isLocalOrPR) {
           // Local / PR environment login (form-based)
