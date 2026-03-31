@@ -6215,10 +6215,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^3.3.3":
-  version: 3.3.5
-  resolution: "@types/config@npm:3.3.5"
-  checksum: 10/6e8595d00e4df85e3e982f812a3fdfd9a952df11776800b0ddf7893963fc179c684a2d82c84f2160d09e90345bce7cb68a49c95dc864f0c9052019ea2c0e31bb
+"@types/config@npm:^4.0.0":
+  version: 4.4.0
+  resolution: "@types/config@npm:4.4.0"
+  dependencies:
+    config: "npm:*"
+  checksum: 10/2b5aaf0684516f63d0c96b6fe709a1164cd39994d015c9139c25d1241e4607adcabe00288ca4ec1951d91554d35b27015cd4ca7792bd55caf99c1bc5269a4102
   languageName: node
   linkType: hard
 
@@ -8861,7 +8863,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"config@npm:^4.0.0":
+"config@npm:*, config@npm:^4.0.0":
   version: 4.4.1
   resolution: "config@npm:4.4.1"
   dependencies:
@@ -14988,7 +14990,7 @@ __metadata:
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^8.0.0"
     "@ngrx/signals": "npm:^21.0.0"
-    "@types/config": "npm:^3.3.3"
+    "@types/config": "npm:^4.0.0"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^5.0.0"
     "@types/express-session": "npm:^1.17.10"
