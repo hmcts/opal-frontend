@@ -9,6 +9,7 @@ export const FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK: IOpalFinesAccountMino
       type: 'MN',
       display_name: 'Minor Creditor',
     },
+    has_associated_defendant: false,
   },
   business_unit: {
     business_unit_id: '77',

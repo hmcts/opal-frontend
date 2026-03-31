@@ -7,6 +7,7 @@ export interface IOpalFinesAccountMinorCreditorDetailsHeader {
       type: string;
       display_name: string;
     };
+    has_associated_defendant: boolean;
   };
   party: {
     party_id: string;
