@@ -25,6 +25,7 @@ import { EditDefendantDetailsActions } from '../../..//e2e/functional/opal/actio
 import { EditCompanyDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.company-details.actions';
 import { AccountDetailsNavActions } from '../../..//e2e/functional/opal/actions/account-details/details.nav.actions';
 import { EditParentGuardianDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
+import { AccountDetailsFixedPenaltyActions } from '../../..//e2e/functional/opal/actions/account-details/details.fixed-penalty.actions';
 import { log } from '../../utils/log.helper';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
@@ -37,6 +38,7 @@ const common = () => new CommonActions();
 const editDefendantDetails = () => new EditDefendantDetailsActions();
 const editCompanyDetails = () => new EditCompanyDetailsActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
+const fixedPenaltyDetails = () => new AccountDetailsFixedPenaltyActions();
 const navActions = () => new AccountDetailsNavActions();
 
 type CommentRow = { [key: string]: string };
@@ -146,6 +148,17 @@ When('I go to the Parent or guardian details section and the header is {string}'
 });
 
 /**
+ * @step Navigates to the Fixed penalty section and validates the header text.
+ *
+ * @param expected - Expected header text for the section.
+ */
+When('I go to the Fixed penalty section and the header is {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('step', 'Navigate to Fixed penalty details', { expected: expectedWithUniq });
+  flow().goToFixedPenaltyDetailsAndAssert(expectedWithUniq);
+});
+
+/**
  * @step Navigates to the Payment terms tab.
  */
 When('I go to the Payment terms tab', () => {
@@ -186,6 +199,14 @@ Then('the At a glance tab should be selected by default', () => {
 });
 
 /**
+ * @step Asserts the Fixed penalty tab is visible on the account details page.
+ */
+Then('I should see the Fixed penalty tab', () => {
+  log('assert', 'Fixed penalty tab is visible');
+  navActions().assertFixedPenaltyTabIsVisible();
+});
+
+/**
  * @step Asserts the expected read-only sections are visible on the At a glance tab.
  */
 Then('I should see the read only sections on the At a glance tab:', (table: DataTable) => {
@@ -204,6 +225,24 @@ Then('I should see the account header summary values:', (table: DataTable) => {
 
   log('assert', 'Asserting account header summary values', { expectedValues });
   atAGlanceDetails().assertAccountHeaderSummaryValues(expectedValues);
+});
+
+/**
+ * @step Asserts the fixed-penalty detail values shown on the Fixed penalty tab.
+ */
+Then('I should see the fixed penalty details:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting fixed penalty details', { expectedValues });
+  fixedPenaltyDetails().assertDetails(expectedValues);
+});
+
+/**
+ * @step Asserts the vehicle-only fixed-penalty fields are not shown on the Fixed penalty tab.
+ */
+Then('I should not see the vehicle fixed penalty fields', () => {
+  log('assert', 'Asserting vehicle fixed penalty fields are absent');
+  fixedPenaltyDetails().assertVehicleFieldsNotPresent();
 });
 
 /**

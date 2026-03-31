@@ -4,6 +4,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
   These scenarios cover the core business flows for landing on the account details screen,
   viewing the default At a glance summary, and confirming Welsh language preferences where applicable,
   while reusing existing journey coverage for comments and account activity notes.
+  Note: This Epic is still in development
 
   Background:
     Given I clear all approved accounts

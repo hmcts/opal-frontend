@@ -9,6 +9,7 @@ import { AccountDetailsCommentsActions } from '../actions/account-details/detail
 import { AccountDetailsAtAGlanceActions } from '../actions/account-details/details.at-a-glance.actions';
 import { AccountDetailsParentGuardianActions } from '../actions/account-details/details.parent.guardian.actions';
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
+import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
@@ -60,6 +61,7 @@ export class AccountEnquiryFlow {
   private readonly results = new ResultsActions();
   private readonly defendantDetails = new AccountDetailsDefendantActions();
   private readonly parentGuardianDetails = new AccountDetailsParentGuardianActions();
+  private readonly fixedPenaltyDetails = new AccountDetailsFixedPenaltyActions();
   private readonly companyDetails = new EditCompanyDetailsActions();
   private readonly detailsNav = new AccountDetailsNavActions();
   private readonly notes = new AccountDetailsNotesActions();
@@ -237,6 +239,18 @@ export class AccountEnquiryFlow {
     logAE('navigate', 'Navigating to Parent/Guardian tab and asserting section header', { headerText });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertSectionHeader(headerText);
+  }
+
+  /**
+   * Navigates to the Fixed penalty tab and asserts a specific section header.
+   *
+   * @param headerText - Expected section header text.
+   */
+  public goToFixedPenaltyDetailsAndAssert(headerText: string): void {
+    logAE('method', 'goToFixedPenaltyDetailsAndAssert()');
+    logAE('navigate', 'Navigating to Fixed penalty tab and asserting section header', { headerText });
+    this.detailsNav.goToFixedPenaltyTab();
+    this.fixedPenaltyDetails.assertSectionHeader(headerText);
   }
 
   /**

@@ -47,9 +47,14 @@ import { DraftAccountsTableColumn } from '../../../e2e/functional/opal/actions/d
 import { DraftPayloadType } from '../../../support/utils/payloads';
 import { log } from '../../utils/log.helper';
 import { DraftAccountsFlow } from '../../../e2e/functional/opal/flows/draft-accounts.flow';
+import { parseToIsoDate } from '../../utils/dateUtils';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 import { convertDataTableToNestedObject } from '../../utils/table';
 import { captureSignedInUserEmail } from 'cypress/e2e/functional/opal/actions/login.actions';
+import {
+  buildPublishedNonVehicleFixedPenaltyOverrides,
+  buildPublishedVehicleFixedPenaltyCompanyOverrides,
+} from './draft-account.seed-builders';
 
 type AccountType = DraftPayloadType;
 type DraftOverrideValue =
@@ -226,13 +231,7 @@ function createPublishedDraftAccount(
   publishingUser: string = DEFAULT_PUBLISHING_USER,
 ): Cypress.Chainable<void> {
   return withSignedInUser((existingUser: string) =>
-    createDraftAndPrepareForPublishing(
-      accountType,
-      overrides,
-      DEFAULT_DRAFT_STATUS,
-      publishingUser,
-      existingUser,
-    ),
+    createDraftAndPrepareForPublishing(accountType, overrides, DEFAULT_DRAFT_STATUS, publishingUser, existingUser),
   );
 }
 
@@ -382,6 +381,164 @@ Given('a published adult or youth defendant account exists:', (table: DataTable)
   });
 
   return createPublishedDraftAccount('adultOrYouthOnly', overrides, publishingUser);
+});
+
+/**
+ * @step Creates a published non-vehicle fixed penalty account.
+ * @description
+ * Seeds a `fixedPenalty` account at API level and sets it to `Publishing Pending`, overriding the
+ * fixed-penalty ticket details so account-enquiry journeys can assert the non-vehicle tab layout.
+ *
+ * Supported table keys:
+ * - title
+ * - first name / first names
+ * - last name
+ * - ticket number
+ * - issuing authority
+ * - time of offence
+ * - place of offence
+ * - business unit id
+ * - publishing user / approving user / approval user
+ *
+ * @example
+ *   Given a published non-vehicle fixed penalty account exists:
+ *     | first name        | Robert                  |
+ *     | last name         | FixedPenaltyNV{uniq}    |
+ *     | ticket number     | FPR1BNV{uniqUpper}      |
+ *     | issuing authority | City of Metropolis      |
+ *     | time of offence   | 14:30                   |
+ *     | place of offence  | Main Street, Metropolis |
+ */
+Given('a published non-vehicle fixed penalty account exists:', (table: DataTable) => {
+  const values = parseSeedValues(table);
+
+  const firstNames = values['first name'] ?? values['first names'];
+  const lastName = values['last name'];
+  const ticketNumber = values['ticket number'];
+  const issuingAuthority = values['issuing authority'] ?? 'Fixed Penalty Office';
+  const timeOfOffence = values['time of offence'] ?? '14:30';
+  const placeOfOffence = values['place of offence'];
+  const businessUnitId = resolveBusinessUnitId(values['business unit id']);
+  const publishingUser = resolvePublishingUser(values);
+  const title = values['title'] ?? 'Mr';
+
+  if (!firstNames || !lastName || !ticketNumber || !placeOfOffence) {
+    throw new Error(
+      'Expected first name, last name, ticket number and place of offence for non-vehicle fixed penalty seed.',
+    );
+  }
+
+  const overrides = buildPublishedNonVehicleFixedPenaltyOverrides({
+    businessUnitId,
+    issuingAuthority,
+    ticketNumber,
+    title,
+    firstNames,
+    lastName,
+    timeOfOffence,
+    placeOfOffence,
+  });
+
+  log('step', 'Creating published non-vehicle fixed penalty account', {
+    firstNames,
+    lastName,
+    ticketNumber,
+    issuingAuthority,
+    timeOfOffence,
+    placeOfOffence,
+    businessUnitId,
+    publishingUser,
+  });
+
+  return createPublishedDraftAccount('opalE2EFixedPenaltyAdult', overrides, publishingUser);
+});
+
+/**
+ * @step Creates a published vehicle fixed penalty company account.
+ * @description
+ * Seeds a `fixedPenaltyCompany` account at API level and sets it to `Publishing Pending`, applying
+ * vehicle-specific fixed-penalty details so account-enquiry journeys can assert the vehicle fields.
+ *
+ * Supported table keys:
+ * - company name
+ * - ticket number
+ * - issuing authority
+ * - registration number
+ * - driving licence
+ * - notice to owner or hirer number (NTO/NTH)
+ * - date notice to owner was issued
+ * - time of offence
+ * - place of offence
+ * - business unit id
+ * - publishing user / approving user / approval user
+ *
+ * @example
+ *   Given a published vehicle fixed penalty company account exists:
+ *     | company name                    | Fixed Penalty Co {uniq} |
+ *     | ticket number                   | FPR1BVEH{uniqUpper}     |
+ *     | registration number             | XY21 ABC                |
+ *     | date notice to owner was issued | 01 May 2023             |
+ */
+Given('a published vehicle fixed penalty company account exists:', (table: DataTable) => {
+  const values = parseSeedValues(table);
+
+  const companyName = values['company name'];
+  const ticketNumber = values['ticket number'];
+  const issuingAuthority = values['issuing authority'] ?? 'Fixed Penalty Office';
+  const registrationNumber = values['registration number'];
+  const drivingLicence = values['driving licence'];
+  const ntoNumber = values['notice to owner or hirer number (nto/nth)'];
+  const rawDateNoticeIssued = values['date notice to owner was issued'];
+  const dateNoticeIssued = rawDateNoticeIssued
+    ? parseToIsoDate(rawDateNoticeIssued, 'date notice to owner was issued')
+    : undefined;
+  const timeOfOffence = values['time of offence'] ?? '14:30';
+  const placeOfOffence = values['place of offence'];
+  const businessUnitId = resolveBusinessUnitId(values['business unit id']);
+  const publishingUser = resolvePublishingUser(values);
+
+  if (
+    !companyName ||
+    !ticketNumber ||
+    !registrationNumber ||
+    !drivingLicence ||
+    !ntoNumber ||
+    !dateNoticeIssued ||
+    !placeOfOffence
+  ) {
+    throw new Error(
+      'Expected company name, ticket number, registration number, driving licence, NTO/NTH number, date notice issued and place of offence for vehicle fixed penalty company seed.',
+    );
+  }
+
+  const overrides = buildPublishedVehicleFixedPenaltyCompanyOverrides({
+    businessUnitId,
+    issuingAuthority,
+    ticketNumber,
+    companyName,
+    registrationNumber,
+    drivingLicence,
+    ntoNumber,
+    dateNoticeIssued,
+    timeOfOffence,
+    placeOfOffence,
+  });
+
+  log('step', 'Creating published vehicle fixed penalty company account', {
+    companyName,
+    ticketNumber,
+    issuingAuthority,
+    registrationNumber,
+    drivingLicence,
+    ntoNumber,
+    dateNoticeIssued,
+    timeOfOffence,
+    placeOfOffence,
+    businessUnitId,
+    publishingUser,
+  });
+
+  return createPublishedDraftAccount('opalE2EFixedPenaltyCompany', overrides, publishingUser);
 });
 
 /**
