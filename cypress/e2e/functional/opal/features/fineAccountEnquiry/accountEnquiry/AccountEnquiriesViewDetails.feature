@@ -45,7 +45,7 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
-    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-3145
+    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-3145
     Scenario: Saving defendant details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -97,7 +97,7 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Accdetail comp{uniq}"
 
-    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-3149
+    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-3149
     Scenario: Saving company details updates the organisation name and audit trail
       # AC3 - Edit and save changes
       And I edit the Company details and change the Company name to "Accdetail comp updated{uniq}"
@@ -149,7 +149,7 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
 
-    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-3153
+    @R1B @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-3153
     Scenario: Saving defendant details updates the name and audit trail for a non-paying account
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -192,7 +192,7 @@ Feature: Account Enquiries – View Account Details
       # AC3 – Navigate to Parent or guardian details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
 
-    @JIRA-STORY:PO-1129 @JIRA-KEY:POT-3155
+    @R1B @JIRA-STORY:PO-1129 @JIRA-KEY:POT-3155
     Scenario: Saving parent or guardian details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Parent or guardian details and change the First name to "Updated"

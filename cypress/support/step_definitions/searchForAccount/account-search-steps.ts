@@ -333,6 +333,17 @@ When('I search using the following inputs:', function (table: DataTable) {
 });
 
 /**
+ * @step Searches for the account most recently created in the scenario by its account number.
+ * @details Resolves the account number from `@etagUpdate` and submits an account-number search.
+ * @example
+ *  When I search for the last created account by account number
+ */
+When('I search for the last created account by account number', () => {
+  log('step', 'Searching for the last created account by account number');
+  searchFlow().searchForLastCreatedAccountByAccountNumber();
+});
+
+/**
  * @step Verifies that a problem page is displayed with the specified heading.
  * @param headingText The expected heading text on the problem page.
  * @details Delegates to `AccountSearchProblemActions.assertProblemPageDisplayed()`.
@@ -681,7 +692,7 @@ Then(
  * @description
  * Composite step that:
  *  - Asserts the Search results page is displayed.
- *  - Asserts the "Individuals" tab is selected.
+ *  - Asserts the Individuals results table structure is correct for the current view.
  *  - Asserts there is at least one row in the results table whose columns
  *    match all key/value pairs from the provided table.
  *
@@ -704,10 +715,25 @@ Then('I see the Individuals search results:', (table: DataTable) => {
 });
 
 /**
+ * @step I see the Individuals search results for the last created account
+ * @description
+ * Resolves the account number from `@etagUpdate`, asserts the Search results page
+ * is displayed with the expected Individuals results table structure, and verifies
+ * a matching result row exists.
+ *
+ * @example
+ *   Then I see the Individuals search results for the last created account
+ */
+Then('I see the Individuals search results for the last created account', () => {
+  log('step', 'Asserting Individuals search results for the last created account');
+  searchFlow().assertIndividualsResultsForLastCreatedAccount();
+});
+
+/**
  * @step I see the Companies search results:
  * @description
  * Composite step that:
- *  - Assumes the "Companies" tab is already selected.
+ *  - Asserts the single-type Companies results table structure is correct.
  *  - Asserts there is at least one row in the results table whose columns
  *    match all key/value pairs from the provided table.
  *
@@ -754,6 +780,32 @@ When('I see the Companies search results:', (table: DataTable) => {
 When('I see the Companies search results by tab switch:', (table: DataTable) => {
   log('step', 'Asserting Companies search results (after tab switch)');
   searchFlow().assertCompaniesResultsWithTabSwitch(table);
+});
+
+/**
+ * @step I see the Minor creditors search results:
+ * @description
+ * Composite step that:
+ *  - Asserts the Search results page is displayed.
+ *  - Asserts there is at least one row in the results table whose columns
+ *    match all key/value pairs from the provided table.
+ *
+ * The DataTable is expected to be a simple key/value table where each row
+ * represents a column header and its expected value in the matching row, e.g.:
+ *
+ *   Then I see the Minor creditors search results:
+ *     | Name | Minor, Mina |
+ *
+ * This is backed by AccountSearchFlow.assertMinorCreditorsResults()
+ * and ResultsActions.assertResultsRowMatchesColumns().
+ *
+ * @example
+ *   Then I see the Minor creditors search results:
+ *     | Name | Minor, Mina |
+ */
+Then('I see the Minor creditors search results:', (table: DataTable) => {
+  log('step', 'Asserting Minor creditors search results');
+  searchFlow().assertMinorCreditorsResults(table);
 });
 
 /**

@@ -10,6 +10,7 @@ import { AccountDetailsCommentsActions } from '../actions/account-details/detail
 import { AccountDetailsAtAGlanceActions } from '../actions/account-details/details.at-a-glance.actions';
 import { AccountDetailsParentGuardianActions } from '../actions/account-details/details.parent.guardian.actions';
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
+import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -17,6 +18,7 @@ import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
+import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
@@ -56,11 +58,12 @@ export class AccountEnquiryFlow {
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCompany = new AccountSearchCompanyActions();
-  private readonly searchCommon = new AccountSearchCommonActions();
   private readonly searchNav = new AccountSearchNavActions();
+  private readonly searchCommon = new AccountSearchCommonActions();
   private readonly results = new ResultsActions();
   private readonly defendantDetails = new AccountDetailsDefendantActions();
   private readonly parentGuardianDetails = new AccountDetailsParentGuardianActions();
+  private readonly fixedPenaltyDetails = new AccountDetailsFixedPenaltyActions();
   private readonly companyDetails = new EditCompanyDetailsActions();
   private readonly detailsNav = new AccountDetailsNavActions();
   private readonly notes = new AccountDetailsNotesActions();
@@ -71,6 +74,7 @@ export class AccountEnquiryFlow {
   private readonly editCompanyDetailsActions = new EditCompanyDetailsActions();
   private readonly editParentGuardianActions = new EditParentGuardianDetailsActions();
   private readonly paymentTerms = new AccountDetailsPaymentTermsActions();
+  private readonly enforcement = new AccountDetailsEnforcementActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -110,17 +114,7 @@ export class AccountEnquiryFlow {
     logAE('method', 'searchByLastName()');
     logAE('search', 'Searching by last name', { surname });
     this.ensureOnIndividualSearchPage();
-    this.resolveAccountNumberFromAlias().then((accountNumber) => {
-      if (accountNumber) {
-        logAE('search', 'Using exact account number for freshly created account', { accountNumber });
-        this.searchCommon.enterAccountNumber(accountNumber);
-        this.searchCommon.clickSearchButton();
-        this.results.assertOnResults();
-        return;
-      }
-
-      this.searchIndividuals.searchByLastName(surname);
-    });
+    this.searchIndividuals.searchByLastName(surname);
   }
 
   /**
@@ -213,6 +207,20 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the most recent account from the Companies results tab and asserts navigation.
+   */
+  public openMostRecentFromCompaniesResults(): void {
+    logAE('method', 'openMostRecentFromCompaniesResults()');
+    logAE('open', 'Opening most recent account from Companies results');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.selectCompaniesTab();
+    this.results.assertCompaniesTabSelected();
+    this.results.openLatestPublished();
+  }
+
+  /**
    * Navigates to the Defendant tab and asserts a specific section header.
    *
    * @param headerText - Expected section header text.
@@ -234,6 +242,18 @@ export class AccountEnquiryFlow {
     logAE('navigate', 'Navigating to Parent/Guardian tab and asserting section header', { headerText });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertSectionHeader(headerText);
+  }
+
+  /**
+   * Navigates to the Fixed penalty tab and asserts a specific section header.
+   *
+   * @param headerText - Expected section header text.
+   */
+  public goToFixedPenaltyDetailsAndAssert(headerText: string): void {
+    logAE('method', 'goToFixedPenaltyDetailsAndAssert()');
+    logAE('navigate', 'Navigating to Fixed penalty tab and asserting section header', { headerText });
+    this.detailsNav.goToFixedPenaltyTab();
+    this.fixedPenaltyDetails.assertSectionHeader(headerText);
   }
 
   /**
@@ -261,6 +281,150 @@ export class AccountEnquiryFlow {
     logAE('method', 'openPaymentTermsAmendForm()');
     this.paymentTerms.openChangeLink();
     this.paymentTerms.assertAmendFormVisible();
+  }
+
+  /**
+   * Navigates to the Enforcement tab and asserts it is active.
+   */
+  public goToEnforcementTab(): void {
+    logAE('method', 'goToEnforcementTab()');
+    logAE('navigate', 'Navigating to Enforcement tab');
+    this.detailsNav.goToEnforcementTab();
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Opens the add enforcement override form from the Enforcement tab.
+   */
+  public openAddEnforcementOverrideForm(): void {
+    logAE('method', 'openAddEnforcementOverrideForm()');
+    this.enforcement.openAddEnforcementOverrideForm();
+    this.enforcement.assertAddEnforcementOverrideFormVisible();
+  }
+
+  /**
+   * Selects an enforcement override code on the add form.
+   *
+   * @param resultCode - Enforcement override result code.
+   */
+  public selectEnforcementOverride(resultCode: string): void {
+    logAE('method', 'selectEnforcementOverride()', { resultCode });
+    this.enforcement.selectEnforcementOverride(resultCode);
+  }
+
+  /**
+   * Selects a Local Justice Area on the add form.
+   *
+   * @param localJusticeArea - Visible LJA option text.
+   */
+  public selectEnforcementOverrideLocalJusticeArea(localJusticeArea: string): void {
+    logAE('method', 'selectEnforcementOverrideLocalJusticeArea()', { localJusticeArea });
+    this.enforcement.selectLocalJusticeArea(localJusticeArea);
+  }
+
+  /**
+   * Selects an enforcer on the add form.
+   *
+   * @param enforcer - Visible enforcer option text.
+   */
+  public selectEnforcementOverrideEnforcer(enforcer: string): void {
+    logAE('method', 'selectEnforcementOverrideEnforcer()', { enforcer });
+    this.enforcement.selectEnforcer(enforcer);
+  }
+
+  /**
+   * Submits the add enforcement override form and stores the request body for later assertions.
+   */
+  public submitAddEnforcementOverride(): void {
+    logAE('method', 'submitAddEnforcementOverride()');
+
+    this.interceptEnforcementOverrideSave();
+    this.enforcement.submitAddEnforcementOverride();
+
+    cy.wait('@enforcementOverrideSave').then(({ request }) => {
+      cy.wrap(request.body, { log: false }).as('enforcementOverrideSaveBody');
+    });
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Cancels the add enforcement override form after confirming unsaved changes should be discarded.
+   */
+  public cancelAddEnforcementOverrideAndDiscardChanges(): void {
+    logAE('method', 'cancelAddEnforcementOverrideAndDiscardChanges()');
+
+    this.common.confirmNextUnsavedChanges(true);
+    this.enforcement.cancelAddEnforcementOverride();
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Asserts the Enforcement tab is active and visible.
+   */
+  public assertEnforcementTabIsActive(): void {
+    logAE('method', 'assertEnforcementTabIsActive()');
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Asserts the enforcement override success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementOverrideSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the intercepted enforcement override save payload.
+   *
+   * @param expected - Expected payload values.
+   * @param expected.overrideId - Expected enforcement override result id.
+   * @param expected.enforcerId - Expected enforcer id.
+   * @param expected.ljaId - Expected local justice area id.
+   */
+  public assertEnforcementOverrideSaveRequest(expected: {
+    overrideId?: string;
+    enforcerId?: string;
+    ljaId?: string;
+  }): void {
+    logAE('method', 'assertEnforcementOverrideSaveRequest()', expected);
+
+    cy.get('@enforcementOverrideSaveBody').then((body: any) => {
+      if (expected.overrideId) {
+        expect(body).to.have.nested.property(
+          'enforcement_override.enforcement_override_result.enforcement_override_result_id',
+          expected.overrideId,
+        );
+      }
+
+      if (expected.ljaId) {
+        expect(String(body?.enforcement_override?.lja?.lja_id)).to.eq(expected.ljaId);
+      }
+
+      if (expected.enforcerId) {
+        expect(String(body?.enforcement_override?.enforcer?.enforcer_id)).to.eq(expected.enforcerId);
+      }
+    });
+  }
+
+  /**
+   * Asserts the enforcement override summary card values.
+   *
+   * @param expected - Expected summary values.
+   * @param expected.override - Expected enforcement override display text.
+   * @param expected.enforcer - Expected enforcer display text.
+   * @param expected.lja - Expected LJA display text.
+   */
+  public assertEnforcementOverrideSummary(expected: { override?: string; enforcer?: string; lja?: string }): void {
+    logAE('method', 'assertEnforcementOverrideSummary()', expected);
+    this.enforcement.assertEnforcementOverrideSummary(expected);
   }
 
   /**
@@ -617,6 +781,13 @@ export class AccountEnquiryFlow {
    */
   private interceptPaymentTermsSave(): void {
     cy.intercept('POST', '**/defendant-accounts/*/payment-terms').as('paymentTermsSave');
+  }
+
+  /**
+   * Intercepts the enforcement override save request for later assertions.
+   */
+  private interceptEnforcementOverrideSave(): void {
+    cy.intercept('PATCH', '**/defendant-accounts/*').as('enforcementOverrideSave');
   }
 
   /**
