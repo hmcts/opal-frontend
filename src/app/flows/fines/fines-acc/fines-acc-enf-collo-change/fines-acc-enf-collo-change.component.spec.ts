@@ -10,6 +10,7 @@ import { OpalFines } from '../../services/opal-fines-service/opal-fines.service'
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FinesAccountStoreType } from '../types/fines-account-store.type';
+import { FINES_ACC_ENF_COLLO_CHANGE_SUCCESS_MESSAGE } from './constants/fines-acc-enf-collo-change-success-message.constant';
 
 describe('FinesAccEnfColloChangeComponent', () => {
   let component: FinesAccEnfColloChangeComponent;
@@ -44,7 +45,7 @@ describe('FinesAccEnfColloChangeComponent', () => {
     mockPayloadService = {
       buildCollectionOrderPayload: vi.fn().mockImplementation((form) => ({
         collection_order: {
-          collection_order_date: '',
+          collection_order_date: null,
           collection_order_flag: form.formData.facc_enf_collection_order_made,
         },
       })),
@@ -104,7 +105,7 @@ describe('FinesAccEnfColloChangeComponent', () => {
       1001,
       {
         collection_order: {
-          collection_order_date: '',
+          collection_order_date: null,
           collection_order_flag: true,
         },
       },
@@ -112,7 +113,7 @@ describe('FinesAccEnfColloChangeComponent', () => {
       '2002',
     );
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountEnforcementCache$');
-    expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith('Collection Order status changed');
+    expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_ENF_COLLO_CHANGE_SUCCESS_MESSAGE);
     expect(routerNavigateSpy).toHaveBeenCalledWith(
       FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
       false,

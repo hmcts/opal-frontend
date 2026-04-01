@@ -9,6 +9,7 @@ import { OpalFines } from '../../services/opal-fines-service/opal-fines.service'
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { IFinesAccEnfColloChangeFormState } from './interfaces/fines-acc-enf-collo-change-form-state.interface';
 import { FinesAccEnfColloChangeFormComponent } from './fines-acc-enf-collo-change-form/fines-acc-enf-collo-change-form.component';
+import { FINES_ACC_ENF_COLLO_CHANGE_SUCCESS_MESSAGE } from './constants/fines-acc-enf-collo-change-success-message.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-collo-change',
@@ -37,7 +38,7 @@ export class FinesAccEnfColloChangeComponent extends AbstractFormParentBaseCompo
     this.stateUnsavedChanges = false;
 
     if (setSuccessMessage) {
-      this.finesAccStore.setSuccessMessage('Collection Order status changed');
+      this.finesAccStore.setSuccessMessage(FINES_ACC_ENF_COLLO_CHANGE_SUCCESS_MESSAGE);
     }
 
     this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, null, 'enforcement');

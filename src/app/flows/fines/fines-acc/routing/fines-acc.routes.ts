@@ -22,6 +22,7 @@ import { fetchLocalJusticeAreasResolver } from '../../routing/resolvers/fetch-re
 import { fetchEnforcersResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-enforcers-resolver';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-titles.constant';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
+import { FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-collo-change/constants/fines-acc-enf-collo-change-routing-titles.constant';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -204,7 +205,7 @@ export const routing: Routes = [
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['account-maintenance']],
-          title: 'Change Collection Order status',
+          title: FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES.children.change,
         },
         resolve: {
           title: TitleResolver,

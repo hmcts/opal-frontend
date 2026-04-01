@@ -582,7 +582,7 @@ describe('FinesAccPayloadService', () => {
 
         expect(result).toEqual({
           collection_order: {
-            collection_order_date: '',
+            collection_order_date: null,
             collection_order_flag: true,
           },
         });

@@ -30,6 +30,7 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from '../../servi
 import { IOpalFinesUpdateDefendantAccountCollectionOrder } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account-collection-order.interface';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/interfaces/fines-acc-enf-collo-change-form-state.interface';
+import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -189,7 +190,7 @@ export class FinesAccPayloadService {
     const collectionOrderFlag = form.formData.facc_enf_collection_order_made as boolean;
 
     const collectionOrder: IOpalFinesUpdateDefendantAccountCollectionOrder = {
-      collection_order_date: '',
+      ...FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS,
       collection_order_flag: collectionOrderFlag,
     };
 
