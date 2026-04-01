@@ -62,6 +62,7 @@
     "impositions",
     "inputname",
     "inputvalue",
+    "JCDE",
     "lastname",
     "linters",
     "LJA",
@@ -121,12 +122,26 @@
     "VPFPO",
     "ZWNJ"
   ],
-  "ignorePaths": ["node_modules", "dist", "coverage", ".husky", "*.lock", "**/*.snap", "**/generated/**"],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "coverage",
+    ".husky",
+    "*.lock",
+    "**/*.snap",
+    "**/generated/**"
+  ],
   "ignoreRegExpList": [
     "/^\\s*\\/\\/\\s*cspell:disable-next-line.*$/",
     "/[A-F0-9]{8,}/", // hex IDs, hashes
     "/\\|[^\\n]*\\|/" // Cucumber tables: ignore anything between pipes
   ],
-  "files": ["**/*.{ts,tsx,js,jsx,json,md,html,css,scss,feature}", "cypress/**/*"],
-  "flagWords": ["teh", "adn"]
+  "files": [
+    "**/*.{ts,tsx,js,jsx,json,md,html,css,scss,feature}",
+    "cypress/**/*"
+  ],
+  "flagWords": [
+    "teh",
+    "adn"
+  ]
 }

@@ -4,8 +4,8 @@
 /**
  * @fileoverview Builds the Jenkins HTML report for Cypress component test results.
  * @description Used after component runs to merge Mochawesome JSON files for the selected browser and to skip
- * report generation cleanly when no component JSON artifacts were produced. This now reads the reporter's `.jsons`
- * output folder directly so Jenkins continues to publish component reports after the default-browser fallback work.
+ * report generation cleanly when no component JSON artifacts were produced. This reads the reporter's `.jsons`
+ * output folder directly from the consolidated component artifact tree.
  */
 
 const fs = require('node:fs');
@@ -36,11 +36,10 @@ function parseBrowser(args) {
 function resolvePaths(browser) {
   return {
     inputDirs: [
-      path.join('functional-output', 'component-report', browser, '.jsons'),
-      path.join('functional-output', 'component-report', '.jsons'),
-      path.join('functional-output', 'component-report', browser),
+      path.join('functional-output', 'component', browser, 'json', '.jsons'),
+      path.join('functional-output', 'component', browser, 'json'),
     ],
-    htmlDir: path.join('functional-output', 'component-html', browser),
+    htmlDir: path.join('functional-output', 'component', browser, 'html'),
   };
 }
 
