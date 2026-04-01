@@ -5,6 +5,7 @@ export default mergeConfig(
   baseConfig,
   defineConfig({
     test: {
+      disableConsoleIntercept: true,
       include: ['src/**/*.spec.ts'],
       setupFiles: ['src/test-setup.vscode.ts'],
     },
