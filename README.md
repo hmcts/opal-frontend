@@ -276,13 +276,32 @@ TAGS=@UAT-Technical yarn test:functional:tags
 
 ```
 
-### Legacy mode
+Run `yarn test:component` to execute the Cypress component suite.
 
-To run Opal functional tests in legacy app mode, used for UAT-Technical coverage:
+All three top-level runners accept:
+
+- `--browser=<chrome|edge|firefox>` for an explicit browser
+- `--mode=<opal|legacy>` for suite mode selection
+- `--parallel` or `--serial` to override the default execution style
+
+Examples:
 
 ```bash
 
-yarn test:functional:uat-legacy
+yarn test:component --browser=chrome --parallel
+yarn test:smoke --mode=legacy --serial
+yarn test:functional --browser=firefox --mode=opal --parallel
+
+```
+
+### Legacy app mode
+
+To run the UAT-Technical-tagged functional tests against legacy app mode locally:
+This keeps the functional suite on the normal OPAL spec tree and only switches the app/helpers into legacy mode.
+
+```bash
+
+yarn test:functional:uat_legacy
 
 ```
 
@@ -302,7 +321,77 @@ yarn cypress
 
 ### Reports
 
-Artifacts and reports are written to `smoke-output/` and `functional-output/`, using browser-specific subdirectories where applicable.
+After a clean run, artifacts and reports are written to `functional-output/` and `smoke-output/`.
+Replace `<browser>` with `chrome`, `edge`, or `firefox`.
+
+```text
+functional-output/
+  component/
+    <browser>/
+      html/
+        component-report.html
+        assets/...
+      json/
+        .jsons/
+          mochawesome*.json
+      junit/
+        component-test-output-*.xml
+      screenshots/...
+  prod/
+    <browser>/
+      opal-mode-test-output-*.xml
+      <browser>-test-result.xml
+      cucumber/
+        OPAL-report-*.ndjson
+        <browser>-report.ndjson
+        <browser>-report.html
+      legacy/
+        legacy-mode-test-output-*.xml
+        legacy-test-result.xml
+        cucumber/
+          LEGACY-report-*.ndjson
+          legacy-report.ndjson
+          legacy-report.html
+  screenshots/
+    <browser>/...
+    <browser>/legacy/...
+  videos/...
+  zephyr/
+    cypress-report-1.json
+    cucumber-report.json
+    temp/...
+  account_evidence/...
+
+smoke-output/
+  prod/
+    <browser>/
+      opal-mode-test-output-*.xml
+      <browser>-test-result.xml
+      cucumber/
+        OPAL-report-*.ndjson
+        smoke-report.ndjson
+        smoke-report.html
+      legacy/
+        legacy-mode-test-output-*.xml
+        legacy-test-result.xml
+        cucumber/
+          LEGACY-report-*.ndjson
+          legacy-report.ndjson
+          legacy-report.html
+  screenshots/
+    <browser>/...
+    <browser>/legacy/...
+  zephyr/
+    cucumber-report.json
+```
+
+Notes:
+
+- `functional-output/component/<browser>/json/.jsons/` is the raw Mochawesome JSON used to build `html/component-report.html`.
+- `functional-output/prod/<browser>/legacy/` and `smoke-output/prod/<browser>/legacy/` are only created for legacy-mode runs.
+- `videos/` is only expected when using `yarn test:functionalOpalVideo`.
+- `account_evidence/` is only expected when legacy evidence capture is enabled.
+- These older component paths should not be recreated on a clean run: `functional-output/component-report/`, `functional-output/component-html/`, and `functional-output/prod/<browser>/component/`.
 
 ## Running accessibility tests
 
@@ -496,7 +585,7 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:cucumber:smoke:jira-create`: Create Jira tickets from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-update`: Update Jira tickets using the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-execute`: Create a Zephyr execution from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
-- `zephyr:test:opalComponent`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
+- `zephyr:test:component`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
 
