@@ -38,7 +38,9 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     component.handleChangeCollectionOrder();
 
-    expect(eventEmitterSpy).toHaveBeenCalled();
+    expect(eventEmitterSpy).toHaveBeenCalledWith(
+      component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
+    );
   });
 
   it('should not emit changeCollectionOrder when the user lacks account maintenance permission', () => {

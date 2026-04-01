@@ -169,11 +169,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should call router.navigate when navigateToChangeCollectionOrderPage is called', () => {
-    component.navigateToChangeCollectionOrderPage();
+    component.navigateToChangeCollectionOrderPage(true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`],
       {
         relativeTo: component['activatedRoute'],
+        state: { currentCollectionOrderFlag: true },
       },
     );
   });

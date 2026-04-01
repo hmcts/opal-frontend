@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -23,8 +24,12 @@ export class FinesAccEnfColloChangeComponent extends AbstractFormParentBaseCompo
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly finesAccPayloadService = inject(FinesAccPayloadService);
   private readonly opalFinesService = inject(OpalFines);
+  private readonly appRouter = inject(Router);
   private readonly utilsService = inject(UtilsService);
   private readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
+  private readonly currentCollectionOrderFlag = this.appRouter.currentNavigation()?.extras.state?.[
+    'currentCollectionOrderFlag'
+  ] as boolean | undefined;
 
   public readonly accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public readonly partyName = this.finesAccStore.party_name() ?? '';
@@ -50,6 +55,13 @@ export class FinesAccEnfColloChangeComponent extends AbstractFormParentBaseCompo
    * @param form The form payload emitted by the child form component.
    */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesAccEnfColloChangeFormState>): void {
+    const selectedCollectionOrderFlag = form.formData.facc_enf_collection_order_made;
+
+    if (selectedCollectionOrderFlag === this.currentCollectionOrderFlag) {
+      this.navigateToEnforcementTab();
+      return;
+    }
+
     const payload = this.finesAccPayloadService.buildCollectionOrderPayload(form);
 
     this.opalFinesService

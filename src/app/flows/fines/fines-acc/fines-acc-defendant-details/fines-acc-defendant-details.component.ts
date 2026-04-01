@@ -462,9 +462,10 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   /**
    * Navigates to the change collection order page.
    */
-  public navigateToChangeCollectionOrderPage(): void {
+  public navigateToChangeCollectionOrderPage(currentCollectionOrderFlag: boolean): void {
     this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`], {
       relativeTo: this.activatedRoute,
+      state: { currentCollectionOrderFlag },
     });
   }
 }

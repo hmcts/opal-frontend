@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { signal } from '@angular/core';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
+import { signal, type WritableSignal } from '@angular/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { FinesAccEnfColloChangeComponent } from './fines-acc-enf-collo-change.component';
@@ -16,6 +16,8 @@ describe('FinesAccEnfColloChangeComponent', () => {
   let component: FinesAccEnfColloChangeComponent;
   let fixture: ComponentFixture<FinesAccEnfColloChangeComponent>;
   let mockRoute: ActivatedRoute;
+  let mockRouter: Pick<Router, 'currentNavigation' | 'navigate'>;
+  let mockCurrentNavigation: WritableSignal<Navigation | null>;
   let mockAccountStore: Pick<
     FinesAccountStoreType,
     'getAccountNumber' | 'party_name' | 'account_id' | 'base_version' | 'business_unit_id' | 'setSuccessMessage'
@@ -30,6 +32,17 @@ describe('FinesAccEnfColloChangeComponent', () => {
         data: {},
       },
     } as ActivatedRoute;
+
+    mockCurrentNavigation = signal<Navigation | null>({
+      extras: {
+        state: {},
+      },
+    } as unknown as Navigation);
+
+    mockRouter = {
+      currentNavigation: mockCurrentNavigation,
+      navigate: vi.fn(),
+    };
 
     mockAccountStore = {
       getAccountNumber: signal('177A'),
@@ -62,6 +75,7 @@ describe('FinesAccEnfColloChangeComponent', () => {
       imports: [FinesAccEnfColloChangeComponent],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: Router, useValue: mockRouter },
         { provide: FinesAccountStore, useValue: mockAccountStore },
         { provide: FinesAccPayloadService, useValue: mockPayloadService },
         { provide: OpalFines, useValue: mockOpalFinesService },
@@ -134,6 +148,40 @@ describe('FinesAccEnfColloChangeComponent', () => {
 
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
     expect(routerNavigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('should navigate back without patching when the selected value matches the current collection order flag', () => {
+    mockCurrentNavigation.set({
+      extras: {
+        state: {
+          currentCollectionOrderFlag: false,
+        },
+      },
+    } as unknown as Navigation);
+
+    fixture = TestBed.createComponent(FinesAccEnfColloChangeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
+
+    component.handleSubmit({
+      formData: {
+        facc_enf_collection_order_made: false,
+      },
+      nestedFlow: false,
+    });
+
+    expect(mockPayloadService.buildCollectionOrderPayload).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.patchDefendantAccount).not.toHaveBeenCalled();
+    expect(mockAccountStore.setSuccessMessage).not.toHaveBeenCalled();
+    expect(routerNavigateSpy).toHaveBeenCalledWith(
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+      false,
+      undefined,
+      null,
+      'enforcement',
+    );
   });
 
   it('should send an empty collection order date when selecting yes', () => {
