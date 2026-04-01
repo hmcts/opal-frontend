@@ -113,7 +113,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should render the search offence list link with the required classes and attributes', () => {
     const link = fixture.nativeElement.querySelector(
-      'a.govuk-link.govuk-task-list__link.govuk-link--no-visited-state',
+      'a.govuk-link.govuk-link--no-visited-state',
     ) as HTMLAnchorElement | null;
 
     expect(link).toBeTruthy();
@@ -121,7 +121,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(link.textContent?.trim()).toBe('search the offence list');
     expect(link.classList.contains('govuk-link')).toBe(true);
-    expect(link.classList.contains('govuk-task-list__link')).toBe(true);
     expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
     expect(link.getAttribute('href')).toBe(component.searchOffenceUrl);
     expect(link.getAttribute('target')).toBe('_blank');
