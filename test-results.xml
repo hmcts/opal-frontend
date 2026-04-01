@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="8.003" tests="5" failures="0">
+  <testsuite name="Root Suite" timestamp="2026-03-06T12:48:46" tests="0" file="cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/pages/LocalJusticeAreasFiltering.feature" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Manual account creation - Local justice area filtering" timestamp="2026-03-06T12:48:46" tests="5" time="7.995" failures="0">
+    <testcase name="Manual account creation - Local justice area filtering Fine + New requests only PSA and CRWCRT local justice areas" time="2.904" classname="Fine + New requests only PSA and CRWCRT local justice areas">
+    </testcase>
+    <testcase name="Manual account creation - Local justice area filtering Fine + Transfer in requests only PSA and CRWCRT local justice areas" time="1.465" classname="Fine + Transfer in requests only PSA and CRWCRT local justice areas">
+    </testcase>
+    <testcase name="Manual account creation - Local justice area filtering Conditional Caution + New requests all local justice area types" time="1.175" classname="Conditional Caution + New requests all local justice area types">
+    </testcase>
+    <testcase name="Manual account creation - Local justice area filtering Fixed Penalty + New requests all local justice area types (Prosecutors all remain visible)" time="1.115" classname="Fixed Penalty + New requests all local justice area types (Prosecutors all remain visible)">
+    </testcase>
+    <testcase name="Manual account creation - Local justice area filtering Fixed Penalty + Transfer in requests all local justice area types (Prosecutors all remain visible)" time="1.103" classname="Fixed Penalty + Transfer in requests all local justice area types (Prosecutors all remain visible)">
+    </testcase>
+  </testsuite>
+</testsuites>

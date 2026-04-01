@@ -5,6 +5,7 @@
 import { MacCourtDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.court-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { selectFirstAutocompleteOption, typeAndSelectAutocompleteOption } from '../common/autocomplete.helper';
 
 const log = createScopedLogger('ManualCourtDetailsActions');
 
@@ -138,12 +139,18 @@ export class ManualCourtDetailsActions {
   }
 
   /**
-   * Types into the LJA autocomplete and selects the first suggestion.
+   * Types into the LJA autocomplete and selects the matching suggestion.
    * @param lja Local Justice Area value to enter.
    */
   private setLja(lja: string): void {
     log('type', 'Setting LJA', { lja });
-    this.typeAutocomplete(L.ljaInput, L.ljaListbox, lja, 'LJA');
+    typeAndSelectAutocompleteOption({
+      inputSelector: L.ljaInput,
+      listboxSelector: L.ljaListbox,
+      value: lja,
+      label: 'LJA',
+      timeoutOptions: this.common.getTimeoutOptions(),
+    });
   }
 
   /**
@@ -156,12 +163,18 @@ export class ManualCourtDetailsActions {
   }
 
   /**
-   * Types into the enforcement court autocomplete and selects the first suggestion.
+   * Types into the enforcement court autocomplete and selects the matching suggestion.
    * @param enforcementCourt Enforcement court value to enter.
    */
   private setEnforcementCourt(enforcementCourt: string): void {
     log('type', 'Setting enforcement court', { enforcementCourt });
-    this.typeAutocomplete(L.enforcementCourtInput, L.enforcementCourtListbox, enforcementCourt, 'Enforcement court');
+    typeAndSelectAutocompleteOption({
+      inputSelector: L.enforcementCourtInput,
+      listboxSelector: L.enforcementCourtListbox,
+      value: enforcementCourt,
+      label: 'Enforcement court',
+      timeoutOptions: this.common.getTimeoutOptions(),
+    });
   }
 
   /**
@@ -187,40 +200,18 @@ export class ManualCourtDetailsActions {
   }
 
   /**
-   * Handles autocomplete inputs by typing, waiting for the listbox, and selecting the first option.
-   * @param inputSelector Selector for the autocomplete input.
-   * @param listboxSelector Selector for the listbox options.
-   * @param value Value to type into the autocomplete.
-   * @param label Logical label for logging.
-   */
-  private typeAutocomplete(inputSelector: string, listboxSelector: string, value: string, label: string): void {
-    const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
-    input.scrollIntoView().clear({ force: true });
-
-    if (value === '') {
-      log('clear', `${label} autocomplete cleared`);
-      input.should('have.value', '');
-      return;
-    }
-
-    input.type(value, { delay: 0, force: true }).should('have.value', value);
-    cy.get(listboxSelector, this.common.getTimeoutOptions()).should('exist');
-    cy.get(inputSelector).type('{downarrow}{enter}', { force: true });
-    cy.get(inputSelector, this.common.getTimeoutOptions()).should('not.have.value', '');
-  }
-
-  /**
    * Selects the first option in an autocomplete without relying on typed text.
    * @param inputSelector Selector for the autocomplete input.
    * @param listboxSelector Selector for the listbox options.
    * @param label Logical label for logging.
    */
   private selectFirstAutocompleteOption(inputSelector: string, listboxSelector: string, label: string): void {
-    const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
-    input.scrollIntoView().clear({ force: true }).type('{downarrow}{enter}', { force: true });
-    cy.get(listboxSelector, this.common.getTimeoutOptions()).should('exist');
-    cy.get(inputSelector, this.common.getTimeoutOptions()).invoke('val').should('not.be.empty');
-    log('select', `Selected first option for ${label}`);
+    selectFirstAutocompleteOption({
+      inputSelector,
+      listboxSelector,
+      label,
+      timeoutOptions: this.common.getTimeoutOptions(),
+    });
   }
 
   /**

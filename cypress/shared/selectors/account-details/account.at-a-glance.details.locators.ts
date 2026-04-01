@@ -40,11 +40,34 @@ export const AccountAtAGlanceLocators = {
     moreOptionsToggle: '.moj-button-menu__toggle-button',
   },
 
+  accountSummary: {
+    /** Visible row that contains the account header summary values below the page title. */
+    root: 'opal-lib-custom-account-information > .govuk-grid-row',
+
+    /** Account type value shown in the summary strip. */
+    accountTypeValue: '#defendant-account-type',
+
+    /** Prosecutor case reference value shown for non-fixed-penalty accounts. */
+    pcrCaseNumberValue: '#defendant-pcr-case-number',
+
+    /** Ticket number value shown for fixed-penalty accounts. */
+    pcrTicketNumberValue: '#defendant-pcr-ticket-number',
+
+    /** Shared selector covering either case-number or ticket-number variants. */
+    caseOrTicketNumberValue: '#defendant-pcr-case-number, #defendant-pcr-ticket-number',
+
+    /** Business unit summary value. */
+    businessUnitValue: '#defendant-business-unit',
+  },
+
   // ──────────────────────────────
   // At a glance — Section headings
   // ──────────────────────────────
 
   headers: {
+    /** Generic section heading selector scoped within the At a glance tab root. */
+    sectionHeading: 'h2.govuk-heading-s',
+
     /** Column header: Defendant */
     defendant: 'app-fines-acc-defendant-details-at-a-glance-tab h2.govuk-heading-s:contains("Defendant")',
 
@@ -57,6 +80,10 @@ export const AccountAtAGlanceLocators = {
 
     /** Section header: Comments (appears in the third column, beneath enforcement block) */
     comments: 'app-fines-acc-defendant-details-at-a-glance-tab h2.govuk-heading-s:contains("Comments")',
+
+    /** Section header: Language preferences. */
+    languagePreferences:
+      'app-fines-acc-defendant-details-at-a-glance-tab h2.govuk-heading-s:contains("Language preferences")',
   },
 
   // ──────────────────────────────
@@ -83,6 +110,14 @@ export const AccountAtAGlanceLocators = {
     /** National Insurance Number value. */
     nationalInsuranceNumber:
       'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Defendant")) h3:contains("National Insurance Number") + p',
+
+    /** Document language value within the Language preferences section. */
+    documentLanguage:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Language preferences")) h3:contains("Document language") + p',
+
+    /** Court hearing language value within the Language preferences section. */
+    courtHearingLanguage:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Language preferences")) h3:contains("Court hearing language") + p',
 
     // Payment terms column
     /** Payment terms type (e.g., Pay by date). */

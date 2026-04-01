@@ -5,6 +5,10 @@ import { IFinesConSelectBuState } from '../select-business-unit/fines-con-select
 import { FINES_CON_SELECT_BU_FORM } from '../select-business-unit/fines-con-select-bu/constants/fines-con-select-bu-form.constant';
 import { FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK } from '../select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-individual.mock';
 import { FINES_CON_SELECT_BU_FORM_COMPANY_MOCK } from '../select-business-unit/fines-con-select-bu/mocks/fines-con-select-bu-form-company.mock';
+import { FINES_CON_SEARCH_ACCOUNT_STATE } from '../consolidate-acc/fines-con-search-account/constants/fines-con-search-account-state.constant';
+import { FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK } from '../consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-account-number.mock';
+import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_MOCK } from '../consolidate-acc/fines-con-search-account/mocks/fines-con-search-account-form-individuals.mock';
+import { FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK } from '../consolidate-acc/fines-con-search-result/mocks/fines-con-search-result-defendant-accounts-formatting.mock';
 
 describe('FinesConStore', () => {
   let store: InstanceType<typeof FinesConStore>;
@@ -22,6 +26,7 @@ describe('FinesConStore', () => {
     expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBeNull();
     expect(store.selectBuForm().formData.fcon_select_bu_defendant_type).toBe('individual');
     expect(store.selectBuForm().nestedFlow).toBe(false);
+    expect(store.selectedAccountIds()).toEqual([]);
   });
 
   it('should update business unit and defendant type', () => {
@@ -55,6 +60,7 @@ describe('FinesConStore', () => {
 
   it('should reset entire consolidation state', () => {
     store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_INDIVIDUAL_MOCK.formData);
+    store.addSelectedAccountIds([11, 12]);
     store.resetConsolidationState();
 
     expect(store.selectBuForm().formData.fcon_select_bu_business_unit_id).toBe(
@@ -64,6 +70,7 @@ describe('FinesConStore', () => {
       FINES_CON_SELECT_BU_FORM.formData.fcon_select_bu_defendant_type,
     );
     expect(store.selectBuForm().nestedFlow).toBe(FINES_CON_SELECT_BU_FORM.nestedFlow);
+    expect(store.selectedAccountIds()).toEqual([]);
   });
 
   it('should compute business unit id correctly', () => {
@@ -78,5 +85,132 @@ describe('FinesConStore', () => {
     store.updateSelectBuForm(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK.formData);
 
     expect(store.getDefendantType()).toBe('company');
+  });
+
+  it('should have unsavedChanges initialized to false', () => {
+    expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should set unsavedChanges to true', () => {
+    store.setUnsavedChanges(true);
+
+    expect(store.unsavedChanges()).toBe(true);
+  });
+
+  it('should set unsavedChanges to false', () => {
+    store.setUnsavedChanges(true);
+    store.setUnsavedChanges(false);
+
+    expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should reset unsavedChanges to false on resetConsolidationState', () => {
+    store.setUnsavedChanges(true);
+    store.resetConsolidationState();
+
+    expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('should update search account form temporarily', () => {
+    const testData = FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData;
+
+    store.updateSearchAccountFormTemporary(testData);
+
+    expect(store.searchAccountForm().fcon_search_account_number).toBe(
+      FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData.fcon_search_account_number,
+    );
+    expect(store.searchAccountForm().fcon_search_account_individuals_search_criteria).toBeTruthy();
+  });
+
+  it('should reset search account form to initial state', () => {
+    const testData = FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData;
+
+    store.updateSearchAccountFormTemporary(testData);
+    store.addSelectedAccountIds([11]);
+    expect(store.searchAccountForm().fcon_search_account_number).toBe(
+      FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData.fcon_search_account_number,
+    );
+
+    store.resetSearchAccountForm();
+
+    expect(store.searchAccountForm()).toEqual(FINES_CON_SEARCH_ACCOUNT_STATE);
+    expect(store.searchAccountForm().fcon_search_account_number).toBeNull();
+  });
+
+  it('should add selected account ids uniquely', () => {
+    store.addSelectedAccountIds([11, 12, 12]);
+    store.addSelectedAccountIds([12, 13]);
+
+    expect(store.selectedAccountIds()).toEqual([11, 12, 13]);
+  });
+
+  it('should preserve cached results when resetting search account form', () => {
+    store.updateDefendantResults(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK, []);
+
+    store.resetSearchAccountForm();
+
+    expect(store.individualResults()).toEqual(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK);
+    expect(store.companyResults()).toEqual([]);
+  });
+
+  it('should preserve search account form data when updating', () => {
+    const initialData = FINES_CON_SEARCH_ACCOUNT_FORM_ACCOUNT_NUMBER_MOCK.formData;
+
+    store.updateSearchAccountFormTemporary(initialData);
+
+    const updatedData = FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_MOCK.formData;
+
+    store.updateSearchAccountFormTemporary(updatedData);
+
+    expect(store.searchAccountForm().fcon_search_account_number).toBe(updatedData.fcon_search_account_number);
+    expect(
+      store.searchAccountForm().fcon_search_account_individuals_search_criteria
+        ?.fcon_search_account_individuals_last_name,
+    ).toBe(updatedData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_last_name);
+  });
+
+  describe('resetStateChangesUnsavedChanges', () => {
+    it('should reset both stateChanges and unsavedChanges flags to false', () => {
+      store.setStateChanges(true);
+      store.setUnsavedChanges(true);
+
+      expect(store.stateChanges()).toBe(true);
+      expect(store.unsavedChanges()).toBe(true);
+
+      store.resetStateChangesUnsavedChanges();
+
+      expect(store.stateChanges()).toBe(false);
+      expect(store.unsavedChanges()).toBe(false);
+    });
+
+    it('should reset stateChanges flag when only stateChanges is true', () => {
+      store.setStateChanges(true);
+
+      expect(store.stateChanges()).toBe(true);
+
+      store.resetStateChangesUnsavedChanges();
+
+      expect(store.stateChanges()).toBe(false);
+    });
+
+    it('should reset unsavedChanges flag when only unsavedChanges is true', () => {
+      store.setUnsavedChanges(true);
+
+      expect(store.unsavedChanges()).toBe(true);
+
+      store.resetStateChangesUnsavedChanges();
+
+      expect(store.unsavedChanges()).toBe(false);
+    });
+
+    it('should keep both flags false when already false', () => {
+      expect(store.stateChanges()).toBe(false);
+      expect(store.unsavedChanges()).toBe(false);
+
+      store.resetStateChangesUnsavedChanges();
+
+      expect(store.stateChanges()).toBe(false);
+      expect(store.unsavedChanges()).toBe(false);
+    });
   });
 });

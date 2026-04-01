@@ -1,7 +1,7 @@
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 export const ACCOUNT_SESSION_USER_STATE_MOCK: IOpalUserState = {
   user_id: 50000000,
-  username: 'timmyTest@HMCTS.NET',
+  username: 'timmyTest@dev.platform.hmcts.net',
   name: 'Timmy Test',
   status: 'active',
   version: 1,

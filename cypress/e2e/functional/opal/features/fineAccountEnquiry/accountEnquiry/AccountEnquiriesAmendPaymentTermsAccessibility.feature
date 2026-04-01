@@ -1,9 +1,10 @@
+@JIRA-LABEL:account-enquiry
 Feature: Account Enquiries - Amend Payment Terms Accessibility
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+    And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                 |
       | account.defendant.forenames                     | John                      |
       | account.defendant.surname                       | AmendPayTerms{uniq}       |
@@ -20,6 +21,7 @@ Feature: Account Enquiries - Amend Payment Terms Accessibility
       | account.payment_terms.payment_terms_type_code   | B                         |
       | account.payment_terms.effective_date            | 2025-05-30                |
 
+  @JIRA-KEY:POT-3118
   Scenario: Amend payment terms page accessibility
     When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
     And I go to the Payment terms tab

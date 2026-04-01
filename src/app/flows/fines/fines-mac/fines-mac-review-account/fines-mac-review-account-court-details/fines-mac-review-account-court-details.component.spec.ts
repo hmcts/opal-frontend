@@ -150,11 +150,12 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
   it('should set card title based on account type', () => {
     component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
-    component['setCardTitle']();
     expect(component.cardTitle).toBe('Issuing authority and court details');
 
     component.accountType = FINES_ACCOUNT_TYPES['Fine'];
-    component['setCardTitle']();
     expect(component.cardTitle).toBe('Court details');
+
+    component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
+    expect(component.cardTitle).toBe('Police and court details');
   });
 });

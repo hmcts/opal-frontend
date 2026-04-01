@@ -2,9 +2,13 @@
  * @file Actions for Manual Account Creation - Offence details task.
  * @description Handles offence entry, impositions, minor creditor interactions, and navigation.
  */
-import { MacOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
+import {
+  MacOffenceDetailsLocators as L,
+  MacOffenceDetailsMinorCreditorInformationLocators as MinorCreditorInfo,
+} from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { typeAndSelectAutocompleteOption } from '../common/autocomplete.helper';
 
 const log = createScopedLogger('ManualOffenceDetailsActions');
 
@@ -109,12 +113,19 @@ export class ManualOffenceDetailsActions {
     }
 
     log('type', `Setting imposition field ${field}`, { index, value });
-    this.typeAndAssert(selector, value, `${field} (imposition ${index + 1})`);
-
     if (field === 'Result code') {
-      cy.get(L.imposition.resultCodeList(index), this.common.getTimeoutOptions()).should('be.visible');
-      cy.get(L.imposition.resultCodeInput(index)).type('{downarrow}{enter}', { force: true });
+      typeAndSelectAutocompleteOption({
+        inputSelector: selector,
+        listboxSelector: L.imposition.resultCodeList(index),
+        value,
+        label: `${field} (imposition ${index + 1})`,
+        timeoutOptions: this.common.getTimeoutOptions(),
+        typeDelay: 10,
+      });
+      return;
     }
+
+    this.typeAndAssert(selector, value, `${field} (imposition ${index + 1})`);
   }
 
   /**
@@ -431,7 +442,7 @@ export class ManualOffenceDetailsActions {
         if (!value) return;
 
         if (label === 'Minor creditor') {
-          cy.get('h5.govuk-summary-card__title', this.common.getTimeoutOptions()).should('contain.text', value);
+          cy.get(MinorCreditorInfo.name, this.common.getTimeoutOptions()).should('contain.text', value);
           return;
         }
 
@@ -472,7 +483,7 @@ export class ManualOffenceDetailsActions {
       if (!value) return;
 
       if (label === 'Minor creditor') {
-        summary.find('h5.govuk-summary-card__title').should('contain.text', value);
+        summary.find(MinorCreditorInfo.name).should('contain.text', value);
         return;
       }
 

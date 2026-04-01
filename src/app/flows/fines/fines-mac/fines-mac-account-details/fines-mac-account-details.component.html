@@ -15,6 +15,21 @@
     <h1 class="govuk-heading-l">Account details</h1>
   }
   <opal-lib-govuk-summary-list summaryListId="accountDetails">
+    @if (showEntryType) {
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="accountDetails"
+        summaryListRowId="entryType"
+      >
+        <ng-container name>Entry type</ng-container>
+        <ng-container value>
+          <p class="govuk-body">
+            {{ originatorType }}
+          </p>
+        </ng-container>
+      </div>
+    }
     <div
       opal-lib-govuk-summary-list-row
       class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -81,7 +96,7 @@
       </div>
     }
   </opal-lib-govuk-summary-list>
-  <h2 class="govuk-heading-m">Court details</h2>
+  <h2 class="govuk-heading-m">{{ courtDetailsCopy.sectionHeading }}</h2>
   <ng-container *ngTemplateOutlet="courtDetails"></ng-container>
   @switch (defendantType) {
     @case (defendantTypes[defendantTypesKeys.adultOrYouthOnly]) {
@@ -287,7 +302,7 @@
           tabindex="0"
           aria-describedby="courtDetailsStatus"
         >
-          Court details
+          {{ courtDetailsCopy.taskListLabel }}
         </a>
       </ng-container>
       <ng-container status>
