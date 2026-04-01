@@ -5,7 +5,7 @@ import {
 } from './intercept/defendantAccountIntercepts';
 
 // constants + mocks
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,

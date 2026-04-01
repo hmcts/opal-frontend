@@ -4,7 +4,9 @@ import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fi
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
-import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_elements';
+import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
+import { AccountSearchIndividualsLocators as IndividualsLocators } from '../../../shared/selectors/account-search/account.search.individuals.locators';
+import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { finesSaDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
@@ -73,39 +75,39 @@ describe('Search Account Component - Individuals', () => {
     () => {
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.app).should('exist');
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
-      cy.get(DOM_ELEMENTS.tabs).should('exist');
-      cy.get(DOM_ELEMENTS.tabsList).should('exist');
-      cy.get(DOM_ELEMENTS.individualsTab).should('exist');
-      cy.get(DOM_ELEMENTS.companiesTab).should('exist');
-      cy.get(DOM_ELEMENTS.minorCreditorsTab).should('exist');
-      cy.get(DOM_ELEMENTS.majorCreditorsTab).should('exist');
-      cy.get(DOM_ELEMENTS.individualsPanel).should('exist');
-      cy.get(DOM_ELEMENTS.individualsHeading).should('contain', 'Individuals');
-      cy.get(DOM_ELEMENTS.businessUnitSummaryList).should('exist');
-      cy.get(DOM_ELEMENTS.businessUnitLink).should('exist').contains('Change');
-      cy.get(DOM_ELEMENTS.businessUnitLink).click();
-      cy.get(DOM_ELEMENTS.accountNumberLabel).should('exist').and('contain', 'Account number');
-      cy.get(DOM_ELEMENTS.referenceNumberLabel).should('exist').and('contain', 'Reference or case number');
-      cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist');
-      cy.get(DOM_ELEMENTS.lastNameLabel).should('exist').and('contain', 'Last name');
-      cy.get(DOM_ELEMENTS.lastNameInput).should('exist');
-      cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).should('exist').and('not.be.checked');
-      cy.get(DOM_ELEMENTS.firstNamesLabel).should('exist').and('contain', 'First names');
-      cy.get(DOM_ELEMENTS.firstNamesInput).should('exist');
-      cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).should('exist').and('not.be.checked');
-      cy.get(DOM_ELEMENTS.includeAliasesCheckbox).should('exist').and('not.be.checked');
-      cy.get(DOM_ELEMENTS.dobLabel).should('exist').and('contain', 'Date of birth');
-      cy.get(DOM_ELEMENTS.dobInput).should('exist');
-      cy.get(DOM_ELEMENTS.niNumberLabel).should('exist').and('contain', 'National Insurance number');
-      cy.get(DOM_ELEMENTS.niNumberInput).should('exist');
-      cy.get(DOM_ELEMENTS.addressLine1Label).should('exist').and('contain', 'Address line 1');
-      cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
-      cy.get(DOM_ELEMENTS.postcodeLabel).should('exist').and('contain', 'Postcode');
-      cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
-      cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
-      cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
+      cy.get(IndividualsLocators.root).should('exist');
+      cy.get(CommonLocators.pageHeader).should('contain', 'Search for an account');
+      cy.get(NavLocators.tabsContainer).should('exist');
+      cy.get(NavLocators.tabsList).should('exist');
+      cy.get(NavLocators.individualsTab).should('exist');
+      cy.get(NavLocators.companiesTab).should('exist');
+      cy.get(NavLocators.minorCreditorsTab).should('exist');
+      cy.get(NavLocators.majorCreditorsTab).should('exist');
+      cy.get(IndividualsLocators.individualsPanel).should('exist');
+      cy.get(IndividualsLocators.individualsHeader).should('contain', 'Individuals');
+      cy.get(CommonLocators.businessUnitSummaryList).should('exist');
+      cy.get(CommonLocators.businessUnitFilterChangeLink).should('exist').contains('Change');
+      cy.get(CommonLocators.businessUnitFilterChangeLink).click();
+      cy.get(CommonLocators.accountNumberLabel).should('exist').and('contain', 'Account number');
+      cy.get(CommonLocators.referenceOrCaseNumberLabel).should('exist').and('contain', 'Reference or case number');
+      cy.get(CommonLocators.referenceOrCaseNumberInput).should('exist');
+      cy.get(IndividualsLocators.lastNameLabel).should('exist').and('contain', 'Last name');
+      cy.get(IndividualsLocators.lastNameInput).should('exist');
+      cy.get(IndividualsLocators.lastNameExactMatchCheckbox).should('exist').and('not.be.checked');
+      cy.get(IndividualsLocators.firstNamesLabel).should('exist').and('contain', 'First names');
+      cy.get(IndividualsLocators.firstNameInput).should('exist');
+      cy.get(IndividualsLocators.firstNamesExactMatchCheckbox).should('exist').and('not.be.checked');
+      cy.get(IndividualsLocators.includeAliasesCheckbox).should('exist').and('not.be.checked');
+      cy.get(IndividualsLocators.dobLabel).should('exist').and('contain', 'Date of birth');
+      cy.get(IndividualsLocators.dobInput).should('exist');
+      cy.get(IndividualsLocators.niNumberLabel).should('exist').and('contain', 'National Insurance number');
+      cy.get(IndividualsLocators.niNumberInput).should('exist');
+      cy.get(IndividualsLocators.addressLine1Label).should('exist').and('contain', 'Address line 1');
+      cy.get(IndividualsLocators.addressLine1Input).should('exist');
+      cy.get(IndividualsLocators.postcodeLabel).should('exist').and('contain', 'Postcode');
+      cy.get(IndividualsLocators.postcodeInput).should('exist');
+      cy.get(CommonLocators.activeAccountsOnlyCheckbox).should('be.checked');
+      cy.get(CommonLocators.searchButton).should('exist').and('contain', 'Search');
     },
   );
 
@@ -116,19 +118,19 @@ describe('Search Account Component - Individuals', () => {
       setupComponent(null);
       individualSearchMock.fsa_search_account_number = '123$%^78';
 
-      cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '123$%^78');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(CommonLocators.accountNumberInput).should('have.value', '123$%^78');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
+      cy.get(CommonLocators.pageHeader).should('contain', 'Search for an account');
 
-      cy.get(DOM_ELEMENTS.errorSummary)
+      cy.get(CommonLocators.errorSummary)
         .should('exist')
         .and('contain', 'Account number must only contain letters or numbers');
-      cy.get(DOM_ELEMENTS.accountNumberError)
+      cy.get(CommonLocators.accountNumberError)
         .should('exist')
         .and('contain', 'Account number must only contain letters or numbers');
 
-      cy.get(DOM_ELEMENTS.accountNumberInput).clear();
+      cy.get(CommonLocators.accountNumberInput).clear();
     },
   );
 
@@ -139,17 +141,17 @@ describe('Search Account Component - Individuals', () => {
       setupComponent(null);
       individualSearchMock.fsa_search_account_number = '1234567';
 
-      cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '1234567');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(CommonLocators.accountNumberInput).should('have.value', '1234567');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary)
+      cy.get(CommonLocators.errorSummary)
         .should('exist')
         .and('contain', 'Enter account number in the correct format such as 12345678 or 12345678A');
-      cy.get(DOM_ELEMENTS.accountNumberError)
+      cy.get(CommonLocators.accountNumberError)
         .should('exist')
         .and('contain', 'Enter account number in the correct format such as 12345678 or 12345678A');
 
-      cy.get(DOM_ELEMENTS.accountNumberInput).clear();
+      cy.get(CommonLocators.accountNumberInput).clear();
     },
   );
   it(
@@ -159,17 +161,17 @@ describe('Search Account Component - Individuals', () => {
       setupComponent(null);
       individualSearchMock.fsa_search_account_reference_case_number = 'REF@#$456';
 
-      cy.get(DOM_ELEMENTS.referenceNumberInput).should('have.value', 'REF@#$456');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(CommonLocators.referenceOrCaseNumberInput).should('have.value', 'REF@#$456');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary)
+      cy.get(CommonLocators.errorSummary)
         .should('exist')
         .and('contain', 'Reference or case number must only contain letters or numbers');
-      cy.get(DOM_ELEMENTS.referenceNumberError)
+      cy.get(CommonLocators.referenceOrCaseNumberError)
         .should('exist')
         .and('contain', 'Reference or case number must only contain letters or numbers');
 
-      cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
+      cy.get(CommonLocators.referenceOrCaseNumberInput).clear();
     },
   );
   it(
@@ -180,13 +182,13 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
         'Smith123';
 
-      cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.lastNameInput).should('have.value', 'Smith123');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Last name must only contain letters');
-      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must only contain letters');
+      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'Last name must only contain letters');
+      cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Last name must only contain letters');
 
-      cy.get(DOM_ELEMENTS.lastNameInput).clear();
+      cy.get(IndividualsLocators.lastNameInput).clear();
     },
   );
   it(
@@ -197,13 +199,15 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
         'John123';
 
-      cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'John123');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.firstNameInput).should('have.value', 'John123');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'First names must only contain letters');
-      cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must only contain letters');
+      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'First names must only contain letters');
+      cy.get(IndividualsLocators.firstNamesError)
+        .should('exist')
+        .and('contain', 'First names must only contain letters');
 
-      cy.get(DOM_ELEMENTS.firstNamesInput).clear();
+      cy.get(IndividualsLocators.firstNameInput).clear();
     },
   );
   it(
@@ -214,13 +218,13 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
         '15/AB/2020';
 
-      cy.get(DOM_ELEMENTS.dobInput).should('have.value', '15/AB/2020');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.dobInput).should('have.value', '15/AB/2020');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
-      cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
+      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
+      cy.get(IndividualsLocators.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
 
-      cy.get(DOM_ELEMENTS.dobInput).clear();
+      cy.get(IndividualsLocators.dobInput).clear();
     },
   );
   it(
@@ -231,13 +235,13 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
         '15/05/2030';
 
-      cy.get(DOM_ELEMENTS.dobInput).should('have.value', '15/05/2030');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.dobInput).should('have.value', '15/05/2030');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Date of birth must be in the past');
-      cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date of birth must be in the past');
+      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'Date of birth must be in the past');
+      cy.get(IndividualsLocators.dobError).should('exist').and('contain', 'Date of birth must be in the past');
 
-      cy.get(DOM_ELEMENTS.dobInput).clear();
+      cy.get(IndividualsLocators.dobInput).clear();
     },
   );
   it(
@@ -248,13 +252,13 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
         '5/1/1980';
 
-      cy.get(DOM_ELEMENTS.dobInput).should('have.value', '5/1/1980');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.dobInput).should('have.value', '5/1/1980');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
-      cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
+      cy.get(CommonLocators.errorSummary).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
+      cy.get(IndividualsLocators.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
 
-      cy.get(DOM_ELEMENTS.dobInput).clear();
+      cy.get(IndividualsLocators.dobInput).clear();
     },
   );
 
@@ -264,23 +268,22 @@ describe('Search Account Component - Individuals', () => {
     () => {
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
-      cy.get(DOM_ELEMENTS.dobDatePickerTitle)
+      cy.get(IndividualsLocators.dobOpenButton).click();
+      cy.get(IndividualsLocators.dobCalendarTitle)
         .invoke('text')
         .then((pickerMonth) => {
           if (pickerMonth.includes(getPreviousMonth())) {
-            cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
+            cy.get(IndividualsLocators.dobCalendarDialog).contains(/^1$/).click();
             return;
           }
 
-          cy.get(DOM_ELEMENTS.dobDatePickerTitle).should('contain', getCurrentMonth());
-          cy.get(DOM_ELEMENTS.dobDatePickerPrevMonth).click();
-          cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
+          cy.get(IndividualsLocators.dobCalendarTitle).should('contain', getCurrentMonth());
+          cy.get(IndividualsLocators.dobPreviousMonthButton).click();
+          cy.get(IndividualsLocators.dobCalendarDialog).contains(/^1$/).click();
         });
-
       const expectedDate = getFirstDayOfPreviousMonth();
-      cy.get(DOM_ELEMENTS.dobInput).should('have.value', expectedDate);
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.dobInput).should('have.value', expectedDate);
+      cy.get(CommonLocators.searchButton).click();
     },
   );
 
@@ -292,17 +295,17 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
         'AB123$%^C';
 
-      cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123$%^C');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.niNumberInput).should('have.value', 'AB123$%^C');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary)
+      cy.get(CommonLocators.errorSummary)
         .should('exist')
         .and('contain', 'National Insurance number must only contain letters or numbers');
-      cy.get(DOM_ELEMENTS.niNumberError)
+      cy.get(IndividualsLocators.niNumberError)
         .should('exist')
         .and('contain', 'National Insurance number must only contain letters or numbers');
 
-      cy.get(DOM_ELEMENTS.niNumberInput).clear();
+      cy.get(IndividualsLocators.niNumberInput).clear();
     },
   );
   it(
@@ -313,17 +316,17 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
         '123 Test St. ®©™';
 
-      cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '123 Test St. ®©™');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.addressLine1Input).should('have.value', '123 Test St. ®©™');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary)
+      cy.get(CommonLocators.errorSummary)
         .should('exist')
         .and('contain', 'Address line 1 must only contain letters or numbers');
-      cy.get(DOM_ELEMENTS.addressLine1Error)
+      cy.get(IndividualsLocators.addressLine1Error)
         .should('exist')
         .and('contain', 'Address line 1 must only contain letters or numbers');
 
-      cy.get(DOM_ELEMENTS.addressLine1Input).clear();
+      cy.get(IndividualsLocators.addressLine1Input).clear();
     },
   );
   it(
@@ -334,15 +337,17 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
         'SW1A @#!';
 
-      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SW1A @#!');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.postcodeInput).should('have.value', 'SW1A @#!');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Postcode must only contain letters or numbers');
-      cy.get(DOM_ELEMENTS.postcodeError)
+      cy.get(CommonLocators.errorSummary)
+        .should('exist')
+        .and('contain', 'Postcode must only contain letters or numbers');
+      cy.get(IndividualsLocators.postcodeError)
         .should('exist')
         .and('contain', 'Postcode must only contain letters or numbers');
 
-      cy.get(DOM_ELEMENTS.postcodeInput).clear();
+      cy.get(IndividualsLocators.postcodeInput).clear();
     },
   );
 
@@ -353,11 +358,11 @@ describe('Search Account Component - Individuals', () => {
       setupComponent(null);
       individualSearchMock.fsa_search_account_number = '1234567890'; // 10 characters (exceeds 9)
 
-      cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '1234567890');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(CommonLocators.accountNumberInput).should('have.value', '1234567890');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.accountNumberError)
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(CommonLocators.accountNumberError)
         .should('exist')
         .and('contain', 'Account number must be 9 characters or fewer');
     },
@@ -371,14 +376,14 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_reference_case_number =
         'This reference number is way too long and exceeds thirty characters';
 
-      cy.get(DOM_ELEMENTS.referenceNumberInput).should(
+      cy.get(CommonLocators.referenceOrCaseNumberInput).should(
         'have.value',
         'This reference number is way too long and exceeds thirty characters',
       );
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.referenceNumberError)
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(CommonLocators.referenceOrCaseNumberError)
         .should('exist')
         .and('contain', 'Reference or case number must be 30 characters or fewer');
     },
@@ -392,11 +397,13 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
         'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
 
-      cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'ThisLastNameIsTooLongAndExceedsThirtyCharacters');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.lastNameInput).should('have.value', 'ThisLastNameIsTooLongAndExceedsThirtyCharacters');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must be 30 characters or fewer');
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(IndividualsLocators.lastNameError)
+        .should('exist')
+        .and('contain', 'Last name must be 30 characters or fewer');
     },
   );
 
@@ -408,11 +415,13 @@ describe('Search Account Component - Individuals', () => {
         'ThisFirstNameIsTooLongAndExceedsTwentyChars';
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'ThisFirstNameIsTooLongAndExceedsTwentyChars');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.firstNameInput).should('have.value', 'ThisFirstNameIsTooLongAndExceedsTwentyChars');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must be 20 characters or fewer');
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(IndividualsLocators.firstNamesError)
+        .should('exist')
+        .and('contain', 'First names must be 20 characters or fewer');
     },
   );
 
@@ -424,11 +433,11 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
         'AB123456CD';
 
-      cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456CD');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.niNumberInput).should('have.value', 'AB123456CD');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.niNumberError)
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(IndividualsLocators.niNumberError)
         .should('exist')
         .and('contain', 'National Insurance number must be 9 characters or fewer');
     },
@@ -442,14 +451,14 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
         'This address line is too long and exceeds thirty characters';
 
-      cy.get(DOM_ELEMENTS.addressLine1Input).should(
+      cy.get(IndividualsLocators.addressLine1Input).should(
         'have.value',
         'This address line is too long and exceeds thirty characters',
       );
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.addressLine1Error)
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(IndividualsLocators.addressLine1Error)
         .should('exist')
         .and('contain', 'Address line 1 must be 30 characters or fewer');
     },
@@ -463,11 +472,13 @@ describe('Search Account Component - Individuals', () => {
       individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
         'AB12 3CDEF'; // 9 characters (exceeds 8)
 
-      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'AB12 3CDEF');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.postcodeInput).should('have.value', 'AB12 3CDEF');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.postcodeError).should('exist').and('contain', 'Postcode must be 8 characters or fewer');
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(IndividualsLocators.postcodeError)
+        .should('exist')
+        .and('contain', 'Postcode must be 8 characters or fewer');
     },
   );
 
@@ -477,12 +488,12 @@ describe('Search Account Component - Individuals', () => {
     () => {
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.firstNamesInput).type('John', { delay: 0 });
-      cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.firstNameInput).type('John', { delay: 0 });
+      cy.get(IndividualsLocators.lastNameInput).should('have.value', '');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Enter last name');
     },
   );
 
@@ -495,12 +506,12 @@ describe('Search Account Component - Individuals', () => {
         cy.stub(win.console, 'info').as('consoleLog');
       });
 
-      cy.get(DOM_ELEMENTS.dobInput).focus().type('15/05/2020', { delay: 0 });
-      cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.dobInput).focus().type('15/05/2020', { delay: 0 });
+      cy.get(IndividualsLocators.lastNameInput).should('have.value', '');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+      cy.get(CommonLocators.errorSummary).should('exist');
+      cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Enter last name');
 
       cy.get('@consoleLog').should('have.not.been.calledOnce');
     },
@@ -512,10 +523,10 @@ describe('Search Account Component - Individuals', () => {
     () => {
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.includeAliasesCheckbox).check().should('be.checked');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.includeAliasesCheckbox).check().should('be.checked');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+      cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Enter last name');
     },
   );
 
@@ -525,10 +536,10 @@ describe('Search Account Component - Individuals', () => {
     () => {
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).check().should('be.checked');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.lastNameExactMatchCheckbox).check().should('be.checked');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+      cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Enter last name');
     },
   );
   it(
@@ -537,10 +548,10 @@ describe('Search Account Component - Individuals', () => {
     () => {
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).check().should('be.checked');
-      cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(IndividualsLocators.firstNamesExactMatchCheckbox).check().should('be.checked');
+      cy.get(CommonLocators.searchButton).click();
 
-      cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'Enter first name');
+      cy.get(IndividualsLocators.firstNamesError).should('exist').and('contain', 'Enter first name');
     },
   );
 });
