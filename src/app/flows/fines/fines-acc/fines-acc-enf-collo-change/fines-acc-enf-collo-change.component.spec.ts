@@ -27,11 +27,9 @@ describe('FinesAccEnfColloChangeComponent', () => {
   beforeEach(async () => {
     mockRoute = {
       snapshot: {
-        data: {
-          title: 'Change Collection Order status',
-        },
+        data: {},
       },
-    } as unknown as ActivatedRoute;
+    } as ActivatedRoute;
 
     mockAccountStore = {
       getAccountNumber: signal('177A'),
