@@ -707,7 +707,9 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
           finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2033';
-          cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.dateInFuture);
+          cy.get(DOM_ELEMENTS.mojTicketPanel)
+            .should('contain', ERROR_MESSAGES.dateInFuture)
+            .and('contain', ERROR_MESSAGES.dateInFutureMessage);
         });
       });
     },
