@@ -71,6 +71,60 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should enforce remove alias link template semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesMacParentGuardianDetailsFormComponent as any).ɵcmp?.consts ?? []).filter(
+      (entry: unknown) => Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesMacParentGuardianDetailsFormComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const removeLinkConsts = templateConsts.filter(
+      (entry) =>
+        entry.includes('govuk-link') &&
+        entry.includes('govuk-link--no-visited-state') &&
+        entry.includes('href') &&
+        entry.includes('click'),
+    );
+
+    expect(removeLinkConsts.length).toBeGreaterThanOrEqual(1);
+    removeLinkConsts.forEach((entry) => {
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should render remove alias link with href and pass $event into removeAlias', () => {
+    component.form.get('fm_parent_guardian_details_add_alias')?.setValue(true);
+    while (component.aliasControls.length < 2) {
+      component.addAlias(component.aliasControls.length, 'fm_parent_guardian_details_aliases');
+    }
+    fixture.detectChanges();
+
+    const link =
+      (Array.from(
+        fixture.nativeElement.querySelectorAll('a.govuk-link.govuk-link--no-visited-state') as NodeListOf<HTMLAnchorElement>,
+      ).find((anchor) => anchor.textContent?.trim().startsWith('Remove')) as HTMLAnchorElement | undefined) ?? null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Parent/guardian remove alias link not found');
+
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const expectedIndex = component.aliasControls.length - 1;
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const removeAliasSpy = vi.spyOn<any, any>(component, 'removeAlias');
+
+    link.dispatchEvent(event);
+
+    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_parent_guardian_details_aliases', event);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
   it('should emit form submit event with form value', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');

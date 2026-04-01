@@ -222,9 +222,8 @@
                       >
                         <a
                           class="govuk-link govuk-link--no-visited-state"
-                          (click)="goToMinorCreditor(rowIndex)"
-                          (keyup.enter)="goToMinorCreditor(rowIndex)"
-                          tabindex="0"
+                          href=""
+                          (click)="goToMinorCreditor(rowIndex, $event)"
                         >
                           Add minor creditor details
                         </a>
@@ -240,9 +239,8 @@
           <div class="govuk-!-margin-top-3">
             <a
               class="govuk-link govuk-link--no-visited-state"
-              tabindex="0"
-              (click)="removeImpositionConfirmation(rowIndex)"
-              (keyup.enter)="removeImpositionConfirmation(rowIndex)"
+              href=""
+              (click)="removeImpositionConfirmation(rowIndex, $event)"
             >
               Remove imposition
             </a>

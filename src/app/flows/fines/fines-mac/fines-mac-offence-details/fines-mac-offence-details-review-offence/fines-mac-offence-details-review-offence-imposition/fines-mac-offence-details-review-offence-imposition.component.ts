@@ -266,7 +266,14 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
     };
   }
 
-  public invertShowMinorCreditorData(impositionId: number): void {
+  /**
+   * Toggles the visibility of minor creditor details for the selected imposition.
+   *
+   * @param impositionId - The unique identifier of the imposition to update.
+   * @param event - The optional DOM event that triggered the toggle.
+   */
+  public invertShowMinorCreditorData(impositionId: number, event?: Event): void {
+    event?.preventDefault();
     const imposition = this.impositionTableData.find((imposition) => imposition.impositionId === impositionId)!;
     imposition.showMinorCreditorData = !imposition.showMinorCreditorData;
   }

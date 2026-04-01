@@ -35,6 +35,46 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     expect(component).toBeTruthy();
   });
 
+  it('should enforce current template link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = (
+      (FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent as any).ɵcmp?.consts ?? []
+    ).filter((entry: unknown) => Array.isArray(entry)) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent as any).ɵcmp?.template?.toString() as
+        | string
+        | undefined) ?? '';
+    const actionLinkConsts = templateConsts.filter(
+      (entry) =>
+        entry.includes('govuk-link') &&
+        entry.includes('govuk-link--no-visited-state') &&
+        entry.includes('href') &&
+        entry.includes('click'),
+    );
+
+    expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
+    actionLinkConsts.forEach((entry) => {
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should prevent default and copy to clipboard when copyCodeToClipboard is called with an event', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    const linkElement = document.createElement('a');
+    const liveRegion = document.createElement('span');
+
+    component.copyCodeToClipboard(linkElement, liveRegion, '1234', event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(utilsService.copyToClipboard).toHaveBeenCalledWith('1234');
+  });
+
   it('should update link and live region, then revert after timeout', () => {
     vi.useFakeTimers();
     fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent);
