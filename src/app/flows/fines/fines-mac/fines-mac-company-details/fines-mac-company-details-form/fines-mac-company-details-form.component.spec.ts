@@ -57,8 +57,8 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
   it('should enforce remove alias link template semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const templateConsts = ((FinesMacCompanyDetailsFormComponent as any).ɵcmp?.consts ?? []).filter(
-      (entry: unknown) => Array.isArray(entry),
+    const templateConsts = ((FinesMacCompanyDetailsFormComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
     ) as unknown[][];
     const templateFunction =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,7 +90,9 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     const link =
       (Array.from(
-        fixture.nativeElement.querySelectorAll('a.govuk-link.govuk-link--no-visited-state') as NodeListOf<HTMLAnchorElement>,
+        fixture.nativeElement.querySelectorAll(
+          'a.govuk-link.govuk-link--no-visited-state',
+        ) as NodeListOf<HTMLAnchorElement>,
       ).find((anchor) => anchor.textContent?.trim().startsWith('Remove')) as HTMLAnchorElement | undefined) ?? null;
     expect(link).toBeTruthy();
     if (!link) throw new Error('Company remove alias link not found');

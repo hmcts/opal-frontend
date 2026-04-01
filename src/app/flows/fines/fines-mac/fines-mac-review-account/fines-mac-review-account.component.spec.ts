@@ -160,8 +160,8 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should enforce current template link semantics for delete account link', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const templateConsts = ((FinesMacReviewAccountComponent as any).ɵcmp?.consts ?? []).filter(
-        (entry: unknown) => Array.isArray(entry),
+      const templateConsts = ((FinesMacReviewAccountComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+        Array.isArray(entry),
       ) as unknown[][];
       const templateFunction =
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

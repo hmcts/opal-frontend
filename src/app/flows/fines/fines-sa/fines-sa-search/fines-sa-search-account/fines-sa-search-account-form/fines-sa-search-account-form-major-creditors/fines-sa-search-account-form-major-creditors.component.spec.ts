@@ -45,8 +45,7 @@ describe('FinesSaSearchAccountFormMajorCreditorsComponent', () => {
     ) as unknown[][];
     const templateFunction =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ((FinesSaSearchAccountFormMajorCreditorsComponent as any).ɵcmp?.template?.toString() as string | undefined) ??
-      '';
+      ((FinesSaSearchAccountFormMajorCreditorsComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
     const filterLinkConsts = templateConsts.filter(
       (entry) => entry.includes('govuk-link') && entry.includes('href') && entry.includes('click'),
     );

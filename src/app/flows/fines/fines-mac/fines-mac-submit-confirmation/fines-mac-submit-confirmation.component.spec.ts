@@ -67,8 +67,8 @@ describe('FinesMacSubmitConfirmationComponent', () => {
 
   it('should enforce current template link semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const templateConsts = ((FinesMacSubmitConfirmationComponent as any).ɵcmp?.consts ?? []).filter(
-      (entry: unknown) => Array.isArray(entry),
+    const templateConsts = ((FinesMacSubmitConfirmationComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
     ) as unknown[][];
     const templateFunction =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

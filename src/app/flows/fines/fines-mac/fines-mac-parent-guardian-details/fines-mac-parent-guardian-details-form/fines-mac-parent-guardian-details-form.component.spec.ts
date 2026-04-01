@@ -106,7 +106,9 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
 
     const link =
       (Array.from(
-        fixture.nativeElement.querySelectorAll('a.govuk-link.govuk-link--no-visited-state') as NodeListOf<HTMLAnchorElement>,
+        fixture.nativeElement.querySelectorAll(
+          'a.govuk-link.govuk-link--no-visited-state',
+        ) as NodeListOf<HTMLAnchorElement>,
       ).find((anchor) => anchor.textContent?.trim().startsWith('Remove')) as HTMLAnchorElement | undefined) ?? null;
     expect(link).toBeTruthy();
     if (!link) throw new Error('Parent/guardian remove alias link not found');

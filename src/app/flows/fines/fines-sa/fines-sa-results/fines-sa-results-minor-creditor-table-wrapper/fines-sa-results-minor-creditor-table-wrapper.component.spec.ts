@@ -34,9 +34,8 @@ describe('FinesSaResultsMinorCreditorTableWrapperComponent', () => {
     ) as unknown[][];
     const templateFunction =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ((FinesSaResultsMinorCreditorTableWrapperComponent as any).ɵcmp?.template?.toString() as
-        | string
-        | undefined) ?? '';
+      ((FinesSaResultsMinorCreditorTableWrapperComponent as any).ɵcmp?.template?.toString() as string | undefined) ??
+      '';
     const actionLinkConsts = templateConsts.filter(
       (entry) =>
         entry.includes('govuk-link') &&

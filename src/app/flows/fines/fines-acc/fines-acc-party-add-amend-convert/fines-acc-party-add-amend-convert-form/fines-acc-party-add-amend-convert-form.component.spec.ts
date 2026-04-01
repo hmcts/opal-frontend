@@ -110,7 +110,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     const link =
       (Array.from(
-        fixture.nativeElement.querySelectorAll('a.govuk-link.govuk-link--no-visited-state') as NodeListOf<HTMLAnchorElement>,
+        fixture.nativeElement.querySelectorAll(
+          'a.govuk-link.govuk-link--no-visited-state',
+        ) as NodeListOf<HTMLAnchorElement>,
       ).find((anchor) => anchor.textContent?.trim().startsWith('Remove')) as HTMLAnchorElement | undefined) ?? null;
     expect(link).toBeTruthy();
     if (!link) throw new Error('Individual remove alias link not found');
@@ -125,7 +127,11 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     link.dispatchEvent(event);
 
-    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'facc_party_add_amend_convert_individual_aliases', event);
+    expect(removeAliasSpy).toHaveBeenCalledWith(
+      expectedIndex,
+      'facc_party_add_amend_convert_individual_aliases',
+      event,
+    );
     expect(event.defaultPrevented).toBe(true);
   });
 
@@ -141,7 +147,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     const link =
       (Array.from(
-        fixture.nativeElement.querySelectorAll('a.govuk-link.govuk-link--no-visited-state') as NodeListOf<HTMLAnchorElement>,
+        fixture.nativeElement.querySelectorAll(
+          'a.govuk-link.govuk-link--no-visited-state',
+        ) as NodeListOf<HTMLAnchorElement>,
       ).find((anchor) => anchor.textContent?.trim().startsWith('Remove')) as HTMLAnchorElement | undefined) ?? null;
     expect(link).toBeTruthy();
     if (!link) throw new Error('Company remove alias link not found');

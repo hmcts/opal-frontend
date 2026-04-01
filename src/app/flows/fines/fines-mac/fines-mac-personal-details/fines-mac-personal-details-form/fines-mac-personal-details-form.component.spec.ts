@@ -83,8 +83,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should enforce remove alias link template semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const templateConsts = ((FinesMacPersonalDetailsFormComponent as any).ɵcmp?.consts ?? []).filter(
-      (entry: unknown) => Array.isArray(entry),
+    const templateConsts = ((FinesMacPersonalDetailsFormComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
     ) as unknown[][];
     const templateFunction =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -116,7 +116,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     const link =
       (Array.from(
-        fixture.nativeElement.querySelectorAll('a.govuk-link.govuk-link--no-visited-state') as NodeListOf<HTMLAnchorElement>,
+        fixture.nativeElement.querySelectorAll(
+          'a.govuk-link.govuk-link--no-visited-state',
+        ) as NodeListOf<HTMLAnchorElement>,
       ).find((anchor) => anchor.textContent?.trim().startsWith('Remove')) as HTMLAnchorElement | undefined) ?? null;
     expect(link).toBeTruthy();
     if (!link) throw new Error('Personal details remove alias link not found');

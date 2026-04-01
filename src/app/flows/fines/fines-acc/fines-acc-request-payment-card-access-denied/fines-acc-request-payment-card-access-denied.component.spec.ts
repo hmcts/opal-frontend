@@ -60,8 +60,7 @@ describe('FinesAccRequestPaymentCardAccessDeniedComponent', () => {
     ) as unknown[][];
     const templateFunction =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ((FinesAccRequestPaymentCardAccessDeniedComponent as any).ɵcmp?.template?.toString() as string | undefined) ??
-      '';
+      ((FinesAccRequestPaymentCardAccessDeniedComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
     const actionLinkConsts = templateConsts.filter(
       (entry) => entry.includes('govuk-link') && entry.includes('href') && entry.includes('click'),
     );
