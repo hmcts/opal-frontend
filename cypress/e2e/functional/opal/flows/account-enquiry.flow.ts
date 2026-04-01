@@ -10,6 +10,7 @@ import { AccountDetailsCommentsActions } from '../actions/account-details/detail
 import { AccountDetailsAtAGlanceActions } from '../actions/account-details/details.at-a-glance.actions';
 import { AccountDetailsParentGuardianActions } from '../actions/account-details/details.parent.guardian.actions';
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
+import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -57,11 +58,12 @@ export class AccountEnquiryFlow {
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCompany = new AccountSearchCompanyActions();
-  private readonly searchCommon = new AccountSearchCommonActions();
   private readonly searchNav = new AccountSearchNavActions();
+  private readonly searchCommon = new AccountSearchCommonActions();
   private readonly results = new ResultsActions();
   private readonly defendantDetails = new AccountDetailsDefendantActions();
   private readonly parentGuardianDetails = new AccountDetailsParentGuardianActions();
+  private readonly fixedPenaltyDetails = new AccountDetailsFixedPenaltyActions();
   private readonly companyDetails = new EditCompanyDetailsActions();
   private readonly detailsNav = new AccountDetailsNavActions();
   private readonly notes = new AccountDetailsNotesActions();
@@ -112,17 +114,7 @@ export class AccountEnquiryFlow {
     logAE('method', 'searchByLastName()');
     logAE('search', 'Searching by last name', { surname });
     this.ensureOnIndividualSearchPage();
-    this.resolveAccountNumberFromAlias().then((accountNumber) => {
-      if (accountNumber) {
-        logAE('search', 'Using exact account number for freshly created account', { accountNumber });
-        this.searchCommon.enterAccountNumber(accountNumber);
-        this.searchCommon.clickSearchButton();
-        this.results.assertOnResults();
-        return;
-      }
-
-      this.searchIndividuals.searchByLastName(surname);
-    });
+    this.searchIndividuals.searchByLastName(surname);
   }
 
   /**
@@ -215,6 +207,20 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the most recent account from the Companies results tab and asserts navigation.
+   */
+  public openMostRecentFromCompaniesResults(): void {
+    logAE('method', 'openMostRecentFromCompaniesResults()');
+    logAE('open', 'Opening most recent account from Companies results');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.selectCompaniesTab();
+    this.results.assertCompaniesTabSelected();
+    this.results.openLatestPublished();
+  }
+
+  /**
    * Navigates to the Defendant tab and asserts a specific section header.
    *
    * @param headerText - Expected section header text.
@@ -236,6 +242,18 @@ export class AccountEnquiryFlow {
     logAE('navigate', 'Navigating to Parent/Guardian tab and asserting section header', { headerText });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertSectionHeader(headerText);
+  }
+
+  /**
+   * Navigates to the Fixed penalty tab and asserts a specific section header.
+   *
+   * @param headerText - Expected section header text.
+   */
+  public goToFixedPenaltyDetailsAndAssert(headerText: string): void {
+    logAE('method', 'goToFixedPenaltyDetailsAndAssert()');
+    logAE('navigate', 'Navigating to Fixed penalty tab and asserting section header', { headerText });
+    this.detailsNav.goToFixedPenaltyTab();
+    this.fixedPenaltyDetails.assertSectionHeader(headerText);
   }
 
   /**

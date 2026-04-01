@@ -25,8 +25,10 @@ import { EditDefendantDetailsActions } from '../../..//e2e/functional/opal/actio
 import { EditCompanyDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.company-details.actions';
 import { AccountDetailsNavActions } from '../../..//e2e/functional/opal/actions/account-details/details.nav.actions';
 import { EditParentGuardianDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
+import { AccountDetailsFixedPenaltyActions } from '../../..//e2e/functional/opal/actions/account-details/details.fixed-penalty.actions';
 import { log } from '../../utils/log.helper';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 
 // Factory functions so each step gets a fresh instance with its own Cypress chain
 const flow = () => new AccountEnquiryFlow();
@@ -36,6 +38,7 @@ const common = () => new CommonActions();
 const editDefendantDetails = () => new EditDefendantDetailsActions();
 const editCompanyDetails = () => new EditCompanyDetailsActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
+const fixedPenaltyDetails = () => new AccountDetailsFixedPenaltyActions();
 const navActions = () => new AccountDetailsNavActions();
 
 type CommentRow = { [key: string]: string };
@@ -86,6 +89,26 @@ When('I search for the account by last name {string} and open the latest result'
 });
 
 /**
+ * @step Opens the latest matching account from the current Search results page.
+ *
+ * @remarks
+ * - Intended for journey scenarios where the results page has already been asserted.
+ * - Delegates to the shared AccountEnquiryFlow/ResultsActions open helper.
+ */
+When('I open the latest matching result from the search results', () => {
+  log('step', 'Opening latest matching result from search results');
+  flow().openMostRecentFromResults();
+});
+
+/**
+ * @step Opens the latest matching account from the Companies tab on the Search results page.
+ */
+When('I open the latest matching result from the Companies search results', () => {
+  log('step', 'Opening latest matching result from Companies search results');
+  flow().openMostRecentFromCompaniesResults();
+});
+
+/**
  * @step Verifies that any page/account/summary header contains the given string.
  *
  * @remarks
@@ -122,6 +145,17 @@ When('I go to the Defendant details section and the header is {string}', (expect
 When('I go to the Parent or guardian details section and the header is {string}', (expected: string) => {
   log('step', 'Navigate to Parent/Guardian details', { expected });
   flow().goToParentGuardianDetailsAndAssert(expected);
+});
+
+/**
+ * @step Navigates to the Fixed penalty section and validates the header text.
+ *
+ * @param expected - Expected header text for the section.
+ */
+When('I go to the Fixed penalty section and the header is {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('step', 'Navigate to Fixed penalty details', { expected: expectedWithUniq });
+  flow().goToFixedPenaltyDetailsAndAssert(expectedWithUniq);
 });
 
 /**
@@ -233,6 +267,71 @@ When('I submit instalments only payment terms with a payment card request', () =
 When('I cancel payment terms amendments', () => {
   log('step', 'Cancel payment terms amendments');
   flow().cancelPaymentTermsAmendment();
+});
+
+/**
+ * @step Asserts the At a glance tab is active.
+ */
+Then('the At a glance tab should be selected by default', () => {
+  log('assert', 'At a glance tab is active by default');
+  navActions().assertAtAGlanceTabIsActive();
+});
+
+/**
+ * @step Asserts the Fixed penalty tab is visible on the account details page.
+ */
+Then('I should see the Fixed penalty tab', () => {
+  log('assert', 'Fixed penalty tab is visible');
+  navActions().assertFixedPenaltyTabIsVisible();
+});
+
+/**
+ * @step Asserts the expected read-only sections are visible on the At a glance tab.
+ */
+Then('I should see the read only sections on the At a glance tab:', (table: DataTable) => {
+  const rows = normalizeTableRows(table);
+  const expectedSections = rows.map((row) => row[0] ?? '').filter(Boolean);
+
+  log('assert', 'Asserting read only sections on the At a glance tab', { expectedSections });
+  atAGlanceDetails().assertReadOnlySections(expectedSections);
+});
+
+/**
+ * @step Asserts the account header summary values displayed above the details tabs.
+ */
+Then('I should see the account header summary values:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting account header summary values', { expectedValues });
+  atAGlanceDetails().assertAccountHeaderSummaryValues(expectedValues);
+});
+
+/**
+ * @step Asserts the fixed-penalty detail values shown on the Fixed penalty tab.
+ */
+Then('I should see the fixed penalty details:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting fixed penalty details', { expectedValues });
+  fixedPenaltyDetails().assertDetails(expectedValues);
+});
+
+/**
+ * @step Asserts the vehicle-only fixed-penalty fields are not shown on the Fixed penalty tab.
+ */
+Then('I should not see the vehicle fixed penalty fields', () => {
+  log('assert', 'Asserting vehicle fixed penalty fields are absent');
+  fixedPenaltyDetails().assertVehicleFieldsNotPresent();
+});
+
+/**
+ * @step Asserts the language preferences shown on the At a glance tab.
+ */
+Then('I should see the following language preferences on the At a glance tab:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting language preferences on the At a glance tab', { expectedValues });
+  atAGlanceDetails().assertLanguagePreferences(expectedValues);
 });
 
 /**
