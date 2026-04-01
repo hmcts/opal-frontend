@@ -153,6 +153,16 @@ describe('FinesConSelectBuFormComponent', () => {
     expect(component['formControlErrorMessages']).toBeDefined();
   });
 
+  it('should reset store and navigate to dashboard on cancel consolidation', () => {
+    const resetSpy = vi.spyOn(finesConStore, 'resetConsolidationState');
+    const handleRouteSpy = vi.spyOn(component, 'handleRoute');
+
+    component.handleCancelConsolidation();
+
+    expect(resetSpy).toHaveBeenCalled();
+    expect(handleRouteSpy).toHaveBeenCalledWith(PAGES_ROUTING_PATHS.children.dashboard, { nonRelative: true });
+  });
+
   it('should handle form submission with valid data', () => {
     const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
 

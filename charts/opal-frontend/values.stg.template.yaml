@@ -36,6 +36,12 @@ opal-fines-service:
             alias: AAD_CLIENT_SECRET
           - name: OpalTestUserPassword
             alias: OPAL_TEST_USER_PASSWORD
+          - name: servicebus-connection-string
+            alias: SERVICEBUS_CONNECTION_STRING
+          - name: servicebus-shared-access-key
+            alias: SERVICEBUS_SHARED_ACCESS_KEY
+          - name: servicebus-logging-pdpl-queue-name
+            alias: SERVICEBUS_LOGGING_PDPL_QUEUE_NAME
     environment:
       OPAL_FINES_DB_HOST: "{{ .Release.Name }}-postgresql"
       OPAL_FINES_DB_NAME: opal
@@ -45,7 +51,7 @@ opal-fines-service:
       OPAL_FINES_DB_PORT: 5432
       RUN_DB_MIGRATION_ON_STARTUP: true
       OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
-      OPAL_LEGACY_GATEWAY_URL: https://opal-legacy-db-stub.staging.platform.hmcts.net/opal
+      OPAL_LEGACY_GATEWAY_URL: ${STG_OPAL_LEGACY_GATEWAY_URL}
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
       FLYWAY_LOCATIONS: classpath:db/migration/allEnvs, classpath:db/migration/devOnly
       FEATURES_APP_INSIGHTS_ENABLED: false

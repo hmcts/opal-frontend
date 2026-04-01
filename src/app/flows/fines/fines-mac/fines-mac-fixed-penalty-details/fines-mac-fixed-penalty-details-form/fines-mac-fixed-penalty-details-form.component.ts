@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -84,6 +85,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   extends AbstractFormAliasBaseComponent
   implements OnInit, OnDestroy
 {
+  private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly vehicleOffenceControls = [
     'fm_fp_offence_details_vehicle_registration_number',
     'fm_fp_offence_details_driving_licence_number',
@@ -311,6 +313,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       this.ngUnsubscribe,
       this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
       (result) => {
+        this.changeDetector.markForCheck();
         this.offenceCode$ = of(result);
       },
       (confirmed) => {

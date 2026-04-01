@@ -7,6 +7,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 import { IFinesConSelectBuForm } from './interfaces/fines-con-select-bu-form.interface';
 import { FINES_CON_DEFENDANT_TYPES } from '../fines-con-select-bu/constants/fines-con-defendant-types.constant';
 import { FinesConStore } from '../../stores/fines-con.store';
+import { FINES_CON_ROUTING_PATHS } from '../../routing/constants/fines-con-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-con-select-bu',
@@ -64,8 +65,7 @@ export class FinesConSelectBuComponent extends AbstractFormParentBaseComponent i
    */
   public handleFormSubmit(formData: IFinesConSelectBuForm): void {
     this.finesConStore.updateSelectBuForm(formData.formData);
-
-    // Navigate to next screen when routing is implemented
+    this.routerNavigate(FINES_CON_ROUTING_PATHS.children.consolidateAcc);
   }
 
   /**

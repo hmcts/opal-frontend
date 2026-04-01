@@ -315,17 +315,13 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
         this.formErrorSummaryMessagesChange.emit([]);
       });
 
-    // Only update validity if the group is valid and dirty, and avoid loops
+    // Keep type-level validation in sync with nested group edits (including back-link flows where type may be pristine)
     this.individualGroup.valueChanges.pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged()).subscribe(() => {
-      if (typeControl?.dirty) {
-        typeControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-      }
+      typeControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
     });
 
     this.companyGroup.valueChanges.pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged()).subscribe(() => {
-      if (typeControl?.dirty) {
-        typeControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-      }
+      typeControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
     });
   }
 

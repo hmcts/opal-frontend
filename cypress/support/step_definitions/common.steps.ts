@@ -165,6 +165,21 @@ When('I select back and cancel', () => {
 });
 
 /**
+ * @step I attempt to navigate away using the HMCTS link and cancel
+ * @description
+ * Triggers an in-app navigation attempt via the HMCTS header link, cancels the
+ * unsaved-changes confirmation, and remains on the current page.
+ *
+ * @example
+ *  When I attempt to navigate away using the HMCTS link and cancel
+ */
+When('I attempt to navigate away using the HMCTS link and cancel', () => {
+  log('step', 'Attempt navigation via HMCTS link and cancel');
+  Common().confirmNextUnsavedChanges(false);
+  Common().clickHmctsHomeLink();
+});
+
+/**
  * @step Assert arbitrary text content exists on the page.
  * @param text - Text expected to be visible anywhere on the page.
  */
