@@ -31,4 +31,22 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(event.preventDefault).toHaveBeenCalled();
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
+
+  it('should emit changeCollectionOrder when handleChangeCollectionOrder is called', () => {
+    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+    component.hasAccountMaintenancePermission = true;
+
+    component.handleChangeCollectionOrder();
+
+    expect(eventEmitterSpy).toHaveBeenCalled();
+  });
+
+  it('should not emit changeCollectionOrder when the user lacks account maintenance permission', () => {
+    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+    component.hasAccountMaintenancePermission = false;
+
+    component.handleChangeCollectionOrder();
+
+    expect(eventEmitterSpy).not.toHaveBeenCalled();
+  });
 });

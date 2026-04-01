@@ -194,6 +194,22 @@ export const routing: Routes = [
           enforcersRefData: fetchEnforcersResolver,
         },
       },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`,
+        loadComponent: () =>
+          import('../fines-acc-enf-collo-change/fines-acc-enf-collo-change.component').then(
+            (c) => c.FinesAccEnfColloChangeComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          title: 'Change Collection Order status',
+        },
+        resolve: {
+          title: TitleResolver,
+        },
+      },
     ],
   },
   {

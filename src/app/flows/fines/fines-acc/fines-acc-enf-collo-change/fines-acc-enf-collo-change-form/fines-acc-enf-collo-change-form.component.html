@@ -1,0 +1,65 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<opal-lib-govuk-heading-with-caption
+  [captionText]="`${accountNumber} - ${partyName}`"
+  [headingText]="'Change Collection Order Status'"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
+>
+</opal-lib-govuk-heading-with-caption>
+
+<p class="govuk-body">If the status of a Collection Order is incorrect you can change it.</p>
+<p class="govuk-body govuk-!-font-weight-bold">This will not issue a new notice.</p>
+<p class="govuk-body">
+  To add a new Collection Order and issue a notice you should
+  <a
+    class="govuk-link"
+    href="#"
+    id="facc_enf_collection_order_go_back"
+    (click)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement', event: $event })"
+    (keyup.enter)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement', event: $event })"
+    >go back</a
+  >
+  and add an enforcement action.
+</p>
+
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+  <opal-lib-govuk-radio
+    fieldSetId="facc_enf_collection_order_made"
+    legendText="Is this account subject to a Collection Order?"
+    legendClasses="govuk-fieldset__legend--m"
+    [errors]="formControlErrorMessages['facc_enf_collection_order_made']"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Yes"
+      inputId="facc_enf_collection_order_made_true"
+      inputName="facc_enf_collection_order_made"
+      [inputValue]="true"
+      [control]="form.get('facc_enf_collection_order_made')"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="No"
+      inputId="facc_enf_collection_order_made_false"
+      inputName="facc_enf_collection_order_made"
+      [inputValue]="false"
+      [control]="form.get('facc_enf_collection_order_made')"
+    ></div>
+  </opal-lib-govuk-radio>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit" buttonClasses="nested-flow govuk-button--primary">
+        Change
+      </opal-lib-govuk-button>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement' })"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</form>

@@ -27,6 +27,7 @@ import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IFinesAccEnfOverrideAddChangeFormState } from '../fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from '../../services/opal-fines-service/constants/opal-fines-defendant-account-patch-payload-defaults.constant';
+import { IOpalFinesUpdateDefendantAccountCollectionOrder } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account-collection-order.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -170,6 +171,21 @@ export class FinesAccPayloadService {
         free_text_note_2: formState.facc_add_free_text_2 || null,
         free_text_note_3: formState.facc_add_free_text_3 || null,
       },
+    };
+  }
+
+  /**
+   * Transforms the given collection order object into an update payload
+   * for the defendant account API.
+   *
+   * @param collectionOrder - The collection order data to patch
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildCollectionOrderPayload(
+    collectionOrder: IOpalFinesUpdateDefendantAccountCollectionOrder,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    return {
+      collection_order: collectionOrder,
     };
   }
 
