@@ -14,7 +14,7 @@ import {
 } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK } from './mocks/parentGuardianDebtor.mock';
-import { DOM_ELEMENTS as DOM } from './constants/defendant_parent_or_guardian_elements';
+import { DOM_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.parent-guardian-details.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 

@@ -1,8 +1,8 @@
 import { DOM_ELEMENTS as ENF_OVR } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
-import { DOM_ELEMENTS as VERSION_CONTROL } from '../accountEnquiry/constants/global_version_control_elements';
 import {
   interceptAuthenticatedUser,
   interceptUserState,

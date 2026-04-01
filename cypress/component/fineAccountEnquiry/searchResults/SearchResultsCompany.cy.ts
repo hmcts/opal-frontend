@@ -4,7 +4,7 @@ import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fi
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
-import { DOM_ELEMENTS } from './constants/search_results_individuals_elements';
+import { AccountEnquiryResultsLocators as ResultsLocators } from '../../../shared/selectors/account-enquiry/account.enquiry.results.locators';
 import {
   EMPTY_SEARCH_RESULTS_MOCK,
   SEARCH_RESULTS_WITH_DATA_MOCK,
@@ -16,6 +16,12 @@ import { COMPANY_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ResultsPageLocators = ResultsLocators.page;
+const ResultsMessageLocators = ResultsLocators.messages;
+const ResultsHeaderCellLocators = ResultsLocators.headerCells;
+const ResultsHeaderButtonLocators = ResultsLocators.headers;
+const ResultsCellLocators = ResultsLocators.cols;
+const ResultsPaginationLocators = ResultsLocators.pagination;
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
@@ -74,8 +80,8 @@ describe('FinesSaResultsComponent - Companies', () => {
     () => {
       setupComponent();
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+      cy.get(ResultsPageLocators.backLinkHost).should('exist');
     },
   );
 
@@ -85,13 +91,13 @@ describe('FinesSaResultsComponent - Companies', () => {
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
-      cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
 
       //(AC2b) Check your search link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(DOM_ELEMENTS.checkSearchLink).should('have.class', 'govuk-link');
-      cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible').click();
-      cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible').click();
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
     },
   );
 
@@ -101,15 +107,15 @@ describe('FinesSaResultsComponent - Companies', () => {
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
-      cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('contain', 'There are more than 100 results');
-      cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
-      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('contain', 'Try adding more information');
-      cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
+      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsLocators.table.root).should('not.exist');
+      cy.get(ResultsMessageLocators.addMoreInfoLink).should('contain', 'Try adding more information');
+      cy.get(ResultsLocators.table.root).should('not.exist');
 
       //(AC3b) Try adding more information link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
-      cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
+      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
     },
   );
 
@@ -120,19 +126,19 @@ describe('FinesSaResultsComponent - Companies', () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
       // Check table exists and headers match design
-      cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
-      cy.get(DOM_ELEMENTS.accountHeader).should('contain', 'Account');
-      cy.get(DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
-      cy.get(DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
-      cy.get(DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
-      cy.get(DOM_ELEMENTS.refHeader).should('contain', 'Ref');
-      cy.get(DOM_ELEMENTS.enfHeader).should('contain', 'ENF');
-      cy.get(DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
+      cy.get(ResultsLocators.table.root).should('exist');
+      cy.get(ResultsHeaderCellLocators.account).should('contain', 'Account');
+      cy.get(ResultsHeaderCellLocators.addr1).should('contain', 'Address line 1');
+      cy.get(ResultsHeaderCellLocators.postcode).should('contain', 'Postcode');
+      cy.get(ResultsHeaderCellLocators.bu).should('contain', 'Business unit');
+      cy.get(ResultsHeaderCellLocators.ref).should('contain', 'Ref');
+      cy.get(ResultsHeaderCellLocators.enf).should('contain', 'ENF');
+      cy.get(ResultsHeaderCellLocators.balance).should('contain', 'Balance');
 
       // Check first row matches mock data
-      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'ACME LTD');
-      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '10 Downing Street');
-      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
+      cy.get(ResultsCellLocators.name).first().should('contain', 'ACME LTD');
+      cy.get(ResultsCellLocators.addr1).first().should('contain', '10 Downing Street');
+      cy.get(ResultsCellLocators.balance).first().should('contain', '£1,000.00');
     },
   );
 
@@ -142,12 +148,12 @@ describe('FinesSaResultsComponent - Companies', () => {
     () => {
       setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
-      cy.get(DOM_ELEMENTS.paginationElement).should('exist');
-      cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 total results');
-      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(ResultsPaginationLocators.root).should('exist');
+      cy.get(ResultsPaginationLocators.resultsText).should('contain', '100 total results');
+      cy.get(ResultsLocators.table.rows).should('have.length', 25);
 
-      cy.get(DOM_ELEMENTS.paginationPageNumber(2)).click();
-      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
+      cy.get(ResultsPaginationLocators.pageNumber(2)).click();
+      cy.get(ResultsPaginationLocators.currentPage).should('contain', '2');
     },
   );
 
@@ -158,65 +164,65 @@ describe('FinesSaResultsComponent - Companies', () => {
       setupComponent(SORTING_SEARCH_RESULTS_MOCK_COMPANIES);
 
       // Default sort = order in the mock
-      cy.get(DOM_ELEMENTS.nameCell).eq(0).should('contain', 'ACME LTD');
-      cy.get(DOM_ELEMENTS.nameCell).eq(1).should('contain', 'ZENITH CORP');
-      cy.get(DOM_ELEMENTS.nameCell).eq(2).should('contain', 'BETA LTD');
-      cy.get(DOM_ELEMENTS.nameCell).eq(3).should('contain', 'OMEGA INC');
-      cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'DELTA PLC');
+      cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ACME LTD');
+      cy.get(ResultsCellLocators.name).eq(1).should('contain', 'ZENITH CORP');
+      cy.get(ResultsCellLocators.name).eq(2).should('contain', 'BETA LTD');
+      cy.get(ResultsCellLocators.name).eq(3).should('contain', 'OMEGA INC');
+      cy.get(ResultsCellLocators.name).eq(4).should('contain', 'DELTA PLC');
 
-      cy.get(DOM_ELEMENTS.accountCell).eq(0).should('contain', '13006BU');
-      cy.get(DOM_ELEMENTS.accountCell).eq(1).should('contain', '13007BU');
-      cy.get(DOM_ELEMENTS.accountCell).eq(2).should('contain', '13008BU');
-      cy.get(DOM_ELEMENTS.accountCell).eq(3).should('contain', '13009BU');
-      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '13010BU');
+      cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13006BU');
+      cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13007BU');
+      cy.get(ResultsCellLocators.accountCell).eq(2).should('contain', '13008BU');
+      cy.get(ResultsCellLocators.accountCell).eq(3).should('contain', '13009BU');
+      cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13010BU');
 
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(0).should('contain', 'SW1A 2AA');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(1).should('contain', 'EC4Y 1AA');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(2).should('contain', 'NW1 6XE');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(3).should('contain', 'NE1 2DF');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'L3 8GH');
+      cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'SW1A 2AA');
+      cy.get(ResultsCellLocators.postcode).eq(1).should('contain', 'EC4Y 1AA');
+      cy.get(ResultsCellLocators.postcode).eq(2).should('contain', 'NW1 6XE');
+      cy.get(ResultsCellLocators.postcode).eq(3).should('contain', 'NE1 2DF');
+      cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'L3 8GH');
 
-      cy.get(DOM_ELEMENTS.balanceCell).eq(0).should('contain', '£1,000.00');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£1,200.00');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(2).should('contain', '£850.00');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(3).should('contain', '£675.00');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£524.00');
+      cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£1,000.00');
+      cy.get(ResultsCellLocators.balance).eq(1).should('contain', '£1,200.00');
+      cy.get(ResultsCellLocators.balance).eq(2).should('contain', '£850.00');
+      cy.get(ResultsCellLocators.balance).eq(3).should('contain', '£675.00');
+      cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
 
       // Account column sorting
-      cy.get(DOM_ELEMENTS.accountHeader).find('button').click(); // Ascending
-      cy.get(DOM_ELEMENTS.accountCell).eq(0).should('contain', '13006BU');
-      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '13010BU');
+      cy.get(ResultsHeaderButtonLocators.account).click(); // Ascending
+      cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13006BU');
+      cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13010BU');
 
-      cy.get(DOM_ELEMENTS.accountHeader).find('button').click(); // Descending
-      cy.get(DOM_ELEMENTS.accountCell).eq(0).should('contain', '13010BU');
-      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '13006BU');
+      cy.get(ResultsHeaderButtonLocators.account).click(); // Descending
+      cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13010BU');
+      cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13006BU');
 
       // Name column sorting
-      cy.get(DOM_ELEMENTS.nameHeader).find('button').click(); // Ascending
-      cy.get(DOM_ELEMENTS.nameCell).eq(0).should('contain', 'ACME LTD');
-      cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'ZENITH CORP');
+      cy.get(ResultsHeaderButtonLocators.name).click(); // Ascending
+      cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ACME LTD');
+      cy.get(ResultsCellLocators.name).eq(4).should('contain', 'ZENITH CORP');
 
-      cy.get(DOM_ELEMENTS.nameHeader).find('button').click(); // Descending
-      cy.get(DOM_ELEMENTS.nameCell).eq(0).should('contain', 'ZENITH CORP');
-      cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'ACME LTD');
+      cy.get(ResultsHeaderButtonLocators.name).click(); // Descending
+      cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ZENITH CORP');
+      cy.get(ResultsCellLocators.name).eq(4).should('contain', 'ACME LTD');
 
       // Postcode column sorting
-      cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click(); // Ascending
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(0).should('contain', 'EC4Y 1AA');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'SW1A 2AA');
+      cy.get(ResultsHeaderButtonLocators.postcode).click(); // Ascending
+      cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'EC4Y 1AA');
+      cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'SW1A 2AA');
 
-      cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click(); // Descending
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(0).should('contain', 'SW1A 2AA');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'EC4Y 1AA');
+      cy.get(ResultsHeaderButtonLocators.postcode).click(); // Descending
+      cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'SW1A 2AA');
+      cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'EC4Y 1AA');
 
       // Balance column sorting
-      cy.get(DOM_ELEMENTS.balanceHeader).find('button').click(); // Ascending
-      cy.get(DOM_ELEMENTS.balanceCell).eq(0).should('contain', '£524.00');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£1,200.00');
+      cy.get(ResultsHeaderButtonLocators.balance).click(); // Ascending
+      cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£524.00');
+      cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£1,200.00');
 
-      cy.get(DOM_ELEMENTS.balanceHeader).find('button').click(); // Descending
-      cy.get(DOM_ELEMENTS.balanceCell).eq(0).should('contain', '£1,200.00');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£524.00');
+      cy.get(ResultsHeaderButtonLocators.balance).click(); // Descending
+      cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£1,200.00');
+      cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
     },
   );
 });

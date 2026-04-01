@@ -1,6 +1,6 @@
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
-import { DOM_ELEMENTS } from './constants/global_version_control_elements';
+import { DOM_ELEMENTS } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import {

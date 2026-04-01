@@ -5,7 +5,7 @@ import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUs
 
 import { interceptDefendantHeader, interceptFixedPenaltyDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
-import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from './constants/account_enquiry_fixed_penalty_elements';
+import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.fixed-penalty.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 
