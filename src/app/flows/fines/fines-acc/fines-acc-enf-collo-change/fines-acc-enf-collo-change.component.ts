@@ -49,16 +49,7 @@ export class FinesAccEnfColloChangeComponent extends AbstractFormParentBaseCompo
    * @param form The form payload emitted by the child form component.
    */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesAccEnfColloChangeFormState>): void {
-    const collectionOrderFlag = form.formData.facc_enf_collection_order_made;
-
-    if (collectionOrderFlag === null) {
-      return;
-    }
-
-    const payload = this.finesAccPayloadService.buildCollectionOrderPayload({
-      collection_order_date: '',
-      collection_order_flag: collectionOrderFlag,
-    });
+    const payload = this.finesAccPayloadService.buildCollectionOrderPayload(form);
 
     this.opalFinesService
       .patchDefendantAccount(

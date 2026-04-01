@@ -574,13 +574,15 @@ describe('FinesAccPayloadService', () => {
 
       it('should build collection order payload correctly', () => {
         const result = service.buildCollectionOrderPayload({
-          collection_order_date: '2025-12-10',
-          collection_order_flag: true,
+          formData: {
+            facc_enf_collection_order_made: true,
+          },
+          nestedFlow: false,
         });
 
         expect(result).toEqual({
           collection_order: {
-            collection_order_date: '2025-12-10',
+            collection_order_date: '',
             collection_order_flag: true,
           },
         });

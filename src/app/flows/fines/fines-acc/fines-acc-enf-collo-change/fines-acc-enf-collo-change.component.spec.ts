@@ -42,8 +42,11 @@ describe('FinesAccEnfColloChangeComponent', () => {
     };
 
     mockPayloadService = {
-      buildCollectionOrderPayload: vi.fn().mockImplementation((collectionOrder) => ({
-        collection_order: collectionOrder,
+      buildCollectionOrderPayload: vi.fn().mockImplementation((form) => ({
+        collection_order: {
+          collection_order_date: '',
+          collection_order_flag: form.formData.facc_enf_collection_order_made,
+        },
       })),
     };
 
@@ -92,8 +95,10 @@ describe('FinesAccEnfColloChangeComponent', () => {
     });
 
     expect(mockPayloadService.buildCollectionOrderPayload).toHaveBeenCalledWith({
-      collection_order_date: '',
-      collection_order_flag: true,
+      formData: {
+        facc_enf_collection_order_made: true,
+      },
+      nestedFlow: false,
     });
     expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(
       1001,
@@ -141,24 +146,11 @@ describe('FinesAccEnfColloChangeComponent', () => {
     });
 
     expect(mockPayloadService.buildCollectionOrderPayload).toHaveBeenCalledWith({
-      collection_order_date: '',
-      collection_order_flag: true,
-    });
-  });
-
-  it('should return early when no collection order selection is made', () => {
-    const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
-
-    component.handleSubmit({
       formData: {
-        facc_enf_collection_order_made: null,
+        facc_enf_collection_order_made: true,
       },
       nestedFlow: false,
     });
-
-    expect(mockPayloadService.buildCollectionOrderPayload).not.toHaveBeenCalled();
-    expect(mockOpalFinesService.patchDefendantAccount).not.toHaveBeenCalled();
-    expect(routerNavigateSpy).not.toHaveBeenCalled();
   });
 
   it('should send an empty collection order date when selecting no', () => {
@@ -170,8 +162,10 @@ describe('FinesAccEnfColloChangeComponent', () => {
     });
 
     expect(mockPayloadService.buildCollectionOrderPayload).toHaveBeenCalledWith({
-      collection_order_date: '',
-      collection_order_flag: false,
+      formData: {
+        facc_enf_collection_order_made: false,
+      },
+      nestedFlow: false,
     });
   });
 
