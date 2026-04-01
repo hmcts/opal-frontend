@@ -194,3 +194,21 @@ export function resolveRelativeDate(value: string): string {
   const { weeks, direction } = parseWeeksValue(value);
   return direction === 'future' ? calculateWeeksInFuture(weeks) : calculateWeeksInPast(weeks);
 }
+/**
+ * Get the current month as a full month name.
+ * @returns Current month string in long-form, for example "April".
+ */
+export function getCurrentMonth(): string {
+  return new Date().toLocaleString('en-GB', { month: 'long' });
+}
+
+/**
+ * Get the previous month as a full month name.
+ * @returns Previous month string in long-form, for example "February".
+ */
+export function getPreviousMonth(): string {
+  const today = new Date();
+  const previousMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+
+  return previousMonth.toLocaleString('en-GB', { month: 'long' });
+}
