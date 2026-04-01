@@ -562,7 +562,7 @@ function executeSuite(suite, options, baseEnv) {
 
   if (!hasXml && !hasNdjson) {
     if (testExitCode === 0 && hasTagFiltering) {
-      console.log(`[run-test-suite] no ${suite} scenarios matched TAGS=${env.CYPRESS_TAGS || env.TAGS}; skipping report generation.`);
+      console.log(`[run-test-suite] no ${suite} scenarios matched the active tag filter; skipping report generation.`);
       return 0;
     }
 
