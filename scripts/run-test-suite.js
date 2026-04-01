@@ -409,16 +409,7 @@ function createComponentParallelReporterConfig(config) {
  * @returns {number}
  */
 function runParallelSuite(config, env, passthroughArgs) {
-  const commandArgs = [
-    '-s',
-    config.leafScript,
-    '-d',
-    config.specPattern,
-    '-m',
-    'false',
-    '-t',
-    String(config.threads),
-  ];
+  const commandArgs = ['-s', config.leafScript, '-d', config.specPattern, '-m', 'false', '-t', String(config.threads)];
 
   if (config.weightsJson) {
     commandArgs.push('-w', config.weightsJson);
@@ -448,9 +439,11 @@ function shouldSkipSuite(env, suite) {
     return false;
   }
 
-  return String(env.SKIP_SMOKE || '')
-    .trim()
-    .toLowerCase() === 'true';
+  return (
+    String(env.SKIP_SMOKE || '')
+      .trim()
+      .toLowerCase() === 'true'
+  );
 }
 
 /**
