@@ -5,7 +5,7 @@ import {
 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
-import { ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS as PAYMENT_TERMS_TAB } from '../constants/account_enquiry_payment_terms_elements';
+import { ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS as PAYMENT_TERMS_TAB } from '../../../../shared/selectors/account-enquiry/account.enquiry.payment-terms.locators';
 import { interceptDefendantHeader, interceptPaymentTerms } from '../intercept/defendantAccountIntercepts';
 import {
   interceptAuthenticatedUser,

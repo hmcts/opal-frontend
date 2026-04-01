@@ -126,8 +126,14 @@ export const AccountSearchCompaniesLocators = {
   /** Company name input field. */
   companyNameInput: '#fsa_search_account_companies_company_name',
 
+  /** Label for the company name input field. */
+  companyNameLabel: '[for="fsa_search_account_companies_company_name"]',
+
   /** Checkbox to enforce exact company name match. */
   companyNameExactMatchCheckbox: '#fsa_search_account_companies_company_name_exact_match',
+
+  /** Inline validation error for company name. */
+  companyNameError: '#fsa_search_account_companies_company_name-error-message',
 
   /** Checkbox to include aliases in company search. */
   includeAliasesCheckbox: '#fsa_search_account_companies_include_aliases',
@@ -135,8 +141,20 @@ export const AccountSearchCompaniesLocators = {
   /** Address line 1 input field. */
   addressLine1Input: '#fsa_search_account_companies_address_line_1',
 
+  /** Label for the address line 1 input field. */
+  addressLine1Label: '[for="fsa_search_account_companies_address_line_1"]',
+
+  /** Inline validation error for address line 1. */
+  addressLine1Error: '#fsa_search_account_companies_address_line_1-error-message',
+
   /** Postcode input field. */
   postCodeInput: '#fsa_search_account_companies_post_code',
+
+  /** Label for the postcode input field. */
+  postCodeLabel: '[for="fsa_search_account_companies_post_code"]',
+
+  /** Inline validation error for postcode. */
+  postCodeError: '#fsa_search_account_companies_post_code-error-message',
 
   /** Root selector for the search form component. */
   searchFormRoot: 'app-fines-sa-search, [data-testid="fines-sa-search"]',

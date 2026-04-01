@@ -16,6 +16,12 @@
  */
 
 export const AccountSearchNavLocators = {
+  /** Tabs component wrapping the account-search tab set. */
+  tabsContainer: 'opal-lib-govuk-tabs, #defendantTabs',
+
+  /** GOV.UK tab list rendered within the tabs component. */
+  tabsList: '.govuk-tabs__list',
+
   /** Individuals tab toggle */
   individualsTab: '[tabitemid="tab-individuals"]',
 
