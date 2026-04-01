@@ -177,9 +177,9 @@ describe('FinesAccEnfColloChangeComponent', () => {
 
   it('should update unsaved changes state', () => {
     component.handleUnsavedChanges(true);
-    expect((component).stateUnsavedChanges).toBe(true);
+    expect(component.stateUnsavedChanges).toBe(true);
 
     component.handleUnsavedChanges(false);
-    expect((component).stateUnsavedChanges).toBe(false);
+    expect(component.stateUnsavedChanges).toBe(false);
   });
 });
