@@ -2,7 +2,7 @@ import './test-setup';
 import { ResourceLoader } from '@angular/compiler';
 import { ɵresolveComponentResources } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+import { BrowserTestingModule, platformBrowserTesting } from '@angular/platform-browser/testing';
 import { beforeEach } from 'vitest';
 import { readdir, readFile } from 'node:fs/promises';
 import { join, normalize, sep } from 'node:path';
@@ -87,9 +87,9 @@ async function resolveResourcePath(url: string): Promise<string> {
   }
 
   if (matches.length > 1) {
-    throw new Error(
-      `Ambiguous Angular component resource "${url}" matched multiple files:\n${matches.map((match) => ` - ${match}`).join('\n')}`,
-    );
+    const matchedFiles = matches.map((match) => ' - ' + match).join('\n');
+
+    throw new Error(`Ambiguous Angular component resource "${url}" matched multiple files:\n${matchedFiles}`);
   }
 
   throw new Error(`Unable to resolve Angular component resource: "${url}"`);
@@ -102,8 +102,8 @@ async function loadAngularComponentResource(url: string): Promise<string> {
 
 TestBed.resetTestEnvironment();
 TestBed.initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting([{ provide: ResourceLoader, useClass: FileSystemResourceLoader }]),
+  BrowserTestingModule,
+  platformBrowserTesting([{ provide: ResourceLoader, useClass: FileSystemResourceLoader }]),
 );
 
 beforeEach(async () => {
