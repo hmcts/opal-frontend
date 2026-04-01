@@ -2,6 +2,7 @@ import { LoginLocators } from '../../../../shared/selectors/login.locators';
 import { PrimaryNavigationLocators as L } from '../../../../shared/selectors/primary-navigation.locators';
 import { CommonActions } from './common/common.actions';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
+import { isLocalOrPrEnvironment } from './auth-environment.actions';
 
 const log = createScopedLogger('PrimaryNavigationActions');
 
@@ -18,6 +19,23 @@ const PRIMARY_NAV_ITEMS = [
  */
 export class PrimaryNavigationActions {
   private readonly common = new CommonActions();
+
+  /**
+   * Asserts the app-owned sign-in page is visible.
+   */
+  private assertAppSignInPageVisible(): void {
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should('include', '/sign-in');
+    cy.get(LoginLocators.usernameInput, this.common.getTimeoutOptions()).should('be.visible');
+  }
+
+  /**
+   * Asserts sign-out redirected away from the app to the Microsoft sign-in domain.
+   *
+   * @param href - Current browser URL after sign out.
+   */
+  private assertMicrosoftSignInRedirect(href: string): void {
+    expect(href).to.include('login.microsoftonline.com');
+  }
 
   /**
    * Asserts that the Fines primary navigation is visible.
@@ -117,11 +135,23 @@ export class PrimaryNavigationActions {
   }
 
   /**
-   * Asserts the user is back on the sign-in page.
+   * Asserts sign-out redirects to the expected authentication entry point.
+   *
+   * For local/PR environments this verifies the app-owned `/sign-in` page.
+   * For higher environments it verifies the browser has been redirected to the
+   * Microsoft sign-in domain without asserting Microsoft-owned page content.
    */
   public assertSignInPageVisible(): void {
     log('assert', 'Checking the sign-in page is displayed');
-    cy.location('pathname', this.common.getPathTimeoutOptions()).should('include', '/sign-in');
-    cy.get(LoginLocators.usernameInput, this.common.getTimeoutOptions()).should('be.visible');
+    const isLocalOrPr = isLocalOrPrEnvironment();
+
+    cy.location('href', this.common.getPathTimeoutOptions()).then((href) => {
+      if (isLocalOrPr) {
+        this.assertAppSignInPageVisible();
+        return;
+      }
+
+      this.assertMicrosoftSignInRedirect(href);
+    });
   }
 }
