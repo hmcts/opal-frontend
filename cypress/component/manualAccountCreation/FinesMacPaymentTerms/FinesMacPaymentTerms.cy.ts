@@ -696,6 +696,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         '@JIRA-STORY:PO-429',
         '@JIRA-STORY:PO-592',
         '@JIRA-STORY:PO-545',
+        '@JIRA-STORY:PO-2983',
         '@JIRA-KEY:POT-4295',
       ),
     },
