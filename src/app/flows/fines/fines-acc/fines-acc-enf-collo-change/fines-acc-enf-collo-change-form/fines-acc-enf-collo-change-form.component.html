@@ -26,6 +26,7 @@
 
 <form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
   <opal-lib-govuk-radio
+    radioClasses="govuk-radios--inline"
     fieldSetId="facc_enf_collection_order_made"
     legendText="Is this account subject to a Collection Order?"
     legendClasses="govuk-fieldset__legend--m"
@@ -50,15 +51,19 @@
   </opal-lib-govuk-radio>
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <opal-lib-govuk-button buttonId="submitForm" type="submit" buttonClasses="nested-flow govuk-button--primary">
-        Change
-      </opal-lib-govuk-button>
-    </div>
-    <div class="govuk-grid-column-two-thirds">
-      <opal-lib-govuk-cancel-link
-        (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement' })"
-      ></opal-lib-govuk-cancel-link>
+    <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
+      <div class="govuk-button-group govuk-!-margin-bottom-0">
+        <opal-lib-govuk-button
+          buttonId="submitForm"
+          type="submit"
+          buttonClasses="nested-flow govuk-button--primary govuk-!-margin-bottom-0"
+        >
+          Change
+        </opal-lib-govuk-button>
+        <opal-lib-govuk-cancel-link
+          (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement' })"
+        ></opal-lib-govuk-cancel-link>
+      </div>
     </div>
   </div>
 </form>
