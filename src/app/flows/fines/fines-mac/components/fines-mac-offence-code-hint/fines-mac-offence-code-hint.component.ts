@@ -14,10 +14,18 @@ export class FinesMacOffenceCodeHintComponent {
   private readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   @Input() public offenceCode!: IOpalFinesOffencesRefData;
+  @Input() public offenceId: number | null = null;
   @Input() public searchedOffenceCode: string | null = null;
   @Input() public selectedOffenceConfirmation!: boolean;
 
+  /**
+   * Returns the title for a single exact offence-code match from the lookup response.
+   * @returns The matched offence title, or `null` when the code is missing, ambiguous, or not found.
+   */
   public get matchedOffenceTitle(): string | null {
-    return this.offenceDetailsService.findExactOffenceMatch(this.offenceCode, this.searchedOffenceCode)?.offence_title ?? null;
+    return (
+      this.offenceDetailsService.findExactOffenceMatch(this.offenceCode, this.searchedOffenceCode, this.offenceId)
+        ?.offence_title ?? null
+    );
   }
 }

@@ -1,6 +1,8 @@
 @if (selectedOffenceConfirmation) {
   @if (matchedOffenceTitle; as offenceTitle) {
-    <ng-container *ngTemplateOutlet="offenceCodeHint; context: { found: true, offenceTitle: offenceTitle }"></ng-container>
+    <ng-container
+      *ngTemplateOutlet="offenceCodeHint; context: { found: true, offenceTitle: offenceTitle }"
+    ></ng-container>
   } @else {
     <ng-container *ngTemplateOutlet="offenceCodeHint; context: { found: false }"></ng-container>
   }

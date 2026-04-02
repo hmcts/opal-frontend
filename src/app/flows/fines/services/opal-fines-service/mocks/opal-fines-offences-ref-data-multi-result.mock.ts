@@ -1,0 +1,79 @@
+import { IOpalFinesOffencesRefData } from '../interfaces/opal-fines-offences-ref-data.interface';
+
+export const OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK: IOpalFinesOffencesRefData = {
+  count: 4,
+  refData: [
+    {
+      offence_id: 41799,
+      get_cjs_code: 'CD71039',
+      business_unit_id: 52,
+      offence_title: 'Criminal damage to property valued under £5000',
+      offence_title_cy: null,
+      date_used_from: '1997-11-16T00:00:00Z',
+      date_used_to: null,
+      offence_oas: 'Contrary to sections 1(1) and 4 of the Criminal Damage Act 1971.',
+      offence_oas_cy: null,
+    },
+    {
+      offence_id: 30733,
+      get_cjs_code: 'CD71039A',
+      business_unit_id: 52,
+      offence_title: 'Attempt criminal damage to property valued under £5000',
+      offence_title_cy: null,
+      date_used_from: '1971-01-01T00:00:00Z',
+      date_used_to: null,
+      offence_oas: 'Contrary to section 1(1) of the Criminal Attempts Act 1981.',
+      offence_oas_cy: null,
+    },
+    {
+      offence_id: 30734,
+      get_cjs_code: 'CD71039B',
+      business_unit_id: 52,
+      offence_title: 'Aid, abet, counsel and procure damage under £5000',
+      offence_title_cy: null,
+      date_used_from: '1971-01-01T00:00:00Z',
+      date_used_to: null,
+      offence_oas: 'Contrary to sections 1(1) and 4 of the Criminal Damage Act 1971.',
+      offence_oas_cy: null,
+    },
+    {
+      offence_id: 30735,
+      get_cjs_code: 'CD71039C',
+      business_unit_id: 52,
+      offence_title: 'Conspiracy to destroy or damage property under £5000',
+      offence_title_cy: null,
+      date_used_from: '1971-01-01T00:00:00Z',
+      date_used_to: '2004-12-25T00:00:00Z',
+      offence_oas: 'Contrary to section 1 of the Criminal Law Act 1977.',
+      offence_oas_cy: null,
+    },
+  ],
+};
+
+export const OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK: IOpalFinesOffencesRefData = {
+  count: 2,
+  refData: [
+    {
+      offence_id: 41799,
+      get_cjs_code: 'GMMET001',
+      business_unit_id: 52,
+      offence_title: 'Duplicate offence title A',
+      offence_title_cy: null,
+      date_used_from: '1997-11-16T00:00:00Z',
+      date_used_to: null,
+      offence_oas: 'Offence A',
+      offence_oas_cy: null,
+    },
+    {
+      offence_id: 41800,
+      get_cjs_code: 'GMMET001',
+      business_unit_id: 73,
+      offence_title: 'Duplicate offence title B',
+      offence_title_cy: null,
+      date_used_from: '1998-11-16T00:00:00Z',
+      date_used_to: null,
+      offence_oas: 'Offence B',
+      offence_oas_cy: null,
+    },
+  ],
+};

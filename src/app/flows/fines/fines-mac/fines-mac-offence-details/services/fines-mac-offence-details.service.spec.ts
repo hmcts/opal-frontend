@@ -9,6 +9,10 @@ import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/in
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import {
+  OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK,
+  OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK,
+} from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-multi-result.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -100,6 +104,18 @@ describe('FinesMacOffenceDetailsService', () => {
     expect(result[0].formData.fm_offence_details_impositions[0]).toEqual(expected);
   });
 
+  it('findExactOffenceMatch - should return undefined when duplicate code matches are ambiguous', () => {
+    const result = service.findExactOffenceMatch(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK, 'GMMET001');
+
+    expect(result).toBeUndefined();
+  });
+
+  it('findExactOffenceMatch - should resolve duplicate code matches using the saved offence id', () => {
+    const result = service.findExactOffenceMatch(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK, 'GMMET001', 41800);
+
+    expect(result).toEqual(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK.refData[1]);
+  });
+
   describe('initOffenceListener', () => {
     let form: FormGroup;
     let destroy$: Subject<void>;
@@ -116,7 +132,7 @@ describe('FinesMacOffenceDetailsService', () => {
 
       form = new FormGroup({
         code: new FormControl(''),
-        id: new FormControl(''),
+        id: new FormControl(null),
       });
 
       destroy$ = new Subject<void>();
@@ -203,56 +219,7 @@ describe('FinesMacOffenceDetailsService', () => {
 
     it('should populate the offence id when an exact match exists in a multi-result response', () => {
       vi.useFakeTimers();
-      const multiResultResponse: IOpalFinesOffencesRefData = {
-        count: 4,
-        refData: [
-          {
-            offence_id: 41799,
-            get_cjs_code: 'CD71039',
-            business_unit_id: 52,
-            offence_title: 'Criminal damage to property valued under £5000',
-            offence_title_cy: null,
-            date_used_from: '1997-11-16T00:00:00Z',
-            date_used_to: null,
-            offence_oas: 'Contrary to sections 1(1) and 4 of the Criminal Damage Act 1971.',
-            offence_oas_cy: null,
-          },
-          {
-            offence_id: 30733,
-            get_cjs_code: 'CD71039A',
-            business_unit_id: 52,
-            offence_title: 'Attempt criminal damage to property valued under £5000',
-            offence_title_cy: null,
-            date_used_from: '1971-01-01T00:00:00Z',
-            date_used_to: null,
-            offence_oas: 'Contrary to section 1(1) of the Criminal Attempts Act 1981.',
-            offence_oas_cy: null,
-          },
-          {
-            offence_id: 30734,
-            get_cjs_code: 'CD71039B',
-            business_unit_id: 52,
-            offence_title: 'Aid, abet, counsel and procure damage under £5000',
-            offence_title_cy: null,
-            date_used_from: '1971-01-01T00:00:00Z',
-            date_used_to: null,
-            offence_oas: 'Contrary to sections 1(1) and 4 of the Criminal Damage Act 1971.',
-            offence_oas_cy: null,
-          },
-          {
-            offence_id: 30735,
-            get_cjs_code: 'CD71039C',
-            business_unit_id: 52,
-            offence_title: 'Conspiracy to destroy or damage property under £5000',
-            offence_title_cy: null,
-            date_used_from: '1971-01-01T00:00:00Z',
-            date_used_to: '2004-12-25T00:00:00Z',
-            offence_oas: 'Contrary to section 1 of the Criminal Law Act 1977.',
-            offence_oas_cy: null,
-          },
-        ],
-      };
-      getOffenceByCjsCode = () => of(multiResultResponse);
+      getOffenceByCjsCode = () => of(OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK);
 
       service.initOffenceCodeListener(
         form,
@@ -270,6 +237,78 @@ describe('FinesMacOffenceDetailsService', () => {
       expect(form.get('code')?.errors).toBeNull();
       expect(form.get('id')?.value).toBe(41799);
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should mark duplicate exact code matches as invalid when there is no saved offence id', () => {
+      vi.useFakeTimers();
+      getOffenceByCjsCode = () => of(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK);
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      form.get('code')?.setValue('gmmet001');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(form.get('code')?.errors).toEqual({ invalidOffenceCode: true });
+      expect(form.get('id')?.value).toBeNull();
+    });
+
+    it('should preserve the saved offence id when the original duplicate code is re-entered', () => {
+      vi.useFakeTimers();
+      form.get('code')?.setValue('GMMET001');
+      form.get('id')?.setValue(41800);
+      getOffenceByCjsCode = (code: string) => {
+        if (code === 'UNIQUE01') {
+          return of({
+            count: 1,
+            refData: [
+              {
+                offence_id: 99999,
+                get_cjs_code: 'UNIQUE01',
+                business_unit_id: 52,
+                offence_title: 'Unique offence title',
+                offence_title_cy: null,
+                date_used_from: '1997-11-16T00:00:00Z',
+                date_used_to: null,
+                offence_oas: 'Unique offence',
+                offence_oas_cy: null,
+              },
+            ],
+          });
+        }
+
+        return of(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK);
+      };
+
+      service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCode,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      expect(form.get('id')?.value).toBe(41800);
+
+      form.get('code')?.setValue('UNIQUE01');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      expect(form.get('id')?.value).toBe(99999);
+
+      form.get('code')?.setValue('GMMET001');
+      vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(form.get('code')?.errors).toBeNull();
+      expect(form.get('id')?.value).toBe(41800);
     });
 
     it('should mark code as invalid when results are returned but none match exactly', () => {

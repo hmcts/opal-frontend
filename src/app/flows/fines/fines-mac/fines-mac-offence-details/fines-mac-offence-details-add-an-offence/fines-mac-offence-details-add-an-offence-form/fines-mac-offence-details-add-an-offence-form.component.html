@@ -61,7 +61,8 @@
     @if (offenceCode$ | async; as offenceCode) {
       <app-fines-mac-offence-code-hint
         [offenceCode]="offenceCode"
-        [searchedOffenceCode]="form.get('fm_offence_details_offence_cjs_code')?.value"
+        [offenceId]="form.controls['fm_offence_details_offence_id'].value"
+        [searchedOffenceCode]="form.controls['fm_offence_details_offence_cjs_code'].value"
         [selectedOffenceConfirmation]="selectedOffenceConfirmation"
       ></app-fines-mac-offence-code-hint>
     }

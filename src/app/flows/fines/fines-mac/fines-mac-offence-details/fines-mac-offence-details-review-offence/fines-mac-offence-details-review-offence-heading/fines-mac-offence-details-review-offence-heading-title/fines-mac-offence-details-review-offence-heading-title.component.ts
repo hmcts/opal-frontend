@@ -24,6 +24,7 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent implements
   private readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   @Input({ required: true }) public offenceCode!: string;
+  @Input({ required: false }) public offenceId: number | null = null;
   @Input({ required: true }) public offenceRefData!: IOpalFinesOffencesRefData;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: false }) public showDetails: boolean = true;
@@ -44,7 +45,11 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent implements
    * Retrieves the offence title from the offence reference data and assigns it to the `offenceTitle` property.
    */
   public getOffenceTitle(): void {
-    const exactMatch = this.offenceDetailsService.findExactOffenceMatch(this.offenceRefData, this.offenceCode);
+    const exactMatch = this.offenceDetailsService.findExactOffenceMatch(
+      this.offenceRefData,
+      this.offenceCode,
+      this.offenceId,
+    );
     this.offenceTitle = exactMatch?.offence_title ?? this.offenceRefData.refData[0]?.offence_title ?? '';
   }
 

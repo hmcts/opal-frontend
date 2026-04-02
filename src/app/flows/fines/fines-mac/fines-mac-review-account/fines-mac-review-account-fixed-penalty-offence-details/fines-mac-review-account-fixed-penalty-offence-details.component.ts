@@ -58,7 +58,11 @@ export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements
    */
   public getOffence(offenceCode: string): void {
     this.opalFinesService.getOffenceByCjsCode(offenceCode).subscribe((offence: IOpalFinesOffencesRefData) => {
-      const exactMatch = this.offenceDetailsService.findExactOffenceMatch(offence, offenceCode);
+      const exactMatch = this.offenceDetailsService.findExactOffenceMatch(
+        offence,
+        offenceCode,
+        this.offenceDetails.fm_offence_details_offence_id,
+      );
       const offenceTitle = exactMatch?.offence_title ?? offence.refData[0]?.offence_title ?? offenceCode;
       this.offence = `${offenceTitle} (${offenceCode})`;
     });

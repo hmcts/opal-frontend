@@ -139,17 +139,27 @@ export class FinesMacOffenceDetailsService {
   public findExactOffenceMatch(
     response: IOpalFinesOffencesRefData | null | undefined,
     offenceCode: string | null | undefined,
+    offenceId?: number | null,
   ): IOpalFinesOffences | undefined {
     if (!response?.refData?.length || !offenceCode) {
       return undefined;
     }
 
     const normalisedOffenceCode = offenceCode.trim().toUpperCase();
-
-    return response.refData.find((offence) => {
+    const exactCodeMatches = response.refData.filter((offence) => {
       const returnedCode = this.getOffenceCode(offence as IOpalFinesOffences & { cjs_code?: string });
       return returnedCode?.trim().toUpperCase() === normalisedOffenceCode;
     });
+
+    if (exactCodeMatches.length === 1) {
+      return exactCodeMatches[0];
+    }
+
+    if (offenceId == null) {
+      return undefined;
+    }
+
+    return exactCodeMatches.find((offence) => offence.offence_id === offenceId);
   }
 
   /**
@@ -174,14 +184,18 @@ export class FinesMacOffenceDetailsService {
   ): void {
     const codeControl = form.controls[codeControlName];
     const idControl = form.controls[idControlName];
+    const savedOffenceId = idControl.value;
+    const savedOffenceCode = typeof codeControl.value === 'string' ? codeControl.value.trim().toUpperCase() : null;
 
     const populateHint = (code: string) => {
-      idControl.setValue(null);
+      const normalisedCode = code?.trim().toUpperCase();
+      const previousOffenceId =
+        normalisedCode && savedOffenceCode === normalisedCode ? savedOffenceId : idControl.value;
 
       if (code?.length >= 7 && code?.length <= 8) {
         const result$ = getOffenceByCjsCode(code).pipe(
           tap((response) => {
-            const exactMatch = this.findExactOffenceMatch(response, code);
+            const exactMatch = this.findExactOffenceMatch(response, code, previousOffenceId);
 
             codeControl.setErrors(exactMatch ? null : { invalidOffenceCode: true }, { emitEvent: false });
             idControl.setValue(exactMatch?.offence_id ?? null, { emitEvent: false });
@@ -196,6 +210,7 @@ export class FinesMacOffenceDetailsService {
         result$.subscribe();
         if (onConfirmChange) onConfirmChange(true);
       } else if (onConfirmChange) {
+        idControl.setValue(null, { emitEvent: false });
         onConfirmChange(false);
       }
     };
