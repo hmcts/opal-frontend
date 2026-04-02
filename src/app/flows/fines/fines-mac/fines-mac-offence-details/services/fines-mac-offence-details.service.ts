@@ -134,7 +134,8 @@ export class FinesMacOffenceDetailsService {
    *
    * @param response - The offence lookup response.
    * @param offenceCode - The offence code entered by the user.
-   * @returns The matching offence entry, if one exists.
+   * @param offenceId - Optional saved offence ID used to disambiguate duplicate exact-code matches.
+   * @returns The unique exact-code match, the saved offence when duplicates can be disambiguated, or `undefined`.
    */
   public findExactOffenceMatch(
     response: IOpalFinesOffencesRefData | null | undefined,
@@ -168,7 +169,6 @@ export class FinesMacOffenceDetailsService {
    * @param codeControlName - The name of the control for the offence code.
    * @param idControlName - The name of the control for the offence ID.
    * @param destroy$ - Subject to signal when to unsubscribe from observables.
-   * @param changeDetector - ChangeDetectorRef to trigger change detection.
    * @param onResult - Optional callback function to handle the result of the code lookup.
    * @param onConfirmChange - Optional callback function to confirm if the code change was successful.
    */
