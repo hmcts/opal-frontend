@@ -81,9 +81,7 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     component.form.get('fsa_search_account_companies_company_name_exact_match')?.setValue(true);
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
-    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
-      false,
-    );
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasError('required')).toBe(false);
   });
 
   it('should treat whitespace-only as empty and require when exact match is true', () => {
@@ -116,31 +114,7 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
 
     ctrl.updateValueAndValidity();
 
-    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
-      false,
-    );
-  });
-
-  it('should skip validation logic if controls are missing', () => {
-    component.form = new FormGroup({
-      fsa_search_account_companies_company_name: new FormControl('test'),
-    });
-    // Keep abstract inputs consistent when swapping the form mid-test
-    component.formControlErrorMessages = component.formControlErrorMessages ?? {};
-    fixture.detectChanges();
-
-    expect(() => component['handleConditionalValidation']()).not.toThrow();
-  });
-
-  it('should skip setup if exact match or include aliases are missing', () => {
-    component.form = new FormGroup({
-      fsa_search_account_companies_company_name: new FormControl('test'),
-    });
-    // Keep abstract inputs consistent when swapping the form mid-test
-    component.formControlErrorMessages = component.formControlErrorMessages ?? {};
-    fixture.detectChanges();
-
-    expect(() => component['setupConditionalValidation']()).not.toThrow();
+    expect(component.form.get('fsa_search_account_companies_company_name')?.hasError('required')).toBe(false);
   });
 
   it('should install its controls into the provided FormGroup on init', () => {

@@ -10,5 +10,6 @@ export const FINES_ACC_DEFENDANT_ROUTING_TITLES: IFinesAccDefendantRoutingPaths 
     'payment-terms': 'Amend payment terms',
     party: 'Amend party details',
     'payment-card': 'Request payment card',
+    enforcement: 'Enforcement',
   },
 };

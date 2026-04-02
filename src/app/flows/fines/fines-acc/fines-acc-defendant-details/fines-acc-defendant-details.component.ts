@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { EMPTY, merge, Observable, takeUntil, tap } from 'rxjs';
+import { EMPTY, merge, Observable, of, switchMap, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 // Stores
@@ -219,22 +219,24 @@ export class FinesAccDefendantDetailsComponent
         case 'payment-terms':
           this.tabPaymentTerms$ = this.fetchTabDataTyped(
             this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id).pipe(
-              tap((data) => {
-                if (data.last_enforcement) {
-                  this.opalFinesService
-                    .getResult(data.last_enforcement)
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe((result) => {
+              switchMap(
+                (data): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> =>
+                  (data.last_enforcement
+                    ? this.opalFinesService.getResult(data.last_enforcement)
+                    : of<IOpalFinesResultRefData | null>(null)
+                  ).pipe(
+                    tap((result: IOpalFinesResultRefData | null) => {
                       this.lastEnforcement = result;
-                    });
-                }
-              }),
+                    }),
+                    map((): IOpalFinesAccountDefendantDetailsPaymentTermsLatest => data),
+                  ),
+              ),
             ),
           );
           break;
         case 'enforcement':
           this.tabEnforcement$ = this.fetchTabDataTyped(
-            this.opalFinesService.getDefendantAccountEnforcementTabData(account_id),
+            this.opalFinesService.getDefendantAccountEnforcementStatus(account_id),
           );
           break;
         case 'impositions':
@@ -388,5 +390,14 @@ export class FinesAccDefendantDetailsComponent
         },
       );
     }
+  }
+
+  /**
+   * Navigates to the add enforcement override page or access denied page based on user permissions.
+   */
+  public navigateToAddEnforcementOverridePage(): void {
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/add`], {
+      relativeTo: this.activatedRoute,
+    });
   }
 }

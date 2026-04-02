@@ -6,8 +6,10 @@ import { MacCreateAccountLocators as L } from '../../../../../shared/selectors/m
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
 import { AccountType } from '../../../../../support/utils/payloads';
+import { CreateManageDraftsActions } from '../draft-account/create-manage-drafts.actions';
 
 const log = createScopedLogger('ManualCreateAccountActions');
+const DIRECT_MANUAL_ACCOUNT_CREATION_LINK = '#finesMacLink';
 
 export type DefendantType =
   | 'Adult or youth'
@@ -19,6 +21,24 @@ export type DefendantType =
 /** Actions for the Manual Account Creation landing page. */
 export class ManualCreateAccountActions {
   private readonly common = new CommonActions();
+  private readonly createManageDrafts = new CreateManageDraftsActions();
+
+  /**
+   * Opens Manual Account Creation from the Accounts landing page.
+   * @param route - `direct` uses the legacy direct link; `cam` uses Create and Manage Draft Accounts first.
+   */
+  openFromAccountsPage(route: 'direct' | 'cam' = 'cam'): void {
+    if (route === 'direct') {
+      log('navigate', 'Opening Manual Account Creation using direct Accounts-page link');
+      cy.get(DIRECT_MANUAL_ACCOUNT_CREATION_LINK, { timeout: 20_000 }).should('be.visible').click({ force: true });
+      return;
+    }
+
+    log('navigate', 'Opening Manual Account Creation using Create and Manage Draft Accounts route');
+    this.createManageDrafts.openPageFromAccounts();
+    this.createManageDrafts.assertOnPage();
+    this.createManageDrafts.clickCreateAccount();
+  }
 
   /**
    * Confirms the Manual Account Creation landing page is visible.

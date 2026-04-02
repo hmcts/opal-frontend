@@ -25,15 +25,15 @@ import { FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-sa-sear
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs';
+import { distinctUntilChanged, takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
-import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
+import { finesSaOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, ACCOUNT_NUMBER_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -145,7 +145,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       {
         fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
         fsa_search_account_number: new FormControl<string | null>(null, [
-          patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
+          patternValidator(ACCOUNT_NUMBER_PATTERN, 'invalidFormat'),
           ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(9),
         ]),
@@ -159,7 +159,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
         fsa_search_account_major_creditors_search_criteria: new FormGroup({}),
         fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
       },
-      { validators: atLeastOneCriteriaValidator },
+      { validators: finesSaOneCriteriaValidator },
     );
   }
 
@@ -169,19 +169,21 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * whenever the fragment changes.
    */
   private setupFragmentListener(): void {
-    (this['activatedRoute'] as ActivatedRoute).fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
-      const resolvedFragment = fragment ?? 'individuals';
+    (this['activatedRoute'] as ActivatedRoute).fragment
+      .pipe(distinctUntilChanged(), takeUntil(this.ngUnsubscribe))
+      .subscribe((fragment) => {
+        const resolvedFragment = fragment ?? 'individuals';
 
-      if (!fragment) {
-        this['router'].navigate([], {
-          relativeTo: this['activatedRoute'],
-          fragment: 'individuals',
-          replaceUrl: true,
-        });
-      }
+        if (!fragment) {
+          this['router'].navigate([], {
+            relativeTo: this['activatedRoute'],
+            fragment: 'individuals',
+            replaceUrl: true,
+          });
+        }
 
-      this.switchTab(resolvedFragment);
-    });
+        this.switchTab(resolvedFragment);
+      });
   }
 
   /**
@@ -221,9 +223,10 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * inline/summary error messages.
    */
   private clearSearchForm(): void {
-    for (const key of ['individuals', 'companies', 'minor_creditors', 'major_creditors']) {
-      this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false });
-    }
+    this.form.setControl('fsa_search_account_individuals_search_criteria', new FormGroup({}));
+    this.form.setControl('fsa_search_account_companies_search_criteria', new FormGroup({}));
+    this.form.setControl('fsa_search_account_minor_creditors_search_criteria', new FormGroup({}));
+    this.form.setControl('fsa_search_account_major_creditors_search_criteria', new FormGroup({}));
     this.clearAllErrorMessages();
   }
 
@@ -237,17 +240,23 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * @param tab Fragment string identifying the tab (the component treats this as a string).
    */
   private switchTab(tab: string | Event): void {
+    const resolvedTab = tab as FinesSaSearchAccountTab;
+
     this.fieldErrors = {
       ...FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS,
-      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTab],
+      ...this.tabFieldErrorMap[resolvedTab],
     } as IFinesSaSearchAccountFieldErrors;
 
     this.setInitialErrorMessages();
 
+    if (this.finesSaStore.activeTab() === resolvedTab) {
+      return;
+    }
+
     // Reset existing values/validation in all tab groups
     this.clearSearchForm();
 
-    this.finesSaStore.setActiveTab(tab as FinesSaSearchAccountTab);
+    this.finesSaStore.setActiveTab(resolvedTab);
   }
 
   /**

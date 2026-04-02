@@ -5,6 +5,7 @@ export const OPAL_FINES_CACHE_DEFAULTS: IOpalFinesCache = {
   businessUnitsCache$: null,
   businessUnitsPermissionCache$: {},
   localJusticeAreasCache$: null,
+  localJusticeAreasLjaTypeCache$: {},
   resultsCache$: null,
   resultCache$: {},
   offenceCodesCache$: {},
@@ -19,5 +20,6 @@ export const OPAL_FINES_CACHE_DEFAULTS: IOpalFinesCache = {
   defendantAccountHistoryAndNotesCache$: null,
   defendantAccountPaymentTermsLatestCache$: null,
   defendantAccountFixedPenaltyCache$: null,
+  enforcersCache$: null,
   minorCreditorAccountAtAGlanceCache$: null,
 };

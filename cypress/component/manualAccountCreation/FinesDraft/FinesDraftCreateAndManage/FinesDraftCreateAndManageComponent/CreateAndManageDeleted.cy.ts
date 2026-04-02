@@ -15,6 +15,10 @@ import { interceptGetDeletedAccounts, interceptGetRejectedAccounts } from './moc
 import { OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK } from './mocks/fines-draft-delete-account.mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesDraftCreateAndManageDeletedComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
@@ -42,106 +46,124 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
     });
   };
 
-  it('(AC.1) should not have table when user does not have accounts submitted', { tags: ['@PO-609'] }, () => {
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
+  it(
+    '(AC.1) should not have table when user does not have accounts submitted',
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3908') },
+    () => {
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
-    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
-    cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
-    cy.get(DOM_ELEMENTS.table).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
+      cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+    },
+  );
 
-  it('(AC.2)Deleted accounts should not appear if deleted 8 or more days ago', { tags: ['@PO-609'] }, () => {
-    const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
+  it(
+    '(AC.2)Deleted accounts should not appear if deleted 8 or more days ago',
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3909') },
+    () => {
+      const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
-    interceptGetDeletedAccounts(200, deletedAccountsMockData);
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetDeletedAccounts(200, deletedAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
-    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
-    cy.get('p').should('exist').and('contain', 'Showing accounts Deleted in the past 7 days');
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
+      cy.get('p').should('exist').and('contain', 'Showing accounts Deleted in the past 7 days');
 
-    for (const link of NAVIGATION_LINKS) {
-      if (link === 'Deleted') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist').should('have.attr', 'aria-current', 'page');
-      } else {
-        cy.get(DOM_ELEMENTS.navigationLinks)
-          .contains(link)
-          .should('exist')
-          .should('not.have.attr', 'aria-current', 'page');
+      for (const link of NAVIGATION_LINKS) {
+        if (link === 'Deleted') {
+          cy.get(DOM_ELEMENTS.navigationLinks)
+            .contains(link)
+            .should('exist')
+            .should('have.attr', 'aria-current', 'page');
+        } else {
+          cy.get(DOM_ELEMENTS.navigationLinks)
+            .contains(link)
+            .should('exist')
+            .should('not.have.attr', 'aria-current', 'page');
+        }
       }
-    }
-    for (const heading of TABLE_HEADINGS_DELETED) {
-      cy.get(DOM_ELEMENTS.tableHeadings).contains(heading).should('exist');
-    }
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - 8);
+      for (const heading of TABLE_HEADINGS_DELETED) {
+        cy.get(DOM_ELEMENTS.tableHeadings).contains(heading).should('exist');
+      }
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - 8);
 
-    cy.get(DOM_ELEMENTS.tableRow).each(($row) => {
-      cy.wrap($row)
-        .find(DOM_ELEMENTS.deleted)
-        .invoke('text')
-        .then(() => {
-          let daysAgo = null;
-          if (daysAgo !== null && daysAgo >= 8) {
-            throw new Error(`Account deleted ${daysAgo} days ago is still visible in the table.`);
-          }
+      cy.get(DOM_ELEMENTS.tableRow).each(($row) => {
+        cy.wrap($row)
+          .find(DOM_ELEMENTS.deleted)
+          .invoke('text')
+          .then(() => {
+            let daysAgo = null;
+            if (daysAgo !== null && daysAgo >= 8) {
+              throw new Error(`Account deleted ${daysAgo} days ago is still visible in the table.`);
+            }
+          });
+      });
+    },
+  );
+  it(
+    '(AC.3)should show summary table with correct data for deleted accounts',
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3910') },
+    () => {
+      const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
+
+      interceptGetDeletedAccounts(200, deletedAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+
+      setupComponent();
+      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
+      cy.get('p').should('exist').and('contain', 'Showing accounts Deleted in the past 7 days');
+
+      for (const link of NAVIGATION_LINKS) {
+        if (link === 'Deleted') {
+          cy.get(DOM_ELEMENTS.navigationLinks)
+            .contains(link)
+            .should('exist')
+            .should('have.attr', 'aria-current', 'page');
+        } else {
+          cy.get(DOM_ELEMENTS.navigationLinks)
+            .contains(link)
+            .should('exist')
+            .should('not.have.attr', 'aria-current', 'page');
+        }
+      }
+
+      for (const heading of TABLE_HEADINGS_DELETED) {
+        cy.get(DOM_ELEMENTS.tableHeadings).contains(heading).should('exist');
+      }
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(0)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.dob).contains('—');
+          cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
         });
-    });
-  });
-  it('(AC.3)should show summary table with correct data for deleted accounts', { tags: ['@PO-609'] }, () => {
-    const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
-
-    interceptGetDeletedAccounts(200, deletedAccountsMockData);
-    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-
-    setupComponent();
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
-
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
-    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
-    cy.get('p').should('exist').and('contain', 'Showing accounts Deleted in the past 7 days');
-
-    for (const link of NAVIGATION_LINKS) {
-      if (link === 'Deleted') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist').should('have.attr', 'aria-current', 'page');
-      } else {
-        cy.get(DOM_ELEMENTS.navigationLinks)
-          .contains(link)
-          .should('exist')
-          .should('not.have.attr', 'aria-current', 'page');
-      }
-    }
-
-    for (const heading of TABLE_HEADINGS_DELETED) {
-      cy.get(DOM_ELEMENTS.tableHeadings).contains(heading).should('exist');
-    }
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(0)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.dob).contains('—');
-        cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
-      });
-    cy.get(DOM_ELEMENTS.tableRow)
-      .eq(1)
-      .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.deleted).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
-      });
-  });
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(1)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+          cy.get(DOM_ELEMENTS.deleted).contains('Today');
+          cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+        });
+    },
+  );
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for deleted accounts',
-    { tags: ['@PO-609'] },
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3911') },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
@@ -172,7 +194,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending for Deleted',
-    { tags: ['@PO-609'] },
+    { tags: buildTags('@JIRA-STORY:PO-609', '@JIRA-KEY:POT-3912') },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 

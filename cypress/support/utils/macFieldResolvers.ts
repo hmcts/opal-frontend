@@ -111,7 +111,12 @@ export const resolveContactFieldKey = (field: string): ManualContactFieldKey => 
 export const resolveCourtFieldKey = (field: string): ManualCourtFieldKey => {
   const normalized = field.toLowerCase();
 
-  if (normalized.includes('local justice area') || normalized.includes('sending area') || normalized.includes('lja'))
+  if (
+    normalized.includes('local justice area') ||
+    normalized.includes('sending area') ||
+    normalized.includes('sending police') ||
+    normalized.includes('lja')
+  )
     return 'lja';
   if (normalized.includes('prosecutor case reference') || normalized.includes('pcr')) return 'pcr';
   if (normalized.includes('enforcement court')) return 'enforcementCourt';

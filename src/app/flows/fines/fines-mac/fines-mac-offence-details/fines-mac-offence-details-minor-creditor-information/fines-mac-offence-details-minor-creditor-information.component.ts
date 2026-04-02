@@ -30,7 +30,8 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
   @Input({ required: true }) public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorState;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: true }) public isDetailsHidden!: boolean;
-  @Input({ required: false }) public headingLevel: HeadingLevel = 5;
+  @Input({ required: false }) public headingLevel: HeadingLevel = 4;
+  @Input({ required: false }) public classes: string | null = null;
   @Output() public actionClicked = new EventEmitter<{ action: string; index: number }>();
   public name!: string;
   public addressLines: string[] = [];
@@ -39,6 +40,10 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
   public sortCode!: string;
   public accountNumber!: string;
   public paymentReference!: string;
+
+  public get getClasses(): string {
+    return this.classes ? this.classes : '';
+  }
 
   /**
    * Retrieves the minor creditor information and sets the corresponding properties.

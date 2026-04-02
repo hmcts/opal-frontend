@@ -3,17 +3,34 @@ import { computed } from '@angular/core';
 import { IFinesConSelectBuState } from '../select-business-unit/fines-con-select-bu/interfaces/fines-con-select-bu-state.interface';
 import { IFinesConSelectBuForm } from '../select-business-unit/fines-con-select-bu/interfaces/fines-con-select-bu-form.interface';
 import { FINES_CON_SELECT_BU_FORM } from '../select-business-unit/fines-con-select-bu/constants/fines-con-select-bu-form.constant';
+import { IFinesConSearchAccountState } from '../consolidate-acc/fines-con-search-account/interfaces/fines-con-search-account-state.interface';
+import { FINES_CON_SEARCH_ACCOUNT_STATE } from '../consolidate-acc/fines-con-search-account/constants/fines-con-search-account-state.constant';
+import { IFinesConSearchResultDefendantAccount } from '../consolidate-acc/fines-con-search-result/interfaces/fines-con-search-result-defendant-account.interface';
 
 export const FinesConStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
     selectBuForm: FINES_CON_SELECT_BU_FORM,
+    searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+    individualResults: [] as IFinesConSearchResultDefendantAccount[],
+    companyResults: [] as IFinesConSearchResultDefendantAccount[],
+    selectedAccountIds: [] as number[],
+    activeTab: 'search',
+    stateChanges: false,
+    unsavedChanges: false,
   })),
   withHooks((store) => {
     return {
       onDestroy() {
         patchState(store, {
           selectBuForm: FINES_CON_SELECT_BU_FORM,
+          searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+          individualResults: [],
+          companyResults: [],
+          selectedAccountIds: [],
+          activeTab: 'search',
+          stateChanges: false,
+          unsavedChanges: false,
         });
       },
     };
@@ -45,6 +62,11 @@ export const FinesConStore = signalStore(
           ...store.selectBuForm(),
           formData,
         },
+        searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+        individualResults: [],
+        companyResults: [],
+        selectedAccountIds: [],
+        stateChanges: true,
       });
     },
 
@@ -58,12 +80,96 @@ export const FinesConStore = signalStore(
     },
 
     /**
+     * Persists temporary/transient search account form data in the store.
+     * Used to preserve form state when navigating to intermediate steps.
+     *
+     * @param formData The search account form data to persist
+     */
+    updateSearchAccountFormTemporary(formData: IFinesConSearchAccountState): void {
+      patchState(store, {
+        searchAccountForm: formData,
+      });
+    },
+
+    /**
+     * Resets the search account form state to its initial value.
+     */
+    resetSearchAccountForm(): void {
+      patchState(store, {
+        searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+      });
+    },
+
+    /**
+     * Updates both individual and company search result buckets.
+     */
+    updateDefendantResults(
+      individualResults: IFinesConSearchResultDefendantAccount[],
+      companyResults: IFinesConSearchResultDefendantAccount[],
+    ): void {
+      patchState(store, {
+        individualResults,
+        companyResults,
+      });
+    },
+
+    /**
+     * Adds selected account ids for consolidation, ensuring uniqueness.
+     */
+    addSelectedAccountIds(selectedAccountIds: number[]): void {
+      patchState(store, {
+        selectedAccountIds: Array.from(new Set([...store.selectedAccountIds(), ...selectedAccountIds])),
+      });
+    },
+
+    /**
      * Resets the entire consolidation form state
      */
     resetConsolidationState(): void {
       patchState(store, {
         selectBuForm: FINES_CON_SELECT_BU_FORM,
+        searchAccountForm: FINES_CON_SEARCH_ACCOUNT_STATE,
+        individualResults: [],
+        companyResults: [],
+        selectedAccountIds: [],
+        stateChanges: false,
+        activeTab: 'search',
+        unsavedChanges: false,
       });
+    },
+
+    /**
+     * Sets the active tab in consolidation page
+     */
+    setActiveTab: (activeTab: string) => {
+      patchState(store, {
+        activeTab,
+      });
+    },
+
+    /**
+     * Updates the state changes flag
+     */
+    setStateChanges: (stateChanges: boolean) => {
+      patchState(store, {
+        stateChanges,
+      });
+    },
+
+    /**
+     * Updates the unsaved changes flag
+     */
+    setUnsavedChanges: (unsavedChanges: boolean) => {
+      patchState(store, {
+        unsavedChanges,
+      });
+    },
+
+    /**
+     * Resets both state changes and unsaved changes flags
+     */
+    resetStateChangesUnsavedChanges: () => {
+      patchState(store, { stateChanges: false, unsavedChanges: false });
     },
   })),
 );

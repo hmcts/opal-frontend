@@ -1,30 +1,40 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
-import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../flows/fines/fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
-import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../flows/fines/fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
-import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../flows/fines/fines-sa/fines-sa-search/routing/constants/fines-sa-search-routing-paths.constant';
-import { FINES_CON_ROUTING_PATHS } from '../../flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
-import { FINES_PERMISSIONS } from '../../constants/fines-permissions.constant';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { DashboardPage } from '@hmcts/opal-frontend-common/pages/dashboard-page';
+import { map } from 'rxjs';
+import { DASHBOARD_PAGE_CONFIGURATION_MAP, isDashboardPageType } from './constants/dashboard-config.constant';
+import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { DASHBOARD_PAGE_DEFAULT_TAB } from './constants/dashboard-config-default-tab.constant';
+import { DASHBOARD_CONFIG_DEFAULT_DASHBOARD } from './constants/dashboard-config-default-dashboard.constant';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterModule],
+  imports: [DashboardPage],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
-  private readonly permissionService = inject(PermissionsService);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
-  public readonly globalStore = inject(GlobalStore);
-  public readonly permissionIds = this.permissionService.getUniquePermissions(this.globalStore.userState());
-  public readonly dashboardPermissions = FINES_PERMISSIONS;
-  public readonly finesRoutingPaths = FINES_ROUTING_PATHS;
-  public readonly finesDraftCreateAndManageRoutingPaths = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
-  public readonly finesDraftCheckAndValidateRoutingPaths = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
-  public readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
-  public readonly finesConRoutingPaths = FINES_CON_ROUTING_PATHS;
-  public active: string = 'nav1';
+  /**
+   * Creates a signal that tracks the 'dashboardType' route parameter. This signal updates whenever the route parameters change, allowing the component to reactively determine which dashboard configuration to use based on the current URL. The initial value is set to null, indicating that no specific dashboard type has been selected yet.
+   */
+  private readonly dashboardType = toSignal(
+    this.activatedRoute.paramMap.pipe(map((paramMap) => paramMap.get('dashboardType'))),
+    { initialValue: null },
+  );
+
+  /**
+   * Resolves the dashboard configuration based on the current route parameter 'dashboardType'. If the parameter is valid and corresponds to a known dashboard type, it returns the specific configuration for that type. If the parameter is missing or invalid, it falls back to the default dashboard configuration defined in DASHBOARD_CONFIG_DEFAULT_DASHBOARD.
+   */
+  public readonly resolvedConfig = computed<IDashboardPageConfiguration>(() => {
+    const dashboardType = this.dashboardType();
+
+    if (dashboardType && isDashboardPageType(dashboardType)) {
+      return DASHBOARD_PAGE_CONFIGURATION_MAP[dashboardType];
+    }
+
+    return DASHBOARD_PAGE_CONFIGURATION_MAP[DASHBOARD_PAGE_DEFAULT_TAB] ?? DASHBOARD_CONFIG_DEFAULT_DASHBOARD;
+  });
 }

@@ -31,6 +31,7 @@ export const MacReviewAccountLocators = {
   summaryValue: '.govuk-summary-list__value',
 
   // Account details
+  originatorTypeData: 'div[id = "accountDetailsOriginatorType"]',
   businessUnitData: 'div[id = "accountDetailsBusinessUnit"]',
   accountTypeData: 'div[id = "accountDetailsAccountType"]',
   defendantTypeData: 'div[id = "accountDetailsDefendantType"]',

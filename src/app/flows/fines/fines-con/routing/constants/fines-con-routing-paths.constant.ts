@@ -4,5 +4,7 @@ export const FINES_CON_ROUTING_PATHS: IFinesConRoutingPaths = {
   root: 'consolidation',
   children: {
     selectBusinessUnit: 'select-business-unit',
+    consolidateAcc: 'consolidate-accounts',
+    searchError: 'search-error',
   },
 };

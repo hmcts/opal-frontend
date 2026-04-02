@@ -71,7 +71,7 @@ describe('FinesMacSubmitConfirmationComponent', () => {
 
     component.createNewAccount();
 
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.createAccount], {
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.originatorType], {
       relativeTo: component['activatedRoute'].parent,
     });
   });
