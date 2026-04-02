@@ -94,7 +94,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3074 @only
+  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3074
   Scenario: Rejected adult or youth account can be edited and resubmitted
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}                       |
@@ -195,7 +195,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3075 @only
+  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3075
   Scenario: Rejected parent or guardian to pay account can be edited and resubmitted
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}              |
