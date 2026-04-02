@@ -178,6 +178,7 @@ export class SearchFilterByBUFinesActions {
       const name = rawName.trim();
 
       cy.contains('td.govuk-table__cell label.govuk-checkboxes__label', name)
+        .scrollIntoView()
         .should('be.visible')
         .invoke('attr', 'for')
         .then((id) => {
