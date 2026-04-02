@@ -63,7 +63,6 @@ describe('FinesAccEnfCourtChangeComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                title: 'Change enforcement court',
                 courtsRefData: mockCourtRefData,
               },
             },
