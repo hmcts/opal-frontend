@@ -35,7 +35,7 @@ Feature: Navigate and edit sections from task list
 
     And I complete manual account creation with the following fields and defaults for account header "TEST Rejected-PO-640-company-{uniq}":
       | Section                    | Field                                    | Value                     |
-      | Court details              | Sending area or Local Justice Area (LJA) | Avon                      |
+      | Court details              | Sending area or Local Justice Area (LJA) | Avon & Somerset           |
       | Court details              | Prosecutor Case Reference (PCR)          | abcd1234a                 |
       | Court details              | Enforcement court                        | ATCM Test (828)           |
       | Company details            | Company name                             | TEST COMPANY LTD {uniq}   |
@@ -94,7 +94,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3074
+  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3074 @only
   Scenario: Rejected adult or youth account can be edited and resubmitted
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}                       |
@@ -107,7 +107,7 @@ Feature: Navigate and edit sections from task list
 
     When I complete manual account creation with the following fields and defaults for account header "Mr Rejected-PO-640-AdultOrYouthOnly TEST{uniq}":
       | Section                    | Field                                    | Value                               |
-      | Court details              | Sending area or Local Justice Area (LJA) | Avon                                |
+      | Court details              | Sending area or Local Justice Area (LJA) | Avon & Somerset                     |
       | Court details              | Prosecutor Case Reference (PCR)          | abcd1234a                           |
       | Court details              | Enforcement court                        | ATCM Test (828)                     |
       | Personal details           | Title                                    | Mr                                  |
@@ -195,7 +195,7 @@ Feature: Navigate and edit sections from task list
     When I submit the manual account for review
     Then I should see the header containing text "Create accounts"
 
-  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3075
+  @JIRA-STORY:PO-640 @JIRA-KEY:POT-3075 @only
   Scenario: Rejected parent or guardian to pay account can be edited and resubmitted
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.surname   | TEST{uniq}              |
@@ -208,7 +208,7 @@ Feature: Navigate and edit sections from task list
 
     When I complete manual account creation with the following fields and defaults for account header "Miss Rejected-PO-640-pgToPay TEST{uniq}":
       | Section                    | Field                                    | Value                           |
-      | Court details              | Sending area or Local Justice Area (LJA) | Avon                            |
+      | Court details              | Sending area or Local Justice Area (LJA) | Avon & Somerset                 |
       | Court details              | Prosecutor Case Reference (PCR)          | abcd1234a                       |
       | Court details              | Enforcement court                        | Court 777 Camberwell CH09 (777) |
       | Personal details           | Title                                    | Miss                            |
