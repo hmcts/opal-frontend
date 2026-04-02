@@ -68,6 +68,7 @@
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="enforcement_court"
             [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeEnforcementCourt()"
           >
             <ng-container name>Enforcement court</ng-container>
             <ng-container value>
