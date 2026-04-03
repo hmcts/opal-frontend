@@ -3712,15 +3712,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.66":
-  version: 0.0.66
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.66"
+"@hmcts/opal-frontend-common@npm:^0.0.69":
+  version: 0.0.69
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.69"
   dependencies:
+    "@microsoft/applicationinsights-web": "npm:^3.3.6"
+    "@ministryofjustice/frontend": "npm:^9.0.0"
+    accessible-autocomplete: "npm:^3.0.1"
+    fast-sort: "npm:^3.4.1"
+    govuk-frontend: "npm:^6.0.0"
+    home-office-kit: "npm:^1.2.0"
+    launchdarkly-js-client-sdk: "npm:^3.5.0"
+    luxon: "npm:^3.5.0"
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
-  checksum: 10/67d2973154c672470ea7a59a3bda2980dd17ff03f2afa0cdd0d19ba2533657b1b1109531147a6f6171ae4b806ffa7528e8729f80266e1152b641478d4f6fd58b
+    "@angular/forms": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    "@angular/platform-browser": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    "@angular/router": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    "@ngrx/signals": ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    rxjs: ^7.8.0
+  peerDependenciesMeta:
+    "@ngrx/signals":
+      optional: true
+  checksum: 10/92d4440a9fb82714d4d838c992896703ff12ddb681cbc1c9c614371d1de568d5dd01a20211b70d78d7b2f4774b5613c19fce592538c0894b1b9f49d06c3a25bb
   languageName: node
   linkType: hard
 
@@ -4646,7 +4662,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-web@npm:^3.3.5":
+"@microsoft/applicationinsights-web@npm:^3.3.5, @microsoft/applicationinsights-web@npm:^3.3.6":
   version: 3.3.11
   resolution: "@microsoft/applicationinsights-web@npm:3.3.11"
   dependencies:
@@ -4683,6 +4699,16 @@ __metadata:
     govuk-frontend: ^5.11.2
     moment: 2.30.1
   checksum: 10/412d29fbde8b903a7db992ab7a9eeeb5d31bd8355b26f47e0d3e9974a1a1ea3fbd12e2d082d21edc2a052c5aa0bda93929a73a1f820a602279f0fda6e71efe56
+  languageName: node
+  linkType: hard
+
+"@ministryofjustice/frontend@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@ministryofjustice/frontend@npm:9.0.0"
+  peerDependencies:
+    govuk-frontend: ^6.0.0
+    moment: 2.30.1
+  checksum: 10/91402390dcbf26558684be9200c9b2ae47c77267fd074ae889bd907ec94e3c29072f40d1aebed8aae3cd2ae771806f8e90d57f03dcaf7de0f4fb470f3219a9a1
   languageName: node
   linkType: hard
 
@@ -7162,7 +7188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"accessible-autocomplete@npm:^3.0.0":
+"accessible-autocomplete@npm:^3.0.0, accessible-autocomplete@npm:^3.0.1":
   version: 3.0.1
   resolution: "accessible-autocomplete@npm:3.0.1"
   peerDependencies:
@@ -11648,6 +11674,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"govuk-frontend@npm:^6.0.0":
+  version: 6.1.0
+  resolution: "govuk-frontend@npm:6.1.0"
+  checksum: 10/dfd478bd47c7726f633cb43ce755e3ed0a513fc783ab7ad53eece931531eefa7471aa00f7548505a4fe523c56bb0ba35092629a3c1eb3a03ad232b1af15cc811
+  languageName: node
+  linkType: hard
+
 "graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.11, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
@@ -13149,7 +13182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"launchdarkly-js-client-sdk@npm:^3.1.4":
+"launchdarkly-js-client-sdk@npm:^3.1.4, launchdarkly-js-client-sdk@npm:^3.5.0":
   version: 3.9.0
   resolution: "launchdarkly-js-client-sdk@npm:3.9.0"
   dependencies:
@@ -14976,7 +15009,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.66"
+    "@hmcts/opal-frontend-common": "npm:^0.0.69"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.27"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.6"
