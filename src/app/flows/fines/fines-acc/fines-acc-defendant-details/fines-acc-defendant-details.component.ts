@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { EMPTY, merge, Observable, of, switchMap, takeUntil, tap } from 'rxjs';
+import { EMPTY, map, merge, Observable, of, switchMap, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 // Stores

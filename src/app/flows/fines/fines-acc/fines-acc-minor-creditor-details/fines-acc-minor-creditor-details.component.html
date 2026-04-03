@@ -78,9 +78,11 @@
       <app-fines-acc-minor-creditor-details-at-a-glance-tab
         [tabData]="tabData"
         [hasAddRemovePaymentHoldPermission]="hasPermission(finesPermissions['add-remove-payment-hold'])"
+        [style]="tabContentStyles"
+        [hasAssociatedDefendant]="accountData.has_associated_defendant"
         (addPaymentHold)="navigateToAddPaymentHoldPage()"
         (removePaymentHold)="navigateToRemovePaymentHoldPage()"
-        [style]="tabContentStyles"
+        (defendantAccountClick)="navigateToDefendantAccountPage($event)"
       ></app-fines-acc-minor-creditor-details-at-a-glance-tab>
     }
   }

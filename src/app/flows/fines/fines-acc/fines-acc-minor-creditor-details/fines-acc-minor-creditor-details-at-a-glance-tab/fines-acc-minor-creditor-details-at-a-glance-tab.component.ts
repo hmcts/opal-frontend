@@ -19,8 +19,10 @@ export class FinesAccMinorCreditorDetailsAtAGlanceTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountMinorCreditorAtAGlance;
   @Input() hasAddRemovePaymentHoldPermission: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
+  @Input() hasAssociatedDefendant: boolean = false;
   @Output() addPaymentHold = new EventEmitter<void>();
   @Output() removePaymentHold = new EventEmitter<void>();
+  @Output() defendantAccountClick = new EventEmitter<number>();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public readonly debtorTypes = FINES_ACC_DEBTOR_TYPES;
 
@@ -36,5 +38,16 @@ export class FinesAccMinorCreditorDetailsAtAGlanceTabComponent {
    */
   public handleRemovePaymentHold(): void {
     this.removePaymentHold.emit();
+  }
+
+  /**
+   * Emits an event when a defendant account link is clicked, passing the account ID and preventing the default link behavior.
+   *
+   * @param accountId The ID of the defendant account.
+   * @param event The click event.
+   */
+  public handleDefendantAccountClick(accountId: number, event: Event): void {
+    event.preventDefault();
+    this.defendantAccountClick.emit(accountId);
   }
 }

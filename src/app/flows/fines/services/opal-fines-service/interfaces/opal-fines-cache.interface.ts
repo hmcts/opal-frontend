@@ -32,7 +32,7 @@ export interface IOpalFinesCache {
   prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> };
   defendantAccountAtAGlanceCache$: Observable<IOpalFinesAccountDefendantAtAGlance> | null;
   defendantAccountPartyCache$: Observable<IOpalFinesAccountDefendantAccountParty> | null;
-  defendantAccountparentOrGuardianAccountPartyCache$: Observable<IOpalFinesAccountDefendantAccountParty> | null;
+  defendantAccountParentOrGuardianAccountPartyCache$: Observable<IOpalFinesAccountDefendantAccountParty> | null;
   defendantAccountEnforcementCache$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> | null;
   defendantAccountImpositionsCache$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> | null;
   defendantAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> | null;
