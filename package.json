@@ -69,7 +69,7 @@
     "build:serve:ssr": "yarn run build:ssr && yarn run serve:ssr",
     "build:serve:local-lib:ssr": "yarn run import:local:common-ui-lib && yarn run import:local:common-node-lib && yarn run build:ssr && yarn run serve:ssr",
     "import:local:common-ui-lib": "yarn remove @hmcts/opal-frontend-common && rm -rf .angular/cache && yarn add @hmcts/opal-frontend-common@file:$COMMON_UI_LIB_PATH/$(ls $COMMON_UI_LIB_PATH | grep .tgz | tail -1)",
-    "import:local:common-node-lib": "yarn remove @hmcts/opal-frontend-common-node && rm -rf .angular/cache && yarn add @hmcts/opal-frontend-common-node@file:$COMMON_NODE_LIB_PATH",
+    "import:local:common-node-lib": "yarn remove @hmcts/opal-frontend-common-node && rm -rf .angular/cache && yarn add @hmcts/opal-frontend-common-node@file:$COMMON_NODE_LIB_PATH/$(ls $COMMON_NODE_LIB_PATH | grep .tgz | tail -1)",
     "import:local:zephyr-automation-nodejs": "yarn remove @hmcts/zephyr-automation-nodejs && rm -rf .angular/cache && yarn add @hmcts/zephyr-automation-nodejs@file:$ZEPHYR_LIB_PATH",
     "import:published:common-ui-lib": "yarn remove @hmcts/opal-frontend-common && rm -rf .angular/cache && VERSION=$(node -p \"require('./package.json').dependencies['@hmcts/opal-frontend-common']\") && yarn add @hmcts/opal-frontend-common@\"$VERSION\"",
     "import:published:common-node-lib": "yarn remove @hmcts/opal-frontend-common-node && rm -rf .angular/cache && VERSION=$(node -p \"require('./package.json').dependencies['@hmcts/opal-frontend-common-node']\") && yarn add @hmcts/opal-frontend-common-node@\"$VERSION\"",
