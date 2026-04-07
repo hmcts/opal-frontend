@@ -119,11 +119,11 @@ Feature: Manual account creation - Create Draft Account
     When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I view the "Court details" task
     And I complete manual court details:
-      | Sending area or Local Justice Area (LJA) | Avon             |
+      | Sending area or Local Justice Area (LJA) | Avon & Somerset  |
       | Prosecutor Case Reference (PCR)          | abcd1234a        |
       | Enforcement court                        | Aram Court (100) |
     Then the manual court details fields are:
-      | Sending area or Local Justice Area (LJA) | Avon             |
+      | Sending area or Local Justice Area (LJA) | Avon & Somerset  |
       | Prosecutor Case Reference (PCR)          | ABCD1234A        |
       | Enforcement court                        | Aram Court (100) |
     And returning to account details the "Court details" task the status is "Provided"
@@ -505,7 +505,7 @@ Feature: Manual account creation - Create Draft Account
     And I see the following text on the page "Search using the code or name of the sending police force that sent the caution"
 
     When I complete manual court details:
-      | Sending police force            | Avon              |
+      | Sending police force            | Avon & Somerset   |
       | Prosecutor Case Reference (PCR) | 1234              |
       | Enforcement court               | West London VPFPO |
     And I return to account details
@@ -545,7 +545,7 @@ Feature: Manual account creation - Create Draft Account
     When I create a "<Originator type>" manual "Fine" account for business unit "West London" with defendant type "Company"
     And I complete manual account creation with the following fields and defaults:
       | Section        | Field                                    | Value                               | Imposition |
-      | Court          | Sending area or Local Justice Area (LJA) | Avon                                |            |
+      | Court          | Sending area or Local Justice Area (LJA) | Avon & Somerset                     |            |
       | Court          | Prosecutor Case Reference                | 1234                                |            |
       | Court          | Enforcement court                        | West London VPFPO                   |            |
       | Offence        | Offence code                             | HY35014                             | 1          |
