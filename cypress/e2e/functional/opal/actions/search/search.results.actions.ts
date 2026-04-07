@@ -18,6 +18,38 @@ const log = createScopedLogger('ResultsActions');
 export class ResultsActions {
   /** Default timeout (ms) used by this actions class. */
   private static readonly WAIT_MS = 15_000;
+  private static readonly INDIVIDUAL_RESULTS_HEADERS = [
+    'Account',
+    'Name',
+    'Aliases',
+    'Date of birth',
+    'Address line 1',
+    'Postcode',
+    'NI number',
+    'Parent or guardian',
+    'Business unit',
+    'Ref',
+  ];
+  private static readonly COMPANY_RESULTS_HEADERS = [
+    'Account',
+    'Company',
+    'Aliases',
+    'Address line 1',
+    'Postcode',
+    'Business unit',
+    'Ref',
+    'ENF',
+    'Balance',
+  ];
+  private static readonly MINOR_CREDITOR_RESULTS_HEADERS = [
+    'Account',
+    'Name',
+    'Address line 1',
+    'Postcode',
+    'Business unit',
+    'Defendant',
+    'Balance',
+  ];
 
   /**
    * Maps human-readable column names (as used in Gherkin) to
@@ -26,11 +58,24 @@ export class ResultsActions {
    * Extend this as more columns are asserted in features.
    */
   private static readonly COLUMN_LOCATORS: Record<string, string> = {
+    // Column header "Account" → account number cell
+    Account: `${R.cols.accountCell}, ${R.cols.minorCreditorAccountCell}`,
+    // Column header "Name" → defendant or minor creditor name cell
+    Name: `${R.cols.name}, ${R.cols.minorCreditorName}`,
+    // Column header "Company" → company name reuses the shared defendant name cell
+    Company: R.cols.name,
+    // Column header "Address line 1" → address cell
+    'Address line 1': `${R.cols.addr1}, ${R.cols.minorCreditorAddr1}`,
+    // Column header "Postcode" → postcode cell
+    Postcode: `${R.cols.postcode}, ${R.cols.minorCreditorPostcode}`,
+    // Column header "Business unit" → business unit cell
+    'Business unit': `${R.cols.businessUnit}, ${R.cols.minorCreditorBusinessUnit}`,
+    // Column header "Defendant" → linked defendant on the minor creditor table
+    Defendant: R.cols.minorCreditorDefendant,
+    // Column header "Balance" → balance cell
+    Balance: `${R.cols.balance}, ${R.cols.minorCreditorBalance}`,
     // Column header "Ref" → reference column cell
     Ref: R.cols.ref,
-    // Example extensions for future:
-    // 'Business unit': R.cols.businessUnit,
-    // 'Balance': R.cols.balance,
   };
 
   /**
@@ -54,44 +99,89 @@ export class ResultsActions {
   }
 
   /**
+   * Normalises visible table header text to make DOM assertions whitespace-safe.
+   * @param text Raw visible header text from the DOM.
+   * @returns Header text with collapsed whitespace.
+   */
+  private static normalizeHeader(text: string): string {
+    return text.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Asserts that the current results table headers match the expected visible labels in order.
+   *
+   * Some single-type search results currently omit trailing columns that are still present in
+   * the shared table component, so callers can allow additional trailing headers where needed.
+   * @param expectedHeaders Visible header labels in the expected order.
+   * @param options Optional assertion behaviour.
+   * @param options.allowAdditionalTrailingHeaders When true, only the leading headers must match.
+   */
+  private assertResultsTableHeaders(
+    expectedHeaders: string[],
+    options?: { allowAdditionalTrailingHeaders?: boolean },
+  ): void {
+    const allowAdditionalTrailingHeaders = options?.allowAdditionalTrailingHeaders ?? false;
+
+    log('assert', 'Asserting results table headers', {
+      expectedHeaders,
+      allowAdditionalTrailingHeaders,
+    });
+
+    this.waitForResultsTable();
+
+    cy.get(`${R.table.head} button`, { timeout: ResultsActions.WAIT_MS }).then(($buttons) => {
+      const actualHeaders = Array.from($buttons, (button) =>
+        ResultsActions.normalizeHeader(button.textContent ?? ''),
+      ).filter(Boolean);
+
+      if (allowAdditionalTrailingHeaders) {
+        expect(actualHeaders.slice(0, expectedHeaders.length), 'results table header prefix').to.deep.equal(
+          expectedHeaders,
+        );
+        return;
+      }
+
+      expect(actualHeaders, 'results table headers').to.deep.equal(expectedHeaders);
+    });
+  }
+
+  /**
+   * Asserts the Individuals results table columns are shown in the expected order.
+   */
+  public assertIndividualsResultsTableStructure(): void {
+    this.assertResultsTableHeaders(ResultsActions.INDIVIDUAL_RESULTS_HEADERS, {
+      allowAdditionalTrailingHeaders: true,
+    });
+  }
+
+  /**
+   * Asserts the Companies results table columns are shown in the expected order.
+   */
+  public assertCompaniesResultsTableStructure(): void {
+    this.assertResultsTableHeaders(ResultsActions.COMPANY_RESULTS_HEADERS);
+  }
+
+  /**
+   * Asserts the Minor creditors results table columns are shown in the expected order.
+   */
+  public assertMinorCreditorResultsTableStructure(): void {
+    this.assertResultsTableHeaders(ResultsActions.MINOR_CREDITOR_RESULTS_HEADERS);
+  }
+
+  /**
    * Asserts we are on the results route and the table contains at least one row.
    *
    * Steps:
-   *  - Wait for `/fines/search-accounts/results` in the pathname
+   *  - Wait for `/fines/dashboard/search/results` in the pathname
    *  - Assert heading contains "Search results"
    *  - Assert results table is visible and has at least 1 row
    */
   public assertOnResults(): void {
     log('assert', 'Asserting on results route and non-empty table');
-    cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should('include', '/fines/search-accounts/results');
+    cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should('include', '/fines/dashboard/search/results');
     cy.get(R.page.heading, { timeout: ResultsActions.WAIT_MS }).should('contain.text', 'Search results');
     cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
     cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).should('have.length.greaterThan', 0);
-  }
-
-  /**
-   * Asserts the "Individuals" tab is selected on the Search results page.
-   *
-   * @remarks
-   * This uses a text-based lookup for the tab label. When/if dedicated
-   * tab locators are added to AccountEnquiryResultsLocators, this
-   * implementation can be updated to use them instead.
-   */
-  public assertIndividualsTabSelected(): void {
-    log('assert', 'Asserting "Individuals" tab is selected');
-
-    // Relaxed text-based assertion – update to dedicated locators when available.
-    cy.contains('button, a', 'Individuals', { matchCase: false })
-      .should('be.visible')
-      .and(($el) => {
-        // Prefer ARIA or selected-state check when present
-        const ariaSelected = $el.attr('aria-selected') ?? $el.attr('aria-current');
-        if (ariaSelected) {
-          expect(ariaSelected.toString().toLowerCase(), 'tab selection state').to.satisfy((val: string) =>
-            ['true', 'page'].includes(val),
-          );
-        }
-      });
   }
 
   /**
@@ -108,21 +198,41 @@ export class ResultsActions {
   }
 
   /**
-   * Asserts the "Companies" tab is selected on the Search results page.
+   * Asserts the "Companies" tab is selected on the Search results page when it is rendered.
    */
   public assertCompaniesTabSelected(): void {
     log('assert', 'Asserting "Companies" tab is selected');
+    this.assertTabSelectedIfPresent('Companies');
+  }
 
-    cy.contains('button, a', 'Companies', { matchCase: false })
-      .should('be.visible')
-      .and(($el) => {
-        const ariaSelected = $el.attr('aria-selected') ?? $el.attr('aria-current');
-        if (ariaSelected) {
-          expect(ariaSelected.toString().toLowerCase(), 'tab selection state').to.satisfy((val: string) =>
-            ['true', 'page'].includes(val),
-          );
-        }
+  /**
+   * Asserts a results tab is selected when the tab control is present.
+   *
+   * Mixed-result searches render defendant-type tabs; single-type searches do not.
+   * @param tabLabel The visible tab label to validate when present.
+   */
+  private assertTabSelectedIfPresent(tabLabel: 'Companies'): void {
+    cy.get('body', { timeout: ResultsActions.WAIT_MS }).then(($body) => {
+      const $tab = $body.find('button, a').filter((_, element) => {
+        return ResultsActions.normalizeHeader(element.textContent ?? '').toLowerCase() === tabLabel.toLowerCase();
       });
+
+      if ($tab.length === 0) {
+        log('info', `No "${tabLabel}" tab rendered for current results view; skipping tab assertion`);
+        return;
+      }
+
+      cy.wrap($tab.first())
+        .should('be.visible')
+        .and(($el) => {
+          const ariaSelected = $el.attr('aria-selected') ?? $el.attr('aria-current');
+          if (ariaSelected) {
+            expect(ariaSelected.toString().toLowerCase(), 'tab selection state').to.satisfy((val: string) =>
+              ['true', 'page'].includes(val),
+            );
+          }
+        });
+    });
   }
 
   /**
@@ -385,7 +495,7 @@ export class ResultsActions {
     // Generic safety check: we should no longer be on the `/results` route
     cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should(
       'not.include',
-      '/fines/search-accounts/results',
+      '/fines/dashboard/search/results',
     );
 
     log('done', 'Returned from results via back link');

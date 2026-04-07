@@ -25,7 +25,7 @@ Feature: Account Enquiries – Add Account Note
       When I search for the account by last name "GrahamAddNoteSurname{uniq}" and open the latest result
       Then I should see the page header contains "Mr James GRAHAMADDNOTESURNAME{uniqUpper}"
 
-    @JIRA-STORY:PO-771 @JIRA-STORY:PO-807 @JIRA-KEY:POT-3080
+    @R1B @JIRA-STORY:PO-771 @JIRA-STORY:PO-807 @JIRA-KEY:POT-3080
     Scenario: Saving a defendant account note returns to account details
       When I record an account note "Valid test account note"
       Then I should see the header "Mr James GRAHAMADDNOTESURNAME{uniqUpper}" and the URL should contain "details"
@@ -46,6 +46,7 @@ Feature: Account Enquiries – Add Account Note
       Then I should see the header "Mr James GRAHAMADDNOTESURNAME{uniqUpper}" and the URL should contain "details"
 
   Rule: Company account baseline
+
     Background:
       Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                      | Submitted                   |

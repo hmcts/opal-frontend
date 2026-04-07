@@ -56,7 +56,6 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from './constants/opal-fines-defendant-account-patch-payload-defaults.constant';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 
 describe('OpalFines', () => {
@@ -339,6 +338,30 @@ describe('OpalFines', () => {
     const itemName = 'Item0';
 
     const result = service.getConfigurationItemValue(businessUnit, itemName);
+
+    expect(result).toBeNull();
+  });
+
+  it('should return the item value for a given configuration item name on non-snake-case business unit', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK;
+    const itemName = 'Item1';
+
+    const result = service.getConfigurationItemValue(businessUnit, itemName);
+
+    expect(result).toEqual('Item1');
+  });
+
+  it('should return null for non-snake-case business unit when item exists but itemValue is null', () => {
+    const businessUnit = structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK);
+    businessUnit.configurationItems = [
+      {
+        itemName: 'Item1',
+        itemValue: null,
+        itemValues: [],
+      },
+    ];
+
+    const result = service.getConfigurationItemValue(businessUnit, 'Item1');
 
     expect(result).toBeNull();
   });
@@ -1057,7 +1080,7 @@ describe('OpalFines', () => {
   it('should clear all account detail caches', () => {
     service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     service['cache']['defendantAccountPartyCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-    service['cache']['defendantAccountparentOrGuardianAccountPartyCache$'] = of(
+    service['cache']['defendantAccountParentOrGuardianAccountPartyCache$'] = of(
       OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
     );
     service['cache']['defendantAccountEnforcementCache$'] = of(
@@ -1080,7 +1103,7 @@ describe('OpalFines', () => {
 
     expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
     expect(service['cache']['defendantAccountPartyCache$']).toBeNull();
-    expect(service['cache']['defendantAccountparentOrGuardianAccountPartyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountParentOrGuardianAccountPartyCache$']).toBeNull();
     expect(service['cache']['defendantAccountEnforcementCache$']).toBeNull();
     expect(service['cache']['defendantAccountImpositionsCache$']).toBeNull();
     expect(service['cache']['defendantAccountHistoryAndNotesCache$']).toBeNull();
@@ -1193,7 +1216,6 @@ describe('OpalFines', () => {
   it('should return a mock response for patching defendant account', () => {
     const accountId = 123456;
     const updatePayload = {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       comment_and_notes: {
         account_comment: 'Updated comment',
         free_text_note_1: 'Updated note 1',
@@ -1215,7 +1237,6 @@ describe('OpalFines', () => {
   it('should handle different payload values in mock response for patching defendant account', () => {
     const accountId = 789012;
     const updatePayload = {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       version: 5,
       comment_and_notes: {
         account_comment: 'Different comment',
@@ -1233,6 +1254,82 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
     expect(req.request.method).toBe('PATCH');
     req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
+  });
+
+  describe('patchDefendantAccount headers', () => {
+    it('should include If-Match and Business-Unit-Id headers when both are provided', () => {
+      const accountId = 123456;
+      const payload = {
+        version: 10,
+        comment_and_notes: {
+          account_comment: 'Test comment',
+          free_text_note_1: null,
+          free_text_note_2: null,
+          free_text_note_3: null,
+        },
+      };
+      const version = '10';
+      const businessUnitId = '2002';
+
+      service.patchDefendantAccount(accountId, payload, version, businessUnitId).subscribe((response) => {
+        expect(response).toEqual({ defendant_account_id: accountId });
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      req.flush({ defendant_account_id: accountId });
+    });
+
+    it('should include only Business-Unit-Id when version is not provided', () => {
+      const accountId = 123456;
+      const payload = {
+        version: 10,
+        comment_and_notes: {
+          account_comment: 'Test comment',
+          free_text_note_1: null,
+          free_text_note_2: null,
+          free_text_note_3: null,
+        },
+      };
+      const businessUnitId = '2002';
+
+      service.patchDefendantAccount(accountId, payload, undefined, businessUnitId).subscribe((response) => {
+        expect(response).toEqual({ defendant_account_id: accountId });
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      req.flush({ defendant_account_id: accountId });
+    });
+
+    it('should not include If-Match and should include Business-Unit-Id when version is empty string and business unit is empty string', () => {
+      const accountId = 123456;
+      const payload = {
+        version: 10,
+        comment_and_notes: {
+          account_comment: 'Test comment',
+          free_text_note_1: null,
+          free_text_note_2: null,
+          free_text_note_3: null,
+        },
+      };
+      const version = '';
+      const businessUnitId = '';
+
+      service.patchDefendantAccount(accountId, payload, version, businessUnitId).subscribe((response) => {
+        expect(response).toEqual({ defendant_account_id: accountId });
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe('');
+      req.flush({ defendant_account_id: accountId });
+    });
   });
 
   describe('putDefendantAccountPaymentTerms', () => {

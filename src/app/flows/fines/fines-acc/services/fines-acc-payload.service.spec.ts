@@ -545,7 +545,6 @@ describe('FinesAccPayloadService', () => {
             free_text_note_2: 'Updated note 2',
             free_text_note_3: 'Updated note 3',
           },
-          enforcement_override: null,
         });
       });
 
@@ -566,7 +565,6 @@ describe('FinesAccPayloadService', () => {
             free_text_note_2: null,
             free_text_note_3: null,
           },
-          enforcement_override: null,
         });
       });
 

@@ -14,7 +14,12 @@
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="collection_order_status"
-            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            [actionEnabled]="
+              hasAccountMaintenancePermission &&
+              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
+                ? true
+                : false
+            "
           >
             <ng-container name>Collection Order status</ng-container>
             <ng-container value>
@@ -86,7 +91,7 @@
     </ng-container>
   </opal-lib-govuk-summary-card-list>
   <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action" summaryCardListId="last-enforcement-action">
-    @if (tabData.last_enforcement_action !== null) {
+    @if (tabData.last_enforcement_action) {
       <ng-container content>
         <opal-lib-govuk-summary-list summaryListId="lastEnforcementActionDetails">
           <div
