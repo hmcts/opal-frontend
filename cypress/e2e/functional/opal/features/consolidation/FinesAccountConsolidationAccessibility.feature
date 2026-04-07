@@ -22,7 +22,7 @@ Feature: Accessibility Tests for Fines Consolidation
       | account.defendant.dob                   | 2002-05-15                                 |
     When I open Consolidate accounts
     Then I check the page for accessibility
-    And I continue to the consolidation account search as an "Individual" defendant
+    And I continue to the consolidation account search as an "Individual" defendant selecting business unit "Camberwell Green"
     Then I am on the consolidation Search tab for Individuals
     And I check the page for accessibility
     And I enter the following consolidation search details:
@@ -63,7 +63,7 @@ Feature: Accessibility Tests for Fines Consolidation
       | account.payment_card_request        | false                                    |
     When I open Consolidate accounts
     Then I check the page for accessibility
-    And I continue to the consolidation account search as an "Company" defendant
+    And I continue to the consolidation account search as an "Company" defendant selecting business unit "Camberwell Green"
     Then I am on the consolidation Search tab for Companies
     And I check the page for accessibility
     And I enter the following consolidation search details:
