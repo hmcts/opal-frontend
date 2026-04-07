@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
@@ -21,17 +21,14 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
   standalone: true,
   imports: [FinesAccEnfCourtChangeFormComponent],
 })
-export class FinesAccEnfCourtChangeComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+export class FinesAccEnfCourtChangeComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly route = inject(ActivatedRoute);
-  private readonly navigationRouter = inject(Router);
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly finesAccPayloadService = inject(FinesAccPayloadService);
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
-  private readonly currentEnforcementCourtId = this.navigationRouter.currentNavigation()?.extras.state?.[
-    'currentEnforcementCourtId'
-  ] as number | null | undefined;
+  private currentEnforcementCourtId!: number;
 
   public accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public partyName = this.finesAccStore.party_name() ?? '';
@@ -47,6 +44,18 @@ export class FinesAccEnfCourtChangeComponent extends AbstractFormParentBaseCompo
       value: court.court_id,
       name: this.opalFinesService.getCourtPrettyName(court),
     }));
+  }
+
+  /**
+   * Loads the current enforcement court id from cached enforcement status data.
+   */
+  private loadCurrentEnforcementCourtId(): void {
+    this.opalFinesService
+      .getDefendantAccountEnforcementStatus(this.finesAccStore.account_id()!)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((enforcementStatus) => {
+        this.currentEnforcementCourtId = enforcementStatus.enforcement_overview.enforcement_court.court_id;
+      });
   }
 
   /**
@@ -109,6 +118,13 @@ export class FinesAccEnfCourtChangeComponent extends AbstractFormParentBaseCompo
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  /**
+   * Initializes component data that depends on cached account services.
+   */
+  public ngOnInit(): void {
+    this.loadCurrentEnforcementCourtId();
   }
 
   /**

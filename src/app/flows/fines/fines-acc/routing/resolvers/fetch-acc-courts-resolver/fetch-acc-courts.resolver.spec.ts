@@ -2,14 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Observable, of } from 'rxjs';
-import { fetchCourtsResolver } from './fetch-courts.resolver';
+import { fetchAccCourtsResolver } from './fetch-acc-courts.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccountStore } from '../../../stores/fines-acc.store';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 
-describe('fetchCourtsResolver', () => {
+describe('fetchAccCourtsResolver', () => {
   const executeResolver: ResolveFn<IOpalFinesCourtRefData> = (...resolverParameters) =>
-    TestBed.runInInjectionContext(() => fetchCourtsResolver(...resolverParameters));
+    TestBed.runInInjectionContext(() => fetchAccCourtsResolver(...resolverParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

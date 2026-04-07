@@ -170,7 +170,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should call router.navigate when navigateToChangeEnforcementCourtPage is called', () => {
-    component.navigateToChangeEnforcementCourtPage(123);
+    component.navigateToChangeEnforcementCourtPage();
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [
@@ -178,7 +178,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       ],
       {
         relativeTo: component['activatedRoute'],
-        state: { currentEnforcementCourtId: 123 },
       },
     );
   });

@@ -461,18 +461,15 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   /**
-   * Navigates to the change enforcement court page, preserving the current court id for no-op submissions.
-   *
-   * @param currentEnforcementCourtId The current enforcement court id shown on the enforcement tab.
+   * Navigates to the change enforcement court page.
    */
-  public navigateToChangeEnforcementCourtPage(currentEnforcementCourtId: number | null): void {
+  public navigateToChangeEnforcementCourtPage(): void {
     this['router'].navigate(
       [
         `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
       ],
       {
         relativeTo: this.activatedRoute,
-        state: { currentEnforcementCourtId },
       },
     );
   }

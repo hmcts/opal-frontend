@@ -24,7 +24,7 @@ import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES } from '../fines-acc-e
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-titles.constant';
-import { fetchCourtsResolver } from './resolvers/fetch-courts-resolver/fetch-courts.resolver';
+import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -211,7 +211,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          courtsRefData: fetchCourtsResolver,
+          courtsRefData: fetchAccCourtsResolver,
         },
       },
     ],

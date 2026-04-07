@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { signal, WritableSignal } from '@angular/core';
-import { ActivatedRoute, Navigation, Router } from '@angular/router';
+import { signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { FinesAccEnfCourtChangeComponent } from './fines-acc-enf-court-change.component';
@@ -11,14 +11,15 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_SUCCESS_MESSAGE } from './constants/fines-acc-enf-court-change-success-message.constant';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 
 describe('FinesAccEnfCourtChangeComponent', () => {
   let component: FinesAccEnfCourtChangeComponent;
   let fixture: ComponentFixture<FinesAccEnfCourtChangeComponent>;
-  let mockCurrentNavigation: WritableSignal<Navigation | null>;
   const mockCourtRefData = structuredClone(OPAL_FINES_COURT_REF_DATA_MOCK);
+  const mockEnforcementStatusData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
   const selectedCourt = mockCourtRefData.refData[1];
-  const currentCourt = mockCourtRefData.refData[0];
+  const currentCourt = mockEnforcementStatusData.enforcement_overview.enforcement_court;
 
   const mockAccountStore = {
     getAccountNumber: signal('123456'),
@@ -37,6 +38,7 @@ describe('FinesAccEnfCourtChangeComponent', () => {
 
   const mockOpalFinesService = {
     patchDefendantAccount: vi.fn().mockReturnValue(of({})),
+    getDefendantAccountEnforcementStatus: vi.fn().mockReturnValue(of(mockEnforcementStatusData)),
     getCourtPrettyName: vi.fn(
       (court: { name: string; court_code: string | number }) => `${court.name} (${court.court_code})`,
     ),
@@ -48,12 +50,6 @@ describe('FinesAccEnfCourtChangeComponent', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-
-    mockCurrentNavigation = signal({
-      extras: {
-        state: {},
-      },
-    } as unknown as Navigation);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccEnfCourtChangeComponent],
@@ -71,7 +67,6 @@ describe('FinesAccEnfCourtChangeComponent', () => {
         {
           provide: Router,
           useValue: {
-            currentNavigation: mockCurrentNavigation,
             navigate: vi.fn(),
           },
         },
@@ -97,6 +92,13 @@ describe('FinesAccEnfCourtChangeComponent', () => {
         value: court.court_id,
         name: `${court.name} (${court.court_code})`,
       })),
+    );
+  });
+
+  it('should get the current enforcement court id from resolved enforcement status data', () => {
+    expect(mockOpalFinesService.getDefendantAccountEnforcementStatus).toHaveBeenCalledWith(1001);
+    expect((component as unknown as { currentEnforcementCourtId: number }).currentEnforcementCourtId).toBe(
+      currentCourt.court_id,
     );
   });
 
@@ -130,18 +132,6 @@ describe('FinesAccEnfCourtChangeComponent', () => {
   });
 
   it('should navigate back without patching when the selected court matches the current court', () => {
-    mockCurrentNavigation.set({
-      extras: {
-        state: {
-          currentEnforcementCourtId: currentCourt.court_id,
-        },
-      },
-    } as unknown as Navigation);
-
-    fixture = TestBed.createComponent(FinesAccEnfCourtChangeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
     const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
 
     component.handleSubmit({

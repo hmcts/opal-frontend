@@ -32,12 +32,12 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
-  it('should emit the current enforcement court id when handleChangeEnforcementCourt is called', () => {
+  it('should emit when handleChangeEnforcementCourt is called', () => {
     const eventEmitterSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
     component.hasAccountMaintenancePermission = true;
 
     component.handleChangeEnforcementCourt();
 
-    expect(eventEmitterSpy).toHaveBeenCalledWith(123);
+    expect(eventEmitterSpy).toHaveBeenCalled();
   });
 });
