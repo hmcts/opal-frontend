@@ -280,7 +280,7 @@ Feature: Account Search and Matches
 
 
   # Need to check that intercepted call should be organisation = true (it wasn't originally)
-  @JIRA-STORY:PO-706 @JIRA-KEY:POT-3259
+  @JIRA-STORY:PO-706 @JIRA-KEY:POT-3259 @only
   Scenario: Verify API call parameters for Defenders and Creditor search using Account number
     # AC1a, AC1b, AC1c
     When I intercept the "account number" account search API
@@ -291,8 +291,10 @@ Feature: Account Search and Matches
       | account_number            | 12345678A                                                                                                                                                                           |
       | business_unit_ids         | [107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138] |
       | active_accounts_only      | false                                                                                                                                                                               |
-      | organisation              | false                                                                                                                                                                               |
       | prosecutor_case_reference | null                                                                                                                                                                                |
+    Then the intercepted "defendant" account search API requests should contain the following counts for "organisation":
+      | false | 1 |
+      | true  | 1 |
     And the intercepted "minor creditor" account search API call will contain the following parameters:
       | account_number       | 12345678A                                                                                                                                                                           |
       | business_unit_ids    | [107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138] |
@@ -300,7 +302,7 @@ Feature: Account Search and Matches
       | creditor             | null                                                                                                                                                                                |
 
 
-  @JIRA-STORY:PO-709 @JIRA-KEY:POT-3260
+  @JIRA-STORY:PO-709 @JIRA-KEY:POT-3260 @only
   Scenario: Verify API call parameters for Defenders and Creditors search using Reference or case number
     # AC1a, AC1b, AC1c
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -626,4 +628,3 @@ Feature: Account Search and Matches
       | organisation                  | true            |
       | exact_match_surname           | null            |
       | exact_match_forenames         | null            |
-
