@@ -160,7 +160,7 @@ describe('FinesAccNoteAddFormComponent', () => {
           'activity_note.record_id',
           mockFinesAccountStore.account_id,
         );
-        expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'DEFENDANT_ACCOUNTS');
+        expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'defendant_accounts');
       });
     },
   );

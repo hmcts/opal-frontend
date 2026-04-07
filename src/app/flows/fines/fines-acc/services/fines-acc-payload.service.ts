@@ -49,7 +49,7 @@ export class FinesAccPayloadService {
   public buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
     return {
       activity_note: {
-        record_type: 'DEFENDANT_ACCOUNTS',
+        record_type: 'defendant_accounts',
         record_id: this.finesAccStore.account_id()!,
         note_text: form.formData.facc_add_notes!,
         note_type: 'AA',
