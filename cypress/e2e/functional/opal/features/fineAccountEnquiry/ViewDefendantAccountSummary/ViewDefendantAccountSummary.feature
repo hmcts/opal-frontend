@@ -53,7 +53,7 @@ Feature: View Defendant Account Summary - Add Comments
       | Line 2  | Line2 Test   |
       | Line 3  | Line3 Test   |
 
-  @JIRA-STORY:PO-777 @JIRA-KEY:POT-3174
+  @R1B @JIRA-STORY:PO-777 @JIRA-KEY:POT-3174
   Scenario: Complete View Defendant Company Account Summary and Comments functionality
     # AC4 - Create & publish a company account then view header summary
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":

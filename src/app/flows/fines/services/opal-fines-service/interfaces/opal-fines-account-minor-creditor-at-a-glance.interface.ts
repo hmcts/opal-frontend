@@ -8,8 +8,10 @@ export interface IOpalFinesAccountMinorCreditorAtAGlance {
   creditor_account_id: string;
   defendant?: {
     account_number: string;
-    id: number;
-    name: string;
+    account_id: number;
+    title: string;
+    forenames: string;
+    surname: string;
     hearing_date: string;
   };
   payment: {

@@ -8,7 +8,7 @@ import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_element
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { finesSaDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
-import { getFirstDayOfPreviousMonth } from '../../../support/utils/dateUtils';
+import { getCurrentMonth, getFirstDayOfPreviousMonth, getPreviousMonth } from '../../../support/utils/dateUtils';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -265,8 +265,19 @@ describe('Search Account Component - Individuals', () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
-      cy.get(DOM_ELEMENTS.dobDatePickerPrevMonth).click();
-      cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
+      cy.get(DOM_ELEMENTS.dobDatePickerTitle)
+        .invoke('text')
+        .then((pickerMonth) => {
+          if (pickerMonth.includes(getPreviousMonth())) {
+            cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
+            return;
+          }
+
+          cy.get(DOM_ELEMENTS.dobDatePickerTitle).should('contain', getCurrentMonth());
+          cy.get(DOM_ELEMENTS.dobDatePickerPrevMonth).click();
+          cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
+        });
+
       const expectedDate = getFirstDayOfPreviousMonth();
       cy.get(DOM_ELEMENTS.dobInput).should('have.value', expectedDate);
       cy.get(DOM_ELEMENTS.searchButton).click();

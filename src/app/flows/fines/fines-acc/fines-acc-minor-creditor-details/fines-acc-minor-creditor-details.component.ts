@@ -41,6 +41,9 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fin
 import { FINES_ACC_MINOR_CREDITOR_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-minor-creditor-account-tabs-cache-map.constant';
 import { IFinesAccMinorCreditorAccountTabsCacheMap } from './interfaces/fines-acc-minor-creditor-account-tabs-cache-map.interface';
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -72,6 +75,7 @@ export class FinesAccMinorCreditorDetailsComponent
 
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountMinorCreditorDetailsTabs = FINES_ACC_MINOR_CREDITOR_DETAILS_TABS;
+  public accountId: number = Number(this.activatedRoute.snapshot.paramMap.get('accountId'));
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public tabAtAGlance$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
@@ -140,6 +144,7 @@ export class FinesAccMinorCreditorDetailsComponent
   protected override getHeaderDataFromRoute(): void {
     const headingData = this.activatedRoute.snapshot.data['minorCreditorAccountHeadingData'];
     this.accountData = this.transformHeaderForView(headingData);
+    this.transformHeaderForStore(this.accountId, this.accountData);
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 
@@ -152,6 +157,11 @@ export class FinesAccMinorCreditorDetailsComponent
     return this.opalFinesService.getMinorCreditorAccountHeadingData(accountId);
   }
 
+  /**
+   * Transforms the minor creditor account heading data for storage in the account store.
+   * @param accountId The ID of the account.
+   * @param header The minor creditor account heading data.
+   */
   protected override transformHeaderForStore(
     accountId: number,
     header: IOpalFinesAccountMinorCreditorDetailsHeader,
@@ -161,12 +171,22 @@ export class FinesAccMinorCreditorDetailsComponent
     );
   }
 
+  /**
+   * Transforms the minor creditor account heading data for use in the view.
+   * @param header The minor creditor account heading data to transform.
+   * @returns The transformed minor creditor account heading data.
+   */
   protected override transformHeaderForView(
     header: IOpalFinesAccountMinorCreditorDetailsHeader,
   ): IOpalFinesAccountMinorCreditorDetailsHeader {
     return this.payloadService.transformPayload(header, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
   }
 
+  /**
+   * Transforms the tab data for use in the view, ensuring it is typed correctly.
+   * @param data The tab data to transform, which must include a version property for cache validation.
+   * @returns The transformed tab data, typed as the same type as the input data.
+   */
   protected override transformTabData<T extends { version: string | null }>(data: T): T {
     return this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
   }
@@ -187,16 +207,39 @@ export class FinesAccMinorCreditorDetailsComponent
     });
   }
 
+  /**
+   * Navigates to the add payment hold page.
+   */
   public navigateToAddPaymentHoldPage(): void {
     this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`], {
       relativeTo: this.activatedRoute,
     });
   }
 
+  /**
+   * Navigates to the remove payment hold page.
+   */
   public navigateToRemovePaymentHoldPage(): void {
     this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`], {
       relativeTo: this.activatedRoute,
     });
+  }
+
+  /**
+   * Navigates to the defendant account page for the specified account ID in a new browser tab.
+   * @param accountId The ID of the defendant account.
+   */
+  public navigateToDefendantAccountPage(accountId: number): void {
+    const url = this['router'].serializeUrl(
+      this['router'].createUrlTree([
+        FINES_ROUTING_PATHS.root,
+        FINES_ACC_ROUTING_PATHS.root,
+        FINES_ACC_ROUTING_PATHS.children.defendant,
+        accountId,
+        FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+      ]),
+    );
+    window.open(url, '_blank');
   }
 
   /**

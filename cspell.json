@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
   "language": "en-GB",
   "words": [
@@ -49,6 +48,7 @@
     "finesmac",
     "firstname",
     "firstnames",
+    "FIXEDPENALTYNV",
     "FNAME",
     "FNAMECHANGE",
     "Followup",
@@ -101,9 +101,11 @@
     "stepshelper",
     "subnavitemfragment",
     "subnavitemid",
+    "SUMMARYADULT",
     "summarycardlistid",
     "summarylistrowid",
     "summarytext",
+    "SUMMARYWELSHPG",
     "TESTNONPAYEE",
     "testone",
     "testpcr",
@@ -119,26 +121,12 @@
     "VPFPO",
     "ZWNJ"
   ],
-  "ignorePaths": [
-    "node_modules",
-    "dist",
-    "coverage",
-    ".husky",
-    "*.lock",
-    "**/*.snap",
-    "**/generated/**"
-  ],
+  "ignorePaths": ["node_modules", "dist", "coverage", ".husky", "*.lock", "**/*.snap", "**/generated/**"],
   "ignoreRegExpList": [
     "/^\\s*\\/\\/\\s*cspell:disable-next-line.*$/",
     "/[A-F0-9]{8,}/", // hex IDs, hashes
     "/\\|[^\\n]*\\|/" // Cucumber tables: ignore anything between pipes
   ],
-  "files": [
-    "**/*.{ts,tsx,js,jsx,json,md,html,css,scss,feature}",
-    "cypress/**/*"
-  ],
-  "flagWords": [
-    "teh",
-    "adn"
-  ]
+  "files": ["**/*.{ts,tsx,js,jsx,json,md,html,css,scss,feature}", "cypress/**/*"],
+  "flagWords": ["teh", "adn"]
 }

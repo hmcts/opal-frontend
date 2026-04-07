@@ -34,4 +34,12 @@ describe('FinesAccMinorCreditorDetailsAtAGlanceTabComponent', () => {
     component.handleRemovePaymentHold();
     expect(component.removePaymentHold.emit).toHaveBeenCalled();
   });
+
+  it('should emit defendantAccountClick event with accountId when handleDefendantAccountClick is called', () => {
+    const accountId = 123;
+    const clickEvent = new MouseEvent('click');
+    vi.spyOn(component.defendantAccountClick, 'emit');
+    component.handleDefendantAccountClick(accountId, clickEvent);
+    expect(component.defendantAccountClick.emit).toHaveBeenCalledWith(accountId);
+  });
 });

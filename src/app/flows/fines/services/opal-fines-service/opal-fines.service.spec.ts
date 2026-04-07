@@ -865,18 +865,6 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should getMinorCreditorAccountAtAGlance data', () => {
-    const account_id: number = 77;
-    const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK;
-    const apiUrl = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`;
-
-    service.getMinorCreditorAccountAtAGlance(account_id).subscribe((response) => {
-      expect(response).toEqual(expectedResponse);
-    });
-
-    httpMock.expectNone(apiUrl);
-  });
-
   it('should getDefendantAccountParty', () => {
     const account_id: number = 77;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_account_party_id}`;
@@ -1094,7 +1082,7 @@ describe('OpalFines', () => {
   it('should clear all account detail caches', () => {
     service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     service['cache']['defendantAccountPartyCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-    service['cache']['defendantAccountparentOrGuardianAccountPartyCache$'] = of(
+    service['cache']['defendantAccountParentOrGuardianAccountPartyCache$'] = of(
       OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
     );
     service['cache']['defendantAccountEnforcementCache$'] = of(
@@ -1112,17 +1100,21 @@ describe('OpalFines', () => {
     service['cache']['defendantAccountFixedPenaltyCache$'] = of(
       OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK,
     );
+    service['cache']['minorCreditorAccountAtAGlanceCache$'] = of(
+      OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK,
+    );
 
     service.clearAccountDetailsCache();
 
     expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
     expect(service['cache']['defendantAccountPartyCache$']).toBeNull();
-    expect(service['cache']['defendantAccountparentOrGuardianAccountPartyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountParentOrGuardianAccountPartyCache$']).toBeNull();
     expect(service['cache']['defendantAccountEnforcementCache$']).toBeNull();
     expect(service['cache']['defendantAccountImpositionsCache$']).toBeNull();
     expect(service['cache']['defendantAccountHistoryAndNotesCache$']).toBeNull();
     expect(service['cache']['defendantAccountPaymentTermsLatestCache$']).toBeNull();
     expect(service['cache']['defendantAccountFixedPenaltyCache$']).toBeNull();
+    expect(service['cache']['minorCreditorAccountAtAGlanceCache$']).toBeNull();
   });
 
   it('should clear draft accounts cache', () => {
@@ -1507,5 +1499,30 @@ describe('OpalFines', () => {
     req.flush({ defendant_account_id: defendantAccountId });
   });
 
-  // Isolated matcher test suite to avoid TestBed reconfiguration errors
+  describe('getMinorCreditorAccountAtAGlance', () => {
+    it('should return cached data if available', () => {
+      const account_id: number = 77;
+      const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK;
+      service['cache']['minorCreditorAccountAtAGlanceCache$'] = of(expectedResponse);
+
+      service.getMinorCreditorAccountAtAGlance(account_id).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      httpMock.expectNone(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`);
+    });
+
+    it('should make an API call if cache is not available', () => {
+      const account_id: number = 77;
+      const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK;
+
+      service.getMinorCreditorAccountAtAGlance(account_id).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`);
+      expect(req.request.method).toBe('GET');
+      req.flush(expectedResponse);
+    });
+  });
 });

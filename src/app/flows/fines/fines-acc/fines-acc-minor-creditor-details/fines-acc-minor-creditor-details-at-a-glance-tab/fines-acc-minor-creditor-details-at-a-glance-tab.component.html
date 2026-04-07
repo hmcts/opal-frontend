@@ -78,16 +78,27 @@
       }
     </div>
 
-    @if (tabData.defendant) {
+    @if (tabData.defendant && hasAssociatedDefendant) {
       <div class="govuk-grid-column-one-third">
         <h2 [class]="style.heading">Defendant account</h2>
         <hr [class]="style.hr" />
 
         <h3 [class]="style.key">Defendant account</h3>
-        <p [class]="style.value">{{ tabData.defendant.account_number }}</p>
+        <p [class]="style.value">
+          <a
+            class="govuk-link govuk-link--no-visited-state"
+            href=""
+            (click)="handleDefendantAccountClick(tabData.defendant.account_id, $event)"
+            >{{ tabData.defendant.account_number }}</a
+          >
+        </p>
 
         <h3 [class]="style.key">Defendant Name</h3>
-        <p [class]="style.value">{{ tabData.defendant.name }}</p>
+        <p [class]="style.value">
+          {{ tabData.defendant.title }}
+          {{ tabData.defendant.forenames }}
+          {{ tabData.defendant.surname | uppercase }}
+        </p>
 
         <h3 [class]="style.key">Hearing Date</h3>
         <p [class]="style.value">{{ tabData.defendant.hearing_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</p>

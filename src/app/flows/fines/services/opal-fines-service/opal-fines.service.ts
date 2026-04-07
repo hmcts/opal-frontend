@@ -51,7 +51,6 @@ import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IOpalFinesAccountRequestPaymentCardResponse } from './interfaces/opal-fines-account-request-payment-card-response.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from './interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
-import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from './mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.interface';
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
@@ -488,12 +487,13 @@ export class OpalFines {
     const accountCaches: (keyof IOpalFinesCache)[] = [
       'defendantAccountAtAGlanceCache$',
       'defendantAccountPartyCache$',
-      'defendantAccountparentOrGuardianAccountPartyCache$',
+      'defendantAccountParentOrGuardianAccountPartyCache$',
       'defendantAccountEnforcementCache$',
       'defendantAccountImpositionsCache$',
       'defendantAccountHistoryAndNotesCache$',
       'defendantAccountPaymentTermsLatestCache$',
       'defendantAccountFixedPenaltyCache$',
+      'minorCreditorAccountAtAGlanceCache$',
     ];
 
     this.clearCaches(accountCaches);
@@ -715,9 +715,9 @@ export class OpalFines {
     account_id: number | null,
     party_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    if (!this.cache.defendantAccountparentOrGuardianAccountPartyCache$) {
+    if (!this.cache.defendantAccountParentOrGuardianAccountPartyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}`;
-      this.cache.defendantAccountparentOrGuardianAccountPartyCache$ = this.http
+      this.cache.defendantAccountParentOrGuardianAccountPartyCache$ = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
@@ -731,7 +731,7 @@ export class OpalFines {
           shareReplay(1),
         );
     }
-    return this.cache.defendantAccountparentOrGuardianAccountPartyCache$;
+    return this.cache.defendantAccountParentOrGuardianAccountPartyCache$;
   }
 
   /**
@@ -1073,9 +1073,9 @@ export class OpalFines {
   ): Observable<IOpalFinesAccountMinorCreditorAtAGlance> {
     if (!this.cache.minorCreditorAccountAtAGlanceCache$) {
       const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`;
-      this.cache.minorCreditorAccountAtAGlanceCache$ =
-        of(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK) ??
-        this.http.get<IOpalFinesAccountMinorCreditorAtAGlance>(url, { observe: 'response' }).pipe(
+      this.cache.minorCreditorAccountAtAGlanceCache$ = this.http
+        .get<IOpalFinesAccountMinorCreditorAtAGlance>(url, { observe: 'response' })
+        .pipe(
           map((response: HttpResponse<IOpalFinesAccountMinorCreditorAtAGlance>) => {
             const version = this.extractEtagVersion(response.headers);
             const payload = response.body as IOpalFinesAccountMinorCreditorAtAGlance;

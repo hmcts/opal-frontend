@@ -3,6 +3,21 @@
  * @description Date calculation, parsing, and formatting helpers for Cypress tests.
  */
 
+const MONTH_NAME_TO_NUMBER: Record<string, string> = {
+  january: '01',
+  february: '02',
+  march: '03',
+  april: '04',
+  may: '05',
+  june: '06',
+  july: '07',
+  august: '08',
+  september: '09',
+  october: '10',
+  november: '11',
+  december: '12',
+};
+
 /**
  * Calculate a date N weeks in the future formatted as dd/MM/yyyy.
  * @param weeks Number of weeks to add to today.
@@ -64,7 +79,7 @@ export function calculateDOB(yearsAgo: number): string {
 }
 
 /**
- * Converts dd/MM/yyyy → yyyy-MM-dd and accepts ISO format as-is.
+ * Converts dd/MM/yyyy or dd MMMM yyyy → yyyy-MM-dd and accepts ISO format as-is.
  * Throws for any other format to keep assertions strict.
  * @param value Input date value to convert.
  * @param contextKey Context key to improve error reporting.
@@ -78,11 +93,25 @@ export function parseToIsoDate(value: unknown, contextKey: string): string {
     return `${yyyy}-${mm}-${dd}`;
   }
 
+  const wordMatch = str.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+  if (wordMatch) {
+    const [, rawDay, rawMonth, year] = wordMatch;
+    const month = MONTH_NAME_TO_NUMBER[rawMonth.toLowerCase()];
+
+    if (!month) {
+      throw new Error(`Unsupported month in "${contextKey}": "${str}".`);
+    }
+
+    return `${year}-${month}-${rawDay.padStart(2, '0')}`;
+  }
+
   if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
     return str;
   }
 
-  throw new Error(`Unsupported date format for "${contextKey}": "${str}". Expected dd/MM/yyyy or yyyy-MM-dd.`);
+  throw new Error(
+    `Unsupported date format for "${contextKey}": "${str}". Expected dd/MM/yyyy, dd MMMM yyyy or yyyy-MM-dd.`,
+  );
 }
 
 /**
@@ -164,4 +193,22 @@ export function parseWeeksValue(value: string): { weeks: number; direction: 'pas
 export function resolveRelativeDate(value: string): string {
   const { weeks, direction } = parseWeeksValue(value);
   return direction === 'future' ? calculateWeeksInFuture(weeks) : calculateWeeksInPast(weeks);
+}
+/**
+ * Get the current month as a full month name.
+ * @returns Current month string in long-form, for example "April".
+ */
+export function getCurrentMonth(): string {
+  return new Date().toLocaleString('en-GB', { month: 'long' });
+}
+
+/**
+ * Get the previous month as a full month name.
+ * @returns Previous month string in long-form, for example "February".
+ */
+export function getPreviousMonth(): string {
+  const today = new Date();
+  const previousMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+
+  return previousMonth.toLocaleString('en-GB', { month: 'long' });
 }
