@@ -36,21 +36,6 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
 
     component.hasAccountMaintenancePermission = true;
-    component.tabData.enforcement_override = {
-      enforcement_override_result: {
-        enforcement_override_result_id: 'EOR123',
-        enforcement_override_result_name: 'Override Result Name',
-      },
-      enforcer: {
-        enforcer_id: 1,
-        enforcer_name: 'Test Enforcer',
-      },
-      lja: {
-        lja_id: 1,
-        lja_name: 'Test LJA',
-      },
-    };
-
     component.handleChangeEnforcementOverride();
 
     expect(emitSpy).toHaveBeenCalled();
