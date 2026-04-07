@@ -40,12 +40,9 @@ describe('FinesAccEnfOverrideAddChangeFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form controls and disable dependent fields', () => {
-    const enforcerControl = component.form.get('fenf_account_enforcement_enforcer');
-    const ljaControl = component.form.get('fenf_account_enforcement_lja');
-
-    expect(enforcerControl?.disabled).toBe(true);
-    expect(ljaControl?.disabled).toBe(true);
+  it('should initialize with dependent fields hidden', () => {
+    expect(component.showEnforcerField).toBe(false);
+    expect(component.showLjaField).toBe(false);
   });
 
   it('should call handleChangeEnforcementAction on enforcement action change', () => {
@@ -54,56 +51,98 @@ describe('FinesAccEnfOverrideAddChangeFormComponent', () => {
     expect(spy).toHaveBeenCalledWith('R1');
   });
 
+  it('should call handleChangeEnforcementAction with empty string when enforcement action is cleared', () => {
+    const spy = vi.spyOn(component, 'handleChangeEnforcementAction');
+    component.form.get('fenf_account_enforcement_action')?.setValue(null);
+    expect(spy).toHaveBeenCalledWith('');
+  });
+
   it('should call getResult when handleChangeEnforcementAction receives a result id', () => {
     component.handleChangeEnforcementAction('R1');
 
     expect(mockOpalFines.getResult).toHaveBeenCalledWith('R1');
   });
 
-  it('should disable enforcer and lja controls when handleChangeEnforcementAction receives an empty id', () => {
+  it('should hide enforcer and lja fields when handleChangeEnforcementAction receives an empty id', () => {
     const enforcerControl = component.form.get('fenf_account_enforcement_enforcer');
     const ljaControl = component.form.get('fenf_account_enforcement_lja');
 
-    enforcerControl?.enable();
-    ljaControl?.enable();
+    component.showEnforcerField = true;
+    component.showLjaField = true;
+    enforcerControl?.setValue('E1');
+    ljaControl?.setValue('L1');
 
     component.handleChangeEnforcementAction('');
 
     expect(mockOpalFines.getResult).not.toHaveBeenCalled();
-    expect(enforcerControl?.disabled).toBe(true);
-    expect(ljaControl?.disabled).toBe(true);
+    expect(component.showEnforcerField).toBe(false);
+    expect(component.showLjaField).toBe(false);
+    expect(enforcerControl?.value).toBeNull();
+    expect(ljaControl?.value).toBeNull();
   });
 
-  it('should enable only enforcer control when result requires enforcer', () => {
+  it('should show only enforcer field when result requires enforcer', () => {
+    mockOpalFines.getResult = vi.fn().mockReturnValue(of({ requires_enforcer: true, requires_lja: false }));
+    component.handleChangeEnforcementAction('R1');
+
+    expect(component.showEnforcerField).toBe(true);
+    expect(component.showLjaField).toBe(false);
+  });
+
+  it('should show only LJA field when result requires LJA', () => {
+    mockOpalFines.getResult = vi.fn().mockReturnValue(of({ requires_enforcer: false, requires_lja: true }));
+    component.handleChangeEnforcementAction('R1');
+
+    expect(component.showEnforcerField).toBe(false);
+    expect(component.showLjaField).toBe(true);
+  });
+
+  it('should show both fields when result requires enforcer and LJA', () => {
+    mockOpalFines.getResult = vi.fn().mockReturnValue(of({ requires_enforcer: true, requires_lja: true }));
+    component.handleChangeEnforcementAction('R1');
+
+    expect(component.showEnforcerField).toBe(true);
+    expect(component.showLjaField).toBe(true);
+  });
+
+  it('should make enforcer mandatory when enforcer field is shown', () => {
     mockOpalFines.getResult = vi.fn().mockReturnValue(of({ requires_enforcer: true, requires_lja: false }));
     component.handleChangeEnforcementAction('R1');
 
     const enforcerControl = component.form.get('fenf_account_enforcement_enforcer');
-    const ljaControl = component.form.get('fenf_account_enforcement_lja');
+    enforcerControl?.setValue(null);
+    enforcerControl?.markAsTouched();
 
-    expect(enforcerControl?.enabled).toBe(true);
-    expect(ljaControl?.disabled).toBe(true);
+    expect(component.showEnforcerField).toBe(true);
+    expect(enforcerControl?.hasError('required')).toBe(true);
   });
 
-  it('should enable only LJA control when result requires LJA', () => {
-    mockOpalFines.getResult = vi.fn().mockReturnValue(of({ requires_enforcer: false, requires_lja: true }));
+  it('should remove enforcer required validation when enforcer field is hidden', () => {
+    mockOpalFines.getResult = vi.fn().mockReturnValue(of({ requires_enforcer: true, requires_lja: false }));
     component.handleChangeEnforcementAction('R1');
 
-    const enforcerControl = component.form.get('fenf_account_enforcement_enforcer');
-    const ljaControl = component.form.get('fenf_account_enforcement_lja');
+    component.handleChangeEnforcementAction('');
 
-    expect(enforcerControl?.disabled).toBe(true);
-    expect(ljaControl?.enabled).toBe(true);
+    const enforcerControl = component.form.get('fenf_account_enforcement_enforcer');
+    expect(component.showEnforcerField).toBe(false);
+    expect(enforcerControl?.hasError('required')).toBe(false);
   });
 
-  it('should enable both controls when result requires enforcer and LJA', () => {
-    mockOpalFines.getResult = vi.fn().mockReturnValue(of({ requires_enforcer: true, requires_lja: true }));
-    component.handleChangeEnforcementAction('R1');
+  it('should return early when setControlRequired receives an unknown control name', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => (component as any)['setControlRequired']('unknown_control_name', true)).not.toThrow();
+  });
 
-    const enforcerControl = component.form.get('fenf_account_enforcement_enforcer');
-    const ljaControl = component.form.get('fenf_account_enforcement_lja');
+  it('should show both fields on init when formValues contain enforcer and lja', () => {
+    component.formValues = {
+      fenf_account_enforcement_action: 'R1',
+      fenf_account_enforcement_enforcer: 'E1',
+      fenf_account_enforcement_lja: 'L1',
+    };
 
-    expect(enforcerControl?.enabled).toBe(true);
-    expect(ljaControl?.enabled).toBe(true);
+    component.ngOnInit();
+
+    expect(component.showEnforcerField).toBe(true);
+    expect(component.showLjaField).toBe(true);
   });
 });
