@@ -9,10 +9,8 @@ import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/in
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import {
-  OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK,
-  OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK,
-} from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-multi-result.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-duplicate-code.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-multi-result.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
