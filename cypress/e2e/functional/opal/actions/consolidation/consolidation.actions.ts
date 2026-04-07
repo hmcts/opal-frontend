@@ -143,8 +143,9 @@ export class ConsolidationActions {
   /**
    * Selects a business unit when the selector is present.
    * If a single business unit is auto-selected, verifies the informational message instead.
+   * @param businessUnit - Optional business unit name to select from the autocomplete. If not provided, the first option will be selected.
    */
-  public selectBusinessUnitIfRequired(): void {
+  public selectBusinessUnitIfRequired(businessUnit?: string): void {
     // Wait for the select business unit form and its business unit branch to finish rendering
     // before deciding whether we are in the single-BU or autocomplete path.
     cy.get(SelectBusinessUnitLocators.heading, { timeout: 10_000 }).should('contain.text', 'Consolidate accounts');
@@ -168,7 +169,20 @@ export class ConsolidationActions {
           });
         return;
       }
-
+      if (businessUnit) {
+        log('select', `Selecting business unit "${businessUnit}" from autocomplete`);
+        cy.get(SelectBusinessUnitLocators.businessUnitInput, { timeout: 10_000 }).should('be.visible').click();
+        cy.get(SelectBusinessUnitLocators.businessUnitAutoComplete, { timeout: 10_000 })
+          .should('be.visible')
+          .contains('li', businessUnit)
+          .should('be.visible')
+          .then(($item) => {
+            const businessUnitName = $item.text().trim();
+            this.setSelectedBusinessUnitAlias(businessUnitName);
+            cy.wrap($item).click();
+          });
+        return;
+      }
       log('select', 'Selecting first available business unit from autocomplete');
       cy.get(SelectBusinessUnitLocators.businessUnitInput, { timeout: 10_000 }).should('be.visible').click();
       cy.get(SelectBusinessUnitLocators.businessUnitAutoComplete, { timeout: 10_000 })
