@@ -48,13 +48,13 @@ export class FinesAccEnfOverrideAddChangeComponent
    * Sets the existing enforcement override values to be used in the form.
    */
   private setExistingEnforcementOverride(): void {
-    const existingOverride = this.route.snapshot.data['enforcementStatus']?.enforcement_override;
-    if (existingOverride) {
+    const existingEnforcementOverride = this.route.snapshot.data['enforcementStatus']?.enforcement_override;
+    if (existingEnforcementOverride) {
       this.formValues = {
         fenf_account_enforcement_action:
-          existingOverride?.enforcement_override_result?.enforcement_override_result_id ?? null,
-        fenf_account_enforcement_enforcer: existingOverride?.enforcer?.enforcer_id ?? null,
-        fenf_account_enforcement_lja: existingOverride?.lja?.lja_id ?? null,
+          existingEnforcementOverride?.enforcement_override_result?.enforcement_override_result_id ?? null,
+        fenf_account_enforcement_enforcer: existingEnforcementOverride?.enforcer?.enforcer_id ?? null,
+        fenf_account_enforcement_lja: existingEnforcementOverride?.lja?.lja_id ?? null,
       };
     }
   }
@@ -117,7 +117,11 @@ export class FinesAccEnfOverrideAddChangeComponent
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe(() => {
-        this.finesAccStore.setSuccessMessage('Enforcement override added');
+        if (this.route.snapshot.data['enforcementStatus']?.enforcement_override) {
+          this.finesAccStore.setSuccessMessage('Enforcement override changed');
+        } else {
+          this.finesAccStore.setSuccessMessage('Enforcement override added');
+        }
         this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, null, 'enforcement');
       });
   }

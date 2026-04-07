@@ -49,6 +49,9 @@ describe('FinesAccEnfOverrideAddChangeComponent', () => {
               { result_id: 'R2', result_title: 'Result Two' },
             ],
           },
+          enforcementStatus: {
+            enforcement_override: null,
+          },
         },
       },
     } as unknown as ActivatedRoute;
