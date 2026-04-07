@@ -6,7 +6,7 @@ import { IOpalFinesUpdateDefendantAccountEnforcementOverride } from './opal-fine
  * Interface for the payload to update a defendant account *Subject to change
  */
 export interface IOpalFinesUpdateDefendantAccountPayload {
-  comment_and_notes?: IOpalFinesUpdateDefendantAccountCommentsNotes | null;
-  enforcement_court?: IOpalFinesUpdateDefendantAccountEnforcementCourt | null;
-  enforcement_override?: IOpalFinesUpdateDefendantAccountEnforcementOverride | null;
+  comment_and_notes?: IOpalFinesUpdateDefendantAccountCommentsNotes;
+  enforcement_court?: IOpalFinesUpdateDefendantAccountEnforcementCourt;
+  enforcement_override?: IOpalFinesUpdateDefendantAccountEnforcementOverride;
 }
