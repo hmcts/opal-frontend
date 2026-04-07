@@ -280,7 +280,7 @@ Feature: Account Search and Matches
 
 
   # Need to check that intercepted call should be organisation = true (it wasn't originally)
-  @JIRA-STORY:PO-706 @JIRA-KEY:POT-3259 @only
+  @JIRA-STORY:PO-706 @JIRA-KEY:POT-3259
   Scenario: Verify API call parameters for Defenders and Creditor search using Account number
     # AC1a, AC1b, AC1c
     When I intercept the "account number" account search API
@@ -302,7 +302,7 @@ Feature: Account Search and Matches
       | creditor             | null                                                                                                                                                                                |
 
 
-  @JIRA-STORY:PO-709 @JIRA-KEY:POT-3260 @only
+  @JIRA-STORY:PO-709 @JIRA-KEY:POT-3260
   Scenario: Verify API call parameters for Defenders and Creditors search using Reference or case number
     # AC1a, AC1b, AC1c
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
