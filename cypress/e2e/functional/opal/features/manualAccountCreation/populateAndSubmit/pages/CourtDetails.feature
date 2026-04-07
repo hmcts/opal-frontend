@@ -13,7 +13,7 @@ Feature: Manual account creation - Court Details
   @JIRA-KEY:POT-3184
   Scenario: (AC.8, AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I complete manual court details:
-      | Sending area or Local Justice Area (LJA) | Avon                    |
+      | Sending area or Local Justice Area (LJA) | Avon & Somerset         |
       | Prosecutor Case Reference (PCR)          | 1234                    |
       | Enforcement court                        | West London VPFPO (101) |
     And I return to account details
@@ -34,7 +34,7 @@ Feature: Manual account creation - Court Details
   @JIRA-KEY:POT-3185
   Scenario: (AC.10) Unsaved court details are cleared when user confirms cancel [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I complete manual court details:
-      | Sending area or Local Justice Area (LJA) | Avon              |
+      | Sending area or Local Justice Area (LJA) | Avon & Somerset   |
       | Prosecutor Case Reference (PCR)          | 1234              |
       | Enforcement court                        | West London VPFPO |
     And I cancel manual court details choosing "Ok" and return to account details
@@ -48,7 +48,7 @@ Feature: Manual account creation - Court Details
   @JIRA-KEY:POT-3186
   Scenario: (AC.11) Confirming cancel restores last saved court details [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I complete manual court details:
-      | Sending area or Local Justice Area (LJA) | Avon              |
+      | Sending area or Local Justice Area (LJA) | Avon & Somerset   |
       | Prosecutor Case Reference (PCR)          | 1234              |
       | Enforcement court                        | West London VPFPO |
     And I return to account details
@@ -87,7 +87,7 @@ Feature: Manual account creation - Court Details
   @JIRA-KEY:POT-3190
   Scenario: (AC.6) Grey navigation links routes correctly [@PO-272, @PO-389]
     When I complete manual court details:
-      | Sending area or Local Justice Area (LJA) | Avon              |
+      | Sending area or Local Justice Area (LJA) | Avon & Somerset   |
       | Prosecutor Case Reference (PCR)          | 1234              |
       | Enforcement court                        | West London VPFPO |
     And I continue to personal details from court details

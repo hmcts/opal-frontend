@@ -90,7 +90,7 @@ Feature: Fines Account Consolidation
       | account.payment_card_request            | false                               |
       | account.defendant.dob                   | 2002-05-15                          |
     When I open Consolidate accounts
-    When I continue to the consolidation account search as an "Individual" defendant
+    When I continue to the consolidation account search as an "Individual" defendant selecting business unit "Camberwell Green"
     Then I am on the consolidation Search tab for Individuals
     And I enter the following consolidation search details:
       | last name             | ResultLink{uniq} |
@@ -133,7 +133,7 @@ Feature: Fines Account Consolidation
       | account.payment_card_request            | false                                        |
       | account.defendant.dob                   | 2002-05-15                                   |
     When I open Consolidate accounts
-    And I continue to the consolidation account search as an "Individual" defendant
+    And I continue to the consolidation account search as an "Individual" defendant selecting business unit "Camberwell Green"
     Then I am on the consolidation Search tab for Individuals
     And I enter the following consolidation search details:
       | last name | ConsolidationZero |
@@ -208,7 +208,7 @@ Feature: Fines Account Consolidation
       | account.prosecutor_case_reference | CONS-RESULT-COMP-{uniq}                |
       | account.account_type              | Fine                                   |
     When I open Consolidate accounts
-    When I continue to the consolidation account search as an "Company" defendant
+    When I continue to the consolidation account search as an "Company" defendant selecting business unit "Camberwell Green"
     Then I am on the consolidation Search tab for Companies
     And I enter the following consolidation search details:
       | company name       | Consolidation Result Co {uniq} |
@@ -247,7 +247,7 @@ Feature: Fines Account Consolidation
       | account.collection_order_made_today | false                                           |
       | account.payment_card_request        | false                                           |
     When I open Consolidate accounts
-    And I continue to the consolidation account search as an "Company" defendant
+    And I continue to the consolidation account search as an "Company" defendant selecting business unit "Camberwell Green"
     Then I am on the consolidation Search tab for Companies
     And I enter the following consolidation search details:
       | company name       | Consolidation Zero Balance Co {uniq} |
