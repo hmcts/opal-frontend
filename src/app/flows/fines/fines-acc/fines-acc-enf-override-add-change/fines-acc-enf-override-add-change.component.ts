@@ -40,9 +40,9 @@ export class FinesAccEnfOverrideAddChangeComponent
   public enforcerOptions: IGovUkSelectOptions[] = this.setEnforcerOptions();
   public localJusticeAreaOptions: IGovUkSelectOptions[] = this.setLocalJusticeAreaOptions();
   public enforcementActionOptions: IGovUkSelectOptions[] = this.setEnforcementActionOptions();
-  public formValues: IFinesAccEnfOverrideAddChangeFormState = {
-    ...FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FORM_DEFAULT,
-  };
+  public formValues: IFinesAccEnfOverrideAddChangeFormState = structuredClone(
+    FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FORM_DEFAULT,
+  );
 
   /**
    * Sets the existing enforcement override values to be used in the form.
