@@ -15,6 +15,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { IFinesAccEnfOverrideAddChangeFormState } from './interfaces/fines-acc-enf-override-add-change-form-state.interface';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FORM_DEFAULT } from './constants/fines-acc-enf-override-add-change-form-default.constant';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES } from './constants/fines-acc-enf-override-add-change-success-messages.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-override-add-change',
@@ -118,9 +119,9 @@ export class FinesAccEnfOverrideAddChangeComponent
       )
       .subscribe(() => {
         if (this.route.snapshot.data['enforcementStatus']?.enforcement_override) {
-          this.finesAccStore.setSuccessMessage('Enforcement override changed');
+          this.finesAccStore.setSuccessMessage(FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.change);
         } else {
-          this.finesAccStore.setSuccessMessage('Enforcement override added');
+          this.finesAccStore.setSuccessMessage(FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.add);
         }
         this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, null, 'enforcement');
       });
