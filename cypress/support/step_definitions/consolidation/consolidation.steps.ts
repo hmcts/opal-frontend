@@ -19,6 +19,14 @@ When(
   },
 );
 
+When(
+  'I continue to the consolidation account search as an {string} defendant selecting business unit {string}',
+  (defendantType: ConsolidationDefendantType, businessUnit: string) => {
+    log('step', 'Continuing to consolidation account search with business unit', { defendantType, businessUnit });
+    consolidationFlow().continueToConsolidationAccountSearch(defendantType, businessUnit);
+  },
+);
+
 When('I click Search on consolidation account search', () => {
   log('step', 'Clicking Search on consolidation account search');
   consolidationFlow().clickConsolidationSearch();
