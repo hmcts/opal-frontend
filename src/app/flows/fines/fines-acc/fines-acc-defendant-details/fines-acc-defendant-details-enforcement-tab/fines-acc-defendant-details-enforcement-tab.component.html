@@ -297,7 +297,10 @@
                 tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
               }})
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (
+              hasAccountMaintenancePermission &&
+              this.tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
+            ) {
               <ng-container action>Change</ng-container>
             }
           </div>

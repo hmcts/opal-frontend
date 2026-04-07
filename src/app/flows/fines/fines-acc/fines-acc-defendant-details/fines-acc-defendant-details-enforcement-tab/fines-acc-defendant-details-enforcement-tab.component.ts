@@ -47,12 +47,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
    */
   public handleAddEnforcementOverride(event: Event): void {
     event.preventDefault();
-    if (
-      this.hasAccountMaintenancePermission &&
-      !this.tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
-    ) {
-      this.addEnforcementOverride.emit();
-    }
+    this.addEnforcementOverride.emit();
   }
 
   /**
@@ -60,11 +55,6 @@ export class FinesAccDefendantDetailsEnforcementTab {
    * @returns void
    */
   public handleChangeEnforcementOverride(): void {
-    if (
-      this.hasAccountMaintenancePermission &&
-      this.tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
-    ) {
-      this.changeEnforcementOverride.emit();
-    }
+    this.changeEnforcementOverride.emit();
   }
 }

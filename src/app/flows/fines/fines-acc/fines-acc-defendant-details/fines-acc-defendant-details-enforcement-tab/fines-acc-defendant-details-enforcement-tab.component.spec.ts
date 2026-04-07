@@ -55,39 +55,4 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     expect(emitSpy).toHaveBeenCalled();
   });
-
-  it('should not emit changeEnforcementOverride when user does not have account maintenance permission', () => {
-    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
-
-    component.hasAccountMaintenancePermission = false;
-    component.tabData.enforcement_override = {
-      enforcement_override_result: {
-        enforcement_override_result_id: 'EOR123',
-        enforcement_override_result_name: 'Override Result Name',
-      },
-      enforcer: {
-        enforcer_id: 1,
-        enforcer_name: 'Test Enforcer',
-      },
-      lja: {
-        lja_id: 1,
-        lja_name: 'Test LJA',
-      },
-    };
-
-    component.handleChangeEnforcementOverride();
-
-    expect(emitSpy).not.toHaveBeenCalled();
-  });
-
-  it('should not emit changeEnforcementOverride when there is no override result id', () => {
-    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
-
-    component.hasAccountMaintenancePermission = true;
-    component.tabData.enforcement_override = null;
-
-    component.handleChangeEnforcementOverride();
-
-    expect(emitSpy).not.toHaveBeenCalled();
-  });
 });
