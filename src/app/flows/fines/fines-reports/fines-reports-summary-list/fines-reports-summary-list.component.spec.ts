@@ -162,4 +162,35 @@ describe('FinesReportsSummaryListComponent', () => {
       )?.heading,
     );
   });
+
+  it('should default to an empty report id and heading when the parent route has no report id', async () => {
+    await TestBed.configureTestingModule({
+      imports: [FinesReportsSummaryListComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: convertToParamMap({}),
+            },
+            paramMap: new BehaviorSubject(convertToParamMap({})),
+            parent: {
+              snapshot: {
+                paramMap: convertToParamMap({}),
+              },
+              paramMap: new BehaviorSubject(convertToParamMap({})),
+            },
+          } satisfies MockActivatedRoute,
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(FinesReportsSummaryListComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component['reportId']()).toBe('');
+    expect(component.pageHeading).toBe('');
+    expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe('');
+  });
 });

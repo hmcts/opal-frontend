@@ -25,8 +25,7 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
     ]);
   }
 
-  const routePermissionIds =
-    FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find((config) => config.id === reportId)?.permissionIds ?? [];
+  const routePermissionIds = report.permissionIds;
 
   if (routePermissionIds.length === 0) {
     return true;

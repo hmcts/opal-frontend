@@ -7,6 +7,7 @@ import { DashboardPage } from '@hmcts/opal-frontend-common/pages/dashboard-page'
 import { By } from '@angular/platform-browser';
 import { DASHBOARD_PAGE_CONFIGURATION_MAP } from './constants/dashboard-config.constant';
 import { DASHBOARD_CONFIG_DEFAULT_DASHBOARD } from './constants/dashboard-config-default-dashboard.constant';
+import { DASHBOARD_PAGE_DEFAULT_TAB } from './constants/dashboard-config-default-tab.constant';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
@@ -58,6 +59,22 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
 
     expect(component.resolvedConfig()).toEqual(DASHBOARD_CONFIG_DEFAULT_DASHBOARD);
+  });
+
+  it('should use the hard-coded default dashboard config when the default tab map entry is missing', () => {
+    const dashboardConfigMap = DASHBOARD_PAGE_CONFIGURATION_MAP as Partial<typeof DASHBOARD_PAGE_CONFIGURATION_MAP>;
+    const originalDefaultConfig = dashboardConfigMap[DASHBOARD_PAGE_DEFAULT_TAB];
+
+    delete dashboardConfigMap[DASHBOARD_PAGE_DEFAULT_TAB];
+
+    try {
+      dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'unknown' }));
+      fixture.detectChanges();
+
+      expect(component.resolvedConfig()).toEqual(DASHBOARD_CONFIG_DEFAULT_DASHBOARD);
+    } finally {
+      dashboardConfigMap[DASHBOARD_PAGE_DEFAULT_TAB] = originalDefaultConfig;
+    }
   });
 
   it('should render the dashboard page with the resolved dashboard config', () => {

@@ -14,10 +14,14 @@ describe('finesReportsTitleResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockTitleService: any;
 
-  const buildRoute = (reportId: string | null) =>
+  const buildRoute = (reportId: string | null, parentReportId?: string) =>
     ({
       paramMap: convertToParamMap(reportId ? { reportId } : {}),
-      parent: reportId ? undefined : { paramMap: convertToParamMap({ reportId: 'parent-report-id' }) },
+      parent: reportId
+        ? undefined
+        : parentReportId
+          ? { paramMap: convertToParamMap({ reportId: parentReportId }) }
+          : undefined,
     }) as ActivatedRouteSnapshot;
 
   beforeEach(() => {
@@ -53,5 +57,18 @@ describe('finesReportsTitleResolver', () => {
 
     expect(result).toBe(FINES_REPORTS_ROUTING_TITLES.root);
     expect(mockTitleService.setTitle).toHaveBeenCalledWith(`OPAL - ${FINES_REPORTS_ROUTING_TITLES.root}`);
+  });
+
+  it('should use the parent route report id when the child route does not include one', () => {
+    const route = buildRoute(null, FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
+    const expectedTitle =
+      FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION.find(
+        (config) => config.id === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
+      )?.title ?? FINES_REPORTS_ROUTING_TITLES.root;
+
+    const result = executeResolver(route, {} as never);
+
+    expect(result).toBe(expectedTitle);
+    expect(mockTitleService.setTitle).toHaveBeenCalledWith(`OPAL - ${expectedTitle}`);
   });
 });
