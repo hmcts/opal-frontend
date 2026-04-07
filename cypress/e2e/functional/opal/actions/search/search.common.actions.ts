@@ -755,11 +755,7 @@ export class AccountSearchCommonActions {
    * @param fieldKey Gherkin field key that resolves via the account search mappings.
    * @param table Two-column DataTable of value/count pairs.
    */
-  public interceptedSearchAccountAPICountsByField(
-    accountType: string,
-    fieldKey: string,
-    table: DataTable,
-  ): void {
+  public interceptedSearchAccountAPICountsByField(accountType: string, fieldKey: string, table: DataTable): void {
     const type = accountType.toLowerCase();
     const mappings = ACCOUNT_SEARCH_MAPPINGS[type];
 
@@ -790,9 +786,10 @@ export class AccountSearchCommonActions {
       .should((interceptions) => {
         const interceptionsList = interceptions ?? [];
 
-        expect(interceptionsList.length, `Expected intercepted ${type} requests for field "${fieldKey}"`).to.be.greaterThan(
-          0,
-        );
+        expect(
+          interceptionsList.length,
+          `Expected intercepted ${type} requests for field "${fieldKey}"`,
+        ).to.be.greaterThan(0);
 
         expect(
           interceptionsList.length,
@@ -829,7 +826,10 @@ export class AccountSearchCommonActions {
           body: interception.request.body,
         }));
 
-        logSync('debug', `INTERCEPTED ${type.toUpperCase()} REQUEST BODIES: ${JSON.stringify(capturedBodies, null, 2)}`);
+        logSync(
+          'debug',
+          `INTERCEPTED ${type.toUpperCase()} REQUEST BODIES: ${JSON.stringify(capturedBodies, null, 2)}`,
+        );
       });
   }
 
