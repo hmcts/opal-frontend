@@ -128,11 +128,6 @@ describe('FinesAccEnfOverrideAddChangeFormComponent', () => {
     expect(enforcerControl?.hasError('required')).toBe(false);
   });
 
-  it('should return early when setControlRequired receives an unknown control name', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => (component as any)['setControlRequired']('unknown_control_name', true)).not.toThrow();
-  });
-
   it('should show both fields on init when formValues contain enforcer and lja', () => {
     component.formValues = {
       fenf_account_enforcement_action: 'R1',

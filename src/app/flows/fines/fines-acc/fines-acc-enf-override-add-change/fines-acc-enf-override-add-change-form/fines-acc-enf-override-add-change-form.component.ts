@@ -65,8 +65,8 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
     this.form.patchValue(this.formValues);
     this.showEnforcerField = !!this.formValues.fenf_account_enforcement_enforcer;
     this.showLjaField = !!this.formValues.fenf_account_enforcement_lja;
-    this.setControlRequired('fenf_account_enforcement_enforcer', this.showEnforcerField);
-    this.setControlRequired('fenf_account_enforcement_lja', this.showLjaField);
+    this.updateControl('fenf_account_enforcement_enforcer', this.showEnforcerField ? [Validators.required] : []);
+    this.updateControl('fenf_account_enforcement_lja', this.showLjaField ? [Validators.required] : []);
     this.form.updateValueAndValidity();
   }
 
@@ -98,28 +98,14 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
         this.hideFieldAndResetValue('fenf_account_enforcement_enforcer');
         if (result.requires_enforcer) {
           this.showEnforcerField = true;
-          this.setControlRequired('fenf_account_enforcement_enforcer', true);
+          this.updateControl('fenf_account_enforcement_enforcer', [Validators.required]);
         }
         if (result.requires_lja) {
           this.showLjaField = true;
-          this.setControlRequired('fenf_account_enforcement_lja', true);
+          this.updateControl('fenf_account_enforcement_lja', [Validators.required]);
         }
         this.form.updateValueAndValidity();
       });
-  }
-
-  /**
-   * Sets required validation on a form control when visible and removes it when hidden.
-   */
-  private setControlRequired(controlName: string, isRequired: boolean): void {
-    const control = this.form.get(controlName);
-    if (!control) return;
-    if (isRequired) {
-      control.setValidators(Validators.required);
-    } else {
-      control.clearValidators();
-    }
-    control.updateValueAndValidity();
   }
 
   /**
@@ -131,11 +117,11 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
     this.form.get(controlName)?.reset(null);
     if (controlName === 'fenf_account_enforcement_enforcer') {
       this.showEnforcerField = false;
-      this.setControlRequired(controlName, false);
+      this.updateControl(controlName, []);
     }
     if (controlName === 'fenf_account_enforcement_lja') {
       this.showLjaField = false;
-      this.setControlRequired(controlName, false);
+      this.updateControl(controlName, []);
     }
   }
 
