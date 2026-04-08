@@ -13148,12 +13148,12 @@ __metadata:
   linkType: hard
 
 "launchdarkly-js-client-sdk@npm:^3.1.4":
-  version: 3.9.0
-  resolution: "launchdarkly-js-client-sdk@npm:3.9.0"
+  version: 3.9.1
+  resolution: "launchdarkly-js-client-sdk@npm:3.9.1"
   dependencies:
     escape-string-regexp: "npm:^4.0.0"
     launchdarkly-js-sdk-common: "npm:5.8.0"
-  checksum: 10/e0fe81292138f6b9dd64b5eb3923875a8d8720d0e485dfe80c32a6911256ca893524313d380d82e1ac9b4790696479482f0ce5efd6537a70a41392966c9ba86d
+  checksum: 10/c54bec5c4cb4b60a9d2f562770f2be817b396a3f367483866f3a918cb32df5c6a076cbb04c085b8ab93cd6551a3e9e7b90493e443df2f86cf13f10c0d1dd85bf
   languageName: node
   linkType: hard
 
