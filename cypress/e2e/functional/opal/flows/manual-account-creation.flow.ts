@@ -2515,15 +2515,9 @@ export class ManualAccountCreationFlow {
    */
   providePaymentTermsFromAccountDetails(payload: ManualPaymentTermsInput, accountDetailsHeader?: string): void {
     log('flow', 'Provide payment terms from Account details', { payload, accountDetailsHeader });
-    cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
-      if (!pathname.includes('/account-details')) {
-        this.taskNavigation.navigateToAccountDetails();
-      } else {
-        this.accountDetails.assertOnAccountDetailsPage(accountDetailsHeader);
-      }
-      this.openTaskFromAccountDetails('Payment terms', accountDetailsHeader);
-      this.paymentTerms.fillPaymentTerms(payload);
-    });
+    this.taskNavigation.navigateToAccountDetails(accountDetailsHeader);
+    this.openTaskFromAccountDetails('Payment terms', accountDetailsHeader);
+    this.paymentTerms.fillPaymentTerms(payload);
   }
 
   /**
