@@ -186,6 +186,13 @@ export const assertParamValue = (
       throw new Error(`Failed to parse JSON array for "${gherkinKey}": "${expectedRaw}". ${String(error)}`);
     }
 
+    if (mapping.key === 'business_unit_ids') {
+      const normalizedActual = [...actualValue].sort();
+      const normalizedExpected = Array.isArray(parsedExpected) ? [...parsedExpected].sort() : parsedExpected;
+      expect(normalizedActual, `${label} – array mismatch`).to.deep.equal(normalizedExpected);
+      return;
+    }
+
     expect(actualValue, `${label} – array mismatch`).to.deep.equal(parsedExpected);
     return;
   }
@@ -206,6 +213,11 @@ type ExpectedEntry = {
   mapping: AccountSearchFieldMapping;
 };
 
+type ExpectedCountEntry = {
+  value: string;
+  count: number;
+};
+
 const valuesMatch = (actualValue: unknown, expectedRaw: string, mapping: AccountSearchFieldMapping): boolean => {
   const expectedValue = expectedRaw === 'null' ? null : expectedRaw;
 
@@ -221,7 +233,15 @@ const valuesMatch = (actualValue: unknown, expectedRaw: string, mapping: Account
       throw new Error(`Failed to parse JSON array for "${mapping.key}": "${expectedRaw}". ${String(error)}`);
     }
 
-    return Array.isArray(parsedExpected) && JSON.stringify(actualValue) === JSON.stringify(parsedExpected);
+    if (!Array.isArray(parsedExpected)) {
+      return false;
+    }
+
+    if (mapping.key === 'business_unit_ids') {
+      return JSON.stringify([...actualValue].sort()) === JSON.stringify([...parsedExpected].sort());
+    }
+
+    return JSON.stringify(actualValue) === JSON.stringify(parsedExpected);
   }
 
   return String(actualValue) === String(expectedValue);
@@ -245,6 +265,22 @@ const interceptionMatchesExpected = (
 
 const pickMatchingInterception = (interceptions: any[], expectedEntries: ExpectedEntry[], entityKey: string): any => {
   return interceptions.find((interception) => interceptionMatchesExpected(interception, expectedEntries, entityKey));
+};
+
+const normalizeExpectedValue = (value: string): unknown => {
+  if (value === 'null') {
+    return null;
+  }
+
+  if (value === 'true') {
+    return true;
+  }
+
+  if (value === 'false') {
+    return false;
+  }
+
+  return value;
 };
 
 /** Shared actions and assertions for Account Search across search types. */
@@ -654,8 +690,8 @@ export class AccountSearchCommonActions {
       return { gherkinKey, expectedRaw, mapping };
     });
 
-    cy.wait(alias).then(() => {
-      cy.get<any[]>(`${alias}.all`).then((interceptions) => {
+    cy.get<any[]>(`${alias}.all`)
+      .should((interceptions) => {
         const interceptionsList = interceptions ?? [];
         const matchingInterception =
           interceptionsList.length <= 1
@@ -668,10 +704,18 @@ export class AccountSearchCommonActions {
             body: interception.request.body,
           }));
 
-          throw new Error(
+          expect(
+            matchingInterception,
             `No intercepted ${type} request matched expected parameters. Captured bodies: ${JSON.stringify(capturedBodies, null, 2)}`,
-          );
+          ).to.exist;
         }
+      })
+      .then((interceptions) => {
+        const interceptionsList = interceptions ?? [];
+        const matchingInterception =
+          interceptionsList.length <= 1
+            ? interceptionsList[0]
+            : pickMatchingInterception(interceptionsList, expectedEntries, entityKey);
 
         const body = matchingInterception.request.body as Record<string, unknown>;
         const entity = (body[entityKey] as Record<string, unknown>) ?? {};
@@ -697,7 +741,96 @@ export class AccountSearchCommonActions {
           });
         }
       });
-    });
+  }
+
+  /**
+   * Validates how many intercepted account search requests contain each expected
+   * value for a mapped request field.
+   *
+   * This is useful when the FE intentionally emits multiple requests for the same
+   * user action and the assertion should validate the request distribution rather
+   * than a single captured payload.
+   *
+   * @param accountType Account type being validated ("defendant" or "minor creditor").
+   * @param fieldKey Gherkin field key that resolves via the account search mappings.
+   * @param table Two-column DataTable of value/count pairs.
+   */
+  public interceptedSearchAccountAPICountsByField(accountType: string, fieldKey: string, table: DataTable): void {
+    const type = accountType.toLowerCase();
+    const mappings = ACCOUNT_SEARCH_MAPPINGS[type];
+
+    if (!mappings) {
+      throw new Error(`Unknown account type in count validation: ${accountType}`);
+    }
+
+    const translatedKey = translateGherkinKey(type, fieldKey);
+    const mapping = mappings[translatedKey];
+
+    if (!mapping) {
+      throw new Error(`No mapping found for feature key: ${fieldKey} (translated: ${translatedKey})`);
+    }
+
+    const { alias, entityKey } = resolveAliasAndEntityKey(type);
+    const expectedCounts: ExpectedCountEntry[] = table.raw().map(([value, count]) => ({
+      value,
+      count: Number(count),
+    }));
+
+    if (expectedCounts.some(({ count }) => Number.isNaN(count))) {
+      throw new Error(`Invalid count provided for intercepted ${type} request field "${fieldKey}"`);
+    }
+
+    const expectedTotal = expectedCounts.reduce((sum, entry) => sum + entry.count, 0);
+
+    cy.get<any[]>(`${alias}.all`)
+      .should((interceptions) => {
+        const interceptionsList = interceptions ?? [];
+
+        expect(
+          interceptionsList.length,
+          `Expected intercepted ${type} requests for field "${fieldKey}"`,
+        ).to.be.greaterThan(0);
+
+        expect(
+          interceptionsList.length,
+          `Expected ${expectedTotal} intercepted ${type} requests for field "${fieldKey}"`,
+        ).to.equal(expectedTotal);
+
+        const actualCounts = new Map<string, number>();
+
+        interceptionsList.forEach((interception) => {
+          const body = (interception.request.body ?? {}) as Record<string, unknown>;
+          const entity = (body[entityKey] as Record<string, unknown>) ?? {};
+          const container = resolveContainer(body, entity, mapping);
+          const rawValue = container[mapping.key];
+          const normalizedValue = rawValue ?? null;
+          const countKey = JSON.stringify(normalizedValue);
+
+          actualCounts.set(countKey, (actualCounts.get(countKey) ?? 0) + 1);
+        });
+
+        expectedCounts.forEach(({ value, count }) => {
+          const normalizedValue = normalizeExpectedValue(value);
+          const actualCount = actualCounts.get(JSON.stringify(normalizedValue)) ?? 0;
+
+          expect(
+            actualCount,
+            `Unexpected intercepted ${type} request count for field "${fieldKey}" value "${value}"`,
+          ).to.equal(count);
+        });
+      })
+      .then((interceptions) => {
+        const interceptionsList = interceptions ?? [];
+        const capturedBodies = interceptionsList.map((interception, index) => ({
+          index,
+          body: interception.request.body,
+        }));
+
+        logSync(
+          'debug',
+          `INTERCEPTED ${type.toUpperCase()} REQUEST BODIES: ${JSON.stringify(capturedBodies, null, 2)}`,
+        );
+      });
   }
 
   /**
