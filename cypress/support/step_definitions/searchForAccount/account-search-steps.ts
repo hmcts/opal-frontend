@@ -687,6 +687,17 @@ Then(
   },
 );
 
+Then(
+  'the intercepted {string} account search API requests should contain the following counts for {string}:',
+  (accountType: string, fieldKey: string, table: DataTable) => {
+    log('step', 'Asserting intercepted account search API request counts by field', {
+      accountType,
+      fieldKey,
+    });
+    searchCommonActions().interceptedSearchAccountAPICountsByField(accountType, fieldKey, table);
+  },
+);
+
 /**
  * @step I see the Individuals search results:
  * @description

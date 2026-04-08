@@ -35,7 +35,7 @@ Feature: Navigate and edit sections from task list
 
     And I complete manual account creation with the following fields and defaults for account header "TEST Rejected-PO-640-company-{uniq}":
       | Section                    | Field                                    | Value                     |
-      | Court details              | Sending area or Local Justice Area (LJA) | Avon                      |
+      | Court details              | Sending area or Local Justice Area (LJA) | Avon & Somerset           |
       | Court details              | Prosecutor Case Reference (PCR)          | abcd1234a                 |
       | Court details              | Enforcement court                        | ATCM Test (828)           |
       | Company details            | Company name                             | TEST COMPANY LTD {uniq}   |
@@ -107,7 +107,7 @@ Feature: Navigate and edit sections from task list
 
     When I complete manual account creation with the following fields and defaults for account header "Mr Rejected-PO-640-AdultOrYouthOnly TEST{uniq}":
       | Section                    | Field                                    | Value                               |
-      | Court details              | Sending area or Local Justice Area (LJA) | Avon                                |
+      | Court details              | Sending area or Local Justice Area (LJA) | Avon & Somerset                     |
       | Court details              | Prosecutor Case Reference (PCR)          | abcd1234a                           |
       | Court details              | Enforcement court                        | ATCM Test (828)                     |
       | Personal details           | Title                                    | Mr                                  |
@@ -208,7 +208,7 @@ Feature: Navigate and edit sections from task list
 
     When I complete manual account creation with the following fields and defaults for account header "Miss Rejected-PO-640-pgToPay TEST{uniq}":
       | Section                    | Field                                    | Value                           |
-      | Court details              | Sending area or Local Justice Area (LJA) | Avon                            |
+      | Court details              | Sending area or Local Justice Area (LJA) | Avon & Somerset                 |
       | Court details              | Prosecutor Case Reference (PCR)          | abcd1234a                       |
       | Court details              | Enforcement court                        | Court 777 Camberwell CH09 (777) |
       | Personal details           | Title                                    | Miss                            |

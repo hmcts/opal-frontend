@@ -25,10 +25,11 @@ export class ConsolidationFlow {
   /**
    * Completes select-business-unit inputs and continues to account search.
    * @param defendantType - "Individual" or "Company"
+   * @param businessUnit - Optional business unit name to select from the autocomplete. If not provided, the first option will be selected.
    */
-  public continueToConsolidationAccountSearch(defendantType: ConsolidationDefendantType): void {
+  public continueToConsolidationAccountSearch(defendantType: ConsolidationDefendantType, businessUnit?: string): void {
     log('flow', 'Continuing from select business unit to consolidation account search', { defendantType });
-    this.consolidation.selectBusinessUnitIfRequired();
+    this.consolidation.selectBusinessUnitIfRequired(businessUnit);
     this.consolidation.selectDefendantType(defendantType);
     this.consolidation.continueFromSelectBusinessUnit();
     this.consolidation.waitForAccountSearchScreen(defendantType);
