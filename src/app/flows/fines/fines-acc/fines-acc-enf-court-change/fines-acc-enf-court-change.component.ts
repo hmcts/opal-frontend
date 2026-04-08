@@ -59,7 +59,10 @@ export class FinesAccEnfCourtChangeComponent extends AbstractFormParentBaseCompo
   }
 
   /**
-   * Navigates back to the enforcement tab and optionally sets the success banner.
+   * Navigates back to the enforcement tab after a successful or intentional form action.
+   *
+   * This clears the unsaved state because the user has either saved changes or
+   * explicitly submitted a no-op selection.
    *
    * @param setSuccessMessage Whether to set the success banner before navigating away.
    */
@@ -106,9 +109,12 @@ export class FinesAccEnfCourtChangeComponent extends AbstractFormParentBaseCompo
 
   /**
    * Navigates back to the enforcement tab without saving changes.
+   *
+   * This intentionally does not clear the unsaved state so the canDeactivate
+   * guard can still intercept navigation when the form has been changed.
    */
   public handleCancel(): void {
-    this.navigateToEnforcementTab(false);
+    this.routerNavigate(FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details, false, undefined, null, 'enforcement');
   }
 
   /**

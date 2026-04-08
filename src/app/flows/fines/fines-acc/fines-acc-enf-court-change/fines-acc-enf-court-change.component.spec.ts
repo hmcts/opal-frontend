@@ -180,10 +180,12 @@ describe('FinesAccEnfCourtChangeComponent', () => {
 
   it('should navigate back to the enforcement tab when cancel is triggered', () => {
     const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
+    component.handleUnsavedChanges(true);
 
     component.handleCancel();
 
     expect(mockAccountStore.setSuccessMessage).not.toHaveBeenCalled();
+    expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(true);
     expect(routerNavigateSpy).toHaveBeenCalledWith(
       FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
       false,
