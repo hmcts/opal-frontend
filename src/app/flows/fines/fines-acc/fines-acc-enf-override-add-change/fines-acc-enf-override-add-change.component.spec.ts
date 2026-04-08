@@ -6,6 +6,7 @@ import { FinesAccPayloadService } from '@app/flows/fines/fines-acc/services/fine
 import { OpalFines } from '@app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '@app/flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES } from './constants/fines-acc-enf-override-add-change-success-messages.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { FinesAccountStoreType } from '../types/fines-account-store.type';
@@ -143,6 +144,9 @@ describe('FinesAccEnfOverrideAddChangeComponent', () => {
       '1',
       '2002',
     );
+    expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith(
+      FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.add,
+    );
     expect(routerNavigateSpy).toHaveBeenCalledWith(
       FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
       false,
@@ -168,6 +172,37 @@ describe('FinesAccEnfOverrideAddChangeComponent', () => {
 
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
     expect(routerNavigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('should set change success message when enforcement override exists in route data', () => {
+    const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
+    (
+      mockRoute.snapshot.data as {
+        enforcementStatus?: { enforcement_override?: unknown };
+      }
+    ).enforcementStatus = {
+      enforcement_override: {
+        enforcement_override_result: {
+          enforcement_override_result_id: 'R2',
+        },
+      },
+    };
+
+    const form = {
+      formData: {
+        fenf_account_enforcement_action: 'R1',
+        fenf_account_enforcement_enforcer: 'E1',
+        fenf_account_enforcement_lja: 'L1',
+      },
+      nestedFlow: false,
+    };
+
+    component.handleFinesEnfOverrideAddChangeSubmit(form);
+
+    expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith(
+      FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.change,
+    );
+    expect(routerNavigateSpy).toHaveBeenCalled();
   });
 
   it('should update stateUnsavedChanges when handleUnsavedChanges is called', () => {
@@ -207,6 +242,44 @@ describe('FinesAccEnfOverrideAddChangeComponent', () => {
       fenf_account_enforcement_enforcer: 'E2',
       fenf_account_enforcement_lja: 'L2',
     });
+  });
+
+  it('should set formValues fields to null when existing enforcement override nested values are missing', () => {
+    (
+      mockRoute.snapshot.data as {
+        enforcementStatus?: { enforcement_override?: unknown };
+      }
+    ).enforcementStatus = {
+      enforcement_override: {},
+    };
+
+    component.formValues = {
+      fenf_account_enforcement_action: 'R1',
+      fenf_account_enforcement_enforcer: 'E1',
+      fenf_account_enforcement_lja: 'L1',
+    };
+
+    component.ngOnInit();
+
+    expect(component.formValues).toEqual({
+      fenf_account_enforcement_action: null,
+      fenf_account_enforcement_enforcer: null,
+      fenf_account_enforcement_lja: null,
+    });
+  });
+
+  it('should default accountNumber, partyName and pageTitle to empty strings when source values are nullish', async () => {
+    mockAccountStore.getAccountNumber = signal(null) as unknown as (typeof mockAccountStore)['getAccountNumber'];
+    mockAccountStore.party_name = signal(null) as unknown as (typeof mockAccountStore)['party_name'];
+    (mockRoute.snapshot.data as { title?: string | null }).title = null;
+
+    const altFixture = TestBed.createComponent(FinesAccEnfOverrideAddChangeComponent);
+    const altComponent = altFixture.componentInstance;
+    altFixture.detectChanges();
+
+    expect(altComponent.accountNumber).toBe('');
+    expect(altComponent.partyName).toBe('');
+    expect(altComponent.pageTitle).toBe('');
   });
 
   it('should complete ngUnsubscribe on destroy', () => {
