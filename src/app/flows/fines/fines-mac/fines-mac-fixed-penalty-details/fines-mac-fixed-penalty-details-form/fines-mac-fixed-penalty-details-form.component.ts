@@ -85,6 +85,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   extends AbstractFormAliasBaseComponent
   implements OnInit, OnDestroy
 {
+  private hasAttemptedSubmit = false;
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly vehicleOffenceControls = [
     'fm_fp_offence_details_vehicle_registration_number',
@@ -126,6 +127,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   override fieldErrors: IFinesMacFixedPenaltyDetailsFieldErrors = {
     ...FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS,
   };
+
+  private retryOffenceCodeLookup = (): void => {};
 
   /*
    * Sets up the form for fixed penalty details, including all sections.
@@ -300,13 +303,14 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
   /**
    * Sets up the offence code listener to handle changes in the offence code field.
-   * It initializes the offence code listener from the offence details service, which fetches
-   * offence details based on the CJS code entered by the user.
-   * It updates the offenceCode$ observable with the fetched offence details and handles
-   * the confirmation of the selected offence.
+   * It initializes the offence code listener from the offence details service which fetches
+   * offence details based on the CJS code entered by the user. It stores
+   * the returned retry callback for submit-time validation, updates the offenceCode$
+   * observable with the fetched offence details, and refreshes rendered errors when
+   * the selected offence confirmation changes after a submit attempt.
    */
   private setupOffenceCodeListener(): void {
-    this.offenceDetailsService.initOffenceCodeListener(
+    this.retryOffenceCodeLookup = this.offenceDetailsService.initOffenceCodeListener(
       this.form,
       `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
       `${this.fixedPenaltyPrefix}offence_details_offence_id`,
@@ -318,8 +322,23 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       },
       (confirmed) => {
         this.selectedOffenceConfirmation = confirmed;
+        this.refreshSubmittedOffenceCodeErrors();
       },
     );
+  }
+
+  /**
+   * Rebuilds rendered error messages after offence-code validation updates asynchronously.
+   * This keeps the summary and inline messages aligned with the latest control errors
+   * after the user has already attempted to submit the form.
+   */
+  private refreshSubmittedOffenceCodeErrors(): void {
+    if (!this.hasAttemptedSubmit) {
+      return;
+    }
+
+    this.handleErrorMessages();
+    this.changeDetector.markForCheck();
   }
 
   /**
@@ -419,13 +438,67 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.setupOffenceCodeListener();
   }
 
+  /**
+   * Ensures offence-code validation has completed before allowing submission.
+   * If the latest lookup failed for a 7 or 8 character code, the lookup is retried.
+   * Otherwise, unresolved lookup-length codes are marked with a pending-validation
+   * error, and that error is cleared once an offence id has been resolved.
+   */
+  private enforceOffenceCodeValidationBeforeSubmit(): void {
+    const offenceCodeControl = this.form.get(
+      `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
+    ) as FormControl | null;
+    const offenceIdControl = this.form.get(
+      `${this.fixedPenaltyPrefix}offence_details_offence_id`,
+    ) as FormControl | null;
+
+    if (!offenceCodeControl || !offenceIdControl) {
+      return;
+    }
+
+    const offenceCode = offenceCodeControl.value ?? '';
+    const isLookupLength = offenceCode.length >= 7 && offenceCode.length <= 8;
+    const hasOffenceId = offenceIdControl.value !== null && offenceIdControl.value !== undefined;
+    const hasInvalidOffenceCodeError = Boolean(offenceCodeControl.errors?.['invalidOffenceCode']);
+    const hasOffenceCodeLookupFailedError = Boolean(offenceCodeControl.errors?.['offenceCodeLookupFailed']);
+
+    if (hasOffenceCodeLookupFailedError && isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError) {
+      this.retryOffenceCodeLookup();
+      return;
+    }
+
+    if (isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError) {
+      const currentErrors = offenceCodeControl.errors;
+      const updatedErrors = currentErrors
+        ? { ...currentErrors, offenceCodeValidationPending: true }
+        : { offenceCodeValidationPending: true };
+      offenceCodeControl.setErrors(updatedErrors, { emitEvent: false });
+      return;
+    }
+
+    const currentErrors = offenceCodeControl.errors;
+    if (currentErrors?.['offenceCodeValidationPending']) {
+      const remainingErrors = { ...currentErrors };
+      delete remainingErrors['offenceCodeValidationPending'];
+      offenceCodeControl.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null, { emitEvent: false });
+    }
+  }
+
   public override ngOnInit(): void {
     this.initialFixedPenaltyDetailsSetup();
     super.ngOnInit();
   }
 
+  /**
+   * Marks the form as submitted, derives the prosecutor name, enforces offence-code
+   * validation, and then delegates to the base submit handler.
+   *
+   * @param event - The submit event triggered by the form submission.
+   */
   public override handleFormSubmit(event: SubmitEvent): void {
+    this.hasAttemptedSubmit = true;
     this.setProsecutorName();
+    this.enforceOffenceCodeValidationBeforeSubmit();
     super.handleFormSubmit(event);
   }
 }

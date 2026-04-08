@@ -99,6 +99,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   extends AbstractFormArrayBaseComponent
   implements OnInit, OnDestroy
 {
+  private hasAttemptedSubmit = false;
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
@@ -137,6 +138,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   };
   public majorCreditorItemsByCode: Record<string, IAlphagovAccessibleAutocompleteItem[]> = {};
   public currentResultCodeByRow: Record<number, string> = {};
+
+  // Replaced during listener setup with a callback that retries the current offence-code lookup.
+  private retryOffenceCodeLookup = (): void => {};
 
   /**
    * Sets up the form for adding an offence.
@@ -210,11 +214,13 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   /**
    * Sets up the offence code listener for the fines-mac-offence-details-add-an-offence component.
-   * This method initializes the offence code listener and updates the offenceCode$ observable
-   * with the result from the service.
+   * This method initializes the offence code listener, stores the returned retry
+   * callback for submit-time validation, updates the offenceCode$ observable with
+   * the lookup result, and refreshes rendered errors when confirmation changes
+   * after a submit attempt.
    */
   private setupOffenceCodeListener(): void {
-    this.offenceDetailsService.initOffenceCodeListener(
+    this.retryOffenceCodeLookup = this.offenceDetailsService.initOffenceCodeListener(
       this.form,
       'fm_offence_details_offence_cjs_code',
       'fm_offence_details_offence_id',
@@ -226,8 +232,23 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       },
       (confirmed) => {
         this.selectedOffenceConfirmation = confirmed;
+        this.refreshSubmittedOffenceCodeErrors();
       },
     );
+  }
+
+  /**
+   * Rebuilds rendered error messages after offence-code validation updates asynchronously.
+   * This keeps the summary and inline messages aligned with the latest control errors
+   * after the user has already attempted to submit the form.
+   */
+  private refreshSubmittedOffenceCodeErrors(): void {
+    if (!this.hasAttemptedSubmit) {
+      return;
+    }
+
+    this.handleErrorMessages();
+    this.changeDetector.markForCheck();
   }
 
   /**
@@ -481,6 +502,48 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
+   * Ensures offence-code validation has completed before allowing submission.
+   * If the latest lookup failed for a 7 or 8 character code, the lookup is retried.
+   * Otherwise, unresolved lookup-length codes are marked with a pending-validation
+   * error, and that error is cleared once an offence id has been resolved.
+   */
+  private enforceOffenceCodeValidationBeforeSubmit(): void {
+    const offenceCodeControl = this.form.get('fm_offence_details_offence_cjs_code') as FormControl | null;
+    const offenceIdControl = this.form.get('fm_offence_details_offence_id') as FormControl | null;
+
+    if (!offenceCodeControl || !offenceIdControl) {
+      return;
+    }
+
+    const offenceCode = offenceCodeControl.value ?? '';
+    const isLookupLength = offenceCode.length >= 7 && offenceCode.length <= 8;
+    const hasOffenceId = offenceIdControl.value !== null && offenceIdControl.value !== undefined;
+    const hasInvalidOffenceCodeError = Boolean(offenceCodeControl.errors?.['invalidOffenceCode']);
+    const hasOffenceCodeLookupFailedError = Boolean(offenceCodeControl.errors?.['offenceCodeLookupFailed']);
+
+    if (hasOffenceCodeLookupFailedError && isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError) {
+      this.retryOffenceCodeLookup();
+      return;
+    }
+
+    if (isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError) {
+      const currentErrors = offenceCodeControl.errors;
+      const updatedErrors = currentErrors
+        ? { ...currentErrors, offenceCodeValidationPending: true }
+        : { offenceCodeValidationPending: true };
+      offenceCodeControl.setErrors(updatedErrors, { emitEvent: false });
+      return;
+    }
+
+    const currentErrors = offenceCodeControl.errors;
+    if (currentErrors?.['offenceCodeValidationPending']) {
+      const remainingErrors = { ...currentErrors };
+      delete remainingErrors['offenceCodeValidationPending'];
+      offenceCodeControl.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null, { emitEvent: false });
+    }
+  }
+
+  /**
    * Navigates to the minor creditor page for the specified row index.
    *
    * @param rowIndex - The index of the row.
@@ -603,13 +666,16 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   /**
    * Handles the form submission for adding an offence.
-   * This method first validates minor creditor selections and then
-   * invokes the base class submission logic.
+   * This method marks that submit was attempted, validates minor creditor
+   * selections, enforces offence-code validation, and then invokes the base
+   * class submission logic.
    *
    * @param event - The submit event triggered by the form submission.
    */
   public override handleFormSubmit(event: SubmitEvent): void {
+    this.hasAttemptedSubmit = true;
     this.checkImpositionMinorCreditors();
+    this.enforceOffenceCodeValidationBeforeSubmit();
     super.handleFormSubmit(event);
   }
 
