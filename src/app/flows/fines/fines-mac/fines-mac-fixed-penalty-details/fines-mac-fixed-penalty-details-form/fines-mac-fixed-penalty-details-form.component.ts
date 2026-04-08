@@ -128,6 +128,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     ...FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS,
   };
 
+  /**
+   * Replaced during listener setup with a callback that retries the current offence-code lookup.
+   */
   private retryOffenceCodeLookup = (): void => {};
 
   /*

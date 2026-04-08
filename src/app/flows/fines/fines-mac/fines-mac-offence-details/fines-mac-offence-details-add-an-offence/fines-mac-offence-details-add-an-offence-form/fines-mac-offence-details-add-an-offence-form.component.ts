@@ -139,7 +139,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public majorCreditorItemsByCode: Record<string, IAlphagovAccessibleAutocompleteItem[]> = {};
   public currentResultCodeByRow: Record<number, string> = {};
 
-  // Replaced during listener setup with a callback that retries the current offence-code lookup.
+  /**
+   * Replaced during listener setup with a callback that retries the current offence-code lookup.
+   */
   private retryOffenceCodeLookup = (): void => {};
 
   /**
