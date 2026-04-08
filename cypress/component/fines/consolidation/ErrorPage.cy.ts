@@ -7,7 +7,8 @@ import { ErrorPageLocators } from 'cypress/shared/selectors/consolidation/ErrorP
 const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
 const CONSOLIDATION_STORY_LABEL = '@JIRA-STORY:PO-2417';
 
-const buildTags = (...tags: string[]): string[] => [...tags, CONSOLIDATION_JIRA_LABEL, CONSOLIDATION_STORY_LABEL];
+const ERROR_PAGE_TAGS = [CONSOLIDATION_STORY_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, CONSOLIDATION_JIRA_LABEL];
 
 describe('FinesConSearchErrorComponent', () => {
   const setupComponent = (defendantType: 'individual' | 'company') => {
@@ -42,23 +43,31 @@ describe('FinesConSearchErrorComponent', () => {
       });
   };
 
-  it('AC2a. displays the individual search error heading and message text', { tags: buildTags() }, () => {
-    setupComponent('individual');
+  it(
+    'AC2a. displays the individual search error heading and message text',
+    { tags: buildTags(...ERROR_PAGE_TAGS) },
+    () => {
+      setupComponent('individual');
 
-    assertHeadingAndIntro();
-    cy.get(ErrorPageLocators.bulletItems).then(($items) => {
-      const items = [...$items].map((item) => item.textContent?.replace(/\s+/g, ' ').trim());
-      expect(items).to.deep.equal(['account number, or', 'National Insurance number, or', 'advanced search']);
-    });
-  });
+      assertHeadingAndIntro();
+      cy.get(ErrorPageLocators.bulletItems).then(($items) => {
+        const items = [...$items].map((item) => item.textContent?.replace(/\s+/g, ' ').trim());
+        expect(items).to.deep.equal(['account number, or', 'National Insurance number, or', 'advanced search']);
+      });
+    },
+  );
 
-  it('AC2b. displays the company search error heading and message text', { tags: buildTags() }, () => {
-    setupComponent('company');
+  it(
+    'AC2b. displays the company search error heading and message text',
+    { tags: buildTags(...ERROR_PAGE_TAGS) },
+    () => {
+      setupComponent('company');
 
-    assertHeadingAndIntro();
-    cy.get(ErrorPageLocators.bulletItems).then(($items) => {
-      const items = [...$items].map((item) => item.textContent?.replace(/\s+/g, ' ').trim());
-      expect(items).to.deep.equal(['account number, or', 'advanced search']);
-    });
-  });
+      assertHeadingAndIntro();
+      cy.get(ErrorPageLocators.bulletItems).then(($items) => {
+        const items = [...$items].map((item) => item.textContent?.replace(/\s+/g, ' ').trim());
+        expect(items).to.deep.equal(['account number, or', 'advanced search']);
+      });
+    },
+  );
 });
