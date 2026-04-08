@@ -421,6 +421,30 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Cancels the change enforcement court form without selecting a value.
+   */
+  public cancelChangeEnforcementCourtWithoutSelectingValue(): void {
+    logAE('method', 'cancelChangeEnforcementCourtWithoutSelectingValue()');
+
+    this.enforcement.cancelChangeEnforcementCourtWithoutConfirmation();
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Selects a different enforcement court value, cancels, and confirms leaving via the route guard.
+   */
+  public cancelDirtyChangeEnforcementCourtAndDiscardChanges(): void {
+    logAE('method', 'cancelDirtyChangeEnforcementCourtAndDiscardChanges()');
+
+    this.enforcement.cancelDirtyChangeEnforcementCourtWithConfirmation('selectedEnforcementCourt');
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
    * Asserts the enforcement court summary matches the selected value stored during the test.
    */
   public assertSelectedEnforcementCourtSummary(): void {
