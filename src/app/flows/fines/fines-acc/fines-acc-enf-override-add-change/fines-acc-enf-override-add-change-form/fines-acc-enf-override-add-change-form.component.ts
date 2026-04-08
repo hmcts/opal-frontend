@@ -73,8 +73,8 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
     this.form.patchValue(this.formValues);
     this._showEnforcerField = !!this.formValues.fenf_account_enforcement_enforcer;
     this._showLjaField = !!this.formValues.fenf_account_enforcement_lja;
-    this.updateControl('fenf_account_enforcement_enforcer', this._showEnforcerField ? [Validators.required] : []);
-    this.updateControl('fenf_account_enforcement_lja', this._showLjaField ? [Validators.required] : []);
+    this.updateControl('fenf_account_enforcement_enforcer', this.showEnforcerField ? [Validators.required] : []);
+    this.updateControl('fenf_account_enforcement_lja', this.showLjaField ? [Validators.required] : []);
     this.form.updateValueAndValidity();
   }
 
