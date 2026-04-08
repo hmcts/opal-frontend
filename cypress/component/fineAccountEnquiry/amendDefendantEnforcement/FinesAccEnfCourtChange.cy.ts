@@ -18,7 +18,14 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-servi
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 
-const ACCOUNT_ENQUIRY_TAGS = ['@JIRA-STORY:PO-1866', '@JIRA-LABEL:account-enquiry'];
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const JIRA_EPIC = '@JIRA-EPIC:PO-1675';
+
+const buildTags = (...tags: string[]): string[] => [...tags, JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
+const ADULT_OR_YOUTH_TAGS = buildTags('@JIRA-STORY:PO-1849');
+const PARENT_GUARDIAN_TAGS = buildTags('@JIRA-STORY:PO-1862');
+const COMPANY_TAGS = buildTags('@JIRA-STORY:PO-1863');
 const PAGE_TITLE = 'Change enforcement court';
 const FIELD_LABEL = 'Enforcement court';
 const SUBMIT_BUTTON_TEXT = 'Change';
@@ -170,7 +177,7 @@ function assertErrors() {
   cy.get(ENF_COURT_CHANGE.fieldError).should('contain.text', REQUIRED_ERROR);
 }
 
-describe('Change Enforcement Court - Individual', { tags: ACCOUNT_ENQUIRY_TAGS }, () => {
+describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS }, () => {
   it('should navigate to the change enforcement court screen and display the form', () => {
     // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
     const { courtsMock, expectedCaption } = commonSetup();
@@ -195,7 +202,7 @@ describe('Change Enforcement Court - Individual', { tags: ACCOUNT_ENQUIRY_TAGS }
   });
 });
 
-describe('Change Enforcement Court - Parent/Guardian', { tags: ACCOUNT_ENQUIRY_TAGS }, () => {
+describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_TAGS }, () => {
   it('should navigate to the change enforcement court screen and display the form', () => {
     // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
     const { courtsMock, expectedCaption } = parentGuardianSetup();
@@ -220,7 +227,7 @@ describe('Change Enforcement Court - Parent/Guardian', { tags: ACCOUNT_ENQUIRY_T
   });
 });
 
-describe('Change Enforcement Court - Company', { tags: ACCOUNT_ENQUIRY_TAGS }, () => {
+describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
   it('should navigate to the change enforcement court screen and display the form', () => {
     // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
     const { courtsMock, expectedCaption } = companySetup();
