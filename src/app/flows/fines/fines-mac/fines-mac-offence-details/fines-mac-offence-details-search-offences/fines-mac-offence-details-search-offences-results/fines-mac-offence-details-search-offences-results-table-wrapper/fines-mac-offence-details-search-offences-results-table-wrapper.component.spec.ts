@@ -36,10 +36,11 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
   });
 
   it('should enforce current template link semantics', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const templateConsts = (
-      (FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent as any).ɵcmp?.consts ?? []
-    ).filter((entry: unknown) => Array.isArray(entry)) as unknown[][];
+    const templateConsts =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent as any).ɵcmp?.consts ?? []).filter(
+        (entry: unknown) => Array.isArray(entry),
+      ) as unknown[][];
     const templateFunction =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ((FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent as any).ɵcmp?.template?.toString() as
