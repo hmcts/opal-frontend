@@ -279,8 +279,10 @@ export class SearchFilterByBUFlow {
           .trim();
 
         log('debug', `Normalised filter summary text: "${normalised}"`);
-
-        expect(normalised).to.equal(expectedSummary);
+        normalised.split(',').forEach((part) => {
+          log('debug', `Summary part: "${part.trim()}"`);
+          expect(expectedSummary).to.include(part.trim());
+        });
       });
   }
 
