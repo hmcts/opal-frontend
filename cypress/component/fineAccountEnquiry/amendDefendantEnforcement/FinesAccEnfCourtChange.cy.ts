@@ -99,7 +99,9 @@ function commonSetup(): ISetupResult {
 
 function parentGuardianSetup(): ISetupResult {
   const headerMock = structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK);
-  headerMock.party_details.individual_details = structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK.party_details.individual_details);
+  headerMock.party_details.individual_details = structuredClone(
+    DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK.party_details.individual_details,
+  );
   headerMock.party_details.individual_details!.forenames = 'Robert';
   headerMock.party_details.individual_details!.surname = 'Thomson';
 
