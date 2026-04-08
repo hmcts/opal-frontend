@@ -67,8 +67,9 @@ describe('FinesAccEnfOverrideAddChangeFormComponent', () => {
     const enforcerControl = component.form.get('fenf_account_enforcement_enforcer');
     const ljaControl = component.form.get('fenf_account_enforcement_lja');
 
-    component.showEnforcerField = true;
-    component.showLjaField = true;
+    mockOpalFines.getResult = vi.fn().mockReturnValue(of({ requires_enforcer: true, requires_lja: true }));
+    component.handleChangeEnforcementAction('R1');
+    vi.mocked(mockOpalFines.getResult).mockClear();
     enforcerControl?.setValue('E1');
     ljaControl?.setValue('L1');
 
