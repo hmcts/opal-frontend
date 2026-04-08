@@ -31,11 +31,32 @@ export class ManualAccountTaskNavigationActions {
   /**
    * Navigates back to the account details task list by clicking the Return button
    * and asserting the Account details header.
+   * @param expectedHeader Optional account details header to assert after navigation; null skips header assertion.
    */
-  navigateToAccountDetails(): void {
-    log('navigate', 'Returning to account details via Return button');
-    this.returnToAccountDetails();
+  navigateToAccountDetails(expectedHeader?: string | null): void {
+    log('navigate', 'Ensuring account details task list is loaded', { expectedHeader });
+    cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
+      if (pathname.includes('/account-details')) {
+        log('navigate', 'Already on account details page');
+        return;
+      }
+
+      cy.get('body', this.common.getTimeoutOptions()).then(($body) => {
+        const returnButton = $body
+          .find('button')
+          .filter((_, element) => /return to account details/i.test(element.innerText ?? ''));
+
+        if (returnButton.length > 0) {
+          log('navigate', 'Return button visible, clicking to reach account details');
+          cy.wrap(returnButton[0]).scrollIntoView().click({ force: true });
+          return;
+        }
+
+        log('navigate', 'Return button not present, waiting for account details navigation already in progress');
+      });
+    });
+
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
-    this.details.assertOnAccountDetailsPage();
+    this.details.assertOnAccountDetailsPage(expectedHeader);
   }
 }
