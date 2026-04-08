@@ -191,6 +191,14 @@ When('I open the add enforcement override form', () => {
 });
 
 /**
+ * @step Opens the change enforcement court form from the Enforcement tab.
+ */
+When('I open the change enforcement court form', () => {
+  log('step', 'Open change enforcement court form');
+  flow().openChangeEnforcementCourtForm();
+});
+
+/**
  * @step Selects an enforcement override on the add form.
  */
 When('I choose the enforcement override {string}', (resultCode: string) => {
@@ -243,6 +251,22 @@ When('I add the enforcement override {string} with the enforcer {string}', (resu
   flow().selectEnforcementOverride(resultCode);
   flow().selectEnforcementOverrideEnforcer(enforcer);
   flow().submitAddEnforcementOverride();
+});
+
+/**
+ * @step Changes the enforcement court to a different available value.
+ */
+When('I change the enforcement court to a different value', () => {
+  log('step', 'Change enforcement court to a different value');
+  flow().changeEnforcementCourtToDifferentValue();
+});
+
+/**
+ * @step Saves the currently displayed enforcement court value again.
+ */
+When('I save the same enforcement court value again', () => {
+  log('step', 'Save the same enforcement court value again');
+  flow().saveSameEnforcementCourtValueAgain();
 });
 
 /**
@@ -356,6 +380,30 @@ Then('I should return to the Enforcement tab', () => {
 Then('the enforcement override success banner is {string}', (expected: string) => {
   log('assert', 'Enforcement override success banner text', { expected });
   flow().assertEnforcementOverrideSuccessBanner(expected);
+});
+
+/**
+ * @step Asserts the enforcement court success banner text.
+ */
+Then('the enforcement court success banner is {string}', (expected: string) => {
+  log('assert', 'Enforcement court success banner text', { expected });
+  flow().assertEnforcementCourtSuccessBanner(expected);
+});
+
+/**
+ * @step Asserts the selected enforcement court value is shown in the summary row.
+ */
+Then('the enforcement court summary shows the selected value', () => {
+  log('assert', 'Selected enforcement court summary value');
+  flow().assertSelectedEnforcementCourtSummary();
+});
+
+/**
+ * @step Asserts no enforcement success banner is displayed.
+ */
+Then('the enforcement success banner is not displayed', () => {
+  log('assert', 'Enforcement success banner is not displayed');
+  flow().assertEnforcementSuccessBannerNotVisible();
 });
 
 /**

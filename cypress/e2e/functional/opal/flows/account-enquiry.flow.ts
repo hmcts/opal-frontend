@@ -304,6 +304,15 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the change enforcement court form from the Enforcement tab.
+   */
+  public openChangeEnforcementCourtForm(): void {
+    logAE('method', 'openChangeEnforcementCourtForm()');
+    this.enforcement.openChangeEnforcementCourtForm();
+    this.enforcement.assertChangeEnforcementCourtFormVisible();
+  }
+
+  /**
    * Selects an enforcement override code on the add form.
    *
    * @param resultCode - Enforcement override result code.
@@ -379,6 +388,62 @@ export class AccountEnquiryFlow {
   public assertEnforcementOverrideSuccessBanner(expected: string): void {
     logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
     this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Changes the enforcement court to a different available value and returns to the Enforcement tab.
+   */
+  public changeEnforcementCourtToDifferentValue(): void {
+    logAE('method', 'changeEnforcementCourtToDifferentValue()');
+
+    this.enforcement.storeCurrentEnforcementCourtValue('originalEnforcementCourt');
+    this.openChangeEnforcementCourtForm();
+    this.enforcement.selectDifferentEnforcementCourt('originalEnforcementCourt', 'selectedEnforcementCourt');
+    this.enforcement.submitChangeEnforcementCourt();
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Saves the currently displayed enforcement court value again and returns to the Enforcement tab.
+   */
+  public saveSameEnforcementCourtValueAgain(): void {
+    logAE('method', 'saveSameEnforcementCourtValueAgain()');
+
+    this.enforcement.storeCurrentEnforcementCourtValue('selectedEnforcementCourt');
+    this.openChangeEnforcementCourtForm();
+    this.enforcement.selectEnforcementCourtFromAlias('selectedEnforcementCourt');
+    this.enforcement.submitChangeEnforcementCourt();
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Asserts the enforcement court summary matches the selected value stored during the test.
+   */
+  public assertSelectedEnforcementCourtSummary(): void {
+    logAE('method', 'assertSelectedEnforcementCourtSummary()');
+    this.enforcement.assertEnforcementCourtMatchesAlias('selectedEnforcementCourt');
+  }
+
+  /**
+   * Asserts the enforcement court success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementCourtSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementCourtSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the enforcement success banner is not displayed.
+   */
+  public assertEnforcementSuccessBannerNotVisible(): void {
+    logAE('method', 'assertEnforcementSuccessBannerNotVisible()');
+    this.enforcement.assertSuccessBannerNotVisible();
   }
 
   /**

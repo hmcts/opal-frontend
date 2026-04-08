@@ -4,7 +4,7 @@
  * Selector map for the **Account Enquiry – Change enforcement court** form.
  *
  * @remarks
- * - Use these selectors in Cypress component tests to avoid local duplication.
+ * - Use these selectors in Cypress component and e2e tests to avoid local duplication.
  * - Keys mirror the visible page structure so assertions stay mechanical and readable.
  */
 export const DOM_ELEMENTS = {
