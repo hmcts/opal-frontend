@@ -6,30 +6,7 @@ import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { IOpalFinesOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences.interface';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
-
-/**
- * Configuration for wiring offence-code lookup behaviour into a form.
- */
-interface ISetupOffenceCodeLookupOptions {
-  /** The form containing the offence code and offence id controls. */
-  form: FormGroup;
-  /** The control name used for the offence code input. */
-  codeControlName: string;
-  /** The control name used to store the resolved offence id. */
-  idControlName: string;
-  /** Emits when the caller tears down subscriptions for the host component. */
-  destroy$: Subject<void>;
-  /** Executes the offence-code lookup request against the backing service. */
-  getOffenceByCjsCode: (code: string) => Observable<IOpalFinesOffencesRefData>;
-  /** Receives each successful lookup response so the caller can update local state. */
-  onResult: (result: IOpalFinesOffencesRefData) => void;
-  /** Receives whether the current offence code has been confirmed by lookup state. */
-  onConfirmChange: (confirmed: boolean) => void;
-  /** Indicates whether the parent form has already been submitted once. */
-  hasAttemptedSubmit: () => boolean;
-  /** Re-renders submitted-state errors after async lookup state changes. */
-  refreshSubmittedErrors: () => void;
-}
+import { IFinesMacOffenceDetailsSetupOffenceCodeLookupOptions } from './interfaces/fines-mac-offence-details-setup-offence-code-lookup-options.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -232,28 +209,18 @@ export class FinesMacOffenceDetailsService {
    * @param options.refreshSubmittedErrors - Refreshes visible errors after async lookup updates.
    * @returns A callback that re-runs validation for the current offence code value.
    */
-  public setupOffenceCodeLookup({
-    form,
-    codeControlName,
-    idControlName,
-    destroy$,
-    getOffenceByCjsCode,
-    onResult,
-    onConfirmChange,
-    hasAttemptedSubmit,
-    refreshSubmittedErrors,
-  }: ISetupOffenceCodeLookupOptions): () => void {
+  public setupOffenceCodeLookup(lookupOptions: IFinesMacOffenceDetailsSetupOffenceCodeLookupOptions): () => void {
     return this.initOffenceCodeListener(
-      form,
-      codeControlName,
-      idControlName,
-      destroy$,
-      getOffenceByCjsCode,
-      onResult,
+      lookupOptions.form,
+      lookupOptions.codeControlName,
+      lookupOptions.idControlName,
+      lookupOptions.destroy$,
+      lookupOptions.getOffenceByCjsCode,
+      lookupOptions.onResult,
       (confirmed) => {
-        onConfirmChange(confirmed);
-        if (hasAttemptedSubmit()) {
-          refreshSubmittedErrors();
+        lookupOptions.onConfirmChange?.(confirmed);
+        if (lookupOptions.hasAttemptedSubmit()) {
+          lookupOptions.refreshSubmittedErrors();
         }
       },
     );
