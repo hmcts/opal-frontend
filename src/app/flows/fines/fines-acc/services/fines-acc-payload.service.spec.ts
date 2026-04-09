@@ -86,7 +86,7 @@ describe('FinesAccPayloadService', () => {
 
       expect(result).toEqual({
         activity_note: {
-          record_type: 'DEFENDANT_ACCOUNTS',
+          record_type: 'defendant_accounts',
           record_id: 77,
           note_type: 'AA',
           note_text: 'Test note content',
