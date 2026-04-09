@@ -16,6 +16,17 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
+const clearEnforcementOverrideResult = (
+  enforcementMock: typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK,
+): void => {
+  if (!enforcementMock.enforcement_override) {
+    throw new Error('Expected enforcement override data to be present in the enforcement mock.');
+  }
+
+  enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = null;
+  enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_name = null;
+};
+
 describe('Account Enquiry Enforcement Status', () => {
   beforeEach(() => {
     interceptAuthenticatedUser();
@@ -226,8 +237,7 @@ describe('Account Enquiry Enforcement Status', () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = null;
-      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_name = null;
+      clearEnforcementOverrideResult(enforcementMock);
       let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
       newUserState.business_unit_users[0].permissions.push({
         permission_id: 7,
@@ -1881,8 +1891,7 @@ describe('Account Enquiry Enforcement Status', () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = null;
-      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_name = null;
+      clearEnforcementOverrideResult(enforcementMock);
 
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
@@ -2094,8 +2103,7 @@ describe('Account Enquiry Enforcement Status', () => {
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = null;
-      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_name = null;
+      clearEnforcementOverrideResult(enforcementMock);
 
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
@@ -2319,8 +2327,7 @@ describe('Account Enquiry Enforcement Status', () => {
         organisation_aliases: [],
       };
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = null;
-      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_name = null;
+      clearEnforcementOverrideResult(enforcementMock);
 
       const accountId = header.defendant_account_party_id;
       interceptAuthenticatedUser();
