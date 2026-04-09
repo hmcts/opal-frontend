@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "rootDir": "./cypress",
     "outDir": "./out-tsc/e2e",
     "types": ["cypress", "node", "@cypress/grep"],
     "typeRoots": ["./node_modules/@types", "./node_modules/@cypress"],
