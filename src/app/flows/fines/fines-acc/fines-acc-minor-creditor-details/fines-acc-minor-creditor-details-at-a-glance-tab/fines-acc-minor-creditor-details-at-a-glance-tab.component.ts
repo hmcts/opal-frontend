@@ -28,15 +28,19 @@ export class FinesAccMinorCreditorDetailsAtAGlanceTabComponent {
 
   /**
    * Emits an event to indicate that the user wants to add a payment hold.
+   * @param event The click event.
    */
-  public handleAddPaymentHold(): void {
+  public handleAddPaymentHold(event: Event): void {
+    event.preventDefault();
     this.addPaymentHold.emit();
   }
 
   /**
    * Emits an event to indicate that the user wants to remove a payment hold.
+   * @param event The click event.
    */
-  public handleRemovePaymentHold(): void {
+  public handleRemovePaymentHold(event: Event): void {
+    event.preventDefault();
     this.removePaymentHold.emit();
   }
 

@@ -123,10 +123,9 @@
           <p [class]="style.value">
             <a
               tabindex="0"
+              href=""
               class="govuk-link govuk-link--no-visited-state"
-              (click)="handleRemovePaymentHold()"
-              (keyup.enter)="handleRemovePaymentHold()"
-              (keyup.space)="handleRemovePaymentHold()"
+              (click)="handleRemovePaymentHold($event)"
               role="button"
               >Remove payment hold</a
             >
@@ -135,10 +134,9 @@
           <p [class]="style.value">
             <a
               tabindex="0"
+              href=""
               class="govuk-link govuk-link--no-visited-state"
-              (click)="handleAddPaymentHold()"
-              (keyup.enter)="handleAddPaymentHold()"
-              (keyup.space)="handleAddPaymentHold()"
+              (click)="handleAddPaymentHold($event)"
               role="button"
               >Add payment hold</a
             >
