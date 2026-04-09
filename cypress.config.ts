@@ -37,14 +37,18 @@ interface IAngularWorkspaceProjectBuildOptions {
   scripts?: string[];
   allowedCommonJsDependencies?: string[];
   inlineStyleLanguage?: string;
+  [key: string]: unknown;
 }
 
 interface IAngularWorkspaceProject {
-  root: string;
+  root?: string;
   sourceRoot: string;
   architect: {
     build: {
       options: IAngularWorkspaceProjectBuildOptions;
+      configurations?: {
+        development?: Record<string, unknown>;
+      };
     };
   };
 }
@@ -65,13 +69,9 @@ const componentProjectConfig = {
   root: angularProject.root || '.',
   sourceRoot: angularProject.sourceRoot,
   buildOptions: {
-    tsConfig: path.relative(__dirname, componentTsconfigPath),
-    assets: angularProject.architect.build.options.assets,
+    ...angularProject.architect.build.options,
+    ...(angularProject.architect.build.configurations?.development || {}),
     styles: [path.relative(__dirname, componentStylesPath)],
-    stylePreprocessorOptions: angularProject.architect.build.options.stylePreprocessorOptions,
-    scripts: angularProject.architect.build.options.scripts,
-    allowedCommonJsDependencies: angularProject.architect.build.options.allowedCommonJsDependencies,
-    inlineStyleLanguage: angularProject.architect.build.options.inlineStyleLanguage,
   },
 };
 

@@ -30,7 +30,11 @@
       "@services/fines/*": ["./src/app/flows/fines/services/*"],
       "@routing/pages/*": ["./src/app/pages/routing/*"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*"],
-      "@routing/flows/*": ["./src/app/flows/routing/*"]
+      "@routing/flows/*": ["./src/app/flows/routing/*"],
+      "cypress/component/*": ["./cypress/component/*"],
+      "cypress/e2e/*": ["./cypress/e2e/*"],
+      "cypress/shared/*": ["./cypress/shared/*"],
+      "cypress/support/*": ["./cypress/support/*"]
     }
   },
   "angularCompilerOptions": {
