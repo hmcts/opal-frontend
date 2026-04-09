@@ -9,7 +9,7 @@ Feature: Account Enquiries - View Fixed Penalty - End-to-end journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-812 @JIRA-STORY:PO-976 @JIRA-STORY:PO-978
+  @R1B @JIRA-STORY:PO-812 @JIRA-STORY:PO-976 @JIRA-STORY:PO-978 @JIRA-KEY:POT-4613
   Scenario: Search for a non-vehicle fixed penalty account and view the fixed penalty details
     Given a published non-vehicle fixed penalty account exists:
       | first name        | Robert                  |
@@ -32,7 +32,7 @@ Feature: Account Enquiries - View Fixed Penalty - End-to-end journeys
       | Place of offence  | Main Street, Metropolis |
     And I should not see the vehicle fixed penalty fields
 
-  @R1B @JIRA-STORY:PO-812 @JIRA-STORY:PO-977 @JIRA-STORY:PO-1674 @JIRA-STORY:PO-1675
+  @R1B @JIRA-STORY:PO-812 @JIRA-STORY:PO-977 @JIRA-STORY:PO-1674 @JIRA-STORY:PO-1675 @JIRA-KEY:POT-4614
   Scenario: Search for a vehicle fixed penalty company account and view the vehicle-specific fixed penalty details
     Given a published vehicle fixed penalty company account exists:
       | company name                              | Fixed Penalty Co {uniq} |
