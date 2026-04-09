@@ -12,7 +12,7 @@ import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../../fines-
 import { IFinesMacPaymentTermsEnforcementActionsOptions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-enforcement-actions-options.interface';
 import { IFinesMacPaymentTermsPermissions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-permissions.interface';
 import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
-import { IOpalFinesBusinessUnit } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-business-unit.interface';
+import { IOpalFinesBusinessUnit } from '../../../services/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';

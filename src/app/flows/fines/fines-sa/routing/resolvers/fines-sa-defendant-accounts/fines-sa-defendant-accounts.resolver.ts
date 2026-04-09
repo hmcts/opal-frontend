@@ -7,6 +7,8 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/f
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defendant-defaults.constant';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-reference-defaults.constant';
 import { of } from 'rxjs';
+import { FinesSaPayloadService } from '../../../services/fines-sa-payload.service';
+import { FINES_SA_BUILD_TRANSFORM_ITEMS_CONFIG } from '../../../services/constants/fines-sa-transform-items-config.constant';
 
 /**
  * Resolver that retrieves defendant accounts based on current search criteria in the Fines SA flow.
@@ -27,6 +29,7 @@ export const finesSaDefendantAccountsResolver =
   () => {
     const opalFinesService = inject(OpalFines);
     const finesSaStore = inject(FinesSaStore);
+    const finesSaPayloadService = inject(FinesSaPayloadService);
     const state = finesSaStore.searchAccount();
     const activeTab = finesSaStore.activeTab();
 
@@ -82,20 +85,27 @@ export const finesSaDefendantAccountsResolver =
 
     // 3) Criteria based on searchType
     if (activeTab === 'individuals' && individualCriteria) {
+      const transformedIndividualCriteria = finesSaPayloadService.transformPayload(
+        { ...individualCriteria },
+        FINES_SA_BUILD_TRANSFORM_ITEMS_CONFIG,
+      );
       return opalFinesService.getDefendantAccounts({
         ...baseSearchParams,
         reference_number: null,
         defendant: {
           ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
-          surname: individualCriteria.fsa_search_account_individuals_last_name,
-          exact_match_surname: individualCriteria.fsa_search_account_individuals_last_name_exact_match ?? false,
-          forenames: individualCriteria.fsa_search_account_individuals_first_names,
-          exact_match_forenames: individualCriteria.fsa_search_account_individuals_first_names_exact_match ?? false,
-          birth_date: individualCriteria.fsa_search_account_individuals_date_of_birth,
-          national_insurance_number: individualCriteria.fsa_search_account_individuals_national_insurance_number,
-          address_line_1: individualCriteria.fsa_search_account_individuals_address_line_1,
-          postcode: individualCriteria.fsa_search_account_individuals_post_code,
-          include_aliases: individualCriteria.fsa_search_account_individuals_include_aliases ?? false,
+          surname: transformedIndividualCriteria.fsa_search_account_individuals_last_name,
+          exact_match_surname:
+            transformedIndividualCriteria.fsa_search_account_individuals_last_name_exact_match ?? false,
+          forenames: transformedIndividualCriteria.fsa_search_account_individuals_first_names,
+          exact_match_forenames:
+            transformedIndividualCriteria.fsa_search_account_individuals_first_names_exact_match ?? false,
+          birth_date: transformedIndividualCriteria.fsa_search_account_individuals_date_of_birth,
+          national_insurance_number:
+            transformedIndividualCriteria.fsa_search_account_individuals_national_insurance_number,
+          address_line_1: transformedIndividualCriteria.fsa_search_account_individuals_address_line_1,
+          postcode: transformedIndividualCriteria.fsa_search_account_individuals_post_code,
+          include_aliases: transformedIndividualCriteria.fsa_search_account_individuals_include_aliases ?? false,
           organisation: isCompany,
         },
         active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,

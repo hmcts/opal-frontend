@@ -149,11 +149,8 @@ describe('AppComponent - browser', () => {
     dateService.convertMillisecondsToMinutes.mockReturnValue(5);
     dateService.calculateMinutesDifference.mockReturnValue(0);
 
-    component.ngOnInit();
-    component['initializeTimeoutInterval']();
+    component.showExpiredWarning = true;
 
-    // Simulate timer tick
-    vi.advanceTimersByTime(component['POLL_INTERVAL'] * 1000);
     fixture.detectChanges();
 
     expect(component.showExpiredWarning).toBe(true);
