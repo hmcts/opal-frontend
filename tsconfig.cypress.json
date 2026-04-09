@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "rootDir": ".",
     "noEmit": true,
     "esModuleInterop": true,
     "types": ["cypress", "node", "@cypress/grep"],
