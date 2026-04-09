@@ -14,12 +14,7 @@
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="collection_order_status"
-            [actionEnabled]="
-              hasAccountMaintenancePermission &&
-              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
-                ? true
-                : false
-            "
+            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
             (actionClick)="handleChangeCollectionOrder()"
           >
             <ng-container name>Collection Order status</ng-container>
@@ -32,10 +27,7 @@
                 {{ 'No collection order' }}
               }
             </ng-container>
-            @if (
-              hasAccountMaintenancePermission &&
-              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
-            ) {
+            @if (hasAccountMaintenancePermission) {
               <ng-container action>Change</ng-container>
             }
           </div>

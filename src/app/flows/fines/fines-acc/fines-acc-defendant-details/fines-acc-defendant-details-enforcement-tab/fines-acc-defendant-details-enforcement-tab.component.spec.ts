@@ -51,4 +51,18 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     expect(eventEmitterSpy).not.toHaveBeenCalled();
   });
+
+  it('should show the collection order change action for company defendants with account maintenance permission', () => {
+    component.isCompanyAccount = true;
+    component.hasAccountMaintenancePermission = true;
+    component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    component.tabData.enforcement_overview.collection_order = {
+      collection_order_date: '2025-12-10',
+      collection_order_flag: false,
+    };
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Change');
+  });
 });
