@@ -21,6 +21,7 @@
     "resolveJsonModule": false,
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
+    "ignoreDeprecations": "6.0",
     "paths": {
       "src/*": ["./src/*"],
       "@app/*": ["./src/app/*"],

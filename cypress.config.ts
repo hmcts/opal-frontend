@@ -79,6 +79,8 @@ async function setupNodeEvents(
   on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
+  const e2eTsconfigPath = path.resolve(__dirname, 'e2e.tsconfig.json');
+
   await addCucumberPreprocessorPlugin(on, config, {
     omitAfterScreenshotHandler: true,
     omitAfterSpecHandler: true,
@@ -127,7 +129,7 @@ async function setupNodeEvents(
           extensions: ['.ts', '.js'],
           plugins: [
             new TsconfigPathsPlugin({
-              configFile: path.resolve(__dirname, 'e2e.tsconfig.json'),
+              configFile: e2eTsconfigPath,
             }),
           ],
         },
@@ -140,7 +142,8 @@ async function setupNodeEvents(
                 {
                   loader: 'ts-loader',
                   options: {
-                    configFile: 'e2e.tsconfig.json',
+                    context: __dirname,
+                    configFile: e2eTsconfigPath,
                     // keep transpileOnly to speed up bundling for Cypress
                     transpileOnly: true,
                     compilerOptions: {
