@@ -25,8 +25,6 @@ describe('FinesAccSummaryHeaderComponent', () => {
     } as unknown as typeof component.accountStore;
 
     component.hasAddAccountActivityNotePermission = false;
-
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -60,8 +58,9 @@ describe('FinesAccSummaryHeaderComponent', () => {
   });
 
   it('should clear success message when banner emits clearSuccessMessage', () => {
-    const banner = fixture.debugElement.query(By.directive(FinesAccBannerMessagesComponent));
+    fixture.detectChanges();
 
+    const banner = fixture.debugElement.query(By.directive(FinesAccBannerMessagesComponent));
     banner.triggerEventHandler('clearSuccessMessage');
 
     expect(component.accountStore.clearSuccessMessage).toHaveBeenCalled();

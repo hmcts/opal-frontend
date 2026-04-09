@@ -19,6 +19,7 @@
 
   "typescript.tsserver.experimental.enableProjectDiagnostics": true,
   "javascript.tsserver.experimental.enableProjectDiagnostics": true,
+  "vitest.rootConfig": "vitest.vscode.config.ts",
 
   "sonarlint.connectedMode.project": {
     "connectionId": "HMCTS SonarQube",

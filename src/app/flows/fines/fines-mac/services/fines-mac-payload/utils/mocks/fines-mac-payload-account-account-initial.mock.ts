@@ -1,4 +1,4 @@
-import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { FINES_ACCOUNT_TYPES } from '../../../../../constants/fines-account-types.constant';
 import { IFinesMacPayloadAccountAccountInitial } from '../../interfaces/fines-mac-payload-account-initial.interface';
 
 export const FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK: IFinesMacPayloadAccountAccountInitial = {
