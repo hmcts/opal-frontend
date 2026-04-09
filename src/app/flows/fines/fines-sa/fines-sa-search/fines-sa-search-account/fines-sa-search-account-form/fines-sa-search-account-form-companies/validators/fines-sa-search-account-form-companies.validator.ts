@@ -1,6 +1,6 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { createConditionalRequiredValidator } from 'src/app/flows/fines/validators/conditional-required.validator';
-import { ConditionalRequiredRuleConfig } from 'src/app/flows/fines/validators/interfaces/conditional-required-rule-config.interface';
+import { createConditionalRequiredValidator } from '../../../../../../validators/conditional-required.validator';
+import { ConditionalRequiredRuleConfig } from '../../../../../../validators/interfaces/conditional-required-rule-config.interface';
 
 /**
  * Cross-field validator for SA Companies search criteria conditional required rules.

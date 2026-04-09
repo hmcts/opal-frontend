@@ -1,6 +1,7 @@
 export const ERROR_MESSAGES = {
   dateInPast: 'Pay by date is in the past',
   dateInFuture: 'Pay by date is more than 3 years in the future',
+  dateInFutureMessage: 'You can continue with this date or change',
   startDateInPast: 'Start date is in the past',
   startDateInFuture: 'Start date is more than 3 years in the future',
   paymentTerms: 'Select payment terms',
