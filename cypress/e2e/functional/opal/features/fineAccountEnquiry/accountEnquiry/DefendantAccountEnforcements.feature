@@ -49,7 +49,7 @@ Feature: Account Enquiries - Add Enforcement Override
       And the enforcement success banner is not displayed
       # AC5a - Cancel without selecting a value returns to the Enforcement tab without confirmation
       When I open the change enforcement court form
-      And I cancel the change enforcement court form without selecting a value
+      And I cancel without entering data
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
       # AC5b - Cancel after selecting a value shows the route guard confirmation before returning to the Enforcement tab
@@ -97,7 +97,7 @@ Feature: Account Enquiries - Add Enforcement Override
       And the enforcement success banner is not displayed
       # AC5a - Cancel without selecting a value returns to the Enforcement tab without confirmation
       When I open the change enforcement court form
-      And I cancel the change enforcement court form without selecting a value
+      And I cancel without entering data
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
       # AC5b - Cancel after selecting a value shows the route guard confirmation before returning to the Enforcement tab
@@ -148,7 +148,7 @@ Feature: Account Enquiries - Add Enforcement Override
       And the enforcement success banner is not displayed
       # AC5a - Cancel without selecting a value returns to the Enforcement tab without confirmation
       When I open the change enforcement court form
-      And I cancel the change enforcement court form without selecting a value
+      And I cancel without entering data
       Then I should return to the Enforcement tab
       And the enforcement court summary shows the selected value
       # AC5b - Cancel after selecting a value shows the route guard confirmation before returning to the Enforcement tab

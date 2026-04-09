@@ -234,7 +234,7 @@ export class AccountDetailsNavActions {
   assertEnforcementTabIsActive(): void {
     log('assert', 'Asserting "Enforcement" tab is active');
 
-    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+    cy.get(N.subNav.enforcementTab, { timeout: 10_000 })
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Enforcement');

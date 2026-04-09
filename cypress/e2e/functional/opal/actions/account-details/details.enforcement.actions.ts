@@ -222,51 +222,6 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
-   * Cancels the change enforcement court form without triggering a confirmation dialog.
-   */
-  public cancelChangeEnforcementCourtWithoutConfirmation(): void {
-    log('action', 'Cancelling change enforcement court form without confirmation');
-
-    cy.window().then((win) => {
-      cy.stub(win, 'confirm').as('changeEnforcementCourtConfirm');
-    });
-
-    cy.get(ENF_COURT_CHANGE.cancelLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
-      .contains(/^Cancel$/i)
-      .click();
-
-    cy.get('@changeEnforcementCourtConfirm').should('not.have.been.called');
-  }
-
-  /**
-   * Cancels the change enforcement court form after selecting a different value and confirms leaving.
-   *
-   * @param currentAliasName - Alias containing the current saved enforcement court value.
-   */
-  public cancelDirtyChangeEnforcementCourtWithConfirmation(currentAliasName: string): void {
-    log('action', 'Cancelling dirty change enforcement court form with confirmation', { currentAliasName });
-
-    this.selectDifferentEnforcementCourt(currentAliasName, 'unsavedEnforcementCourt');
-
-    let confirmationShown = false;
-
-    cy.once('window:confirm', (msg) => {
-      confirmationShown = true;
-      const normalized = String(msg).replace(/\s+/g, ' ');
-      expect(normalized, 'Confirm prompt message').to.match(/unsaved changes/i);
-      return true;
-    });
-
-    cy.get(ENF_COURT_CHANGE.cancelLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
-      .contains(/^Cancel$/i)
-      .click();
-
-    cy.then(() => {
-      expect(confirmationShown, 'Unsaved changes confirmation should be displayed').to.be.true;
-    });
-  }
-
-  /**
    * Clicks the cancel link on the add enforcement override form.
    */
   public cancelAddEnforcementOverride(): void {

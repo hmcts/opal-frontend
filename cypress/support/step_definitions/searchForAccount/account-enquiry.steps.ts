@@ -270,14 +270,6 @@ When('I save the same enforcement court value again', () => {
 });
 
 /**
- * @step Cancels the change enforcement court form without selecting a value.
- */
-When('I cancel the change enforcement court form without selecting a value', () => {
-  log('step', 'Cancel change enforcement court form without selecting a value');
-  flow().cancelChangeEnforcementCourtWithoutSelectingValue();
-});
-
-/**
  * @step Cancels the change enforcement court form after selecting a value and confirms leaving.
  */
 When('I cancel the change enforcement court form after selecting a value and discarding changes', () => {
