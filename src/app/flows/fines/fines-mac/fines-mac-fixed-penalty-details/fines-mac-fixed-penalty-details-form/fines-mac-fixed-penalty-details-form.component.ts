@@ -305,46 +305,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   /**
-   * Sets up the offence code listener to handle changes in the offence code field.
-   * It initializes the offence code listener from the offence details service which fetches
-   * offence details based on the CJS code entered by the user. It stores
-   * the returned retry callback for submit-time validation, updates the offenceCode$
-   * observable with the fetched offence details, and refreshes rendered errors when
-   * the selected offence confirmation changes after a submit attempt.
-   */
-  private setupOffenceCodeListener(): void {
-    this.retryOffenceCodeLookup = this.offenceDetailsService.initOffenceCodeListener(
-      this.form,
-      `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
-      `${this.fixedPenaltyPrefix}offence_details_offence_id`,
-      this.ngUnsubscribe,
-      this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
-      (result) => {
-        this.changeDetector.markForCheck();
-        this.offenceCode$ = of(result);
-      },
-      (confirmed) => {
-        this.selectedOffenceConfirmation = confirmed;
-        this.refreshSubmittedOffenceCodeErrors();
-      },
-    );
-  }
-
-  /**
-   * Rebuilds rendered error messages after offence-code validation updates asynchronously.
-   * This keeps the summary and inline messages aligned with the latest control errors
-   * after the user has already attempted to submit the form.
-   */
-  private refreshSubmittedOffenceCodeErrors(): void {
-    if (!this.hasAttemptedSubmit) {
-      return;
-    }
-
-    this.handleErrorMessages();
-    this.changeDetector.markForCheck();
-  }
-
-  /**
    * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
    * It finds the corresponding prosecutor from the prosecutorsData array
    * and returns the pretty name for that prosecutor or null if not found.
@@ -438,53 +398,25 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     // Set up listeners
     if (this.defendantType !== this.defendantTypesKeys.company) this.dateOfBirthListener();
     this.offenceTypeListener();
-    this.setupOffenceCodeListener();
-  }
-
-  /**
-   * Ensures offence-code validation has completed before allowing submission.
-   * If the latest lookup failed for a 7 or 8 character code, the lookup is retried.
-   * Otherwise, unresolved lookup-length codes are marked with a pending-validation
-   * error, and that error is cleared once an offence id has been resolved.
-   */
-  private enforceOffenceCodeValidationBeforeSubmit(): void {
-    const offenceCodeControl = this.form.get(
-      `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
-    ) as FormControl | null;
-    const offenceIdControl = this.form.get(
-      `${this.fixedPenaltyPrefix}offence_details_offence_id`,
-    ) as FormControl | null;
-
-    if (!offenceCodeControl || !offenceIdControl) {
-      return;
-    }
-
-    const offenceCode = offenceCodeControl.value ?? '';
-    const isLookupLength = offenceCode.length >= 7 && offenceCode.length <= 8;
-    const hasOffenceId = offenceIdControl.value !== null && offenceIdControl.value !== undefined;
-    const hasInvalidOffenceCodeError = Boolean(offenceCodeControl.errors?.['invalidOffenceCode']);
-    const hasOffenceCodeLookupFailedError = Boolean(offenceCodeControl.errors?.['offenceCodeLookupFailed']);
-
-    if (hasOffenceCodeLookupFailedError && isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError) {
-      this.retryOffenceCodeLookup();
-      return;
-    }
-
-    if (isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError) {
-      const currentErrors = offenceCodeControl.errors;
-      const updatedErrors = currentErrors
-        ? { ...currentErrors, offenceCodeValidationPending: true }
-        : { offenceCodeValidationPending: true };
-      offenceCodeControl.setErrors(updatedErrors, { emitEvent: false });
-      return;
-    }
-
-    const currentErrors = offenceCodeControl.errors;
-    if (currentErrors?.['offenceCodeValidationPending']) {
-      const remainingErrors = { ...currentErrors };
-      delete remainingErrors['offenceCodeValidationPending'];
-      offenceCodeControl.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null, { emitEvent: false });
-    }
+    this.retryOffenceCodeLookup = this.offenceDetailsService.setupOffenceCodeLookup({
+      form: this.form,
+      codeControlName: `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
+      idControlName: `${this.fixedPenaltyPrefix}offence_details_offence_id`,
+      destroy$: this.ngUnsubscribe,
+      getOffenceByCjsCode: this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
+      onResult: (result) => {
+        this.changeDetector.markForCheck();
+        this.offenceCode$ = of(result);
+      },
+      onConfirmChange: (confirmed) => {
+        this.selectedOffenceConfirmation = confirmed;
+      },
+      hasAttemptedSubmit: () => this.hasAttemptedSubmit,
+      refreshSubmittedErrors: () => {
+        this.handleErrorMessages();
+        this.changeDetector.markForCheck();
+      },
+    });
   }
 
   public override ngOnInit(): void {
@@ -501,7 +433,12 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   public override handleFormSubmit(event: SubmitEvent): void {
     this.hasAttemptedSubmit = true;
     this.setProsecutorName();
-    this.enforceOffenceCodeValidationBeforeSubmit();
+    this.offenceDetailsService.enforceOffenceCodeValidationBeforeSubmit(
+      this.form,
+      `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
+      `${this.fixedPenaltyPrefix}offence_details_offence_id`,
+      this.retryOffenceCodeLookup,
+    );
     super.handleFormSubmit(event);
   }
 }

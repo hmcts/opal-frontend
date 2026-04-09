@@ -7,6 +7,30 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { IOpalFinesOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences.interface';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
+/**
+ * Configuration for wiring offence-code lookup behaviour into a form.
+ */
+interface ISetupOffenceCodeLookupOptions {
+  /** The form containing the offence code and offence id controls. */
+  form: FormGroup;
+  /** The control name used for the offence code input. */
+  codeControlName: string;
+  /** The control name used to store the resolved offence id. */
+  idControlName: string;
+  /** Emits when the caller tears down subscriptions for the host component. */
+  destroy$: Subject<void>;
+  /** Executes the offence-code lookup request against the backing service. */
+  getOffenceByCjsCode: (code: string) => Observable<IOpalFinesOffencesRefData>;
+  /** Receives each successful lookup response so the caller can update local state. */
+  onResult: (result: IOpalFinesOffencesRefData) => void;
+  /** Receives whether the current offence code has been confirmed by lookup state. */
+  onConfirmChange: (confirmed: boolean) => void;
+  /** Indicates whether the parent form has already been submitted once. */
+  hasAttemptedSubmit: () => boolean;
+  /** Re-renders submitted-state errors after async lookup state changes. */
+  refreshSubmittedErrors: () => void;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -191,13 +215,96 @@ export class FinesMacOffenceDetailsService {
   }
 
   /**
+   * Wires offence-code lookup state into a form using a single options object.
+   * The lookup behaviour is unchanged from the old positional-parameter version,
+   * but the named configuration makes each dependency explicit and keeps the
+   * public API below the parameter-count threshold.
+   *
+   * @param options - Configuration for the offence-code lookup wiring.
+   * @param options.form - The form containing the offence code and offence id controls.
+   * @param options.codeControlName - The offence code control name.
+   * @param options.idControlName - The offence id control name.
+   * @param options.destroy$ - Emits when subscriptions should be torn down.
+   * @param options.getOffenceByCjsCode - Fetches offences for the current code.
+   * @param options.onResult - Handles successful lookup responses.
+   * @param options.onConfirmChange - Updates the caller with the confirmation state.
+   * @param options.hasAttemptedSubmit - Reports whether submit has already been attempted.
+   * @param options.refreshSubmittedErrors - Refreshes visible errors after async lookup updates.
+   * @returns A callback that re-runs validation for the current offence code value.
+   */
+  public setupOffenceCodeLookup({
+    form,
+    codeControlName,
+    idControlName,
+    destroy$,
+    getOffenceByCjsCode,
+    onResult,
+    onConfirmChange,
+    hasAttemptedSubmit,
+    refreshSubmittedErrors,
+  }: ISetupOffenceCodeLookupOptions): () => void {
+    return this.initOffenceCodeListener(
+      form,
+      codeControlName,
+      idControlName,
+      destroy$,
+      getOffenceByCjsCode,
+      onResult,
+      (confirmed) => {
+        onConfirmChange(confirmed);
+        if (hasAttemptedSubmit()) {
+          refreshSubmittedErrors();
+        }
+      },
+    );
+  }
+
+  /**
+   * Ensures offence-code validation has completed before allowing submission.
+   * If the latest lookup failed for a 7 or 8 character code, the lookup is retried.
+   * Otherwise, unresolved lookup-length codes are marked with a pending-validation
+   * error, and that error is cleared once an offence id has been resolved.
+   */
+  public enforceOffenceCodeValidationBeforeSubmit(
+    form: FormGroup,
+    codeControlName: string,
+    idControlName: string,
+    retryOffenceCodeLookup: () => void,
+  ): void {
+    const offenceCodeControl = form.get(codeControlName) as FormControl | null;
+    const offenceIdControl = form.get(idControlName) as FormControl | null;
+
+    if (!offenceCodeControl || !offenceIdControl) {
+      return;
+    }
+
+    const offenceCode = typeof offenceCodeControl.value === 'string' ? offenceCodeControl.value : '';
+    const isLookupLength = offenceCode.length >= 7 && offenceCode.length <= 8;
+    const hasOffenceId = offenceIdControl.value !== null && offenceIdControl.value !== undefined;
+    const hasInvalidOffenceCodeError = Boolean(offenceCodeControl.errors?.['invalidOffenceCode']);
+    const hasOffenceCodeLookupFailedError = Boolean(offenceCodeControl.errors?.['offenceCodeLookupFailed']);
+
+    if (hasOffenceCodeLookupFailedError && isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError) {
+      retryOffenceCodeLookup();
+      return;
+    }
+
+    this.setControlError(
+      offenceCodeControl,
+      'offenceCodeValidationPending',
+      isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError,
+    );
+  }
+
+  /**
    * Initializes the offence code listener for a form control.
+   *
    * @param form - The FormGroup containing the controls.
    * @param codeControlName - The name of the control for the offence code.
    * @param idControlName - The name of the control for the offence ID.
    * @param destroy$ - Subject to signal when to unsubscribe from observables.
    * @param getOffenceByCjsCode - Function used to fetch offence details by CJS code.
-   * @param onResult - Optional callback function to handle the result of the code lookup.
+   * @param onResult - Callback function to handle a successful code lookup result.
    * @param onConfirmChange - Optional callback function to confirm if the code change was successful.
    * @returns A callback that re-runs validation for the current offence code value.
    */

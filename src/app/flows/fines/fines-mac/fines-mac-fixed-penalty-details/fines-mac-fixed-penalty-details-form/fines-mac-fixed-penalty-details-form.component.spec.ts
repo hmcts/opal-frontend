@@ -10,7 +10,7 @@ import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK } from '../mocks/fines-mac-fi
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
 import { OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-autocomplete-items.mock';
-import { FormControl, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
@@ -195,8 +195,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     vi.spyOn<any, any>(component, 'dateOfBirthListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'offenceTypeListener');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component, 'setupOffenceCodeListener');
+    const setupOffenceCodeLookupSpy = vi.spyOn(component['offenceDetailsService'], 'setupOffenceCodeLookup');
 
     component['initialFixedPenaltyDetailsSetup']();
 
@@ -206,27 +205,19 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component['rePopulateForm']).toHaveBeenCalled();
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
     expect(component['offenceTypeListener']).toHaveBeenCalled();
-    expect(component['setupOffenceCodeListener']).toHaveBeenCalled();
+    expect(setupOffenceCodeLookupSpy).toHaveBeenCalled();
   });
 
   it('should update offenceCode$ and selectedOffenceConfirmation when callbacks are invoked', () => {
     vi.useFakeTimers();
     mockOpalFinesService.getOffenceByCjsCode.mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
 
-    component['setupFixedPenaltyDetailsForm']();
-    component.form.addControl('fm_fp_offence_details_offence_id', new FormControl(''));
-    component.form.addControl('fm_fp_offence_details_offence_cjs_code', new FormControl(''));
-
-    // Act
-    component['setupOffenceCodeListener']();
-
     component.form.get('fm_fp_offence_details_offence_cjs_code')?.setValue('AK123456');
 
     vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
     // Assert
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let value: any;
+    let value: unknown;
     component.offenceCode$.subscribe((v) => (value = v));
     expect(value).toEqual(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
     expect(component.selectedOffenceConfirmation).toBe(true);
@@ -245,8 +236,8 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleErrorMessagesSpy = vi.spyOn<any, any>(component, 'handleErrorMessages');
 
+    component['initialFixedPenaltyDetailsSetup']();
     component.handleFormSubmit(new SubmitEvent('submit'));
-    component['setupOffenceCodeListener']();
     confirmChangeCallback(false);
 
     expect(component.selectedOffenceConfirmation).toBe(false);
@@ -255,8 +246,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should set offenceCodeValidationPending immediately when lookup-length offence code changes', () => {
     vi.useFakeTimers();
-    component['setupFixedPenaltyDetailsForm']();
-    component['setupOffenceCodeListener']();
     component.form.get('fm_fp_offence_details_offence_id')?.setValue(314441);
 
     component.form.get('fm_fp_offence_details_offence_cjs_code')?.setValue('AK12345');
@@ -289,8 +278,12 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     offenceCodeControl.setErrors({ customError: true });
     offenceIdControl.setValue(null);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).enforceOffenceCodeValidationBeforeSubmit();
+    component['offenceDetailsService'].enforceOffenceCodeValidationBeforeSubmit(
+      component.form,
+      'fm_fp_offence_details_offence_cjs_code',
+      'fm_fp_offence_details_offence_id',
+      component['retryOffenceCodeLookup'],
+    );
 
     expect(offenceCodeControl.errors).toEqual({
       customError: true,
