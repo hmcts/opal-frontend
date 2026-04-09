@@ -206,7 +206,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2, AC2a, AC5a, AC5b, AC5c, AC5d, AC5e, AC5f, AC5g, AC5h, AC5i. should display the individual results columns in the AC order and format populated data',
-      { tags: buildTags(...INDIVIDUAL_TAGS) },
+      { tags: buildTags(...INDIVIDUAL_TAGS, '@JIRA-KEY:POT-4575') },
       () => {
         defendantAccountResults[0].has_paying_parent_guardian = true; // Set to true to confirm Y is displayed in the relevant cell
         defendantAccountResults[0].checks = { errors: [], warnings: [] }; //checks should be empty for check boxes to appear
@@ -246,7 +246,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2b, AC2c, AC5b, AC5d, AC5fi, AC5g. should display an em dash for optional or unavailable account data',
-      { tags: buildTags(...INDIVIDUAL_TAGS) },
+      { tags: buildTags(...INDIVIDUAL_TAGS, '@JIRA-KEY:POT-4576') },
       () => {
         defendantAccountResults.push(createFalseyResult());
 
@@ -275,7 +275,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2d, AC2e. should display a maximum of 100 accounts on a single scrollable page with no pagination',
-      { tags: buildTags(...INDIVIDUAL_TAGS) },
+      { tags: buildTags(...INDIVIDUAL_TAGS, '@JIRA-KEY:POT-4577') },
       () => {
         defendantAccountResults = createMaxResultsMock();
 
@@ -294,7 +294,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC3. should display individual results in Name, Date of birth, then Account number ascending order',
-      { tags: buildTags(...INDIVIDUAL_TAGS) },
+      { tags: buildTags(...INDIVIDUAL_TAGS, '@JIRA-KEY:POT-4578') },
       () => {
         defendantAccountResults = [
           buildIndividualResult({
@@ -341,7 +341,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the individual over-100 results state with the try adding more information link',
-      { tags: buildTags(...INVALID_RESULTS_TAGS) },
+      { tags: buildTags(...INVALID_RESULTS_TAGS, '@JIRA-KEY:POT-4579') },
       () => {
         defendantAccountResults = createTooManyResultsMock();
 
@@ -355,7 +355,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the individual no-results state with the check your search link',
-      { tags: buildTags(...INVALID_RESULTS_TAGS) },
+      { tags: buildTags(...INVALID_RESULTS_TAGS, '@JIRA-KEY:POT-4580') },
       () => {
         defendantAccountResults = [];
 
@@ -369,7 +369,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7. should display warning and error checks beneath the relevant account row',
-      { tags: buildTags(...INDIVIDUAL_TAGS) },
+      { tags: buildTags(...INDIVIDUAL_TAGS, '@JIRA-KEY:POT-4581') },
       () => {
         setupComponent();
 
@@ -385,7 +385,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7a, AC7b. should show only errors when both errors and warnings exist, listing multiple errors as bullets',
-      { tags: buildTags(...INDIVIDUAL_TAGS) },
+      { tags: buildTags(...INDIVIDUAL_TAGS, '@JIRA-KEY:POT-4582') },
       () => {
         defendantAccountResults = [createMultipleErrorsAndWarningsResult()];
 
@@ -409,7 +409,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7c. should display all warnings when multiple warnings apply and no errors exist',
-      { tags: buildTags(...INDIVIDUAL_TAGS) },
+      { tags: buildTags(...INDIVIDUAL_TAGS, '@JIRA-KEY:POT-4583') },
       () => {
         defendantAccountResults = [createMultipleWarningsResult()];
 
@@ -436,7 +436,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1, AC1a, AC1b. should render the company account results tab with populated mock data',
-      { tags: buildTags(...COMPANY_TAGS) },
+      { tags: buildTags(...COMPANY_TAGS, '@JIRA-KEY:POT-4584') },
       () => {
         setupComponent({ defendantType: 'company' });
 
@@ -460,7 +460,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2, AC2a, AC5a, AC5b, AC5d, AC5e, AC5f, AC5i. should display the company results columns in the AC order and format populated data',
-      { tags: buildTags(...COMPANY_TAGS) },
+      { tags: buildTags(...COMPANY_TAGS, '@JIRA-KEY:POT-4585') },
       () => {
         setupComponent({ defendantType: 'company' });
 
@@ -494,7 +494,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2b, AC2c, AC5b, AC5d, AC5fi. should display an em dash for unavailable company account data',
-      { tags: buildTags(...COMPANY_TAGS) },
+      { tags: buildTags(...COMPANY_TAGS, '@JIRA-KEY:POT-4586') },
       () => {
         defendantAccountResults.push(createCompanyFalseyResult());
 
@@ -517,7 +517,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC2d, AC2e. should display a maximum of 100 company accounts on a single scrollable page with no pagination',
-      { tags: buildTags(...COMPANY_TAGS) },
+      { tags: buildTags(...COMPANY_TAGS, '@JIRA-KEY:POT-4587') },
       () => {
         defendantAccountResults = createCompanyMaxResultsMock();
 
@@ -533,7 +533,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC3. should display company results in Name, then Account number ascending order',
-      { tags: buildTags(...COMPANY_TAGS) },
+      { tags: buildTags(...COMPANY_TAGS, '@JIRA-KEY:POT-4588') },
       () => {
         defendantAccountResults = [
           buildCompanyResult({
@@ -572,7 +572,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the company over-100 results state with the try adding more information link',
-      { tags: buildTags(...INVALID_RESULTS_TAGS) },
+      { tags: buildTags(...INVALID_RESULTS_TAGS, '@JIRA-KEY:POT-4589') },
       () => {
         defendantAccountResults = createCompanyTooManyResultsMock();
 
@@ -586,7 +586,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the company no-results state with the check your search link',
-      { tags: buildTags(...INVALID_RESULTS_TAGS) },
+      { tags: buildTags(...INVALID_RESULTS_TAGS, '@JIRA-KEY:POT-4590') },
       () => {
         defendantAccountResults = [];
 
@@ -600,7 +600,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7. should display warning and error checks beneath the relevant company account row',
-      { tags: buildTags(...COMPANY_TAGS) },
+      { tags: buildTags(...COMPANY_TAGS, '@JIRA-KEY:POT-4591') },
       () => {
         defendantAccountResults[0].checks = {
           errors: [{ reference: 'CON.ER.4', message: 'Account has days in default' }],
@@ -620,7 +620,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7a, AC7b. should show only errors for company results when both errors and warnings exist, listing multiple errors as bullets',
-      { tags: buildTags(...COMPANY_TAGS) },
+      { tags: buildTags(...COMPANY_TAGS, '@JIRA-KEY:POT-4592') },
       () => {
         defendantAccountResults = [createCompanyMultipleErrorsAndWarningsResult()];
 
@@ -642,7 +642,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC7c. should display all warnings for company results when multiple warnings apply and no errors exist',
-      { tags: buildTags(...COMPANY_TAGS) },
+      { tags: buildTags(...COMPANY_TAGS, '@JIRA-KEY:POT-4593') },
       () => {
         defendantAccountResults = [createCompanyMultipleWarningsResult()];
 
@@ -668,7 +668,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC3, AC3a, AC3b. should show row checkboxes for selectable accounts, hide them for errors, and keep warning rows enabled',
-      { tags: buildTags(...RESULTS_TAB_FUNCTIONALITY_TAGS) },
+      { tags: buildTags(...RESULTS_TAB_FUNCTIONALITY_TAGS, '@JIRA-KEY:POT-4594') },
       () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };
         defendantAccountResults.push(createMultipleErrorsAndWarningsResult(), createMultipleWarningsResult());
@@ -700,7 +700,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC4, AC4a, AC4b, AC4c, AC5a, AC5b, AC5c. should bulk select and deselect all enabled accounts while excluding accounts with errors',
-      { tags: buildTags(...RESULTS_TAB_FUNCTIONALITY_TAGS) },
+      { tags: buildTags(...RESULTS_TAB_FUNCTIONALITY_TAGS, '@JIRA-KEY:POT-4595') },
       () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };
         defendantAccountResults.push(createMultipleErrorsAndWarningsResult(), createMultipleWarningsResult());
@@ -741,7 +741,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC6, AC6a, AC6b. should display Add to list above the counter and show a validation error when no accounts are selected',
-      { tags: buildTags(...RESULTS_TAB_FUNCTIONALITY_TAGS) },
+      { tags: buildTags(...RESULTS_TAB_FUNCTIONALITY_TAGS, '@JIRA-KEY:POT-4596') },
       () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };
 
