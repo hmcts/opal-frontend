@@ -40,6 +40,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() hasEnterEnforcementPermission: boolean = false;
   @Output() addEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementOverride = new EventEmitter<void>();
+  @Output() public removeEnforcementOverride = new EventEmitter<void>();
 
   /**
    * Emits an event to add an enforcement override if the user has the necessary permissions and there is no existing enforcement override result.
