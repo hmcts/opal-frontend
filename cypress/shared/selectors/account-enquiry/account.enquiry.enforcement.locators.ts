@@ -1,3 +1,5 @@
+import { COLLECTION_ORDER_CHANGE_ELEMENTS } from './account.enquiry.collection-order-change.locators';
+
 /**
  * @file account.enquiry.enforcement.locators.ts
  * @description
@@ -47,6 +49,6 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
 
   detailsDaysInDefault: '[id="enforcementActionDetailsDays in defaultKey"]',
   detailsReason: '#enforcementActionDetailsReasonKey',
-
+  collectionOrderChange: '#enforcementOverviewDetailsCollection_order_statusActions > a',
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
 } as const;

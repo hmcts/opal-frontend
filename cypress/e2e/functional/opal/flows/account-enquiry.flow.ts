@@ -304,6 +304,90 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the Change Collection Order status form from the Enforcement tab.
+   */
+  public openChangeCollectionOrderForm(): void {
+    logAE('method', 'openChangeCollectionOrderForm()');
+    this.enforcement.openChangeCollectionOrderForm();
+  }
+
+  /**
+   * Asserts the Change Collection Order status form is visible.
+   */
+  public assertChangeCollectionOrderFormVisible(): void {
+    logAE('method', 'assertChangeCollectionOrderFormVisible()');
+    this.enforcement.assertChangeCollectionOrderFormVisible();
+  }
+
+  /**
+   * Asserts the account identifier shown on the Change Collection Order status page.
+   *
+   * @param expected - Expected account identifier text.
+   */
+  public assertChangeCollectionOrderAccountIdentifier(expected: string): void {
+    logAE('method', 'assertChangeCollectionOrderAccountIdentifier()', { expected });
+    this.enforcement.assertChangeCollectionOrderAccountIdentifier(expected);
+  }
+
+  /**
+   * Selects a Collection Order status option on the change form.
+   *
+   * @param option - Visible radio label to select.
+   */
+  public selectChangeCollectionOrderStatus(option: string): void {
+    logAE('method', 'selectChangeCollectionOrderStatus()', { option });
+    this.enforcement.selectCollectionOrderStatus(option);
+  }
+
+  /**
+   * Submits the Change Collection Order status form.
+   */
+  public submitChangeCollectionOrderForm(): void {
+    logAE('method', 'submitChangeCollectionOrderForm()');
+    this.enforcement.submitChangeCollectionOrderForm();
+  }
+
+  /**
+   * Cancels the Change Collection Order status form without making changes.
+   */
+  public cancelChangeCollectionOrderFormWithoutChanges(): void {
+    logAE('method', 'cancelChangeCollectionOrderFormWithoutChanges()');
+    this.enforcement.cancelChangeCollectionOrderForm();
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Cancels the Change Collection Order status form after making changes and chooses to stay on the page.
+   */
+  public cancelChangeCollectionOrderFormAndStay(): void {
+    logAE('method', 'cancelChangeCollectionOrderFormAndStay()');
+    this.common.confirmNextUnsavedChanges(false);
+    this.enforcement.cancelChangeCollectionOrderForm();
+    this.enforcement.assertChangeCollectionOrderFormVisible();
+  }
+
+  /**
+   * Asserts the Collection Order success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertCollectionOrderSuccessBanner(expected: string): void {
+    logAE('method', 'assertCollectionOrderSuccessBanner()', { expected });
+    this.enforcement.assertCollectionOrderSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the Collection Order summary value on the Enforcement tab.
+   *
+   * @param expected - Expected Collection Order summary value.
+   */
+  public assertCollectionOrderSummary(expected: string): void {
+    logAE('method', 'assertCollectionOrderSummary()', { expected });
+    this.enforcement.assertCollectionOrderSummary(expected);
+  }
+
+  /**
    * Selects an enforcement override code on the add form.
    *
    * @param resultCode - Enforcement override result code.

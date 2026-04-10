@@ -4,6 +4,7 @@
  */
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { DOM_ELEMENTS as ENF_OVR } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
+import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('AccountDetailsEnforcementActions');
@@ -52,6 +53,111 @@ export class AccountDetailsEnforcementActions {
     cy.get(ENF.addEnforcementOverrideLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .click();
+  }
+
+  /**
+   * Opens the Change Collection Order status form from the Enforcement tab.
+   */
+  public openChangeCollectionOrderForm(): void {
+    log('navigate', 'Opening Change Collection Order status form');
+    cy.get(ENF.collectionOrderChange, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .click();
+  }
+
+  /**
+   * Asserts the Change Collection Order status page is visible.
+   */
+  public assertChangeCollectionOrderFormVisible(): void {
+    log('assert', 'Change Collection Order status form is visible');
+    cy.get(COLLO.pageHeading, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', 'Change Collection Order Status');
+    cy.get(COLLO.form, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
+  }
+
+  /**
+   * Asserts the account identifier caption shown on the Change Collection Order status page.
+   *
+   * @param expected - Expected account identifier text.
+   */
+  public assertChangeCollectionOrderAccountIdentifier(expected: string): void {
+    log('assert', 'Change Collection Order account identifier', { expected });
+    cy.get(COLLO.headingWithCaption, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', expected);
+  }
+
+  /**
+   * Selects a Collection Order status option on the change form.
+   *
+   * @param option - Visible radio label to select.
+   */
+  public selectCollectionOrderStatus(option: string): void {
+    const normalizedOption = option.trim().toLowerCase();
+    log('action', 'Selecting Collection Order status', { option });
+
+    if (normalizedOption === 'yes') {
+      cy.get(COLLO.yesRadio, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+        .should('exist')
+        .check({ force: true });
+      return;
+    }
+
+    if (normalizedOption === 'no') {
+      cy.get(COLLO.noRadio, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+        .should('exist')
+        .check({ force: true });
+      return;
+    }
+
+    throw new Error(`Unsupported Collection Order status "${option}". Supported options: Yes, No`);
+  }
+
+  /**
+   * Submits the Change Collection Order status form.
+   */
+  public submitChangeCollectionOrderForm(): void {
+    log('action', 'Submitting Change Collection Order status form');
+    cy.get(COLLO.submitButton, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+  }
+
+  /**
+   * Clicks cancel on the Change Collection Order status form.
+   */
+  public cancelChangeCollectionOrderForm(): void {
+    log('action', 'Cancelling Change Collection Order status form');
+    cy.get(COLLO.cancelLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .click();
+  }
+
+  /**
+   * Asserts the success banner text shown after changing Collection Order status.
+   *
+   * @param expected - Expected success message.
+   */
+  public assertCollectionOrderSuccessBannerText(expected: string): void {
+    log('assert', 'Collection Order success banner text', { expected });
+    cy.get(ENF.successBanner, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .find(ENF.successBannerText)
+      .should('contain.text', expected);
+  }
+
+  /**
+   * Asserts the Collection Order summary value shown on the Enforcement tab.
+   *
+   * @param expected - Expected Collection Order summary value.
+   */
+  public assertCollectionOrderSummary(expected: string): void {
+    log('assert', 'Collection Order summary value', { expected });
+    cy.get(ENF.collectionOrderStatus, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .parent()
+      .should('contain.text', expected);
   }
 
   /**
