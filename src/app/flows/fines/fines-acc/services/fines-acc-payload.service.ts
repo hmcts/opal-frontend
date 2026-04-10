@@ -26,7 +26,7 @@ import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-bui
 import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IFinesAccEnfOverrideAddChangeFormState } from '../fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from '../../services/opal-fines-service/constants/opal-fines-defendant-account-patch-payload-defaults.constant';
+import { IFinesAccEnfCourtChangeFormState } from '../fines-acc-enf-court-change/interfaces/fines-acc-enf-court-change-form-state.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -163,7 +163,6 @@ export class FinesAccPayloadService {
    */
   public buildCommentsFormPayload(formState: IFinesAccAddCommentsFormState): IOpalFinesUpdateDefendantAccountPayload {
     return {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       comment_and_notes: {
         account_comment: formState.facc_add_comment || null,
         free_text_note_1: formState.facc_add_free_text_1 || null,
@@ -189,7 +188,6 @@ export class FinesAccPayloadService {
       fenf_account_enforcement_lja: lja_id,
     } = formState;
     return {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       enforcement_override: {
         enforcement_override_result: enforcement_override_result_id
           ? {
@@ -206,6 +204,23 @@ export class FinesAccPayloadService {
               lja_id,
             }
           : null,
+      },
+    };
+  }
+
+  /**
+   * Transforms the given IFinesAccEnfCourtChangeFormState into an update payload
+   * for the defendant account API.
+   *
+   * @param formState - The form state containing the enforcement court data
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildEnforcementCourtFormPayload(
+    formState: IFinesAccEnfCourtChangeFormState,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    return {
+      enforcement_court: {
+        court_id: Number(formState.facc_enf_court),
       },
     };
   }
