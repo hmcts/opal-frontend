@@ -49,4 +49,5 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   detailsReason: '#enforcementActionDetailsReasonKey',
 
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
+  changeEnforcementOverrideLink: '#enforcementOverrideDetailsEnforcement_overrideActions > .govuk-link',
 } as const;
