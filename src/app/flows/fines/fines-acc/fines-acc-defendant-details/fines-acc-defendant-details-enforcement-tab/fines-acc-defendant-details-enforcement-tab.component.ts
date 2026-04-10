@@ -39,6 +39,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
   @Output() addEnforcementOverride = new EventEmitter<void>();
+  @Output() changeEnforcementCourt = new EventEmitter<void>();
 
   /**
    * Emits an event to add an enforcement override if the user has the necessary permissions and there is no existing enforcement override result.
@@ -52,5 +53,12 @@ export class FinesAccDefendantDetailsEnforcementTab {
     ) {
       this.addEnforcementOverride.emit();
     }
+  }
+
+  /**
+   * Emits a request to navigate to the change enforcement court page.
+   */
+  public handleChangeEnforcementCourt(): void {
+    this.changeEnforcementCourt.emit();
   }
 }

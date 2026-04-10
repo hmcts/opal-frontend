@@ -1,4 +1,4 @@
-import { IFinesMacFixedPenaltyDetailsStoreState } from 'src/app/flows/fines/fines-mac/fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
+import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../../../fines-mac/fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 
 export const FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK: IFinesMacFixedPenaltyDetailsStoreState = {
   fm_offence_details_notice_number: '12345',
