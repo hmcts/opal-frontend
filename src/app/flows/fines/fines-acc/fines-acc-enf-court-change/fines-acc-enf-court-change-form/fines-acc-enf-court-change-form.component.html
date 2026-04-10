@@ -1,0 +1,30 @@
+<opal-lib-govuk-heading-with-caption
+  [captionText]="`${accountNumber} - ${partyName}`"
+  [headingText]="'Change enforcement court'"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+>
+</opal-lib-govuk-heading-with-caption>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+  <opal-lib-alphagov-accessible-autocomplete
+    [control]="form.get('facc_enf_court')"
+    labelText="Enforcement court"
+    labelClasses="govuk-fieldset__legend--m"
+    inputId="facc_enf_court"
+    inputName="facc_enf_court"
+    label="Enforcement court"
+    [autoCompleteItems]="courtOptions"
+    [errors]="formControlErrorMessages['facc_enf_court']"
+    [tabIndex]="0"
+  ></opal-lib-alphagov-accessible-autocomplete>
+
+  <div class="govuk-button-group">
+    <opal-lib-govuk-button buttonId="submitForm" type="submit" buttonClasses="nested-flow govuk-button--primary">
+      Change
+    </opal-lib-govuk-button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>
