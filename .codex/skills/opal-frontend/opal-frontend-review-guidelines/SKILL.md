@@ -70,6 +70,7 @@ Apply these rules when reviewing changes in opal-frontend; focus on P0/P1 blocke
 
 - Add or maintain tests for new logic and error/empty states.
 - Prefer Angular Testing Library/Harnesses; avoid brittle DOM selectors/data-testids when a Harness exists.
+- When a review finding concerns Vitest, Angular TestBed setup, render timing, or suite-load failures, consult `opal-vitest-guard` for the preferred diagnostic and fix patterns.
 
 ### Function Design
 
