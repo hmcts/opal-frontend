@@ -5,6 +5,7 @@ Feature: Reports landing page navigation
 
   @JIRA-STORY:PO-2613 @JIRA-EPIC:PO-2627
   Scenario: Your reports keeps Reports selected in the primary navigation
+    #AC1d: Report tab stays selected
     When I select the Fines primary navigation item "Reports"
     Then I am taken to the "Reports" Fines landing page
     And the Reports item remains selected in the primary navigation

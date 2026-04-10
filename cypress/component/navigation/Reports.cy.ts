@@ -19,6 +19,9 @@ const REPORTS_EPIC_TAG = '@JIRA-EPIC:PO-2627';
 interface IComponentProperties {
   permissionIds: number[];
   dashboardType: string;
+}
+
+interface ISummaryListComponentProperties {
   reportId: string;
 }
 
@@ -43,6 +46,9 @@ const operationalReportPermissions = [
 const componentProperties: IComponentProperties = {
   permissionIds: operationalReportPermissions,
   dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
+};
+
+const summaryListComponentProperties: ISummaryListComponentProperties = {
   reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
 };
 
@@ -82,7 +88,7 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     });
   };
 
-  const setupSummaryListComponent = (props: IComponentProperties = componentProperties) => {
+  const setupSummaryListComponent = (props: ISummaryListComponentProperties = summaryListComponentProperties) => {
     const activatedRoute: MockActivatedRoute = {
       snapshot: {
         paramMap: convertToParamMap({}),
@@ -108,41 +114,34 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
 
   const commonSetup = () => setupDashboardComponent();
 
-  const noOperationalPermissionsSetup = () =>
+  const setupDashboardWithPermissions = (permissionIds: number[]) =>
     setupDashboardComponent({
       ...componentProperties,
-      permissionIds: [],
+      permissionIds,
     });
+
+  const noOperationalPermissionsSetup = () => setupDashboardWithPermissions([]);
 
   const enforcementPermissionSetup = () =>
-    setupDashboardComponent({
-      ...componentProperties,
-      permissionIds: [FINES_PERMISSIONS['operational-report-by-enforcement']],
-    });
+    setupDashboardWithPermissions([FINES_PERMISSIONS['operational-report-by-enforcement']]);
 
   const paymentsPermissionSetup = () =>
-    setupDashboardComponent({
-      ...componentProperties,
-      permissionIds: [FINES_PERMISSIONS['operational-report-by-payments']],
+    setupDashboardWithPermissions([FINES_PERMISSIONS['operational-report-by-payments']]);
+
+  const setupSummaryListForReport = (reportId: string) =>
+    setupSummaryListComponent({
+      ...summaryListComponentProperties,
+      reportId,
     });
 
   const yourReportsSummaryListSetup = () =>
-    setupSummaryListComponent({
-      ...componentProperties,
-      reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
-    });
+    setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports);
 
   const operationalReportsByEnforcementSummaryListSetup = () =>
-    setupSummaryListComponent({
-      ...componentProperties,
-      reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement,
-    });
+    setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement);
 
   const operationalReportsByPaymentsSummaryListSetup = () =>
-    setupSummaryListComponent({
-      ...componentProperties,
-      reportId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
-    });
+    setupSummaryListForReport(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
 
   const assertNavigationTarget = (expectedPath: string) => {
     cy.get('@routerNavigateByUrl').should('have.been.called');
