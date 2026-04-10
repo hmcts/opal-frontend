@@ -81,4 +81,13 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(event.preventDefault).toHaveBeenCalled();
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
+
+  it('should emit when handleChangeEnforcementCourt is called', () => {
+    const eventEmitterSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
+    component.hasAccountMaintenancePermission = true;
+
+    component.handleChangeEnforcementCourt();
+
+    expect(eventEmitterSpy).toHaveBeenCalled();
+  });
 });
