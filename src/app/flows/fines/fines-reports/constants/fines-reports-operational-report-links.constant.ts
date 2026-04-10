@@ -6,7 +6,7 @@ import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summa
 export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfigurationLink[] = [
   {
     id: 'finesReportsOperationalReportsByEnforcementLink',
-    text: 'Operational Reports (by enforcement)',
+    text: 'Operational reports (by enforcement)',
     routerLink: [
       '/',
       FINES_ROUTING_PATHS.root,
@@ -21,7 +21,7 @@ export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfiguration
   },
   {
     id: 'finesReportsOperationalReportsByPaymentLink',
-    text: 'Operational Reports (by payment)',
+    text: 'Operational reports (by payments)',
     routerLink: [
       '/',
       FINES_ROUTING_PATHS.root,

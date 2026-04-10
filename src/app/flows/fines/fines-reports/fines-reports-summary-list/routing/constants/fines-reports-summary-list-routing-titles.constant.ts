@@ -3,8 +3,8 @@ import { IFinesReportsSummaryListRoutingPaths } from '../interfaces/fines-report
 export const FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES: IFinesReportsSummaryListRoutingPaths = {
   root: 'Reports',
   children: {
-    operationalReportsByEnforcement: 'Operational Reports by Enforcement',
-    operationalReportsByPayments: 'Operational Reports by Payments',
-    yourReports: 'Your Reports',
+    operationalReportsByEnforcement: 'Operational reports (by enforcement)',
+    operationalReportsByPayments: 'Operational reports (by payments)',
+    yourReports: 'Your reports',
   },
 };

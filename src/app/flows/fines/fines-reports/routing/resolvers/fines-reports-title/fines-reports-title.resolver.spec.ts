@@ -14,15 +14,16 @@ describe('finesReportsTitleResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockTitleService: any;
 
-  const buildRoute = (reportId: string | null, parentReportId?: string) =>
-    ({
+  const buildRoute = (reportId: string | null, parentReportId?: string) => {
+    const parentRoute = parentReportId ? { paramMap: convertToParamMap({ reportId: parentReportId }) } : undefined;
+
+    const parent = reportId ? undefined : parentRoute;
+
+    return {
       paramMap: convertToParamMap(reportId ? { reportId } : {}),
-      parent: reportId
-        ? undefined
-        : parentReportId
-          ? { paramMap: convertToParamMap({ reportId: parentReportId }) }
-          : undefined,
-    }) as ActivatedRouteSnapshot;
+      parent,
+    } as ActivatedRouteSnapshot;
+  };
 
   beforeEach(() => {
     mockTitleService = {
