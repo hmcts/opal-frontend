@@ -887,9 +887,8 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Cais am dynnu arian o fudd-daliadau',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
-      enforcement_override_result: true,
     },
     {
       result_id: 'AEOC',
@@ -897,7 +896,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Gorchymyn atafaelu enillion - cyfrif dirwy',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -906,7 +905,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Gwarant Mechniaeth - Gyda dyddiad',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -915,7 +914,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Gwarant Mechniaeth - Heb Ddyddiad',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -924,7 +923,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: null,
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -933,7 +932,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Rhybudd o Warant Traddodi',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -942,7 +941,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Gwarant Atafaelu',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -951,7 +950,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: null,
       active: false,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -960,7 +959,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Gwarant dim mechniaeth',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -969,7 +968,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Rhybudd Cofrestru',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -978,7 +977,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Gwŷs Gorfodi',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -987,7 +986,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Trosglwyddo Gorchymyn Dirwy i Lys yng Nghymru neu Lloegr',
       active: true,
       result_type: 'Action',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
     {
@@ -996,7 +995,7 @@ export const OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK: IOpalFinesResultsRefD
       result_title_cy: 'Rhybudd o gamau pellach',
       active: true,
       result_type: 'Result',
-      imposition_creditor: null,
+      imposition_creditor: '',
       imposition_allocation_order: null,
     },
   ],
