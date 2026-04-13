@@ -172,7 +172,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     },
   );
   it(
-    'AC2bi: Label Welsh and Language is displayed in blue ("govuk-tag--blue")',
+    'AC2bi: Label Welsh and Language is displayed in blue',
     {
       tags: buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814', '@JIRA-KEY:POT-3343'),
     },
