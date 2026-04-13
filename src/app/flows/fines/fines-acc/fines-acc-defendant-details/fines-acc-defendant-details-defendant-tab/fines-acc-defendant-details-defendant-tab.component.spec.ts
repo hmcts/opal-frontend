@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defendant-details-defendant-tab.component';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-text.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
@@ -30,8 +31,13 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).not.toContain('Actions');
-    expect(compiled.textContent).not.toContain('Convert to a company account');
-    expect(compiled.textContent).not.toContain('Convert to an individual account');
+    expect(compiled.textContent).not.toContain(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY].convertActionLabel,
+    );
+    expect(compiled.textContent).not.toContain(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL]
+        .convertActionLabel,
+    );
   });
 
   it('should render an interactive convert-to-company action for paying individual accounts with permission', () => {
@@ -41,7 +47,9 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain('Actions');
-    expect(compiled.textContent).toContain('Convert to a company account');
+    expect(compiled.textContent).toContain(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY].convertActionLabel,
+    );
   });
 
   it('should render an interactive convert-to-individual action for paying company accounts with permission', () => {
@@ -62,7 +70,10 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     const convertLink = fixture.nativeElement.querySelector('.govuk-link');
 
     expect(compiled.textContent).toContain('Actions');
-    expect(compiled.textContent).toContain('Convert to an individual account');
+    expect(compiled.textContent).toContain(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL]
+        .convertActionLabel,
+    );
     expect(convertLink).not.toBeNull();
   });
 
@@ -80,8 +91,13 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).not.toContain('Actions');
-    expect(compiled.textContent).not.toContain('Convert to a company account');
-    expect(compiled.textContent).not.toContain('Convert to an individual account');
+    expect(compiled.textContent).not.toContain(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY].convertActionLabel,
+    );
+    expect(compiled.textContent).not.toContain(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL]
+        .convertActionLabel,
+    );
   });
 
   it('should handle change defendant details when partyType is a company', () => {

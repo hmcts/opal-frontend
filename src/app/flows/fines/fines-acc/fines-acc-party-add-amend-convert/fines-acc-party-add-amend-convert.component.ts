@@ -10,6 +10,8 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from './constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from './constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from './constants/fines-acc-party-add-amend-convert-text.constant';
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
   imports: [FinesAccPartyAddAmendConvertFormComponent],
@@ -43,12 +45,11 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
       return null;
     }
 
-    if (this.partyType === 'company') {
-      return 'Converted to a company account.';
-    }
-
-    if (this.partyType === 'individual') {
-      return 'Converted to an individual account.';
+    if (
+      this.partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY ||
+      this.partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL
+    ) {
+      return FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[this.partyType].successMessage;
     }
 
     return null;

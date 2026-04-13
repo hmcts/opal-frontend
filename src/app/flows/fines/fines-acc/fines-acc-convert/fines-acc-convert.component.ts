@@ -10,6 +10,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-text.constant';
 
 @Component({
   selector: 'app-fines-acc-convert',
@@ -72,25 +73,28 @@ export class FinesAccConvertComponent implements OnInit {
   }
 
   /**
+   * Returns the shared conversion copy for the requested target party type when supported.
+   */
+  private get conversionText() {
+    if (this.routePartyType !== this.partyTypes.COMPANY && this.routePartyType !== this.partyTypes.INDIVIDUAL) {
+      return null;
+    }
+
+    return FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[this.routePartyType];
+  }
+
+  /**
    * Returns the confirmation heading for the requested conversion target.
    */
   public get headingText(): string {
-    if (this.routePartyType === this.partyTypes.INDIVIDUAL) {
-      return 'Are you sure you want to convert this account to an individual account?';
-    }
-
-    return 'Are you sure you want to convert this account to a company account?';
+    return this.conversionText?.confirmationHeading ?? '';
   }
 
   /**
    * Returns the warning copy describing which source-specific fields will be removed.
    */
   public get warningText(): string {
-    if (this.routePartyType === this.partyTypes.INDIVIDUAL) {
-      return 'Some information specific to company accounts, such as company name, will be removed.';
-    }
-
-    return 'Certain data related to individual accounts, such as employment details, will be removed.';
+    return this.conversionText?.warningText ?? '';
   }
 
   /**

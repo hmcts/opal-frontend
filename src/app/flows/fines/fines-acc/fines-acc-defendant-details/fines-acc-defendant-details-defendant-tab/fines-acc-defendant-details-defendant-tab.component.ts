@@ -3,6 +3,7 @@ import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summa
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-text.constant';
 import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party-details.component';
 import { IFinesAccDefendantDetailsConvertAction } from '../interfaces/fines-acc-defendant-details-convert-action.interface';
 
@@ -24,18 +25,14 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
       return null;
     }
 
-    if (this.tabData.defendant_account_party.party_details.organisation_flag) {
-      return {
-        interactive: true,
-        label: 'Convert to an individual account',
-        partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
-      };
-    }
+    const targetPartyType = this.tabData.defendant_account_party.party_details.organisation_flag
+      ? FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL
+      : FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY;
 
     return {
       interactive: true,
-      label: 'Convert to a company account',
-      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
+      label: FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[targetPartyType].convertActionLabel,
+      partyType: targetPartyType,
     };
   }
 

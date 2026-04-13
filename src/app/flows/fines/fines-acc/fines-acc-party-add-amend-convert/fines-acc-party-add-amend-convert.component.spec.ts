@@ -12,6 +12,8 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from './constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from './constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from './constants/fines-acc-party-add-amend-convert-text.constant';
 
 describe('FinesAccPartyAddAmendConvert', () => {
   let component: FinesAccPartyAddAmendConvert;
@@ -267,11 +269,16 @@ describe('FinesAccPartyAddAmendConvert', () => {
       value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
       writable: true,
     });
-    Object.defineProperty(component, 'partyType', { value: 'company', writable: true });
+    Object.defineProperty(component, 'partyType', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
+      writable: true,
+    });
 
     component.handleFormSubmit(mockFormData);
 
-    expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith('Converted to a company account.');
+    expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY].successMessage,
+    );
   });
 
   it('should set a success message when converting to an individual account', () => {
@@ -284,11 +291,16 @@ describe('FinesAccPartyAddAmendConvert', () => {
       value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
       writable: true,
     });
-    Object.defineProperty(component, 'partyType', { value: 'individual', writable: true });
+    Object.defineProperty(component, 'partyType', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
+      writable: true,
+    });
 
     component.handleFormSubmit(mockFormData);
 
-    expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith('Converted to an individual account.');
+    expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL].successMessage,
+    );
   });
 
   it('should redirect to details page when required store values are missing', () => {

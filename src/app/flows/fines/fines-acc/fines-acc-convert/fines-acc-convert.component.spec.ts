@@ -19,6 +19,7 @@ import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { finesAccStateGuard } from '../routing/guards/fines-acc-state-guard/fines-acc-state.guard';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-text.constant';
 
 describe('FinesAccConvertComponent', () => {
   let fixture: ComponentFixture<FinesAccConvertComponent>;
@@ -178,9 +179,11 @@ describe('FinesAccConvertComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain('06000427N - Mr Terrence CONWAY-JOHNSON');
-    expect(compiled.textContent).toContain('Are you sure you want to convert this account to a company account?');
     expect(compiled.textContent).toContain(
-      'Certain data related to individual accounts, such as employment details, will be removed.',
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY].confirmationHeading,
+    );
+    expect(compiled.textContent).toContain(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY].warningText,
     );
     expect(compiled.textContent).toContain('Yes - continue');
     expect(compiled.textContent).toContain('No - cancel');
@@ -195,9 +198,12 @@ describe('FinesAccConvertComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain('06000427N - Accdetail comp limited');
-    expect(compiled.textContent).toContain('Are you sure you want to convert this account to an individual account?');
     expect(compiled.textContent).toContain(
-      'Some information specific to company accounts, such as company name, will be removed.',
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL]
+        .confirmationHeading,
+    );
+    expect(compiled.textContent).toContain(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT[FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL].warningText,
     );
     expect(compiled.textContent).toContain('Yes - continue');
     expect(compiled.textContent).toContain('No - cancel');
