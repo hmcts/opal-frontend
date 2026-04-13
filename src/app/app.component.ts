@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject, DOCUMENT } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, computed, inject, DOCUMENT } from '@angular/core';
 import { Observable, Subject, filter, from, map, of, startWith, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
@@ -32,6 +32,7 @@ import { DASHBOARD_PAGE_DEFAULT_TAB } from './pages/dashboard/constants/dashboar
 import { DashboardPageType } from './pages/dashboard/types/dashboard.type';
 import { isDashboardPageType } from './pages/dashboard/constants/dashboard-config.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { getAccessiblePrimaryNavigationItems } from './flows/fines/utils/fines-section-permissions.utils';
 
 @Component({
   selector: 'app-root',
@@ -103,7 +104,9 @@ export class AppComponent implements OnInit, OnDestroy {
   public showExpiredWarning = false;
   public readonly sessionService = inject(SessionService);
   public readonly globalStore = inject(GlobalStore);
-  public readonly navigationItems = NAVIGATION_BAR_CONFIGURATION;
+  public readonly navigationItems = computed(() =>
+    getAccessiblePrimaryNavigationItems(NAVIGATION_BAR_CONFIGURATION, this.globalStore.userState()),
+  );
 
   public readonly activeNavigationItem = toSignal(
     this.router.events.pipe(
