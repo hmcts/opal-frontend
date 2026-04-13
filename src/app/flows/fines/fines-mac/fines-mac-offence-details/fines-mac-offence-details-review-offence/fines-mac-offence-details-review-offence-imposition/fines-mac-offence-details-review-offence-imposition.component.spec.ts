@@ -92,6 +92,34 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should enforce current template link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesMacOffenceDetailsReviewOffenceImpositionComponent as any).ɵcmp?.consts ?? []).filter(
+      (entry: unknown) => Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesMacOffenceDetailsReviewOffenceImpositionComponent as any).ɵcmp?.template?.toString() as
+        | string
+        | undefined) ?? '';
+    const actionLinkConsts = templateConsts.filter(
+      (entry) =>
+        entry.includes('govuk-link') &&
+        entry.includes('govuk-link--no-visited-state') &&
+        entry.includes('href') &&
+        entry.includes('click'),
+    );
+
+    expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
+    actionLinkConsts.forEach((entry) => {
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
   it('should set impositionsTotalsData with converted monetary strings', () => {
     const expectedTotal = '£100.00';
     mockUtilsService.convertToMonetaryString.mockReturnValue(expectedTotal);
@@ -250,6 +278,37 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component.invertShowMinorCreditorData(impositionId);
 
     expect(component.impositionTableData[0].showMinorCreditorData).toBe(false);
+  });
+
+  it('should click show/hide details link and preserve current template click behaviour', () => {
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Show/hide details link not found');
+
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const impositionId = component.impositionTableData[0].impositionId;
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'invertShowMinorCreditorData');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(impositionId, event);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it('should prevent default and still invert minor creditor data when event is provided', () => {
+    const impositionId = component.impositionTableData[0].impositionId;
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+
+    component.invertShowMinorCreditorData(impositionId, event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(component.impositionTableData[0].showMinorCreditorData).toBe(true);
   });
 
   it('should return null for address and payment method for minor creditor', () => {

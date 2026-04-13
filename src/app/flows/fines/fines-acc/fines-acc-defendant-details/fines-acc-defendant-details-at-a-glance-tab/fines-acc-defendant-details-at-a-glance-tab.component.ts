@@ -34,7 +34,13 @@ export class FinesAccDefendantDetailsAtAGlanceTabComponent {
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public readonly debtorTypes = FINES_ACC_DEBTOR_TYPES;
 
-  public handleAddComments(): void {
+  /**
+   * Emits the add comments action for the current tab.
+   *
+   * @param event - The optional DOM event that triggered the action.
+   */
+  public handleAddComments(event?: Event): void {
+    event?.preventDefault();
     this.addComments.emit();
   }
 }
