@@ -569,6 +569,22 @@ describe('FinesAccPayloadService', () => {
         });
       });
 
+      it('should build collection order payload correctly', () => {
+        const result = service.buildCollectionOrderPayload({
+          formData: {
+            facc_enf_collection_order_made: true,
+          },
+          nestedFlow: false,
+        });
+
+        expect(result).toEqual({
+          collection_order: {
+            collection_order_date: null,
+            collection_order_flag: true,
+          },
+        });
+      });
+
       it('should transform payload using the transformation service', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(

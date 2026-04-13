@@ -182,6 +182,17 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
+  it('should call router.navigate when navigateToChangeCollectionOrderPage is called', () => {
+    component.navigateToChangeCollectionOrderPage(true);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`],
+      {
+        relativeTo: component['activatedRoute'],
+        state: { currentCollectionOrderFlag: true },
+      },
+    );
+  });
+
   it('should fetch the defendant tab data when fragment is changed to defendant', () => {
     component['refreshFragment$'].next('defendant');
     // Subscribe to trigger the pipe execution
