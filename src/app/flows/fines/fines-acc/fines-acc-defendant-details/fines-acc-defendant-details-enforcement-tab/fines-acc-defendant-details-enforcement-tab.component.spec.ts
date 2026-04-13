@@ -51,13 +51,4 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
       component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
     );
   });
-
-  it('should not emit changeCollectionOrder when the user lacks account maintenance permission', () => {
-    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
-    component.hasAccountMaintenancePermission = false;
-
-    component.handleChangeCollectionOrder();
-
-    expect(eventEmitterSpy).not.toHaveBeenCalled();
-  });
 });

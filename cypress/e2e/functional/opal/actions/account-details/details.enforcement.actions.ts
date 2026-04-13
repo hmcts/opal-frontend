@@ -193,7 +193,7 @@ export class AccountDetailsEnforcementActions {
       .should('be.visible')
       .click();
   }
-  
+
   /**
    * Asserts the change enforcement court form is visible.
    */
