@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
@@ -7,7 +7,6 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FORM_DEFAULT } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-form-default.constant';
 import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-success-messages.constant';
@@ -17,9 +16,9 @@ import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES } from '../fines-acc
   templateUrl: './fines-acc-enf-override-remove.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [GovukHeadingWithCaptionComponent, GovukCancelLinkComponent, GovukButtonComponent],
+  imports: [GovukHeadingWithCaptionComponent, GovukCancelLinkComponent],
 })
-export class FinesAccEnfOverrideRemoveComponent {
+export class FinesAccEnfOverrideRemoveComponent implements OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -66,5 +65,10 @@ export class FinesAccEnfOverrideRemoveComponent {
         this.finesAccStore.setSuccessMessage(FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.remove);
         this.navigateToDefendantDetailsPage();
       });
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }
