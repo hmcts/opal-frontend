@@ -27,6 +27,10 @@ import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IFinesAccEnfOverrideAddChangeFormState } from '../fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
 import { IFinesAccEnfCourtChangeFormState } from '../fines-acc-enf-court-change/interfaces/fines-acc-enf-court-change-form-state.interface';
+import { IOpalFinesUpdateDefendantAccountCollectionOrder } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account-collection-order.interface';
+import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/interfaces/fines-acc-enf-collo-change-form-state.interface';
+import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -190,6 +194,28 @@ export class FinesAccPayloadService {
         free_text_note_2: formState.facc_add_free_text_2 || null,
         free_text_note_3: formState.facc_add_free_text_3 || null,
       },
+    };
+  }
+
+  /**
+   * Transforms the given collection order form into an update payload
+   * for the defendant account API.
+   *
+   * @param form - The submitted collection order form
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildCollectionOrderPayload(
+    form: IAbstractFormBaseForm<IFinesAccEnfColloChangeFormState>,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    const collectionOrderFlag = form.formData.facc_enf_collection_order_made as boolean;
+
+    const collectionOrder: IOpalFinesUpdateDefendantAccountCollectionOrder = {
+      ...FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS,
+      collection_order_flag: collectionOrderFlag,
+    };
+
+    return {
+      collection_order: collectionOrder,
     };
   }
 
