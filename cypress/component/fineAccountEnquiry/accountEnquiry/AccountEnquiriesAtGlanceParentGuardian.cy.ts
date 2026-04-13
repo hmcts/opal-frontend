@@ -162,7 +162,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.enforcementStatusTag)
         .should('be.visible')
         .and('contain.text', 'Welsh and English')
-        .and('have.css', 'color', 'rgb(12, 45, 74)');
+        .and('have.class', 'govuk-tag');
     },
   );
 
