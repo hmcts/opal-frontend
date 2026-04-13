@@ -1,5 +1,3 @@
-import { COLLECTION_ORDER_CHANGE_ELEMENTS } from './account.enquiry.collection-order-change.locators';
-
 /**
  * @file account.enquiry.enforcement.locators.ts
  * @description
