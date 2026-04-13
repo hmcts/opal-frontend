@@ -12,7 +12,7 @@ import { FINES_ROUTING_PATHS } from 'src/app/flows/fines/routing/constants/fines
 import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component';
 import { ReportsLocators as L } from '../../shared/selectors/reports.locators';
 
-const REPORTS_JIRA_LABEL = '@JIRA-LABEL:navigation';
+const REPORTS_JIRA_LABEL = '@JIRA-LABEL:primary-nav-and-dashboards';
 const REPORTS_STORY_TAG = '@JIRA-STORY:PO-2613';
 const REPORTS_EPIC_TAG = '@JIRA-EPIC:PO-2627';
 
