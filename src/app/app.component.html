@@ -16,7 +16,7 @@
       [useFragmentNavigation]="false"
       (navigationItemSelected)="onPrimaryNavSelected($event)"
     >
-      @for (navigationItem of navigationItems; track navigationItem.key) {
+      @for (navigationItem of navigationItems(); track navigationItem.key) {
         <li
           opal-lib-moj-primary-navigation-item
           [primaryNavigationItemId]="navigationItem.key"
