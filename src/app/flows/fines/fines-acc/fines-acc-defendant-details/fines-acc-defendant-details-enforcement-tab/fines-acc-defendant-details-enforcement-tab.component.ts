@@ -41,6 +41,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Output() addEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementCourt = new EventEmitter<void>();
+  @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
   /**
    * Emits an event to add an enforcement override if the user has the necessary permissions and there is no existing enforcement override result.
@@ -64,5 +65,12 @@ export class FinesAccDefendantDetailsEnforcementTab {
    */
   public handleChangeEnforcementCourt(): void {
     this.changeEnforcementCourt.emit();
+  }
+
+  /**
+   * Emits an event to change the collection order status.
+   */
+  public handleChangeCollectionOrder(): void {
+    this.changeCollectionOrder.emit(this.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false);
   }
 }

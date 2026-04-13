@@ -26,6 +26,7 @@ import { defendantAccountEnforcementStatusResolver } from './resolvers/defendant
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-titles.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
+import { FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-collo-change/constants/fines-acc-enf-collo-change-routing-titles.constant';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -234,6 +235,22 @@ export const routing: Routes = [
         resolve: {
           title: TitleResolver,
           courtsRefData: fetchAccCourtsResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`,
+        loadComponent: () =>
+          import('../fines-acc-enf-collo-change/fines-acc-enf-collo-change.component').then(
+            (c) => c.FinesAccEnfColloChangeComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          title: FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES.children.change,
+        },
+        resolve: {
+          title: TitleResolver,
         },
       },
     ],
