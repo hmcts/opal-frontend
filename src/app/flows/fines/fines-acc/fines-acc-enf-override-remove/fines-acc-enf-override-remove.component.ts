@@ -29,11 +29,17 @@ export class FinesAccEnfOverrideRemoveComponent implements OnDestroy {
   public partyName = this.finesAccStore.party_name() ?? '';
   public pageTitle: string = this.route.snapshot.data['title'] ?? '';
 
+  /**
+   * Gets the current enforcement override result from the route data, if available.
+   */
   public get enforcementOverride() {
     return (this.route.snapshot.data['enforcementStatus'] as IOpalFinesAccountDefendantDetailsEnforcementTabRefData)
       ?.enforcement_override?.enforcement_override_result;
   }
 
+  /**
+   * Navigates to the defendant details page with the 'enforcement' fragment to display the enforcement tab.
+   */
   public navigateToDefendantDetailsPage(): void {
     this.router.navigate([`../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`], {
       relativeTo: this.route,
