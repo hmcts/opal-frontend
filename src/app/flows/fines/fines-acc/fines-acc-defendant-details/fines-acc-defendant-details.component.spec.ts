@@ -178,6 +178,16 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
+  it('should call router.navigate when navigateToRemoveEnforcementOverridePage is called', () => {
+    component.navigateToRemoveEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/remove`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
   it('should fetch the defendant tab data when fragment is changed to defendant', () => {
     component['refreshFragment$'].next('defendant');
     // Subscribe to trigger the pipe execution

@@ -3,8 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
-// import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-// import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -28,7 +26,6 @@ export class FinesAccEnfOverrideRemoveComponent {
   private finesAccStore = inject(FinesAccountStore);
   private finesAccPayloadService = inject(FinesAccPayloadService);
   private opalFinesService = inject(OpalFines);
-  // private utilsService = inject(UtilsService);
   public accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public partyName = this.finesAccStore.party_name() ?? '';
   public pageTitle: string = this.route.snapshot.data['title'] ?? '';
