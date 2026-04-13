@@ -1,16 +1,45 @@
 import { inject, Injectable } from '@angular/core';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
-import { FormGroup } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil, tap, catchError, EMPTY } from 'rxjs';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { IOpalFinesOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences.interface';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { IFinesMacOffenceDetailsSetupOffenceCodeLookupOptions } from './interfaces/fines-mac-offence-details-setup-offence-code-lookup-options.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacOffenceDetailsService {
   public utilsService = inject(UtilsService);
+
+  /**
+   * Adds or removes a single custom error key while preserving any other control errors.
+   *
+   * @param control - The control to update.
+   * @param errorKey - The custom error key to add or remove.
+   * @param hasError - True to set the error key, false to clear it.
+   */
+  private setControlError(control: FormControl, errorKey: string, hasError: boolean): void {
+    const currentErrors = control.errors ?? {};
+
+    if (hasError) {
+      if (!currentErrors[errorKey]) {
+        control.setErrors({ ...currentErrors, [errorKey]: true }, { emitEvent: false });
+      }
+      return;
+    }
+
+    if (!currentErrors[errorKey]) {
+      return;
+    }
+
+    const remainingErrors = { ...currentErrors };
+    delete remainingErrors[errorKey];
+    control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null, { emitEvent: false });
+  }
+
   /**
    * Reorders the imposition keys to maintain correct numbering.
    *
@@ -53,6 +82,16 @@ export class FinesMacOffenceDetailsService {
         child.formData.fm_offence_details_imposition_position--;
       }
     }
+  }
+
+  /**
+   * Extracts the offence code from a ref-data item.
+   *
+   * @param offence - The offence ref-data item.
+   * @returns The offence code when present.
+   */
+  private getOffenceCode(offence: IOpalFinesOffences & { cjs_code?: string }): string | undefined {
+    return offence.get_cjs_code ?? offence.cjs_code;
   }
 
   /**
@@ -116,14 +155,125 @@ export class FinesMacOffenceDetailsService {
   }
 
   /**
+   * Finds the exact offence match for a supplied offence code from the returned offence reference data.
+   *
+   * Supports both `get_cjs_code` and `cjs_code` shaped response objects so the caller does not need
+   * to care about the source format.
+   *
+   * @param response - The offence lookup response.
+   * @param offenceCode - The offence code entered by the user.
+   * @param offenceId - Optional saved offence ID used to disambiguate duplicate exact-code matches.
+   * @returns The unique exact-code match, the saved offence when duplicates can be disambiguated, or `undefined`.
+   */
+  public findExactOffenceMatch(
+    response: IOpalFinesOffencesRefData | null | undefined,
+    offenceCode: string | null | undefined,
+    offenceId?: number | null,
+  ): IOpalFinesOffences | undefined {
+    if (!response?.refData?.length || !offenceCode) {
+      return undefined;
+    }
+
+    const normalisedOffenceCode = offenceCode.trim().toUpperCase();
+    const exactCodeMatches = response.refData.filter((offence) => {
+      const returnedCode = this.getOffenceCode(offence as IOpalFinesOffences & { cjs_code?: string });
+      return returnedCode?.trim().toUpperCase() === normalisedOffenceCode;
+    });
+
+    if (exactCodeMatches.length === 1) {
+      return exactCodeMatches[0];
+    }
+
+    if (offenceId == null) {
+      return undefined;
+    }
+
+    return exactCodeMatches.find((offence) => offence.offence_id === offenceId);
+  }
+
+  /**
+   * Wires offence-code lookup state into a form using a single options object.
+   * The lookup behaviour is unchanged from the old positional-parameter version,
+   * but the named configuration makes each dependency explicit and keeps the
+   * public API below the parameter-count threshold.
+   *
+   * @param options - Configuration for the offence-code lookup wiring.
+   * @param options.form - The form containing the offence code and offence id controls.
+   * @param options.codeControlName - The offence code control name.
+   * @param options.idControlName - The offence id control name.
+   * @param options.destroy$ - Emits when subscriptions should be torn down.
+   * @param options.getOffenceByCjsCode - Fetches offences for the current code.
+   * @param options.onResult - Handles successful lookup responses.
+   * @param options.onConfirmChange - Updates the caller with the confirmation state.
+   * @param options.hasAttemptedSubmit - Reports whether submit has already been attempted.
+   * @param options.refreshSubmittedErrors - Refreshes visible errors after async lookup updates.
+   * @returns A callback that re-runs validation for the current offence code value.
+   */
+  public setupOffenceCodeLookup(lookupOptions: IFinesMacOffenceDetailsSetupOffenceCodeLookupOptions): () => void {
+    return this.initOffenceCodeListener(
+      lookupOptions.form,
+      lookupOptions.codeControlName,
+      lookupOptions.idControlName,
+      lookupOptions.destroy$,
+      lookupOptions.getOffenceByCjsCode,
+      lookupOptions.onResult,
+      (confirmed) => {
+        lookupOptions.onConfirmChange?.(confirmed);
+        if (lookupOptions.hasAttemptedSubmit()) {
+          lookupOptions.refreshSubmittedErrors();
+        }
+      },
+    );
+  }
+
+  /**
+   * Ensures offence-code validation has completed before allowing submission.
+   * If the latest lookup failed for a 7 or 8 character code, the lookup is retried.
+   * Otherwise, unresolved lookup-length codes are marked with a pending-validation
+   * error, and that error is cleared once an offence id has been resolved.
+   */
+  public enforceOffenceCodeValidationBeforeSubmit(
+    form: FormGroup,
+    codeControlName: string,
+    idControlName: string,
+    retryOffenceCodeLookup: () => void,
+  ): void {
+    const offenceCodeControl = form.get(codeControlName) as FormControl | null;
+    const offenceIdControl = form.get(idControlName) as FormControl | null;
+
+    if (!offenceCodeControl || !offenceIdControl) {
+      return;
+    }
+
+    const offenceCode = typeof offenceCodeControl.value === 'string' ? offenceCodeControl.value : '';
+    const isLookupLength = offenceCode.length >= 7 && offenceCode.length <= 8;
+    const hasOffenceId = offenceIdControl.value !== null && offenceIdControl.value !== undefined;
+    const hasInvalidOffenceCodeError = Boolean(offenceCodeControl.errors?.['invalidOffenceCode']);
+    const hasOffenceCodeLookupFailedError = Boolean(offenceCodeControl.errors?.['offenceCodeLookupFailed']);
+
+    if (hasOffenceCodeLookupFailedError && isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError) {
+      retryOffenceCodeLookup();
+      return;
+    }
+
+    this.setControlError(
+      offenceCodeControl,
+      'offenceCodeValidationPending',
+      isLookupLength && !hasOffenceId && !hasInvalidOffenceCodeError,
+    );
+  }
+
+  /**
    * Initializes the offence code listener for a form control.
+   *
    * @param form - The FormGroup containing the controls.
    * @param codeControlName - The name of the control for the offence code.
    * @param idControlName - The name of the control for the offence ID.
    * @param destroy$ - Subject to signal when to unsubscribe from observables.
-   * @param changeDetector - ChangeDetectorRef to trigger change detection.
-   * @param onResult - Optional callback function to handle the result of the code lookup.
+   * @param getOffenceByCjsCode - Function used to fetch offence details by CJS code.
+   * @param onResult - Callback function to handle a successful code lookup result.
    * @param onConfirmChange - Optional callback function to confirm if the code change was successful.
+   * @returns A callback that re-runs validation for the current offence code value.
    */
   public initOffenceCodeListener(
     form: FormGroup,
@@ -134,49 +284,111 @@ export class FinesMacOffenceDetailsService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onResult: (result: any) => void,
     onConfirmChange?: (confirmed: boolean) => void,
-  ): void {
-    const codeControl = form.controls[codeControlName];
-    const idControl = form.controls[idControlName];
+  ): () => void {
+    const codeControl = form.controls[codeControlName] as FormControl;
+    const idControl = form.controls[idControlName] as FormControl;
+    let latestLookupRequest = 0;
+    const savedOffenceId = idControl.value;
+    const savedOffenceCode = typeof codeControl.value === 'string' ? codeControl.value.trim().toUpperCase() : null;
 
-    const populateHint = (code: string) => {
-      idControl.setValue(null);
+    const populateHint = (code: string, isInitialLoad: boolean = false) => {
+      const lookupRequest = ++latestLookupRequest;
+      const normalisedCode = code?.trim().toUpperCase();
+      const previousOffenceId =
+        normalisedCode && savedOffenceCode === normalisedCode ? savedOffenceId : idControl.value;
+      const hasCurrentOffenceId = idControl.value !== null && idControl.value !== undefined;
+      const shouldDeferPendingValidation =
+        isInitialLoad && normalisedCode === savedOffenceCode && savedOffenceId !== null && savedOffenceId !== undefined;
+      this.setControlError(codeControl, 'invalidOffenceCode', false);
+      this.setControlError(codeControl, 'offenceCodeLookupFailed', false);
 
       if (code?.length >= 7 && code?.length <= 8) {
+        const shouldShowPendingValidation = shouldDeferPendingValidation ? false : !hasCurrentOffenceId;
+        this.setControlError(codeControl, 'offenceCodeValidationPending', shouldShowPendingValidation);
+        if (shouldShowPendingValidation && onConfirmChange) onConfirmChange(false);
+
         const result$ = getOffenceByCjsCode(code).pipe(
           tap((response) => {
-            codeControl.setErrors(response.count === 0 ? { invalidOffenceCode: true } : null, { emitEvent: false });
-            idControl.setValue(response.count === 1 ? response.refData[0].offence_id : null, { emitEvent: false });
+            const exactMatch = this.findExactOffenceMatch(response, code, previousOffenceId);
+
+            // Ignore stale responses that return after the user has changed the code.
+            if (lookupRequest !== latestLookupRequest || codeControl.value !== code) {
+              return;
+            }
+
+            this.setControlError(codeControl, 'offenceCodeValidationPending', false);
+            this.setControlError(codeControl, 'offenceCodeLookupFailed', false);
+            this.setControlError(codeControl, 'invalidOffenceCode', !exactMatch);
+            idControl.setValue(exactMatch?.offence_id ?? null, { emitEvent: false });
 
             if (typeof onResult === 'function') {
               onResult(response);
             }
+
+            if (onConfirmChange) onConfirmChange(true);
+          }),
+          catchError(() => {
+            // Ignore stale failures for previous lookups.
+            if (lookupRequest !== latestLookupRequest || codeControl.value !== code) {
+              return EMPTY;
+            }
+
+            this.setControlError(codeControl, 'offenceCodeValidationPending', false);
+            this.setControlError(codeControl, 'invalidOffenceCode', false);
+            this.setControlError(codeControl, 'offenceCodeLookupFailed', true);
+            idControl.setValue(null, { emitEvent: false });
+            if (onConfirmChange) onConfirmChange(false);
+            return EMPTY;
           }),
           takeUntil(destroy$),
         );
 
         result$.subscribe();
-        if (onConfirmChange) onConfirmChange(true);
-      } else if (onConfirmChange) {
-        onConfirmChange(false);
+      } else {
+        idControl.setValue(null, { emitEvent: false });
+        this.setControlError(codeControl, 'offenceCodeValidationPending', false);
+        this.setControlError(codeControl, 'offenceCodeLookupFailed', false);
+        if (onConfirmChange) onConfirmChange(false);
       }
     };
 
     if (codeControl.value) {
-      populateHint(codeControl.value);
+      const upperCasedCode = this.utilsService.upperCaseAllLetters(codeControl.value);
+      codeControl.setValue(upperCasedCode, { emitEvent: false });
+      populateHint(upperCasedCode, true);
     }
 
     codeControl.valueChanges
       .pipe(
         distinctUntilChanged(),
         tap((code: string) => {
-          code = this.utilsService.upperCaseAllLetters(code);
-          codeControl.setValue(code, { emitEvent: false });
+          const upperCasedCode = this.utilsService.upperCaseAllLetters(code);
+          const isLookupLength = upperCasedCode?.length >= 7 && upperCasedCode?.length <= 8;
+          codeControl.setValue(upperCasedCode, { emitEvent: false });
+          // Invalidate any in-flight lookup as soon as the input changes.
+          latestLookupRequest++;
+          idControl.setValue(null, { emitEvent: false });
+          this.setControlError(codeControl, 'offenceCodeValidationPending', isLookupLength);
+          this.setControlError(codeControl, 'invalidOffenceCode', false);
+          this.setControlError(codeControl, 'offenceCodeLookupFailed', false);
+          if (onConfirmChange) onConfirmChange(false);
         }),
         debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime),
         takeUntil(destroy$),
       )
       .subscribe((code: string) => {
-        populateHint(code);
+        populateHint(this.utilsService.upperCaseAllLetters(code));
       });
+
+    return () => {
+      const code = this.utilsService.upperCaseAllLetters(codeControl.value);
+
+      if (typeof code !== 'string') {
+        return;
+      }
+
+      codeControl.setValue(code, { emitEvent: false });
+      populateHint(code);
+    };
   }
 }

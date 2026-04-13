@@ -15,6 +15,7 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingComponent implements OnIn
   private readonly opalFinesService = inject(OpalFines);
 
   @Input({ required: true }) public offenceId!: number;
+  @Input({ required: false }) public offenceRefId: number | null = null;
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: false }) public showDetails: boolean = true;

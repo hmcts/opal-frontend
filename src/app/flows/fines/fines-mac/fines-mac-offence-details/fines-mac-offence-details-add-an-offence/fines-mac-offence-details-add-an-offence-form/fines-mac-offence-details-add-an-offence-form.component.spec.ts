@@ -74,6 +74,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       'scrollToTop',
     ]);
 
+    mockUtilsService.upperCaseAllLetters.mockImplementation((value: string) => value?.toUpperCase?.() ?? value);
+
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceFormComponent],
       providers: [
@@ -223,7 +225,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     component.selectedOffenceConfirmation = true;
 
-    component['setupOffenceCodeListener']();
     offenceCodeControl.reset();
 
     expect(component.selectedOffenceConfirmation).toBe(false);
@@ -256,7 +257,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', () => {
-    component['setupOffenceCodeListener']();
     const mockCjsCode = 'abc123';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
@@ -267,7 +267,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to true when cjs_code length is between 7 and 8', () => {
     vi.useFakeTimers();
-    component['setupOffenceCodeListener']();
     const mockCjsCode = 'abc1234';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
@@ -593,8 +592,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'setupResultCodeListener');
     mockDateService.toFormat.mockReturnValue('01/01/2022');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component['offenceDetailsService'], 'initOffenceCodeListener');
+    const setupOffenceCodeLookupSpy = vi.spyOn(component['offenceDetailsService'], 'setupOffenceCodeLookup');
 
     // Call the method
     component['initialAddAnOffenceDetailsSetup']();
@@ -608,7 +606,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(offenceDetailsDraft.formData);
-    expect(component['offenceDetailsService']['initOffenceCodeListener']).toHaveBeenCalled();
+    expect(setupOffenceCodeLookupSpy).toHaveBeenCalled();
     expect(component['addControlsToFormArray']).not.toHaveBeenCalled();
     expect(component['setupResultCodeListener']).toHaveBeenCalledTimes(impositionsLength);
     expect(component.today).toBe('01/01/2022');
@@ -640,6 +638,26 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addMinorCreditor], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should refresh rendered errors when offence validation state changes after submit', () => {
+    let confirmChangeCallback: (confirmed: boolean) => void = () => undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['offenceDetailsService'], 'initOffenceCodeListener').mockImplementation(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (...args: any[]) => {
+        confirmChangeCallback = args[6];
+      },
+    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleErrorMessagesSpy = vi.spyOn<any, any>(component, 'handleErrorMessages');
+
+    component['initialAddAnOffenceDetailsSetup']();
+    component.handleFormSubmit(new SubmitEvent('submit'));
+    confirmChangeCallback(false);
+
+    expect(component.selectedOffenceConfirmation).toBe(false);
+    expect(handleErrorMessagesSpy).toHaveBeenCalled();
   });
 
   it('should update minorCreditorsHidden based on hidden imposition minor creditor', () => {
@@ -813,6 +831,135 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(checkImpositionSpy).toHaveBeenCalled();
     expect(superHandleFormSubmitSpy).toHaveBeenCalledWith(event);
+  });
+
+  it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue('AK12345');
+    offenceCodeControl.setErrors(null);
+    offenceIdControl.setValue(null);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(offenceCodeControl.errors).toEqual(expect.objectContaining({ offenceCodeValidationPending: true }));
+  });
+
+  it('should preserve existing offence code errors when setting offenceCodeValidationPending', () => {
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue('AK12345');
+    offenceCodeControl.setErrors({ customError: true });
+    offenceIdControl.setValue(null);
+
+    component['offenceDetailsService'].enforceOffenceCodeValidationBeforeSubmit(
+      component.form,
+      'fm_offence_details_offence_cjs_code',
+      'fm_offence_details_offence_id',
+      component['retryOffenceCodeLookup'],
+    );
+
+    expect(offenceCodeControl.errors).toEqual({
+      customError: true,
+      offenceCodeValidationPending: true,
+    });
+  });
+
+  it('should handle null offence code values without setting pending validation', () => {
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue(null);
+    offenceCodeControl.setErrors({ offenceCodeValidationPending: true });
+    offenceIdControl.setValue(null);
+
+    component['offenceDetailsService'].enforceOffenceCodeValidationBeforeSubmit(
+      component.form,
+      'fm_offence_details_offence_cjs_code',
+      'fm_offence_details_offence_id',
+      component['retryOffenceCodeLookup'],
+    );
+
+    expect(offenceCodeControl.errors).toBeNull();
+  });
+
+  it('should not set offenceCodeValidationPending on submit when offence code is already invalid', () => {
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue('AK12345');
+    offenceCodeControl.setErrors({ invalidOffenceCode: true });
+    offenceIdControl.setValue(null);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(offenceCodeControl.errors).toEqual({ invalidOffenceCode: true });
+    expect(offenceCodeControl.errors?.['offenceCodeValidationPending']).toBeUndefined();
+  });
+
+  it('should retry offence code lookup on submit when offence lookup previously failed', () => {
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+    const retryOffenceCodeLookupSpy = vi.fn();
+
+    offenceCodeControl.setValue('AK12345');
+    offenceCodeControl.setErrors({ offenceCodeLookupFailed: true });
+    offenceIdControl.setValue(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component['retryOffenceCodeLookup'] = retryOffenceCodeLookupSpy;
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(retryOffenceCodeLookupSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should remove offenceCodeValidationPending and keep other existing errors', () => {
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue('AK12345');
+    offenceCodeControl.setErrors({
+      offenceCodeValidationPending: true,
+      invalidOffenceCode: true,
+    });
+    offenceIdControl.setValue(null);
+
+    component['offenceDetailsService'].enforceOffenceCodeValidationBeforeSubmit(
+      component.form,
+      'fm_offence_details_offence_cjs_code',
+      'fm_offence_details_offence_id',
+      component['retryOffenceCodeLookup'],
+    );
+
+    expect(offenceCodeControl.errors).toEqual({ invalidOffenceCode: true });
+  });
+
+  it('should clear offenceCodeValidationPending on submit when offence id is set', () => {
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue('AK12345');
+    offenceCodeControl.setErrors({ offenceCodeValidationPending: true });
+    offenceIdControl.setValue(314441);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(offenceCodeControl.errors?.['offenceCodeValidationPending']).toBeUndefined();
+  });
+
+  it('should return early when offence code or offence id controls are missing', () => {
+    component.form.removeControl('fm_offence_details_offence_id');
+
+    expect(() =>
+      component['offenceDetailsService'].enforceOffenceCodeValidationBeforeSubmit(
+        component.form,
+        'fm_offence_details_offence_cjs_code',
+        'fm_offence_details_offence_id',
+        component['retryOffenceCodeLookup'],
+      ),
+    ).not.toThrow();
   });
 
   it('should add a new draft offence when index is -1', () => {
