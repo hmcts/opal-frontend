@@ -32,6 +32,15 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
+  it('should emit when handleChangeEnforcementCourt is called', () => {
+    const eventEmitterSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
+    component.hasAccountMaintenancePermission = true;
+
+    component.handleChangeEnforcementCourt();
+
+    expect(eventEmitterSpy).toHaveBeenCalled();
+  });
+
   it('should emit changeCollectionOrder when handleChangeCollectionOrder is called', () => {
     const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
     component.hasAccountMaintenancePermission = true;

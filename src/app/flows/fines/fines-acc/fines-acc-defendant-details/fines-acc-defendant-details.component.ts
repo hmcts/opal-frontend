@@ -55,6 +55,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -457,6 +458,20 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/add`], {
       relativeTo: this.activatedRoute,
     });
+  }
+
+  /**
+   * Navigates to the change enforcement court page.
+   */
+  public navigateToChangeEnforcementCourtPage(): void {
+    this['router'].navigate(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
+      ],
+      {
+        relativeTo: this.activatedRoute,
+      },
+    );
   }
 
   /**

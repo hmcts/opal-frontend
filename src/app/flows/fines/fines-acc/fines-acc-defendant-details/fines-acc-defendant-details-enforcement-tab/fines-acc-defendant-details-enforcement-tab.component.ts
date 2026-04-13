@@ -39,6 +39,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
   @Output() addEnforcementOverride = new EventEmitter<void>();
+  @Output() changeEnforcementCourt = new EventEmitter<void>();
   @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
   /**
@@ -56,13 +57,16 @@ export class FinesAccDefendantDetailsEnforcementTab {
   }
 
   /**
+   * Emits a request to navigate to the change enforcement court page.
+   */
+  public handleChangeEnforcementCourt(): void {
+    this.changeEnforcementCourt.emit();
+  }
+
+  /**
    * Emits an event to change the collection order status.
    */
   public handleChangeCollectionOrder(): void {
-    if (this.hasAccountMaintenancePermission) {
-      this.changeCollectionOrder.emit(
-        this.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
-      );
-    }
+    this.changeCollectionOrder.emit(this.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false);
   }
 }
