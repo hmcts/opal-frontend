@@ -266,6 +266,8 @@
     @if (offenceCode$ | async; as offenceCode) {
       <app-fines-mac-offence-code-hint
         [offenceCode]="offenceCode"
+        [offenceId]="form.controls['fm_fp_offence_details_offence_id'].value"
+        [searchedOffenceCode]="form.controls['fm_fp_offence_details_offence_cjs_code'].value"
         [selectedOffenceConfirmation]="selectedOffenceConfirmation"
       ></app-fines-mac-offence-code-hint>
     }
