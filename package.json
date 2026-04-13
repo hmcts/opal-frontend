@@ -83,7 +83,7 @@
     "@hmcts/info-provider": "^1.1.0",
     "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
-    "@hmcts/opal-frontend-common": "^0.0.66",
+    "@hmcts/opal-frontend-common": "^0.0.67",
     "@hmcts/opal-frontend-common-node": "^0.0.27",
     "@hmcts/properties-volume": "^1.1.0",
     "@hmcts/zephyr-automation-nodejs": "0.0.7",

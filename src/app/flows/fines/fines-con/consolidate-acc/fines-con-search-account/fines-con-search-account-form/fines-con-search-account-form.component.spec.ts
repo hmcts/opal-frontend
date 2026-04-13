@@ -98,6 +98,75 @@ describe('FinesConSearchAccountFormComponent', () => {
     expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
   });
 
+  it('should enforce current clear search link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesConSearchAccountFormComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesConSearchAccountFormComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const clearSearchLinkConst = templateConsts.find(
+      (entry) =>
+        entry.includes('govuk-link') &&
+        entry.includes('govuk-link--no-visited-state') &&
+        entry.includes('href') &&
+        entry.includes('click'),
+    );
+
+    expect(clearSearchLinkConst).toBeTruthy();
+    expect(clearSearchLinkConst).toContain('href');
+    expect(clearSearchLinkConst).toContain('');
+    expect(clearSearchLinkConst).not.toContain('tabindex');
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should pass $event from the clear search link click and preserve current behaviour', () => {
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Clear search link not found');
+
+    component.form.patchValue({ fcon_search_account_number: '12345678' });
+
+    expect(link.textContent?.trim()).toBe('Clear search');
+    expect(link.classList.contains('govuk-link')).toBe(true);
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    const handlerSpy = vi.spyOn(component, 'clearSearchForm');
+    const resetSpy = vi.spyOn(finesConStore, 'resetSearchAccountForm');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(resetSpy).toHaveBeenCalled();
+    expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
+  });
+
+  it('should prevent default and keep the existing reset logic when clearSearchForm is called', () => {
+    component.form.patchValue({ fcon_search_account_number: '12345678' });
+
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const clearAllErrorMessagesSpy = vi.spyOn<any, any>(component, 'clearAllErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setInitialErrorMessagesSpy = vi.spyOn<any, any>(component, 'setInitialErrorMessages');
+    const resetSpy = vi.spyOn(finesConStore, 'resetSearchAccountForm');
+
+    component.clearSearchForm(event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(clearAllErrorMessagesSpy).toHaveBeenCalled();
+    expect(setInitialErrorMessagesSpy).toHaveBeenCalled();
+    expect(resetSpy).toHaveBeenCalled();
+    expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
+  });
+
   it('should persist form and navigate to search error page when conflicting criteria are submitted', () => {
     const router = TestBed.inject(Router);
     const updateTemporarySpy = vi.spyOn(finesConStore, 'updateSearchAccountFormTemporary');

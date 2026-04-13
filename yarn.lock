@@ -3710,15 +3710,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.66":
-  version: 0.0.66
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.66"
+"@hmcts/opal-frontend-common@npm:^0.0.67":
+  version: 0.0.67
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.67"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
-  checksum: 10/67d2973154c672470ea7a59a3bda2980dd17ff03f2afa0cdd0d19ba2533657b1b1109531147a6f6171ae4b806ffa7528e8729f80266e1152b641478d4f6fd58b
+  checksum: 10/3efaeb283e0244e9ec148fc6b40325999b517b3e75bb42a4891ea48f158948385e6014b410aa6551cb6eaf658b126424b52fa5d4b5b73dc32462b53b11fcee5e
   languageName: node
   linkType: hard
 
@@ -14954,7 +14954,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.66"
+    "@hmcts/opal-frontend-common": "npm:^0.0.67"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.27"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"

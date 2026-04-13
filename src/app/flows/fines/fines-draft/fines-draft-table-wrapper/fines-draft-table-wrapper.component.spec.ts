@@ -63,4 +63,101 @@ describe('FinesDraftTableWrapperComponent', () => {
 
     expect(component.accountClicked.emit).toHaveBeenCalledWith(testAccountId);
   });
+
+  it('should enforce current template link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesDraftTableWrapperComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesDraftTableWrapperComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const actionLinkConsts = templateConsts.filter(
+      (entry) =>
+        entry.includes('govuk-link') &&
+        entry.includes('govuk-link--no-visited-state') &&
+        entry.includes('href') &&
+        entry.includes('click'),
+    );
+
+    expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
+    actionLinkConsts.forEach((entry) => {
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should click defendant link and preserve current template click behaviour', () => {
+    component.activeTab = 'review';
+    component.tableData = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK;
+    fixture.detectChanges();
+
+    const defendantName = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Defendant;
+    const links = Array.from(fixture.nativeElement.querySelectorAll('a.govuk-link')) as HTMLAnchorElement[];
+    const link = links.find((anchor) => anchor.textContent?.trim() === defendantName) ?? null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Defendant link not found');
+
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'onDefendantClick');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.linkClicked, 'emit');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0], event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(emitSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
+  });
+
+  it('should click account link and preserve current template click behaviour', () => {
+    fixture.componentRef.setInput('activeTab', 'approved');
+    fixture.componentRef.setInput('tableData', FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    fixture.detectChanges();
+
+    const accountNumber = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0].Account;
+    const links = Array.from(fixture.nativeElement.querySelectorAll('a.govuk-link')) as HTMLAnchorElement[];
+    const link = links.find((anchor) => anchor.textContent?.trim() === accountNumber) ?? null;
+    if (!link) {
+      const linkTexts = links.map((anchor) => anchor.textContent?.trim());
+      throw new Error(`Account link not found. Available links: ${linkTexts.join(', ')}`);
+    }
+
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'onAccountClick');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.accountClicked, 'emit');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'], event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(emitSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id']);
+  });
+
+  it('should prevent default and emit accountClicked when onAccountClick is called with an event', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.accountClicked, 'emit');
+    const accountId = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'];
+
+    component.onAccountClick(accountId, event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith(accountId);
+  });
 });
