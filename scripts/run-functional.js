@@ -5,21 +5,15 @@
  */
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { resolveGenericBrowser } = require('./browser-support');
 
 const args = process.argv.slice(2);
 const withTags = args.includes('--tags');
-
-/**
- * Resolve the browser under test, defaulting to chrome when unset.
- * @returns {string} Normalized browser name.
- */
-const resolveBrowser = () => {
-  const raw = (process.env.BROWSER_TO_RUN || '').trim().toLowerCase();
-  return raw || 'chrome';
-};
-
-const browser = resolveBrowser();
+const tagExpression = (process.env.CYPRESS_TAGS || process.env.TAGS || '').trim();
+const browser = resolveGenericBrowser(process.env.BROWSER_TO_RUN);
 process.env.BROWSER_TO_RUN = browser;
 process.env.TEST_SPECS = (process.env.TEST_SPECS || '').trim() || 'cypress/e2e/functional/opal/**/*.feature';
 console.log(`[run-functional] TEST_SPECS=${process.env.TEST_SPECS}`);
@@ -47,16 +41,51 @@ const runYarn = (scriptName) => {
   return result.error ? 1 : 0;
 };
 
-const testExitCode = runYarn('test:functionalOpalParallel');
-runYarn('test:functional:combine:reports');
+/**
+ * Return whether the given directory contains files with the provided extension.
+ * @param {string} dirPath
+ * @param {string} extension
+ * @returns {boolean}
+ */
+const hasFilesWithExtension = (dirPath, extension) => {
+  if (!fs.existsSync(dirPath)) {
+    return false;
+  }
 
-const cucumberScript =
-  browser === 'edge'
-    ? 'test:functionalEdge:cucumber:combineParallelReport'
-    : browser === 'firefox'
-      ? 'test:functionalFirefox:cucumber:combineParallelReport'
-      : 'test:functional:cucumber:combineParallelReport';
+  return fs.readdirSync(dirPath).some((filename) => filename.endsWith(extension));
+};
 
-runYarn(cucumberScript);
+/**
+ * Return whether functional artifacts were produced for the selected browser.
+ * @param {string} resolvedBrowser
+ * @returns {{ hasXml: boolean, hasNdjson: boolean }}
+ */
+const getFunctionalArtifacts = (resolvedBrowser) => {
+  const functionalDir = path.join('functional-output', 'prod', resolvedBrowser);
+  const cucumberDir = path.join(functionalDir, 'cucumber');
 
-process.exit(testExitCode || 0);
+  return {
+    hasXml: hasFilesWithExtension(functionalDir, '.xml'),
+    hasNdjson: hasFilesWithExtension(cucumberDir, '.ndjson'),
+  };
+};
+
+const parallelScript = withTags ? 'test:functionalOpalParallel:tagged' : 'test:functionalOpalParallel';
+
+const testExitCode = runYarn(parallelScript);
+const { hasXml, hasNdjson } = getFunctionalArtifacts(browser);
+
+if (!hasXml && !hasNdjson) {
+  if (testExitCode === 0 && withTags) {
+    console.log(`[run-functional] no functional scenarios matched TAGS=${tagExpression}; skipping report generation.`);
+    process.exit(0);
+  }
+
+  console.error('[run-functional] no functional test artifacts were produced; treating the run as failed.');
+  process.exit(testExitCode || 1);
+}
+
+const combineReportsExitCode = hasXml ? runYarn('test:functional:combine:reports') : 0;
+const combineCucumberExitCode = hasNdjson ? runYarn('test:functional:cucumber:combineParallelReport') : 0;
+
+process.exit(testExitCode || combineReportsExitCode || combineCucumberExitCode || 0);

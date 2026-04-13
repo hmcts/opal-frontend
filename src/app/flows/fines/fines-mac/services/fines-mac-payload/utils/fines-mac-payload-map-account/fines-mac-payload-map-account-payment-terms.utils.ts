@@ -1,4 +1,4 @@
-import { FINES_PAYMENT_TERMS_OPTIONS } from 'src/app/flows/fines/constants/fines-payment-terms-options.constant';
+import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../../../constants/fines-payment-terms-options.constant';
 import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';

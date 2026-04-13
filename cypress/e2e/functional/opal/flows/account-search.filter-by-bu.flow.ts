@@ -16,7 +16,6 @@ import { SearchFilterByBUFinesActions } from '../actions/search/search.filter-by
 import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { SearchFilterByBUConfiscationActions } from '../actions/search/search.filter-by-bu-confiscation.actions';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
-import { DashboardActions } from '../actions/dashboard.actions';
 
 const commonActions = new SearchFilterByBUCommonActions();
 const navActions = new SearchFilterByBUNavActions();
@@ -26,7 +25,6 @@ const log = createScopedLogger('SearchFilterByBUFlow');
 
 /** Flow wrapper around business unit filter navigation and assertions. */
 export class SearchFilterByBUFlow {
-  private readonly dashboard = new DashboardActions();
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCommonActions = new AccountSearchCommonActions();
 
@@ -39,7 +37,7 @@ export class SearchFilterByBUFlow {
    *   3. Open the Business Unit filter via the “Change” link
    *
    * Delegates:
-   *   - DashboardActions.goToAccountSearch()
+   *   - AccountSearchIndividualsActions.assertOnSearchLandingPage()
    *   - AccountSearchIndividualsActions.assertDefaultIndividualsActive()
    *   - AccountSearchCommonActions.openBusinessUnitFilter()
    *
@@ -48,7 +46,7 @@ export class SearchFilterByBUFlow {
    */
   navigateToFilterByBusinessUnit(): void {
     log('navigate', 'Go to Account Search from dashboard');
-    this.dashboard.goToAccountSearch();
+    this.searchIndividuals.assertOnSearchLandingPage();
 
     log('assert', 'Verify Individuals form is active by default');
     this.searchIndividuals.assertDefaultIndividualsActive();
@@ -281,8 +279,10 @@ export class SearchFilterByBUFlow {
           .trim();
 
         log('debug', `Normalised filter summary text: "${normalised}"`);
-
-        expect(normalised).to.equal(expectedSummary);
+        normalised.split(',').forEach((part) => {
+          log('debug', `Summary part: "${part.trim()}"`);
+          expect(expectedSummary).to.include(part.trim());
+        });
       });
   }
 

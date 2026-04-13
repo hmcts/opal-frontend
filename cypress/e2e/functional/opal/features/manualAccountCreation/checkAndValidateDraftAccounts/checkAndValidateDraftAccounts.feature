@@ -1,10 +1,11 @@
+@JIRA-LABEL:manual-account-creation
 Feature: Check and Validate - Checker
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
-  @PO-594
+  @JIRA-STORY:PO-594 @JIRA-KEY:POT-3157
   Scenario: Back navigation returns to Review accounts from an in-review draft
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                       |
@@ -12,25 +13,25 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Lincoln{uniq}                   |
       | account.defendant.email_address_1       | larry.lincoln{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219385                     |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "LINCOLN{uniqUpper}, Larry" and see header "Mr Larry LINCOLN{uniqUpper}"
     And the draft account status tag is "In review"
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "To review"
 
-  @PO-594 @UAT-Technical
+  @R1A @JIRA-STORY:PO-594 @UAT-Technical @JIRA-KEY:POT-3158
   Scenario: Approve an in-review draft account from the review screen
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                                            | Submitted                                                                                                                                                                                              |
-      | account.defendant.forenames                               | Larry                                                                                                                                                                                                  |
-      | account.defendant.surname                                 | Lincoln{uniq}                                                                                                                                                                                          |
-      | account.defendant.email_address_1                         | larry.lincoln{uniq}@outlook.com                                                                                                                                                                        |
-      | account.defendant.telephone_number_home                   | 02078219385                                                                                                                                                                                            |
-      | account.defendant.debtor_detail.vehicle_make              | _=+[{]};:'@#~,<.>/?\\\\\|¬`!"£                                                                                                                                                                         |
-      | account.defendant.debtor_detail.vehicle_registration_mark | $%^&*()-                                                                                                                                                                                               |
-      | account.account_notes                                     | [{"account_note_serial":1,"account_note_text":"It's short - note.","note_type":"AC"},{"account_note_serial":2,"account_note_text":"Here's short - note.","note_type":"AA"}]                         |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+      | Account_status                                            | Submitted                                                                                                                                                                   |
+      | account.defendant.forenames                               | Larry                                                                                                                                                                       |
+      | account.defendant.surname                                 | Lincoln{uniq}                                                                                                                                                               |
+      | account.defendant.email_address_1                         | larry.lincoln{uniq}@outlook.com                                                                                                                                             |
+      | account.defendant.telephone_number_home                   | 02078219385                                                                                                                                                                 |
+      | account.defendant.debtor_detail.vehicle_make              | _=+[{]};:'@#~,<.>/?\\\\\|¬`!"£                                                                                                                                              |
+      | account.defendant.debtor_detail.vehicle_registration_mark | $%^&*()-                                                                                                                                                                    |
+      | account.account_notes                                     | [{"account_note_serial":1,"account_note_text":"It's short - note.","note_type":"AC"},{"account_note_serial":2,"account_note_text":"Here's short - note.","note_type":"AA"}] |
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Lincoln{uniq}, Larry" and see header "Mr Larry Lincoln{uniq}"
     And the draft account status tag is "In review"
@@ -39,7 +40,7 @@ Feature: Check and Validate - Checker
     Then I should see the checker header "Review accounts" and status heading "To review"
     And the draft success banner is "You have approved Larry Lincoln{uniq}'s account"
 
-  @PO-969 @PO-601
+  @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-KEY:POT-3159
   Scenario: Reject an in-review draft account and review it from the Rejected tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                      |
@@ -47,7 +48,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Potter{uniq}                   |
       | account.defendant.email_address_1       | harry.potter{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219385                    |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
     And the draft account status tag is "In review"
@@ -62,15 +63,15 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Rejected"
 
-  @PO-2609
+  @JIRA-STORY:PO-2609 @JIRA-KEY:POT-3160
   Scenario: Inputter cannot delete a rejected account,checker-only deletion post-submission
     Given a "adultOrYouthOnly" draft account exists with:
-      | Account_status                          | Submitted                |
-      | account.defendant.forenames             | Harry                    |
+      | Account_status                          | Submitted                      |
+      | account.defendant.forenames             | Harry                          |
       | account.defendant.surname               | Potter{uniq}                   |
       | account.defendant.email_address_1       | harry.potter{uniq}@outlook.com |
-      | account.defendant.telephone_number_home | 02078219385              |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+      | account.defendant.telephone_number_home | 02078219385                    |
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Potter{uniq}, Harry" and see header "Mr Harry Potter{uniq}"
     And I see the "Delete account" link
@@ -85,7 +86,7 @@ Feature: Check and Validate - Checker
     And the draft account status tag is "Rejected"
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Rejected"
-    And I am logged in with email "opal-test@HMCTS.NET"
+    And I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I open Create and Manage Draft Accounts
     When I view the "Rejected" tab on the Create and Manage Draft Accounts page
     And I open the draft account for defendant "Potter{uniq}, Harry"
@@ -93,8 +94,8 @@ Feature: Check and Validate - Checker
     Then I click the "Check account" button
     And I do not see the "Delete account" link
 
-    
-  @PO-597 @PO-616
+
+  @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-KEY:POT-3161
   Scenario: Delete an in-review draft account and verify it on the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -102,7 +103,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Barnes{uniq}                 |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219334                  |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "Barnes{uniq}, Peter" and see header "Mr Peter Barnes{uniq}"
     And the draft account status tag is "In review"
@@ -120,7 +121,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Deleted"
 
-  @PO-597
+  @JIRA-STORY:PO-597 @JIRA-KEY:POT-3162
   Scenario: Cancel draft deletion and remain on the confirmation page
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -128,14 +129,14 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Barn{uniq}                   |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219334                  |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "BARN{uniqUpper}, Peter" and see header "Mr Peter BARN{uniqUpper}"
     When I delete the draft account from review and see the confirmation page
     And I cancel draft deletion choosing "No - Cancel"
     Then I should be back on the page "Mr Peter BARN{uniqUpper}" with status "In review"
 
-  @PO-597
+  @JIRA-STORY:PO-597 @JIRA-KEY:POT-3163
   Scenario: Cancel draft deletion after entering a reason and return to the account
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -143,7 +144,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Barn{uniq}                   |
       | account.defendant.email_address_1       | peter.barn{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219334                  |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "BARN{uniqUpper}, Peter" and see header "Mr Peter BARN{uniqUpper}"
     When I delete the draft account from review and see the confirmation page
@@ -154,7 +155,7 @@ Feature: Check and Validate - Checker
     When I cancel draft deletion choosing "Ok"
     Then I should see the header containing text "Mr Peter BARN{uniqUpper}"
 
-  @PO-968
+  @JIRA-STORY:PO-968 @JIRA-KEY:POT-3164
   Scenario: Show a global error banner when approving fails
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -162,7 +163,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | BLART{uniq}                  |
       | account.defendant.email_address_1       | paul.blart{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02078219385                  |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     And draft account decision updates fail with status 400
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "BLART{uniqUpper}, Paul" and see header "Mr Paul BLART{uniqUpper}"
@@ -171,7 +172,7 @@ Feature: Check and Validate - Checker
       | Decision | Approve |
     Then I should see the draft global error banner
 
-  @PO-1073
+  @JIRA-STORY:PO-1073 @JIRA-KEY:POT-3165
   Scenario: View a failed draft account and return to the Failed tab
     Given failed draft accounts are stubbed with one result
     When I open Check and Validate Draft Accounts
@@ -182,7 +183,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Failed"
 
-  @PO-603
+  @JIRA-STORY:PO-603 @JIRA-KEY:POT-3166
   Scenario: Open an existing deleted draft account from the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                   |
@@ -190,7 +191,7 @@ Feature: Check and Validate - Checker
       | account.defendant.surname               | Salt{uniq}                  |
       | account.defendant.email_address_1       | paul.salt{uniq}@outlook.com |
       | account.defendant.telephone_number_home | 02038219385                 |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     And I set the last created draft account status to "Deleted"
     When I open Check and Validate Draft Accounts
     And I view the "Deleted" tab on the Check and Validate page
@@ -200,36 +201,36 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the header containing text "Review accounts"
 
-  @PO-1804
+  @JIRA-STORY:PO-1804 @JIRA-KEY:POT-3167
   Scenario: Open a fixed penalty account from the To review tab and return using Back
     Given a "fixedPenalty" draft account exists with:
       | Account_status              | Submitted      |
       | account.defendant.forenames | FakeFixed      |
       | account.defendant.surname   | FAKELAST{uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
     When I go back to Check and Validate Draft Accounts
     Then I should see the header containing text "Review accounts"
 
-  @PO-1804
+  @JIRA-STORY:PO-1804 @JIRA-KEY:POT-3168
   Scenario: Open a fixed penalty company account from the To review tab and return using Back
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "TestFixedPenaltyCompany {uniq}" and see header "TestFixedPenaltyCompany {uniq}"
     When I go back to Check and Validate Draft Accounts
     Then I should see the header containing text "Review accounts"
 
 
-  @PO-2463
+  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-3169
   Scenario: Delete a fixed penalty company draft and return from the Deleted tab
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "TestFixedPenaltyCompany {uniq}" and see header "TestFixedPenaltyCompany {uniq}"
     When I delete the draft account from review and see the confirmation page
@@ -243,13 +244,13 @@ Feature: Check and Validate - Checker
     Then I should see the checker header "Review accounts" and status heading "Deleted"
 
 
-  @PO-2463
+  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-3170
   Scenario: Delete a fixed penalty draft and return from the Deleted tab
     Given a "fixedPenalty" draft account exists with:
       | Account_status              | Submitted      |
       | account.defendant.forenames | FakeFixed      |
       | account.defendant.surname   | FAKELAST{uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
     When I delete the draft account from review and see the confirmation page
@@ -262,13 +263,13 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Deleted"
 
-  @PO-2463
+  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-3171
   Scenario: Reject a fixed penalty draft and return from the Rejected tab
     Given a "fixedPenalty" draft account exists with:
       | Account_status              | Submitted      |
       | account.defendant.forenames | FakeFixed      |
       | account.defendant.surname   | FAKELAST{uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "FAKELAST{uniqUpper}, FakeFixed" and see header "Mr FakeFixed FAKELAST{uniqUpper}"
     And the draft account status tag is "In review"
@@ -282,12 +283,12 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the header containing text "Review accounts"
 
-  @PO-2463
+  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-3172
   Scenario: Reject a fixed penalty company draft and return from the Rejected tab
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |
       | account.defendant.company_name | TestFixedPenaltyCompany {uniq} |
-    And I am logged in with email "opal-test-10@HMCTS.NET"
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "TestFixedPenaltyCompany {uniq}" and see header "TestFixedPenaltyCompany {uniq}"
     And the draft account status tag is "In review"

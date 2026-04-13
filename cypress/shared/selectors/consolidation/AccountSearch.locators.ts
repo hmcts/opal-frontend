@@ -1,5 +1,6 @@
 export const AccountSearchLocators = {
   heading: 'h1.govuk-heading-l',
+  backLink: 'a.govuk-back-link',
 
   // Summary rows
   summaryList: '#consolidateAccSummary',

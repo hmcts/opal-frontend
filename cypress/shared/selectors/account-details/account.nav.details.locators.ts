@@ -85,6 +85,9 @@ export const AccountNavDetailsLocators = {
     /** Tab link for “Parent or guardian.” */
     parentOrGuardianTab: 'li[subnavitemid="parent-or-guardian-tab"] > a.moj-sub-navigation__link',
 
+    /** Tab link for “Fixed penalty.” */
+    fixedPenaltyTab: 'li[subnavitemid="fixed-penalty-tab"] > a.moj-sub-navigation__link',
+
     /** Tab link for “Payment terms.” */
     paymentTermsTab: 'li[subnavitemid="payment-terms-tab"] > a.moj-sub-navigation__link',
 

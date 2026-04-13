@@ -1,5 +1,5 @@
-import { DashboardActions } from '../actions/dashboard.actions';
 import { ManualCreateAccountActions, DefendantType } from '../actions/manual-account-creation/create-account.actions';
+import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { AccountType } from '../../../../support/utils/payloads';
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
@@ -66,6 +66,7 @@ import {
   OriginatorType,
 } from '../actions/manual-account-creation/create-transfer.actions';
 import { ManualAccountRequestMonitorActions } from '../actions/manual-account-creation/manual-account-request-monitor.actions';
+import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -131,7 +132,8 @@ type CompositeEntry = {
  * feature so Cucumber steps remain intent-driven and thin.
  */
 export class ManualAccountCreationFlow {
-  private readonly dashboard = new DashboardActions();
+  private readonly searchIndividuals = new AccountSearchIndividualsActions();
+  private readonly primaryNavigation = new PrimaryNavigationActions();
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly originatorType = new ManualCreateOrTransferInActions();
   private readonly accountDetails = new ManualAccountDetailsActions();
@@ -1430,7 +1432,9 @@ export class ManualAccountCreationFlow {
    */
   goToManualAccountCreationFromDashboard(): void {
     log('flow', 'Navigate to Manual Account Creation from dashboard');
-    this.dashboard.assertDashboard();
+    this.searchIndividuals.assertOnSearchLandingPage();
+    this.primaryNavigation.chooseItem('Accounts');
+    this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
     this.ensureOnCreateOrTransferInPage();
     this.originatorType.selectOriginatorType('New');
     this.originatorType.continueToCreateAccount();
@@ -2511,15 +2515,9 @@ export class ManualAccountCreationFlow {
    */
   providePaymentTermsFromAccountDetails(payload: ManualPaymentTermsInput, accountDetailsHeader?: string): void {
     log('flow', 'Provide payment terms from Account details', { payload, accountDetailsHeader });
-    cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
-      if (!pathname.includes('/account-details')) {
-        this.taskNavigation.navigateToAccountDetails();
-      } else {
-        this.accountDetails.assertOnAccountDetailsPage(accountDetailsHeader);
-      }
-      this.openTaskFromAccountDetails('Payment terms', accountDetailsHeader);
-      this.paymentTerms.fillPaymentTerms(payload);
-    });
+    this.taskNavigation.navigateToAccountDetails(accountDetailsHeader);
+    this.openTaskFromAccountDetails('Payment terms', accountDetailsHeader);
+    this.paymentTerms.fillPaymentTerms(payload);
   }
 
   /**
@@ -2944,8 +2942,9 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * Ensures the create or transfer in page is loaded.
-   * If currently on Create account, navigates back; otherwise navigates from dashboard.
+   * Ensures the create-or-transfer-in page is loaded from the Accounts landing page.
+   * If we are not already on that page, the flow returns to Accounts via primary navigation
+   * and reopens Manual Account Creation using the deterministic Accounts-page entry.
    */
   private ensureOnCreateOrTransferInPage(): void {
     cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
@@ -2954,7 +2953,9 @@ export class ManualAccountCreationFlow {
         return;
       }
 
-      this.dashboard.goToManualAccountCreation();
+      this.primaryNavigation.chooseItem('Accounts');
+      this.primaryNavigation.assertLandingPage('Accounts', '/fines/dashboard/accounts');
+      this.createAccount.openFromAccountsPage();
       this.originatorType.assertOnCreateOrTransferInPage();
     });
   }

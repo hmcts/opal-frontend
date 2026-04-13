@@ -25,6 +25,8 @@ import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-s
 import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-build-payment-terms-amend.utils';
 import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
+import { IFinesAccEnfOverrideAddChangeFormState } from '../fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
+import { IFinesAccEnfCourtChangeFormState } from '../fines-acc-enf-court-change/interfaces/fines-acc-enf-court-change-form-state.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +50,7 @@ export class FinesAccPayloadService {
   public buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
     return {
       activity_note: {
-        record_type: 'DEFENDANT_ACCOUNTS',
+        record_type: 'defendant_accounts',
         record_id: this.finesAccStore.account_id()!,
         note_text: form.formData.facc_add_notes!,
         note_type: 'AA',
@@ -153,7 +155,7 @@ export class FinesAccPayloadService {
   }
 
   /**
-   * Transforms the given IFinesAccAddCommentsFormState and account version into an update payload
+   * Transforms the given IFinesAccAddCommentsFormState into an update payload
    * for the defendant account API.
    *
    * @param formState - The form state containing the comment and note data
@@ -166,6 +168,59 @@ export class FinesAccPayloadService {
         free_text_note_1: formState.facc_add_free_text_1 || null,
         free_text_note_2: formState.facc_add_free_text_2 || null,
         free_text_note_3: formState.facc_add_free_text_3 || null,
+      },
+    };
+  }
+
+  /**
+   * Transforms the given IFinesAccEnfOverrideAddChangeFormState into an update payload
+   * for the defendant account API.
+   *
+   * @param formState - The form state containing the enforcement override data
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildEnforcementOverrideFormPayload(
+    formState: IFinesAccEnfOverrideAddChangeFormState,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    const {
+      fenf_account_enforcement_action: enforcement_override_result_id,
+      fenf_account_enforcement_enforcer: enforcer_id,
+      fenf_account_enforcement_lja: lja_id,
+    } = formState;
+    return {
+      enforcement_override: {
+        enforcement_override_result: enforcement_override_result_id
+          ? {
+              enforcement_override_result_id,
+            }
+          : null,
+        enforcer: enforcer_id
+          ? {
+              enforcer_id,
+            }
+          : null,
+        lja: lja_id
+          ? {
+              lja_id,
+            }
+          : null,
+      },
+    };
+  }
+
+  /**
+   * Transforms the given IFinesAccEnfCourtChangeFormState into an update payload
+   * for the defendant account API.
+   *
+   * @param formState - The form state containing the enforcement court data
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildEnforcementCourtFormPayload(
+    formState: IFinesAccEnfCourtChangeFormState,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    return {
+      enforcement_court: {
+        court_id: Number(formState.facc_enf_court),
       },
     };
   }
