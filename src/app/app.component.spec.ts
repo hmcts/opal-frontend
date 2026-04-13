@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NavigationEnd, Router, RouterModule, provideRouter } from '@angular/router';
+import { Router, RouterModule, Routes, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DateTime } from 'luxon';
 import { By } from '@angular/platform-browser';
@@ -30,6 +30,10 @@ import { FINES_DRAFT_ROUTING_PATHS } from './flows/fines/fines-draft/routing/con
 import { ACCOUNTS_PERMISSIONS } from './flows/fines/constants/accounts-permissions.constant';
 import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions.constant';
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
+import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
+import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -64,6 +68,40 @@ const getPrimaryNavigationTexts = (fixture: ComponentFixture<AppComponent>): str
   Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.moj-primary-navigation__link')).map(
     (link) => link.textContent?.trim() ?? '',
   );
+
+const hasPrimaryNavigation = (fixture: ComponentFixture<AppComponent>): boolean =>
+  fixture.debugElement.query(By.directive(MojPrimaryNavigationComponent)) !== null;
+
+const navigateToUrl = async (fixture: ComponentFixture<AppComponent>, router: Router, url: string): Promise<void> => {
+  await fixture.ngZone!.run(async () => {
+    await router.navigateByUrl(url);
+  });
+  fixture.detectChanges();
+};
+
+const getDefendantAccountRoutes = (): Routes => [
+  {
+    path: `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
+    children: [
+      {
+        path: FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+        component: DummyDashboardRouteComponent,
+      },
+      {
+        path: '',
+        data: {
+          [HIDE_PRIMARY_NAV_ROUTE_DATA_KEY]: true,
+        },
+        children: [
+          {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`,
+            component: DummyDashboardRouteComponent,
+          },
+        ],
+      },
+    ],
+  },
+];
 
 describe('AppComponent - browser', () => {
   const mockDocumentLocation = {
@@ -264,20 +302,21 @@ describe('AppComponent - browser', () => {
   });
 
   it('should track page views on navigation end', () => {
-    vi.useFakeTimers();
+    globalStore.setAuthenticated(true);
+
+    const router = TestBed.inject(Router);
+    router.resetConfig([{ path: 'test', component: DummyDashboardRouteComponent }]);
+
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    const mockNavigationEnd = new NavigationEnd(1, '/test', '/test');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component['router'].events, 'pipe').mockReturnValue(of(mockNavigationEnd));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['appInsightsService'], 'logPageView');
 
-    component.ngOnInit();
-    vi.runOnlyPendingTimers();
+    fixture.detectChanges();
 
-    expect(component['appInsightsService'].logPageView).toHaveBeenCalledWith('test', '/test');
-    vi.useRealTimers();
+    return navigateToUrl(fixture, router, '/test').then(() => {
+      expect(component['appInsightsService'].logPageView).toHaveBeenCalledWith('test', '/test');
+    });
   });
 
   it('should resolve Search as the active item for the default landing route', () => {
@@ -389,6 +428,138 @@ describe('AppComponent - browser', () => {
     fixture.detectChanges();
 
     expect(getPrimaryNavigationTexts(fixture)).toContain('Accounts');
+  });
+
+  it('should show the primary navigation on browse routes', async () => {
+    globalStore.setAuthenticated(true);
+
+    const router = TestBed.inject(Router);
+    const browseRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.accounts}`;
+
+    router.resetConfig([
+      {
+        path: `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.accounts}`,
+        component: DummyDashboardRouteComponent,
+      },
+    ]);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    await navigateToUrl(fixture, router, browseRoute);
+
+    expect(hasPrimaryNavigation(fixture)).toBe(true);
+  });
+
+  it('should hide the primary navigation on journey routes such as Create account', async () => {
+    globalStore.setAuthenticated(true);
+
+    const router = TestBed.inject(Router);
+    const createAccountRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`;
+
+    router.resetConfig([
+      {
+        path: `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`,
+        component: DummyDashboardRouteComponent,
+        data: {
+          [HIDE_PRIMARY_NAV_ROUTE_DATA_KEY]: true,
+        },
+      },
+    ]);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    await navigateToUrl(fixture, router, createAccountRoute);
+
+    expect(hasPrimaryNavigation(fixture)).toBe(false);
+  });
+
+  it('should hide the primary navigation on the first render for deep-linked account journeys', async () => {
+    globalStore.setAuthenticated(true);
+
+    const router = TestBed.inject(Router);
+    const addAccountNoteRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/123/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+    router.resetConfig(getDefendantAccountRoutes());
+    window.history.replaceState({}, '', addAccountNoteRoute);
+
+    try {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+
+      expect(hasPrimaryNavigation(fixture)).toBe(false);
+
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(hasPrimaryNavigation(fixture)).toBe(false);
+    } finally {
+      window.history.replaceState({}, '', currentUrl);
+    }
+  });
+
+  it('should keep the primary navigation visible on the first render for deep-linked browse routes', async () => {
+    globalStore.setAuthenticated(true);
+
+    const router = TestBed.inject(Router);
+    const browseRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/123/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+    router.resetConfig(getDefendantAccountRoutes());
+    window.history.replaceState({}, '', browseRoute);
+
+    try {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+
+      expect(hasPrimaryNavigation(fixture)).toBe(true);
+
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(hasPrimaryNavigation(fixture)).toBe(true);
+    } finally {
+      window.history.replaceState({}, '', currentUrl);
+    }
+  });
+
+  it('should hide the primary navigation for nested account journeys such as Add Account Note', async () => {
+    globalStore.setAuthenticated(true);
+
+    const router = TestBed.inject(Router);
+    const addAccountNoteRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/123/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`;
+    router.resetConfig(getDefendantAccountRoutes());
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    await navigateToUrl(fixture, router, addAccountNoteRoute);
+
+    expect(hasPrimaryNavigation(fixture)).toBe(false);
+  });
+
+  it('should hide the primary navigation when entering a journey and show it again when returning to browse mode', async () => {
+    globalStore.setAuthenticated(true);
+
+    const router = TestBed.inject(Router);
+    const browseRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/123/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
+    const addAccountNoteRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/123/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`;
+
+    router.resetConfig(getDefendantAccountRoutes());
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    await navigateToUrl(fixture, router, browseRoute);
+    expect(hasPrimaryNavigation(fixture)).toBe(true);
+
+    await navigateToUrl(fixture, router, addAccountNoteRoute);
+    expect(hasPrimaryNavigation(fixture)).toBe(false);
+
+    await navigateToUrl(fixture, router, browseRoute);
+    expect(hasPrimaryNavigation(fixture)).toBe(true);
   });
 
   it('should navigate to the selected dashboard type from primary navigation', () => {
