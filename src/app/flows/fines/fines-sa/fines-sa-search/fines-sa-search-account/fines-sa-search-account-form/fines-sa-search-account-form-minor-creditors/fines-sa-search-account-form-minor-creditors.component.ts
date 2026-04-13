@@ -11,7 +11,7 @@ import {
   GovukRadiosConditionalComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
-import { FINES_MINOR_CREDITOR_TYPES } from 'src/app/flows/fines/constants/fines-minor-creditor-types.constant';
+import { FINES_MINOR_CREDITOR_TYPES } from '../../../../../constants/fines-minor-creditor-types.constant';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { requiredMinorCreditorDataValidator } from './validators/fines-sa-search-account-form-minor-creditors.validator';

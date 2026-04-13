@@ -68,6 +68,7 @@
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="enforcement_court"
             [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeEnforcementCourt()"
           >
             <ng-container name>Enforcement court</ng-container>
             <ng-container value>
@@ -346,7 +347,7 @@
     <h2 [class]="style.heading">Actions</h2>
     @if (hasEnterEnforcementPermission) {
       <p>
-        <a class="govuk-link" tabindex="0">Add enforcement action</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="">Add enforcement action</a>
       </p>
     }
     @if (
@@ -354,13 +355,13 @@
       !tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
     ) {
       <p>
-        <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddEnforcementOverride($event)"
+        <a class="govuk-link govuk-link--no-visited-state" href="" (click)="handleAddEnforcementOverride($event)"
           >Add enforcement override</a
         >
       </p>
     }
     <p>
-      <a class="govuk-link" tabindex="0">Request an HMRC check</a>
+      <a class="govuk-link govuk-link--no-visited-state" href="">Request an HMRC check</a>
     </p>
   </div>
 }

@@ -31,6 +31,8 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   collectionOrderStatus: '#enforcementOverviewDetailsCollection_order_statusKey',
   daysInDefault: '#enforcementOverviewDetailsDays_in_defaultKey',
   enforcementCourt: '#enforcementOverviewDetailsEnforcement_courtKey',
+  enforcementCourtValue: '#enforcementOverviewDetailsEnforcement_courtValue',
+  changeEnforcementCourtLink: '#enforcementOverviewDetailsEnforcement_courtActions .govuk-link',
   enforcementAction: '#lastEnforcementActionDetailsEnforcement_actionKey',
   reason: '#lastEnforcementActionDetailsReasonKey',
   lastEnfEnforcer: '#lastEnforcementActionDetailsEnforcerKey',
@@ -49,4 +51,5 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   detailsReason: '#enforcementActionDetailsReasonKey',
 
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
+  changeEnforcementOverrideLink: '#enforcementOverrideDetailsEnforcement_overrideActions > .govuk-link',
 } as const;
