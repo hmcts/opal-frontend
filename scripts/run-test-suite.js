@@ -222,6 +222,57 @@ function hasOption(args, optionName) {
 }
 
 /**
+ * Return the value for an option from passthrough args.
+ * Supports both `--option value` and `--option=value` forms.
+ * @param {string[]} args
+ * @param {string} optionName
+ * @returns {string}
+ */
+function getOptionValue(args, optionName) {
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+
+    if (arg === optionName) {
+      return args[index + 1] || '';
+    }
+
+    if (arg.startsWith(`${optionName}=`)) {
+      return arg.slice(optionName.length + 1);
+    }
+  }
+
+  return '';
+}
+
+/**
+ * Remove an option and its value from passthrough args.
+ * Supports both `--option value` and `--option=value` forms.
+ * @param {string[]} args
+ * @param {string} optionName
+ * @returns {string[]}
+ */
+function removeOption(args, optionName) {
+  const filteredArgs = [];
+
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+
+    if (arg === optionName) {
+      index += 1;
+      continue;
+    }
+
+    if (arg.startsWith(`${optionName}=`)) {
+      continue;
+    }
+
+    filteredArgs.push(arg);
+  }
+
+  return filteredArgs;
+}
+
+/**
  * Apply shared environment settings for the selected suite.
  * @param {NodeJS.ProcessEnv} env
  * @param {{ mode: 'opal' | 'legacy', suite: string, tags: boolean }} context
@@ -235,6 +286,7 @@ function applyRunnerEnv(env, context) {
 
   if (context.suite === 'functional' || context.suite === 'smoke') {
     env.TEST_STAGE = context.suite;
+    env.CYPRESS_messagesEnabled = env.CYPRESS_messagesEnabled || 'true';
   } else if (context.suite === 'component') {
     env.TEST_STAGE = 'component';
   }
@@ -301,9 +353,7 @@ function buildSuiteConfig(options) {
       ? isLegacy
         ? 'cypress/e2e/smoke/legacy/**/*.feature'
         : 'cypress/e2e/smoke/opal/**/*.feature'
-      : isLegacy
-        ? 'cypress/e2e/functional/legacy/**/*.feature'
-        : (process.env.TEST_SPECS || '').trim() || 'cypress/e2e/functional/opal/**/*.feature';
+      : (process.env.TEST_SPECS || '').trim() || 'cypress/e2e/functional/opal/**/*.feature';
 
   const screenshotsFolder = isLegacy
     ? `${outputRoot}/screenshots/${browser}/legacy`
@@ -320,9 +370,7 @@ function buildSuiteConfig(options) {
   const weightsJson =
     suite === 'smoke'
       ? 'cypress/parallel/weights/smoke-parallel-weights.json'
-      : isLegacy
-        ? ''
-        : 'cypress/parallel/weights/functional-parallel-weights.json';
+      : 'cypress/parallel/weights/functional-parallel-weights.json';
 
   return {
     suite,
@@ -409,7 +457,19 @@ function createComponentParallelReporterConfig(config) {
  * @returns {number}
  */
 function runParallelSuite(config, env, passthroughArgs) {
-  const commandArgs = ['-s', config.leafScript, '-d', config.specPattern, '-m', 'false', '-t', String(config.threads)];
+  const specOverride = getOptionValue(passthroughArgs, '--spec');
+  const forwardedArgs = removeOption(passthroughArgs, '--spec');
+  const commandArgs = ['-s', config.leafScript, '-m', 'false', '-t', String(config.threads)];
+
+  if (specOverride) {
+    if (specOverride.includes('*')) {
+      commandArgs.push('-d', specOverride);
+    } else {
+      commandArgs.push('--spec', specOverride);
+    }
+  } else {
+    commandArgs.push('-d', config.specPattern);
+  }
 
   if (config.weightsJson) {
     commandArgs.push('-w', config.weightsJson);
@@ -421,8 +481,8 @@ function runParallelSuite(config, env, passthroughArgs) {
     commandArgs.push('-r', 'mocha-junit-reporter', '-o', `mochaFile=${config.junitMochaFile}`);
   }
 
-  if (passthroughArgs.length > 0) {
-    commandArgs.push('-a', passthroughArgs.join(' '));
+  if (forwardedArgs.length > 0) {
+    commandArgs.push('-a', forwardedArgs.join(' '));
   }
 
   return runYarnTool('cypress-parallel', commandArgs, env);
