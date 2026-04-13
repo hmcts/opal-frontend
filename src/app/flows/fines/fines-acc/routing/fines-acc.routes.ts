@@ -23,6 +23,9 @@ import { fetchEnforcersResolver } from '../../routing/resolvers/fetch-results-wi
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-titles.constant';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { defendantAccountEnforcementStatusResolver } from './resolvers/defendant-account-enforcement-status.resolver';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-titles.constant';
+import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -214,6 +217,23 @@ export const routing: Routes = [
           localJusticeAreasRefData: fetchLocalJusticeAreasResolver,
           enforcersRefData: fetchEnforcersResolver,
           enforcementStatus: defendantAccountEnforcementStatusResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
+        loadComponent: () =>
+          import('../fines-acc-enf-court-change/fines-acc-enf-court-change.component').then(
+            (c) => c.FinesAccEnfCourtChangeComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          title: FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES.children.change,
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+        },
+        resolve: {
+          title: TitleResolver,
+          courtsRefData: fetchAccCourtsResolver,
         },
       },
     ],

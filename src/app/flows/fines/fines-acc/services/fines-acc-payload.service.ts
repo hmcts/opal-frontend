@@ -26,6 +26,7 @@ import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-bui
 import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IFinesAccEnfOverrideAddChangeFormState } from '../fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
+import { IFinesAccEnfCourtChangeFormState } from '../fines-acc-enf-court-change/interfaces/fines-acc-enf-court-change-form-state.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -203,6 +204,23 @@ export class FinesAccPayloadService {
               lja_id,
             }
           : null,
+      },
+    };
+  }
+
+  /**
+   * Transforms the given IFinesAccEnfCourtChangeFormState into an update payload
+   * for the defendant account API.
+   *
+   * @param formState - The form state containing the enforcement court data
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildEnforcementCourtFormPayload(
+    formState: IFinesAccEnfCourtChangeFormState,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    return {
+      enforcement_court: {
+        court_id: Number(formState.facc_enf_court),
       },
     };
   }

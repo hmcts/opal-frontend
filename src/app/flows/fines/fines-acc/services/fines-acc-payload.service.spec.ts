@@ -15,6 +15,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '../../services/
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { IFinesAccEnfOverrideAddChangeFormState } from '../fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
+import { IFinesAccEnfCourtChangeFormState } from '../fines-acc-enf-court-change/interfaces/fines-acc-enf-court-change-form-state.interface';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-map-transform-items-config.constant';
 import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines-acc-party-add-amend-convert/mocks/fines-acc-party-add-amend-convert-form-empty.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
@@ -672,6 +673,22 @@ describe('FinesAccPayloadService', () => {
       expect(result.address).toBeDefined();
       expect(result.contact_details).toBeDefined();
       expect(result.language_preferences).toBeDefined();
+    });
+  });
+
+  describe('buildEnforcementCourtFormPayload', () => {
+    it('should build the correct payload for an enforcement court change', () => {
+      const formState: IFinesAccEnfCourtChangeFormState = {
+        facc_enf_court: 202,
+      };
+
+      const result = service.buildEnforcementCourtFormPayload(formState);
+
+      expect(result).toEqual({
+        enforcement_court: {
+          court_id: 202,
+        },
+      });
     });
   });
 

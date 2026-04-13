@@ -7,6 +7,9 @@ import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { ResolveFn } from '@angular/router';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../../../fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FinesSaPayloadService } from '../../../services/fines-sa-payload.service';
+import { FINES_SA_BUILD_TRANSFORM_ITEMS_CONFIG } from '../../../services/constants/fines-sa-transform-items-config.constant';
+import { IFinesSaSearchAccountFormIndividualsState } from '../../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/interfaces/fines-sa-search-account-form-individuals-state.interface';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const execIndividuals: ResolveFn<any> = (...params) =>
@@ -18,6 +21,7 @@ const execCompanies: ResolveFn<any> = (...params) =>
 describe('finesSaDefendantAccountsResolver (store-driven)', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let opalFines: any;
+  let finesSaPayloadService: FinesSaPayloadService;
   let finesSaStore: FinesSaStoreType;
 
   beforeEach(() => {
@@ -29,12 +33,14 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
             getDefendantAccounts: vi.fn().mockName('OpalFines.getDefendantAccounts'),
           },
         },
+        FinesSaPayloadService,
         FinesSaStore,
       ],
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     opalFines = TestBed.inject(OpalFines) as any;
+    finesSaPayloadService = TestBed.inject(FinesSaPayloadService);
     finesSaStore = TestBed.inject(FinesSaStore);
   });
 
@@ -96,6 +102,8 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
   });
 
   it('builds individual payload when activeTab = individuals and criteria present', async () => {
+    const transformPayloadSpy = vi.spyOn(finesSaPayloadService, 'transformPayload');
+
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
       fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
@@ -104,7 +112,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
         fsa_search_account_individuals_last_name_exact_match: true,
         fsa_search_account_individuals_first_names: 'Jane',
         fsa_search_account_individuals_first_names_exact_match: false,
-        fsa_search_account_individuals_date_of_birth: '1980-01-02',
+        fsa_search_account_individuals_date_of_birth: '02/01/1980',
         fsa_search_account_individuals_national_insurance_number: 'QQ123456C',
         fsa_search_account_individuals_address_line_1: '10 Lane',
         fsa_search_account_individuals_post_code: 'AB1 2CD',
@@ -117,6 +125,19 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
+    const transformedCriteria = transformPayloadSpy.mock.calls[0][0] as IFinesSaSearchAccountFormIndividualsState;
+
+    expect(finesSaPayloadService.transformPayload).toHaveBeenCalledWith(
+      expect.any(Object),
+      FINES_SA_BUILD_TRANSFORM_ITEMS_CONFIG,
+    );
+    expect(transformedCriteria).not.toBe(finesSaStore.searchAccount().fsa_search_account_individuals_search_criteria);
+    expect(transformedCriteria.fsa_search_account_individuals_date_of_birth).toBe('1980-01-02');
+    expect(finesSaStore.searchAccount().fsa_search_account_individuals_search_criteria).toEqual(
+      expect.objectContaining({
+        fsa_search_account_individuals_date_of_birth: '02/01/1980',
+      }),
+    );
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
       expect.objectContaining({
         active_accounts_only: true,
@@ -182,6 +203,8 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
   });
 
   it('defaults active_accounts_only to true when not set in store', async () => {
+    const transformPayloadSpy = vi.spyOn(finesSaPayloadService, 'transformPayload');
+
     // active flag omitted -> resolver should send true by default
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
@@ -198,6 +221,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
+    expect(transformPayloadSpy).toHaveBeenCalledWith(expect.any(Object), FINES_SA_BUILD_TRANSFORM_ITEMS_CONFIG);
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
       expect.objectContaining({ active_accounts_only: true }),
     );

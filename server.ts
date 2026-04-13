@@ -57,7 +57,23 @@ const ssrLogger = Logger.getLogger('SSR');
 function app(): Express {
   const server = express();
 
-  const commonEngine = new CommonEngine();
+  const commonEngine = new CommonEngine({
+    allowedHosts: [
+      'localhost',
+      'opal-frontend.staging.platform.hmcts.net',
+      'opal-frontend-staging.staging.platform.hmcts.net',
+      'opal-frontend.demo.platform.hmcts.net',
+      'opal-frontend.ithc.platform.hmcts.net',
+      'opal-frontend.test.platform.hmcts.net',
+      '*.dev.platform.hmcts.net',
+      'opal-frontend.staging.apps.hmcts.net',
+      'opal-frontend-staging.staging.apps.hmcts.net',
+      'opal-frontend.demo.apps.hmcts.net',
+      'opal-frontend.ithc.apps.hmcts.net',
+      'opal-frontend.test.apps.hmcts.net',
+      '*.dev.apps.hmcts.net',
+    ],
+  });
 
   server.set('view engine', 'html');
   server.set('views', distFolder);

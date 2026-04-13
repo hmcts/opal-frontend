@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { FinesNotProvidedComponent } from 'src/app/flows/fines/components/fines-not-provided/fines-not-provided.component';
+import { FinesNotProvidedComponent } from '../../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
@@ -266,7 +266,14 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
     };
   }
 
-  public invertShowMinorCreditorData(impositionId: number): void {
+  /**
+   * Toggles the visibility of minor creditor details for the selected imposition.
+   *
+   * @param impositionId - The unique identifier of the imposition to update.
+   * @param event - The optional DOM event that triggered the toggle.
+   */
+  public invertShowMinorCreditorData(impositionId: number, event?: Event): void {
+    event?.preventDefault();
     const imposition = this.impositionTableData.find((imposition) => imposition.impositionId === impositionId)!;
     imposition.showMinorCreditorData = !imposition.showMinorCreditorData;
   }
