@@ -19,9 +19,9 @@ import {
 } from '../accountEnquiry/intercept/defendantAccountIntercepts';
 import {
   createDefendantHeaderMockWithName,
+  createParentGuardianHeaderMockWithName,
   DEFENDANT_HEADER_MOCK,
 } from '../accountEnquiry/mocks/defendant_details_mock';
-import { createParentGuardianHeaderMockWithName } from '../accountEnquiry/mocks/defendant_details_mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 
 const componentProperties: IComponentProperties = {
