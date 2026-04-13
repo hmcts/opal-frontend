@@ -115,6 +115,22 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should render the search offence list link with the required classes and attributes', () => {
+    const link = fixture.nativeElement.querySelector(
+      'a.govuk-link.govuk-link--no-visited-state',
+    ) as HTMLAnchorElement | null;
+
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Search offence list link not found');
+
+    expect(link.textContent?.trim()).toBe('search the offence list');
+    expect(link.classList.contains('govuk-link')).toBe(true);
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe(component.searchOffenceUrl);
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+  });
+
   it('should create the form with the correct controls', () => {
     component['setupFixedPenaltyDetailsForm']();
     Object.keys(FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK.formData).forEach((key) => {

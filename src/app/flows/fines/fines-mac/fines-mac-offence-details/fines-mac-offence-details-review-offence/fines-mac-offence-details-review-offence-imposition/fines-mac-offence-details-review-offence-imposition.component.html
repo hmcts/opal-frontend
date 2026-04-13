@@ -48,9 +48,8 @@
   @let linkLabel = show ? 'Hide details' : 'Show details';
   <a
     class="govuk-link govuk-link--no-visited-state"
-    (click)="invertShowMinorCreditorData(impositionId)"
-    (keyup.enter)="invertShowMinorCreditorData(impositionId)"
-    tabindex="0"
+    href=""
+    (click)="invertShowMinorCreditorData(impositionId, $event)"
     >{{ linkLabel }}</a
   >
   @if (show) {
