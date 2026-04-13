@@ -55,6 +55,16 @@ export class FinesSaSearchAccountFormMajorCreditorsComponent extends AbstractNes
     this.finesSaStore.resetDefendantSearchCriteria();
   }
 
+  /**
+   * Emits the business unit filter action.
+   *
+   * @param event - The DOM event that triggered the filter link.
+   */
+  public onFilterBusinessUnitClick(event: Event): void {
+    event.preventDefault();
+    this.filterBusinessUnitClicked.emit();
+  }
+
   public override ngOnInit(): void {
     this.setupMajorCreditorForm();
     super.ngOnInit();

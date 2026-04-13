@@ -367,8 +367,11 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
    *
    * This method uses the Angular Router to navigate to the dashboard search route.
    * It also sets the URL fragment to the currently active tab as determined by `finesSaStore.activeTab()`.
+   *
+   * @param event - The optional DOM event that triggered the navigation.
    */
-  public navigateBackToSearch() {
+  public navigateBackToSearch(event?: Event) {
+    event?.preventDefault();
     this['router'].navigate(
       [
         '/',
