@@ -124,10 +124,13 @@ describe('FinesAccEnfOverrideRemoveComponent', () => {
   it('should navigate to defendant details enforcement section', () => {
     component.navigateToDefendantDetailsPage();
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith([`../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`], {
-      relativeTo: mockRoute,
-      fragment: 'enforcement',
-    });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [`../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`],
+      {
+        relativeTo: mockRoute,
+        fragment: 'enforcement',
+      },
+    );
   });
 
   it('should remove enforcement override and navigate on success', () => {
@@ -138,8 +141,15 @@ describe('FinesAccEnfOverrideRemoveComponent', () => {
     expect(mockPayloadService.buildEnforcementOverrideFormPayload).toHaveBeenCalledWith(
       FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FORM_DEFAULT,
     );
-    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(1001, { enforcement_override: {} }, '1', '2002');
-    expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.remove);
+    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(
+      1001,
+      { enforcement_override: {} },
+      '1',
+      '2002',
+    );
+    expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith(
+      FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.remove,
+    );
     expect(navigateToDetailsSpy).toHaveBeenCalled();
   });
 

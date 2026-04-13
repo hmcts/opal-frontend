@@ -35,6 +35,8 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 })
 export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private finesService = inject(OpalFines);
+  private _showEnforcerField = false;
+  private _showLjaField = false;
   protected override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FIELD_ERRORS,
   };
@@ -48,8 +50,6 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
   @Input({ required: true }) accountNumber!: string;
   @Input({ required: true }) pageTitle!: string;
   @Input({ required: true }) formValues!: IFinesAccEnfOverrideAddChangeFormState;
-  private _showEnforcerField = false;
-  private _showLjaField = false;
 
   public get showEnforcerField(): boolean {
     return this._showEnforcerField;
