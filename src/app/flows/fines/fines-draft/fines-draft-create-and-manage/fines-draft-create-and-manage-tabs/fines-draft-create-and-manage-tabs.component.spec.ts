@@ -150,6 +150,40 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
   });
 
+  it('should prevent default and navigate when handleRoute is called with an event', () => {
+    const route = 'some/route';
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    component.activeTab = 'review';
+
+    component.handleRoute(route, event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(finesDraftStore.fragment()).toEqual('review');
+    expect(mockRouter.navigate).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
+  });
+
+  it('should enforce view all rejected accounts link template semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesDraftCreateAndManageTabsComponent as any).ɵcmp?.consts ?? []).filter(
+      (entry: unknown) => Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesDraftCreateAndManageTabsComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const rejectedLinkConst = templateConsts.find(
+      (entry) => entry.includes('govuk-link') && entry.includes('href') && entry.includes('click'),
+    );
+
+    expect(rejectedLinkConst).toBeTruthy();
+    expect(rejectedLinkConst).toContain('govuk-link--no-visited-state');
+    expect(rejectedLinkConst).toContain('href');
+    expect(rejectedLinkConst).toContain('');
+    expect(rejectedLinkConst).not.toContain('tabindex');
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
   it('should show "0" when getDraftAccounts returns count 0', async () => {
     mockOpalFinesService.getDraftAccounts.mockReturnValue(of({ count: 0, summaries: [] }));
     finesDraftService.populateTableData.mockReturnValue([]);

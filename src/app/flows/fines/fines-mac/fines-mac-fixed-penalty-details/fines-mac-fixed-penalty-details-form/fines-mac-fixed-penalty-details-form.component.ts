@@ -85,6 +85,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   extends AbstractFormAliasBaseComponent
   implements OnInit, OnDestroy
 {
+  private hasAttemptedSubmit = false;
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly vehicleOffenceControls = [
     'fm_fp_offence_details_vehicle_registration_number',
@@ -126,6 +127,11 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   override fieldErrors: IFinesMacFixedPenaltyDetailsFieldErrors = {
     ...FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS,
   };
+
+  /**
+   * Replaced during listener setup with a callback that retries the current offence-code lookup.
+   */
+  private retryOffenceCodeLookup = (): void => {};
 
   /*
    * Sets up the form for fixed penalty details, including all sections.
@@ -299,30 +305,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   /**
-   * Sets up the offence code listener to handle changes in the offence code field.
-   * It initializes the offence code listener from the offence details service, which fetches
-   * offence details based on the CJS code entered by the user.
-   * It updates the offenceCode$ observable with the fetched offence details and handles
-   * the confirmation of the selected offence.
-   */
-  private setupOffenceCodeListener(): void {
-    this.offenceDetailsService.initOffenceCodeListener(
-      this.form,
-      `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
-      `${this.fixedPenaltyPrefix}offence_details_offence_id`,
-      this.ngUnsubscribe,
-      this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
-      (result) => {
-        this.changeDetector.markForCheck();
-        this.offenceCode$ = of(result);
-      },
-      (confirmed) => {
-        this.selectedOffenceConfirmation = confirmed;
-      },
-    );
-  }
-
-  /**
    * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
    * It finds the corresponding prosecutor from the prosecutorsData array
    * and returns the pretty name for that prosecutor or null if not found.
@@ -416,7 +398,25 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     // Set up listeners
     if (this.defendantType !== this.defendantTypesKeys.company) this.dateOfBirthListener();
     this.offenceTypeListener();
-    this.setupOffenceCodeListener();
+    this.retryOffenceCodeLookup = this.offenceDetailsService.setupOffenceCodeLookup({
+      form: this.form,
+      codeControlName: `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
+      idControlName: `${this.fixedPenaltyPrefix}offence_details_offence_id`,
+      destroy$: this.ngUnsubscribe,
+      getOffenceByCjsCode: this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
+      onResult: (result) => {
+        this.changeDetector.markForCheck();
+        this.offenceCode$ = of(result);
+      },
+      onConfirmChange: (confirmed) => {
+        this.selectedOffenceConfirmation = confirmed;
+      },
+      hasAttemptedSubmit: () => this.hasAttemptedSubmit,
+      refreshSubmittedErrors: () => {
+        this.handleErrorMessages();
+        this.changeDetector.markForCheck();
+      },
+    });
   }
 
   public override ngOnInit(): void {
@@ -424,8 +424,21 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     super.ngOnInit();
   }
 
+  /**
+   * Marks the form as submitted, derives the prosecutor name, enforces offence-code
+   * validation, and then delegates to the base submit handler.
+   *
+   * @param event - The submit event triggered by the form submission.
+   */
   public override handleFormSubmit(event: SubmitEvent): void {
+    this.hasAttemptedSubmit = true;
     this.setProsecutorName();
+    this.offenceDetailsService.enforceOffenceCodeValidationBeforeSubmit(
+      this.form,
+      `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
+      `${this.fixedPenaltyPrefix}offence_details_offence_id`,
+      this.retryOffenceCodeLookup,
+    );
     super.handleFormSubmit(event);
   }
 }

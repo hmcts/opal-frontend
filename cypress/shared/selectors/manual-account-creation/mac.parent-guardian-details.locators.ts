@@ -39,7 +39,7 @@ export const MacParentGuardianDetailsLocators = {
   cancelLink: 'a.govuk-link.button-link',
   aliasAdd: '#fm_parent_guardian_details_add_alias',
   aliasAddButton: 'button[id="addAlias"]',
-  aliasRemoveButton: '.govuk-link--no-visited-state',
+  aliasRemoveButton: '#fm_parent_guardian_details_add_alias-conditional a.govuk-link--no-visited-state',
   aliasContainer: 'div[id="fm_parent_guardian_details_alias_container"]',
   returnToAccountDetailsButton: 'button:contains("Return to account details")',
   addContactDetailsButton: 'button:contains("Add contact details")',

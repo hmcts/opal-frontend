@@ -69,8 +69,10 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
    * @param linkElement - The HTML element whose label will be temporarily changed to indicate the copy action.
    * @param liveRegion - The HTML element used as a live region for screen readers to announce the copy action.
    * @param value - The string value to be copied to the clipboard.
+   * @param event - The optional DOM event that triggered the copy action.
    */
-  public copyCodeToClipboard(linkElement: HTMLElement, liveRegion: HTMLElement, value: string): void {
+  public copyCodeToClipboard(linkElement: HTMLElement, liveRegion: HTMLElement, value: string, event?: Event): void {
+    event?.preventDefault();
     this.utilsService.copyToClipboard(value);
 
     const originalText = linkElement.innerText;
