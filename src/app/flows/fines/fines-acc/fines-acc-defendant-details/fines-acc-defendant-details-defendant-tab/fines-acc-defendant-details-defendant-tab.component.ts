@@ -20,6 +20,9 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
   @Output() changeDefendantDetails = new EventEmitter<string>();
   @Output() convertAccount = new EventEmitter<string>();
 
+  /**
+   * Returns the convert action configuration when the account is eligible for conversion.
+   */
   public get convertAction(): IFinesAccDefendantDetailsConvertAction | null {
     if (!this.hasAccountMaintenencePermission || !this.tabData.defendant_account_party.is_debtor) {
       return null;
@@ -36,6 +39,11 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
     };
   }
 
+  /**
+   * Emits the convert account action for the current defendant account.
+   *
+   * @param event - The optional DOM event that triggered the action.
+   */
   public handleConvertAccount(event?: Event): void {
     event?.preventDefault();
     if (this.convertAction?.interactive) {
@@ -43,6 +51,9 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
     }
   }
 
+  /**
+   * Emits the party type to use when changing the current defendant details.
+   */
   public handleChangeDefendantDetails(): void {
     if (this.tabData.defendant_account_party.party_details.organisation_flag) {
       this.changeDefendantDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
