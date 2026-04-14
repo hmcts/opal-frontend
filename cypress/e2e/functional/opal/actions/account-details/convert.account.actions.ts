@@ -37,7 +37,7 @@ export class AccountConvertActions {
         expect(actual).to.include('-');
       });
 
-    cy.get(L.page.header, { timeout: AccountConvertActions.DEFAULT_TIMEOUT })
+    cy.get(L.page.heading, { timeout: AccountConvertActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .should(($el) => {
         const text = this.normalize($el.text());
@@ -75,7 +75,7 @@ export class AccountConvertActions {
         expect(actual).to.include('-');
       });
 
-    cy.get(L.page.header, { timeout: AccountConvertActions.DEFAULT_TIMEOUT })
+    cy.get(L.page.heading, { timeout: AccountConvertActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .should(($el) => {
         const text = this.normalize($el.text());

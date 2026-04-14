@@ -41,7 +41,11 @@ export class AccountDetailsDefendantActions {
     cy.get(L.defendantTabHeader.title, { timeout }).should('be.visible');
 
     // Click the "Change" link in the Defendant tab header
-    cy.get(L.defendantTabHeader.changeLink, { timeout }).should('be.visible').scrollIntoView().click({ force: true });
+    cy.get(L.defendantTabHeader.changeLink, { timeout })
+      .contains('Change')
+      .should('be.visible')
+      .scrollIntoView()
+      .click({ force: true });
 
     // Optionally wait for the edit form to appear
     if (opts?.formSelector) {
