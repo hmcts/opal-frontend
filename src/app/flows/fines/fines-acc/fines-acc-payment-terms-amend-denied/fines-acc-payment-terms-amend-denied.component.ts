@@ -31,8 +31,8 @@ export class FinesAccPaymentTermsAmendDeniedComponent {
    * Navigates back to the account summary details page.
    * @param event The event triggered by clicking or pressing enter on the back link.
    */
-  public navigateBackToAccountSummary(event: Event): void {
-    event.preventDefault();
+  public navigateBackToAccountSummary(event?: Event): void {
+    event?.preventDefault();
     this.router.navigate([`../../../details`], { relativeTo: this.route });
   }
 }

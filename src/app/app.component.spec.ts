@@ -110,7 +110,6 @@ const getDefendantAccountRoutes = (): Routes => [
     ],
   },
 ];
-
 describe('AppComponent - browser', () => {
   const mockDocumentLocation = {
     location: {
@@ -602,7 +601,6 @@ describe('AppComponent - browser', () => {
     await navigateToUrl(fixture, router, browseRoute);
     expect(hasPrimaryNavigation(fixture)).toBe(true);
   });
-
   it('should navigate to the selected dashboard type from primary navigation', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
@@ -779,7 +777,6 @@ describe('AppComponent - browser', () => {
 
     expect(documentLocation.href).toBe(SSO_ENDPOINTS.logout);
   });
-
   it('should update the active navigation item when the router navigates between dashboard tabs', async () => {
     globalStore.setAuthenticated(true);
 

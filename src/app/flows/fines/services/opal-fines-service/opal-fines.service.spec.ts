@@ -1245,7 +1245,7 @@ describe('OpalFines', () => {
   it('should clear all account detail caches', () => {
     service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     service['cache']['defendantAccountPartyCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-    service['cache']['defendantAccountparentOrGuardianAccountPartyCache$'] = of(
+    service['cache']['defendantAccountParentOrGuardianAccountPartyCache$'] = of(
       OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
     );
     service['cache']['defendantAccountEnforcementCache$'] = of(
@@ -1268,7 +1268,7 @@ describe('OpalFines', () => {
 
     expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
     expect(service['cache']['defendantAccountPartyCache$']).toBeNull();
-    expect(service['cache']['defendantAccountparentOrGuardianAccountPartyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountParentOrGuardianAccountPartyCache$']).toBeNull();
     expect(service['cache']['defendantAccountEnforcementCache$']).toBeNull();
     expect(service['cache']['defendantAccountImpositionsCache$']).toBeNull();
     expect(service['cache']['defendantAccountHistoryAndNotesCache$']).toBeNull();
