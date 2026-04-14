@@ -120,6 +120,26 @@ describe('FinesAccEnfOverrideAddChangeComponent', () => {
     ]);
   });
 
+  it('should default header values to empty strings when store and route values are missing', () => {
+    fixture.destroy();
+    mockAccountStore.getAccountNumber = signal<string | null>(
+      null,
+    ) as unknown as typeof mockAccountStore.getAccountNumber;
+    mockAccountStore.party_name = signal<string | null>(null) as unknown as typeof mockAccountStore.party_name;
+    mockRoute.snapshot.data = {
+      ...mockRoute.snapshot.data,
+      title: undefined,
+    };
+
+    const fallbackFixture = TestBed.createComponent(FinesAccEnfOverrideAddChangeComponent);
+    const fallbackComponent = fallbackFixture.componentInstance;
+    fallbackFixture.detectChanges();
+
+    expect(fallbackComponent.accountNumber).toBe('');
+    expect(fallbackComponent.partyName).toBe('');
+    expect(fallbackComponent.pageTitle).toBe('');
+  });
+
   it('should submit form and navigate on success', () => {
     const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
     const form = {

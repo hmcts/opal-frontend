@@ -288,6 +288,30 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
     });
   });
 
+  describe('dateChecker', () => {
+    beforeEach(() => {
+      component.ngOnInit();
+    });
+
+    it('should ignore unknown date fields when resetting and applying date flags', () => {
+      component.payByDateInFuture = true;
+      component.payByDateInPast = true;
+      component.startDateInFuture = true;
+      component.startDateInPast = true;
+      component.suspendedCommittalDateInFuture = true;
+      component.suspendedCommittalDateInPast = true;
+
+      component['dateChecker']('02/01/2024', 'unknown_date_field');
+
+      expect(component.payByDateInFuture).toBe(true);
+      expect(component.payByDateInPast).toBe(true);
+      expect(component.startDateInFuture).toBe(true);
+      expect(component.startDateInPast).toBe(true);
+      expect(component.suspendedCommittalDateInFuture).toBe(true);
+      expect(component.suspendedCommittalDateInPast).toBe(true);
+    });
+  });
+
   describe('Form Population', () => {
     it('should populate form with initial data', () => {
       const testData: IFinesAccPaymentTermsAmendForm = {

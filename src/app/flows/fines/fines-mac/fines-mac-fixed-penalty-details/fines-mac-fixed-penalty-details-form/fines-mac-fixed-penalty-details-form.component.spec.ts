@@ -115,6 +115,16 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should allow the default retryOffenceCodeLookup callback to be invoked before listener setup', () => {
+    const freshFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    freshComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    freshComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+
+    expect(() => freshComponent['retryOffenceCodeLookup']()).not.toThrow();
+  });
+
   it('should create the form with the correct controls', () => {
     component['setupFixedPenaltyDetailsForm']();
     Object.keys(FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK.formData).forEach((key) => {
@@ -133,6 +143,14 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required)).toBe(
       true,
     );
+  });
+
+  it('should ignore missing vehicle controls when updating offence validators', () => {
+    component['setupFixedPenaltyDetailsForm']();
+    component.form.removeControl('fm_fp_offence_details_nto_nth');
+    component.form.get('fm_fp_offence_details_offence_type')?.setValue('vehicle');
+
+    expect(() => component['updateOffenceControlValidators']()).not.toThrow();
   });
 
   it('should remove validators from the form controls', () => {
@@ -206,6 +224,22 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
     expect(component['offenceTypeListener']).toHaveBeenCalled();
     expect(setupOffenceCodeLookupSpy).toHaveBeenCalled();
+  });
+
+  it('should skip the date of birth listener during initial setup for company defendants', () => {
+    const freshFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    freshComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    freshComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const dateOfBirthListenerSpy = vi.spyOn<any, any>(freshComponent, 'dateOfBirthListener');
+    const offenceTypeListenerSpy = vi.spyOn(freshComponent as never, 'offenceTypeListener');
+
+    freshFixture.detectChanges();
+
+    expect(dateOfBirthListenerSpy).not.toHaveBeenCalled();
+    expect(offenceTypeListenerSpy).toHaveBeenCalled();
   });
 
   it('should update offenceCode$ and selectedOffenceConfirmation when callbacks are invoked', () => {

@@ -158,6 +158,44 @@ describe('FinesAccPartyAddAmendConvert', () => {
     });
   });
 
+  it('should initialise the parent guardian fragment from route party type', async () => {
+    TestBed.resetTestingModule();
+
+    await TestBed.configureTestingModule({
+      imports: [FinesAccPartyAddAmendConvert],
+      providers: [
+        { provide: FinesAccPayloadService, useValue: mockPayloadService },
+        { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: FinesAccountStore, useValue: mockFinesAccStore },
+        { provide: UtilsService, useValue: mockUtilsService },
+        { provide: Router, useValue: mockRouter },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                partyAddAmendConvertData: {
+                  ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
+                  version: '1',
+                },
+              },
+              params: {
+                partyType: 'parentGuardian',
+                accountId: '123',
+              },
+            },
+          },
+        },
+      ],
+    }).compileComponents();
+
+    const freshFixture = TestBed.createComponent(FinesAccPartyAddAmendConvert);
+    const freshComponent = freshFixture.componentInstance;
+    freshFixture.detectChanges();
+
+    expect(freshComponent['fragment']).toBe('parent-or-guardian');
+  });
+
   it('should call utilsService.scrollToTop on API call failure and reset unsaved changes', () => {
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,

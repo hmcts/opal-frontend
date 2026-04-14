@@ -22,8 +22,8 @@ describe('FinesAccEnfCourtChangeComponent', () => {
   const currentCourt = mockEnforcementStatusData.enforcement_overview.enforcement_court;
 
   const mockAccountStore = {
-    getAccountNumber: signal('123456'),
-    party_name: signal('Mr Test PERSON'),
+    getAccountNumber: signal<string | null>('123456'),
+    party_name: signal<string | null>('Mr Test PERSON'),
     account_id: signal(1001),
     base_version: signal('1'),
     business_unit_id: signal('2002'),
@@ -50,6 +50,8 @@ describe('FinesAccEnfCourtChangeComponent', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    mockAccountStore.getAccountNumber.set('123456');
+    mockAccountStore.party_name.set('Mr Test PERSON');
 
     await TestBed.configureTestingModule({
       imports: [FinesAccEnfCourtChangeComponent],
@@ -84,6 +86,18 @@ describe('FinesAccEnfCourtChangeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should default account and party labels to empty strings when store values are missing', () => {
+    mockAccountStore.getAccountNumber.set(null);
+    mockAccountStore.party_name.set(null);
+
+    const blankFixture = TestBed.createComponent(FinesAccEnfCourtChangeComponent);
+    const blankComponent = blankFixture.componentInstance;
+    blankFixture.detectChanges();
+
+    expect(blankComponent.accountNumber).toBe('');
+    expect(blankComponent.partyName).toBe('');
   });
 
   it('should map route data into autocomplete options', () => {

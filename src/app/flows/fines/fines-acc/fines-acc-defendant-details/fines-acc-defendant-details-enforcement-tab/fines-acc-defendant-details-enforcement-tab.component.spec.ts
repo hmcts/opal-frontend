@@ -40,4 +40,16 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
+
+  it('should not emit addEnforcementOverride when permission is missing', () => {
+    const eventEmitterSpy = vi.spyOn(component.addEnforcementOverride, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+    component.hasAccountMaintenancePermission = false;
+    component.tabData.enforcement_override = null;
+
+    component.handleAddEnforcementOverride(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(eventEmitterSpy).not.toHaveBeenCalled();
+  });
 });

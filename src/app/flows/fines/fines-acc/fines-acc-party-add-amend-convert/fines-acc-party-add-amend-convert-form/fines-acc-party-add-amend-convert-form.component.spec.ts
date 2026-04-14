@@ -257,6 +257,31 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(titleControl?.hasError('required')).toBe(false);
   });
 
+  it('should initialise unknown party types with base controls only', () => {
+    const freshFixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    freshComponent.partyType = 'unknown';
+    freshComponent.isDebtor = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addIndividualFormControlsSpy = vi.spyOn<any, any>(freshComponent, 'addIndividualFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addCompanyFormControlsSpy = vi.spyOn<any, any>(freshComponent, 'addCompanyFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupAliasFormControlsSpy = vi.spyOn<any, any>(freshComponent, 'setupAliasFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setUpAliasCheckboxListenerSpy = vi.spyOn<any, any>(freshComponent, 'setUpAliasCheckboxListener');
+
+    freshFixture.detectChanges();
+
+    expect(addIndividualFormControlsSpy).not.toHaveBeenCalled();
+    expect(addCompanyFormControlsSpy).not.toHaveBeenCalled();
+    expect(setupAliasFormControlsSpy).not.toHaveBeenCalled();
+    expect(setUpAliasCheckboxListenerSpy).not.toHaveBeenCalled();
+    expect(freshComponent.form.get('facc_party_add_amend_convert_add_alias')).toBeTruthy();
+    expect(freshComponent.form.get('facc_party_add_amend_convert_title')).toBeNull();
+    expect(freshComponent.form.get('facc_party_add_amend_convert_company_name')).toBeNull();
+  });
+
   it('should require forenames field with max length validation', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
@@ -892,5 +917,58 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_title')).toBeNull();
     expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeNull();
     expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeNull();
+  });
+
+  it('should set up company alias controls and checkbox listener during initial setup', () => {
+    component.partyType = 'company';
+    component.initialFormData = {
+      nestedFlow: false,
+      formData: {
+        facc_party_add_amend_convert_organisation_aliases: [
+          { facc_party_add_amend_convert_alias_organisation_name_0: 'Alias Company Ltd' },
+        ],
+      },
+    } as never;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupAliasFormControlsSpy = vi.spyOn<any, any>(component, 'setupAliasFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setUpAliasCheckboxListenerSpy = vi.spyOn<any, any>(component, 'setUpAliasCheckboxListener');
+
+    fixture.detectChanges();
+
+    expect(setupAliasFormControlsSpy).toHaveBeenCalledWith([0], 'facc_party_add_amend_convert_organisation_aliases');
+    expect(setUpAliasCheckboxListenerSpy).toHaveBeenCalledWith(
+      'facc_party_add_amend_convert_add_alias',
+      'facc_party_add_amend_convert_organisation_aliases',
+    );
+  });
+
+  it('should repopulate with null when initial form data payload is missing', () => {
+    component.partyType = 'company';
+    component.initialFormData = { nestedFlow: false } as never;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rePopulateFormSpy = vi.spyOn<any, any>(component, 'rePopulateForm');
+
+    fixture.detectChanges();
+
+    expect(rePopulateFormSpy).toHaveBeenCalledWith(null);
+  });
+
+  it('should default age and age label when initial DOB is populated but age lookup returns no value', () => {
+    component.partyType = 'individual';
+    component.initialFormData = {
+      nestedFlow: false,
+      formData: {
+        facc_party_add_amend_convert_dob: '1990-01-01',
+      },
+    } as never;
+    mockDateService.getAgeObject.mockReturnValue(null);
+
+    fixture.detectChanges();
+
+    expect(component.age).toBe(0);
+    expect(component.ageLabel).toBe('');
   });
 });

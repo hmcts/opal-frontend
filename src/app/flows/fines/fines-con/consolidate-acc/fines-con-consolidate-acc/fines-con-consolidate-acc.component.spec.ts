@@ -53,6 +53,12 @@ describe('FinesConConsolidateAccComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should instantiate inside an injection context', () => {
+    const instance = TestBed.runInInjectionContext(() => new FinesConConsolidateAccComponent());
+
+    expect(instance).toBeTruthy();
+  });
+
   it('should have search tab as initial active tab', () => {
     expect(finesConStore.activeTab()).toBe('search');
   });
@@ -158,7 +164,7 @@ describe('FinesConConsolidateAccComponent', () => {
 
     component.cancelConsolidation();
 
-    await Promise.resolve();
+    await mockRouter.navigate.mock.results[0].value;
 
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       `/${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}`,

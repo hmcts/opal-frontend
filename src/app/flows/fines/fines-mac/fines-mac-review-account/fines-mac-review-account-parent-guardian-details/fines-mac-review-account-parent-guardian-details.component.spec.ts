@@ -67,6 +67,16 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
     expect(component.dob).toBe('01 January 1990');
   });
 
+  it('should leave the date of birth unset when no dob is provided', () => {
+    mockDateService.getFromFormatToFormat.mockClear();
+    component.parentGuardianDetails.fm_parent_guardian_details_dob = null;
+
+    component['getDateOfBirthData']();
+
+    expect(mockDateService.getFromFormatToFormat).not.toHaveBeenCalled();
+    expect(component.dob).toBeUndefined();
+  });
+
   it('should format address correctly', () => {
     const formattedAddress = ['123 Main St', 'Apt 4B', 'Springfield', '12345'];
     mockUtilsService.formatAddress.mockReturnValue(formattedAddress);

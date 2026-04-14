@@ -16,10 +16,10 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES } from './constants/fines-acc-m
 import { defendantAccountPartyResolver } from './resolvers/defendant-account-party.resolver';
 import { defendantAccountPaymentTermsLatestResolver } from './resolvers/defendant-account-payment-terms-latest.resolver';
 import { minorCreditorAccountHeadingResolver } from './resolvers/defendant-minor-creditor-heading.resolver';
-import { fetchResultsWithParamsResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-results-with-params-resolver';
+import { fetchResultsWithParamsResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-results-with-params.resolver';
 import { IOpalFinesResultsParams } from '../../services/opal-fines-service/interfaces/opal-fines-results-params.interface';
-import { fetchLocalJusticeAreasResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-ljas-resolver';
-import { fetchEnforcersResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-enforcers-resolver';
+import { fetchLocalJusticeAreasResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-ljas.resolver';
+import { fetchEnforcersResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-enforcers.resolver';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-titles.constant';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';

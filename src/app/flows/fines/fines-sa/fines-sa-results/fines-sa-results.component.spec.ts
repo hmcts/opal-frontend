@@ -264,6 +264,18 @@ describe('FinesSaResultsComponent', () => {
     expect(setTabSpy).toHaveBeenCalledWith('' as FinesSaSearchAccountTab);
   });
 
+  it('should not subscribe to fragment changes for non-defendant result views', () => {
+    component.resultView = 'minorCreditors';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setTabSpy = vi.spyOn<any, any>(finesSaStore, 'setResultsActiveTab');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).setupFragmentListener();
+
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(setTabSpy).not.toHaveBeenCalled();
+  });
+
   it('should navigate back to search page with correct fragment', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(finesSaStore, 'activeTab').mockReturnValue('individuals');

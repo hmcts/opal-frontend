@@ -11,7 +11,7 @@ import {
   MojHeaderNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-header';
 import { MojPrimaryNavigationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-primary-navigation';
-import { Observable, of } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { Component, PLATFORM_ID } from '@angular/core';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -33,6 +33,8 @@ import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.c
 import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FINES_CON_ROUTING_PATHS } from './flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
@@ -78,6 +80,12 @@ const navigateToUrl = async (fixture: ComponentFixture<AppComponent>, router: Ro
   });
   fixture.detectChanges();
 };
+
+const callAppComponentMethod = <T>(methodName: string, context: object, ...args: unknown[]): T =>
+  (AppComponent.prototype as unknown as Record<string, (...methodArgs: unknown[]) => T>)[methodName].call(
+    context,
+    ...args,
+  );
 
 const getDefendantAccountRoutes = (): Routes => [
   {
@@ -233,6 +241,19 @@ describe('AppComponent - browser', () => {
     vi.useRealTimers();
   });
 
+  it('should return early when token expiry is not available', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    globalStore.setTokenExpiry(null as never);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupTimerSubSpy = vi.spyOn<any, any>(component, 'setupTimerSub');
+
+    component['initializeTimeoutInterval']();
+
+    expect(dateService.convertMillisecondsToMinutes).not.toHaveBeenCalled();
+    expect(setupTimerSubSpy).not.toHaveBeenCalled();
+  });
+
   it('should handle no expiry case correctly', () => {
     vi.useFakeTimers();
     const fixture = TestBed.createComponent(AppComponent);
@@ -317,6 +338,26 @@ describe('AppComponent - browser', () => {
     return navigateToUrl(fixture, router, '/test').then(() => {
       expect(component['appInsightsService'].logPageView).toHaveBeenCalledWith('test', '/test');
     });
+  });
+
+  it('should fall back to "unknown" when a navigation event has no trailing page segment', () => {
+    const logPageView = vi.fn();
+
+    callAppComponentMethod<void>('trackPageViews', {
+      platformId: 'browser',
+      navigationEnd$: of({
+        url: { split: () => ['/test'] },
+        urlAfterRedirects: {
+          split: () => ({
+            pop: () => undefined,
+          }),
+        },
+      }),
+      ngUnsubscribe: new Subject<void>(),
+      appInsightsService: { logPageView },
+    });
+
+    expect(logPageView).toHaveBeenCalledWith('unknown', '/test');
   });
 
   it('should resolve Search as the active item for the default landing route', () => {
@@ -635,6 +676,108 @@ describe('AppComponent - browser', () => {
       FINES_DASHBOARD_ROUTING_PATHS.root,
       'finance',
     ]);
+  });
+
+  it('should use the router snapshot when computing initial primary nav visibility after navigation', () => {
+    const isPrimaryNavigationHiddenSpy = vi.fn().mockReturnValue(true);
+    const getCurrentUrlBeforeInitialNavigationSpy = vi.fn();
+
+    const result = callAppComponentMethod<boolean>('getInitialPrimaryNavigationHidden', {
+      router: {
+        navigated: true,
+        routerState: {
+          snapshot: {
+            root: 'snapshot-root',
+          },
+        },
+      },
+      isPrimaryNavigationHidden: isPrimaryNavigationHiddenSpy,
+      getCurrentUrlBeforeInitialNavigation: getCurrentUrlBeforeInitialNavigationSpy,
+      isPrimaryNavigationHiddenForInitialUrl: vi.fn(),
+    });
+
+    expect(result).toBe(true);
+    expect(isPrimaryNavigationHiddenSpy).toHaveBeenCalledWith('snapshot-root');
+    expect(getCurrentUrlBeforeInitialNavigationSpy).not.toHaveBeenCalled();
+  });
+
+  it('should prefer Location.path when determining the current URL before initial navigation', () => {
+    const pathSpy = vi.fn().mockReturnValue('/from-location?tab=search#summary');
+
+    const result = callAppComponentMethod<string>('getCurrentUrlBeforeInitialNavigation', {
+      location: { path: pathSpy },
+      document: {
+        location: {
+          pathname: '/from-document',
+          search: '?from=document',
+          hash: '#fragment',
+        },
+      },
+      router: { url: '/from-router' },
+    });
+
+    expect(result).toBe('/from-location?tab=search#summary');
+    expect(pathSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('should fall back to router.url when browser location is unavailable before initial navigation', () => {
+    const result = callAppComponentMethod<string>('getCurrentUrlBeforeInitialNavigation', {
+      location: { path: vi.fn().mockReturnValue('') },
+      document: { location: null },
+      router: { url: '/from-router' },
+    });
+
+    expect(result).toBe('/from-router');
+  });
+
+  it('should hide the primary navigation for MAC and consolidation initial deep links', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    expect(
+      component['isPrimaryNavigationHiddenForInitialUrl'](
+        `/${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`,
+      ),
+    ).toBe(true);
+    expect(
+      component['isPrimaryNavigationHiddenForInitialUrl'](
+        `/${FINES_ROUTING_PATHS.root}/${FINES_CON_ROUTING_PATHS.root}/${FINES_CON_ROUTING_PATHS.children.selectBusinessUnit}`,
+      ),
+    ).toBe(true);
+  });
+
+  it('should only hide the primary navigation for supported account journey deep links', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    expect(
+      component['isPrimaryNavigationHiddenForInitialUrl'](
+        `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root}/123/${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`,
+      ),
+    ).toBe(true);
+    expect(
+      component['isPrimaryNavigationHiddenForInitialUrl'](
+        `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root}/123/${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details}`,
+      ),
+    ).toBe(false);
+    expect(
+      component['isPrimaryNavigationHiddenForInitialUrl'](
+        `/${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.finance}`,
+      ),
+    ).toBe(false);
+    expect(
+      component['isPrimaryNavigationHiddenForInitialUrl'](
+        `/${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/unknown/123/note/add`,
+      ),
+    ).toBe(false);
+  });
+
+  it('should update document location when handling a redirect', () => {
+    const documentLocation = { href: '' };
+
+    callAppComponentMethod<void>('handleRedirect', { document: { location: documentLocation } }, SSO_ENDPOINTS.logout);
+
+    expect(documentLocation.href).toBe(SSO_ENDPOINTS.logout);
   });
 
   it('should update the active navigation item when the router navigates between dashboard tabs', async () => {

@@ -35,6 +35,18 @@ describe('fines-con-payload-map-defendant-accounts utils', () => {
     expect(extractDefendantAccounts(FINES_CON_PAYLOAD_MAP_DEFENDANT_ACCOUNTS_RESPONSE_INVALID_VALUE_MOCK)).toEqual([]);
   });
 
+  it('should extract defendant accounts from a camelCase wrapper array', () => {
+    const response = {
+      defendantAccounts: [{ defendantAccountId: '401' }, { defendantAccountId: '402' }],
+    };
+
+    expect(extractDefendantAccounts(response)).toEqual(response.defendantAccounts);
+  });
+
+  it('should return an empty array when an object response has no supported defendant account keys', () => {
+    expect(extractDefendantAccounts({ someOtherKey: 'value' })).toEqual([]);
+  });
+
   it('should map defendant accounts with fallback properties', () => {
     const mapped = mapDefendantAccounts(FINES_CON_PAYLOAD_MAP_DEFENDANT_ACCOUNTS_FALLBACK_PROPERTIES_MOCK);
 
@@ -79,6 +91,63 @@ describe('fines-con-payload-map-defendant-accounts utils', () => {
       expect.objectContaining({
         'Account ID': 88,
         CO: '-',
+      }),
+    );
+  });
+
+  it('should map a forenames-only defendant, camelCase account id and paying parent guardian flag', () => {
+    const mapped = mapDefendantAccounts([
+      {
+        defendantAccountId: '123',
+        accountNumber: 'ACC123',
+        defendantSurname: null,
+        defendantFirstnames: 'Only Forenames',
+        hasPayingParentGuardian: true,
+      },
+    ] as never);
+
+    expect(mapped[0]).toEqual(
+      expect.objectContaining({
+        'Account ID': 123,
+        Name: 'Only Forenames',
+        'P/G': 'Y',
+      }),
+    );
+  });
+
+  it('should map a surname-only defendant when forenames are null', () => {
+    const mapped = mapDefendantAccounts([
+      {
+        defendant_account_id: 124,
+        defendant_surname: 'Smith',
+        defendant_firstnames: null,
+      },
+    ] as never);
+
+    expect(mapped[0]).toEqual(
+      expect.objectContaining({
+        'Account ID': 124,
+        Name: 'SMITH',
+      }),
+    );
+  });
+
+  it('should return null aliases when organisation alias names are blank after trimming', () => {
+    const mapped = mapDefendantAccounts([
+      {
+        defendant_account_id: 202,
+        organisation_flag: true,
+        organisation_name: 'Alias Test Ltd',
+        aliases: [
+          { alias_number: null, organisation_name: '   ' },
+          { alias_number: null, organisation_name: '\t' },
+        ],
+      },
+    ] as never);
+
+    expect(mapped[0]).toEqual(
+      expect.objectContaining({
+        Aliases: null,
       }),
     );
   });
@@ -164,5 +233,65 @@ describe('fines-con-payload-map-defendant-accounts utils', () => {
     const result = buildChecksByAccountId(FINES_CON_PAYLOAD_MAP_DEFENDANT_ACCOUNTS_CHECKS_MISSING_FIELDS_MOCK);
 
     expect(result[31]).toEqual([]);
+  });
+
+  it('should drop checks where reference or message contain only whitespace', () => {
+    const result = buildChecksByAccountId([
+      {
+        defendant_account_id: 51,
+        checks: {
+          errors: [{ reference: '   ', message: 'Valid message' }],
+          warnings: [{ reference: 'WARN.1', message: '   ' }],
+        },
+      },
+    ] as never);
+
+    expect(result[51]).toEqual([]);
+  });
+
+  it('should drop checks where reference or message are undefined', () => {
+    const result = buildChecksByAccountId([
+      {
+        defendant_account_id: 52,
+        checks: {
+          errors: [{ message: 'Missing reference' }],
+          warnings: [{ reference: 'WARN.2' }],
+        },
+      },
+    ] as never);
+
+    expect(result[52]).toEqual([]);
+  });
+
+  it('should return a null account id when all supported account id fields are missing', () => {
+    const mapped = mapDefendantAccounts([
+      {
+        defendant_account_id: undefined,
+        defendantAccountId: undefined,
+        defendant_surname: 'NoId',
+        defendant_firstnames: 'Person',
+      },
+    ] as never);
+
+    expect(mapped[0]).toEqual(
+      expect.objectContaining({
+        'Account ID': null,
+        Name: 'NOID, Person',
+      }),
+    );
+  });
+
+  it('should ignore non-safe integer string account ids when building checks', () => {
+    const result = buildChecksByAccountId([
+      {
+        defendant_account_id: '99999999999999999999',
+        checks: {
+          errors: [{ reference: 'CON.ER.99', message: 'Too large account id' }],
+          warnings: [],
+        },
+      },
+    ] as never);
+
+    expect(result).toEqual({});
   });
 });

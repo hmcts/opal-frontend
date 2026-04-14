@@ -58,6 +58,32 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should not repopulate the form when removeMinorCreditor is set but no matching creditor exists', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft[0],
+        childFormData: [
+          {
+            ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+            formData: {
+              ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+              fm_offence_details_imposition_position: 99,
+            },
+          },
+        ],
+      },
+    ]);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(1);
+    const freshFixture = TestBed.createComponent(FinesMacOffenceDetailsMinorCreditorFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rePopulateFormSpy = vi.spyOn<any, any>(freshComponent, 'rePopulateForm');
+
+    freshFixture.detectChanges();
+
+    expect(rePopulateFormSpy).not.toHaveBeenCalled();
+  });
+
   it('should set individual validators for title, forenames and surname controls', () => {
     component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('individual');
     fixture.detectChanges();

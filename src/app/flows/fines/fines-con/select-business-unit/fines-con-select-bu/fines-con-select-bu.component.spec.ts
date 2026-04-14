@@ -147,6 +147,17 @@ describe('FinesConSelectBuComponent', () => {
     expect(component.businessUnitAutoCompleteItems()).toBeDefined();
   });
 
+  it('should fall back to empty business units when route data is missing', () => {
+    mockActivatedRoute.snapshot.data = {} as { businessUnits: IOpalFinesBusinessUnitRefData };
+    const freshFixture = TestBed.createComponent(FinesConSelectBuComponent);
+    const freshComponent = freshFixture.componentInstance;
+
+    freshFixture.detectChanges();
+
+    expect(freshComponent.businessUnitsRefData).toEqual({ refData: [] });
+    expect(freshComponent.businessUnitAutoCompleteItems()).toEqual([]);
+  });
+
   it('should handle form submission with different defendant types', () => {
     const updateSpy = vi.spyOn(finesConStore, 'updateSelectBuForm');
     component.handleFormSubmit(FINES_CON_SELECT_BU_FORM_COMPANY_MOCK);
