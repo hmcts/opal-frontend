@@ -3,7 +3,7 @@ import { IFinesAccDefendantAccountTabsCacheMap } from '../interfaces/fines-acc-d
 export const FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP: IFinesAccDefendantAccountTabsCacheMap = {
   'at-a-glance': 'defendantAccountAtAGlanceCache$',
   defendant: 'defendantAccountPartyCache$',
-  'parent-or-guardian': 'defendantAccountparentOrGuardianAccountPartyCache$',
+  'parent-or-guardian': 'defendantAccountParentOrGuardianAccountPartyCache$',
   'fixed-penalty': 'defendantAccountFixedPenaltyCache$',
   'payment-terms': 'defendantAccountPaymentTermsLatestCache$',
   enforcement: 'defendantAccountEnforcementCache$',
