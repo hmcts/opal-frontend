@@ -23,9 +23,9 @@ const JIRA_EPIC = '@JIRA-EPIC:PO-1675';
 
 const buildTags = (...tags: string[]): string[] => [...tags, JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
-const ADULT_OR_YOUTH_TAGS = buildTags('@JIRA-STORY:PO-1849');
-const PARENT_GUARDIAN_TAGS = buildTags('@JIRA-STORY:PO-1862');
-const COMPANY_TAGS = buildTags('@JIRA-STORY:PO-1863');
+const ADULT_OR_YOUTH_TAGS = buildTags('@JIRA-STORY:PO-1849', '@JIRA-STORY:PO-3729');
+const PARENT_GUARDIAN_TAGS = buildTags('@JIRA-STORY:PO-1862', '@JIRA-STORY:PO-3729');
+const COMPANY_TAGS = buildTags('@JIRA-STORY:PO-1863', '@JIRA-STORY:PO-3729');
 const PAGE_TITLE = 'Change enforcement court';
 const FIELD_LABEL = 'Enforcement court';
 const SUBMIT_BUTTON_TEXT = 'Change';
@@ -170,6 +170,14 @@ function assertForm(courtsMock: IOpalFinesCourtRefData) {
     .and('contain.text', `${courtsMock.refData[1].name} (${courtsMock.refData[1].court_code})`);
 }
 
+function assertLayout() {
+  cy.get(ENF_COURT_CHANGE.title).should('have.class', 'govuk-!-margin-bottom-30');
+  cy.get(ENF_COURT_CHANGE.buttonGroup).should('exist').and('have.class', 'govuk-button-group');
+  cy.get(ENF_COURT_CHANGE.submitButton)
+    .should('have.class', 'govuk-button')
+    .and('have.class', 'govuk-!-margin-right-4');
+}
+
 function assertErrors() {
   cy.get(ENF_COURT_CHANGE.errorSummary).should('exist');
   cy.get(ENF_COURT_CHANGE.errorSummaryTitle).should('contain.text', ERROR_SUMMARY_TITLE);
@@ -189,6 +197,7 @@ describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS },
     assertCaption(expectedCaption);
     assertContent();
     assertForm(courtsMock);
+    assertLayout();
   });
 
   it('should show validation errors when no enforcement court is selected', () => {
@@ -214,6 +223,7 @@ describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_T
     assertCaption(expectedCaption);
     assertContent();
     assertForm(courtsMock);
+    assertLayout();
   });
 
   it('should show validation errors when no enforcement court is selected', () => {
@@ -239,6 +249,7 @@ describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
     assertCaption(expectedCaption);
     assertContent();
     assertForm(courtsMock);
+    assertLayout();
   });
 
   it('should show validation errors when no enforcement court is selected', () => {

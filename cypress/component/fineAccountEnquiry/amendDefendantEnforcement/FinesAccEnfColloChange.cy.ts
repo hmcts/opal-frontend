@@ -130,6 +130,27 @@ function assertCollectionOrderChangeForm() {
   cy.get(COLLECTION_ORDER_CHANGE.submitButton).should('contain.text', 'Change');
 }
 
+function assertCollectionOrderChangeLayout() {
+  cy.get(COLLECTION_ORDER_CHANGE.pageHeading).should('have.class', 'govuk-!-margin-bottom-6');
+  cy.get(COLLECTION_ORDER_CHANGE.contentParagraphs)
+    .should('have.length', 3)
+    .each(($paragraph) => {
+      cy.wrap($paragraph).should('have.class', 'govuk-!-margin-bottom-6');
+    });
+  cy.get(COLLECTION_ORDER_CHANGE.buttonGroupRow).should('exist');
+  cy.get(COLLECTION_ORDER_CHANGE.buttonGroupColumn)
+    .should('exist')
+    .and('have.class', 'govuk-grid-column-two-thirds')
+    .and('have.class', 'govuk-!-margin-bottom-0');
+  cy.get(COLLECTION_ORDER_CHANGE.buttonGroup)
+    .should('exist')
+    .and('have.class', 'govuk-button-group')
+    .and('have.class', 'govuk-!-margin-bottom-0');
+  cy.get(COLLECTION_ORDER_CHANGE.submitButton)
+    .should('have.class', 'govuk-button')
+    .and('have.class', 'govuk-!-margin-right-4');
+}
+
 function assertCollectionOrderChangeRequiredError() {
   cy.get(COLLECTION_ORDER_CHANGE.submitButton).click();
 
@@ -272,6 +293,7 @@ function runCollectionOrderChangeSuite(
       assertCollectionOrderChangeTitle(expectedCaption);
       assertCollectionOrderChangeContent();
       assertCollectionOrderChangeForm();
+      assertCollectionOrderChangeLayout();
 
       // AC2ci: the go back link returns the user to the Enforcement tab.
       assertGoBackLinkNavigatesToEnforcementTab();
@@ -292,21 +314,36 @@ function runCollectionOrderChangeSuite(
 }
 
 runCollectionOrderChangeSuite(
-  ['@JIRA-STORY:PO-1848', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend Defendant Enforcement Attributes'],
+  [
+    '@JIRA-STORY:PO-1848',
+    '@JIRA-STORY:PO-3729',
+    '@JIRA-EPIC:PO-1675',
+    '@JIRA-LABEL:Amend Defendant Enforcement Attributes',
+  ],
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth',
   '177A - Mr Robert THOMSON',
   commonSetup,
 );
 
 runCollectionOrderChangeSuite(
-  ['@JIRA-STORY:PO-1860', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend Defendant Enforcement Attributes'],
+  [
+    '@JIRA-STORY:PO-1860',
+    '@JIRA-STORY:PO-3729',
+    '@JIRA-EPIC:PO-1675',
+    '@JIRA-LABEL:Amend Defendant Enforcement Attributes',
+  ],
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth with parent or guardian to pay',
   '177A - Mr Robert THOMSON',
   parentGuardianSetup,
 );
 
 runCollectionOrderChangeSuite(
-  ['@JIRA-STORY:PO-1861', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend Defendant Enforcement Attributes'],
+  [
+    '@JIRA-STORY:PO-1861',
+    '@JIRA-STORY:PO-3729',
+    '@JIRA-EPIC:PO-1675',
+    '@JIRA-LABEL:Amend Defendant Enforcement Attributes',
+  ],
   'Account Enquiry Enforcement - Change Collection Order status - Company',
   '177A - Test Org Ltd',
   companySetup,
