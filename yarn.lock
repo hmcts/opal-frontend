@@ -3113,12 +3113,12 @@ __metadata:
   linkType: hard
 
 "@cucumber/messages@npm:^32.0.0":
-  version: 32.2.0
-  resolution: "@cucumber/messages@npm:32.2.0"
+  version: 32.3.1
+  resolution: "@cucumber/messages@npm:32.3.1"
   dependencies:
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-  checksum: 10/b041c144977caee48be45c1418923db7ec80395701f0d91c6c6b0491889980941dcbfd82b184e5b3678a8726ca4ab91b77aff19d1ee2b718b4c2d20d597cc5d3
+  checksum: 10/eb02dff7dd7471a08a090736ec9eadb1ff9370724a50384ceada4a54819a388dacea9bdf8bd74427338dc7432b178810bcdf48387cd3c94c522b94b07542dacd
   languageName: node
   linkType: hard
 
@@ -7774,9 +7774,9 @@ __metadata:
   linkType: hard
 
 "axe-core@npm:^4.8.4":
-  version: 4.11.2
-  resolution: "axe-core@npm:4.11.2"
-  checksum: 10/495a6baa80a157603e5ea9ebfefb06ef4f947d722f8adcefea3a086c918363437406fa5adf27bd9f759314f7661f023110bd5490b3d13f623c92d3dbdf432298
+  version: 4.11.3
+  resolution: "axe-core@npm:4.11.3"
+  checksum: 10/4ef64672117df20f040b245d78b5b38552497bd6a1a84222f8c6a07304e0a374a290504ccd76efc3d1ee3a17c8731a65b625a49bf6701c7bd16093a54fcd5b8d
   languageName: node
   linkType: hard
 
@@ -11171,23 +11171,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0":
-  version: 1.15.6
-  resolution: "follow-redirects@npm:1.15.6"
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.11":
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10/70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
-  languageName: node
-  linkType: hard
-
-"follow-redirects@npm:^1.15.11":
-  version: 1.15.11
-  resolution: "follow-redirects@npm:1.15.11"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: 10/07372fd74b98c78cf4d417d68d41fdaa0be4dcacafffb9e67b1e3cf090bc4771515e65020651528faab238f10f9b9c0d9707d6c1574a6c0387c5de1042cde9ba
+  checksum: 10/3fbe3d80b3b544c22705d837aa5d4a0d07a740d913534a2620b0a004c610af4148e3b58723536dd099aaa1c9d3a155964bde9665d6e5cb331460809a1fc572fd
   languageName: node
   linkType: hard
 
