@@ -10,13 +10,7 @@
       </div>
       @if (hasAccountMaintenencePermission) {
         <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-          <a
-            href=""
-            [class]="style.changeLink"
-            (click)="handleChangeDefendantDetails($event)"
-            (keyup.enter)="handleChangeDefendantDetails()"
-            >Change</a
-          >
+          <a href="" [class]="style.changeLink" (click)="handleChangeDefendantDetails($event)">Change</a>
         </div>
       }
     </div>
@@ -34,21 +28,13 @@
     <h2 [class]="style.heading">Actions</h2>
     @if (canAddParentOrGuardianDetails) {
       <p>
-        <a
-          href=""
-          class="govuk-link govuk-link--no-visited-state"
-          (click)="handleAddParentOrGuardianDetails($event)"
-          (keyup.enter)="handleAddParentOrGuardianDetails()"
+        <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddParentOrGuardianDetails($event)"
           >Add parent or guardian details</a
         >
       </p>
     }
     <p>
-      <a
-        href=""
-        class="govuk-link govuk-link--no-visited-state"
-        (click)="handleConvertAccount($event)"
-        (keyup.enter)="handleConvertAccount()"
+      <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleConvertAccount($event)"
         >Convert to {{ party.party_details.organisation_flag ? 'an individual' : 'a company' }} account</a
       >
     </p>
