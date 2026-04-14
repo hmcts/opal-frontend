@@ -82,6 +82,15 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
+  it('should emit changeEnforcementOverride when user has permission and an override result exists', () => {
+    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
+
+    component.hasAccountMaintenancePermission = true;
+    component.handleChangeEnforcementOverride();
+
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
   it('should emit when handleChangeEnforcementCourt is called', () => {
     const eventEmitterSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
     component.hasAccountMaintenancePermission = true;
@@ -89,5 +98,16 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     component.handleChangeEnforcementCourt();
 
     expect(eventEmitterSpy).toHaveBeenCalled();
+  });
+
+  it('should emit changeCollectionOrder when handleChangeCollectionOrder is called', () => {
+    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+    component.hasAccountMaintenancePermission = true;
+
+    component.handleChangeCollectionOrder();
+
+    expect(eventEmitterSpy).toHaveBeenCalledWith(
+      component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
+    );
   });
 });

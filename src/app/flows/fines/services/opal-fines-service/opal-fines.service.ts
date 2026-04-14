@@ -486,7 +486,7 @@ export class OpalFines {
     const accountCaches: (keyof IOpalFinesCache)[] = [
       'defendantAccountAtAGlanceCache$',
       'defendantAccountPartyCache$',
-      'defendantAccountparentOrGuardianAccountPartyCache$',
+      'defendantAccountParentOrGuardianAccountPartyCache$',
       'defendantAccountEnforcementCache$',
       'defendantAccountImpositionsCache$',
       'defendantAccountHistoryAndNotesCache$',
@@ -713,9 +713,9 @@ export class OpalFines {
     account_id: number | null,
     party_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    if (!this.cache.defendantAccountparentOrGuardianAccountPartyCache$) {
+    if (!this.cache.defendantAccountParentOrGuardianAccountPartyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}`;
-      this.cache.defendantAccountparentOrGuardianAccountPartyCache$ = this.http
+      this.cache.defendantAccountParentOrGuardianAccountPartyCache$ = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
@@ -729,7 +729,7 @@ export class OpalFines {
           shareReplay(1),
         );
     }
-    return this.cache.defendantAccountparentOrGuardianAccountPartyCache$;
+    return this.cache.defendantAccountParentOrGuardianAccountPartyCache$;
   }
 
   /**

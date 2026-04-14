@@ -14,12 +14,8 @@
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="collection_order_status"
-            [actionEnabled]="
-              hasAccountMaintenancePermission &&
-              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
-                ? true
-                : false
-            "
+            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeCollectionOrder()"
           >
             <ng-container name>Collection Order status</ng-container>
             <ng-container value>
@@ -31,10 +27,7 @@
                 {{ 'No collection order' }}
               }
             </ng-container>
-            @if (
-              hasAccountMaintenancePermission &&
-              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
-            ) {
+            @if (hasAccountMaintenancePermission) {
               <ng-container action>Change</ng-container>
             }
           </div>
@@ -290,6 +283,7 @@
             summaryListId="enforcementOverrideDetails"
             summaryListRowId="enforcement_override"
             [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeEnforcementOverride()"
           >
             <ng-container name>Enforcement override</ng-container>
             <ng-container value>
@@ -297,7 +291,10 @@
                 tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
               }})
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (
+              hasAccountMaintenancePermission &&
+              this.tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+            ) {
               <ng-container action>Change</ng-container>
             }
           </div>

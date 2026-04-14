@@ -20,7 +20,7 @@
     [errors]="formControlErrorMessages['fenf_account_enforcement_action']"
     [tabIndex]="0"
   ></opal-lib-alphagov-accessible-autocomplete>
-  @if (form.controls['fenf_account_enforcement_enforcer'].enabled) {
+  @if (showEnforcerField) {
     <opal-lib-alphagov-accessible-autocomplete
       [control]="form.get('fenf_account_enforcement_enforcer')"
       labelText="Enforcer"
@@ -33,7 +33,7 @@
       [tabIndex]="1"
     ></opal-lib-alphagov-accessible-autocomplete>
   }
-  @if (form.controls['fenf_account_enforcement_lja'].enabled) {
+  @if (showLjaField) {
     <opal-lib-alphagov-accessible-autocomplete
       [control]="form.get('fenf_account_enforcement_lja')"
       labelText="Local Justice Area (LJA)"
