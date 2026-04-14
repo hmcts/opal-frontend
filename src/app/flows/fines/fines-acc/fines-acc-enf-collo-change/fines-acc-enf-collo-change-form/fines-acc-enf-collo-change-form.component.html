@@ -11,7 +11,7 @@
 </opal-lib-govuk-heading-with-caption>
 
 <p class="govuk-body govuk-!-margin-bottom-6">If the status of a Collection Order is incorrect you can change it.</p>
-<p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-6">This will not issue a new notice.</p>
+<p class="govuk-body govuk-!-margin-bottom-6"><strong>This will not issue a new notice.</strong></p>
 <p class="govuk-body govuk-!-margin-bottom-6">
   To add a new Collection Order and issue a notice you should
   <a
@@ -53,7 +53,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
       <div class="govuk-button-group govuk-!-margin-bottom-0">
-        <button class="govuk-button govuk-!-margin-right-4" buttonId="submitForm" type="submit">Change</button>
+        <button class="govuk-button govuk-!-margin-right-4" id="submitForm" type="submit">Change</button>
         <opal-lib-govuk-cancel-link
           (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement' })"
         ></opal-lib-govuk-cancel-link>
