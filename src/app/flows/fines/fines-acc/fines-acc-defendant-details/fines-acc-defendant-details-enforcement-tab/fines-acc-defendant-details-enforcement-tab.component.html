@@ -283,6 +283,7 @@
             summaryListId="enforcementOverrideDetails"
             summaryListRowId="enforcement_override"
             [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeEnforcementOverride()"
           >
             <ng-container name>Enforcement override</ng-container>
             <ng-container value>
@@ -290,7 +291,10 @@
                 tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
               }})
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (
+              hasAccountMaintenancePermission &&
+              this.tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+            ) {
               <ng-container action>Change</ng-container>
             }
           </div>

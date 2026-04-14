@@ -35,6 +35,8 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 })
 export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private finesService = inject(OpalFines);
+  private _showEnforcerField = false;
+  private _showLjaField = false;
   protected override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FIELD_ERRORS,
   };
@@ -47,19 +49,33 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
   @Input({ required: true }) partyName!: string;
   @Input({ required: true }) accountNumber!: string;
   @Input({ required: true }) pageTitle!: string;
+  @Input({ required: true }) formValues!: IFinesAccEnfOverrideAddChangeFormState;
+
+  public get showEnforcerField(): boolean {
+    return this._showEnforcerField;
+  }
+
+  public get showLjaField(): boolean {
+    return this._showLjaField;
+  }
 
   /**
    * Sets up the enforcement override add/change form with the necessary form controls.
+   * Populates the form with any existing enforcement override values if they are present.
    * @return void
    */
   private setupEnforcementOverrideAddChangeForm(): void {
     this.form = new FormGroup({
       fenf_account_enforcement_action: new FormControl<string | null>(null, Validators.required),
-      fenf_account_enforcement_enforcer: new FormControl<string | null>(null, Validators.required),
-      fenf_account_enforcement_lja: new FormControl<string | null>(null, Validators.required),
+      fenf_account_enforcement_enforcer: new FormControl<string | null>(null),
+      fenf_account_enforcement_lja: new FormControl<string | null>(null),
     });
-    this.disableFormControl('fenf_account_enforcement_enforcer');
-    this.disableFormControl('fenf_account_enforcement_lja');
+    this.form.patchValue(this.formValues);
+    this._showEnforcerField = !!this.formValues.fenf_account_enforcement_enforcer;
+    this._showLjaField = !!this.formValues.fenf_account_enforcement_lja;
+    this.updateControl('fenf_account_enforcement_enforcer', this.showEnforcerField ? [Validators.required] : []);
+    this.updateControl('fenf_account_enforcement_lja', this.showLjaField ? [Validators.required] : []);
+    this.form.updateValueAndValidity();
   }
 
   /**
@@ -86,35 +102,35 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
       .getResult(id)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((result) => {
-        this.disableFormControl('fenf_account_enforcement_lja');
-        this.disableFormControl('fenf_account_enforcement_enforcer');
+        this.hideFieldAndResetValue('fenf_account_enforcement_lja');
+        this.hideFieldAndResetValue('fenf_account_enforcement_enforcer');
         if (result.requires_enforcer) {
-          this.enableFormControl('fenf_account_enforcement_enforcer');
+          this._showEnforcerField = true;
+          this.updateControl('fenf_account_enforcement_enforcer', [Validators.required]);
         }
         if (result.requires_lja) {
-          this.enableFormControl('fenf_account_enforcement_lja');
+          this._showLjaField = true;
+          this.updateControl('fenf_account_enforcement_lja', [Validators.required]);
         }
         this.form.updateValueAndValidity();
       });
   }
 
   /**
-   * Enables a form control
-   * @param controlName Name of the form field to enable
+   * Hides a field and resets its value.
+   * @param controlName Name of the form field to hide
    * @returns void
    */
-  private enableFormControl(controlName: string): void {
-    this.form.get(controlName)?.enable();
-  }
-
-  /**
-   * Disables a form control and resets its value.
-   * @param controlName Name of the form field to disable
-   * @returns void
-   */
-  private disableFormControl(controlName: string): void {
-    this.form.get(controlName)?.reset();
-    this.form.get(controlName)?.disable();
+  private hideFieldAndResetValue(controlName: string): void {
+    this.form.get(controlName)?.reset(null);
+    if (controlName === 'fenf_account_enforcement_enforcer') {
+      this._showEnforcerField = false;
+      this.updateControl(controlName, []);
+    }
+    if (controlName === 'fenf_account_enforcement_lja') {
+      this._showLjaField = false;
+      this.updateControl(controlName, []);
+    }
   }
 
   /**
@@ -130,6 +146,8 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
 
   /**
    * Handles the change enforcement action event emitted from the form when a new enforcement action is selected.
+   * If an id is not provided (form value is cleared), the enforcer and local justice area form controls are disabled.
+   * If an id is provided, the enforcement action result is fetched and appropriate form controls are enabled/disabled.
    * @param id The result ID for the enforcement action that has been selected in the form
    * @returns void
    */
@@ -137,8 +155,8 @@ export class FinesAccEnfOverrideAddChangeFormComponent extends AbstractFormBaseC
     if (id) {
       this.getEnforcementActionResult(id);
     } else {
-      this.disableFormControl('fenf_account_enforcement_enforcer');
-      this.disableFormControl('fenf_account_enforcement_lja');
+      this.hideFieldAndResetValue('fenf_account_enforcement_enforcer');
+      this.hideFieldAndResetValue('fenf_account_enforcement_lja');
       this.form.updateValueAndValidity();
     }
   }
