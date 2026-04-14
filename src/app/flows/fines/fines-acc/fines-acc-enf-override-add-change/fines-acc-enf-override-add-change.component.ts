@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IOpalFinesResultsRefData } from '@app/flows/fines/services/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { FinesAccEnfOverrideAddChangeFormComponent } from './fines-acc-enf-override-add-change-form/fines-acc-enf-override-add-change-form.component';
@@ -14,6 +14,8 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '@app/flows/fines/fines-acc/ro
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { IFinesAccEnfOverrideAddChangeFormState } from './interfaces/fines-acc-enf-override-add-change-form-state.interface';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FORM_DEFAULT } from './constants/fines-acc-enf-override-add-change-form-default.constant';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES } from './constants/fines-acc-enf-override-add-change-success-messages.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-override-add-change',
@@ -22,7 +24,10 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
   standalone: true,
   imports: [FinesAccEnfOverrideAddChangeFormComponent],
 })
-export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+export class FinesAccEnfOverrideAddChangeComponent
+  extends AbstractFormParentBaseComponent
+  implements OnDestroy, OnInit
+{
   private readonly ngUnsubscribe = new Subject<void>();
   private route = inject(ActivatedRoute);
   private finesAccStore = inject(FinesAccountStore);
@@ -36,6 +41,24 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
   public enforcerOptions: IGovUkSelectOptions[] = this.setEnforcerOptions();
   public localJusticeAreaOptions: IGovUkSelectOptions[] = this.setLocalJusticeAreaOptions();
   public enforcementActionOptions: IGovUkSelectOptions[] = this.setEnforcementActionOptions();
+  public formValues: IFinesAccEnfOverrideAddChangeFormState = structuredClone(
+    FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_FORM_DEFAULT,
+  );
+
+  /**
+   * Sets the existing enforcement override values to be used in the form.
+   */
+  private setExistingEnforcementOverride(): void {
+    const existingEnforcementOverride = this.route.snapshot.data['enforcementStatus']?.enforcement_override;
+    if (existingEnforcementOverride) {
+      this.formValues = {
+        fenf_account_enforcement_action:
+          existingEnforcementOverride?.enforcement_override_result?.enforcement_override_result_id ?? null,
+        fenf_account_enforcement_enforcer: existingEnforcementOverride?.enforcer?.enforcer_id ?? null,
+        fenf_account_enforcement_lja: existingEnforcementOverride?.lja?.lja_id ?? null,
+      };
+    }
+  }
 
   /**
    * Sets the options for the enforcer select dropdown.
@@ -95,7 +118,11 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe(() => {
-        this.finesAccStore.setSuccessMessage('Enforcement override added');
+        if (this.route.snapshot.data['enforcementStatus']?.enforcement_override) {
+          this.finesAccStore.setSuccessMessage(FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.change);
+        } else {
+          this.finesAccStore.setSuccessMessage(FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.add);
+        }
         this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, null, 'enforcement');
       });
   }
@@ -115,5 +142,9 @@ export class FinesAccEnfOverrideAddChangeComponent extends AbstractFormParentBas
   public ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  public ngOnInit(): void {
+    this.setExistingEnforcementOverride();
   }
 }

@@ -124,9 +124,8 @@
               @if (row['Account ID']) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
-                  tabindex="0"
-                  (click)="goToAccount(row['Account ID'])"
-                  (keyup.enter)="goToAccount(row['Account ID'])"
+                  href=""
+                  (click)="goToAccount(row['Account ID'], $event)"
                   >{{ row['Account']! }}</a
                 >
               } @else {

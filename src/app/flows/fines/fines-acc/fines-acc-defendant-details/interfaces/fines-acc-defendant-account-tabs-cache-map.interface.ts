@@ -1,7 +1,7 @@
 export interface IFinesAccDefendantAccountTabsCacheMap {
   'at-a-glance': 'defendantAccountAtAGlanceCache$';
   defendant: 'defendantAccountPartyCache$';
-  'parent-or-guardian': 'defendantAccountparentOrGuardianAccountPartyCache$';
+  'parent-or-guardian': 'defendantAccountParentOrGuardianAccountPartyCache$';
   'fixed-penalty': 'defendantAccountFixedPenaltyCache$';
   'payment-terms': 'defendantAccountPaymentTermsLatestCache$';
   enforcement: 'defendantAccountEnforcementCache$';

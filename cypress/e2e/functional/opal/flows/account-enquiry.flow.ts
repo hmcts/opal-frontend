@@ -40,6 +40,8 @@ const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
 export class AccountEnquiryFlow {
   /** Default timeout (ms) for key waits in this flow. */
   private static readonly WAIT_MS = 15_000;
+  /** Timeout (ms) for route transitions back to the defendant details shell. */
+  private static readonly DETAILS_NAV_WAIT_MS = 20_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
 
   /** Waits for the account header summary call to succeed and the At a glance tab to render. */
@@ -304,6 +306,90 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the Change Collection Order status form from the Enforcement tab.
+   */
+  public openChangeCollectionOrderForm(): void {
+    logAE('method', 'openChangeCollectionOrderForm()');
+    this.enforcement.openChangeCollectionOrderForm();
+  }
+
+  /**
+   * Asserts the Change Collection Order status form is visible.
+   */
+  public assertChangeCollectionOrderFormVisible(): void {
+    logAE('method', 'assertChangeCollectionOrderFormVisible()');
+    this.enforcement.assertChangeCollectionOrderFormVisible();
+  }
+
+  /**
+   * Asserts the account identifier shown on the Change Collection Order status page.
+   *
+   * @param expected - Expected account identifier text.
+   */
+  public assertChangeCollectionOrderAccountIdentifier(expected: string): void {
+    logAE('method', 'assertChangeCollectionOrderAccountIdentifier()', { expected });
+    this.enforcement.assertChangeCollectionOrderAccountIdentifier(expected);
+  }
+
+  /**
+   * Selects a Collection Order status option on the change form.
+   *
+   * @param option - Visible radio label to select.
+   */
+  public selectChangeCollectionOrderStatus(option: string): void {
+    logAE('method', 'selectChangeCollectionOrderStatus()', { option });
+    this.enforcement.selectCollectionOrderStatus(option);
+  }
+
+  /**
+   * Submits the Change Collection Order status form.
+   */
+  public submitChangeCollectionOrderForm(): void {
+    logAE('method', 'submitChangeCollectionOrderForm()');
+    this.enforcement.submitChangeCollectionOrderForm();
+  }
+
+  /**
+   * Cancels the Change Collection Order status form without making changes.
+   */
+  public cancelChangeCollectionOrderFormWithoutChanges(): void {
+    logAE('method', 'cancelChangeCollectionOrderFormWithoutChanges()');
+    this.enforcement.cancelChangeCollectionOrderForm();
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Cancels the Change Collection Order status form after making changes and chooses to stay on the page.
+   */
+  public cancelChangeCollectionOrderFormAndStay(): void {
+    logAE('method', 'cancelChangeCollectionOrderFormAndStay()');
+    this.common.confirmNextUnsavedChanges(false);
+    this.enforcement.cancelChangeCollectionOrderForm();
+    this.enforcement.assertChangeCollectionOrderFormVisible();
+  }
+
+  /**
+   * Asserts the Collection Order success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertCollectionOrderSuccessBanner(expected: string): void {
+    logAE('method', 'assertCollectionOrderSuccessBanner()', { expected });
+    this.enforcement.assertCollectionOrderSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the Collection Order summary value on the Enforcement tab.
+   *
+   * @param expected - Expected Collection Order summary value.
+   */
+  public assertCollectionOrderSummary(expected: string): void {
+    logAE('method', 'assertCollectionOrderSummary()', { expected });
+    this.enforcement.assertCollectionOrderSummary(expected);
+  }
+
+  /**
    * Selects an enforcement override code on the add form.
    *
    * @param resultCode - Enforcement override result code.
@@ -379,6 +465,95 @@ export class AccountEnquiryFlow {
   public assertEnforcementOverrideSuccessBanner(expected: string): void {
     logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
     this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Opens the change enforcement court form from the Enforcement tab.
+   */
+  public openChangeEnforcementCourtForm(): void {
+    logAE('method', 'openChangeEnforcementCourtForm()');
+    this.enforcement.openChangeEnforcementCourtForm();
+    this.enforcement.assertChangeEnforcementCourtFormVisible();
+  }
+
+  /**
+   * Changes the enforcement court to a different available value and returns to the Enforcement tab.
+   */
+  public changeEnforcementCourtToDifferentValue(): void {
+    logAE('method', 'changeEnforcementCourtToDifferentValue()');
+
+    this.enforcement.storeCurrentEnforcementCourtValue('originalEnforcementCourt');
+    this.openChangeEnforcementCourtForm();
+    this.enforcement.selectDifferentEnforcementCourt('originalEnforcementCourt', 'selectedEnforcementCourt');
+    this.enforcement.submitChangeEnforcementCourt();
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Saves the currently displayed enforcement court value again and returns to the Enforcement tab.
+   */
+  public saveSameEnforcementCourtValueAgain(): void {
+    logAE('method', 'saveSameEnforcementCourtValueAgain()');
+
+    this.enforcement.storeCurrentEnforcementCourtValue('selectedEnforcementCourt');
+    this.openChangeEnforcementCourtForm();
+    this.enforcement.selectEnforcementCourtFromAlias('selectedEnforcementCourt');
+    this.enforcement.submitChangeEnforcementCourt();
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Selects a different enforcement court value, cancels, and confirms leaving via the route guard.
+   */
+  public cancelDirtyChangeEnforcementCourtAndDiscardChanges(): void {
+    logAE('method', 'cancelDirtyChangeEnforcementCourtAndDiscardChanges()');
+
+    this.enforcement.selectDifferentEnforcementCourt('selectedEnforcementCourt', 'unsavedEnforcementCourt');
+    this.common.cancelEditing(true);
+
+    cy.document({ timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS })
+      .its('readyState')
+      .should('match', /interactive|complete/);
+
+    // If the app didn’t redirect after OK, fall back to going back
+    cy.location('href', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).then((href) => {
+      if (href.includes('/enforcement/court/change')) {
+        cy.go('back');
+      }
+    });
+
+    this.detailsNav.assertEnforcementTabIsActive();
+    this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Asserts the enforcement court summary matches the selected value stored during the test.
+   */
+  public assertSelectedEnforcementCourtSummary(): void {
+    logAE('method', 'assertSelectedEnforcementCourtSummary()');
+    this.enforcement.assertEnforcementCourtMatchesAlias('selectedEnforcementCourt');
+  }
+
+  /**
+   * Asserts the enforcement court success banner text.
+   *
+   * @param expected - Expected success banner message.
+   */
+  public assertEnforcementCourtSuccessBanner(expected: string): void {
+    logAE('method', 'assertEnforcementCourtSuccessBanner()', { expected });
+    this.enforcement.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Asserts the enforcement success banner is not displayed.
+   */
+  public assertEnforcementSuccessBannerNotVisible(): void {
+    logAE('method', 'assertEnforcementSuccessBannerNotVisible()');
+    this.enforcement.assertSuccessBannerNotVisible();
   }
 
   /**

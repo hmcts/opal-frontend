@@ -191,6 +191,89 @@ When('I open the add enforcement override form', () => {
 });
 
 /**
+ * @step Opens the Change Collection Order status form from the Enforcement tab.
+ */
+When('I open the Change Collection Order status form', () => {
+  log('step', 'Open Change Collection Order status form');
+  flow().openChangeCollectionOrderForm();
+});
+
+/**
+ * @step Verifies the Change Collection Order status page is visible.
+ */
+Then('I should see the Change Collection Order status page', () => {
+  log('assert', 'Change Collection Order status page is visible');
+  flow().assertChangeCollectionOrderFormVisible();
+});
+
+/**
+ * @step Verifies the account identifier shown on the Change Collection Order status page.
+ */
+Then('I should see the account identifier {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Change Collection Order account identifier', { expected: expectedWithUniq });
+  flow().assertChangeCollectionOrderAccountIdentifier(expectedWithUniq);
+});
+
+/**
+ * @step Selects the requested Collection Order status option on the change form.
+ */
+When('I select {string} for Collection Order status', (option: string) => {
+  log('step', 'Select Collection Order status', { option });
+  flow().selectChangeCollectionOrderStatus(option);
+});
+
+/**
+ * @step Submits the Change Collection Order status form.
+ */
+When('I submit the Change Collection Order status form', () => {
+  log('step', 'Submit Change Collection Order status form');
+  flow().submitChangeCollectionOrderForm();
+});
+
+/**
+ * @step Cancels the Change Collection Order status form without making changes.
+ */
+When('I cancel the Change Collection Order status form without making changes', () => {
+  log('step', 'Cancel Change Collection Order status form without changes');
+  flow().cancelChangeCollectionOrderFormWithoutChanges();
+});
+
+/**
+ * @step Cancels the Change Collection Order status form and chooses to stay on the page.
+ */
+When('I cancel the Change Collection Order status form and choose to stay', () => {
+  log('step', 'Cancel Change Collection Order status form and choose to stay');
+  flow().cancelChangeCollectionOrderFormAndStay();
+});
+
+/**
+ * @step Verifies the Collection Order success banner text.
+ */
+Then('I should see the collection order success banner {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Collection Order success banner text', { expected: expectedWithUniq });
+  flow().assertCollectionOrderSuccessBanner(expectedWithUniq);
+});
+
+/**
+ * @step Verifies the Collection Order summary value shown on the Enforcement tab.
+ */
+Then('the collection order summary should show {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Collection Order summary value', { expected: expectedWithUniq });
+  flow().assertCollectionOrderSummary(expectedWithUniq);
+});
+
+/**
+ * @step Verifies we remain on the Change Collection Order status page.
+ */
+Then('I should remain on the Change Collection Order status page', () => {
+  log('assert', 'Remain on Change Collection Order status page');
+  flow().assertChangeCollectionOrderFormVisible();
+});
+
+/**
  * @step Selects an enforcement override on the add form.
  */
 When('I choose the enforcement override {string}', (resultCode: string) => {
@@ -243,6 +326,38 @@ When('I add the enforcement override {string} with the enforcer {string}', (resu
   flow().selectEnforcementOverride(resultCode);
   flow().selectEnforcementOverrideEnforcer(enforcer);
   flow().submitAddEnforcementOverride();
+});
+
+/**
+ * @step Opens the change enforcement court form from the Enforcement tab.
+ */
+When('I open the change enforcement court form', () => {
+  log('step', 'Open change enforcement court form');
+  flow().openChangeEnforcementCourtForm();
+});
+
+/**
+ * @step Changes the enforcement court to a different available value.
+ */
+When('I change the enforcement court to a different value', () => {
+  log('step', 'Change enforcement court to a different value');
+  flow().changeEnforcementCourtToDifferentValue();
+});
+
+/**
+ * @step Saves the currently displayed enforcement court value again.
+ */
+When('I save the same enforcement court value again', () => {
+  log('step', 'Save the same enforcement court value again');
+  flow().saveSameEnforcementCourtValueAgain();
+});
+
+/**
+ * @step Cancels the change enforcement court form after selecting a value and confirms leaving.
+ */
+When('I cancel the change enforcement court form after selecting a value and discarding changes', () => {
+  log('step', 'Cancel dirty change enforcement court form and discard changes');
+  flow().cancelDirtyChangeEnforcementCourtAndDiscardChanges();
 });
 
 /**
@@ -356,6 +471,30 @@ Then('I should return to the Enforcement tab', () => {
 Then('the enforcement override success banner is {string}', (expected: string) => {
   log('assert', 'Enforcement override success banner text', { expected });
   flow().assertEnforcementOverrideSuccessBanner(expected);
+});
+
+/**
+ * @step Asserts the enforcement court success banner text.
+ */
+Then('the enforcement court success banner is {string}', (expected: string) => {
+  log('assert', 'Enforcement court success banner text', { expected });
+  flow().assertEnforcementCourtSuccessBanner(expected);
+});
+
+/**
+ * @step Asserts the selected enforcement court value is shown in the summary row.
+ */
+Then('the enforcement court summary shows the selected value', () => {
+  log('assert', 'Selected enforcement court summary value');
+  flow().assertSelectedEnforcementCourtSummary();
+});
+
+/**
+ * @step Asserts no enforcement success banner is displayed.
+ */
+Then('the enforcement success banner is not displayed', () => {
+  log('assert', 'Enforcement success banner is not displayed');
+  flow().assertEnforcementSuccessBannerNotVisible();
 });
 
 /**
