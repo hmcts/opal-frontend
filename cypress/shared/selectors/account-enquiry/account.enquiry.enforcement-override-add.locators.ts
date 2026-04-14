@@ -18,4 +18,7 @@ export const DOM_ELEMENTS = {
   addOverrideButton: '#submitForm',
   cancelLink: '.govuk-link',
   errorSummary: '.govuk-error-summary__title',
+  enfOverrideDropdownOptions: '#fenf_account_enforcement_action-autocomplete__listbox .autocomplete__option',
+  enforcerDropdownOptions: '#fenf_account_enforcement_enforcer-autocomplete__listbox .autocomplete__option',
+  localJusticeAreaDropdownOptions: '#fenf_account_enforcement_lja-autocomplete__listbox .autocomplete__option',
 } as const;

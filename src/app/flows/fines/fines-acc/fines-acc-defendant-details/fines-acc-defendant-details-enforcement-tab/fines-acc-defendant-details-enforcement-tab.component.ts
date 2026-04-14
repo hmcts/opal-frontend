@@ -39,6 +39,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
   @Output() addEnforcementOverride = new EventEmitter<void>();
+  @Output() changeEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementCourt = new EventEmitter<void>();
   @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
@@ -48,12 +49,15 @@ export class FinesAccDefendantDetailsEnforcementTab {
    */
   public handleAddEnforcementOverride(event: Event): void {
     event.preventDefault();
-    if (
-      this.hasAccountMaintenancePermission &&
-      !this.tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
-    ) {
-      this.addEnforcementOverride.emit();
-    }
+    this.addEnforcementOverride.emit();
+  }
+
+  /**
+   * Emits an event to change an enforcement override if the user has the necessary permissions and there is an existing enforcement override result.
+   * @returns void
+   */
+  public handleChangeEnforcementOverride(): void {
+    this.changeEnforcementOverride.emit();
   }
 
   /**
