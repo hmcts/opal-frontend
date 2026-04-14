@@ -388,6 +388,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.refreshFragment$.complete();
   }
 
+  /**
+   * Determines whether the Defendant tab should show the add parent/guardian link.
+   *
+   * The link is only available for youth-only accounts where the defendant is the
+   * debtor and no parent or guardian party is currently attached to the account.
+   */
   public get canAddParentOrGuardianDetails(): boolean {
     return (
       this.accountData.is_youth &&
@@ -397,9 +403,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   /**
-   * Navigates to the amend party details page for the specified party type.
-   * Or navigates to the access-denied page if the user lacks the required permission in this BU.
-   * @param partyType
+   * Navigates to the shared party details journey for the selected party type.
+   *
+   * This is used by the Defendant details actions and currently routes to the
+   * existing amend page for the chosen party. If the user does not have account
+   * maintenance permission in the active business unit, they are redirected to
+   * the access-denied page instead.
+   *
+   * @param partyType - The party type to open in the party details flow.
    */
   public navigateToAmendPartyDetailsPage(partyType: string): void {
     if (

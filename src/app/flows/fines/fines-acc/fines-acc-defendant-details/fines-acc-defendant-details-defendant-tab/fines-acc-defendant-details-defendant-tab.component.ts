@@ -20,6 +20,14 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
   @Output() convertAccount = new EventEmitter<string>();
   @Output() addParentOrGuardianDetails = new EventEmitter<string>();
 
+  /**
+   * Emits the current defendant party type for the convert-account journey.
+   *
+   * The click originates from an anchor element, so the browser default
+   * navigation is prevented before emitting the event to the parent container.
+   *
+   * @param event - The click event from the action link.
+   */
   public handleConvertAccount(event?: Event): void {
     event?.preventDefault();
 
@@ -30,6 +38,14 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
     }
   }
 
+  /**
+   * Emits the current defendant party type for the shared party-details flow.
+   *
+   * The click originates from an anchor element, so the browser default
+   * navigation is prevented before emitting the event to the parent container.
+   *
+   * @param event - The click event from the action link.
+   */
   public handleChangeDefendantDetails(event?: Event): void {
     event?.preventDefault();
 
@@ -40,6 +56,14 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
     }
   }
 
+  /**
+   * Emits the parent-or-guardian party type for the add-details journey.
+   *
+   * The click originates from an anchor element, so the browser default
+   * navigation is prevented before emitting the event to the parent container.
+   *
+   * @param event - The click event from the action link.
+   */
   public handleAddParentOrGuardianDetails(event?: Event): void {
     event?.preventDefault();
     this.addParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
