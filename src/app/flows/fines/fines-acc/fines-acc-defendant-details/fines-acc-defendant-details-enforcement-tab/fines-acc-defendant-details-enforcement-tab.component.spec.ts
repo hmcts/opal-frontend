@@ -126,4 +126,19 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
       component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
     );
   });
+
+  it('should emit false when collection order is missing', () => {
+    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+    component.tabData = {
+      ...component.tabData,
+      enforcement_overview: {
+        ...component.tabData.enforcement_overview,
+        collection_order: null,
+      },
+    };
+
+    component.handleChangeCollectionOrder();
+
+    expect(eventEmitterSpy).toHaveBeenCalledWith(false);
+  });
 });
