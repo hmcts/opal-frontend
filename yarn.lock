@@ -3113,12 +3113,12 @@ __metadata:
   linkType: hard
 
 "@cucumber/messages@npm:^32.0.0":
-  version: 32.2.0
-  resolution: "@cucumber/messages@npm:32.2.0"
+  version: 32.3.1
+  resolution: "@cucumber/messages@npm:32.3.1"
   dependencies:
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-  checksum: 10/b041c144977caee48be45c1418923db7ec80395701f0d91c6c6b0491889980941dcbfd82b184e5b3678a8726ca4ab91b77aff19d1ee2b718b4c2d20d597cc5d3
+  checksum: 10/eb02dff7dd7471a08a090736ec9eadb1ff9370724a50384ceada4a54819a388dacea9bdf8bd74427338dc7432b178810bcdf48387cd3c94c522b94b07542dacd
   languageName: node
   linkType: hard
 
@@ -3681,9 +3681,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.27":
-  version: 0.0.27
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.27"
+"@hmcts/opal-frontend-common-node@npm:^0.0.28":
+  version: 0.0.28
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.28"
   dependencies:
     "@azure/msal-browser": "npm:^5.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3702,23 +3702,38 @@ __metadata:
     helmet: "npm:^8.0.0"
     http-proxy-middleware: "npm:^3.0.0"
     luxon: "npm:^3.4.3"
-    prettier: "npm:^3.0.3"
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/ce5e1ea609e7e3cb054eebd024d6d7e8f3752d8dd1f00c39d8922d08cfa7c6178e2e24da54de95a254136a1d8aeaf17b8587c58062b1888db3ff7cf2b3825080
+  checksum: 10/609ffec48043c11c20f52c5f6923e909b7752dea36649a1cbeb7234c1e15461df5ffc0644687492c713ab86f7ec4b560b849468367dba48010676280eee1e504
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.67":
-  version: 0.0.67
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.67"
+"@hmcts/opal-frontend-common@npm:^0.0.69":
+  version: 0.0.69
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.69"
   dependencies:
+    "@microsoft/applicationinsights-web": "npm:^3.3.6"
+    "@ministryofjustice/frontend": "npm:^9.0.0"
+    accessible-autocomplete: "npm:^3.0.1"
+    fast-sort: "npm:^3.4.1"
+    govuk-frontend: "npm:^6.0.0"
+    home-office-kit: "npm:^1.2.0"
+    launchdarkly-js-client-sdk: "npm:^3.5.0"
+    luxon: "npm:^3.5.0"
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
-  checksum: 10/3efaeb283e0244e9ec148fc6b40325999b517b3e75bb42a4891ea48f158948385e6014b410aa6551cb6eaf658b126424b52fa5d4b5b73dc32462b53b11fcee5e
+    "@angular/forms": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    "@angular/platform-browser": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    "@angular/router": ^18.2.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    "@ngrx/signals": ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    rxjs: ^7.8.0
+  peerDependenciesMeta:
+    "@ngrx/signals":
+      optional: true
+  checksum: 10/92d4440a9fb82714d4d838c992896703ff12ddb681cbc1c9c614371d1de568d5dd01a20211b70d78d7b2f4774b5613c19fce592538c0894b1b9f49d06c3a25bb
   languageName: node
   linkType: hard
 
@@ -4625,7 +4640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-web@npm:^3.3.5":
+"@microsoft/applicationinsights-web@npm:^3.3.5, @microsoft/applicationinsights-web@npm:^3.3.6":
   version: 3.4.1
   resolution: "@microsoft/applicationinsights-web@npm:3.4.1"
   dependencies:
@@ -4654,13 +4669,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ministryofjustice/frontend@npm:^8.0.0":
-  version: 8.0.1
-  resolution: "@ministryofjustice/frontend@npm:8.0.1"
+"@ministryofjustice/frontend@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@ministryofjustice/frontend@npm:9.0.0"
   peerDependencies:
-    govuk-frontend: ^5.11.2
+    govuk-frontend: ^6.0.0
     moment: 2.30.1
-  checksum: 10/412d29fbde8b903a7db992ab7a9eeeb5d31bd8355b26f47e0d3e9974a1a1ea3fbd12e2d082d21edc2a052c5aa0bda93929a73a1f820a602279f0fda6e71efe56
+  checksum: 10/91402390dcbf26558684be9200c9b2ae47c77267fd074ae889bd907ec94e3c29072f40d1aebed8aae3cd2ae771806f8e90d57f03dcaf7de0f4fb470f3219a9a1
   languageName: node
   linkType: hard
 
@@ -7147,7 +7162,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"accessible-autocomplete@npm:^3.0.0":
+"accessible-autocomplete@npm:^3.0.0, accessible-autocomplete@npm:^3.0.1":
   version: 3.0.1
   resolution: "accessible-autocomplete@npm:3.0.1"
   peerDependencies:
@@ -7759,9 +7774,9 @@ __metadata:
   linkType: hard
 
 "axe-core@npm:^4.8.4":
-  version: 4.11.2
-  resolution: "axe-core@npm:4.11.2"
-  checksum: 10/495a6baa80a157603e5ea9ebfefb06ef4f947d722f8adcefea3a086c918363437406fa5adf27bd9f759314f7661f023110bd5490b3d13f623c92d3dbdf432298
+  version: 4.11.3
+  resolution: "axe-core@npm:4.11.3"
+  checksum: 10/4ef64672117df20f040b245d78b5b38552497bd6a1a84222f8c6a07304e0a374a290504ccd76efc3d1ee3a17c8731a65b625a49bf6701c7bd16093a54fcd5b8d
   languageName: node
   linkType: hard
 
@@ -11156,23 +11171,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0":
-  version: 1.15.6
-  resolution: "follow-redirects@npm:1.15.6"
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.11":
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10/70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
-  languageName: node
-  linkType: hard
-
-"follow-redirects@npm:^1.15.11":
-  version: 1.15.11
-  resolution: "follow-redirects@npm:1.15.11"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: 10/07372fd74b98c78cf4d417d68d41fdaa0be4dcacafffb9e67b1e3cf090bc4771515e65020651528faab238f10f9b9c0d9707d6c1574a6c0387c5de1042cde9ba
+  checksum: 10/3fbe3d80b3b544c22705d837aa5d4a0d07a740d913534a2620b0a004c610af4148e3b58723536dd099aaa1c9d3a155964bde9665d6e5cb331460809a1fc572fd
   languageName: node
   linkType: hard
 
@@ -11626,10 +11631,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^5.0.0":
-  version: 5.14.0
-  resolution: "govuk-frontend@npm:5.14.0"
-  checksum: 10/be321340f49306e3dada63c67888b7947e36d60dce839c9d7f0c97932cda26a848c1fc664d48bb1d85494b7d28a3e99b2df6391dfc1bcbab905f529a2faa6788
+"govuk-frontend@npm:^6.0.0":
+  version: 6.1.0
+  resolution: "govuk-frontend@npm:6.1.0"
+  checksum: 10/dfd478bd47c7726f633cb43ce755e3ed0a513fc783ab7ad53eece931531eefa7471aa00f7548505a4fe523c56bb0ba35092629a3c1eb3a03ad232b1af15cc811
   languageName: node
   linkType: hard
 
@@ -13134,7 +13139,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"launchdarkly-js-client-sdk@npm:^3.1.4":
+"launchdarkly-js-client-sdk@npm:^3.1.4, launchdarkly-js-client-sdk@npm:^3.5.0":
   version: 3.9.1
   resolution: "launchdarkly-js-client-sdk@npm:3.9.1"
   dependencies:
@@ -14954,12 +14959,12 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.67"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.27"
+    "@hmcts/opal-frontend-common": "npm:^0.0.69"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.28"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
-    "@ministryofjustice/frontend": "npm:^8.0.0"
+    "@ministryofjustice/frontend": "npm:^9.0.0"
     "@ngrx/signals": "npm:^21.0.0"
     "@types/config": "npm:^4.0.0"
     "@types/cookie-parser": "npm:^1.4.6"
@@ -14993,7 +14998,7 @@ __metadata:
     express: "npm:^5.0.0"
     express-session: "npm:^1.17.3"
     fast-sort: "npm:^3.4.1"
-    govuk-frontend: "npm:^5.0.0"
+    govuk-frontend: "npm:^6.0.0"
     helmet: "npm:^8.0.0"
     home-office-kit: "npm:^1.2.0"
     http-proxy-middleware: "npm:^3.0.0"

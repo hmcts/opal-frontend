@@ -495,6 +495,15 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   /**
+   * Navigates to the change enforcement override page or access denied page based on user permissions.
+   */
+  public navigateToChangeEnforcementOverridePage(): void {
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/change`], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  /**
    * Navigates to the change enforcement court page.
    */
   public navigateToChangeEnforcementCourtPage(): void {
@@ -506,5 +515,15 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         relativeTo: this.activatedRoute,
       },
     );
+  }
+
+  /**
+   * Navigates to the change collection order page.
+   */
+  public navigateToChangeCollectionOrderPage(currentCollectionOrderFlag: boolean): void {
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`], {
+      relativeTo: this.activatedRoute,
+      state: { currentCollectionOrderFlag },
+    });
   }
 }
