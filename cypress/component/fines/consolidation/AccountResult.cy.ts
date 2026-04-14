@@ -180,7 +180,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
     it(
       'AC1, AC1a, AC1b. should render the individual account results tab with populated mock data',
-      { tags: buildTags(...INDIVIDUAL_TAGS) },
+      { tags: buildTags(...INDIVIDUAL_TAGS, '@JIRA-KEY:POT-4574') },
       () => {
         setupComponent();
 

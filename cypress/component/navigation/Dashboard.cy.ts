@@ -68,7 +68,7 @@ describe(
         ],
       });
 
-    it('AC4e hides Reports from the primary navigation when the user has no report permissions in any business unit', () => {
+    it('AC4e hides Reports from the primary navigation when the user has no report permissions in any business unit', {tags: ['@JIRA-KEY:POT-4656']}, () => {
       setupComponent(USER_STATE_MOCK_NO_PERMISSION);
 
       cy.get(L.container).should('be.visible');
@@ -82,7 +82,7 @@ describe(
       cy.get(L.itemByText(L.labels.reports)).should('not.exist');
     });
 
-    it('shows Reports in the primary navigation when the user has a report permission in any business unit', () => {
+    it('shows Reports in the primary navigation when the user has a report permission in any business unit', {tags: ['@JIRA-KEY:POT-4657']}, () => {
       setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION));
 
       cy.get(L.container).should('be.visible');
