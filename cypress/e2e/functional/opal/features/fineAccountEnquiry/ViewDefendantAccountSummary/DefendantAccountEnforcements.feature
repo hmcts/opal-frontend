@@ -27,6 +27,7 @@ Feature: Defendant account enforcement - Collection order
       When I search for the account by last name "CollectionOrderAdult{uniq}" and open the latest result
       And I go to the Enforcement tab
 
+    @JIRA-KEY:POT-4685
     Scenario: Save Collection Order status for an adult or youth account
       And I open the Change Collection Order status form
       Then I should see the Change Collection Order status page
@@ -37,11 +38,13 @@ Feature: Defendant account enforcement - Collection order
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
+    @JIRA-KEY:POT-4686
     Scenario: Cancel without making a selection returns to the Enforcement tab
       And I open the Change Collection Order status form
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
+    @JIRA-KEY:POT-4687
     Scenario: Cancel after selecting a value shows a route guard
       And I open the Change Collection Order status form
       And I select "Yes" for Collection Order status
@@ -66,6 +69,7 @@ Feature: Defendant account enforcement - Collection order
       When I search for the account by last name "ParentGuardianSurname{uniq}" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME{uniqUpper}"
       And I go to the Enforcement tab
 
+    @JIRA-KEY:POT-4688
     Scenario: Save Collection Order status for an account with parent or guardian details
       And I open the Change Collection Order status form
       Then I should see the Change Collection Order status page
@@ -76,11 +80,13 @@ Feature: Defendant account enforcement - Collection order
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
+    @JIRA-KEY:POT-4689
     Scenario: Cancel without making a selection returns to the Enforcement tab
       And I open the Change Collection Order status form
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
+    @JIRA-KEY:POT-4690
     Scenario: Cancel after selecting a value shows a route guard
       And I open the Change Collection Order status form
       And I select "Yes" for Collection Order status
@@ -105,6 +111,7 @@ Feature: Defendant account enforcement - Collection order
       When I open the company account details for "Collection Order Company{uniq}"
       And I go to the Enforcement tab
 
+    @JIRA-KEY:POT-4691
     Scenario: Save Collection Order status for a company account
       And I open the Change Collection Order status form
       Then I should see the Change Collection Order status page
@@ -115,11 +122,13 @@ Feature: Defendant account enforcement - Collection order
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
+    @JIRA-KEY:POT-4692
     Scenario: Cancel without making a selection returns to the Enforcement tab
       And I open the Change Collection Order status form
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
+    @JIRA-KEY:POT-4693
     Scenario: Cancel after selecting a value shows a route guard
       And I open the Change Collection Order status form
       And I select "Yes" for Collection Order status

@@ -297,7 +297,7 @@ Feature: Manual account creation - Create Draft Account
       | national insurance number | AB122398B        |
     And returning to account details the "Personal details" task the status is "Provided"
 
-  @JIRA-KEY:POT-3132
+  @JIRA-STORY:PO-1449 @JIRA-KEY:POT-3132
   Scenario: Capitalisation is applied for defendant and employer details without parent or guardian
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
 

@@ -194,7 +194,7 @@ function CollectionOrderChangedNavigatesToEnforcementTab(
 }
 
 function CollectionOrderCancel(setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number }) {
-  it('AC5a: cancel without changes returns to the Enforcement tab without confirmation', () => {
+  it('AC5a: cancel without changes returns to the Enforcement tab without confirmation', {tags: ['@JIRA-KEY:POT-4715', '@JIRA-KEY:POT-4721', '@JIRA-KEY:POT-4727']}, () => {
     setupFn();
     navigateToCollectionOrderChange();
 
@@ -209,7 +209,7 @@ function CollectionOrderCancel(setupFn: (collectionOrderFlag?: boolean) => { acc
     cy.get(COLLECTION_ORDER_CHANGE.form).should('not.exist');
   });
 
-  it('AC5b: cancel after selecting a value shows confirmation before returning to the Enforcement tab', () => {
+  it('AC5b: cancel after selecting a value shows confirmation before returning to the Enforcement tab', {tags: ['@JIRA-KEY:POT-4716', '@JIRA-KEY:POT-4722', '@JIRA-KEY:POT-4728']}, () => {
     setupFn();
     navigateToCollectionOrderChange();
 
@@ -231,7 +231,7 @@ function CollectionOrderCancel(setupFn: (collectionOrderFlag?: boolean) => { acc
     cy.get(COLLECTION_ORDER_CHANGE.form).should('not.exist');
   });
 
-  it('AC5c: dismissing the cancel confirmation keeps the user on the page', () => {
+  it('AC5c: dismissing the cancel confirmation keeps the user on the page', {tags: ['@JIRA-KEY:POT-4717', '@JIRA-KEY:POT-4723', '@JIRA-KEY:POT-4729']}, () => {
     setupFn();
     navigateToCollectionOrderChange();
 
@@ -261,7 +261,7 @@ function runCollectionOrderChangeSuite(
   setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number },
 ) {
   describe(suiteTitle, { tags }, () => {
-    it('AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci: navigates to and displays the change collection order screen', () => {
+    it('AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci: navigates to and displays the change collection order screen', {tags: ['@JIRA-KEY:POT-4712', '@JIRA-KEY:POT-4718', '@JIRA-KEY:POT-4724']}, () => {
       setupFn();
 
       // AC1, AC1a: clicking Change navigates from Enforcement to the Change Collection Order status screen.
@@ -277,13 +277,13 @@ function runCollectionOrderChangeSuite(
       assertGoBackLinkNavigatesToEnforcementTab();
     });
 
-    it('AC3, AC3a: displays an error when Change is selected without choosing a collection order option', () => {
+    it('AC3, AC3a: displays an error when Change is selected without choosing a collection order option', {tags: ['@JIRA-KEY:POT-4713', '@JIRA-KEY:POT-4719', '@JIRA-KEY:POT-4725']}, () => {
       setupFn();
       navigateToCollectionOrderChange();
       assertCollectionOrderChangeRequiredError();
     });
 
-    it('AC4a: selecting a different value returns the user to the Enforcement tab', () => {
+    it('AC4a: selecting a different value returns the user to the Enforcement tab', {tags: ['@JIRA-KEY:POT-4714', '@JIRA-KEY:POT-4720', '@JIRA-KEY:POT-4726']}, () => {
       CollectionOrderChangedNavigatesToEnforcementTab(setupFn);
     });
 
@@ -292,21 +292,21 @@ function runCollectionOrderChangeSuite(
 }
 
 runCollectionOrderChangeSuite(
-  ['@JIRA-STORY:PO-1848', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend Defendant Enforcement Attributes'],
+  ['@JIRA-STORY:PO-1848', '@JIRA-EPIC:POT-4711', '@JIRA-LABEL:Amend_Defendant_Enforcement_Attributes'],
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth',
   '177A - Mr Robert THOMSON',
   commonSetup,
 );
-
+//@JIRA-EPIC:PO-1675
 runCollectionOrderChangeSuite(
-  ['@JIRA-STORY:PO-1860', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend Defendant Enforcement Attributes'],
+  ['@JIRA-STORY:PO-1860', '@JIRA-EPIC:POT-4711', '@JIRA-LABEL:Amend_Defendant_Enforcement_Attributes'],
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth with parent or guardian to pay',
   '177A - Mr Robert THOMSON',
   parentGuardianSetup,
 );
 
 runCollectionOrderChangeSuite(
-  ['@JIRA-STORY:PO-1861', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend Defendant Enforcement Attributes'],
+  ['@JIRA-STORY:PO-1861', '@JIRA-EPIC:POT-4711', '@JIRA-LABEL:Amend_Defendant_Enforcement_Attributes'],
   'Account Enquiry Enforcement - Change Collection Order status - Company',
   '177A - Test Org Ltd',
   companySetup,

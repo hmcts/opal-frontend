@@ -82,7 +82,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     });
   });
 
-  it('should render the component', { tags: buildTags('@JIRA-KEY:POT-4040') }, () => {
+  it('should render the component', { tags: buildTags('@JIRA-STORY:PO-2790', '@JIRA-KEY:POT-4040') }, () => {
     setupComponent(null);
     // Verify the component is rendered
     cy.get(L.dataPage).should('exist');

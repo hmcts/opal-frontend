@@ -61,7 +61,7 @@ describe('FinesMacContactDetailsComponent', () => {
     });
   });
 
-  it('should render the component', { tags: buildTags('@JIRA-KEY:POT-4079') }, () => {
+  it('should render the component', { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-KEY:POT-4079') }, () => {
     setupComponent(null);
 
     // Verify the component is rendered
