@@ -87,7 +87,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement override form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1849 @JIRA-STORY:PO-1862 @JIRA-EPIC:PO-1675
+  @JIRA-STORY:PO-1849 @JIRA-STORY:PO-1862 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4753
   Scenario: Parent or guardian enforcement tab accessibility
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
