@@ -388,6 +388,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.refreshFragment$.complete();
   }
 
+  public get canAddParentOrGuardianDetails(): boolean {
+    return (
+      this.accountData.is_youth &&
+      this.accountData.debtor_type === this.debtorTypes.defendant &&
+      !this.accountData.parent_guardian_party_id
+    );
+  }
+
   /**
    * Navigates to the amend party details page for the specified party type.
    * Or navigates to the access-denied page if the user lacks the required permission in this BU.

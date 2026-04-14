@@ -14,11 +14,15 @@ import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party
 export class FinesAccDefendantDetailsDefendantTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty;
   @Input() hasAccountMaintenencePermission: boolean = false;
+  @Input() canAddParentOrGuardianDetails: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Output() changeDefendantDetails = new EventEmitter<string>();
   @Output() convertAccount = new EventEmitter<string>();
+  @Output() addParentOrGuardianDetails = new EventEmitter<string>();
 
-  public handleConvertAccount(): void {
+  public handleConvertAccount(event?: Event): void {
+    event?.preventDefault();
+
     if (this.tabData.defendant_account_party.party_details.organisation_flag) {
       this.convertAccount.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
     } else {
@@ -26,11 +30,18 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
     }
   }
 
-  public handleChangeDefendantDetails(): void {
+  public handleChangeDefendantDetails(event?: Event): void {
+    event?.preventDefault();
+
     if (this.tabData.defendant_account_party.party_details.organisation_flag) {
       this.changeDefendantDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
     } else {
       this.changeDefendantDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL);
     }
+  }
+
+  public handleAddParentOrGuardianDetails(event?: Event): void {
+    event?.preventDefault();
+    this.addParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
   }
 }
