@@ -22,6 +22,7 @@ import { fetchLocalJusticeAreasResolver } from '../../routing/resolvers/fetch-re
 import { fetchEnforcersResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-enforcers-resolver';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-titles.constant';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
+import { defendantAccountEnforcementStatusResolver } from './resolvers/defendant-account-enforcement-status.resolver';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-titles.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
@@ -196,6 +197,27 @@ export const routing: Routes = [
           resultsRefData: fetchResultsWithParamsResolver,
           localJusticeAreasRefData: fetchLocalJusticeAreasResolver,
           enforcersRefData: fetchEnforcersResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.change}`,
+        loadComponent: () =>
+          import('../fines-acc-enf-override-add-change/fines-acc-enf-override-add-change.component').then(
+            (c) => c.FinesAccEnfOverrideAddChangeComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
+          title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.change,
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+        },
+        resolve: {
+          titleResolver: TitleResolver,
+          resultsRefData: fetchResultsWithParamsResolver,
+          localJusticeAreasRefData: fetchLocalJusticeAreasResolver,
+          enforcersRefData: fetchEnforcersResolver,
+          enforcementStatus: defendantAccountEnforcementStatusResolver,
         },
       },
       {
