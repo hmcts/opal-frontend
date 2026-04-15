@@ -55,7 +55,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   };
 
   it(
-    'should render the component',
+    'should render the component (FinesMacAccountCommentsAndNotesComponent)',
     { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-469', '@JIRA-KEY:POT-4026') },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);

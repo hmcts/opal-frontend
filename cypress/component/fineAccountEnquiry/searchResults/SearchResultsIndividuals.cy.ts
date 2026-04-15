@@ -80,7 +80,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
   );
 
   it(
-    '(AC2) Displays error message when no search matches are found',
+    '(AC2) Displays error message when no search matches are found (FinesSaResultsComponent - Individuals)',
     { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3777') },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
@@ -98,7 +98,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
   );
 
   it(
-    '(AC3) Handles more than 100 search matches correctly',
+    '(AC3) Handles more than 100 search matches correctly (FinesSaResultsComponent - Individuals)',
     { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3778') },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);

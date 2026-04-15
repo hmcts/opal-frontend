@@ -61,7 +61,7 @@ describe('FinesMacContactDetailsComponent', () => {
     });
   });
 
-  it('should render the component', { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-KEY:POT-4079') }, () => {
+  it('should render the component (FinesMacContactDetailsComponent)', { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-KEY:POT-4079') }, () => {
     setupComponent(null);
 
     // Verify the component is rendered
@@ -69,7 +69,7 @@ describe('FinesMacContactDetailsComponent', () => {
   });
 
   it(
-    '(AC.1) should load all elements on the screen correctly',
+    '(AC.1) should load all elements on the screen correctly (FinesMacContactDetailsComponent)',
     { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4080') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');

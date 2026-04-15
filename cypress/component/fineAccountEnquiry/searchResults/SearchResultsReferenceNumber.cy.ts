@@ -89,7 +89,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
   };
 
   it(
-    '(AC3a) Displays error message when no search matches are found',
+    '(AC3a) Displays error message when no search matches are found (Search Results Reference Number)',
     { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3789') },
     () => {
       setupComponent('EMPTY_RESULTS');
@@ -170,7 +170,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
   );
 
   it(
-    '(AC5c) Companies tab displays company defendant account summary data',
+    '(AC5c) Companies tab displays company defendant account summary data (Search Results Reference Number)',
     { tags: buildTags('@JIRA-STORY:PO-709', '@JIRA-KEY:POT-3792') },
     () => {
       setupComponent('WITH_DATA', 'companies');

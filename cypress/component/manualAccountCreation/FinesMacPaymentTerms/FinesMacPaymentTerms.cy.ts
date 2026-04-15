@@ -90,7 +90,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     });
   });
 
-  it('(AC.1) should render the component', { tags: buildTags('@JIRA-STORY:PO-566', '@JIRA-KEY:POT-4276') }, () => {
+  it('(AC.1) should render the component (FinesMacPaymentTermsComponent)', { tags: buildTags('@JIRA-STORY:PO-566', '@JIRA-KEY:POT-4276') }, () => {
     setupComponent('adultOrYouthOnly');
     cy.get(DOM_ELEMENTS['finesMacPaymentTermsForm']).should('exist');
   });

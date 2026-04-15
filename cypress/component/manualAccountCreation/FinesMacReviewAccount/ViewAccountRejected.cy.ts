@@ -85,7 +85,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     interceptOffences();
   });
 
-  it('AC.2,4 - should render correctly - AY', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4389') }, () => {
+  it('AC.2,4 - should render correctly - AY (FinesMacReviewAccountComponent - View Rejected Account)', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4389') }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Rejected';
 
@@ -113,7 +113,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   });
 
   it(
-    'AC.3 - should render Review History section correctly',
+    'AC.3 - should render Review History section correctly (FinesMacReviewAccountComponent - View Rejected Account)',
     { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4390') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
@@ -167,7 +167,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     },
   );
 
-  it('AC.2,5 - should render correctly - AYPG', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4391') }, () => {
+  it('AC.2,5 - should render correctly - AYPG (FinesMacReviewAccountComponent - View Rejected Account)', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4391') }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Rejected';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -195,7 +195,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC.2,6 - should render correctly - COMP', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4392') }, () => {
+  it('AC.2,6 - should render correctly - COMP (FinesMacReviewAccountComponent - View Rejected Account)', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4392') }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Rejected';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -224,7 +224,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   });
 
   it(
-    'AC4ai - should show language preferences if business unit is welsh speaking - AY',
+    'AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Rejected Account)',
     { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4393') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
@@ -240,7 +240,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     },
   );
   it(
-    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
+    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Rejected Account)',
     { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4394') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
@@ -257,7 +257,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     },
   );
   it(
-    'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
+    'AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Rejected Account)',
     { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4395') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
@@ -275,7 +275,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   );
 
   it(
-    'AC.7 - should show em-dash for empty values',
+    'AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Rejected Account)',
     { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4396') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);

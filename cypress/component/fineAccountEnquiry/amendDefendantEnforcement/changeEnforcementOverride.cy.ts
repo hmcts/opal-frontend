@@ -167,7 +167,7 @@ function adultOrYouthOnlySetup() {
 }
 
 describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:PO-1870'] }, () => {
-  it('AC1. Selecting Change enforcement override on the Enforcement tab navigates to the change screen', {tags: ['@JIRA-KEY:POT-4668', '@JIRA-KEY:POT-4681']}, () => {
+  it('AC1. Selecting Change enforcement override on the Enforcement tab navigates to the change screen', {tags: ['@JIRA-KEY:POT-4668']}, () => {
     const { accountId } = registerChangeEnforcementOverrideIntercepts(buildParentGuardianHeaderMock());
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
@@ -440,7 +440,7 @@ describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871'
 });
 
 describe('Change Enforcement Override - Adult or youth only', { tags: ['@JIRA-STORY:PO-1869'] }, () => {
-  it('AC1. Selecting Change enforcement override on the Enforcement tab navigates to the change screen', {tags: ['@JIRA-KEY:POT-4668', '@JIRA-KEY:POT-4681']}, () => {
+  it('AC1. Selecting Change enforcement override on the Enforcement tab navigates to the change screen (Change Enforcement Override - Adult or youth only)', {tags: ['@JIRA-KEY:POT-4681']}, () => {
     const { accountId } = registerChangeEnforcementOverrideIntercepts(buildAdultOrYouthHeaderMock());
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
 

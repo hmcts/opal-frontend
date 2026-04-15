@@ -194,7 +194,7 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
     });
 
-    it('AC4a. Error when no enforcement override is selected', { tags: ['@JIRA-KEY:POT-4445'] }, () => {
+    it('AC4a. Error when no enforcement override is selected (Add Enforcement Override - Adult/Youth)', { tags: ['@JIRA-KEY:POT-4445'] }, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -330,7 +330,7 @@ describe(
     );
 
     it(
-      'AC6b. Cancel after selecting a value shows confirmation before navigating away',
+      'AC6b. Cancel after selecting a value shows confirmation before navigating away (Add Enforcement Override - Adult/Youth)',
       { tags: ['@JIRA-KEY:POT-4450'] },
       () => {
         commonSetup();
@@ -425,7 +425,7 @@ describe(
   'Add Enforcement Override - Parent/Guardian',
   { tags: ['@JIRA-STORY:PO-1866', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with title', { tags: ['@JIRA-KEY:POT-4615'] }, () => {
+    it('AC1a, AC1b. Should render the form with title (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4615'] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Mr Roberto THOMSON - 177A');
@@ -433,7 +433,7 @@ describe(
     });
 
     it(
-      'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link',
+      'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link (Add Enforcement Override - Parent/Guardian)',
       { tags: ['@JIRA-KEY:POT-4616'] },
       () => {
         parentGuardianSetup();
@@ -460,7 +460,7 @@ describe(
     );
 
     it(
-      'Should support forward keyboard navigation across the add enforcement override form',
+      'Should support forward keyboard navigation across the add enforcement override form (Add Enforcement Override - Parent/Guardian)',
       { tags: ['@JIRA-KEY:POT-4617'] },
       () => {
         parentGuardianSetup();
@@ -479,7 +479,7 @@ describe(
       },
     );
 
-    it('AC2. Enforcer dropdown for valid override', { tags: ['@JIRA-KEY:POT-4618'] }, () => {
+    it('AC2. Enforcer dropdown for valid override (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4618'] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -506,7 +506,7 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
     });
 
-    it('AC3. LJA dropdown for valid override', { tags: ['@JIRA-KEY:POT-4619'] }, () => {
+    it('AC3. LJA dropdown for valid override (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4619'] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -520,7 +520,7 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
     });
 
-    it('AC4a. Error when no enforcement override is selected', { tags: ['@JIRA-KEY:POT-4620'] }, () => {
+    it('AC4a. Error when no enforcement override is selected (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4620'] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -532,7 +532,7 @@ describe(
         .should('contain.text', 'Select an enforcement override');
     });
 
-    it('AC4b. Error when no enforcer is selected', { tags: ['@JIRA-KEY:POT-4621'] }, () => {
+    it('AC4b. Error when no enforcer is selected (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4621'] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -551,7 +551,7 @@ describe(
         .should('contain.text', 'Select an enforcer');
     });
 
-    it('AC4c. Error when no LJA is selected', { tags: ['@JIRA-KEY:POT-4622'] }, () => {
+    it('AC4c. Error when no LJA is selected (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4622'] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -569,10 +569,7 @@ describe(
         .should('contain.text', 'Select a Local Justice Area');
     });
 
-    it(
-      'AC5. Valid submission returns to Enforcement tab with success banner and new override panel',
-      { tags: ['@JIRA-KEY:POT-4448'] },
-      () => {
+    it('AC5. Valid submission returns to Enforcement tab with success banner and new override panel (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4839'] }, () => {
         const { accountId } = parentGuardianSetup();
         const updatedEnforcementMock = structuredClone(
           OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK,
@@ -630,11 +627,10 @@ describe(
         );
         cy.get(ENF.localJusticeArea).should('exist').and('contain.text', 'Local Justice Area (LJA)');
         cy.get(ENF.localJusticeAreaValue).should('exist').and('contain.text', "Bedfordshire Magistrates' Court(4165)");
-      },
-    );
+      });
 
     it(
-      'AC6a. Cancel without changes returns away from the add override page without confirmation',
+      'AC6a. Cancel without changes returns away from the add override page without confirmation (Add Enforcement Override - Parent/Guardian)',
       { tags: ['@JIRA-KEY:POT-4623'] },
       () => {
         parentGuardianSetup();
@@ -656,7 +652,7 @@ describe(
     );
 
     it(
-      'AC6b. Cancel after selecting a value shows confirmation before navigating away',
+      'AC6b. Cancel after selecting a value shows confirmation before navigating away (Add Enforcement Override - Parent/Guardian)',
       { tags: ['@JIRA-KEY:POT-4624'] },
       () => {
         parentGuardianSetup();
@@ -685,7 +681,7 @@ describe(
     );
 
     it(
-      'AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page',
+      'AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page (Add Enforcement Override - Parent/Guardian)',
       { tags: ['@JIRA-KEY:POT-4625'] },
       () => {
         parentGuardianSetup();

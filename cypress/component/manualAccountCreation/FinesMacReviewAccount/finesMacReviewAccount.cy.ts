@@ -149,7 +149,7 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   });
 
-  it('should render component', { tags: buildTags('@JIRA-STORY:PO-2790', '@JIRA-KEY:POT-4397') }, () => {
+  it('should render component (FinesMacReviewAccountComponent)', { tags: buildTags('@JIRA-STORY:PO-2790', '@JIRA-KEY:POT-4397') }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.app).should('exist');

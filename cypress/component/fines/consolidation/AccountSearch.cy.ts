@@ -186,10 +186,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     },
   );
 
-  it(
-    'AC3b. Invalid National Insurance number format displays the expected error and no search update occurs',
-    { tags: buildPo2415Tags('@JIRA-KEY:POT-3869') },
-    () => {
+  it('AC3b. Invalid National Insurance number format displays the expected error and no search update occurs', { tags: buildPo2415Tags() }, () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_national_insurance_number = 'AB12345$C';
 
@@ -201,8 +198,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         AccountSearchLocators.nationalInsuranceNumberError,
       );
       assertNoSearchUpdate(updateSearchSpy);
-    },
-  );
+    });
 
   it(
     'AC4a. Account number max length displays the expected error and no search update occurs',
@@ -219,10 +215,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     },
   );
 
-  it(
-    'AC3. Invalid advanced search criteria display the expected errors and no search update occurs',
-    { tags: buildPo2415Tags('@JIRA-KEY:POT-3869') },
-    () => {
+  it('AC3. Invalid advanced search criteria display the expected errors and no search update occurs', { tags: buildPo2415Tags() }, () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
@@ -260,13 +253,9 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       });
 
       assertNoSearchUpdate(updateSearchSpy);
-    },
-  );
+    });
 
-  it(
-    'AC4. Advanced search max length validation errors display expected messages and no search update occurs',
-    { tags: buildPo2413Tags('@JIRA-KEY:POT-3870') },
-    () => {
+  it('AC4. Advanced search max length validation errors display expected messages and no search update occurs', { tags: buildPo2413Tags() }, () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
@@ -308,8 +297,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       });
 
       assertNoSearchUpdate(updateSearchSpy);
-    },
-  );
+    });
 
   it(
     'AC5a. User enters data into First names without Last name and sees Enter last name',
@@ -502,10 +490,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   );
   // Company search scenarios
 
-  it(
-    'AC1. Search screen mirrors expected field types, headings and actions',
-    { tags: buildPo2413Tags('@JIRA-KEY:POT-3867') },
-    () => {
+  it('AC1. Search screen mirrors expected field types, headings and actions (Company search)', { tags: buildPo2413Tags() }, () => {
       setupConsolidationComponent({ defendantType: 'company' });
 
       cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
@@ -555,13 +540,9 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
             'Use quick search to search for an account using account number, or use advanced search',
           );
         });
-    },
-  );
+    });
 
-  it(
-    'AC2. Selecting Search with no populated fields triggers no action and user stays on same screen',
-    { tags: buildPo2413Tags('@JIRA-KEY:POT-3868') },
-    () => {
+  it('AC2. Selecting Search with no populated fields triggers no action and user stays on same screen (Company search)', { tags: buildPo2413Tags() }, () => {
       const updateSearchSpy = Cypress.sinon.spy();
       setupConsolidationComponent({ updateSearchSpy, defendantType: 'company' });
 
@@ -570,13 +551,9 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
       cy.then(() => {
         expect(updateSearchSpy).to.not.have.been.called;
       });
-    },
-  );
+    });
 
-  it(
-    'AC3a. Invalid company account number format displays the expected error and no search update occurs',
-    { tags: buildPo2413Tags('@JIRA-KEY:POT-3869') },
-    () => {
+  it('AC3a. Invalid company account number format displays the expected error and no search update occurs', { tags: buildPo2413Tags() }, () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_number = '1234567';
 
@@ -588,8 +565,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
         AccountSearchLocators.accountNumberError,
       );
       assertNoSearchUpdate(updateSearchSpy);
-    },
-  );
+    });
 
   it(
     'AC4a. Company account number max length displays the expected error and no search update occurs',
@@ -606,10 +582,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     },
   );
 
-  it(
-    'AC3. Invalid advanced search criteria display the expected errors and no search update occurs',
-    { tags: buildPo2415Tags('@JIRA-KEY:POT-3869') },
-    () => {
+  it('AC3. Invalid advanced search criteria display the expected errors and no search update occurs (Company search)', { tags: buildPo2415Tags() }, () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
@@ -648,13 +621,9 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
       //AC3 Following selecting 'search' the system remains on the same screen
       assertNoSearchUpdate(updateSearchSpy);
-    },
-  );
+    });
 
-  it(
-    'AC4. Advanced search max length validation displays the expected errors and no search update occurs',
-    { tags: buildPo2413Tags('@JIRA-KEY:POT-3879') },
-    () => {
+  it('AC4. Advanced search max length validation displays the expected errors and no search update occurs', { tags: buildPo2413Tags() }, () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData = {
         ...structuredClone(FINES_CON_SEARCH_ACCOUNT_FORM_EMPTY_MOCK.formData),
@@ -693,8 +662,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
       //AC4 Following selecting 'search' the system remains on the same screen
       assertNoSearchUpdate(updateSearchSpy);
-    },
-  );
+    });
 
   it(
     'AC5. Field dependencies checked & display the expected errors when ommited - no search update occurs',
@@ -732,10 +700,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
     },
   );
 
-  it(
-    'AC6a. When account number is entered, it is used exclusively for the search payload',
-    { tags: buildPo2413Tags('@JIRA-KEY:POT-3875') },
-    () => {
+  it('AC6a. When account number is entered, it is used exclusively for the search payload (Company search)', { tags: buildPo2413Tags() }, () => {
       const updateSearchSpy = Cypress.sinon.spy();
       finesConSearchAccountFormData.fcon_search_account_number = '12345678';
 
@@ -757,8 +722,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
           fcon_search_account_companies_post_code: null,
         });
       });
-    },
-  );
+    });
 
   it(
     'AC7 Clear search button removes all populated data except in results/consolidation tabs',

@@ -53,7 +53,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     });
   });
 
-  it('should render the component', { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4155') }, () => {
+  it('should render the component (FinesMacLanguagePreferenceComponent)', { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4155') }, () => {
     setupComponent(null);
 
     // Verify the component is rendered

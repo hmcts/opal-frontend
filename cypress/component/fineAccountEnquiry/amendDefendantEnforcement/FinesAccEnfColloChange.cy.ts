@@ -193,10 +193,22 @@ function CollectionOrderChangedNavigatesToEnforcementTab(
   cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus).parent().should('contain.text', 'Collection Order');
 }
 
-function CollectionOrderCancel(setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number }) {
+type CollectionOrderChangePotTags = {
+  navigateAndDisplay: string;
+  validationError: string;
+  changeSelection: string;
+  cancelWithoutChanges: string;
+  cancelWithConfirmation: string;
+  cancelDismissed: string;
+};
+
+function CollectionOrderCancel(
+  setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number },
+  potTags: CollectionOrderChangePotTags,
+) {
   it(
     'AC5a: cancel without changes returns to the Enforcement tab without confirmation',
-    { tags: ['@JIRA-KEY:POT-4715', '@JIRA-KEY:POT-4721', '@JIRA-KEY:POT-4727'] },
+    { tags: [potTags.cancelWithoutChanges] },
     () => {
       setupFn();
       navigateToCollectionOrderChange();
@@ -215,7 +227,7 @@ function CollectionOrderCancel(setupFn: (collectionOrderFlag?: boolean) => { acc
 
   it(
     'AC5b: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
-    { tags: ['@JIRA-KEY:POT-4716', '@JIRA-KEY:POT-4722', '@JIRA-KEY:POT-4728'] },
+    { tags: [potTags.cancelWithConfirmation] },
     () => {
       setupFn();
       navigateToCollectionOrderChange();
@@ -241,7 +253,7 @@ function CollectionOrderCancel(setupFn: (collectionOrderFlag?: boolean) => { acc
 
   it(
     'AC5c: dismissing the cancel confirmation keeps the user on the page',
-    { tags: ['@JIRA-KEY:POT-4717', '@JIRA-KEY:POT-4723', '@JIRA-KEY:POT-4729'] },
+    { tags: [potTags.cancelDismissed] },
     () => {
       setupFn();
       navigateToCollectionOrderChange();
@@ -271,11 +283,12 @@ function runCollectionOrderChangeSuite(
   suiteTitle: string,
   expectedCaption: string,
   setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number },
+  potTags: CollectionOrderChangePotTags,
 ) {
   describe(suiteTitle, { tags }, () => {
     it(
       'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci: navigates to and displays the change collection order screen',
-      { tags: ['@JIRA-KEY:POT-4712', '@JIRA-KEY:POT-4718', '@JIRA-KEY:POT-4724'] },
+      { tags: [potTags.navigateAndDisplay] },
       () => {
         setupFn();
 
@@ -295,7 +308,7 @@ function runCollectionOrderChangeSuite(
 
     it(
       'AC3, AC3a: displays an error when Change is selected without choosing a collection order option',
-      { tags: ['@JIRA-KEY:POT-4713', '@JIRA-KEY:POT-4719', '@JIRA-KEY:POT-4725'] },
+      { tags: [potTags.validationError] },
       () => {
         setupFn();
         navigateToCollectionOrderChange();
@@ -305,13 +318,13 @@ function runCollectionOrderChangeSuite(
 
     it(
       'AC4a: selecting a different value returns the user to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-4714', '@JIRA-KEY:POT-4720', '@JIRA-KEY:POT-4726'] },
+      { tags: [potTags.changeSelection] },
       () => {
         CollectionOrderChangedNavigatesToEnforcementTab(setupFn);
       },
     );
 
-    CollectionOrderCancel(setupFn);
+    CollectionOrderCancel(setupFn, potTags);
   });
 }
 
@@ -320,6 +333,14 @@ runCollectionOrderChangeSuite(
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth',
   '177A - Mr Robert THOMSON',
   commonSetup,
+  {
+    navigateAndDisplay: '@JIRA-KEY:POT-4712',
+    validationError: '@JIRA-KEY:POT-4713',
+    changeSelection: '@JIRA-KEY:POT-4714',
+    cancelWithoutChanges: '@JIRA-KEY:POT-4715',
+    cancelWithConfirmation: '@JIRA-KEY:POT-4716',
+    cancelDismissed: '@JIRA-KEY:POT-4717',
+  },
 );
 
 runCollectionOrderChangeSuite(
@@ -327,6 +348,14 @@ runCollectionOrderChangeSuite(
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth with parent or guardian to pay',
   '177A - Mr Robert THOMSON',
   parentGuardianSetup,
+  {
+    navigateAndDisplay: '@JIRA-KEY:POT-4718',
+    validationError: '@JIRA-KEY:POT-4719',
+    changeSelection: '@JIRA-KEY:POT-4720',
+    cancelWithoutChanges: '@JIRA-KEY:POT-4721',
+    cancelWithConfirmation: '@JIRA-KEY:POT-4722',
+    cancelDismissed: '@JIRA-KEY:POT-4723',
+  },
 );
 
 runCollectionOrderChangeSuite(
@@ -334,4 +363,12 @@ runCollectionOrderChangeSuite(
   'Account Enquiry Enforcement - Change Collection Order status - Company',
   '177A - Test Org Ltd',
   companySetup,
+  {
+    navigateAndDisplay: '@JIRA-KEY:POT-4724',
+    validationError: '@JIRA-KEY:POT-4725',
+    changeSelection: '@JIRA-KEY:POT-4726',
+    cancelWithoutChanges: '@JIRA-KEY:POT-4727',
+    cancelWithConfirmation: '@JIRA-KEY:POT-4728',
+    cancelDismissed: '@JIRA-KEY:POT-4729',
+  },
 );
