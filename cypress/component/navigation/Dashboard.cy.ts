@@ -68,31 +68,39 @@ describe(
         ],
       });
 
-    it('AC4e hides Reports from the primary navigation when the user has no report permissions in any business unit', () => {
-      setupComponent(USER_STATE_MOCK_NO_PERMISSION);
+    it(
+      'AC4e hides Reports from the primary navigation when the user has no report permissions in any business unit',
+      { tags: ['@JIRA-KEY:POT-4784'] },
+      () => {
+        setupComponent(USER_STATE_MOCK_NO_PERMISSION);
 
-      cy.get(L.container).should('be.visible');
-      cy.get(L.items)
-        .should('have.length', L.expectedItemsWithoutReports.length)
-        .then(($items) => {
-          const labels = [...$items].map((item) => item.textContent?.trim() ?? '');
+        cy.get(L.container).should('be.visible');
+        cy.get(L.items)
+          .should('have.length', L.expectedItemsWithoutReports.length)
+          .then(($items) => {
+            const labels = [...$items].map((item) => item.textContent?.trim() ?? '');
 
-          expect(labels).to.deep.equal(L.expectedItemsWithoutReports);
-        });
-      cy.get(L.itemByText(L.labels.reports)).should('not.exist');
-    });
+            expect(labels).to.deep.equal(L.expectedItemsWithoutReports);
+          });
+        cy.get(L.itemByText(L.labels.reports)).should('not.exist');
+      },
+    );
 
-    it('shows Reports in the primary navigation when the user has a report permission in any business unit', () => {
-      setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION));
+    it(
+      'shows Reports in the primary navigation when the user has a report permission in any business unit',
+      { tags: ['@JIRA-KEY:POT-4785'] },
+      () => {
+        setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION));
 
-      cy.get(L.container).should('be.visible');
-      cy.get(L.items)
-        .should('have.length', L.expectedItemsWithReports.length)
-        .then(($items) => {
-          const labels = [...$items].map((item) => item.textContent?.trim() ?? '');
+        cy.get(L.container).should('be.visible');
+        cy.get(L.items)
+          .should('have.length', L.expectedItemsWithReports.length)
+          .then(($items) => {
+            const labels = [...$items].map((item) => item.textContent?.trim() ?? '');
 
-          expect(labels).to.deep.equal(L.expectedItemsWithReports);
-        });
-    });
+            expect(labels).to.deep.equal(L.expectedItemsWithReports);
+          });
+      },
+    );
   },
 );
