@@ -149,11 +149,15 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   });
 
-  it('should render component (FinesMacReviewAccountComponent)', { tags: buildTags('@JIRA-STORY:PO-2790', '@JIRA-KEY:POT-4397') }, () => {
-    setupComponent();
+  it(
+    'should render component (FinesMacReviewAccountComponent)',
+    { tags: buildTags('@JIRA-STORY:PO-2790', '@JIRA-KEY:POT-4397') },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.app).should('exist');
+    },
+  );
 
   it(
     '(AC.1c) should show Police and court details card for Conditional Caution',

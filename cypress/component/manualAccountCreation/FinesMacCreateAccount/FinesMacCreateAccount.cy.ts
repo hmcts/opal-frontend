@@ -74,11 +74,15 @@ describe('FinesMacCreateAccountComponent', () => {
     buinessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });
 
-  it('should render the component (FinesMacCreateAccountComponent)', { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4112') }, () => {
-    setupComponent(null);
+  it(
+    'should render the component (FinesMacCreateAccountComponent)',
+    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4112') },
+    () => {
+      setupComponent(null);
 
-    cy.get(L.app).should('exist');
-  });
+      cy.get(L.app).should('exist');
+    },
+  );
 
   it(
     '(AC.1)should render all elements on the page correctly and have correct text',

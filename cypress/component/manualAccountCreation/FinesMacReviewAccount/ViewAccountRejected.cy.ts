@@ -85,32 +85,36 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     interceptOffences();
   });
 
-  it('AC.2,4 - should render correctly - AY (FinesMacReviewAccountComponent - View Rejected Account)', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4389') }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Rejected';
+  it(
+    'AC.2,4 - should render correctly - AY (FinesMacReviewAccountComponent - View Rejected Account)',
+    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4389') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Rejected';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#personal-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#employer-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#personal-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#employer-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
 
-    cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
-    cy.get('#company-details-summary-card-list').should('not.exist');
-    cy.get('#defendant-details-summary-card-list').should('not.exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
+      cy.get('#company-details-summary-card-list').should('not.exist');
+      cy.get('#defendant-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
 
   it(
     'AC.3 - should render Review History section correctly (FinesMacReviewAccountComponent - View Rejected Account)',
@@ -167,61 +171,69 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     },
   );
 
-  it('AC.2,5 - should render correctly - AYPG (FinesMacReviewAccountComponent - View Rejected Account)', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4391') }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Rejected';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+  it(
+    'AC.2,5 - should render correctly - AYPG (FinesMacReviewAccountComponent - View Rejected Account)',
+    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4391') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Rejected';
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#defendant-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#employer-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
-    cy.get('#parent-guardian-details-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#defendant-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#employer-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('exist');
 
-    cy.get('#company-details-summary-card-list').should('not.exist');
-    cy.get('#personal-details-summary-card-list').should('not.exist');
+      cy.get('#company-details-summary-card-list').should('not.exist');
+      cy.get('#personal-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
 
-  it('AC.2,6 - should render correctly - COMP (FinesMacReviewAccountComponent - View Rejected Account)', { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4392') }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Rejected';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+  it(
+    'AC.2,6 - should render correctly - COMP (FinesMacReviewAccountComponent - View Rejected Account)',
+    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4392') },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Rejected';
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'test company');
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'test company');
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#company-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#company-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
 
-    cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
-    cy.get('#personal-details-summary-card-list').should('not.exist');
-    cy.get('#employer-details-summary-card-list').should('not.exist');
-    cy.get('#defendant-details-summary-card-list').should('not.exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
+      cy.get('#personal-details-summary-card-list').should('not.exist');
+      cy.get('#employer-details-summary-card-list').should('not.exist');
+      cy.get('#defendant-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
 
   it(
     'AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Rejected Account)',

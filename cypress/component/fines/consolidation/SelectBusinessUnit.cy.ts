@@ -67,7 +67,10 @@ describe('FinesConSelectBuFormComponent', () => {
     autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
   });
 
-  it('(AC1, AC2, AC3) should show business unit and defendant type fields', { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-4928'] }, () => {
+  it(
+    '(AC1, AC2, AC3) should show business unit and defendant type fields',
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-4928'] },
+    () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = 1;
       setupComponent();
@@ -94,9 +97,13 @@ describe('FinesConSelectBuFormComponent', () => {
       // Cancel & Continue buttons
       cy.get(SelectBusinessUnitLocators.continueButton).should('be.visible').and('contain', 'Continue');
       cy.get(SelectBusinessUnitLocators.cancelLink).should('be.visible').and('contain', 'Cancel');
-    });
+    },
+  );
 
-  it('(AC2) should list available business units in the autocomplete', { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-4929'] }, () => {
+  it(
+    '(AC2) should list available business units in the autocomplete',
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-4929'] },
+    () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = null;
       setupComponent();
@@ -110,7 +117,8 @@ describe('FinesConSelectBuFormComponent', () => {
             expect($items.eq(index)).to.contain(item.name);
           });
         });
-    });
+    },
+  );
 
   it(
     '(AC2a) should auto select a single business unit',

@@ -338,7 +338,10 @@ function extractComponentTests(file) {
         }
       }
 
-      if ((ts.isFunctionDeclaration(node) || ts.isFunctionExpression(node) || ts.isArrowFunction(node)) && node !== fn) {
+      if (
+        (ts.isFunctionDeclaration(node) || ts.isFunctionExpression(node) || ts.isArrowFunction(node)) &&
+        node !== fn
+      ) {
         return;
       }
 
@@ -672,14 +675,14 @@ function analyse(tests) {
  */
 function buildIssueRows(issueType, tests, options = {}) {
   const relatedLocations = (options.relatedTests || []).map((test) => `${test.file}:${test.line}`);
-  const relatedTests = (options.relatedTests || []).map(
-    (test) => `${test.qualifiedTitle} [${test.file}:${test.line}]`,
-  );
+  const relatedTests = (options.relatedTests || []).map((test) => `${test.qualifiedTitle} [${test.file}:${test.line}]`);
   const relatedCount = options.relatedTests ? options.relatedTests.length : '';
 
   return tests.map((test) => {
     const storyTags = test.tags.filter((tag) => STORY_TAG_RE.test(tag));
-    const potTags = options.potTagsByTest?.get(`${test.file}:${test.line}:${test.qualifiedTitle}`) || test.tags.filter((tag) => POT_TAG_RE.test(tag));
+    const potTags =
+      options.potTagsByTest?.get(`${test.file}:${test.line}:${test.qualifiedTitle}`) ||
+      test.tags.filter((tag) => POT_TAG_RE.test(tag));
 
     return {
       scope: test.scope,
@@ -761,7 +764,9 @@ function printSummary(outputPath, component, functional, rowCount) {
 }
 
 const outputPath = resolveOutputPath();
-const componentTests = walk(COMPONENT_ROOT, '.cy.ts').flatMap(extractComponentTests).filter((test) => !shouldIgnoreTest(test));
+const componentTests = walk(COMPONENT_ROOT, '.cy.ts')
+  .flatMap(extractComponentTests)
+  .filter((test) => !shouldIgnoreTest(test));
 const functionalTests = walk(FUNCTIONAL_ROOT, '.feature')
   .flatMap(extractFunctionalTests)
   .filter((test) => !shouldIgnoreTest(test));

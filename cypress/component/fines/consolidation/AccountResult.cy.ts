@@ -167,7 +167,10 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
       defendantAccountResults = structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK);
     });
 
-    it('AC1, AC1a, AC1b. should render the individual account results tab with populated mock data', { tags: ['@JIRA-STORY:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-4918'] }, () => {
+    it(
+      'AC1, AC1a, AC1b. should render the individual account results tab with populated mock data',
+      { tags: ['@JIRA-STORY:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-4918'] },
+      () => {
         setupComponent();
 
         // AC1, AC1a, AC1b. Results tab renders with the selected business unit and defendant type.
@@ -187,7 +190,8 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultRowWithAccount('ACC001'))
           .find(AccountResultsLocators.resultNameCell)
           .should('contain', 'SMITH, John James');
-      });
+      },
+    );
 
     it(
       'AC2, AC2a, AC5a, AC5b, AC5c, AC5d, AC5e, AC5f, AC5g, AC5h, AC5i. should display the individual results columns in the AC order and format populated data',

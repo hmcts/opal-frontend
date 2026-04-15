@@ -194,17 +194,21 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
     });
 
-    it('AC4a. Error when no enforcement override is selected (Add Enforcement Override - Adult/Youth)', { tags: ['@JIRA-KEY:POT-4445'] }, () => {
-      commonSetup();
+    it(
+      'AC4a. Error when no enforcement override is selected (Add Enforcement Override - Adult/Youth)',
+      { tags: ['@JIRA-KEY:POT-4445'] },
+      () => {
+        commonSetup();
 
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.addOverrideButton).click();
-      cy.get(ENF_OVR.errorSummary)
-        .should('exist')
-        .contains('There is a problem')
-        .next()
-        .should('contain.text', 'Select an enforcement override');
-    });
+        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+        cy.get(ENF_OVR.addOverrideButton).click();
+        cy.get(ENF_OVR.errorSummary)
+          .should('exist')
+          .contains('There is a problem')
+          .next()
+          .should('contain.text', 'Select an enforcement override');
+      },
+    );
 
     it('AC4b. Error when no enforcer is selected', { tags: ['@JIRA-KEY:POT-4446'] }, () => {
       commonSetup();
@@ -425,12 +429,16 @@ describe(
   'Add Enforcement Override - Parent/Guardian',
   { tags: ['@JIRA-STORY:PO-1866', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with title (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4615'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC1a, AC1b. Should render the form with title (Add Enforcement Override - Parent/Guardian)',
+      { tags: ['@JIRA-KEY:POT-4615'] },
+      () => {
+        parentGuardianSetup();
 
-      cy.get(ENF_OVR.title).should('contain.text', 'Mr Roberto THOMSON - 177A');
-      cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
-    });
+        cy.get(ENF_OVR.title).should('contain.text', 'Mr Roberto THOMSON - 177A');
+        cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
+      },
+    );
 
     it(
       'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link (Add Enforcement Override - Parent/Guardian)',
@@ -479,97 +487,120 @@ describe(
       },
     );
 
-    it('AC2. Enforcer dropdown for valid override (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4618'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC2. Enforcer dropdown for valid override (Add Enforcement Override - Parent/Guardian)',
+      { tags: ['@JIRA-KEY:POT-4618'] },
+      () => {
+        parentGuardianSetup();
 
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.enfOverrideDropdown).click().type('AB');
-      cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('DW').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('not.exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('not.exist');
+        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+        cy.get(ENF_OVR.enfOverrideDropdown).click().type('AB');
+        cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('DW').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('not.exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('not.exist');
 
-      cy.get(ENF_OVR.dropdownOptions).contains('ABDC').click();
-      cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'ABDC');
+        cy.get(ENF_OVR.dropdownOptions).contains('ABDC').click();
+        cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'ABDC');
 
-      cy.get(ENF_OVR.enforcerDropdown).should('exist');
-      cy.get(ENF_OVR.enforcerDropdown).click();
-      cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
-    });
+        cy.get(ENF_OVR.enforcerDropdown).should('exist');
+        cy.get(ENF_OVR.enforcerDropdown).click();
+        cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
+      },
+    );
 
-    it('AC3. LJA dropdown for valid override (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4619'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC3. LJA dropdown for valid override (Add Enforcement Override - Parent/Guardian)',
+      { tags: ['@JIRA-KEY:POT-4619'] },
+      () => {
+        parentGuardianSetup();
 
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.enfOverrideDropdown).click().type('TFO');
-      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
+        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+        cy.get(ENF_OVR.enfOverrideDropdown).click().type('TFO');
+        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
 
-      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').click();
-      cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'TFOOUT');
-      cy.get(ENF_OVR.localJusticeAreaDropdown).should('exist');
-      cy.get(ENF_OVR.localJusticeAreaDropdown).click();
-      cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
-    });
+        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').click();
+        cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'TFOOUT');
+        cy.get(ENF_OVR.localJusticeAreaDropdown).should('exist');
+        cy.get(ENF_OVR.localJusticeAreaDropdown).click();
+        cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
+      },
+    );
 
-    it('AC4a. Error when no enforcement override is selected (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4620'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC4a. Error when no enforcement override is selected (Add Enforcement Override - Parent/Guardian)',
+      { tags: ['@JIRA-KEY:POT-4620'] },
+      () => {
+        parentGuardianSetup();
 
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.addOverrideButton).click();
-      cy.get(ENF_OVR.errorSummary)
-        .should('exist')
-        .contains('There is a problem')
-        .next()
-        .should('contain.text', 'Select an enforcement override');
-    });
+        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+        cy.get(ENF_OVR.addOverrideButton).click();
+        cy.get(ENF_OVR.errorSummary)
+          .should('exist')
+          .contains('There is a problem')
+          .next()
+          .should('contain.text', 'Select an enforcement override');
+      },
+    );
 
-    it('AC4b. Error when no enforcer is selected (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4621'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC4b. Error when no enforcer is selected (Add Enforcement Override - Parent/Guardian)',
+      { tags: ['@JIRA-KEY:POT-4621'] },
+      () => {
+        parentGuardianSetup();
 
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.enfOverrideDropdown).click().type('BW');
-      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').click();
-      cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'BWTD');
-      cy.get(ENF_OVR.enforcerDropdown).should('exist');
+        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+        cy.get(ENF_OVR.enfOverrideDropdown).click().type('BW');
+        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').click();
+        cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'BWTD');
+        cy.get(ENF_OVR.enforcerDropdown).should('exist');
 
-      cy.get(ENF_OVR.addOverrideButton).click();
-      cy.get(ENF_OVR.errorSummary)
-        .should('exist')
-        .contains('There is a problem')
-        .next()
-        .should('contain.text', 'Select an enforcer');
-    });
+        cy.get(ENF_OVR.addOverrideButton).click();
+        cy.get(ENF_OVR.errorSummary)
+          .should('exist')
+          .contains('There is a problem')
+          .next()
+          .should('contain.text', 'Select an enforcer');
+      },
+    );
 
-    it('AC4c. Error when no LJA is selected (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4622'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC4c. Error when no LJA is selected (Add Enforcement Override - Parent/Guardian)',
+      { tags: ['@JIRA-KEY:POT-4622'] },
+      () => {
+        parentGuardianSetup();
 
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.enfOverrideDropdown).click().type('TFO');
-      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
-      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').click();
-      cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'TFOOUT');
-      cy.get(ENF_OVR.localJusticeAreaDropdown).should('exist');
+        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+        cy.get(ENF_OVR.enfOverrideDropdown).click().type('TFO');
+        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
+        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').click();
+        cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'TFOOUT');
+        cy.get(ENF_OVR.localJusticeAreaDropdown).should('exist');
 
-      cy.get(ENF_OVR.addOverrideButton).click();
-      cy.get(ENF_OVR.errorSummary)
-        .should('exist')
-        .contains('There is a problem')
-        .next()
-        .should('contain.text', 'Select a Local Justice Area');
-    });
+        cy.get(ENF_OVR.addOverrideButton).click();
+        cy.get(ENF_OVR.errorSummary)
+          .should('exist')
+          .contains('There is a problem')
+          .next()
+          .should('contain.text', 'Select a Local Justice Area');
+      },
+    );
 
-    it('AC5. Valid submission returns to Enforcement tab with success banner and new override panel (Add Enforcement Override - Parent/Guardian)', { tags: ['@JIRA-KEY:POT-4839'] }, () => {
+    it(
+      'AC5. Valid submission returns to Enforcement tab with success banner and new override panel (Add Enforcement Override - Parent/Guardian)',
+      { tags: ['@JIRA-KEY:POT-4839'] },
+      () => {
         const { accountId } = parentGuardianSetup();
         const updatedEnforcementMock = structuredClone(
           OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK,
@@ -627,7 +658,8 @@ describe(
         );
         cy.get(ENF.localJusticeArea).should('exist').and('contain.text', 'Local Justice Area (LJA)');
         cy.get(ENF.localJusticeAreaValue).should('exist').and('contain.text', "Bedfordshire Magistrates' Court(4165)");
-      });
+      },
+    );
 
     it(
       'AC6a. Cancel without changes returns away from the add override page without confirmation (Add Enforcement Override - Parent/Guardian)',

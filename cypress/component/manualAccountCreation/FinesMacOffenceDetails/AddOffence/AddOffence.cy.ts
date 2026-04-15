@@ -124,9 +124,12 @@ describe('FinesMacAddOffenceComponent', () => {
     });
   };
 
-  it('should block submitting the offence while offence-code validation is still in progress', {
+  it(
+    'should block submitting the offence while offence-code validation is still in progress',
+    {
       tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-4930'],
-    }, () => {
+    },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
@@ -164,11 +167,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
+    },
+  );
 
-  it('should keep blocking submission when offence validation completes with an invalid offence code', {
+  it(
+    'should keep blocking submission when offence validation completes with an invalid offence code',
+    {
       tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-4931'],
-    }, () => {
+    },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
@@ -207,11 +214,15 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.wrap(formSubmitSpy).should('not.have.been.called');
-    });
+    },
+  );
 
-  it('should submit the exact offence match when multiple offences are returned for the searched code', {
+  it(
+    'should submit the exact offence match when multiple offences are returned for the searched code',
+    {
       tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-4932'],
-    }, () => {
+    },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
@@ -260,11 +271,15 @@ describe('FinesMacAddOffenceComponent', () => {
           OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK.refData[0].offence_id,
         );
       });
-    });
+    },
+  );
 
-  it('should keep the offence invalid when multiple offences are returned but none exactly match the searched code', {
+  it(
+    'should keep the offence invalid when multiple offences are returned but none exactly match the searched code',
+    {
       tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-4933'],
-    }, () => {
+    },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
@@ -309,7 +324,8 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.wrap(formSubmitSpy).should('not.have.been.called');
-    });
+    },
+  );
 
   it(
     '(AC.1)should render the component',

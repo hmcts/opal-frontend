@@ -186,22 +186,26 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     },
   );
 
-  it('AC2c: Labels not displayed (Account Enquiries At Glance Parent Guardian)', { tags: buildTags('@JIRA-STORY:PO-779', '@JIRA-KEY:POT-3372') }, () => {
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+  it(
+    'AC2c: Labels not displayed (Account Enquiries At Glance Parent Guardian)',
+    { tags: buildTags('@JIRA-STORY:PO-779', '@JIRA-KEY:POT-3372') },
+    () => {
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
 
-    setupAccountEnquiryComponent(componentProperties);
+      setupAccountEnquiryComponent(componentProperties);
 
-    cy.contains('h2', /language preference(s)?/i).should('not.exist');
-    cy.contains(/document language/i).should('not.exist');
-    cy.contains('p', 'Welsh and English').should('not.exist');
+      cy.contains('h2', /language preference(s)?/i).should('not.exist');
+      cy.contains(/document language/i).should('not.exist');
+      cy.contains('p', 'Welsh and English').should('not.exist');
 
-    cy.contains(/court hearing language/i).should('not.exist');
-    cy.contains('p', 'Welsh and English').should('not.exist');
+      cy.contains(/court hearing language/i).should('not.exist');
+      cy.contains('p', 'Welsh and English').should('not.exist');
 
-    cy.get(DOM.enforcementStatusTag).should('not.exist');
-  });
+      cy.get(DOM.enforcementStatusTag).should('not.exist');
+    },
+  );
 
   it(
     'AC3: displays Aliases section when defendant has one or more aliases (Account Enquiries At Glance Parent Guardian)',
