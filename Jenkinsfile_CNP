@@ -531,14 +531,14 @@ withPipeline(type, product, component) {
       } else {
                 echo 'Running opal component tests (no skip label present)'
                 try {
-                    yarnBuilder.yarn('test:opalComponent')
+                    yarnBuilder.yarn('test:component')
         } catch (hudson.AbortException e) {
                     echo "Opal component tests failed: ${e}"
                     currentBuild.result = 'FAILURE'
         } finally {
                     archiveArtifact(functionalArtifactsGlob)
                     publishHtmlReport(
-                    "functional-output/component-html/${resolvedBrowserToRun()}/",
+                    "functional-output/component/${resolvedBrowserToRun()}/html/",
                     'component-report.html',
                     "Component Test Report (${resolvedBrowserToRun()})"
                   )

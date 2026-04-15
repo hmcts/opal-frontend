@@ -12,8 +12,9 @@ export const COLLECTION_ORDER_CHANGE_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
   pageHeading: 'h1.govuk-heading-l',
   form: 'app-fines-acc-enf-collo-change-form form',
+  contentParagraphs: 'app-fines-acc-enf-collo-change-form p.govuk-body',
   introText: 'app-fines-acc-enf-collo-change-form p.govuk-body:first-of-type',
-  warningText: 'app-fines-acc-enf-collo-change-form p.govuk-body.govuk-\\!-font-weight-bold',
+  warningText: 'app-fines-acc-enf-collo-change-form p.govuk-body:nth-of-type(2)',
 
   errorSummary: '.govuk-error-summary',
   errorSummaryTitle: '.govuk-error-summary__title',
@@ -28,5 +29,8 @@ export const COLLECTION_ORDER_CHANGE_ELEMENTS = {
   noRadioLabel: 'label[for="facc_enf_collection_order_made-facc_enf_collection_order_made_false"]',
 
   submitButton: 'button#submitForm',
+  buttonGroupRow: 'app-fines-acc-enf-collo-change-form .govuk-grid-row',
+  buttonGroupColumn: 'app-fines-acc-enf-collo-change-form .govuk-grid-column-two-thirds',
+  buttonGroup: 'app-fines-acc-enf-collo-change-form .govuk-button-group',
   cancelLink: 'opal-lib-govuk-cancel-link a',
 } as const;
