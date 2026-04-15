@@ -8,7 +8,7 @@ Feature: Fines primary navigation
     Then I see the Fines primary navigation with Search selected by default
 
   @JIRA-STORY:PO-2611
-  Scenario Outline: AC4a AC4b AC4c - Selecting a top-level Fines area updates the active navigation item
+  Scenario Outline: AC4a AC4b AC4c - Selecting a top-level Fines area updates the active navigation item - <menuItem>
     When I select the Fines primary navigation item "<menuItem>"
     Then I am taken to the "<menuItem>" Fines landing page
 

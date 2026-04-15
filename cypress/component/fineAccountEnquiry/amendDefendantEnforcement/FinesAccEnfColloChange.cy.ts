@@ -202,12 +202,17 @@ type CollectionOrderChangePotTags = {
   cancelDismissed: string;
 };
 
+function withDefendantType(title: string, defendantTypeLabel: string) {
+  return `${title} (${defendantTypeLabel})`;
+}
+
 function CollectionOrderCancel(
   setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number },
+  defendantTypeLabel: string,
   potTags: CollectionOrderChangePotTags,
 ) {
   it(
-    'AC5a: cancel without changes returns to the Enforcement tab without confirmation',
+    withDefendantType('AC5a: cancel without changes returns to the Enforcement tab without confirmation', defendantTypeLabel),
     { tags: [potTags.cancelWithoutChanges] },
     () => {
       setupFn();
@@ -226,7 +231,10 @@ function CollectionOrderCancel(
   );
 
   it(
-    'AC5b: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
+    withDefendantType(
+      'AC5b: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
+      defendantTypeLabel,
+    ),
     { tags: [potTags.cancelWithConfirmation] },
     () => {
       setupFn();
@@ -252,7 +260,7 @@ function CollectionOrderCancel(
   );
 
   it(
-    'AC5c: dismissing the cancel confirmation keeps the user on the page',
+    withDefendantType('AC5c: dismissing the cancel confirmation keeps the user on the page', defendantTypeLabel),
     { tags: [potTags.cancelDismissed] },
     () => {
       setupFn();
@@ -281,13 +289,17 @@ function CollectionOrderCancel(
 function runCollectionOrderChangeSuite(
   tags: string[],
   suiteTitle: string,
+  defendantTypeLabel: string,
   expectedCaption: string,
   setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number },
   potTags: CollectionOrderChangePotTags,
 ) {
   describe(suiteTitle, { tags }, () => {
     it(
-      'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci: navigates to and displays the change collection order screen',
+      withDefendantType(
+        'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci: navigates to and displays the change collection order screen',
+        defendantTypeLabel,
+      ),
       { tags: [potTags.navigateAndDisplay] },
       () => {
         setupFn();
@@ -307,7 +319,10 @@ function runCollectionOrderChangeSuite(
     );
 
     it(
-      'AC3, AC3a: displays an error when Change is selected without choosing a collection order option',
+      withDefendantType(
+        'AC3, AC3a: displays an error when Change is selected without choosing a collection order option',
+        defendantTypeLabel,
+      ),
       { tags: [potTags.validationError] },
       () => {
         setupFn();
@@ -317,20 +332,21 @@ function runCollectionOrderChangeSuite(
     );
 
     it(
-      'AC4a: selecting a different value returns the user to the Enforcement tab',
+      withDefendantType('AC4a: selecting a different value returns the user to the Enforcement tab', defendantTypeLabel),
       { tags: [potTags.changeSelection] },
       () => {
         CollectionOrderChangedNavigatesToEnforcementTab(setupFn);
       },
     );
 
-    CollectionOrderCancel(setupFn, potTags);
+    CollectionOrderCancel(setupFn, defendantTypeLabel, potTags);
   });
 }
 
 runCollectionOrderChangeSuite(
   ['@JIRA-STORY:PO-1848', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend_Defendant_Enforcement_Attributes'],
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth',
+  'adult or youth',
   '177A - Mr Robert THOMSON',
   commonSetup,
   {
@@ -346,6 +362,7 @@ runCollectionOrderChangeSuite(
 runCollectionOrderChangeSuite(
   ['@JIRA-STORY:PO-1860', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend_Defendant_Enforcement_Attributes'],
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth with parent or guardian to pay',
+  'adult or youth with parent or guardian to pay',
   '177A - Mr Robert THOMSON',
   parentGuardianSetup,
   {
@@ -361,6 +378,7 @@ runCollectionOrderChangeSuite(
 runCollectionOrderChangeSuite(
   ['@JIRA-STORY:PO-1861', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:Amend_Defendant_Enforcement_Attributes'],
   'Account Enquiry Enforcement - Change Collection Order status - Company',
+  'company',
   '177A - Test Org Ltd',
   companySetup,
   {

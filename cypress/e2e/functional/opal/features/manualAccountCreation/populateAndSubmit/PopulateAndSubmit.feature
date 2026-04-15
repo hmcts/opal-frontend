@@ -457,7 +457,7 @@ Feature: Manual account creation - Create Draft Account
     And I see the following text on the page "You've submitted this account for review"
 
   @JIRA-STORY:PO-2766
-  Scenario Outline: User can navigate to create account page and return via back link for each originator option
+  Scenario Outline: User can navigate to create account page and return via back link for each originator option - <Originator type>
     When I open Manual Account Creation
     Then I choose '<Originator type>' and continue to create account page
     Then I should see the header containing text '<Create account header>'
@@ -474,7 +474,7 @@ Feature: Manual account creation - Create Draft Account
       | New             | Create account        |
 
   @JIRA-STORY:PO-2766
-  Scenario Outline: User can cancel create account from transfer in
+  Scenario Outline: User can cancel create account from transfer in - <Cancel journey state>
     When I open Manual Account Creation
     Then I choose 'Transfer in' and continue to create account page
     And I prepare create account page '<Cancel journey state>' before cancelling
@@ -541,7 +541,7 @@ Feature: Manual account creation - Create Draft Account
       | Enforcement court               | West London VPFPO (101)                   |
 
   @JIRA-STORY:PO-2767
-  Scenario Outline: User selects entry type and is visible on review account screen
+  Scenario Outline: User selects entry type and is visible on review account screen - <Originator type>
     When I create a "<Originator type>" manual "Fine" account for business unit "West London" with defendant type "Company"
     And I complete manual account creation with the following fields and defaults:
       | Section        | Field                                    | Value                               | Imposition |

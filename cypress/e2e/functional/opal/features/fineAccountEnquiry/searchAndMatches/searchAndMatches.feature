@@ -86,7 +86,7 @@ Feature: Account Search and Matches
       | individual last name     | Smith    |
 
   @JIRA-STORY:PO-705
-  Scenario Outline: Error when two sections contain data (Individuals)
+  Scenario Outline: Error when two sections contain data (Individuals) - <validation_case>
     When I search using the following inputs:
       | account number           | <accountNumber> |
       | reference or case number | <reference>     |
@@ -95,13 +95,13 @@ Feature: Account Search and Matches
     And I see the listed options "account number, reference or case number, selected tab"
     @JIRA-KEY:POT-3243
     Examples: Account number and reference
-      | accountNumber | reference | lastName |
-      | 12345678      | REF-123   |          |
+      | validation_case              | accountNumber | reference | lastName |
+      | Account number and reference | 12345678      | REF-123   |          |
 
     @JIRA-KEY:POT-3244
     Examples: Reference and last name
-      | accountNumber | reference | lastName |
-      |               | REF-123   | Smith    |
+      | validation_case         | accountNumber | reference | lastName |
+      | Reference and last name |               | REF-123   | Smith    |
 
 
   @JIRA-STORY:PO-712 @JIRA-KEY:POT-3245
@@ -122,7 +122,7 @@ Feature: Account Search and Matches
       | company name             | CompanyOne |
 
   @JIRA-STORY:PO-712
-  Scenario Outline: Error when two sections contain data (Companies) Case 1
+  Scenario Outline: Error when two sections contain data (Companies) Case 1 - <validation_case>
     And I view the Companies search form
     When I search using the following inputs:
       | account number           | <accountNumber> |
@@ -138,13 +138,13 @@ Feature: Account Search and Matches
       | company name             | <companyName>   |
     @JIRA-KEY:POT-3246
     Examples: Reference and company name
-      | accountNumber | reference | companyName |
-      |               | REF-123   | CompanyOne  |
+      | validation_case            | accountNumber | reference | companyName |
+      | Reference and company name |               | REF-123   | CompanyOne  |
 
     @JIRA-KEY:POT-3247
     Examples: Account number and reference
-      | accountNumber | reference | companyName |
-      | 2345678       | REF-123   |             |
+      | validation_case              | accountNumber | reference | companyName |
+      | Account number and reference | 2345678       | REF-123   |             |
 
   @JIRA-STORY:PO-715
   #- AC5i.
@@ -168,7 +168,7 @@ Feature: Account Search and Matches
 
   @JIRA-STORY:PO-715
   #-AC9a
-  Scenario Outline: Minor creditors - company type error validation with examples
+  Scenario Outline: Minor creditors - company type error validation with examples - <validation_case>
     And I view the Minor Creditors search form
     When I search using the following inputs:
       | minor creditor type      | Company         |
@@ -186,18 +186,18 @@ Feature: Account Search and Matches
       | company name             | <companyName>   |
     @JIRA-KEY:POT-3249
     Examples: Account number, reference, and company name
-      | accountNumber | reference | companyName |
-      | 12345678      | REF-123   | CompanyOne  |
+      | validation_case                            | accountNumber | reference | companyName |
+      | Account number, reference, and company name | 12345678      | REF-123   | CompanyOne  |
 
     @JIRA-KEY:POT-3250
     Examples: Account number and company name
-      | accountNumber | reference | companyName |
-      | 12345678      |           | CompanyOne  |
+      | validation_case                 | accountNumber | reference | companyName |
+      | Account number and company name | 12345678      |           | CompanyOne  |
 
     @JIRA-KEY:POT-3251
     Examples: Reference and company name
-      | accountNumber | reference | companyName |
-      |               | REF-123   | CompanyOne  |
+      | validation_case            | accountNumber | reference | companyName |
+      | Reference and company name |               | REF-123   | CompanyOne  |
 
   @JIRA-STORY:PO-715 @JIRA-KEY:POT-3252
   Scenario: Minor creditors - company type displays validation message when name, address and postcode are missing
@@ -353,7 +353,7 @@ Feature: Account Search and Matches
 
 
   @JIRA-STORY:PO-709
-  Scenario: Verify search works for all reference types
+  Scenario: Verify search works for all reference types - <reference_type>
     #AC6
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted         |

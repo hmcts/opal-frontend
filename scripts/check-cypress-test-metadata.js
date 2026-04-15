@@ -28,6 +28,8 @@ const DEFAULT_OUTPUT = path.join(ROOT, 'tmp', 'cypress-test-metadata-report.csv'
 
 const STORY_TAG_RE = /^@JIRA-STORY:/;
 const POT_TAG_RE = /^@JIRA-KEY:POT-\d+$/;
+const SKIP_TAG = '@skip';
+const DUMMY_FEATURE_RE = /(?:^|\/)dummytest\.feature$/i;
 
 /**
  * Walk a directory recursively and collect files with the given suffix.
@@ -68,6 +70,19 @@ function rel(file) {
  */
 function uniq(values) {
   return [...new Set(values)];
+}
+
+/**
+ * Return whether a test should be excluded from metadata auditing.
+ * Tests already marked `@skip` are intentionally ignored.
+ * @param {{ tags?: string[] }} test
+ * @returns {boolean}
+ */
+function shouldIgnoreTest(test) {
+  return (
+    (Array.isArray(test?.tags) && test.tags.includes(SKIP_TAG)) ||
+    (typeof test?.file === 'string' && DUMMY_FEATURE_RE.test(test.file))
+  );
 }
 
 /**
@@ -402,6 +417,16 @@ function extractComponentTests(file) {
     if (ts.isSpreadElement(node)) return evalExpr(node.expression, env);
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
     if (ts.isNumericLiteral(node)) return Number(node.text);
+    if (ts.isTemplateExpression(node)) {
+      let text = node.head.text;
+      for (const span of node.templateSpans) {
+        const expressionValue = evalExpr(span.expression, env);
+        if (expressionValue === undefined) return undefined;
+        text += String(expressionValue);
+        text += span.literal.text;
+      }
+      return text;
+    }
     if (node.kind === ts.SyntaxKind.TrueKeyword) return true;
     if (node.kind === ts.SyntaxKind.FalseKeyword) return false;
     if (ts.isIdentifier(node)) return resolveConst(node.text, env);
@@ -647,6 +672,9 @@ function analyse(tests) {
  */
 function buildIssueRows(issueType, tests, options = {}) {
   const relatedLocations = (options.relatedTests || []).map((test) => `${test.file}:${test.line}`);
+  const relatedTests = (options.relatedTests || []).map(
+    (test) => `${test.qualifiedTitle} [${test.file}:${test.line}]`,
+  );
   const relatedCount = options.relatedTests ? options.relatedTests.length : '';
 
   return tests.map((test) => {
@@ -665,6 +693,7 @@ function buildIssueRows(issueType, tests, options = {}) {
       group_key: options.key || '',
       related_count: relatedCount,
       related_locations: relatedLocations.join(' | '),
+      related_tests: relatedTests.join(' | '),
     };
   });
 }
@@ -732,8 +761,10 @@ function printSummary(outputPath, component, functional, rowCount) {
 }
 
 const outputPath = resolveOutputPath();
-const componentTests = walk(COMPONENT_ROOT, '.cy.ts').flatMap(extractComponentTests);
-const functionalTests = walk(FUNCTIONAL_ROOT, '.feature').flatMap(extractFunctionalTests);
+const componentTests = walk(COMPONENT_ROOT, '.cy.ts').flatMap(extractComponentTests).filter((test) => !shouldIgnoreTest(test));
+const functionalTests = walk(FUNCTIONAL_ROOT, '.feature')
+  .flatMap(extractFunctionalTests)
+  .filter((test) => !shouldIgnoreTest(test));
 const componentResult = analyse(componentTests);
 const functionalResult = analyse(functionalTests);
 const rows = [...buildRows(componentResult), ...buildRows(functionalResult)];
@@ -752,6 +783,7 @@ const headers = [
   'group_key',
   'related_count',
   'related_locations',
+  'related_tests',
 ];
 
 fs.writeFileSync(outputPath, toCsv(rows, headers), 'utf8');
@@ -782,6 +814,7 @@ process.exit(rows.length === 0 ? 0 : 1);
  *   pot_tags: string,
  *   group_key: string,
  *   related_count: string | number,
- *   related_locations: string
+ *   related_locations: string,
+ *   related_tests: string
  * }} CsvRow
  */
