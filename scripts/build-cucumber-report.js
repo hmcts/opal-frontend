@@ -3,9 +3,9 @@
 
 /**
  * @fileoverview Builds merged Cucumber ndjson, Zephyr JSON, and Jenkins HTML reports from raw Cypress outputs.
- * @description Used by smoke, functional, and legacy report-combine scripts after parallel test execution because
- * the default-browser fallback changes exposed a brittle shell-based report path that could reuse stale merged ndjson
- * files or mask combine failures, leaving Jenkins to publish blank reports for the selected browser.
+ * @description Used by smoke and functional report-combine steps for both OPAL and Legacy modes after parallel or
+ * serial Cypress execution. This avoids brittle shell-based merge commands and keeps the generated HTML, merged
+ * ndjson, and Zephyr JSON outputs aligned with the selected suite/browser/mode combination.
  */
 
 const fs = require('node:fs');
@@ -23,11 +23,12 @@ const {
 /**
  * Parse CLI arguments into a simple key-value object.
  * @param {string[]} args
- * @returns {{ suite: string, browser: string }}
+ * @returns {{ suite: string, browser: string, mode: string }}
  */
 function parseArgs(args) {
   const options = {
     browser: '',
+    mode: '',
     suite: '',
   };
 
@@ -37,9 +38,23 @@ function parseArgs(args) {
       continue;
     }
 
+    if (arg.startsWith('--mode=')) {
+      options.mode = arg.split('=')[1].trim().toLowerCase();
+      continue;
+    }
+
     if (!options.suite) {
       options.suite = arg.trim().toLowerCase();
     }
+  }
+
+  if (options.suite === 'legacy') {
+    options.suite = 'functional';
+    options.mode = 'legacy';
+  }
+
+  if (!options.mode) {
+    options.mode = 'opal';
   }
 
   return options;
@@ -49,33 +64,41 @@ function parseArgs(args) {
  * Resolve report paths for the requested suite/browser combination.
  * @param {string} suite
  * @param {string} browser
+ * @param {string} mode
  * @returns {{ inputDir: string, htmlPath: string, mergedPath: string, zephyrJsonPath: string }}
  */
-function resolveReportPaths(suite, browser) {
-  switch (suite) {
-    case 'functional':
+function resolveReportPaths(suite, browser, mode) {
+  switch (`${suite}:${mode}`) {
+    case 'functional:opal':
       return {
         inputDir: path.join('functional-output', 'prod', browser, 'cucumber'),
         mergedPath: path.join('functional-output', 'prod', browser, 'cucumber', `${browser}-report.ndjson`),
         htmlPath: path.join('functional-output', 'prod', browser, 'cucumber', `${browser}-report.html`),
         zephyrJsonPath: path.join('functional-output', 'zephyr', 'cucumber-report.json'),
       };
-    case 'legacy':
+    case 'functional:legacy':
       return {
         inputDir: path.join('functional-output', 'prod', browser, 'legacy', 'cucumber'),
         mergedPath: path.join('functional-output', 'prod', browser, 'legacy', 'cucumber', 'legacy-report.ndjson'),
         htmlPath: path.join('functional-output', 'prod', browser, 'legacy', 'cucumber', 'legacy-report.html'),
         zephyrJsonPath: path.join('functional-output', 'zephyr', 'cucumber-report.json'),
       };
-    case 'smoke':
+    case 'smoke:opal':
       return {
         inputDir: path.join('smoke-output', 'prod', browser, 'cucumber'),
         mergedPath: path.join('smoke-output', 'prod', browser, 'cucumber', 'smoke-report.ndjson'),
         htmlPath: path.join('smoke-output', 'prod', browser, 'cucumber', 'smoke-report.html'),
         zephyrJsonPath: path.join('smoke-output', 'zephyr', 'cucumber-report.json'),
       };
+    case 'smoke:legacy':
+      return {
+        inputDir: path.join('smoke-output', 'prod', browser, 'legacy', 'cucumber'),
+        mergedPath: path.join('smoke-output', 'prod', browser, 'legacy', 'cucumber', 'legacy-report.ndjson'),
+        htmlPath: path.join('smoke-output', 'prod', browser, 'legacy', 'cucumber', 'legacy-report.html'),
+        zephyrJsonPath: path.join('smoke-output', 'zephyr', 'cucumber-report.json'),
+      };
     default:
-      throw new Error(`Unsupported Cucumber report suite: ${suite || '(empty)'}`);
+      throw new Error(`Unsupported Cucumber report suite/mode: ${suite || '(empty)'}/${mode || '(empty)'}`);
   }
 }
 
@@ -177,17 +200,18 @@ async function writeHtmlReport(outputPath, messages) {
 }
 
 async function main() {
-  const { suite, browser: requestedBrowser } = parseArgs(process.argv.slice(2));
+  const { suite, browser: requestedBrowser, mode } = parseArgs(process.argv.slice(2));
 
   if (!suite) {
-    throw new Error('A report suite must be provided: smoke, functional, or legacy');
+    throw new Error('A report suite must be provided: smoke or functional');
   }
 
   const browser = requestedBrowser || resolveGenericBrowser(process.env.BROWSER_TO_RUN);
-  const reportPaths = resolveReportPaths(suite, browser);
+  const reportPaths = resolveReportPaths(suite, browser, mode);
   const { messages, sourceFiles } = loadMessages(reportPaths.inputDir, reportPaths.mergedPath);
 
   console.log(`[build-cucumber-report] suite=${suite}`);
+  console.log(`[build-cucumber-report] mode=${mode}`);
   console.log(`[build-cucumber-report] browser=${browser}`);
   console.log(`[build-cucumber-report] inputs=${sourceFiles.length}`);
 

@@ -58,7 +58,6 @@ import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-re
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from './constants/opal-fines-defendant-account-patch-payload-defaults.constant';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -489,6 +488,37 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(expectedUrl);
     expect(req.request.method).toBe('GET');
     req.flush(expectedResponse);
+  });
+
+  it('should retry the offence code request after an error for the same code', () => {
+    const refData = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0];
+    const expectedResponse: IOpalFinesOffencesRefData = {
+      count: 1,
+      refData: [refData],
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+    const firstError = vi.fn();
+    const secondNext = vi.fn();
+
+    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe({
+      error: firstError,
+    });
+
+    const firstReq = httpMock.expectOne(expectedUrl);
+    expect(firstReq.request.method).toBe('GET');
+    firstReq.flush({ message: 'request failed' }, { status: 500, statusText: 'Server Error' });
+
+    expect(firstError).toHaveBeenCalledTimes(1);
+
+    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe({
+      next: secondNext,
+    });
+
+    const secondReq = httpMock.expectOne(expectedUrl);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(expectedResponse);
+
+    expect(secondNext).toHaveBeenCalledWith(expectedResponse);
   });
 
   it('should send a GET request to major creditor ref data API', () => {
@@ -1222,7 +1252,6 @@ describe('OpalFines', () => {
   it('should return a mock response for patching defendant account', () => {
     const accountId = 123456;
     const updatePayload = {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       comment_and_notes: {
         account_comment: 'Updated comment',
         free_text_note_1: 'Updated note 1',
@@ -1244,7 +1273,6 @@ describe('OpalFines', () => {
   it('should handle different payload values in mock response for patching defendant account', () => {
     const accountId = 789012;
     const updatePayload = {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       version: 5,
       comment_and_notes: {
         account_comment: 'Different comment',
@@ -1268,7 +1296,6 @@ describe('OpalFines', () => {
     it('should include If-Match and Business-Unit-Id headers when both are provided', () => {
       const accountId = 123456;
       const payload = {
-        ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
         version: 10,
         comment_and_notes: {
           account_comment: 'Test comment',
@@ -1294,7 +1321,6 @@ describe('OpalFines', () => {
     it('should include only Business-Unit-Id when version is not provided', () => {
       const accountId = 123456;
       const payload = {
-        ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
         version: 10,
         comment_and_notes: {
           account_comment: 'Test comment',
@@ -1319,7 +1345,6 @@ describe('OpalFines', () => {
     it('should not include If-Match and should include Business-Unit-Id when version is empty string and business unit is empty string', () => {
       const accountId = 123456;
       const payload = {
-        ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
         version: 10,
         comment_and_notes: {
           account_comment: 'Test comment',

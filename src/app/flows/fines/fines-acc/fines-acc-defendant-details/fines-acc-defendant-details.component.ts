@@ -52,6 +52,7 @@ import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/inte
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -398,6 +399,39 @@ export class FinesAccDefendantDetailsComponent
   public navigateToAddEnforcementOverridePage(): void {
     this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/add`], {
       relativeTo: this.activatedRoute,
+    });
+  }
+
+  /**
+   * Navigates to the change enforcement override page or access denied page based on user permissions.
+   */
+  public navigateToChangeEnforcementOverridePage(): void {
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/change`], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  /**
+   * Navigates to the change enforcement court page.
+   */
+  public navigateToChangeEnforcementCourtPage(): void {
+    this['router'].navigate(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
+      ],
+      {
+        relativeTo: this.activatedRoute,
+      },
+    );
+  }
+
+  /**
+   * Navigates to the change collection order page.
+   */
+  public navigateToChangeCollectionOrderPage(currentCollectionOrderFlag: boolean): void {
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`], {
+      relativeTo: this.activatedRoute,
+      state: { currentCollectionOrderFlag },
     });
   }
 }

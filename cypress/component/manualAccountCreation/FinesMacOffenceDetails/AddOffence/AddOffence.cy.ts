@@ -7,6 +7,9 @@ import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.st
 import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-multi-result.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-duplicate-code.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { ADD_OFFENCE_OFFENCE_MOCK } from './mocks/add-offence-draft-state-mock';
 import { provideHttpClient } from '@angular/common/http';
@@ -124,6 +127,209 @@ describe('FinesMacAddOffenceComponent', () => {
       fixture.detectChanges();
     });
   };
+
+  it(
+    'should block submitting the offence while offence-code validation is still in progress',
+    {
+      tags: buildTags('@JIRA-STORY:PO-2948', '@JIRA-KEY:POT-6180'),
+    },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(IMPOSITION_MOCK_3);
+
+      setupComponent(formSubmitSpy);
+
+      cy.intercept(
+        {
+          method: 'GET',
+          pathname: '/opal-fines-service/offences',
+          query: {
+            q: 'AK123456',
+          },
+        },
+        {
+          delay: 750,
+          body: OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK,
+        },
+      ).as('getDelayedOffenceCode');
+
+      cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('AK123456{enter}', { delay: 0 });
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Offence code still being validated');
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
+
+      cy.wait('@getDelayedOffenceCode');
+
+      cy.get(DOM_ELEMENTS.successPanel).should('contain', 'Offence found');
+      cy.get(DOM_ELEMENTS.successPanel).should(
+        'contain',
+        OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK.refData[0].offence_title,
+      );
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+    },
+  );
+
+  it(
+    'should keep blocking submission when offence validation completes with an invalid offence code',
+    {
+      tags: buildTags('@JIRA-STORY:PO-2948', '@JIRA-KEY:POT-6182'),
+    },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(IMPOSITION_MOCK_3);
+
+      setupComponent(formSubmitSpy);
+
+      cy.intercept(
+        {
+          method: 'GET',
+          pathname: '/opal-fines-service/offences',
+          query: {
+            q: 'ZZ12345',
+          },
+        },
+        {
+          delay: 750,
+          body: {
+            count: 0,
+            refData: [],
+          },
+        },
+      ).as('getInvalidOffenceCode');
+
+      cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('ZZ12345{enter}', { delay: 0 });
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Offence code still being validated');
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
+
+      cy.wait('@getInvalidOffenceCode');
+
+      cy.get(DOM_ELEMENTS.invalidPanel).should('contain', 'Offence not found');
+      cy.get(DOM_ELEMENTS.invalidPanel).should('contain', 'Enter a valid offence code');
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidOffenceCode);
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
+    },
+  );
+
+  it(
+    'should submit the exact offence match when multiple offences are returned for the searched code',
+    {
+      tags: buildTags('@JIRA-STORY:PO-3412', '@JIRA-KEY:POT-6181'),
+    },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(IMPOSITION_MOCK_3);
+
+      setupComponent(formSubmitSpy);
+
+      cy.intercept(
+        {
+          method: 'GET',
+          pathname: '/opal-fines-service/offences',
+          query: {
+            q: 'CD71039',
+          },
+        },
+        {
+          body: OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK,
+        },
+      ).as('getExactMatchMultiResultOffence');
+
+      cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('CD71039', { delay: 0 });
+
+      cy.wait('@getExactMatchMultiResultOffence').then(({ response }) => {
+        expect(response?.body.count).to.be.greaterThan(1);
+        expect(response?.body.refData).to.have.length.greaterThan(1);
+        expect(
+          response?.body.refData.some((offence: { get_cjs_code: string }) => offence.get_cjs_code === 'CD71039'),
+        ).to.equal(true);
+      });
+
+      cy.get(DOM_ELEMENTS.successPanel).should('contain', 'Offence found');
+      cy.get(DOM_ELEMENTS.successPanel).should(
+        'contain',
+        OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK.refData[0].offence_title,
+      );
+      cy.get(DOM_ELEMENTS.invalidPanel).should('not.exist');
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+
+      cy.then(() => {
+        const submittedForm = formSubmitSpy.getCall(0).args[0];
+        expect(submittedForm.formData.fm_offence_details_offence_cjs_code).to.equal('CD71039');
+        expect(submittedForm.formData.fm_offence_details_offence_id).to.equal(
+          OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK.refData[0].offence_id,
+        );
+      });
+    },
+  );
+
+  it(
+    'should keep the offence invalid when multiple offences are returned but none exactly match the searched code',
+    {
+      tags: buildTags('@JIRA-STORY:PO-3412', '@JIRA-KEY:POT-6183'),
+    },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(IMPOSITION_MOCK_3);
+
+      setupComponent(formSubmitSpy);
+
+      cy.intercept(
+        {
+          method: 'GET',
+          pathname: '/opal-fines-service/offences',
+          query: {
+            q: 'CD71039D',
+          },
+        },
+        {
+          body: {
+            count: 2,
+            refData: OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK.refData.map((offence, index) => ({
+              ...offence,
+              offence_id: offence.offence_id + index,
+              get_cjs_code: `CD71039${String.fromCharCode(65 + index)}`,
+            })),
+          },
+        },
+      ).as('getInexactMultiResultOffence');
+
+      cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('CD71039D', { delay: 0 });
+
+      cy.wait('@getInexactMultiResultOffence').then(({ response }) => {
+        expect(response?.body.count).to.be.greaterThan(1);
+        expect(response?.body.refData).to.have.length.greaterThan(1);
+        expect(
+          response?.body.refData.some((offence: { get_cjs_code: string }) => offence.get_cjs_code === 'CD71039D'),
+        ).to.equal(false);
+      });
+
+      cy.get(DOM_ELEMENTS.invalidPanel).should('contain', 'Offence not found');
+      cy.get(DOM_ELEMENTS.invalidPanel).should('contain', 'Enter a valid offence code');
+      cy.get(DOM_ELEMENTS.successPanel).should('not.exist');
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
+    },
+  );
 
   it(
     '(AC.1)should render the component',

@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NavigationEnd, RouterModule, provideRouter } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DateTime } from 'luxon';
 import { By } from '@angular/platform-browser';
@@ -12,13 +12,14 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-header';
 import { MojPrimaryNavigationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-primary-navigation';
 import { Observable, of } from 'rxjs';
-import { PLATFORM_ID } from '@angular/core';
+import { Component, PLATFORM_ID } from '@angular/core';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -26,8 +27,43 @@ import { createSpyObj } from './testing/create-spy-obj.helper';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DRAFT_ROUTING_PATHS } from './flows/fines/fines-draft/routing/constants/fines-draft-routing-paths.constant';
+import { ACCOUNTS_PERMISSIONS } from './flows/fines/constants/accounts-permissions.constant';
+import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions.constant';
+import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
+
+@Component({
+  standalone: true,
+  template: '',
+})
+class DummyDashboardRouteComponent {}
+
+const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+  const userState = structuredClone(OPAL_USER_STATE_MOCK);
+  const [firstBusinessUnit, secondBusinessUnit] = userState.business_unit_users;
+
+  userState.business_unit_users = [
+    {
+      ...firstBusinessUnit,
+      permissions: [],
+    },
+    {
+      ...secondBusinessUnit,
+      permissions: permissionIds.map((permissionId) => ({
+        permission_id: permissionId,
+        permission_name: `Permission ${permissionId}`,
+      })),
+    },
+  ];
+
+  return userState;
+};
+
+const getPrimaryNavigationTexts = (fixture: ComponentFixture<AppComponent>): string[] =>
+  Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.moj-primary-navigation__link')).map(
+    (link) => link.textContent?.trim() ?? '',
+  );
 
 describe('AppComponent - browser', () => {
   const mockDocumentLocation = {
@@ -149,11 +185,8 @@ describe('AppComponent - browser', () => {
     dateService.convertMillisecondsToMinutes.mockReturnValue(5);
     dateService.calculateMinutesDifference.mockReturnValue(0);
 
-    component.ngOnInit();
-    component['initializeTimeoutInterval']();
+    component.showExpiredWarning = true;
 
-    // Simulate timer tick
-    vi.advanceTimersByTime(component['POLL_INTERVAL'] * 1000);
     fixture.detectChanges();
 
     expect(component.showExpiredWarning).toBe(true);
@@ -298,6 +331,66 @@ describe('AppComponent - browser', () => {
     expect(primaryNavigation.useFragmentNavigation).toBe(false);
   });
 
+  it('should hide Reports in primary navigation when the user lacks all report permissions', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Reports');
+  });
+
+  it('should show Reports in primary navigation when the user has a report permission in any business unit', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).toContain('Reports');
+  });
+
+  it('should hide Search in primary navigation when the user lacks all search permissions', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Search');
+  });
+
+  it('should show Search in primary navigation when the user has a search permission in any business unit', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).toContain('Search');
+  });
+
+  it('should hide Accounts in primary navigation when the user lacks all accounts permissions', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Accounts');
+  });
+
+  it('should show Accounts in primary navigation when the user has an accounts permission in any business unit', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).toContain('Accounts');
+  });
+
   it('should navigate to the selected dashboard type from primary navigation', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
@@ -371,6 +464,31 @@ describe('AppComponent - browser', () => {
       FINES_DASHBOARD_ROUTING_PATHS.root,
       'finance',
     ]);
+  });
+
+  it('should update the active navigation item when the router navigates between dashboard tabs', async () => {
+    globalStore.setAuthenticated(true);
+
+    const router = TestBed.inject(Router);
+    router.resetConfig([
+      {
+        path: `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/:dashboardType`,
+        component: DummyDashboardRouteComponent,
+      },
+    ]);
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    await fixture.ngZone!.run(async () => {
+      await router.navigateByUrl(
+        `/${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.children.reports}`,
+      );
+    });
+    fixture.detectChanges();
+
+    expect(component.activeNavigationItem()).toBe(FINES_DASHBOARD_ROUTING_PATHS.children.reports);
   });
 });
 

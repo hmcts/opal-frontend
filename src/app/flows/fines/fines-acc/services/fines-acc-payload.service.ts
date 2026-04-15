@@ -26,7 +26,11 @@ import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-bui
 import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IFinesAccEnfOverrideAddChangeFormState } from '../fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS } from '../../services/opal-fines-service/constants/opal-fines-defendant-account-patch-payload-defaults.constant';
+import { IFinesAccEnfCourtChangeFormState } from '../fines-acc-enf-court-change/interfaces/fines-acc-enf-court-change-form-state.interface';
+import { IOpalFinesUpdateDefendantAccountCollectionOrder } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account-collection-order.interface';
+import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/interfaces/fines-acc-enf-collo-change-form-state.interface';
+import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -50,7 +54,7 @@ export class FinesAccPayloadService {
   public buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
     return {
       activity_note: {
-        record_type: 'DEFENDANT_ACCOUNTS',
+        record_type: 'defendant_accounts',
         record_id: this.finesAccStore.account_id()!,
         note_text: form.formData.facc_add_notes!,
         note_type: 'AA',
@@ -163,13 +167,34 @@ export class FinesAccPayloadService {
    */
   public buildCommentsFormPayload(formState: IFinesAccAddCommentsFormState): IOpalFinesUpdateDefendantAccountPayload {
     return {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       comment_and_notes: {
         account_comment: formState.facc_add_comment || null,
         free_text_note_1: formState.facc_add_free_text_1 || null,
         free_text_note_2: formState.facc_add_free_text_2 || null,
         free_text_note_3: formState.facc_add_free_text_3 || null,
       },
+    };
+  }
+
+  /**
+   * Transforms the given collection order form into an update payload
+   * for the defendant account API.
+   *
+   * @param form - The submitted collection order form
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildCollectionOrderPayload(
+    form: IAbstractFormBaseForm<IFinesAccEnfColloChangeFormState>,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    const collectionOrderFlag = form.formData.facc_enf_collection_order_made as boolean;
+
+    const collectionOrder: IOpalFinesUpdateDefendantAccountCollectionOrder = {
+      ...FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS,
+      collection_order_flag: collectionOrderFlag,
+    };
+
+    return {
+      collection_order: collectionOrder,
     };
   }
 
@@ -189,7 +214,6 @@ export class FinesAccPayloadService {
       fenf_account_enforcement_lja: lja_id,
     } = formState;
     return {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_PATCH_PAYLOAD_DEFAULTS,
       enforcement_override: {
         enforcement_override_result: enforcement_override_result_id
           ? {
@@ -206,6 +230,23 @@ export class FinesAccPayloadService {
               lja_id,
             }
           : null,
+      },
+    };
+  }
+
+  /**
+   * Transforms the given IFinesAccEnfCourtChangeFormState into an update payload
+   * for the defendant account API.
+   *
+   * @param formState - The form state containing the enforcement court data
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildEnforcementCourtFormPayload(
+    formState: IFinesAccEnfCourtChangeFormState,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    return {
+      enforcement_court: {
+        court_id: Number(formState.facc_enf_court),
       },
     };
   }
