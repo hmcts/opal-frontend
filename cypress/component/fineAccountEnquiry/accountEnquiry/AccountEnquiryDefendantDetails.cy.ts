@@ -430,7 +430,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action',
-    { tags: buildTags('@JIRA-STORY:PO-1874') },
+    { tags: buildTags('@JIRA-STORY:PO-1874', '@JIRA-KEY:POT-4892') },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -454,7 +454,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2. Non youth-only accounts do not show the Add parent or guardian details action',
-    { tags: buildTags('@JIRA-STORY:PO-1874') },
+    { tags: buildTags('@JIRA-STORY:PO-1874', '@JIRA-KEY:POT-4893') },
     () => {
       const scenarios = [
         {
