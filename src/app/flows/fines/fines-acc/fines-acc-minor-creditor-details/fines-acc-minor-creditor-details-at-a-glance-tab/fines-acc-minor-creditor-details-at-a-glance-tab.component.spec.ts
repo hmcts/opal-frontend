@@ -24,14 +24,16 @@ describe('FinesAccMinorCreditorDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should emit addPaymentHold event when handleAddPaymentHold is called', () => {
+    const clickEvent = new MouseEvent('click');
     vi.spyOn(component.addPaymentHold, 'emit');
-    component.handleAddPaymentHold();
+    component.handleAddPaymentHold(clickEvent);
     expect(component.addPaymentHold.emit).toHaveBeenCalled();
   });
 
   it('should emit removePaymentHold event when handleRemovePaymentHold is called', () => {
+    const clickEvent = new MouseEvent('click');
     vi.spyOn(component.removePaymentHold, 'emit');
-    component.handleRemovePaymentHold();
+    component.handleRemovePaymentHold(clickEvent);
     expect(component.removePaymentHold.emit).toHaveBeenCalled();
   });
 

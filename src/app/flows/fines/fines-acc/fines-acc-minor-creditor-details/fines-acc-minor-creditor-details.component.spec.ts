@@ -27,7 +27,10 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     OpalFines,
     'getMinorCreditorAccountHeadingData' | 'getMinorCreditorAccountAtAGlance' | 'clearCache' | 'getResult'
   >;
-  let mockPayloadService: Pick<FinesAccPayloadService, 'transformAccountHeaderForStore' | 'transformPayload'>;
+  let mockPayloadService: Pick<
+    FinesAccPayloadService,
+    'transformMinorCreditorAccountHeaderForStore' | 'transformPayload'
+  >;
 
   beforeEach(async () => {
     routerSpy = {
@@ -48,7 +51,7 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     };
 
     mockPayloadService = {
-      transformAccountHeaderForStore: vi.fn().mockReturnValue(MOCK_FINES_ACCOUNT_STATE),
+      transformMinorCreditorAccountHeaderForStore: vi.fn().mockReturnValue(MOCK_FINES_ACCOUNT_STATE),
       transformPayload: vi.fn().mockImplementation((...args) => {
         return args[0]; // returns the first argument = payload
       }),

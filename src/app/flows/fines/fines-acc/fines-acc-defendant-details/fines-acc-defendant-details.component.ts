@@ -267,9 +267,7 @@ export class FinesAccDefendantDetailsComponent
   }
 
   protected override transformHeaderForStore(accountId: number, header: IOpalFinesAccountDefendantDetailsHeader): void {
-    this.accountStore.setAccountState(
-      this.payloadService.transformAccountHeaderForStore(accountId, header, 'defendant'),
-    );
+    this.accountStore.setAccountState(this.payloadService.transformDefendantAccountHeaderForStore(accountId, header));
   }
 
   protected override transformHeaderForView(

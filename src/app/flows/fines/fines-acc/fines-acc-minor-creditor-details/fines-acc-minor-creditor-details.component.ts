@@ -167,7 +167,7 @@ export class FinesAccMinorCreditorDetailsComponent
     header: IOpalFinesAccountMinorCreditorDetailsHeader,
   ): void {
     this.accountStore.setAccountState(
-      this.payloadService.transformAccountHeaderForStore(accountId, header, 'minorCreditor'),
+      this.payloadService.transformMinorCreditorAccountHeaderForStore(accountId, header),
     );
   }
 
