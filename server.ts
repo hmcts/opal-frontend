@@ -93,16 +93,16 @@ function app(): Express {
     res.status(200).send('OK');
   });
 
-  new Routes().enableFor(
-    server,
-    config.get('features.sso.enabled'),
-    sessionExpiryConfiguration,
+  new Routes().enableFor({
+    app: server,
+    ssoEnabled: config.get('features.sso.enabled'),
+    expiryConfiguration: sessionExpiryConfiguration,
     routesConfiguration,
     sessionConfiguration,
     ssoConfiguration,
-    opalUserServiceConfiguration,
+    opalUserServiceConfig: opalUserServiceConfiguration,
     proxyConfiguration,
-  );
+  });
 
   const serverTransferState = configureMonitoring();
 
