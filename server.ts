@@ -84,23 +84,25 @@ function app(): Express {
   configureSecurityHeaders(server);
   new HealthCheck().enableFor(server, 'opal-frontend');
 
-  const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration } = getRoutesConfig();
+  const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration, proxyConfiguration } =
+    getRoutesConfig();
 
-  configureApiProxyRoutes(server);
+  configureApiProxyRoutes(server, proxyConfiguration);
 
   server.get('/health', (_req: Request, res: Response) => {
     res.status(200).send('OK');
   });
 
-  new Routes().enableFor(
-    server,
-    config.get('features.sso.enabled'),
-    sessionExpiryConfiguration,
+  new Routes().enableFor({
+    app: server,
+    ssoEnabled: config.get('features.sso.enabled'),
+    expiryConfiguration: sessionExpiryConfiguration,
     routesConfiguration,
     sessionConfiguration,
     ssoConfiguration,
-    opalUserServiceConfiguration,
-  );
+    opalUserServiceConfig: opalUserServiceConfiguration,
+    proxyConfiguration,
+  });
 
   const serverTransferState = configureMonitoring();
 

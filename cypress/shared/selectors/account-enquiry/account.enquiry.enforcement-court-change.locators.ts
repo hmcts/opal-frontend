@@ -17,6 +17,7 @@ export const DOM_ELEMENTS = {
   hiddenEnforcementCourtInput: '#facc_enf_court',
   dropdownOptions: '.autocomplete__option',
   submitButton: '#submitForm',
+  buttonGroup: '.govuk-button-group',
   cancelLink: '.govuk-button-group .govuk-link',
   errorSummary: '.govuk-error-summary',
   errorSummaryTitle: '.govuk-error-summary__title',

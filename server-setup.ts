@@ -8,11 +8,13 @@ import { AppInsights } from '@hmcts/opal-frontend-common-node/app-insights';
 import { LaunchDarkly } from '@hmcts/opal-frontend-common-node/launch-darkly';
 import {
   ExpiryConfiguration,
+  ProxyConfiguration,
   RoutesConfiguration,
   SessionStorageConfiguration,
   TransferServerState,
   OpalUserServiceConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
+import { DEFAULT_PROXY_CONFIG } from '@hmcts/opal-frontend-common-node/constants';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -21,6 +23,7 @@ export function getRoutesConfig(): {
   sessionExpiryConfiguration: ExpiryConfiguration;
   routesConfiguration: RoutesConfiguration;
   opalUserServiceConfiguration: OpalUserServiceConfiguration;
+  proxyConfiguration: ProxyConfiguration;
 } {
   const testMode = config.get<boolean>('expiry.testMode');
   const expiryConfigPath = testMode ? 'expiry.test' : 'expiry.default';
@@ -31,10 +34,14 @@ export function getRoutesConfig(): {
     warningThresholdInMilliseconds: config.get<number>(`${expiryConfigPath}.warningThresholdInMilliseconds`),
   };
 
+  const proxyConfiguration: ProxyConfiguration = {
+    ...DEFAULT_PROXY_CONFIG,
+    opalApiUrl: config.get('opal-api.url'),
+    opalFinesServiceUrl: config.get('opal-api.opal-fines-service'),
+    opalUserServiceUrl: config.get('opal-api.opal-user-service'),
+  };
+
   const routesConfiguration: RoutesConfiguration = {
-    opalApiTarget: config.get('opal-api.url'),
-    opalFinesServiceTarget: config.get('opal-api.opal-fines-service'),
-    opalUserServiceTarget: config.get('opal-api.opal-user-service'),
     frontendHostname:
       env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod'),
     prefix: config.get('session.prefix'),
@@ -50,19 +57,23 @@ export function getRoutesConfig(): {
     updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
   };
 
-  return { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration };
+  return { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration, proxyConfiguration };
 }
 
-export function configureApiProxyRoutes(app: Express): void {
-  app.use('/api', OpalApiProxy(config.get('opal-api.url'), config.get('features.ip-logging.enabled')));
-  app.use(
-    '/opal-fines-service',
-    OpalApiProxy(config.get('opal-api.opal-fines-service'), config.get('features.ip-logging.enabled')),
-  );
-  app.use(
-    '/opal-user-service',
-    OpalApiProxy(config.get('opal-api.opal-user-service'), config.get('features.ip-logging.enabled')),
-  );
+export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyConfiguration): void {
+  const ipLoggingEnabled = config.get('features.ip-logging.enabled') as boolean;
+
+  if (proxyConfiguration.opalApiUrl) {
+    app.use('/api', OpalApiProxy(proxyConfiguration.opalApiUrl, ipLoggingEnabled));
+  }
+
+  if (proxyConfiguration.opalFinesServiceUrl) {
+    app.use('/opal-fines-service', OpalApiProxy(proxyConfiguration.opalFinesServiceUrl, ipLoggingEnabled));
+  }
+
+  if (proxyConfiguration.opalUserServiceUrl) {
+    app.use('/opal-user-service', OpalApiProxy(proxyConfiguration.opalUserServiceUrl, ipLoggingEnabled));
+  }
 }
 
 export function configureSession(server: Express): void {
