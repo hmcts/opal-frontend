@@ -393,12 +393,11 @@ void runComponentStage(
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
     try {
-      builder.yarn(shouldRunWithZephyr ? 'zephyr:test:opalComponent' : 'test:opalComponent')
+      builder.yarn(shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component')
     } finally {
-      archiveArtifact(functionalProdArtifactsPath)
-      archiveArtifact("functional-output/screenshots/${browserToRun}/component/**")
+      archiveArtifact("functional-output/component/${browserToRun}/**")
       publishHtmlReport(
-        "functional-output/component-html/${browserToRun}/",
+        "functional-output/component/${browserToRun}/html/",
         'component-report.html',
         "Component Test Report (${browserToRun})"
       )
@@ -521,11 +520,7 @@ void runLegacyStage(
 ) {
   runNightlyStage(enabled, 'Legacy Tests', failureResultValue, 'Legacy tests failed') {
     try {
-      builder.yarn(
-        'yarn test:functionalLegacy ; ' +
-        'yarn test:functionalLegacy:combine:reports ; ' +
-        'yarn test:functionalLegacy:cucumber:combineParallelReport'
-      )
+      builder.yarn('test:functional --mode=legacy')
     } finally {
       archiveArtifact("functional-output/prod/${browserToRun}/legacy/**")
       archiveArtifact("functional-output/screenshots/${browserToRun}/legacy/**")

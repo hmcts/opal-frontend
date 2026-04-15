@@ -335,11 +335,11 @@ export default defineConfig({
       reporterEnabled:
         'cypress-mochawesome-reporter, mocha-junit-reporter, @hmcts/zephyr-automation-nodejs/cypress/ZephyrReporter',
       mochaJunitReporterReporterOptions: {
-        mochaFile: `functional-output/prod/${resolvedBrowserToRun}/component/component-test-output-[hash].xml`,
+        mochaFile: `functional-output/component/${resolvedBrowserToRun}/junit/component-test-output-[hash].xml`,
         toConsole: false,
       },
       cypressMochawesomeReporterReporterOptions: {
-        reportDir: `functional-output/component-report/${resolvedBrowserToRun}`,
+        reportDir: `functional-output/component/${resolvedBrowserToRun}/json`,
         overwrite: false,
         html: false,
         json: true,
