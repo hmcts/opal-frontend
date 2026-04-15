@@ -157,7 +157,7 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
       });
   };
 
-  it('AC1a AC1b AC1d AC2a AC2b AC2c AC2d shows the Your reports panel and Operational reports links in the correct order', () => {
+  it('AC1a AC1b AC1d AC2a AC2b AC2c AC2d shows the Your reports panel and Operational reports links in the correct order', {tags: ['@JIRA-KEY:POT-4786']}, () => {
     commonSetup();
 
     cy.contains(L.pageHeader, 'Reports').should('be.visible');
@@ -176,7 +176,7 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     });
   });
 
-  it('AC1c routes View all your reports to the Your reports summary list screen', () => {
+  it('AC1c routes View all your reports to the Your reports summary list screen', {tags: ['@JIRA-KEY:POT-4787']}, () => {
     commonSetup();
 
     cy.get(L.yourReportsLink).click();
@@ -184,7 +184,7 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     assertNavigationTarget(reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports));
   });
 
-  it('AC3a routes Operational reports by enforcement to the correct summary list screen', () => {
+  it('AC3a routes Operational reports by enforcement to the correct summary list screen', {tags: ['@JIRA-KEY:POT-4788']}, () => {
     commonSetup();
 
     cy.get(L.operationalReportsByEnforcementLink).click();
@@ -194,7 +194,7 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     );
   });
 
-  it('AC3b routes Operational reports by payments to the correct summary list screen', () => {
+  it('AC3b routes Operational reports by payments to the correct summary list screen', {tags: ['@JIRA-KEY:POT-4789']}, () => {
     commonSetup();
 
     cy.get(L.operationalReportsByPaymentsLink).click();
@@ -204,25 +204,25 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     );
   });
 
-  it('AC1c renders the Your reports summary list heading', () => {
+  it('AC1c renders the Your reports summary list heading', {tags: ['@JIRA-KEY:POT-4790']}, () => {
     yourReportsSummaryListSetup();
 
     cy.contains(L.pageHeader, 'Your reports').should('be.visible');
   });
 
-  it('AC3a renders the Operational reports by enforcement summary list heading', () => {
+  it('AC3a renders the Operational reports by enforcement summary list heading', {tags: ['@JIRA-KEY:POT-4791']}, () => {
     operationalReportsByEnforcementSummaryListSetup();
 
     cy.contains(L.pageHeader, 'Operational reports (by enforcement)').should('be.visible');
   });
 
-  it('AC3b renders the Operational reports by payments summary list heading', () => {
+  it('AC3b renders the Operational reports by payments summary list heading', {tags: ['@JIRA-KEY:POT-4792']}, () => {
     operationalReportsByPaymentsSummaryListSetup();
 
     cy.contains(L.pageHeader, 'Operational reports (by payments)').should('be.visible');
   });
 
-  it('AC4d hides the Operational reports group when the user has no operational report permissions', () => {
+  it('AC4d hides the Operational reports group when the user has no operational report permissions', {tags: ['@JIRA-KEY:POT-4793']}, () => {
     noOperationalPermissionsSetup();
 
     cy.contains(L.pageHeader, 'Reports').should('be.visible');
@@ -232,7 +232,7 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
   });
 
-  it('AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible', () => {
+  it('AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible', {tags: ['@JIRA-KEY:POT-4794']}, () => {
     enforcementPermissionSetup();
 
     cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
@@ -242,7 +242,7 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
   });
 
-  it('AC4b AC4c shows only the payments link and keeps the Operational reports heading visible', () => {
+  it('AC4b AC4c shows only the payments link and keeps the Operational reports heading visible', {tags: ['@JIRA-KEY:POT-4795']}, () => {
     paymentsPermissionSetup();
 
     cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');

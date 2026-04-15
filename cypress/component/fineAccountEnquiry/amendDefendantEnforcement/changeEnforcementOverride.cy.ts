@@ -167,7 +167,7 @@ function adultOrYouthOnlySetup() {
 }
 
 describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }, () => {
-  it('AC1. Selecting Change enforcement override on the Enforcement tab navigates to the change screen', () => {
+  it('AC1. Selecting Change enforcement override on the Enforcement tab navigates to the change screen', {tags: ['@JIRA-KEY:POT-4768', '@JIRA-KEY:POT-4781']}, () => {
     const { accountId } = registerChangeEnforcementOverrideIntercepts(buildParentGuardianHeaderMock());
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
@@ -179,14 +179,14 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
   });
 
-  it('AC1a, AC1b. Should render the change enforcement override form with the individual account identifier', () => {
+  it('AC1a, AC1b. Should render the change enforcement override form with the individual account identifier', {tags: ['@JIRA-KEY:POT-4769']}, () => {
     parentGuardianSetup();
 
     cy.get(ENF_OVR.title).should('contain.text', 'Mr Robert THOMSON - 177A');
     cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');
   });
 
-  it('AC1c, AC1ci, AC1d. Should display the override dropdown, results reference data, add override button and cancel link', () => {
+  it('AC1c, AC1ci, AC1d. Should display the override dropdown, results reference data, add override button and cancel link', {tags: ['@JIRA-KEY:POT-4770']}, () => {
     parentGuardianSetup();
 
     cy.get(ENF_OVR.subtitle).should('contain.text', 'Select an enforcement override');
@@ -211,7 +211,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
     cy.contains('a.govuk-link', /^Cancel$/i).should('exist');
   });
 
-  it('AC2, AC2a, AC2ai. Enforcer dropdown displays dynamically for overrides that require an enforcer', () => {
+  it('AC2, AC2a, AC2ai. Enforcer dropdown displays dynamically for overrides that require an enforcer', {tags: ['@JIRA-KEY:POT-4771']}, () => {
     parentGuardianSetup();
 
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -243,7 +243,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
     cy.get(ENF_OVR.enforcerDropdownOptions).contains('The DWP (3)').should('exist');
   });
 
-  it('AC3, AC3a, AC3ai. LJA dropdown displays dynamically for overrides that require a Local Justice Area', () => {
+  it('AC3, AC3a, AC3ai. LJA dropdown displays dynamically for overrides that require a Local Justice Area', {tags: ['@JIRA-KEY:POT-4772']}, () => {
     parentGuardianSetup();
 
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -259,7 +259,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
     cy.get(ENF_OVR.localJusticeAreaDropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
   });
 
-  it('AC4a. Error when no enforcement override is selected', () => {
+  it('AC4a. Error when no enforcement override is selected', {tags: ['@JIRA-KEY:POT-4773']}, () => {
     parentGuardianSetup();
 
     clearEnforcementOverrideSelection();
@@ -272,7 +272,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
       .should('contain.text', 'Select an enforcement override');
   });
 
-  it('AC4b. Error when no enforcer is selected for an override that requires one', () => {
+  it('AC4b. Error when no enforcer is selected for an override that requires one', {tags: ['@JIRA-KEY:POT-4774']}, () => {
     parentGuardianSetup();
 
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -293,7 +293,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
       .should('contain.text', 'Select an enforcer');
   });
 
-  it('AC4c. Error when no Local Justice Area is selected for an override that requires one', () => {
+  it('AC4c. Error when no Local Justice Area is selected for an override that requires one', {tags: ['@JIRA-KEY:POT-4775']}, () => {
     parentGuardianSetup();
 
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -312,7 +312,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
       .should('contain.text', 'Select a Local Justice Area');
   });
 
-  it('AC5. Valid submission returns to Enforcement tab with success banner and updated override panel', () => {
+  it('AC5. Valid submission returns to Enforcement tab with success banner and updated override panel', {tags: ['@JIRA-KEY:POT-4776']}, () => {
     const { accountId } = parentGuardianSetup();
     const updatedEnforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
@@ -372,7 +372,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
     cy.get(ENF.localJusticeAreaValue).should('exist').and('contain.text', "Bedfordshire Magistrates' Court(4165)");
   });
 
-  it('AC6a. Cancel without changes returns to the Enforcement tab without confirmation', () => {
+  it('AC6a. Cancel without changes returns to the Enforcement tab without confirmation', {tags: ['@JIRA-KEY:POT-4777']}, () => {
     parentGuardianSetup();
 
     cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');
@@ -390,7 +390,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
     cy.get(ENF_OVR.enfOverrideDropdown).should('not.exist');
   });
 
-  it('AC6b. Cancel after selecting a value shows confirmation before navigating away', () => {
+  it('AC6b. Cancel after selecting a value shows confirmation before navigating away', {tags: ['@JIRA-KEY:POT-4778']}, () => {
     parentGuardianSetup();
 
     cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');
@@ -418,7 +418,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
 });
 
 describe('Change Enforcement Override - Company', { tags: ['@PO-1871'] }, () => {
-  it('AC1. Selecting Change enforcement override on the company Enforcement tab navigates to the change screen', () => {
+  it('AC1. Selecting Change enforcement override on the company Enforcement tab navigates to the change screen', {tags: ['@JIRA-KEY:POT-4779']}, () => {
     const { accountId } = registerChangeEnforcementOverrideIntercepts(buildCompanyHeaderMock());
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
@@ -430,7 +430,7 @@ describe('Change Enforcement Override - Company', { tags: ['@PO-1871'] }, () => 
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
   });
 
-  it('AC1a, AC1b. Should render the change enforcement override form with the company account identifier', () => {
+  it('AC1a, AC1b. Should render the change enforcement override form with the company account identifier', {tags: ['@JIRA-KEY:POT-4780']}, () => {
     companySetup();
 
     cy.get(ENF_OVR.title).should('contain.text', 'Test Org Ltd - 177A');
@@ -440,7 +440,7 @@ describe('Change Enforcement Override - Company', { tags: ['@PO-1871'] }, () => 
 });
 
 describe('Change Enforcement Override - Adult or youth only', { tags: ['@PO-1869'] }, () => {
-  it('AC1. Selecting Change enforcement override on the Enforcement tab navigates to the change screen', () => {
+  it('AC1. Selecting Change enforcement override on the Enforcement tab navigates to the change screen', {tags: ['@JIRA-KEY:POT-4768', '@JIRA-KEY:POT-4781']}, () => {
     const { accountId } = registerChangeEnforcementOverrideIntercepts(buildAdultOrYouthHeaderMock());
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
@@ -452,7 +452,7 @@ describe('Change Enforcement Override - Adult or youth only', { tags: ['@PO-1869
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
   });
 
-  it('AC1a, AC1b. Should render the change enforcement override form with the adult or youth only account identifier', () => {
+  it('AC1a, AC1b. Should render the change enforcement override form with the adult or youth only account identifier', {tags: ['@JIRA-KEY:POT-4782']}, () => {
     adultOrYouthOnlySetup();
 
     cy.get(ENF_OVR.title).should('contain.text', 'Mr Robert THOMSON - 177A');
