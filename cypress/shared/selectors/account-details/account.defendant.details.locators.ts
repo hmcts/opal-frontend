@@ -74,7 +74,7 @@ export const AccountDefendantDetailsLocators = {
     /** “Defendant Details” section heading within the tab. */
     title: 'app-fines-acc-defendant-details-defendant-tab h2.govuk-heading-s',
     /** Right-aligned “Change” link for the Defendant details section. */
-    changeLink: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-column-one-third .govuk-link',
+    changeLink: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-row > .govuk-grid-column-one-third .govuk-link',
   },
 
   // ──────────────────────────────
@@ -170,6 +170,6 @@ export const AccountDefendantDetailsLocators = {
     sideColumn: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-column-one-third',
 
     /** “Convert to a company account” action link. */
-    convertToCompany: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-column-one-third p > a',
+    convertAccount: 'app-fines-acc-defendant-details-defendant-tab > .govuk-grid-column-one-third p > a',
   },
 };

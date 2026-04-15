@@ -68,5 +68,5 @@ export const DEFENDANT_DETAILS = {
   courtHearingLanguage: '#languagePreferencesHearing_languageValue',
 
   // Links
-  defendantChange: 'a[class="govuk-!-margin-bottom-0 govuk-link"]',
+  defendantChange: 'a.govuk-link.govuk-\\!-margin-bottom-0',
 };
