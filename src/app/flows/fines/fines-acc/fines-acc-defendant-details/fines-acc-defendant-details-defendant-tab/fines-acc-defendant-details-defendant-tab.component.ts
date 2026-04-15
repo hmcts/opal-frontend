@@ -36,7 +36,8 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
     };
   }
 
-  public handleConvertAccount(): void {
+  public handleConvertAccount(event?: Event): void {
+    event?.preventDefault();
     if (this.convertAction?.interactive) {
       this.convertAccount.emit(this.convertAction.partyType);
     }

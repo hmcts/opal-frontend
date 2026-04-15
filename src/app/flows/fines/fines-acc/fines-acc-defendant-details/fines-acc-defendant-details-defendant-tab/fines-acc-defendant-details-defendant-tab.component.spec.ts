@@ -123,11 +123,13 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   it('should emit the company party type when the convert link is clicked', () => {
     fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
     fixture.detectChanges();
+    const event = { preventDefault: vi.fn() } as unknown as Event;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component.convertAccount, 'emit');
-    component.handleConvertAccount();
+    component.handleConvertAccount(event);
 
+    expect(event.preventDefault).toHaveBeenCalled();
     expect(component.convertAccount.emit).toHaveBeenCalledWith(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
   });
 
@@ -144,11 +146,13 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
       },
     });
     fixture.detectChanges();
+    const event = { preventDefault: vi.fn() } as unknown as Event;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component.convertAccount, 'emit');
-    component.handleConvertAccount();
+    component.handleConvertAccount(event);
 
+    expect(event.preventDefault).toHaveBeenCalled();
     expect(component.convertAccount.emit).toHaveBeenCalledWith(
       FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
     );

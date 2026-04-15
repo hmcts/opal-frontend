@@ -37,10 +37,9 @@
         @if (convertAction.interactive) {
           <a
             id="defendant-convert-action-link"
-            tabindex="0"
             class="govuk-link govuk-link--no-visited-state"
-            (click)="handleConvertAccount()"
-            (keyup.enter)="handleConvertAccount()"
+            href=""
+            (click)="handleConvertAccount($event)"
             >{{ convertAction.label }}</a
           >
         } @else {
