@@ -428,7 +428,10 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
   );
 
-  it('AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action', { tags: buildTags('@JIRA-STORY:PO-1874') }, () => {
+  it(
+    'AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action',
+    { tags: buildTags('@JIRA-STORY:PO-1874') },
+    () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
@@ -446,9 +449,13 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
       cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('be.visible');
-    });
+    },
+  );
 
-  it('AC2. Non youth-only accounts do not show the Add parent or guardian details action', { tags: buildTags('@JIRA-STORY:PO-1874') }, () => {
+  it(
+    'AC2. Non youth-only accounts do not show the Add parent or guardian details action',
+    { tags: buildTags('@JIRA-STORY:PO-1874') },
+    () => {
       const scenarios = [
         {
           // Adult Account
@@ -488,5 +495,6 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
         cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('not.exist');
       });
-    });
+    },
+  );
 });

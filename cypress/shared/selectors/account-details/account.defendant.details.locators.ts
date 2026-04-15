@@ -74,7 +74,8 @@ export const AccountDefendantDetailsLocators = {
     /** “Defendant Details” section heading within the tab. */
     title: 'app-fines-acc-defendant-details-defendant-tab h2.govuk-heading-s',
     /** Right-aligned “Change” link for the Defendant details section. */
-    changeLink: 'app-fines-acc-defendant-details-defendant-tab .govuk-grid-row > .govuk-grid-column-one-third .govuk-link',
+    changeLink:
+      'app-fines-acc-defendant-details-defendant-tab .govuk-grid-row > .govuk-grid-column-one-third .govuk-link',
   },
 
   // ──────────────────────────────
