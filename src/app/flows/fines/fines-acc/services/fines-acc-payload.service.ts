@@ -65,8 +65,8 @@ export class FinesAccPayloadService {
   /**
    * Transforms the given IOpalFinesAccountDefendantDetailsHeader into IFinesAccountState for the store
    * @param account_id The account ID for which the header data was fetched. This is needed to set the account_id in the store state, as the header data does not contain the account_id field.
-   * @param headingData The heading data as either IOpalFinesAccountDefendantDetailsHeader or IOpalFinesAccountMinorCreditorDetailsHeader
-   * @returns The transformed account state to be set in the store, containing the common fields as well as correctly mapped party_id and party_type based on the partyType parameter.
+   * @param headingData The heading data as either IOpalFinesAccountDefendantDetailsHeader
+   * @returns The transformed account state to be set in the store.
    */
   public transformDefendantAccountHeaderForStore(
     account_id: number,
@@ -104,10 +104,10 @@ export class FinesAccPayloadService {
   }
 
   /**
-   * Transforms the given IOpalFinesAccountDefendantDetailsHeader into IFinesAccountState for the store
+   * Transforms the given IOpalFinesAccountMinorCreditorDetailsHeader into IFinesAccountState for the store
    * @param account_id The account ID for which the header data was fetched. This is needed to set the account_id in the store state, as the header data does not contain the account_id field.
-   * @param headingData The heading data as either IOpalFinesAccountDefendantDetailsHeader or IOpalFinesAccountMinorCreditorDetailsHeader
-   * @returns The transformed account state to be set in the store, containing the common fields as well as correctly mapped party_id and party_type based on the partyType parameter.
+   * @param headingData The heading data as either IOpalFinesAccountMinorCreditorDetailsHeader
+   * @returns The transformed account state to be set in the store.
    */
   public transformMinorCreditorAccountHeaderForStore(
     account_id: number,

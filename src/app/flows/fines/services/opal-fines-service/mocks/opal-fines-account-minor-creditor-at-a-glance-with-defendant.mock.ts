@@ -27,7 +27,6 @@ export const OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK: 
       title: 'Mr',
       forenames: 'John',
       surname: 'Doe',
-      hearing_date: '07/07/2026',
     },
     payment: {
       is_bacs: true,

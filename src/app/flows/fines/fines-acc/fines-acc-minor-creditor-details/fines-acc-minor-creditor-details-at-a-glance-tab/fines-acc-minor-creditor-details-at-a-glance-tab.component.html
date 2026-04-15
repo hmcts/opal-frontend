@@ -99,9 +99,6 @@
           {{ tabData.defendant.forenames }}
           {{ tabData.defendant.surname | uppercase }}
         </p>
-
-        <h3 [class]="style.key">Hearing Date</h3>
-        <p [class]="style.value">{{ tabData.defendant.hearing_date | dateFormat: 'dd/MM/yyyy' : 'dd MMMM yyyy' }}</p>
       </div>
     }
 

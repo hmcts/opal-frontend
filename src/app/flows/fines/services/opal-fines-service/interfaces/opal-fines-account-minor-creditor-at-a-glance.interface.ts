@@ -12,7 +12,6 @@ export interface IOpalFinesAccountMinorCreditorAtAGlance {
     title: string;
     forenames: string;
     surname: string;
-    hearing_date: string;
   };
   payment: {
     is_bacs: boolean;
