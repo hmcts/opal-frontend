@@ -27,7 +27,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-1866 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4455
+  @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4455
   Scenario: Add enforcement override page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                             |

@@ -53,10 +53,57 @@ describe('FinesAccPaymentTermsAmendDeniedComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate back to account summary on navigateBackToAccountSummary', () => {
+  it('should enforce go back link template semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesAccPaymentTermsAmendDeniedComponent as any).ɵcmp?.consts ?? []).filter(
+      (entry: unknown) => Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesAccPaymentTermsAmendDeniedComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const goBackLinkConst = templateConsts.find(
+      (entry) => entry.includes('govuk-link') && entry.includes('govuk-!-margin-top-4') && entry.includes('click'),
+    );
+
+    expect(goBackLinkConst).toBeTruthy();
+    expect(goBackLinkConst).toContain('href');
+    expect(goBackLinkConst).toContain('');
+    expect(goBackLinkConst).toContain('govuk-link--no-visited-state');
+    expect(goBackLinkConst).not.toContain('tabindex');
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should pass $event from go back link click and preserve logic', () => {
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Go back link not found');
+
+    expect(link.textContent?.trim()).toBe('Go back');
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'navigateBackToAccountSummary');
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+
+    link.dispatchEvent(clickEvent);
+
+    expect(handlerSpy).toHaveBeenCalledWith(clickEvent);
+    expect(clickEvent.defaultPrevented).toBe(true);
+    expect(routerSpy).toHaveBeenCalledWith([`../../../details`], { relativeTo: component['route'] });
+  });
+
+  it('should prevent default and navigate back to account summary on navigateBackToAccountSummary', () => {
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+
     component.navigateBackToAccountSummary(event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
     expect(routerSpy).toHaveBeenCalledWith([`../../../details`], { relativeTo: component['route'] });
   });
 });

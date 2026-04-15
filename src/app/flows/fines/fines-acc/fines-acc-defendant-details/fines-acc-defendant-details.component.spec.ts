@@ -169,6 +169,16 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
+  it('should call router.navigate when navigateToChangeEnforcementOverridePage is called', () => {
+    component.navigateToChangeEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/change`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
   it('should call router.navigate when navigateToChangeEnforcementCourtPage is called', () => {
     component.navigateToChangeEnforcementCourtPage();
 
@@ -178,6 +188,17 @@ describe('FinesAccDefendantDetailsComponent', () => {
       ],
       {
         relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToChangeCollectionOrderPage is called', () => {
+    component.navigateToChangeCollectionOrderPage(true);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`],
+      {
+        relativeTo: component['activatedRoute'],
+        state: { currentCollectionOrderFlag: true },
       },
     );
   });

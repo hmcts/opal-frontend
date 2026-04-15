@@ -206,7 +206,9 @@
         [hasAccountMaintenancePermission]="hasPermission('account-maintenance')"
         [hasEnterEnforcementPermission]="hasPermission('enter-enforcement')"
         (addEnforcementOverride)="navigateToAddEnforcementOverridePage()"
+        (changeEnforcementOverride)="navigateToChangeEnforcementOverridePage()"
         (changeEnforcementCourt)="navigateToChangeEnforcementCourtPage()"
+        (changeCollectionOrder)="navigateToChangeCollectionOrderPage($event)"
       ></app-fines-acc-defendant-details-enforcement-tab>
     }
   }

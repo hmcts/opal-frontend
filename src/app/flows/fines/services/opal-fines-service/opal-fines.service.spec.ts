@@ -489,6 +489,37 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
+  it('should retry the offence code request after an error for the same code', () => {
+    const refData = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0];
+    const expectedResponse: IOpalFinesOffencesRefData = {
+      count: 1,
+      refData: [refData],
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+    const firstError = vi.fn();
+    const secondNext = vi.fn();
+
+    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe({
+      error: firstError,
+    });
+
+    const firstReq = httpMock.expectOne(expectedUrl);
+    expect(firstReq.request.method).toBe('GET');
+    firstReq.flush({ message: 'request failed' }, { status: 500, statusText: 'Server Error' });
+
+    expect(firstError).toHaveBeenCalledTimes(1);
+
+    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe({
+      next: secondNext,
+    });
+
+    const secondReq = httpMock.expectOne(expectedUrl);
+    expect(secondReq.request.method).toBe('GET');
+    secondReq.flush(expectedResponse);
+
+    expect(secondNext).toHaveBeenCalledWith(expectedResponse);
+  });
+
   it('should send a GET request to major creditor ref data API', () => {
     const businessUnit = 1;
     const mockMajorCreditor: IOpalFinesMajorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
@@ -1080,7 +1111,7 @@ describe('OpalFines', () => {
   it('should clear all account detail caches', () => {
     service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     service['cache']['defendantAccountPartyCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-    service['cache']['defendantAccountparentOrGuardianAccountPartyCache$'] = of(
+    service['cache']['defendantAccountParentOrGuardianAccountPartyCache$'] = of(
       OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
     );
     service['cache']['defendantAccountEnforcementCache$'] = of(
@@ -1103,7 +1134,7 @@ describe('OpalFines', () => {
 
     expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
     expect(service['cache']['defendantAccountPartyCache$']).toBeNull();
-    expect(service['cache']['defendantAccountparentOrGuardianAccountPartyCache$']).toBeNull();
+    expect(service['cache']['defendantAccountParentOrGuardianAccountPartyCache$']).toBeNull();
     expect(service['cache']['defendantAccountEnforcementCache$']).toBeNull();
     expect(service['cache']['defendantAccountImpositionsCache$']).toBeNull();
     expect(service['cache']['defendantAccountHistoryAndNotesCache$']).toBeNull();

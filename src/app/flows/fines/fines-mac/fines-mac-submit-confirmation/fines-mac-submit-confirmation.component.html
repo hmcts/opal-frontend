@@ -5,20 +5,14 @@
     <li>
       <a
         id="createNewAccount"
-        class="govuk-link"
-        (click)="createNewAccount()"
-        (keyup.enter)="createNewAccount()"
-        tabindex="0"
+        class="govuk-link govuk-link--no-visited-state"
+        href=""
+        (click)="createNewAccount($event)"
         >Create a new account</a
       >
     </li>
     <li>
-      <a
-        id="accountsInReview"
-        class="govuk-link"
-        (click)="seeAllAccounts()"
-        (keyup.enter)="seeAllAccounts()"
-        tabindex="0"
+      <a id="accountsInReview" class="govuk-link govuk-link--no-visited-state" href="" (click)="seeAllAccounts($event)"
         >See all accounts in review</a
       >
     </li>

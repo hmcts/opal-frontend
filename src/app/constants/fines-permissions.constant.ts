@@ -12,4 +12,6 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'amend-payment-terms': 9,
   'enter-enforcement': 10,
   consolidate: 13,
+  'operational-report-by-enforcement': 14,
+  'operational-report-by-payments': 15,
 };

@@ -49,6 +49,7 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
 
   detailsDaysInDefault: '[id="enforcementActionDetailsDays in defaultKey"]',
   detailsReason: '#enforcementActionDetailsReasonKey',
-
+  collectionOrderChange: '#enforcementOverviewDetailsCollection_order_statusActions > a',
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
+  changeEnforcementOverrideLink: '#enforcementOverrideDetailsEnforcement_overrideActions > .govuk-link',
 } as const;

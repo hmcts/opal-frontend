@@ -14,12 +14,8 @@
             "
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="collection_order_status"
-            [actionEnabled]="
-              hasAccountMaintenancePermission &&
-              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
-                ? true
-                : false
-            "
+            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeCollectionOrder()"
           >
             <ng-container name>Collection Order status</ng-container>
             <ng-container value>
@@ -31,10 +27,7 @@
                 {{ 'No collection order' }}
               }
             </ng-container>
-            @if (
-              hasAccountMaintenancePermission &&
-              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
-            ) {
+            @if (hasAccountMaintenancePermission) {
               <ng-container action>Change</ng-container>
             }
           </div>
@@ -290,6 +283,7 @@
             summaryListId="enforcementOverrideDetails"
             summaryListRowId="enforcement_override"
             [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeEnforcementOverride()"
           >
             <ng-container name>Enforcement override</ng-container>
             <ng-container value>
@@ -297,7 +291,10 @@
                 tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
               }})
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (
+              hasAccountMaintenancePermission &&
+              this.tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+            ) {
               <ng-container action>Change</ng-container>
             }
           </div>
@@ -338,7 +335,7 @@
     <h2 [class]="style.heading">Actions</h2>
     @if (hasEnterEnforcementPermission) {
       <p>
-        <a class="govuk-link" tabindex="0">Add enforcement action</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="">Add enforcement action</a>
       </p>
     }
     @if (
@@ -346,13 +343,13 @@
       !tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
     ) {
       <p>
-        <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddEnforcementOverride($event)"
+        <a class="govuk-link govuk-link--no-visited-state" href="" (click)="handleAddEnforcementOverride($event)"
           >Add enforcement override</a
         >
       </p>
     }
     <p>
-      <a class="govuk-link" tabindex="0">Request an HMRC check</a>
+      <a class="govuk-link govuk-link--no-visited-state" href="">Request an HMRC check</a>
     </p>
   </div>
 }
