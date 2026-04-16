@@ -1,4 +1,4 @@
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import {
   createParentGuardianHeaderMockWithName,
   DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
@@ -18,7 +18,7 @@ import { interceptAtAGlance, interceptDefendantHeader } from './intercept/defend
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
-import { DEFENDANT_DETAILS } from './constants/defendant_details_elements';
+import { DEFENDANT_DETAILS } from '../../../shared/selectors/account-enquiry/account.enquiry.defendant-details.locators';
 import { setLanguagePref } from './Utils/SharedFunctions';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';

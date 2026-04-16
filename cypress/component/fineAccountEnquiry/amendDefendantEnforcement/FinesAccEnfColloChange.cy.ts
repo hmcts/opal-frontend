@@ -4,7 +4,7 @@ import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupCompo
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { DOM_ELEMENTS as VERSION_CONTROL } from '../accountEnquiry/constants/global_version_control_elements';
+import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import {
   interceptDefendantHeader,
   interceptEnforcementStatus,

@@ -25,9 +25,9 @@ export const AccountSearchMinorCreditorsLocators = {
 
   panel: {
     /** Minor creditors panel root (useful for scoping). */
-    root: '#minorCreditors',
+    root: 'opal-lib-govuk-tabs-panel#minorCreditors, #minorCreditors',
     /** Optional heading within panel, if needed. */
-    heading: '#minorCreditors h1.govuk-heading-l',
+    heading: 'opal-lib-govuk-tabs-panel#minorCreditors h1.govuk-heading-l, #minorCreditors h1.govuk-heading-l',
   },
 
   // ──────────────────────────────
@@ -51,25 +51,41 @@ export const AccountSearchMinorCreditorsLocators = {
   // Individual sub-form fields (within conditional)
   // ──────────────────────────────
   individual: {
+    lastNameLabel: '[for="fsa_search_account_minor_creditors_last_name"]',
     lastNameInput: '#fsa_search_account_minor_creditors_last_name',
     lastNameExactMatchCheckbox: '#fsa_search_account_minor_creditors_last_name_exact_match',
+    lastNameError: '#fsa_search_account_minor_creditors_last_name-error-message',
 
+    firstNamesLabel: '[for="fsa_search_account_minor_creditors_first_names"]',
     firstNamesInput: '#fsa_search_account_minor_creditors_first_names',
     firstNamesExactMatchCheckbox: '#fsa_search_account_minor_creditors_first_names_exact_match',
+    firstNamesError: '#fsa_search_account_minor_creditors_first_names-error-message',
 
+    addressLine1Label: '[for="fsa_search_account_minor_creditors_individual_address_line_1"]',
     addressLine1Input: '#fsa_search_account_minor_creditors_individual_address_line_1',
+    addressLine1Error: '#fsa_search_account_minor_creditors_individual_address_line_1-error-message',
+
+    postcodeLabel: '[for="fsa_search_account_minor_creditors_individual_post_code"]',
     postcodeInput: '#fsa_search_account_minor_creditors_individual_post_code',
+    postcodeError: '#fsa_search_account_minor_creditors_individual_post_code-error-message',
   },
 
   // ──────────────────────────────
   // Company sub-form fields (within conditional)
   // ──────────────────────────────
   company: {
+    companyNameLabel: '[for="fsa_search_account_minor_creditors_company_name"]',
     companyNameInput: '#fsa_search_account_minor_creditors_company_name',
     companyNameExactMatchCheckbox: '#fsa_search_account_minor_creditors_company_name_exact_match',
+    companyNameError: '#fsa_search_account_minor_creditors_company_name-error-message',
 
+    companyAddressLine1Label: '[for="fsa_search_account_minor_creditors_company_address_line_1"]',
     companyAddressLine1Input: '#fsa_search_account_minor_creditors_company_address_line_1',
+    companyAddressLine1Error: '#fsa_search_account_minor_creditors_company_address_line_1-error-message',
+
+    companyPostcodeLabel: '[for="fsa_search_account_minor_creditors_company_post_code"]',
     companyPostcodeInput: '#fsa_search_account_minor_creditors_company_post_code',
+    companyPostcodeError: '#fsa_search_account_minor_creditors_company_post_code-error-message',
   },
 } as const;
 

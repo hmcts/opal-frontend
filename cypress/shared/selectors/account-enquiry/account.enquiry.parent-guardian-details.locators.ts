@@ -1,4 +1,11 @@
-// Element selectors for Parent or Guardian details
+/**
+ * @file account.enquiry.parent-guardian-details.locators.ts
+ * @description
+ * Shared selector map for the Account Enquiry parent-or-guardian tab.
+ *
+ * @remarks
+ * - Preserves the legacy export name used by component specs to keep migration mechanical.
+ */
 export const DOM_ELEMENTS = {
   // Header actions
   changeLink: 'a.govuk-link.govuk-\\!-margin-bottom-0',
@@ -36,4 +43,4 @@ export const DOM_ELEMENTS = {
 
   // Account Comments
   accountCommentsNotesKey: '#accountCommentsNotesKey',
-};
+} as const;

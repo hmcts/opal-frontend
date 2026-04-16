@@ -70,7 +70,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
       });
 
       // Ac4b - Issuing Authority and court details - AC4b
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('be.visible');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('contain', 'Aberdeen Sheriff Court District (9701)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('contain', 'Camberwell Green Magistrates Court (104)');
 
       // Ac4a - Account Details (No heading) - AC4a
@@ -151,7 +151,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
         cy.wrap($el).should('contain', expectedSections[index]);
       });
       // Issuing authority and enforcement court
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('be.visible');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('contain', 'Aberdeen Sheriff Court District (9701)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('contain', 'Camberwell Green Magistrates Court (104)');
 
       // Account details and defendant type
