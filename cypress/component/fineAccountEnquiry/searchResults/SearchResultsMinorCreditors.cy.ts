@@ -274,7 +274,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
   );
 
   it(
-    '(AC4f) Should sort by each column - ascending then descending',
+    '(AC4f) Should sort by each column - ascending then descending (FinesSaResultsComponent - Minor Creditors)',
     { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3788') },
     () => {
       setupComponent(SORTING_MINOR_CREDITORS_MOCK);

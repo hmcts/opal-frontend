@@ -59,7 +59,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   };
 
   it(
-    'should render the component',
+    'should render the component (FinesMacCompanyDetailsComponent)',
     { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-365', '@JIRA-KEY:POT-4061') },
     () => {
       setupComponent(null, 'company');

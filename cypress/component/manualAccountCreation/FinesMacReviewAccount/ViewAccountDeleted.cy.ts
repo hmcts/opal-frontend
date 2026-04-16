@@ -225,7 +225,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   );
 
   it(
-    '(AC.6) should render all elements on the screen for company defendant type',
+    '(AC.6) should render all elements on the screen for company defendant type (FinesMacReviewAccountComponent - View Deleted Account)',
     { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4376') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);

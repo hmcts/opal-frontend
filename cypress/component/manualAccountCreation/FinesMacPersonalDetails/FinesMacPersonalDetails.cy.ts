@@ -122,7 +122,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should load button for next page for adultOrYouthOnly Defendant',
+    '(AC.1) should load button for next page for adultOrYouthOnly Defendant (FinesMacPersonalDetailsComponent)',
     { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-433', '@JIRA-KEY:POT-4337') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');

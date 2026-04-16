@@ -368,7 +368,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it(
     '(AC.1) should convert PCR input to uppercase',
-    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-1450', '@JIRA-KEY:POT-4107', '@JIRA-KEY:POT-4109') },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-1450', '@JIRA-KEY:POT-4107') },
     () => {
       setupComponent(null, 'company');
 
@@ -399,8 +399,8 @@ describe('FinesMacCourtDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should convert PCR input to uppercase',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-1448', '@JIRA-KEY:POT-4107', '@JIRA-KEY:POT-4109') },
+    '(AC.1) should convert PCR input to uppercase (Adult or youth only)',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-1448', '@JIRA-KEY:POT-4109') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
