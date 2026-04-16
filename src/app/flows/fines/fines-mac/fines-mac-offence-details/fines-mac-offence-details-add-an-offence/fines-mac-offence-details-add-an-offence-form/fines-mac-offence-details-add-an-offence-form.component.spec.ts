@@ -833,6 +833,61 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(superHandleFormSubmitSpy).toHaveBeenCalledWith(event);
   });
 
+  it('should flag amount imposed as invalid when the value is zero', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(0);
+    amountImposedControl.updateValueAndValidity();
+
+    expect(amountImposedControl.errors).toEqual(expect.objectContaining({ invalidZeroAmount: true }));
+  });
+
+  it('should expose a non-numeric amount imposed error message when the value is invalid text', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue('abc');
+    amountImposedControl.updateValueAndValidity();
+
+    expect(amountImposedControl.errors).toEqual(expect.objectContaining({ invalidAmountValue: true }));
+    expect(component['fieldErrors']['fm_offence_details_amount_imposed_0']).toEqual(
+      expect.objectContaining({
+        invalidAmountValue: expect.objectContaining({
+          message: 'Enter a valid amount',
+          priority: 2,
+        }),
+      }),
+    );
+  });
+
+  it('should not emit form submission when amount imposed is negative', () => {
+    const formSubmitSpy = vi.spyOn(component['formSubmit'], 'emit');
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue('OFF1234');
+    offenceIdControl.setValue(123);
+    amountImposedControl.setValue(-10);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(amountImposedControl.errors).toEqual(expect.objectContaining({ invalidNegativeAmount: true }));
+    expect(component.form.invalid).toBe(true);
+    expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
   it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
