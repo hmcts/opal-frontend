@@ -485,7 +485,7 @@ describe('FinesMacMinorCreditor', () => {
   );
   it(
     '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
-    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-1450', '@JIRA-KEY:POT-4197', '@JIRA-KEY:POT-4199') },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-1450', '@JIRA-KEY:POT-4197') },
     () => {
       setupComponent(null, 'company');
 
@@ -529,8 +529,8 @@ describe('FinesMacMinorCreditor', () => {
   );
 
   it(
-    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
-    { tags: buildTags('@JIRA-STORY:PO-242', '@JIRA-STORY:PO-1448', '@JIRA-KEY:POT-4197', '@JIRA-KEY:POT-4199') },
+    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input (Adult or youth only)',
+    { tags: buildTags('@JIRA-STORY:PO-242', '@JIRA-STORY:PO-1448', '@JIRA-KEY:POT-4199') },
     () => {
       setupComponent(null, 'AdultOrYouthOnly');
 

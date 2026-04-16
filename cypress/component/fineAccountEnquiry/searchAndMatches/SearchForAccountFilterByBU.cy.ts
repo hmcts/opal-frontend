@@ -15,8 +15,9 @@ import { FinesSaSearchFilterBusinessUnitComponent } from 'src/app/flows/fines/fi
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ACCOUNT_ENQUIRY_STORY_TAG = '@JIRA-STORY:PO-711';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_STORY_TAG, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Filter by Business Unit (CT)', () => {
   let resolverPayload: typeof OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
