@@ -1,5 +1,8 @@
 // Element selectors for Parent or Guardian details
 export const DOM_ELEMENTS = {
+  // Header actions
+  changeLink: 'a.govuk-link.govuk-\\!-margin-bottom-0',
+
   // Personal Details
   parentOrGuardianDetailsName: '#parentOrGuardianDetailsNameValue',
   parentOrGuardianDetailsAliases: '#parentOrGuardianDetailsAliasesKey',
