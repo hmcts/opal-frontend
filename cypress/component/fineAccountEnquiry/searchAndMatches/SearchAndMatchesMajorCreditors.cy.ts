@@ -20,7 +20,7 @@ const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIR
 
 describe('Search Account Component - Major Creditors', () => {
   let majorCreditorsSearchMock = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
-  const fragment$ = new BehaviorSubject<string | null>(null);
+  const fragment$ = new BehaviorSubject<string | null>('majorCreditors');
 
   const setupComponent = () => {
     mount(FinesSaSearchAccountComponent, {
@@ -48,6 +48,7 @@ describe('Search Account Component - Major Creditors', () => {
           useFactory: () => {
             const store = new FinesSaStore();
             store.setSearchAccount(majorCreditorsSearchMock);
+            store.setActiveTab('majorCreditors');
 
             return store;
           },
@@ -82,7 +83,6 @@ describe('Search Account Component - Major Creditors', () => {
     () => {
       setupComponent();
 
-      cy.get(NavLocators.majorCreditorsTab).click();
       cy.get(CommonLocators.root).should('exist');
       cy.get(CommonLocators.pageHeader).should('contain', 'Search for an account');
       cy.get(NavLocators.tabsContainer).should('exist');
@@ -168,7 +168,9 @@ describe('Search Account Component - Major Creditors', () => {
       cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
       cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');
       cy.get(NavLocators.minorCreditorsTab).click();
+      cy.then(() => fragment$.next('minorCreditors'));
       cy.get(NavLocators.majorCreditorsTab).click();
+      cy.then(() => fragment$.next('majorCreditors'));
       cy.get(MajorAutocompleteLocators.input).should('have.value', '');
     },
   );

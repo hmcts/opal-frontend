@@ -50,7 +50,7 @@ export const AccountSearchIndividualsLocators = {
   // ──────────────────────────────
 
   /** Panel element containing all individual search input fields. */
-  individualsPanel: '#individuals .govuk-tabs__panel',
+  individualsPanel: 'opal-lib-govuk-tabs-panel#individuals, #individuals',
 
   /** Inner Individuals panel heading. */
   individualsHeader: '#individuals h1.govuk-heading-l',

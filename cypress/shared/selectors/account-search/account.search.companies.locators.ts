@@ -108,7 +108,7 @@ export const AccountSearchCompaniesLocators = {
   selectedTabClass: 'govuk-tabs__list-item--selected',
 
   /** Panel content area displayed when the Companies tab is active. */
-  companiesPanel: 'opal-lib-govuk-tabs-panel#companies .govuk-tabs__panel',
+  companiesPanel: 'opal-lib-govuk-tabs-panel#companies, #companies',
 
   /** Tab button for "Minor Creditors". */
   minorCreditorsTab: '#tab-minor-creditors .govuk-tabs__tab',

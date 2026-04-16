@@ -18,9 +18,9 @@ export const AccountSearchMajorCreditorsLocators = {
 
   panel: {
     /** major creditors panel root (useful for scoping). */
-    root: '#majorCreditors',
+    root: 'opal-lib-govuk-tabs-panel#majorCreditors, #majorCreditors',
     /** Optional heading within panel, if needed. */
-    heading: '#majorCreditors h1.govuk-heading-l',
+    heading: 'opal-lib-govuk-tabs-panel#majorCreditors h1.govuk-heading-l, #majorCreditors h1.govuk-heading-l',
   },
 
   autocomplete: {

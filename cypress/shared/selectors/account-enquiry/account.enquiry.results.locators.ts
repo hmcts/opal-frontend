@@ -167,10 +167,10 @@ export const AccountEnquiryResultsLocators = {
     resultsText: '.moj-pagination__results',
 
     /** Previous-page control. */
-    previousButton: '.govuk-pagination__prev',
+    previousButton: '.govuk-pagination__prev a.govuk-pagination__link',
 
     /** Next-page control wrapper. */
-    nextButton: '.govuk-pagination__next',
+    nextButton: '.govuk-pagination__next a.govuk-pagination__link',
 
     /** List container for numbered pagination items. */
     list: '.govuk-pagination__list',
@@ -189,7 +189,8 @@ export const AccountEnquiryResultsLocators = {
      * @param pageNum - Visible page number text.
      * @returns Selector for the pagination item matching the provided page number.
      */
-    pageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
+    pageNumber: (pageNum: number | string) =>
+      `.govuk-pagination__item a.govuk-pagination__link:contains("${pageNum}"), .govuk-pagination__item--current:contains("${pageNum}")`,
 
     next: 'nav.govuk-pagination .govuk-pagination__next a.govuk-pagination__link',
   },

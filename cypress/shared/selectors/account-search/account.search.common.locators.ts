@@ -16,7 +16,7 @@
 
 export const AccountSearchCommonLocators = {
   /** Root of the Search screen (any tab). Useful for scoping queries. */
-  root: 'app-fines-sa-search, [data-testid="fines-sa-search"]',
+  root: 'app-fines-sa-search-account, app-fines-sa-search-account-form, app-fines-sa-search, [data-testid="fines-sa-search"]',
 
   /** Top-level page heading for the account search form. */
   pageHeader: 'app-fines-sa-search-account-form > h1.govuk-heading-l',

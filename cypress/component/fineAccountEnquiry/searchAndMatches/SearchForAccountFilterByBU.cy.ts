@@ -73,7 +73,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   const getRowCheckboxes = (tab: BusinessUnitTab) => cy.get(ROW_CHECKBOX_SELECTORS[tab]);
 
-  const getMasterLabel = (tab: BusinessUnitTab) => cy.get(MASTER_LABEL_SELECTORS[tab]);
+  const getMasterLabel = (tab: BusinessUnitTab) => cy.contains(MASTER_LABEL_SELECTORS[tab], MASTER_LABEL_TEXT[tab]);
 
   const clickTab = (tab: BusinessUnitTab) => cy.get(TAB_LINK_SELECTORS[tab]).scrollIntoView().click({ force: true });
 

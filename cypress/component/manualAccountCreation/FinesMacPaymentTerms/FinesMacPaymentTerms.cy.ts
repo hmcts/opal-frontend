@@ -596,9 +596,14 @@ describe('FinesMacPaymentTermsComponent', () => {
         setupComponent(defendantType);
 
         cy.get(DOM_ELEMENTS.payInFull).click();
-        cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
-        cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
-        cy.get(DOM_ELEMENTS.datePickerPayByDateElement).filter(':visible').find(DOM_ELEMENTS.testDate).first().click();
+        cy.get(DOM_ELEMENTS.payByDate).closest('.moj-datepicker').find(DOM_ELEMENTS.datePickerButton).click();
+        cy.get(DOM_ELEMENTS.datePickerPayByDateElement).filter(':visible').last().should('be.visible');
+        cy.get(DOM_ELEMENTS.datePickerPayByDateElement)
+          .filter(':visible')
+          .last()
+          .find(DOM_ELEMENTS.testDate)
+          .first()
+          .click();
         cy.get(DOM_ELEMENTS.payByDate).should(
           'have.value',
           `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
@@ -623,9 +628,14 @@ describe('FinesMacPaymentTermsComponent', () => {
         setupComponent(defendantType);
 
         cy.get(DOM_ELEMENTS.instalmentsOnly).click();
-        cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
-        cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
-        cy.get(DOM_ELEMENTS.datePickerStartDateElement).filter(':visible').find(DOM_ELEMENTS.testDate).first().click();
+        cy.get(DOM_ELEMENTS.startDate).closest('.moj-datepicker').find(DOM_ELEMENTS.datePickerButton).click();
+        cy.get(DOM_ELEMENTS.datePickerStartDateElement).filter(':visible').last().should('be.visible');
+        cy.get(DOM_ELEMENTS.datePickerStartDateElement)
+          .filter(':visible')
+          .last()
+          .find(DOM_ELEMENTS.testDate)
+          .first()
+          .click();
         cy.get(DOM_ELEMENTS.startDate).should(
           'have.value',
           `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,

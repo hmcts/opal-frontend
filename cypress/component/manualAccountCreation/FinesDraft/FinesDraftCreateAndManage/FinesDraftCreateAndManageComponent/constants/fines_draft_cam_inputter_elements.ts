@@ -19,9 +19,10 @@ export const DOM_ELEMENTS = {
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
 
-  previousPageButton: '.govuk-pagination__prev',
-  nextPageButton: '.govuk-pagination__next',
+  previousPageButton: '.govuk-pagination__prev a.govuk-pagination__link',
+  nextPageButton: '.govuk-pagination__next a.govuk-pagination__link',
   //Added as Page Number is now dynamic
-  paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
+  paginationPageNumber: (pageNum: number | string) =>
+    `.govuk-pagination__item a.govuk-pagination__link:contains("${pageNum}"), .govuk-pagination__item--current:contains("${pageNum}")`,
   rejectedAccounts: 'a.govuk-link',
 };
