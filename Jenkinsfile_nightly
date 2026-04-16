@@ -633,7 +633,6 @@ void setupTestSpecifications() {
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(nightlySecrets())
   env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
-  configureStagingLegacyGatewayUrl()
 
   before('akschartsinstall') {
     onPR {
