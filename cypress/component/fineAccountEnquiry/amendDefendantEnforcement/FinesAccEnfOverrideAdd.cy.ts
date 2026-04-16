@@ -1,8 +1,8 @@
 import { DOM_ELEMENTS as ENF_OVR } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
+import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
-import { DOM_ELEMENTS as VERSION_CONTROL } from '../accountEnquiry/constants/global_version_control_elements';
 import {
   interceptAuthenticatedUser,
   interceptUserState,
@@ -99,61 +99,53 @@ describe(
   'Add Enforcement Override - Adult/Youth',
   { tags: ['@JIRA-STORY:PO-1850', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with title', { tags: ['@JIRA-KEY:POT-4440'] }, () => {
+    it('AC1a, AC1b. Should render the form with title', { tags: [] }, () => {
       commonSetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Mr Robert THOMSON - 177A');
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
     });
 
-    it(
-      'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link',
-      { tags: ['@JIRA-KEY:POT-4441'] },
-      () => {
-        commonSetup();
+    it('AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link', { tags: [] }, () => {
+      commonSetup();
 
-        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-        cy.get(ENF_OVR.enfOverrideDropdown).click();
-        cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('DW').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).click();
+      cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('DW').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
 
-        cy.get(ENF_OVR.addOverrideButton).should('exist');
-        cy.get(ENF_OVR.cancelLink).should('exist');
-      },
-    );
+      cy.get(ENF_OVR.addOverrideButton).should('exist');
+      cy.get(ENF_OVR.cancelLink).should('exist');
+    });
 
-    it(
-      'Should support forward keyboard navigation across the add enforcement override form',
-      { tags: ['@JIRA-KEY:POT-4442'] },
-      () => {
-        commonSetup();
+    it('Should support forward keyboard navigation across the add enforcement override form', { tags: [] }, () => {
+      commonSetup();
 
-        cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
-        cy.get(ENF_OVR.enfOverrideDropdown).should('be.visible').focus();
-        cy.get(ENF_OVR.enfOverrideDropdown).should('have.focus');
+      cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('be.visible').focus();
+      cy.get(ENF_OVR.enfOverrideDropdown).should('have.focus');
 
-        cy.press(Cypress.Keyboard.Keys.TAB);
-        cy.get(ENF_OVR.addOverrideButton).should('have.focus');
+      cy.press(Cypress.Keyboard.Keys.TAB);
+      cy.get(ENF_OVR.addOverrideButton).should('have.focus');
 
-        cy.press(Cypress.Keyboard.Keys.TAB);
-        cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
+      cy.press(Cypress.Keyboard.Keys.TAB);
+      cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
 
-        cy.get('@getResults.all').should('have.length', 0);
-      },
-    );
+      cy.get('@getResults.all').should('have.length', 0);
+    });
 
-    it('AC2. Enforcer dropdown for valid override', { tags: ['@JIRA-KEY:POT-4443'] }, () => {
+    it('AC2. Enforcer dropdown for valid override', { tags: [] }, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -180,7 +172,7 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
     });
 
-    it('AC3. LJA dropdown for valid override', { tags: ['@JIRA-KEY:POT-4444'] }, () => {
+    it('AC3. LJA dropdown for valid override', { tags: [] }, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -194,19 +186,23 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
     });
 
-    it('AC4a. Error when no enforcement override is selected', { tags: ['@JIRA-KEY:POT-4445'] }, () => {
-      commonSetup();
+    it(
+      'AC4a. Error when no enforcement override is selected (Add Enforcement Override - Adult/Youth)',
+      { tags: [] },
+      () => {
+        commonSetup();
 
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.addOverrideButton).click();
-      cy.get(ENF_OVR.errorSummary)
-        .should('exist')
-        .contains('There is a problem')
-        .next()
-        .should('contain.text', 'Select an enforcement override');
-    });
+        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+        cy.get(ENF_OVR.addOverrideButton).click();
+        cy.get(ENF_OVR.errorSummary)
+          .should('exist')
+          .contains('There is a problem')
+          .next()
+          .should('contain.text', 'Select an enforcement override');
+      },
+    );
 
-    it('AC4b. Error when no enforcer is selected', { tags: ['@JIRA-KEY:POT-4446'] }, () => {
+    it('AC4b. Error when no enforcer is selected', { tags: [] }, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -225,7 +221,7 @@ describe(
         .should('contain.text', 'Select an enforcer');
     });
 
-    it('AC4c. Error when no LJA is selected', { tags: ['@JIRA-KEY:POT-4447'] }, () => {
+    it('AC4c. Error when no LJA is selected', { tags: [] }, () => {
       commonSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -245,7 +241,7 @@ describe(
 
     it(
       'AC5. Valid submission returns to Enforcement tab with success banner and new override panel',
-      { tags: ['@JIRA-KEY:POT-4448'] },
+      { tags: [] },
       () => {
         const { accountId } = commonSetup();
         const updatedEnforcementMock = structuredClone(
@@ -309,7 +305,7 @@ describe(
 
     it(
       'AC6a. Cancel without changes returns away from the add override page without confirmation',
-      { tags: ['@JIRA-KEY:POT-4449'] },
+      { tags: [] },
       () => {
         commonSetup();
 
@@ -330,8 +326,8 @@ describe(
     );
 
     it(
-      'AC6b. Cancel after selecting a value shows confirmation before navigating away',
-      { tags: ['@JIRA-KEY:POT-4450'] },
+      'AC6b. Cancel after selecting a value shows confirmation before navigating away (Add Enforcement Override - Adult/Youth)',
+      { tags: [] },
       () => {
         commonSetup();
 
@@ -360,7 +356,7 @@ describe(
 
     it(
       'AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page',
-      { tags: ['@JIRA-KEY:POT-4451'] },
+      { tags: [] },
       () => {
         commonSetup();
 
@@ -392,7 +388,7 @@ describe(
   'Add Enforcement Override - Company',
   { tags: ['@JIRA-STORY:PO-1867', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with company title', { tags: ['@JIRA-KEY:POT-4452'] }, () => {
+    it('AC1a, AC1b. Should render the form with company title', { tags: [] }, () => {
       companySetup();
 
       cy.get(ENF_OVR.title).should('contain.text', 'Test Org Ltd - 177A');
@@ -401,7 +397,7 @@ describe(
 
     it(
       'Should support forward keyboard navigation across the company add enforcement override form',
-      { tags: ['@JIRA-LABEL:accessibility', '@JIRA-KEY:POT-4453'] },
+      { tags: ['@JIRA-LABEL:accessibility'] },
       () => {
         companySetup();
 
@@ -425,16 +421,20 @@ describe(
   'Add Enforcement Override - Parent/Guardian',
   { tags: ['@JIRA-STORY:PO-1866', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with title', { tags: ['@JIRA-KEY:POT-4615'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC1a, AC1b. Should render the form with title (Add Enforcement Override - Parent/Guardian)',
+      { tags: [] },
+      () => {
+        parentGuardianSetup();
 
-      cy.get(ENF_OVR.title).should('contain.text', 'Mr Roberto THOMSON - 177A');
-      cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
-    });
+        cy.get(ENF_OVR.title).should('contain.text', 'Mr Roberto THOMSON - 177A');
+        cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
+      },
+    );
 
     it(
-      'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link',
-      { tags: ['@JIRA-KEY:POT-4616'] },
+      'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link (Add Enforcement Override - Parent/Guardian)',
+      { tags: [] },
       () => {
         parentGuardianSetup();
 
@@ -460,8 +460,8 @@ describe(
     );
 
     it(
-      'Should support forward keyboard navigation across the add enforcement override form',
-      { tags: ['@JIRA-KEY:POT-4617'] },
+      'Should support forward keyboard navigation across the add enforcement override form (Add Enforcement Override - Parent/Guardian)',
+      { tags: [] },
       () => {
         parentGuardianSetup();
 
@@ -479,7 +479,7 @@ describe(
       },
     );
 
-    it('AC2. Enforcer dropdown for valid override', { tags: ['@JIRA-KEY:POT-4618'] }, () => {
+    it('AC2. Enforcer dropdown for valid override (Add Enforcement Override - Parent/Guardian)', { tags: [] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -506,7 +506,7 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
     });
 
-    it('AC3. LJA dropdown for valid override', { tags: ['@JIRA-KEY:POT-4619'] }, () => {
+    it('AC3. LJA dropdown for valid override (Add Enforcement Override - Parent/Guardian)', { tags: [] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -520,19 +520,23 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
     });
 
-    it('AC4a. Error when no enforcement override is selected', { tags: ['@JIRA-KEY:POT-4620'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC4a. Error when no enforcement override is selected (Add Enforcement Override - Parent/Guardian)',
+      { tags: [] },
+      () => {
+        parentGuardianSetup();
 
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.addOverrideButton).click();
-      cy.get(ENF_OVR.errorSummary)
-        .should('exist')
-        .contains('There is a problem')
-        .next()
-        .should('contain.text', 'Select an enforcement override');
-    });
+        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+        cy.get(ENF_OVR.addOverrideButton).click();
+        cy.get(ENF_OVR.errorSummary)
+          .should('exist')
+          .contains('There is a problem')
+          .next()
+          .should('contain.text', 'Select an enforcement override');
+      },
+    );
 
-    it('AC4b. Error when no enforcer is selected', { tags: ['@JIRA-KEY:POT-4621'] }, () => {
+    it('AC4b. Error when no enforcer is selected (Add Enforcement Override - Parent/Guardian)', { tags: [] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -551,7 +555,7 @@ describe(
         .should('contain.text', 'Select an enforcer');
     });
 
-    it('AC4c. Error when no LJA is selected', { tags: ['@JIRA-KEY:POT-4622'] }, () => {
+    it('AC4c. Error when no LJA is selected (Add Enforcement Override - Parent/Guardian)', { tags: [] }, () => {
       parentGuardianSetup();
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -570,8 +574,8 @@ describe(
     });
 
     it(
-      'AC5. Valid submission returns to Enforcement tab with success banner and new override panel',
-      { tags: ['@JIRA-KEY:POT-4448'] },
+      'AC5. Valid submission returns to Enforcement tab with success banner and new override panel (Add Enforcement Override - Parent/Guardian)',
+      { tags: [] },
       () => {
         const { accountId } = parentGuardianSetup();
         const updatedEnforcementMock = structuredClone(
@@ -634,8 +638,8 @@ describe(
     );
 
     it(
-      'AC6a. Cancel without changes returns away from the add override page without confirmation',
-      { tags: ['@JIRA-KEY:POT-4623'] },
+      'AC6a. Cancel without changes returns away from the add override page without confirmation (Add Enforcement Override - Parent/Guardian)',
+      { tags: [] },
       () => {
         parentGuardianSetup();
 
@@ -656,8 +660,8 @@ describe(
     );
 
     it(
-      'AC6b. Cancel after selecting a value shows confirmation before navigating away',
-      { tags: ['@JIRA-KEY:POT-4624'] },
+      'AC6b. Cancel after selecting a value shows confirmation before navigating away (Add Enforcement Override - Parent/Guardian)',
+      { tags: [] },
       () => {
         parentGuardianSetup();
 
@@ -685,8 +689,8 @@ describe(
     );
 
     it(
-      'AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page',
-      { tags: ['@JIRA-KEY:POT-4625'] },
+      'AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page (Add Enforcement Override - Parent/Guardian)',
+      { tags: [] },
       () => {
         parentGuardianSetup();
 

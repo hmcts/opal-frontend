@@ -14,11 +14,23 @@ import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party
 export class FinesAccDefendantDetailsDefendantTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty;
   @Input() hasAccountMaintenencePermission: boolean = false;
+  @Input() canAddParentOrGuardianDetails: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   @Output() changeDefendantDetails = new EventEmitter<string>();
   @Output() convertAccount = new EventEmitter<string>();
+  @Output() addParentOrGuardianDetails = new EventEmitter<string>();
 
-  public handleConvertAccount(): void {
+  /**
+   * Emits the current defendant party type for the convert-account journey.
+   *
+   * The click originates from an anchor element, so the browser default
+   * navigation is prevented before emitting the event to the parent container.
+   *
+   * @param event - The click event from the action link.
+   */
+  public handleConvertAccount(event?: Event): void {
+    event?.preventDefault();
+
     if (this.tabData.defendant_account_party.party_details.organisation_flag) {
       this.convertAccount.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
     } else {
@@ -26,11 +38,34 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
     }
   }
 
-  public handleChangeDefendantDetails(): void {
+  /**
+   * Emits the current defendant party type for the shared party-details flow.
+   *
+   * The click originates from an anchor element, so the browser default
+   * navigation is prevented before emitting the event to the parent container.
+   *
+   * @param event - The click event from the action link.
+   */
+  public handleChangeDefendantDetails(event?: Event): void {
+    event?.preventDefault();
+
     if (this.tabData.defendant_account_party.party_details.organisation_flag) {
       this.changeDefendantDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY);
     } else {
       this.changeDefendantDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL);
     }
+  }
+
+  /**
+   * Emits the parent-or-guardian party type for the add-details journey.
+   *
+   * The click originates from an anchor element, so the browser default
+   * navigation is prevented before emitting the event to the parent container.
+   *
+   * @param event - The click event from the action link.
+   */
+  public handleAddParentOrGuardianDetails(event?: Event): void {
+    event?.preventDefault();
+    this.addParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
   }
 }

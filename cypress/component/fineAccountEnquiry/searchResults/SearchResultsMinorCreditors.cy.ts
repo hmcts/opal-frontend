@@ -4,7 +4,7 @@ import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fi
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
-import { DOM_ELEMENTS } from './constants/search_results_minor_creditors_elements';
+import { AccountEnquiryResultsLocators as ResultsLocators } from '../../../shared/selectors/account-enquiry/account.enquiry.results.locators';
 import {
   EMPTY_SEARCH_RESULTS_MOCK,
   INDIVIDUAL_SEARCH_RESULTS_MOCK,
@@ -16,6 +16,11 @@ import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/sea
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ResultsPageLocators = ResultsLocators.page;
+const ResultsMessageLocators = ResultsLocators.messages;
+const ResultsHeaderLocators = ResultsLocators.headerCells;
+const ResultsCellLocators = ResultsLocators.cols;
+const ResultsPaginationLocators = ResultsLocators.pagination;
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
@@ -70,158 +75,158 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     'Search results component is created correctly for minor creditors',
-    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3782') },
+    { tags: buildTags('@JIRA-STORY:PO-708') },
     () => {
       setupComponent();
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+      cy.get(ResultsPageLocators.backLinkHost).should('exist');
     },
   );
 
   it(
     '(AC2) Displays error message when no minor creditor search matches are found',
-    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3783') },
+    { tags: buildTags('@JIRA-STORY:PO-708') },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
-      cy.get(DOM_ELEMENTS.noResultsHeading).should('be.visible');
-      cy.get(DOM_ELEMENTS.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.noResultsHeading).should('be.visible');
+      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
 
-      cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible');
-      cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible');
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
 
       //(AC2b) Check your search link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(DOM_ELEMENTS.checkSearchLink).should('have.class', 'govuk-link');
-      cy.get(DOM_ELEMENTS.checkSearchLink).click();
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.checkYourSearchLink).click();
     },
   );
 
   it(
     '(AC3) Handles more than 100 minor creditor search matches correctly',
-    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3784') },
+    { tags: buildTags('@JIRA-STORY:PO-708') },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+      cy.get(ResultsPageLocators.backLinkHost).should('exist');
 
       // Should show too many results message when more than 100 results
-      cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('be.visible');
-      cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('be.visible');
+      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
 
-      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('be.visible');
-      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('contain', 'Try adding more information');
+      cy.get(ResultsMessageLocators.addMoreInfoLink).should('be.visible');
+      cy.get(ResultsMessageLocators.addMoreInfoLink).should('contain', 'Try adding more information');
 
-      cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
+      cy.get(ResultsLocators.table.root).should('not.exist');
 
       //(AC3b) Try adding more information link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
-      cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
+      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
     },
   );
 
   it(
     '(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting',
-    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3785') },
+    { tags: buildTags('@JIRA-STORY:PO-708') },
     () => {
       setupComponent(INDIVIDUAL_SEARCH_RESULTS_MOCK);
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+      cy.get(ResultsPageLocators.backLinkHost).should('exist');
 
-      cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
+      cy.get(ResultsLocators.table.root).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountHeader).should('contain', 'Account');
-      cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.nameHeader).should('contain', 'Name');
-      cy.get(DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
-      cy.get(DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
-      cy.get(DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
-      cy.get(DOM_ELEMENTS.defendantHeader).should('contain', 'Defendant');
-      cy.get(DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
+      cy.get(ResultsHeaderLocators.account).should('contain', 'Account');
+      cy.get(ResultsHeaderLocators.account).find('button').click();
+      cy.get(ResultsHeaderLocators.name).should('contain', 'Name');
+      cy.get(ResultsHeaderLocators.addr1).should('contain', 'Address line 1');
+      cy.get(ResultsHeaderLocators.postcode).should('contain', 'Postcode');
+      cy.get(ResultsHeaderLocators.bu).should('contain', 'Business unit');
+      cy.get(ResultsHeaderLocators.defendant).should('contain', 'Defendant');
+      cy.get(ResultsHeaderLocators.balance).should('contain', 'Balance');
 
-      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14001MC');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).first().should('contain', '14001MC');
 
-      cy.get(DOM_ELEMENTS.accountCell).first().find('a').should('exist');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).first().find('a').should('exist');
 
-      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'THOMPSON, Emma Claire');
+      cy.get(ResultsCellLocators.minorCreditorName).first().should('contain', 'THOMPSON, Emma Claire');
 
-      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '5 Minor Court');
+      cy.get(ResultsCellLocators.minorCreditorAddr1).first().should('contain', '5 Minor Court');
 
-      cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'MC1 2RT');
+      cy.get(ResultsCellLocators.minorCreditorPostcode).first().should('contain', 'MC1 2RT');
 
-      cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Minor Creditors Unit');
+      cy.get(ResultsCellLocators.minorCreditorBusinessUnit).first().should('contain', 'Minor Creditors Unit');
 
-      cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'THOMPSON, Emma Claire');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).first().should('contain', 'THOMPSON, Emma Claire');
 
-      cy.get(DOM_ELEMENTS.defendantCell).first().find('a').should('exist');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).first().find('a').should('exist');
 
-      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£345.00');
+      cy.get(ResultsCellLocators.minorCreditorBalance).first().should('contain', '£345.00');
 
-      cy.get(DOM_ELEMENTS.accountCell).eq(1).should('contain', '14002MC');
-      cy.get(DOM_ELEMENTS.accountCell).eq(1).find('a').should('exist');
-      cy.get(DOM_ELEMENTS.nameCell).eq(1).should('contain', 'WILSON, James Robert');
-      cy.get(DOM_ELEMENTS.addressCell).eq(1).should('contain', '8 Elm Street');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(1).should('contain', 'MC3 5RT');
-      cy.get(DOM_ELEMENTS.defendantCell).eq(1).should('contain', 'WILSON, James Robert');
-      cy.get(DOM_ELEMENTS.defendantCell).eq(1).find('a').should('exist');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£567.00');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).eq(1).should('contain', '14002MC');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).eq(1).find('a').should('exist');
+      cy.get(ResultsCellLocators.minorCreditorName).eq(1).should('contain', 'WILSON, James Robert');
+      cy.get(ResultsCellLocators.minorCreditorAddr1).eq(1).should('contain', '8 Elm Street');
+      cy.get(ResultsCellLocators.minorCreditorPostcode).eq(1).should('contain', 'MC3 5RT');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).should('contain', 'WILSON, James Robert');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).find('a').should('exist');
+      cy.get(ResultsCellLocators.minorCreditorBalance).eq(1).should('contain', '£567.00');
     },
   );
 
   it(
     '(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting',
-    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3786') },
+    { tags: buildTags('@JIRA-STORY:PO-708') },
     () => {
       setupComponent(COMPANY_SEARCH_RESULTS_MOCK);
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+      cy.get(ResultsPageLocators.backLinkHost).should('exist');
 
-      cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
+      cy.get(ResultsLocators.table.root).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountHeader).should('contain', 'Account');
-      cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.nameHeader).should('contain', 'Name');
-      cy.get(DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
-      cy.get(DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
-      cy.get(DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
-      cy.get(DOM_ELEMENTS.defendantHeader).should('contain', 'Defendant');
-      cy.get(DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
+      cy.get(ResultsHeaderLocators.account).should('contain', 'Account');
+      cy.get(ResultsHeaderLocators.account).find('button').click();
+      cy.get(ResultsHeaderLocators.name).should('contain', 'Name');
+      cy.get(ResultsHeaderLocators.addr1).should('contain', 'Address line 1');
+      cy.get(ResultsHeaderLocators.postcode).should('contain', 'Postcode');
+      cy.get(ResultsHeaderLocators.bu).should('contain', 'Business unit');
+      cy.get(ResultsHeaderLocators.defendant).should('contain', 'Defendant');
+      cy.get(ResultsHeaderLocators.balance).should('contain', 'Balance');
 
-      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14003MC');
-      cy.get(DOM_ELEMENTS.accountCell).first().find('a').should('exist');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).first().should('contain', '14003MC');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).first().find('a').should('exist');
 
-      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'Young Entrepreneurs Ltd');
+      cy.get(ResultsCellLocators.minorCreditorName).first().should('contain', 'Young Entrepreneurs Ltd');
 
-      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '12 Business Park');
+      cy.get(ResultsCellLocators.minorCreditorAddr1).first().should('contain', '12 Business Park');
 
-      cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'MC2 4RT');
+      cy.get(ResultsCellLocators.minorCreditorPostcode).first().should('contain', 'MC2 4RT');
 
-      cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Minor Creditors Unit');
+      cy.get(ResultsCellLocators.minorCreditorBusinessUnit).first().should('contain', 'Minor Creditors Unit');
 
-      cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'Young Entrepreneurs Ltd');
-      cy.get(DOM_ELEMENTS.defendantCell).first().find('a').should('exist');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).first().should('contain', 'Young Entrepreneurs Ltd');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).first().find('a').should('exist');
 
-      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£890.00');
+      cy.get(ResultsCellLocators.minorCreditorBalance).first().should('contain', '£890.00');
 
-      cy.get(DOM_ELEMENTS.accountCell).eq(1).should('contain', '14004MC');
-      cy.get(DOM_ELEMENTS.accountCell).eq(1).find('a').should('exist');
-      cy.get(DOM_ELEMENTS.nameCell).eq(1).should('contain', 'Tech Solutions Inc');
-      cy.get(DOM_ELEMENTS.addressCell).eq(1).should('contain', '45 Industrial Estate');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(1).should('contain', 'MC4 7RT');
-      cy.get(DOM_ELEMENTS.defendantCell).eq(1).should('contain', 'Tech Solutions Inc');
-      cy.get(DOM_ELEMENTS.defendantCell).eq(1).find('a').should('exist');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£1,250.00');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).eq(1).should('contain', '14004MC');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).eq(1).find('a').should('exist');
+      cy.get(ResultsCellLocators.minorCreditorName).eq(1).should('contain', 'Tech Solutions Inc');
+      cy.get(ResultsCellLocators.minorCreditorAddr1).eq(1).should('contain', '45 Industrial Estate');
+      cy.get(ResultsCellLocators.minorCreditorPostcode).eq(1).should('contain', 'MC4 7RT');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).should('contain', 'Tech Solutions Inc');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).find('a').should('exist');
+      cy.get(ResultsCellLocators.minorCreditorBalance).eq(1).should('contain', '£1,250.00');
     },
   );
 
   it(
     '(AC4d) Displays pagination with 25 results per page for maximum of 100 results',
-    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3787') },
+    { tags: buildTags('@JIRA-STORY:PO-708') },
     () => {
       // Using LARGE_SEARCH_RESULTS_MOCK but limiting to 100 results for pagination testing
       const paginationMock = {
@@ -231,126 +236,126 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
       setupComponent(paginationMock);
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-      cy.get(DOM_ELEMENTS.paginationElement).should('exist');
-      cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 total results');
-      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
+      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+      cy.get(ResultsPaginationLocators.root).should('exist');
+      cy.get(ResultsPaginationLocators.resultsText).should('contain', '100 total results');
+      cy.get(ResultsPaginationLocators.currentPage).should('contain', '1');
 
       // Verify pagination shows 4 pages total
-      cy.get(DOM_ELEMENTS.paginationList).within(() => {
-        cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
+      cy.get(ResultsPaginationLocators.list).within(() => {
+        cy.get(ResultsPaginationLocators.listItem).should('have.length.at.least', 4);
         cy.contains('1').should('exist');
         cy.contains('2').should('exist');
-        cy.get(DOM_ELEMENTS.paginationListItemEllipses).should('exist');
+        cy.get(ResultsPaginationLocators.listItemEllipses).should('exist');
         cy.contains('4').should('exist');
       });
 
-      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(ResultsLocators.table.rows).should('have.length', 25);
 
-      cy.get(DOM_ELEMENTS.paginationPageNumber(2)).click();
-      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
-      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(ResultsPaginationLocators.pageNumber(2)).click();
+      cy.get(ResultsPaginationLocators.currentPage).should('contain', '2');
+      cy.get(ResultsLocators.table.rows).should('have.length', 25);
 
-      cy.get(DOM_ELEMENTS.paginationPageNumber(4)).click();
-      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
-      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(ResultsPaginationLocators.pageNumber(4)).click();
+      cy.get(ResultsPaginationLocators.currentPage).should('contain', '4');
+      cy.get(ResultsLocators.table.rows).should('have.length', 25);
 
-      cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
-      cy.get(DOM_ELEMENTS.nextPageButton).should('not.exist');
+      cy.get(ResultsPaginationLocators.previousButton).should('exist');
+      cy.get(ResultsPaginationLocators.nextButton).should('not.exist');
 
-      cy.get(DOM_ELEMENTS.previousPageButton).click();
-      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
-      cy.get(DOM_ELEMENTS.table).should('have.length', 25);
+      cy.get(ResultsPaginationLocators.previousButton).click();
+      cy.get(ResultsPaginationLocators.currentPage).should('contain', '3');
+      cy.get(ResultsLocators.table.rows).should('have.length', 25);
 
-      cy.get(DOM_ELEMENTS.nextPageButton).should('exist');
-      cy.get(DOM_ELEMENTS.nextPageButton).click();
-      cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
+      cy.get(ResultsPaginationLocators.nextButton).should('exist');
+      cy.get(ResultsPaginationLocators.nextButton).click();
+      cy.get(ResultsPaginationLocators.currentPage).should('contain', '4');
     },
   );
 
   it(
-    '(AC4f) Should sort by each column - ascending then descending',
-    { tags: buildTags('@JIRA-STORY:PO-708', '@JIRA-KEY:POT-3788') },
+    '(AC4f) Should sort by each column - ascending then descending (FinesSaResultsComponent - Minor Creditors)',
+    { tags: buildTags('@JIRA-STORY:PO-708') },
     () => {
       setupComponent(SORTING_MINOR_CREDITORS_MOCK);
 
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
-      cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
+      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+      cy.get(ResultsPageLocators.backLinkHost).should('exist');
+      cy.get(ResultsLocators.table.root).should('exist');
 
       // Initially account number in descending order
-      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14005MC');
-      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14001MC');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).first().should('contain', '14005MC');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).eq(4).should('contain', '14001MC');
 
       // Test Account column sorting - sort ascending
-      cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14001MC');
-      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14005MC');
+      cy.get(ResultsHeaderLocators.account).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).first().should('contain', '14001MC');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).eq(4).should('contain', '14005MC');
 
       // sort descending
-      cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14005MC');
-      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14001MC');
+      cy.get(ResultsHeaderLocators.account).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).first().should('contain', '14005MC');
+      cy.get(ResultsCellLocators.minorCreditorAccountCell).eq(4).should('contain', '14001MC');
 
       // Test Name column sorting - sort ascending
-      cy.get(DOM_ELEMENTS.nameHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'ANDERSON, Lisa');
-      cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'WILLIAMS, Sarah');
+      cy.get(ResultsHeaderLocators.name).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorName).first().should('contain', 'ANDERSON, Lisa');
+      cy.get(ResultsCellLocators.minorCreditorName).eq(4).should('contain', 'WILLIAMS, Sarah');
 
       // sort descending
-      cy.get(DOM_ELEMENTS.nameHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'WILLIAMS, Sarah');
-      cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'ANDERSON, Lisa');
+      cy.get(ResultsHeaderLocators.name).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorName).first().should('contain', 'WILLIAMS, Sarah');
+      cy.get(ResultsCellLocators.minorCreditorName).eq(4).should('contain', 'ANDERSON, Lisa');
 
       // Test Address column sorting - sort ascending
-      cy.get(DOM_ELEMENTS.addressHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '1 High Street');
-      cy.get(DOM_ELEMENTS.addressCell).eq(4).should('contain', '8 Park Avenue');
+      cy.get(ResultsHeaderLocators.addr1).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorAddr1).first().should('contain', '1 High Street');
+      cy.get(ResultsCellLocators.minorCreditorAddr1).eq(4).should('contain', '8 Park Avenue');
 
       // sort descending
-      cy.get(DOM_ELEMENTS.addressHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '8 Park Avenue');
-      cy.get(DOM_ELEMENTS.addressCell).eq(4).should('contain', '1 High Street');
+      cy.get(ResultsHeaderLocators.addr1).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorAddr1).first().should('contain', '8 Park Avenue');
+      cy.get(ResultsCellLocators.minorCreditorAddr1).eq(4).should('contain', '1 High Street');
 
       // Test Postcode column sorting - sort ascending
-      cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'B2 4TY');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'RG1 9RT');
+      cy.get(ResultsHeaderLocators.postcode).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorPostcode).first().should('contain', 'B2 4TY');
+      cy.get(ResultsCellLocators.minorCreditorPostcode).eq(4).should('contain', 'RG1 9RT');
 
       // sort descending
-      cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'RG1 9RT');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'B2 4TY');
+      cy.get(ResultsHeaderLocators.postcode).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorPostcode).first().should('contain', 'RG1 9RT');
+      cy.get(ResultsCellLocators.minorCreditorPostcode).eq(4).should('contain', 'B2 4TY');
 
       // Test Balance column sorting - sort ascending
-      cy.get(DOM_ELEMENTS.balanceHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£310.00');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£890.00');
+      cy.get(ResultsHeaderLocators.balance).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorBalance).first().should('contain', '£310.00');
+      cy.get(ResultsCellLocators.minorCreditorBalance).eq(4).should('contain', '£890.00');
 
       // sort descending
-      cy.get(DOM_ELEMENTS.balanceHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£890.00');
-      cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£310.00');
+      cy.get(ResultsHeaderLocators.balance).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorBalance).first().should('contain', '£890.00');
+      cy.get(ResultsCellLocators.minorCreditorBalance).eq(4).should('contain', '£310.00');
 
       // Test Business unit column sorting - sort ascending
-      cy.get(DOM_ELEMENTS.businessUnitHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Central Unit');
-      cy.get(DOM_ELEMENTS.businessUnitCell).eq(4).should('contain', 'West Unit');
+      cy.get(ResultsHeaderLocators.bu).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorBusinessUnit).first().should('contain', 'Central Unit');
+      cy.get(ResultsCellLocators.minorCreditorBusinessUnit).eq(4).should('contain', 'West Unit');
 
       // sort descending
-      cy.get(DOM_ELEMENTS.businessUnitHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'West Unit');
-      cy.get(DOM_ELEMENTS.businessUnitCell).eq(4).should('contain', 'Central Unit');
+      cy.get(ResultsHeaderLocators.bu).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorBusinessUnit).first().should('contain', 'West Unit');
+      cy.get(ResultsCellLocators.minorCreditorBusinessUnit).eq(4).should('contain', 'Central Unit');
 
       // Test Defendant column sorting - sort ascending
-      cy.get(DOM_ELEMENTS.defendantHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'ANDERSON, Lisa');
-      cy.get(DOM_ELEMENTS.defendantCell).eq(4).should('contain', 'WILLIAMS, Sarah');
+      cy.get(ResultsHeaderLocators.defendant).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorDefendant).first().should('contain', 'ANDERSON, Lisa');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).eq(4).should('contain', 'WILLIAMS, Sarah');
 
       // sort descending
-      cy.get(DOM_ELEMENTS.defendantHeader).find('button').click();
-      cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'WILLIAMS, Sarah');
-      cy.get(DOM_ELEMENTS.defendantCell).eq(4).should('contain', 'ANDERSON, Lisa');
+      cy.get(ResultsHeaderLocators.defendant).find('button').click();
+      cy.get(ResultsCellLocators.minorCreditorDefendant).first().should('contain', 'WILLIAMS, Sarah');
+      cy.get(ResultsCellLocators.minorCreditorDefendant).eq(4).should('contain', 'ANDERSON, Lisa');
     },
   );
 });
