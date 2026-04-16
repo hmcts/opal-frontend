@@ -10,7 +10,6 @@ Feature: Manual account creation - Court Details
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I view the "Court details" task
 
-  @JIRA-KEY:POT-3184
   Scenario: (AC.8, AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I complete manual court details:
       | Sending area or Local Justice Area (LJA) | Avon & Somerset         |
@@ -31,7 +30,6 @@ Feature: Manual account creation - Court Details
       | Prosecutor Case Reference (PCR)          |  |
       | Enforcement court                        |  |
 
-  @JIRA-KEY:POT-3185
   Scenario: (AC.10) Unsaved court details are cleared when user confirms cancel [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I complete manual court details:
       | Sending area or Local Justice Area (LJA) | Avon & Somerset   |
@@ -45,7 +43,6 @@ Feature: Manual account creation - Court Details
       | Prosecutor Case Reference (PCR)          |  |
       | Enforcement court                        |  |
 
-  @JIRA-KEY:POT-3186
   Scenario: (AC.11) Confirming cancel restores last saved court details [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I complete manual court details:
       | Sending area or Local Justice Area (LJA) | Avon & Somerset   |
@@ -63,18 +60,17 @@ Feature: Manual account creation - Court Details
     Then the manual court details fields are:
       | Prosecutor Case Reference (PCR) | 1234 |
 
-  @JIRA-KEY:POT-3187
   Scenario: (AC.11) Unsaved court details are retained when cancel is dismissed
     When I complete manual court details:
       | Prosecutor Case Reference (PCR) | 4321 |
     And I cancel manual court details choosing "Cancel"
     Then the manual court details fields are:
       | Prosecutor Case Reference (PCR) | 4321 |
-  @JIRA-STORY:PO-2790 @JIRA-KEY:POT-3188
+  @JIRA-STORY:PO-2790
   Scenario: Court Details - Axe Core
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-2790 @JIRA-KEY:POT-3189
+  @JIRA-STORY:PO-2790
   Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core (court details)
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I open Manual Account Creation from the dashboard
@@ -84,7 +80,6 @@ Feature: Manual account creation - Court Details
     Then I see the following text on the page "Police and court details"
     And I check the page for accessibility
 
-  @JIRA-KEY:POT-3190
   Scenario: (AC.6) Grey navigation links routes correctly [@PO-272, @PO-389]
     When I complete manual court details:
       | Sending area or Local Justice Area (LJA) | Avon & Somerset   |

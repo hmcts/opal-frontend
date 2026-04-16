@@ -51,70 +51,66 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
     });
   };
 
-  it(
-    '(AC.1) Review account is created as per design artefact',
-    { tags: buildTags('@JIRA-STORY:PO-1059', '@JIRA-KEY:POT-3889') },
-    () => {
-      const emptyMockData = { count: 0, summaries: [] };
+  it('(AC.1) Review account is created as per design artefact', { tags: buildTags('@JIRA-STORY:PO-1059') }, () => {
+    const emptyMockData = { count: 0, summaries: [] };
 
-      interceptCAVGetRejectedAccounts(200, emptyMockData);
-      interceptCAVGetToReviewAccounts(200, emptyMockData);
-      interceptCAVGetDeletedAccounts(200, emptyMockData);
-      interceptCAVGetFailedAccounts(200, emptyMockData);
+    interceptCAVGetRejectedAccounts(200, emptyMockData);
+    interceptCAVGetToReviewAccounts(200, emptyMockData);
+    interceptCAVGetDeletedAccounts(200, emptyMockData);
+    interceptCAVGetFailedAccounts(200, emptyMockData);
 
-      setupComponent();
+    setupComponent();
 
-      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
+    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
 
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
 
-      cy.get(DOM_ELEMENTS.navigationLinks).each((link, index) => {
-        const expectedLink = NAVIGATION_LINKS[index];
-        cy.wrap(link).should('contain', expectedLink);
-        if (expectedLink === 'To review') {
-          cy.wrap(link).should('have.attr', 'aria-current', 'page');
-        } else {
-          cy.wrap(link).should('not.have.attr', 'aria-current', 'page');
-        }
-      });
-
-      for (const link of NAVIGATION_LINKS) {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
-        if (link === 'To review') {
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
-          cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'To review');
-          cy.get('p').should('exist').and('contain', 'There are no accounts to review');
-        }
-        //the below two verifications covered as part of PO-593
-        if (link === 'Rejected') {
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
-          cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Rejected');
-          cy.get('p').should('exist').and('contain', 'There are no rejected accounts');
-        }
-        if (link === 'Deleted') {
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
-          cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Deleted');
-          cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
-        }
-        if (link === 'Failed') {
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
-          cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
-          cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Failed');
-          cy.get('p').should('exist').and('contain', 'There are no failed accounts');
-        }
+    cy.get(DOM_ELEMENTS.navigationLinks).each((link, index) => {
+      const expectedLink = NAVIGATION_LINKS[index];
+      cy.wrap(link).should('contain', expectedLink);
+      if (expectedLink === 'To review') {
+        cy.wrap(link).should('have.attr', 'aria-current', 'page');
+      } else {
+        cy.wrap(link).should('not.have.attr', 'aria-current', 'page');
       }
-    },
-  );
+    });
+
+    for (const link of NAVIGATION_LINKS) {
+      cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
+      if (link === 'To review') {
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
+        cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'To review');
+        cy.get('p').should('exist').and('contain', 'There are no accounts to review');
+      }
+      //the below two verifications covered as part of PO-593
+      if (link === 'Rejected') {
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
+        cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Rejected');
+        cy.get('p').should('exist').and('contain', 'There are no rejected accounts');
+      }
+      if (link === 'Deleted') {
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
+        cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Deleted');
+        cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
+      }
+      if (link === 'Failed') {
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
+        cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Failed');
+        cy.get('p').should('exist').and('contain', 'There are no failed accounts');
+      }
+    }
+  });
 
   it(
     '(AC.2) should display the Failed tab correctly when there are zero draft records',
-    { tags: buildTags('@JIRA-STORY:PO-1059', '@JIRA-KEY:POT-3890') },
+    { tags: buildTags('@JIRA-STORY:PO-1059') },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -138,7 +134,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.2c) should display the Failed account count for 1-99 accounts',
-    { tags: buildTags('@JIRA-STORY:PO-1059', '@JIRA-KEY:POT-3891') },
+    { tags: buildTags('@JIRA-STORY:PO-1059') },
     () => {
       const count = [1, 2, 30, 49, 80, 99];
       cy.wrap(count).each((accountCount) => {
@@ -161,7 +157,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.2c) should display the Failed account count for 99+ accounts',
-    { tags: buildTags('@JIRA-STORY:PO-1059', '@JIRA-KEY:POT-3892') },
+    { tags: buildTags('@JIRA-STORY:PO-1059') },
     () => {
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
@@ -181,7 +177,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.3) should display the Failed tab correctly when there are draft records',
-    { tags: buildTags('@JIRA-STORY:PO-1059', '@JIRA-KEY:POT-3893') },
+    { tags: buildTags('@JIRA-STORY:PO-1059') },
     () => {
       const failedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -215,7 +211,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateFailedComponent)',
-    { tags: buildTags('@JIRA-STORY:PO-1059', '@JIRA-KEY:POT-3894') },
+    { tags: buildTags('@JIRA-STORY:PO-1059') },
     () => {
       const failedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -278,7 +274,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
   it(
     '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateFailedComponent)',
-    { tags: buildTags('@JIRA-STORY:PO-1059', '@JIRA-KEY:POT-3895') },
+    { tags: buildTags('@JIRA-STORY:PO-1059') },
     () => {
       const failedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });

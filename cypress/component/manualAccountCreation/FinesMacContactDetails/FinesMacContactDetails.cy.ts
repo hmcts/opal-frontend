@@ -61,20 +61,16 @@ describe('FinesMacContactDetailsComponent', () => {
     });
   });
 
-  it(
-    'should render the component (FinesMacContactDetailsComponent)',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-KEY:POT-4079') },
-    () => {
-      setupComponent(null);
+  it('should render the component (FinesMacContactDetailsComponent)', { tags: buildTags('@JIRA-STORY:PO-272') }, () => {
+    setupComponent(null);
 
-      // Verify the component is rendered
-      cy.get(L.primaryEmailInput).should('exist');
-    },
-  );
+    // Verify the component is rendered
+    cy.get(L.primaryEmailInput).should('exist');
+  });
 
   it(
     '(AC.1) should load all elements on the screen correctly (FinesMacContactDetailsComponent)',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4080') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -100,7 +96,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.1) should load button for next page for adultOrYouthOnly Defendant',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4081') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -110,7 +106,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.2) should not have any mandatory inputs - Return to account details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4082') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -124,7 +120,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.2) should not have any mandatory inputs - Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4083') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -138,7 +134,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.3) should load button for next page for AYPG Defendant',
-    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-370', '@JIRA-KEY:POT-4084') },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-370') },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -148,7 +144,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.3) should load button for next page for Company Defendant',
-    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-371', '@JIRA-KEY:POT-4085') },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-371') },
     () => {
       setupComponent(null, 'company');
 
@@ -158,7 +154,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.4) should accept valid email addresses - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4086') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -184,7 +180,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.5) should accept valid telephone numbers - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4087') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -210,7 +206,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.6) should accept valid contact details - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4088') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -236,7 +232,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.7) should error when primary email address validation is not met - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4089') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(invalidEmails).each((email: string) => {
@@ -254,7 +250,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.7) should error when secondary email address validation is not met - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4090') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(invalidEmails).each((email: string) => {
@@ -272,7 +268,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when home telephone number validation is not met - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4091') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
@@ -290,7 +286,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when business telephone number validation is not met - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4092') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
@@ -308,7 +304,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when mobile telephone number validation is not met - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4093') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
@@ -326,7 +322,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.9) should allow submission when validation errors are corrected - Return to account details + Add employer details',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4094') },
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 

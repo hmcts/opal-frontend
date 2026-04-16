@@ -55,7 +55,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
   it(
     'should render the component (FinesMacLanguagePreferenceComponent)',
-    { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4155') },
+    { tags: buildTags('@JIRA-STORY:PO-464') },
     () => {
       setupComponent(null);
 
@@ -64,68 +64,56 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     },
   );
 
-  it(
-    '(AC.1,AC.2)should load all elements on the screen correctly',
-    { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4156') },
-    () => {
-      setupComponent(null);
+  it('(AC.1,AC.2)should load all elements on the screen correctly', { tags: buildTags('@JIRA-STORY:PO-464') }, () => {
+    setupComponent(null);
 
-      cy.get(L.pageTitle).should('contain', 'Language preferences');
-      cy.get(L.descriptionText).should(
-        'contain',
-        'These language preferences are for the defendant, or a parent or guardian if they are paying on behalf of the defendant.',
-      );
-      cy.get(L.legend).should('contain', 'Documents');
-      cy.get(L.legend).should('contain', 'Court hearings');
-      cy.get(L.cyDocumentRadioLabel).should('contain', 'Welsh and English');
-      cy.get(L.enDocumentRadioLabel).should('contain', 'English only');
-      cy.get(L.cyCourtHearingRadioLabel).should('contain', 'Welsh and English');
-      cy.get(L.enCourtHearingRadioLabel).should('contain', 'English only');
+    cy.get(L.pageTitle).should('contain', 'Language preferences');
+    cy.get(L.descriptionText).should(
+      'contain',
+      'These language preferences are for the defendant, or a parent or guardian if they are paying on behalf of the defendant.',
+    );
+    cy.get(L.legend).should('contain', 'Documents');
+    cy.get(L.legend).should('contain', 'Court hearings');
+    cy.get(L.cyDocumentRadioLabel).should('contain', 'Welsh and English');
+    cy.get(L.enDocumentRadioLabel).should('contain', 'English only');
+    cy.get(L.cyCourtHearingRadioLabel).should('contain', 'Welsh and English');
+    cy.get(L.enCourtHearingRadioLabel).should('contain', 'English only');
 
-      cy.get(L.cyDocumentRadioOption).should('exist');
-      cy.get(L.enDocumentRadioOption).should('exist');
-      cy.get(L.cyCourtHearingRadioOption).should('exist');
-      cy.get(L.enCourtHearingRadioOption).should('exist');
+    cy.get(L.cyDocumentRadioOption).should('exist');
+    cy.get(L.enDocumentRadioOption).should('exist');
+    cy.get(L.cyCourtHearingRadioOption).should('exist');
+    cy.get(L.enCourtHearingRadioOption).should('exist');
 
-      cy.get(L.submitButton).should('contain', 'Save changes');
-      cy.get(L.cancelLink).should('exist');
-    },
-  );
+    cy.get(L.submitButton).should('contain', 'Save changes');
+    cy.get(L.cancelLink).should('exist');
+  });
 
-  it(
-    '(AC.3)should allow form to be submitted with no input',
-    { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4157') },
-    () => {
-      const formSubmitSpy = Cypress.sinon.spy();
+  it('(AC.3)should allow form to be submitted with no input', { tags: buildTags('@JIRA-STORY:PO-464') }, () => {
+    const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(formSubmitSpy);
+    setupComponent(formSubmitSpy);
 
-      cy.get(L.submitButton).first().click();
+    cy.get(L.submitButton).first().click();
 
-      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+  });
 
-  it(
-    '(AC.3)should allow selections on language preferences',
-    { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4158') },
-    () => {
-      const formSubmitSpy = Cypress.sinon.spy();
+  it('(AC.3)should allow selections on language preferences', { tags: buildTags('@JIRA-STORY:PO-464') }, () => {
+    const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(formSubmitSpy);
+    setupComponent(formSubmitSpy);
 
-      cy.get(L.cyDocumentRadioOption).click();
-      cy.get(L.enCourtHearingRadioOption).click();
+    cy.get(L.cyDocumentRadioOption).click();
+    cy.get(L.enCourtHearingRadioOption).click();
 
-      cy.get(L.submitButton).first().click();
+    cy.get(L.submitButton).first().click();
 
-      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+  });
 
   it(
     '(AC.3)should allow selections on language preferences Opposite options',
-    { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4159') },
+    { tags: buildTags('@JIRA-STORY:PO-464') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
