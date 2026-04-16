@@ -225,21 +225,17 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2 (Fines) ----------------
 
-  it(
-    'AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z',
-    { tags: buildTags() },
-    () => {
-      setupComponent();
-      clickTab('fines');
+  it('AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z', { tags: buildTags() }, () => {
+    setupComponent();
+    clickTab('fines');
 
-      getRowLabels('fines').then(($labels) => {
-        const actual = extractLabels($labels);
-        expect(norm(actual), 'Fines membership').to.deep.equal(norm(expectedFinesNames));
-        actual.forEach((label) => expect(expectedFinesNames, 'label equals BU name').to.include(label));
-        expect(actual, 'Fines alphabetical').to.deep.equal(norm(actual));
-      });
-    },
-  );
+    getRowLabels('fines').then(($labels) => {
+      const actual = extractLabels($labels);
+      expect(norm(actual), 'Fines membership').to.deep.equal(norm(expectedFinesNames));
+      actual.forEach((label) => expect(expectedFinesNames, 'label equals BU name').to.include(label));
+      expect(actual, 'Fines alphabetical').to.deep.equal(norm(actual));
+    });
+  });
 
   // ---------------- AC2 (Confiscation) ----------------
 
@@ -269,32 +265,28 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC3 (Fines select-all) ----------------
 
-  it(
-    'AC3a (Fines): master checkbox selects all fines units and counter shows n of n',
-    { tags: buildTags() },
-    () => {
-      preselectedIds = [];
-      setupComponent();
+  it('AC3a (Fines): master checkbox selects all fines units and counter shows n of n', { tags: buildTags() }, () => {
+    preselectedIds = [];
+    setupComponent();
 
-      clickTab('fines');
-      const n = expectedFinesNames.length;
+    clickTab('fines');
+    const n = expectedFinesNames.length;
 
-      // Toggle ON via label
-      getMasterLabel('fines').click();
+    // Toggle ON via label
+    getMasterLabel('fines').click();
 
-      // All checked
-      getRowCheckboxes('fines')
-        .should('have.length', n)
-        .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
+    // All checked
+    getRowCheckboxes('fines')
+      .should('have.length', n)
+      .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
 
-      // Counter "n of n"
-      cy.get(CommonLocators.selectedCountLabel)
-        .invoke('text')
-        .then((txt) => {
-          expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
-        });
-    },
-  );
+    // Counter "n of n"
+    cy.get(CommonLocators.selectedCountLabel)
+      .invoke('text')
+      .then((txt) => {
+        expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
+      });
+  });
 
   it(
     'AC3ai (Fines): unticking master checkbox clears all fines units and counter shows 0 of n',
@@ -444,27 +436,23 @@ describe('Filter by Business Unit (CT)', () => {
     });
   };
 
-  it(
-    'AC6a (Fines): shows an error when clicking Save with no business units selected',
-    { tags: buildTags() },
-    () => {
-      // Start clean (no preselectedIds)
-      preselectedIds = [];
-      setupComponent();
+  it('AC6a (Fines): shows an error when clicking Save with no business units selected', { tags: buildTags() }, () => {
+    // Start clean (no preselectedIds)
+    preselectedIds = [];
+    setupComponent();
 
-      // Sanity: Save shows (0)
-      assertSaveCount(0);
+    // Sanity: Save shows (0)
+    assertSaveCount(0);
 
-      // Click Save with nothing selected
-      clickSave();
+    // Click Save with nothing selected
+    clickSave();
 
-      // Error summary appears with message
-      assertErrorSummaryVisible();
+    // Error summary appears with message
+    assertErrorSummaryVisible();
 
-      // Still on Fines tab (header unchanged)
-      getMasterLabel('fines').should('be.visible');
-    },
-  );
+    // Still on Fines tab (header unchanged)
+    getMasterLabel('fines').should('be.visible');
+  });
 
   it(
     'AC6b (Confiscation): shows an error when clicking Save with no business units selected',

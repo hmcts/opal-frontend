@@ -110,21 +110,17 @@ describe('FinesMacAccountDetailsComponent', () => {
     },
   );
 
-  it(
-    '(AC.2) should keep Court details label for Fine accounts',
-    { tags: buildTags('@JIRA-STORY:PO-2790') },
-    () => {
-      const fineState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
-      fineState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
-      fineState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+  it('(AC.2) should keep Court details label for Fine accounts', { tags: buildTags('@JIRA-STORY:PO-2790') }, () => {
+    const fineState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
+    fineState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
+    fineState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
-      setupComponent(null, 'adultOrYouthOnly', fineState);
+    setupComponent(null, 'adultOrYouthOnly', fineState);
 
-      cy.contains('h2.govuk-heading-m', 'Court details').should('exist');
-      cy.get(L.taskList.itemByName('Court details')).find(L.taskList.link).should('contain', 'Court details');
-      cy.get(L.taskList.itemByName('Court details')).find(L.taskList.link).should('not.contain', 'Police and court');
-    },
-  );
+    cy.contains('h2.govuk-heading-m', 'Court details').should('exist');
+    cy.get(L.taskList.itemByName('Court details')).find(L.taskList.link).should('contain', 'Court details');
+    cy.get(L.taskList.itemByName('Court details')).find(L.taskList.link).should('not.contain', 'Police and court');
+  });
 
   it(
     '(AC.2) should keep Court details label for Fixed Penalty accounts',
@@ -186,12 +182,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5,AC.6)should load all elements on the screen correctly for AYPG',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-367',
-        '@JIRA-STORY:PO-344',
-        '@JIRA-STORY:PO-468',
-        '@JIRA-STORY:PO-524',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-367', '@JIRA-STORY:PO-344', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524'),
     },
     () => {
       setupComponent(null);

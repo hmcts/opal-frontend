@@ -2357,148 +2357,132 @@ describe('Account Enquiry Enforcement Status', () => {
     },
   );
 
-  it(
-    'AC3: Enforcement override panel remove link true - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1657') },
-    () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+  it('AC3: Enforcement override panel remove link true - Company', { tags: buildTags('@JIRA-STORY:PO-1657') }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+    const accountId = header.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
+    cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle)
-        .should('contain.text', 'Enforcement override')
-        .next()
-        .find('a')
-        .should('contain.text', 'Remove');
-    },
-  );
+    cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+    cy.get(ENFORCEMENT_STATUS_TAB.tableTitle)
+      .should('contain.text', 'Enforcement override')
+      .next()
+      .find('a')
+      .should('contain.text', 'Remove');
+  });
 
-  it(
-    'AC3: Enforcement override panel remove link false - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1657') },
-    () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+  it('AC3: Enforcement override panel remove link false - Company', { tags: buildTags('@JIRA-STORY:PO-1657') }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+    const accountId = header.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
+    cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement override');
-      cy.contains('a', 'Remove').should('not.exist');
-    },
-  );
+    cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+    cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement override');
+    cy.contains('a', 'Remove').should('not.exist');
+  });
 
-  it(
-    'AC4: Enforcement override panel change link true - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1657') },
-    () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+  it('AC4: Enforcement override panel change link true - Company', { tags: buildTags('@JIRA-STORY:PO-1657') }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+    const accountId = header.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
+    cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement override');
+    cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+    cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement override');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementOverride)
-        .should('exist')
-        .and('contain.text', 'Enforcement override')
-        .next()
-        .should('contain.text', 'Override Result Name(EOR123)')
-        .next()
-        .find('a')
-        .should('contain.text', 'Change');
-    },
-  );
+    cy.get(ENFORCEMENT_STATUS_TAB.enforcementOverride)
+      .should('exist')
+      .and('contain.text', 'Enforcement override')
+      .next()
+      .should('contain.text', 'Override Result Name(EOR123)')
+      .next()
+      .find('a')
+      .should('contain.text', 'Change');
+  });
 
-  it(
-    'AC4: Enforcement override panel change link false - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1657') },
-    () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+  it('AC4: Enforcement override panel change link false - Company', { tags: buildTags('@JIRA-STORY:PO-1657') }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+    const accountId = header.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
+    cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement override');
+    cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+    cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement override');
 
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementOverride)
-        .should('exist')
-        .and('contain.text', 'Enforcement override')
-        .next()
-        .should('contain.text', 'Override Result Name(EOR123)');
-      cy.contains('a', 'Change').should('not.exist');
-    },
-  );
+    cy.get(ENFORCEMENT_STATUS_TAB.enforcementOverride)
+      .should('exist')
+      .and('contain.text', 'Enforcement override')
+      .next()
+      .should('contain.text', 'Override Result Name(EOR123)');
+    cy.contains('a', 'Change').should('not.exist');
+  });
 });

@@ -15,38 +15,34 @@ describe('Manual account creation - Originator Type', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
   });
 
-  it(
-    'Validate Originator Type page renders as designed',
-    { tags: buildTags('@JIRA-STORY:PO-2763') },
-    () => {
-      const props: IFinesComponentProperties = {
-        draftAccountId: '100',
-        fragments: undefined,
-        componentUrl: `${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
-        interceptedRoutes: ['create-account', 'dashboard'],
-        isCheckerUser: false,
-      };
-      setupFinesMacComponent(props);
+  it('Validate Originator Type page renders as designed', { tags: buildTags('@JIRA-STORY:PO-2763') }, () => {
+    const props: IFinesComponentProperties = {
+      draftAccountId: '100',
+      fragments: undefined,
+      componentUrl: `${FINES_MAC_ROUTING_PATHS.children.originatorType}`,
+      interceptedRoutes: ['create-account', 'dashboard'],
+      isCheckerUser: false,
+    };
+    setupFinesMacComponent(props);
 
-      cy.get(DOM.pageHeader).should('contain.text', 'Do you want to create a new account or transfer in?');
-      cy.get(DOM.originatorType.createNew).should('exist');
-      cy.get(DOM.originatorType.transferIn).should('exist');
-      cy.get(DOM.continueButton).should('exist');
-      cy.get(DOM.cancelLink).should('exist');
+    cy.get(DOM.pageHeader).should('contain.text', 'Do you want to create a new account or transfer in?');
+    cy.get(DOM.originatorType.createNew).should('exist');
+    cy.get(DOM.originatorType.transferIn).should('exist');
+    cy.get(DOM.continueButton).should('exist');
+    cy.get(DOM.cancelLink).should('exist');
 
-      cy.get(DOM.originatorType.createNew).should('not.be.checked');
-      cy.get(DOM.originatorType.transferIn).should('not.be.checked');
+    cy.get(DOM.originatorType.createNew).should('not.be.checked');
+    cy.get(DOM.originatorType.transferIn).should('not.be.checked');
 
-      cy.get(DOM.originatorType.createNew).check({ force: true }).should('be.checked');
-      cy.get(DOM.originatorType.transferIn).should('not.be.checked');
+    cy.get(DOM.originatorType.createNew).check({ force: true }).should('be.checked');
+    cy.get(DOM.originatorType.transferIn).should('not.be.checked');
 
-      cy.get(DOM.originatorType.transferIn).check({ force: true }).should('be.checked');
-      cy.get(DOM.originatorType.createNew).should('not.be.checked');
+    cy.get(DOM.originatorType.transferIn).check({ force: true }).should('be.checked');
+    cy.get(DOM.originatorType.createNew).should('not.be.checked');
 
-      cy.get(DOM.continueButton).click({ force: true });
-      cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
-    },
-  );
+    cy.get(DOM.continueButton).click({ force: true });
+    cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
+  });
 
   it(
     'AC2: routes to Create account view when "New account" is selected and Continue is clicked',

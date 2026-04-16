@@ -250,118 +250,110 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     },
   );
 
-  it(
-    'AC2. Parent/Guardian - Alias add/remove and clear behaviour',
-    { tags: buildTags('@JIRA-STORY:PO-1112') },
-    () => {
-      setupComponent('parentGuardian', minimalMock);
+  it('AC2. Parent/Guardian - Alias add/remove and clear behaviour', { tags: buildTags('@JIRA-STORY:PO-1112') }, () => {
+    setupComponent('parentGuardian', minimalMock);
 
-      // Pre-condition: checkbox unchecked & section hidden
-      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+    // Pre-condition: checkbox unchecked & section hidden
+    cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
-      // AC2: Tick the Add aliases checkbox
-      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+    // AC2: Tick the Add aliases checkbox
+    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
 
-      // AC2a: Subheading 'Alias 1' displayed
-      cy.contains('legend', 'Alias 1').should('exist').and('have.class', 'govuk-fieldset__legend');
+    // AC2a: Subheading 'Alias 1' displayed
+    cy.contains('legend', 'Alias 1').should('exist').and('have.class', 'govuk-fieldset__legend');
 
-      // AC2b: Two free text boxes with titles First names / Last name for Alias 1
-      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
-      cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
-      cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
+    // AC2b: Two free text boxes with titles First names / Last name for Alias 1
+    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
+    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
+    cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
+    cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
 
-      // Enter some data to later verify clearing behaviour (AC2f)
-      cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
+    // Enter some data to later verify clearing behaviour (AC2f)
+    cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
+    cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
 
-      // AC2c: Grey 'Add another alias' button displayed
-      cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
+    // AC2c: Grey 'Add another alias' button displayed
+    cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
 
-      // Helper to add alias and assert its presence
-      const addAliasAndAssert = (aliasNumber: number) => {
-        cy.get(DOM_ELEMENTS.addAliasButton).click();
-        cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
-        const index = aliasNumber - 1;
-        cy.get(getAliasForenamesInput(index)).should('exist');
-        cy.get(getAliasSurnameInput(index)).should('exist');
-      };
+    // Helper to add alias and assert its presence
+    const addAliasAndAssert = (aliasNumber: number) => {
+      cy.get(DOM_ELEMENTS.addAliasButton).click();
+      cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
+      const index = aliasNumber - 1;
+      cy.get(getAliasForenamesInput(index)).should('exist');
+      cy.get(getAliasSurnameInput(index)).should('exist');
+    };
 
-      // AC2d / AC2di: Add aliases 2 through 5 incrementally
-      addAliasAndAssert(2);
-      cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
-      addAliasAndAssert(3);
-      addAliasAndAssert(4);
-      addAliasAndAssert(5);
+    // AC2d / AC2di: Add aliases 2 through 5 incrementally
+    addAliasAndAssert(2);
+    cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
+    addAliasAndAssert(3);
+    addAliasAndAssert(4);
+    addAliasAndAssert(5);
 
-      // AC2dii: Once 5 alias rows added, add button disappears
-      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+    // AC2dii: Once 5 alias rows added, add button disappears
+    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-      // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
-      cy.get('a.govuk-link').contains('Remove').should('exist');
-      cy.contains('legend', 'Alias 1')
-        .parent('fieldset')
-        .within(() => {
-          cy.contains('Remove').should('not.exist');
-        });
-
-      // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
-      cy.get('a.govuk-link').contains('Remove').click();
-      cy.contains('legend', 'Alias 5').should('not.exist');
-      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
-
-      // Add back up to 5 to demonstrate cap again
-      addAliasAndAssert(5);
-      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
-
-      // AC2f: Untick Add aliases checkbox hides & wipes alias data
-      cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
-
-      // Re-check and ensure a fresh empty Alias 1 row (data wiped)
-      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
-      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
-    },
-  );
-
-  it(
-    'AC5. Parent/Guardian - Required field validation (core)',
-    { tags: buildTags('@JIRA-STORY:PO-1112') },
-    () => {
-      const emptyCoreMock = structuredClone(minimalMock);
-      emptyCoreMock.defendant_account_party.party_details.individual_details!.title = '';
-      emptyCoreMock.defendant_account_party.party_details.individual_details!.forenames = '';
-      emptyCoreMock.defendant_account_party.party_details.individual_details!.surname = '';
-      emptyCoreMock.defendant_account_party.address!.address_line_1 = '';
-
-      setupComponent('parentGuardian', emptyCoreMock);
-
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-
-      cy.get(DOM_ELEMENTS.forenamesInput).should('have.value', '');
-      cy.get(DOM_ELEMENTS.surnameInput).should('have.value', '');
-      cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '');
-
-      cy.get(DOM_ELEMENTS.submitButton).click();
-
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-
-      // Verify parent/guardian specific error messages
-      coreRequiredMessages.forEach((msg) => {
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+    // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
+    cy.get('a.govuk-link').contains('Remove').should('exist');
+    cy.contains('legend', 'Alias 1')
+      .parent('fieldset')
+      .within(() => {
+        cy.contains('Remove').should('not.exist');
       });
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', 'Enter employer name');
-      cy.get(DOM_ELEMENTS.errorSummary).should(
-        'not.contain.text',
-        'Enter employee reference or National Insurance number',
-      );
-    },
-  );
+    // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
+    cy.get('a.govuk-link').contains('Remove').click();
+    cy.contains('legend', 'Alias 5').should('not.exist');
+    cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
+
+    // Add back up to 5 to demonstrate cap again
+    addAliasAndAssert(5);
+    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+
+    // AC2f: Untick Add aliases checkbox hides & wipes alias data
+    cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+
+    // Re-check and ensure a fresh empty Alias 1 row (data wiped)
+    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
+  });
+
+  it('AC5. Parent/Guardian - Required field validation (core)', { tags: buildTags('@JIRA-STORY:PO-1112') }, () => {
+    const emptyCoreMock = structuredClone(minimalMock);
+    emptyCoreMock.defendant_account_party.party_details.individual_details!.title = '';
+    emptyCoreMock.defendant_account_party.party_details.individual_details!.forenames = '';
+    emptyCoreMock.defendant_account_party.party_details.individual_details!.surname = '';
+    emptyCoreMock.defendant_account_party.address!.address_line_1 = '';
+
+    setupComponent('parentGuardian', emptyCoreMock);
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+
+    cy.get(DOM_ELEMENTS.forenamesInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.surnameInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '');
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+
+    // Verify parent/guardian specific error messages
+    coreRequiredMessages.forEach((msg) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+    });
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', 'Enter employer name');
+    cy.get(DOM_ELEMENTS.errorSummary).should(
+      'not.contain.text',
+      'Enter employee reference or National Insurance number',
+    );
+  });
 
   it(
     'AC5. Parent/Guardian - Required field validation (employer name)',

@@ -106,34 +106,26 @@ describe('Search Account Component - Major Creditors', () => {
     },
   );
 
-  it(
-    'AC2a, AC2b, AC2c. Single BU filtered and dropdown contents',
-    { tags: buildTags('@JIRA-STORY:PO-716') },
-    () => {
-      setupComponent();
+  it('AC2a, AC2b, AC2c. Single BU filtered and dropdown contents', { tags: buildTags('@JIRA-STORY:PO-716') }, () => {
+    setupComponent();
 
-      cy.get(MajorCreditorsLocators.panel.heading).should('exist').contains('Major creditors');
-      cy.get(MajorAutocompleteLocators.hint).should('exist').contains('Search using creditor name or code');
-      cy.get(MajorAutocompleteLocators.input).click();
-      cy.get(MajorAutocompleteLocators.listbox).find('li').should('have.length', 4);
-      cy.get(MajorAutocompleteLocators.listbox).find('li').eq(0).should('contain', 'Abellio Greater Anglia (AGAL)');
-      cy.get(MajorAutocompleteLocators.listbox).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
-      cy.get(MajorAutocompleteLocators.listbox).find('li').eq(2).should('contain', 'Aldi Stores Ltd (ALDI)');
-      cy.get(MajorAutocompleteLocators.listbox).find('li').eq(3).should('contain', 'Arriva Rail North (ARVA)');
-    },
-  );
+    cy.get(MajorCreditorsLocators.panel.heading).should('exist').contains('Major creditors');
+    cy.get(MajorAutocompleteLocators.hint).should('exist').contains('Search using creditor name or code');
+    cy.get(MajorAutocompleteLocators.input).click();
+    cy.get(MajorAutocompleteLocators.listbox).find('li').should('have.length', 4);
+    cy.get(MajorAutocompleteLocators.listbox).find('li').eq(0).should('contain', 'Abellio Greater Anglia (AGAL)');
+    cy.get(MajorAutocompleteLocators.listbox).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
+    cy.get(MajorAutocompleteLocators.listbox).find('li').eq(2).should('contain', 'Aldi Stores Ltd (ALDI)');
+    cy.get(MajorAutocompleteLocators.listbox).find('li').eq(3).should('contain', 'Arriva Rail North (ARVA)');
+  });
 
-  it(
-    'AC2d. Type ahead and non-case sensitive search',
-    { tags: buildTags('@JIRA-STORY:PO-716') },
-    () => {
-      setupComponent();
+  it('AC2d. Type ahead and non-case sensitive search', { tags: buildTags('@JIRA-STORY:PO-716') }, () => {
+    setupComponent();
 
-      cy.get(MajorAutocompleteLocators.input).click().type('ab');
-      cy.get(MajorAutocompleteLocators.listbox).find('li').eq(0).should('contain', 'Abellio Greater Anglia (AGAL)');
-      cy.get(MajorAutocompleteLocators.listbox).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
-    },
-  );
+    cy.get(MajorAutocompleteLocators.input).click().type('ab');
+    cy.get(MajorAutocompleteLocators.listbox).find('li').eq(0).should('contain', 'Abellio Greater Anglia (AGAL)');
+    cy.get(MajorAutocompleteLocators.listbox).find('li').eq(1).should('contain', 'Aberdeen JP Court (ABJP)');
+  });
 
   it(
     'AC2f. Navigated to account enquiry when major creditor is selected and searched for',
@@ -155,25 +147,21 @@ describe('Search Account Component - Major Creditors', () => {
     },
   );
 
-  it(
-    'AC2h. Data cleared when another tab is selected',
-    { tags: buildTags('@JIRA-STORY:PO-716') },
-    () => {
-      setupComponent();
+  it('AC2h. Data cleared when another tab is selected', { tags: buildTags('@JIRA-STORY:PO-716') }, () => {
+    setupComponent();
 
-      majorCreditorsSearchMock.fsa_search_account_number = '12345678';
-      majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
+    majorCreditorsSearchMock.fsa_search_account_number = '12345678';
+    majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
 
-      cy.get(MajorAutocompleteLocators.input).click();
-      cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
-      cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');
-      cy.get(NavLocators.minorCreditorsTab).click();
-      cy.then(() => fragment$.next('minorCreditors'));
-      cy.get(NavLocators.majorCreditorsTab).click();
-      cy.then(() => fragment$.next('majorCreditors'));
-      cy.get(MajorAutocompleteLocators.input).should('have.value', '');
-    },
-  );
+    cy.get(MajorAutocompleteLocators.input).click();
+    cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
+    cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');
+    cy.get(NavLocators.minorCreditorsTab).click();
+    cy.then(() => fragment$.next('minorCreditors'));
+    cy.get(NavLocators.majorCreditorsTab).click();
+    cy.then(() => fragment$.next('majorCreditors'));
+    cy.get(MajorAutocompleteLocators.input).should('have.value', '');
+  });
 
   it('AC3. Multiple BUs filtered unhappy path', { tags: buildTags('@JIRA-STORY:PO-716') }, () => {
     setupComponent();
@@ -186,31 +174,23 @@ describe('Search Account Component - Major Creditors', () => {
     cy.get(MajorRequirementLocators.link).should('exist').contains('filter by a single business unit');
   });
 
-  it(
-    'AC4, AC5. Major creditor tab error validation',
-    { tags: buildTags('@JIRA-STORY:PO-716') },
-    () => {
-      setupComponent();
+  it('AC4, AC5. Major creditor tab error validation', { tags: buildTags('@JIRA-STORY:PO-716') }, () => {
+    setupComponent();
 
-      cy.get(CommonLocators.searchButton).click();
+    cy.get(CommonLocators.searchButton).click();
 
-      cy.get(MajorAutocompleteLocators.error).should('exist').and('contain', 'Enter a major creditor name or code');
-    },
-  );
+    cy.get(MajorAutocompleteLocators.error).should('exist').and('contain', 'Enter a major creditor name or code');
+  });
 
-  it(
-    'AC6. Validation passes navigated to problem screen',
-    { tags: buildTags('@JIRA-STORY:PO-716') },
-    () => {
-      setupComponent();
-      majorCreditorsSearchMock.fsa_search_account_number = '12345678';
-      majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
-      cy.get(MajorAutocompleteLocators.input).click();
-      cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
-      cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');
+  it('AC6. Validation passes navigated to problem screen', { tags: buildTags('@JIRA-STORY:PO-716') }, () => {
+    setupComponent();
+    majorCreditorsSearchMock.fsa_search_account_number = '12345678';
+    majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
+    cy.get(MajorAutocompleteLocators.input).click();
+    cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
+    cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');
 
-      cy.get(CommonLocators.searchButton).click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
-    },
-  );
+    cy.get(CommonLocators.searchButton).click();
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['problem']);
+  });
 });

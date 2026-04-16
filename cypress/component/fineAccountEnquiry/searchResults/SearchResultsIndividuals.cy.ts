@@ -74,16 +74,12 @@ describe('FinesSaResultsComponent - Individuals', () => {
     });
   };
 
-  it(
-    'Search results component is created correctly',
-    { tags: buildTags('@JIRA-STORY:PO-717') },
-    () => {
-      setupComponent();
+  it('Search results component is created correctly', { tags: buildTags('@JIRA-STORY:PO-717') }, () => {
+    setupComponent();
 
-      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
-      cy.get(ResultsPageLocators.backLinkHost).should('exist');
-    },
-  );
+    cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+    cy.get(ResultsPageLocators.backLinkHost).should('exist');
+  });
 
   it(
     '(AC2) Displays error message when no search matches are found (FinesSaResultsComponent - Individuals)',
@@ -262,201 +258,197 @@ describe('FinesSaResultsComponent - Individuals', () => {
     },
   );
 
-  it(
-    '(AC4f) Should sort by each column - ascending then descending',
-    { tags: buildTags('@JIRA-STORY:PO-717') },
-    () => {
-      setupComponent(SORTING_SEARCH_RESULTS_MOCK);
+  it('(AC4f) Should sort by each column - ascending then descending', { tags: buildTags('@JIRA-STORY:PO-717') }, () => {
+    setupComponent(SORTING_SEARCH_RESULTS_MOCK);
 
-      //Account column sorting
-      cy.get(ResultsCellLocators.accountCell).first().should('contain', '13003BU');
-      cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13001BU');
+    //Account column sorting
+    cy.get(ResultsCellLocators.accountCell).first().should('contain', '13003BU');
+    cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13001BU');
 
-      cy.get(ResultsHeaderButtonLocators.account).click();
+    cy.get(ResultsHeaderButtonLocators.account).click();
 
-      cy.get(ResultsCellLocators.accountCell).first().should('contain', '13001BU');
-      cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13002BU');
-      cy.get(ResultsCellLocators.accountCell).eq(2).should('contain', '13003BU');
-      cy.get(ResultsCellLocators.accountCell).eq(3).should('contain', '13004BU');
-      cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13005BU');
+    cy.get(ResultsCellLocators.accountCell).first().should('contain', '13001BU');
+    cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13002BU');
+    cy.get(ResultsCellLocators.accountCell).eq(2).should('contain', '13003BU');
+    cy.get(ResultsCellLocators.accountCell).eq(3).should('contain', '13004BU');
+    cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13005BU');
 
-      cy.get(ResultsHeaderButtonLocators.account).click();
+    cy.get(ResultsHeaderButtonLocators.account).click();
 
-      cy.get(ResultsCellLocators.accountCell).first().should('contain', '13005BU');
-      cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13004BU');
-      cy.get(ResultsCellLocators.accountCell).eq(2).should('contain', '13003BU');
-      cy.get(ResultsCellLocators.accountCell).eq(3).should('contain', '13002BU');
-      cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13001BU');
+    cy.get(ResultsCellLocators.accountCell).first().should('contain', '13005BU');
+    cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13004BU');
+    cy.get(ResultsCellLocators.accountCell).eq(2).should('contain', '13003BU');
+    cy.get(ResultsCellLocators.accountCell).eq(3).should('contain', '13002BU');
+    cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13001BU');
 
-      // Name column sorting
-      cy.get(ResultsHeaderButtonLocators.name).click();
+    // Name column sorting
+    cy.get(ResultsHeaderButtonLocators.name).click();
 
-      cy.get(ResultsCellLocators.name).first().should('contain', 'ANDERSON, Lisa Marie');
-      cy.get(ResultsCellLocators.name).eq(1).should('contain', 'BROWN, David Paul');
-      cy.get(ResultsCellLocators.name).eq(2).should('contain', 'JOHNSON, Emily Rose');
-      cy.get(ResultsCellLocators.name).eq(3).should('contain', 'SMITH, John Michael');
-      cy.get(ResultsCellLocators.name).eq(4).should('contain', 'WILLIAMS, Sarah Jane');
+    cy.get(ResultsCellLocators.name).first().should('contain', 'ANDERSON, Lisa Marie');
+    cy.get(ResultsCellLocators.name).eq(1).should('contain', 'BROWN, David Paul');
+    cy.get(ResultsCellLocators.name).eq(2).should('contain', 'JOHNSON, Emily Rose');
+    cy.get(ResultsCellLocators.name).eq(3).should('contain', 'SMITH, John Michael');
+    cy.get(ResultsCellLocators.name).eq(4).should('contain', 'WILLIAMS, Sarah Jane');
 
-      cy.get(ResultsHeaderButtonLocators.name).click();
+    cy.get(ResultsHeaderButtonLocators.name).click();
 
-      cy.get(ResultsCellLocators.name).first().should('contain', 'WILLIAMS, Sarah Jane');
-      cy.get(ResultsCellLocators.name).eq(1).should('contain', 'SMITH, John Michael');
-      cy.get(ResultsCellLocators.name).eq(2).should('contain', 'JOHNSON, Emily Rose');
-      cy.get(ResultsCellLocators.name).eq(3).should('contain', 'BROWN, David Paul');
-      cy.get(ResultsCellLocators.name).eq(4).should('contain', 'ANDERSON, Lisa Marie');
+    cy.get(ResultsCellLocators.name).first().should('contain', 'WILLIAMS, Sarah Jane');
+    cy.get(ResultsCellLocators.name).eq(1).should('contain', 'SMITH, John Michael');
+    cy.get(ResultsCellLocators.name).eq(2).should('contain', 'JOHNSON, Emily Rose');
+    cy.get(ResultsCellLocators.name).eq(3).should('contain', 'BROWN, David Paul');
+    cy.get(ResultsCellLocators.name).eq(4).should('contain', 'ANDERSON, Lisa Marie');
 
-      // DOB column sorting
-      cy.get(ResultsHeaderButtonLocators.dob).click();
+    // DOB column sorting
+    cy.get(ResultsHeaderButtonLocators.dob).click();
 
-      cy.get(ResultsCellLocators.dob).first().should('contain', '08 Nov 1975');
-      cy.get(ResultsCellLocators.dob).eq(1).should('contain', '12 Sep 1982');
-      cy.get(ResultsCellLocators.dob).eq(2).should('contain', '01 Jun 1985');
-      cy.get(ResultsCellLocators.dob).eq(3).should('contain', '25 Dec 1988');
-      cy.get(ResultsCellLocators.dob).eq(4).should('contain', '15 Mar 1990');
+    cy.get(ResultsCellLocators.dob).first().should('contain', '08 Nov 1975');
+    cy.get(ResultsCellLocators.dob).eq(1).should('contain', '12 Sep 1982');
+    cy.get(ResultsCellLocators.dob).eq(2).should('contain', '01 Jun 1985');
+    cy.get(ResultsCellLocators.dob).eq(3).should('contain', '25 Dec 1988');
+    cy.get(ResultsCellLocators.dob).eq(4).should('contain', '15 Mar 1990');
 
-      cy.get(ResultsHeaderButtonLocators.dob).click();
+    cy.get(ResultsHeaderButtonLocators.dob).click();
 
-      cy.get(ResultsCellLocators.dob).first().should('contain', '15 Mar 1990');
-      cy.get(ResultsCellLocators.dob).eq(1).should('contain', '25 Dec 1988');
-      cy.get(ResultsCellLocators.dob).eq(2).should('contain', '01 Jun 1985');
-      cy.get(ResultsCellLocators.dob).eq(3).should('contain', '12 Sep 1982');
-      cy.get(ResultsCellLocators.dob).eq(4).should('contain', '08 Nov 1975');
+    cy.get(ResultsCellLocators.dob).first().should('contain', '15 Mar 1990');
+    cy.get(ResultsCellLocators.dob).eq(1).should('contain', '25 Dec 1988');
+    cy.get(ResultsCellLocators.dob).eq(2).should('contain', '01 Jun 1985');
+    cy.get(ResultsCellLocators.dob).eq(3).should('contain', '12 Sep 1982');
+    cy.get(ResultsCellLocators.dob).eq(4).should('contain', '08 Nov 1975');
 
-      // Address line 1 column sorting
-      cy.get(ResultsHeaderButtonLocators.addr1).click();
+    // Address line 1 column sorting
+    cy.get(ResultsHeaderButtonLocators.addr1).click();
 
-      cy.get(ResultsCellLocators.addr1).first().should('contain', '1 High Street');
-      cy.get(ResultsCellLocators.addr1).eq(1).should('contain', '15 Oak Street');
-      cy.get(ResultsCellLocators.addr1).eq(2).should('contain', '22 Victoria Road');
-      cy.get(ResultsCellLocators.addr1).eq(3).should('contain', '5 Church Lane');
-      cy.get(ResultsCellLocators.addr1).eq(4).should('contain', '8 Park Avenue');
+    cy.get(ResultsCellLocators.addr1).first().should('contain', '1 High Street');
+    cy.get(ResultsCellLocators.addr1).eq(1).should('contain', '15 Oak Street');
+    cy.get(ResultsCellLocators.addr1).eq(2).should('contain', '22 Victoria Road');
+    cy.get(ResultsCellLocators.addr1).eq(3).should('contain', '5 Church Lane');
+    cy.get(ResultsCellLocators.addr1).eq(4).should('contain', '8 Park Avenue');
 
-      cy.get(ResultsHeaderButtonLocators.addr1).click();
+    cy.get(ResultsHeaderButtonLocators.addr1).click();
 
-      cy.get(ResultsCellLocators.addr1).first().should('contain', '8 Park Avenue');
-      cy.get(ResultsCellLocators.addr1).eq(1).should('contain', '5 Church Lane');
-      cy.get(ResultsCellLocators.addr1).eq(2).should('contain', '22 Victoria Road');
-      cy.get(ResultsCellLocators.addr1).eq(3).should('contain', '15 Oak Street');
-      cy.get(ResultsCellLocators.addr1).eq(4).should('contain', '1 High Street');
+    cy.get(ResultsCellLocators.addr1).first().should('contain', '8 Park Avenue');
+    cy.get(ResultsCellLocators.addr1).eq(1).should('contain', '5 Church Lane');
+    cy.get(ResultsCellLocators.addr1).eq(2).should('contain', '22 Victoria Road');
+    cy.get(ResultsCellLocators.addr1).eq(3).should('contain', '15 Oak Street');
+    cy.get(ResultsCellLocators.addr1).eq(4).should('contain', '1 High Street');
 
-      // Postcode column sorting
-      cy.get(ResultsHeaderButtonLocators.postcode).click();
+    // Postcode column sorting
+    cy.get(ResultsHeaderButtonLocators.postcode).click();
 
-      cy.get(ResultsCellLocators.postcode).first().should('contain', 'B2 4TY');
-      cy.get(ResultsCellLocators.postcode).eq(1).should('contain', 'L3 8GH');
-      cy.get(ResultsCellLocators.postcode).eq(2).should('contain', 'M1 5AB');
-      cy.get(ResultsCellLocators.postcode).eq(3).should('contain', 'NE1 2DF');
-      cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'RG1 9RT');
+    cy.get(ResultsCellLocators.postcode).first().should('contain', 'B2 4TY');
+    cy.get(ResultsCellLocators.postcode).eq(1).should('contain', 'L3 8GH');
+    cy.get(ResultsCellLocators.postcode).eq(2).should('contain', 'M1 5AB');
+    cy.get(ResultsCellLocators.postcode).eq(3).should('contain', 'NE1 2DF');
+    cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'RG1 9RT');
 
-      cy.get(ResultsHeaderButtonLocators.postcode).click();
+    cy.get(ResultsHeaderButtonLocators.postcode).click();
 
-      cy.get(ResultsCellLocators.postcode).first().should('contain', 'RG1 9RT');
-      cy.get(ResultsCellLocators.postcode).eq(1).should('contain', 'NE1 2DF');
-      cy.get(ResultsCellLocators.postcode).eq(2).should('contain', 'M1 5AB');
-      cy.get(ResultsCellLocators.postcode).eq(3).should('contain', 'L3 8GH');
-      cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'B2 4TY');
+    cy.get(ResultsCellLocators.postcode).first().should('contain', 'RG1 9RT');
+    cy.get(ResultsCellLocators.postcode).eq(1).should('contain', 'NE1 2DF');
+    cy.get(ResultsCellLocators.postcode).eq(2).should('contain', 'M1 5AB');
+    cy.get(ResultsCellLocators.postcode).eq(3).should('contain', 'L3 8GH');
+    cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'B2 4TY');
 
-      // NI number column sorting
-      cy.get(ResultsHeaderButtonLocators.ni).click();
+    // NI number column sorting
+    cy.get(ResultsHeaderButtonLocators.ni).click();
 
-      cy.get(ResultsCellLocators.ni).first().should('contain', 'AB 12 34 56 C');
-      cy.get(ResultsCellLocators.ni).eq(1).should('contain', 'CD 78 90 12 E');
-      cy.get(ResultsCellLocators.ni).eq(2).should('contain', 'EF 34 56 78 G');
-      cy.get(ResultsCellLocators.ni).eq(3).should('contain', 'GH 90 12 34 H');
-      cy.get(ResultsCellLocators.ni).eq(4).should('contain', 'JK 56 78 90 C');
+    cy.get(ResultsCellLocators.ni).first().should('contain', 'AB 12 34 56 C');
+    cy.get(ResultsCellLocators.ni).eq(1).should('contain', 'CD 78 90 12 E');
+    cy.get(ResultsCellLocators.ni).eq(2).should('contain', 'EF 34 56 78 G');
+    cy.get(ResultsCellLocators.ni).eq(3).should('contain', 'GH 90 12 34 H');
+    cy.get(ResultsCellLocators.ni).eq(4).should('contain', 'JK 56 78 90 C');
 
-      cy.get(ResultsHeaderButtonLocators.ni).click();
+    cy.get(ResultsHeaderButtonLocators.ni).click();
 
-      cy.get(ResultsCellLocators.ni).first().should('contain', 'JK 56 78 90 C');
-      cy.get(ResultsCellLocators.ni).eq(1).should('contain', 'GH 90 12 34 H');
-      cy.get(ResultsCellLocators.ni).eq(2).should('contain', 'EF 34 56 78 G');
-      cy.get(ResultsCellLocators.ni).eq(3).should('contain', 'CD 78 90 12 E');
-      cy.get(ResultsCellLocators.ni).eq(4).should('contain', 'AB 12 34 56 C');
+    cy.get(ResultsCellLocators.ni).first().should('contain', 'JK 56 78 90 C');
+    cy.get(ResultsCellLocators.ni).eq(1).should('contain', 'GH 90 12 34 H');
+    cy.get(ResultsCellLocators.ni).eq(2).should('contain', 'EF 34 56 78 G');
+    cy.get(ResultsCellLocators.ni).eq(3).should('contain', 'CD 78 90 12 E');
+    cy.get(ResultsCellLocators.ni).eq(4).should('contain', 'AB 12 34 56 C');
 
-      // Parent or guardian column sorting
-      cy.get(ResultsHeaderButtonLocators.pg).click();
+    // Parent or guardian column sorting
+    cy.get(ResultsHeaderButtonLocators.pg).click();
 
-      cy.get(ResultsCellLocators.parentGuard).first().should('contain', 'BROWN, Michael');
-      cy.get(ResultsCellLocators.parentGuard).eq(1).should('contain', 'DOE, Jane');
-      cy.get(ResultsCellLocators.parentGuard).eq(2).should('contain', 'TAYLOR, Susan');
-      cy.get(ResultsCellLocators.parentGuard).eq(3).should('contain', '—');
-      cy.get(ResultsCellLocators.parentGuard).eq(4).should('contain', '—');
+    cy.get(ResultsCellLocators.parentGuard).first().should('contain', 'BROWN, Michael');
+    cy.get(ResultsCellLocators.parentGuard).eq(1).should('contain', 'DOE, Jane');
+    cy.get(ResultsCellLocators.parentGuard).eq(2).should('contain', 'TAYLOR, Susan');
+    cy.get(ResultsCellLocators.parentGuard).eq(3).should('contain', '—');
+    cy.get(ResultsCellLocators.parentGuard).eq(4).should('contain', '—');
 
-      cy.get(ResultsHeaderButtonLocators.pg).click();
+    cy.get(ResultsHeaderButtonLocators.pg).click();
 
-      cy.get(ResultsCellLocators.parentGuard).first().should('contain', 'TAYLOR, Susan');
-      cy.get(ResultsCellLocators.parentGuard).eq(1).should('contain', 'DOE, Jane');
-      cy.get(ResultsCellLocators.parentGuard).eq(2).should('contain', 'BROWN, Michael');
-      cy.get(ResultsCellLocators.parentGuard).eq(3).should('contain', '—');
-      cy.get(ResultsCellLocators.parentGuard).eq(4).should('contain', '—');
+    cy.get(ResultsCellLocators.parentGuard).first().should('contain', 'TAYLOR, Susan');
+    cy.get(ResultsCellLocators.parentGuard).eq(1).should('contain', 'DOE, Jane');
+    cy.get(ResultsCellLocators.parentGuard).eq(2).should('contain', 'BROWN, Michael');
+    cy.get(ResultsCellLocators.parentGuard).eq(3).should('contain', '—');
+    cy.get(ResultsCellLocators.parentGuard).eq(4).should('contain', '—');
 
-      // Business unit column sorting
-      cy.get(ResultsHeaderButtonLocators.bu).click();
+    // Business unit column sorting
+    cy.get(ResultsHeaderButtonLocators.bu).click();
 
-      cy.get(ResultsCellLocators.businessUnit).first().should('contain', 'Birmingham Unit');
-      cy.get(ResultsCellLocators.businessUnit).eq(1).should('contain', 'Liverpool Unit');
-      cy.get(ResultsCellLocators.businessUnit).eq(2).should('contain', 'Manchester Unit');
-      cy.get(ResultsCellLocators.businessUnit).eq(3).should('contain', 'Newcastle Unit');
-      cy.get(ResultsCellLocators.businessUnit).eq(4).should('contain', 'Reading Unit');
+    cy.get(ResultsCellLocators.businessUnit).first().should('contain', 'Birmingham Unit');
+    cy.get(ResultsCellLocators.businessUnit).eq(1).should('contain', 'Liverpool Unit');
+    cy.get(ResultsCellLocators.businessUnit).eq(2).should('contain', 'Manchester Unit');
+    cy.get(ResultsCellLocators.businessUnit).eq(3).should('contain', 'Newcastle Unit');
+    cy.get(ResultsCellLocators.businessUnit).eq(4).should('contain', 'Reading Unit');
 
-      cy.get(ResultsHeaderButtonLocators.bu).click();
+    cy.get(ResultsHeaderButtonLocators.bu).click();
 
-      cy.get(ResultsCellLocators.businessUnit).first().should('contain', 'Reading Unit');
-      cy.get(ResultsCellLocators.businessUnit).eq(1).should('contain', 'Newcastle Unit');
-      cy.get(ResultsCellLocators.businessUnit).eq(2).should('contain', 'Manchester Unit');
-      cy.get(ResultsCellLocators.businessUnit).eq(3).should('contain', 'Liverpool Unit');
-      cy.get(ResultsCellLocators.businessUnit).eq(4).should('contain', 'Birmingham Unit');
+    cy.get(ResultsCellLocators.businessUnit).first().should('contain', 'Reading Unit');
+    cy.get(ResultsCellLocators.businessUnit).eq(1).should('contain', 'Newcastle Unit');
+    cy.get(ResultsCellLocators.businessUnit).eq(2).should('contain', 'Manchester Unit');
+    cy.get(ResultsCellLocators.businessUnit).eq(3).should('contain', 'Liverpool Unit');
+    cy.get(ResultsCellLocators.businessUnit).eq(4).should('contain', 'Birmingham Unit');
 
-      // ref column sorting
-      cy.get(ResultsHeaderButtonLocators.ref).click();
+    // ref column sorting
+    cy.get(ResultsHeaderButtonLocators.ref).click();
 
-      cy.get(ResultsCellLocators.ref).first().should('contain', 'PCR19274548');
-      cy.get(ResultsCellLocators.ref).eq(1).should('contain', 'PCR19274549');
-      cy.get(ResultsCellLocators.ref).eq(2).should('contain', 'PCR19274550');
-      cy.get(ResultsCellLocators.ref).eq(3).should('contain', 'PCR19274551');
-      cy.get(ResultsCellLocators.ref).eq(4).should('contain', 'PCR19274552');
+    cy.get(ResultsCellLocators.ref).first().should('contain', 'PCR19274548');
+    cy.get(ResultsCellLocators.ref).eq(1).should('contain', 'PCR19274549');
+    cy.get(ResultsCellLocators.ref).eq(2).should('contain', 'PCR19274550');
+    cy.get(ResultsCellLocators.ref).eq(3).should('contain', 'PCR19274551');
+    cy.get(ResultsCellLocators.ref).eq(4).should('contain', 'PCR19274552');
 
-      cy.get(ResultsHeaderButtonLocators.ref).click();
+    cy.get(ResultsHeaderButtonLocators.ref).click();
 
-      cy.get(ResultsCellLocators.ref).first().should('contain', 'PCR19274552');
-      cy.get(ResultsCellLocators.ref).eq(1).should('contain', 'PCR19274551');
-      cy.get(ResultsCellLocators.ref).eq(2).should('contain', 'PCR19274550');
-      cy.get(ResultsCellLocators.ref).eq(3).should('contain', 'PCR19274549');
-      cy.get(ResultsCellLocators.ref).eq(4).should('contain', 'PCR19274548');
+    cy.get(ResultsCellLocators.ref).first().should('contain', 'PCR19274552');
+    cy.get(ResultsCellLocators.ref).eq(1).should('contain', 'PCR19274551');
+    cy.get(ResultsCellLocators.ref).eq(2).should('contain', 'PCR19274550');
+    cy.get(ResultsCellLocators.ref).eq(3).should('contain', 'PCR19274549');
+    cy.get(ResultsCellLocators.ref).eq(4).should('contain', 'PCR19274548');
 
-      // ENF column sorting
-      cy.get(ResultsHeaderButtonLocators.enf).click();
+    // ENF column sorting
+    cy.get(ResultsHeaderButtonLocators.enf).click();
 
-      cy.get(ResultsCellLocators.enf).first().should('contain', 'BWTD');
-      cy.get(ResultsCellLocators.enf).eq(1).should('contain', 'BWTD');
-      cy.get(ResultsCellLocators.enf).eq(2).should('contain', 'ENFORCEMENT');
-      cy.get(ResultsCellLocators.enf).eq(3).should('contain', 'WARRANT');
-      cy.get(ResultsCellLocators.enf).eq(4).should('contain', 'WARRANT');
+    cy.get(ResultsCellLocators.enf).first().should('contain', 'BWTD');
+    cy.get(ResultsCellLocators.enf).eq(1).should('contain', 'BWTD');
+    cy.get(ResultsCellLocators.enf).eq(2).should('contain', 'ENFORCEMENT');
+    cy.get(ResultsCellLocators.enf).eq(3).should('contain', 'WARRANT');
+    cy.get(ResultsCellLocators.enf).eq(4).should('contain', 'WARRANT');
 
-      cy.get(ResultsHeaderButtonLocators.enf).click();
+    cy.get(ResultsHeaderButtonLocators.enf).click();
 
-      cy.get(ResultsCellLocators.enf).first().should('contain', 'WARRANT');
-      cy.get(ResultsCellLocators.enf).eq(1).should('contain', 'WARRANT');
-      cy.get(ResultsCellLocators.enf).eq(2).should('contain', 'ENFORCEMENT');
-      cy.get(ResultsCellLocators.enf).eq(3).should('contain', 'BWTD');
-      cy.get(ResultsCellLocators.enf).eq(4).should('contain', 'BWTD');
+    cy.get(ResultsCellLocators.enf).first().should('contain', 'WARRANT');
+    cy.get(ResultsCellLocators.enf).eq(1).should('contain', 'WARRANT');
+    cy.get(ResultsCellLocators.enf).eq(2).should('contain', 'ENFORCEMENT');
+    cy.get(ResultsCellLocators.enf).eq(3).should('contain', 'BWTD');
+    cy.get(ResultsCellLocators.enf).eq(4).should('contain', 'BWTD');
 
-      // Balance column sorting
-      cy.get(ResultsHeaderButtonLocators.balance).click();
+    // Balance column sorting
+    cy.get(ResultsHeaderButtonLocators.balance).click();
 
-      cy.get(ResultsCellLocators.balance).first().should('contain', '£524.00');
-      cy.get(ResultsCellLocators.balance).eq(1).should('contain', '£675.00');
-      cy.get(ResultsCellLocators.balance).eq(2).should('contain', '£714.00');
-      cy.get(ResultsCellLocators.balance).eq(3).should('contain', '£850.00');
-      cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£1,200.00');
+    cy.get(ResultsCellLocators.balance).first().should('contain', '£524.00');
+    cy.get(ResultsCellLocators.balance).eq(1).should('contain', '£675.00');
+    cy.get(ResultsCellLocators.balance).eq(2).should('contain', '£714.00');
+    cy.get(ResultsCellLocators.balance).eq(3).should('contain', '£850.00');
+    cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£1,200.00');
 
-      cy.get(ResultsHeaderButtonLocators.balance).click();
+    cy.get(ResultsHeaderButtonLocators.balance).click();
 
-      cy.get(ResultsCellLocators.balance).first().should('contain', '£1,200.00');
-      cy.get(ResultsCellLocators.balance).eq(1).should('contain', '£850.00');
-      cy.get(ResultsCellLocators.balance).eq(2).should('contain', '£714.00');
-      cy.get(ResultsCellLocators.balance).eq(3).should('contain', '£675.00');
-      cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
-    },
-  );
+    cy.get(ResultsCellLocators.balance).first().should('contain', '£1,200.00');
+    cy.get(ResultsCellLocators.balance).eq(1).should('contain', '£850.00');
+    cy.get(ResultsCellLocators.balance).eq(2).should('contain', '£714.00');
+    cy.get(ResultsCellLocators.balance).eq(3).should('contain', '£675.00');
+    cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
+  });
 });

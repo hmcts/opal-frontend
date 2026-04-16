@@ -34,16 +34,12 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     });
   };
 
-  it(
-    'AC.2 Should show all the headings as per the design artifact',
-    { tags: buildTags('@JIRA-STORY:PO-618') },
-    () => {
-      const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+  it('AC.2 Should show all the headings as per the design artifact', { tags: buildTags('@JIRA-STORY:PO-618') }, () => {
+    const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
-      setupComponent(allRejectedMockData);
-      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'All rejected accounts');
-    },
-  );
+    setupComponent(allRejectedMockData);
+    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'All rejected accounts');
+  });
 
   it(
     'AC.3 verify the table of headers in review tab (FinesDraftCreateAndManageViewAllRejectedComponent)',

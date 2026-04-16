@@ -228,73 +228,61 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it(
-    '(AC2) Validation will exist for the Issuing Authority field',
-    { tags: buildTags('@JIRA-STORY:PO-857') },
-    () => {
-      setupComponent(null);
+  it('(AC2) Validation will exist for the Issuing Authority field', { tags: buildTags('@JIRA-STORY:PO-857') }, () => {
+    setupComponent(null);
 
-      // User does not provide a value
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
+    // User does not provide a value
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
 
-      // User enters more than 41 characters
-      const longText = 'A'.repeat(42); // Exceeds 41 characters
-      cy.get(DOM_ELEMENTS.issuingAuthorityInput).type(longText);
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
+    // User enters more than 41 characters
+    const longText = 'A'.repeat(42); // Exceeds 41 characters
+    cy.get(DOM_ELEMENTS.issuingAuthorityInput).type(longText);
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
 
-      // User enters non-alphanumeric characters (assuming there's validation for this)
-      cy.get(DOM_ELEMENTS.issuingAuthorityInput).clear().type('Invalid@Authority#123');
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
-    },
-  );
+    // User enters non-alphanumeric characters (assuming there's validation for this)
+    cy.get(DOM_ELEMENTS.issuingAuthorityInput).clear().type('Invalid@Authority#123');
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
+  });
 
-  it(
-    '(AC3) Validation will exist for the Enforcement Court field',
-    { tags: buildTags('@JIRA-STORY:PO-857') },
-    () => {
-      setupComponent();
+  it('(AC3) Validation will exist for the Enforcement Court field', { tags: buildTags('@JIRA-STORY:PO-857') }, () => {
+    setupComponent();
 
-      // User does not provide a value
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
+    // User does not provide a value
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
 
-      // User enters more than 35 characters
-      const longText = 'A'.repeat(36); // Exceeds 35 characters
-      cy.get(DOM_ELEMENTS.enforcementCourtInput).type(longText);
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
+    // User enters more than 35 characters
+    const longText = 'A'.repeat(36); // Exceeds 35 characters
+    cy.get(DOM_ELEMENTS.enforcementCourtInput).type(longText);
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
 
-      // User enters non-alphanumeric characters (assuming there's validation for this)
-      cy.get(DOM_ELEMENTS.enforcementCourtInput).clear().type('Invalid@Court#123');
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
-    },
-  );
+    // User enters non-alphanumeric characters (assuming there's validation for this)
+    cy.get(DOM_ELEMENTS.enforcementCourtInput).clear().type('Invalid@Court#123');
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
+  });
 
-  it(
-    '(AC4) Validation will exist for the Title field',
-    { tags: buildTags('@JIRA-STORY:PO-857') },
-    () => {
-      setupComponent();
+  it('(AC4) Validation will exist for the Title field', { tags: buildTags('@JIRA-STORY:PO-857') }, () => {
+    setupComponent();
 
-      // User does not select a value
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Select a title');
+    // User does not select a value
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Select a title');
 
-      // Select a valid title to fix the error
-      cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    // Select a valid title to fix the error
+    cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      // There should still be other errors but not the title error
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Select a title');
-    },
-  );
+    // There should still be other errors but not the title error
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Select a title');
+  });
 
   it(
     '(AC5) Validation will exist for the First names field - required field',
@@ -696,35 +684,27 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it(
-    '(AC15) Validation for NTO/NTH field - max length',
-    { tags: buildTags('@JIRA-STORY:PO-857') },
-    () => {
-      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'A'.repeat(11); // Exceeds 10 characters
-      setupComponent();
-      cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer',
-      );
-    },
-  );
+  it('(AC15) Validation for NTO/NTH field - max length', { tags: buildTags('@JIRA-STORY:PO-857') }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'A'.repeat(11); // Exceeds 10 characters
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer',
+    );
+  });
 
-  it(
-    '(AC15) Validation for NTO/NTH field - special characters',
-    { tags: buildTags('@JIRA-STORY:PO-857') },
-    () => {
-      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'NTO$%^&*';
-      setupComponent();
-      cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Notice to owner or hirer number (NTO/NTH) must only contain letters or numbers',
-      );
-    },
-  );
+  it('(AC15) Validation for NTO/NTH field - special characters', { tags: buildTags('@JIRA-STORY:PO-857') }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'NTO$%^&*';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Notice to owner or hirer number (NTO/NTH) must only contain letters or numbers',
+    );
+  });
 
   it(
     '(AC16) Validation will exist for the Date notice to owner was issued field - future date',

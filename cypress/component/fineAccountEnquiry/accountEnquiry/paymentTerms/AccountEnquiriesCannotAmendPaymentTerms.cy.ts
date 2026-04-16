@@ -182,30 +182,26 @@ describe('Account Enquiry Payment Terms', () => {
     },
   );
 
-  it(
-    'AC1.2aii: If the account has a zero balance,',
-    { tags: buildTags('@JIRA-STORY:PO-1801') },
-    () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
-      headerMock.payment_state_summary.account_balance = 0.0;
-      headerMock.debtor_type = 'individual';
-      headerMock.account_status_reference.account_status_code = 'TS';
-      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+  it('AC1.2aii: If the account has a zero balance,', { tags: buildTags('@JIRA-STORY:PO-1801') }, () => {
+    let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
+    headerMock.payment_state_summary.account_balance = 0.0;
+    headerMock.debtor_type = 'individual';
+    headerMock.account_status_reference.account_status_code = 'TS';
+    let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
+    const accountId = headerMock.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, headerMock, '123');
 
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
-      cy.get('p').contains('The account has a zero balance.').should('exist');
-    },
-  );
+    interceptPaymentTerms(accountId, paymentTermsMock, '123');
+    interceptResultByCode('REM');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
+    cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+    cy.get('h1').contains(' You cannot amend the payment terms of this account.').should('exist');
+    cy.get('p').contains('The account has a zero balance.').should('exist');
+  });
 
   it(
     'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU',

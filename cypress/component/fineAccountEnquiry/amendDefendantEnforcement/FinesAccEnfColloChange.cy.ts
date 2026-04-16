@@ -322,13 +322,9 @@ describe(
       },
     );
 
-    it(
-      'AC5c. Adult or youth: dismissing the cancel confirmation keeps the user on the page',
-      { tags: [] },
-      () => {
-        assertDismissingCancelConfirmationKeepsUserOnPage(commonSetup);
-      },
-    );
+    it('AC5c. Adult or youth: dismissing the cancel confirmation keeps the user on the page', { tags: [] }, () => {
+      assertDismissingCancelConfirmationKeepsUserOnPage(commonSetup);
+    });
   },
 );
 
@@ -403,21 +399,13 @@ describe('Account Enquiry Enforcement - Change Collection Order status - Company
     },
   );
 
-  it(
-    'AC4a. Company: selecting a different value returns the user to the Enforcement tab',
-    { tags: [] },
-    () => {
-      assertCollectionOrderChangedNavigatesToEnforcementTab(companySetup);
-    },
-  );
+  it('AC4a. Company: selecting a different value returns the user to the Enforcement tab', { tags: [] }, () => {
+    assertCollectionOrderChangedNavigatesToEnforcementTab(companySetup);
+  });
 
-  it(
-    'AC5a. Company: cancel without changes returns to the Enforcement tab without confirmation',
-    { tags: [] },
-    () => {
-      assertCancelWithoutChanges(companySetup);
-    },
-  );
+  it('AC5a. Company: cancel without changes returns to the Enforcement tab without confirmation', { tags: [] }, () => {
+    assertCancelWithoutChanges(companySetup);
+  });
 
   it(
     'AC5b. Company: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
@@ -427,13 +415,9 @@ describe('Account Enquiry Enforcement - Change Collection Order status - Company
     },
   );
 
-  it(
-    'AC5c. Company: dismissing the cancel confirmation keeps the user on the page',
-    { tags: [] },
-    () => {
-      assertDismissingCancelConfirmationKeepsUserOnPage(companySetup);
-    },
-  );
+  it('AC5c. Company: dismissing the cancel confirmation keeps the user on the page', { tags: [] }, () => {
+    assertDismissingCancelConfirmationKeepsUserOnPage(companySetup);
+  });
 });
 
 function assertChangeSelectionReturnsToEnforcementTab(updatedCollectionOrderFlag: boolean) {

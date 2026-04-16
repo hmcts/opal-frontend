@@ -150,155 +150,115 @@ describe('Account Enquiry Amend Payment Terms', () => {
   };
 
   describe('Adult or youth defendant', () => {
-    it(
-      'AC1: Navigation opens the amend payment terms screen',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        setupAmendPaymentTermsViaNavigation('adultOrYouth');
+    it('AC1: Navigation opens the amend payment terms screen', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      setupAmendPaymentTermsViaNavigation('adultOrYouth');
 
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.form).should('exist');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.form).should('exist');
+    });
 
-    it(
-      'AC2a: Display payment terms radio buttons',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth');
+    it('AC2a: Display payment terms radio buttons', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth');
 
-        cy.contains('legend', 'Select payment terms').should('exist');
-        cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).should('exist');
-        cy.get(AMEND_PAYMENT_TERMS.payInFullLabel).should('contain.text', 'Pay in full');
-        cy.get(AMEND_PAYMENT_TERMS.instalmentsOnlyRadio).should('exist');
-        cy.get(AMEND_PAYMENT_TERMS.instalmentsOnlyLabel).should('contain.text', 'Instalments only');
-        cy.get(AMEND_PAYMENT_TERMS.lumpSumPlusInstalmentsRadio).should('exist');
-        cy.get(AMEND_PAYMENT_TERMS.lumpSumPlusInstalmentsLabel).should('contain.text', 'Lump sum plus instalments');
-      },
-    );
+      cy.contains('legend', 'Select payment terms').should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.payInFullLabel).should('contain.text', 'Pay in full');
+      cy.get(AMEND_PAYMENT_TERMS.instalmentsOnlyRadio).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.instalmentsOnlyLabel).should('contain.text', 'Instalments only');
+      cy.get(AMEND_PAYMENT_TERMS.lumpSumPlusInstalmentsRadio).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.lumpSumPlusInstalmentsLabel).should('contain.text', 'Lump sum plus instalments');
+    });
 
-    it(
-      'AC3a: Pay in full shows pay by date and is required',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth');
+    it('AC3a: Pay in full shows pay by date and is required', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth');
 
-        cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).check({ force: true });
-        cy.get(AMEND_PAYMENT_TERMS.payByDateLabel).should('contain.text', 'Enter pay by date');
-        cy.get(AMEND_PAYMENT_TERMS.payByDateInput).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).check({ force: true });
+      cy.get(AMEND_PAYMENT_TERMS.payByDateLabel).should('contain.text', 'Enter pay by date');
+      cy.get(AMEND_PAYMENT_TERMS.payByDateInput).should('exist');
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter pay by date');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter pay by date');
+    });
 
-    it(
-      'AC3b: Pay in full past date warning message displays',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01/01/2020',
-        });
+    it('AC3b: Pay in full past date warning message displays', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '01/01/2020',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).should('be.checked');
-        cy.contains('strong', 'Pay by date is in the past').should('exist');
-        cy.contains('p', 'You can continue with date in the past or change').should('exist');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).should('be.checked');
+      cy.contains('strong', 'Pay by date is in the past').should('exist');
+      cy.contains('p', 'You can continue with date in the past or change').should('exist');
+    });
 
-    it(
-      'AC3c: Pay in full future date warning message displays',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01/01/2030',
-        });
+    it('AC3c: Pay in full future date warning message displays', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '01/01/2030',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).should('be.checked');
-        cy.contains('strong', 'Pay by date is more than 6 months in the future').should('exist');
-        cy.contains('p', 'You can continue with date in the future or change').should('exist');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.payInFullRadio).should('be.checked');
+      cy.contains('strong', 'Pay by date is more than 6 months in the future').should('exist');
+      cy.contains('p', 'You can continue with date in the future or change').should('exist');
+    });
 
-    it(
-      'AC3dii.b: Invalid pay by date shows valid date error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '32/13/2024',
-        });
+    it('AC3dii.b: Invalid pay by date shows valid date error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '32/13/2024',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter a valid date');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter a valid date');
+    });
 
-    it(
-      'AC3dii.c: Invalid pay by date format shows format error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01012024',
-        });
+    it('AC3dii.c: Invalid pay by date format shows format error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '01012024',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Date must be in the format DD/MM/YYYY');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Date must be in the format DD/MM/YYYY');
+    });
 
-    it(
-      'AC4a: Instalments only shows mandatory fields',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'instalmentsOnly',
-        });
+    it('AC4a: Instalments only shows mandatory fields', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'instalmentsOnly',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.instalmentsOnlyRadio).should('be.checked');
-        cy.get(AMEND_PAYMENT_TERMS.instalmentAmountLabel).should('contain.text', 'Instalment');
-        cy.get(AMEND_PAYMENT_TERMS.instalmentAmountInput).should('exist');
-        cy.get(AMEND_PAYMENT_TERMS.frequencyWeeklyLabel).should('contain.text', 'Weekly');
-        cy.get(AMEND_PAYMENT_TERMS.frequencyFortnightlyLabel).should('contain.text', 'Fortnightly');
-        cy.get(AMEND_PAYMENT_TERMS.frequencyMonthlyLabel).should('contain.text', 'Monthly');
-        cy.get(AMEND_PAYMENT_TERMS.startDateLabel).should('contain.text', 'Start date');
-        cy.get(AMEND_PAYMENT_TERMS.startDateInput).should('exist');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.instalmentsOnlyRadio).should('be.checked');
+      cy.get(AMEND_PAYMENT_TERMS.instalmentAmountLabel).should('contain.text', 'Instalment');
+      cy.get(AMEND_PAYMENT_TERMS.instalmentAmountInput).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.frequencyWeeklyLabel).should('contain.text', 'Weekly');
+      cy.get(AMEND_PAYMENT_TERMS.frequencyFortnightlyLabel).should('contain.text', 'Fortnightly');
+      cy.get(AMEND_PAYMENT_TERMS.frequencyMonthlyLabel).should('contain.text', 'Monthly');
+      cy.get(AMEND_PAYMENT_TERMS.startDateLabel).should('contain.text', 'Start date');
+      cy.get(AMEND_PAYMENT_TERMS.startDateInput).should('exist');
+    });
 
-    it(
-      'AC4b: Start date in past warning displays',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'instalmentsOnly',
-          facc_payment_terms_start_date: '01/01/2020',
-        });
+    it('AC4b: Start date in past warning displays', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'instalmentsOnly',
+        facc_payment_terms_start_date: '01/01/2020',
+      });
 
-        cy.contains('strong', 'Start date is in the past').should('exist');
-        cy.contains('p', 'You can continue with date in the past or change').should('exist');
-      },
-    );
+      cy.contains('strong', 'Start date is in the past').should('exist');
+      cy.contains('p', 'You can continue with date in the past or change').should('exist');
+    });
 
-    it(
-      'AC4c: Start date in future warning displays',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'instalmentsOnly',
-          facc_payment_terms_start_date: '01/01/2030',
-        });
+    it('AC4c: Start date in future warning displays', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'instalmentsOnly',
+        facc_payment_terms_start_date: '01/01/2030',
+      });
 
-        cy.contains('strong', 'Start date is more than 6 months in the future').should('exist');
-        cy.contains('p', 'You can continue with date in the future or change').should('exist');
-      },
-    );
+      cy.contains('strong', 'Start date is more than 6 months in the future').should('exist');
+      cy.contains('p', 'You can continue with date in the future or change').should('exist');
+    });
 
     it(
       'AC4d: Instalments only missing values shows required errors',
@@ -315,85 +275,69 @@ describe('Account Enquiry Amend Payment Terms', () => {
       },
     );
 
-    it(
-      'AC4e: Instalment amount with too many decimals shows error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'instalmentsOnly',
-          facc_payment_terms_instalment_amount: 12.345,
-          facc_payment_terms_instalment_period: 'M',
-          facc_payment_terms_start_date: '01/01/2030',
-        });
+    it('AC4e: Instalment amount with too many decimals shows error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'instalmentsOnly',
+        facc_payment_terms_instalment_amount: 12.345,
+        facc_payment_terms_instalment_period: 'M',
+        facc_payment_terms_start_date: '01/01/2030',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should(
-          'contain.text',
-          'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
-        );
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should(
+        'contain.text',
+        'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
+      );
+    });
 
-    it(
-      'AC4f: Start date with invalid value shows valid date error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'instalmentsOnly',
-          facc_payment_terms_instalment_amount: 10,
-          facc_payment_terms_instalment_period: 'M',
-          facc_payment_terms_start_date: '35/14/2023',
-        });
+    it('AC4f: Start date with invalid value shows valid date error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'instalmentsOnly',
+        facc_payment_terms_instalment_amount: 10,
+        facc_payment_terms_instalment_period: 'M',
+        facc_payment_terms_start_date: '35/14/2023',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter a valid date');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter a valid date');
+    });
 
-    it(
-      'AC4g: Start date with invalid format shows format error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'instalmentsOnly',
-          facc_payment_terms_instalment_amount: 10,
-          facc_payment_terms_instalment_period: 'M',
-          facc_payment_terms_start_date: '01012024',
-        });
+    it('AC4g: Start date with invalid format shows format error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'instalmentsOnly',
+        facc_payment_terms_instalment_amount: 10,
+        facc_payment_terms_instalment_period: 'M',
+        facc_payment_terms_start_date: '01012024',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Date must be in the format DD/MM/YYYY');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Date must be in the format DD/MM/YYYY');
+    });
 
-    it(
-      'AC5a: Lump sum plus instalments shows mandatory fields',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth');
+    it('AC5a: Lump sum plus instalments shows mandatory fields', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth');
 
-        cy.get(AMEND_PAYMENT_TERMS.lumpSumPlusInstalmentsRadio).click();
-        cy.get(AMEND_PAYMENT_TERMS.lumpSumPlusInstalmentsRadio).should('be.checked');
-        cy.get(AMEND_PAYMENT_TERMS.lumpSumAmountLabel).should('contain.text', 'Lump sum');
-        cy.get(AMEND_PAYMENT_TERMS.lumpSumAmountInput).should('exist');
-        cy.get(AMEND_PAYMENT_TERMS.instalmentAmountLabel).should('contain.text', 'Instalment');
-        cy.get(AMEND_PAYMENT_TERMS.instalmentAmountInput).should('exist');
-        cy.get(AMEND_PAYMENT_TERMS.frequencyWeeklyLabel).should('contain.text', 'Weekly');
-        cy.get(AMEND_PAYMENT_TERMS.frequencyFortnightlyLabel).should('contain.text', 'Fortnightly');
-        cy.get(AMEND_PAYMENT_TERMS.frequencyMonthlyLabel).should('contain.text', 'Monthly');
-        cy.get(AMEND_PAYMENT_TERMS.startDateLabel).should('contain.text', 'Start date');
-        cy.get(AMEND_PAYMENT_TERMS.startDateInput).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.lumpSumPlusInstalmentsRadio).click();
+      cy.get(AMEND_PAYMENT_TERMS.lumpSumPlusInstalmentsRadio).should('be.checked');
+      cy.get(AMEND_PAYMENT_TERMS.lumpSumAmountLabel).should('contain.text', 'Lump sum');
+      cy.get(AMEND_PAYMENT_TERMS.lumpSumAmountInput).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.instalmentAmountLabel).should('contain.text', 'Instalment');
+      cy.get(AMEND_PAYMENT_TERMS.instalmentAmountInput).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.frequencyWeeklyLabel).should('contain.text', 'Weekly');
+      cy.get(AMEND_PAYMENT_TERMS.frequencyFortnightlyLabel).should('contain.text', 'Fortnightly');
+      cy.get(AMEND_PAYMENT_TERMS.frequencyMonthlyLabel).should('contain.text', 'Monthly');
+      cy.get(AMEND_PAYMENT_TERMS.startDateLabel).should('contain.text', 'Start date');
+      cy.get(AMEND_PAYMENT_TERMS.startDateInput).should('exist');
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter lump sum amount');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter instalment amount');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Select frequency of instalments');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter start date');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter lump sum amount');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter instalment amount');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Select frequency of instalments');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter start date');
+    });
 
     it(
       'AC5b: Lump sum plus instalments start date in past warning displays',
@@ -423,35 +367,27 @@ describe('Account Enquiry Amend Payment Terms', () => {
       },
     );
 
-    it(
-      'AC5c: Pay in full invalid date shows calendar date error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '32/13/2024',
-        });
+    it('AC5c: Pay in full invalid date shows calendar date error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '32/13/2024',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter a valid date');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter a valid date');
+    });
 
-    it(
-      'AC5c: Pay in full invalid format shows format error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01012024',
-        });
+    it('AC5c: Pay in full invalid format shows format error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '01012024',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Date must be in the format DD/MM/YYYY');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Date must be in the format DD/MM/YYYY');
+    });
 
     it(
       'AC6a: Days in default checkbox displays for adult defendant',
@@ -502,23 +438,19 @@ describe('Account Enquiry Amend Payment Terms', () => {
       },
     );
 
-    it(
-      'AC6ei: Missing days in default date shows required error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01/01/2030',
-          facc_payment_terms_has_days_in_default: true,
-          facc_payment_terms_default_days_in_jail: 10,
-          facc_payment_terms_reason_for_change: 'Test reason',
-        });
+    it('AC6ei: Missing days in default date shows required error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '01/01/2030',
+        facc_payment_terms_has_days_in_default: true,
+        facc_payment_terms_default_days_in_jail: 10,
+        facc_payment_terms_reason_for_change: 'Test reason',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter date days in default were imposed');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter date days in default were imposed');
+    });
 
     it(
       'AC6eii: Future days in default date shows future date error',
@@ -577,24 +509,20 @@ describe('Account Enquiry Amend Payment Terms', () => {
       },
     );
 
-    it(
-      'AC6ev: Missing days in default count shows required error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01/01/2030',
-          facc_payment_terms_has_days_in_default: true,
-          facc_payment_terms_suspended_committal_date: '01/01/2024',
-          facc_payment_terms_default_days_in_jail: null,
-          facc_payment_terms_reason_for_change: 'Test reason',
-        });
+    it('AC6ev: Missing days in default count shows required error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '01/01/2030',
+        facc_payment_terms_has_days_in_default: true,
+        facc_payment_terms_suspended_committal_date: '01/01/2024',
+        facc_payment_terms_default_days_in_jail: null,
+        facc_payment_terms_reason_for_change: 'Test reason',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter days in default');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter days in default');
+    });
 
     it(
       'AC6evi: Non-numeric days in default count shows numeric error',
@@ -618,48 +546,36 @@ describe('Account Enquiry Amend Payment Terms', () => {
       },
     );
 
-    it(
-      'AC7a: Change without reason shows reason required error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_payment_terms: 'payInFull',
-          facc_payment_terms_pay_by_date: '01/01/2030',
-          facc_payment_terms_reason_for_change: null,
-        });
+    it('AC7a: Change without reason shows reason required error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '01/01/2030',
+        facc_payment_terms_reason_for_change: null,
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter reason for change');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should('contain.text', 'Enter reason for change');
+    });
 
-    it(
-      'AC7b: Reason for change character count updates',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_reason_for_change: '1234567890',
-        });
+    it('AC7b: Reason for change character count updates', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_reason_for_change: '1234567890',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.reasonForChangeTextarea).should('have.attr', 'maxlength', '250');
-        cy.get(AMEND_PAYMENT_TERMS.reasonForChangeCharacterCount).should(
-          'contain.text',
-          'You have 240 characters remaining',
-        );
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.reasonForChangeTextarea).should('have.attr', 'maxlength', '250');
+      cy.get(AMEND_PAYMENT_TERMS.reasonForChangeCharacterCount).should(
+        'contain.text',
+        'You have 240 characters remaining',
+      );
+    });
 
-    it(
-      'AC8a: Request payment card checkbox displays',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth');
+    it('AC8a: Request payment card checkbox displays', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth');
 
-        cy.get(AMEND_PAYMENT_TERMS.paymentCardCheckbox).should('exist');
-        cy.get(AMEND_PAYMENT_TERMS.paymentCardLabel).should('contain.text', 'Request payment card');
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.paymentCardCheckbox).should('exist');
+      cy.get(AMEND_PAYMENT_TERMS.paymentCardLabel).should('contain.text', 'Request payment card');
+    });
 
     it(
       'AC8bi: Pay in full with payment card request shows restriction error',
@@ -733,23 +649,19 @@ describe('Account Enquiry Amend Payment Terms', () => {
       },
     );
 
-    it(
-      'AC9b: No changes with change letter checked shows error',
-      { tags: buildTags('@JIRA-STORY:PO-1149') },
-      () => {
-        mountAmendPaymentTermsForm('adultOrYouth', {
-          facc_payment_terms_change_letter: true,
-          facc_payment_terms_reason_for_change: 'Test reason',
-        });
+    it('AC9b: No changes with change letter checked shows error', { tags: buildTags('@JIRA-STORY:PO-1149') }, () => {
+      mountAmendPaymentTermsForm('adultOrYouth', {
+        facc_payment_terms_change_letter: true,
+        facc_payment_terms_reason_for_change: 'Test reason',
+      });
 
-        cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
-        cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
-        cy.get(AMEND_PAYMENT_TERMS.errorSummary).should(
-          'contain.text',
-          'Cannot generate payment terms change letter as no changes made',
-        );
-      },
-    );
+      cy.get(AMEND_PAYMENT_TERMS.pageHeading).should('contain.text', 'Payment terms');
+      cy.get(AMEND_PAYMENT_TERMS.submitButton).click();
+      cy.get(AMEND_PAYMENT_TERMS.errorSummary).should(
+        'contain.text',
+        'Cannot generate payment terms change letter as no changes made',
+      );
+    });
   });
 
   describe('Parent or Guardian defendant', () => {

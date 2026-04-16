@@ -49,12 +49,7 @@ describe('FinesMacMinorCreditorInformation', () => {
   it(
     '(AC.1) should load the component',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-670',
-        '@JIRA-STORY:PO-671',
-        '@JIRA-STORY:PO-414',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -88,12 +83,7 @@ describe('FinesMacMinorCreditorInformation', () => {
   it(
     '(AC.2) should load all keys and elements with correct text',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-670',
-        '@JIRA-STORY:PO-671',
-        '@JIRA-STORY:PO-414',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -109,12 +99,7 @@ describe('FinesMacMinorCreditorInformation', () => {
   it(
     '(AC.2)should load all fields with the correct values',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-670',
-        '@JIRA-STORY:PO-671',
-        '@JIRA-STORY:PO-414',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);

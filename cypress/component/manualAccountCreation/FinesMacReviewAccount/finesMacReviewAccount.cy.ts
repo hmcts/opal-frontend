@@ -149,15 +149,11 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   });
 
-  it(
-    'should render component (FinesMacReviewAccountComponent)',
-    { tags: buildTags('@JIRA-STORY:PO-2790') },
-    () => {
-      setupComponent();
+  it('should render component (FinesMacReviewAccountComponent)', { tags: buildTags('@JIRA-STORY:PO-2790') }, () => {
+    setupComponent();
 
-      cy.get(DOM_ELEMENTS.app).should('exist');
-    },
-  );
+    cy.get(DOM_ELEMENTS.app).should('exist');
+  });
 
   it(
     '(AC.1c) should show Police and court details card for Conditional Caution',
@@ -1316,18 +1312,14 @@ describe('FinesMacReviewAccountComponent', () => {
     },
   );
 
-  it(
-    'AC.8, Decision table will be shown as per the design artefact',
-    { tags: buildTags('@JIRA-STORY:PO-594') },
-    () => {
-      setupComponent(finesAccountPayload, finesAccountPayload, false, true);
-      cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
-      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
-      cy.get(DOM_ELEMENTS.rejectionText).should('exist');
-      cy.get(DOM_ELEMENTS.continue).should('exist');
-      cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-    },
-  );
+  it('AC.8, Decision table will be shown as per the design artefact', { tags: buildTags('@JIRA-STORY:PO-594') }, () => {
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+    cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
+    cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
+    cy.get(DOM_ELEMENTS.rejectionText).should('exist');
+    cy.get(DOM_ELEMENTS.continue).should('exist');
+    cy.get(DOM_ELEMENTS.deleteLink).should('exist');
+  });
   it(
     'AC.8a user does not select any radio button and selects the Continue button',
     { tags: buildTags('@JIRA-STORY:PO-594') },

@@ -66,25 +66,21 @@ describe('Account Enquiry - Defendant Header', () => {
     },
   );
 
-  it(
-    'AC1a: renders the Company Account Header Summary',
-    { tags: buildTags('@JIRA-STORY:PO-867') },
-    () => {
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
-      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+  it('AC1a: renders the Company Account Header Summary', { tags: buildTags('@JIRA-STORY:PO-867') }, () => {
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
+    setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.pageHeader).should('exist');
-      cy.get(DOM.headingWithCaption).should('exist');
-      cy.get(DOM.headingName).should('exist').and('contain.text', 'Sainsco');
-      cy.get(DOM.accountInfo).should('exist');
-      cy.get(DOM.summaryMetricBar).should('exist');
-      cy.get(DOM.subnav).should('exist');
-      cy.get(DOM.atAGlanceTabComponent).should('exist');
-    },
-  );
+    cy.get(DOM.pageHeader).should('exist');
+    cy.get(DOM.headingWithCaption).should('exist');
+    cy.get(DOM.headingName).should('exist').and('contain.text', 'Sainsco');
+    cy.get(DOM.accountInfo).should('exist');
+    cy.get(DOM.summaryMetricBar).should('exist');
+    cy.get(DOM.subnav).should('exist');
+    cy.get(DOM.atAGlanceTabComponent).should('exist');
+  });
 
   it(
     'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels)',
@@ -224,24 +220,20 @@ describe('Account Enquiry - Defendant Header', () => {
   );
 
   //  Adult defendant → no tag at all
-  it(
-    'AC2a: renders no tag for adult defendants',
-    { tags: buildTags('@JIRA-STORY:PO-1593') },
-    () => {
-      const adult = structuredClone(DEFENDANT_HEADER_MOCK);
-      adult.is_youth = false;
-      adult.debtor_type = 'Defendant';
-      adult.parent_guardian_party_id = null;
+  it('AC2a: renders no tag for adult defendants', { tags: buildTags('@JIRA-STORY:PO-1593') }, () => {
+    const adult = structuredClone(DEFENDANT_HEADER_MOCK);
+    adult.is_youth = false;
+    adult.debtor_type = 'Defendant';
+    adult.parent_guardian_party_id = null;
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, adult, '1');
-      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, adult, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
+    setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.statusTag).should('not.exist');
-    },
-  );
+    cy.get(DOM.statusTag).should('not.exist');
+  });
 
   // Negative balance prefixed with minus (e.g. -£4.50)
   it(
@@ -263,24 +255,20 @@ describe('Account Enquiry - Defendant Header', () => {
     },
   );
 
-  it(
-    'AC3: negative balance is prefixed with a minus - Company',
-    { tags: buildTags('@JIRA-STORY:PO-867') },
-    () => {
-      const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-      header.payment_state_summary.account_balance = -4.5;
+  it('AC3: negative balance is prefixed with a minus - Company', { tags: buildTags('@JIRA-STORY:PO-867') }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+    header.payment_state_summary.account_balance = -4.5;
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, header, '1');
-      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, header, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
+    setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.summaryMetricBar)
-        .contains(/-£\s*4\.50|−£\s*4\.50/)
-        .should('exist');
-    },
-  );
+    cy.get(DOM.summaryMetricBar)
+      .contains(/-£\s*4\.50|−£\s*4\.50/)
+      .should('exist');
+  });
 
   it(
     'AC4: shows "Add account note" when user has permission',
@@ -434,45 +422,41 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     ],
   };
 
-  it(
-    'AC1, AC2a: renders the Minor Creditor Account Header Summary',
-    { tags: buildTags('@JIRA-STORY:PO-1924') },
-    () => {
-      const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
-      header.has_associated_defendant = true;
-      header.awaiting_payout_amount = 100;
-      header.awarded_amount = 200;
-      header.paid_out_amount = 50;
-      header.outstanding_amount = 150;
+  it('AC1, AC2a: renders the Minor Creditor Account Header Summary', { tags: buildTags('@JIRA-STORY:PO-1924') }, () => {
+    const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
+    header.has_associated_defendant = true;
+    header.awaiting_payout_amount = 100;
+    header.awarded_amount = 200;
+    header.paid_out_amount = 50;
+    header.outstanding_amount = 150;
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
-      setupAccountEnquiryComponent(minorCreditorComponentProperties);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
+    setupAccountEnquiryComponent(minorCreditorComponentProperties);
 
-      cy.get(DOM.pageHeader).should('exist');
-      cy.get(DOM.minorCreditorAccountType).should('contain.text', 'Minor Creditor');
-      cy.get(DOM.minorCreditorBusinessUnit).should('contain.text', 'Camberwell Green (77)');
+    cy.get(DOM.pageHeader).should('exist');
+    cy.get(DOM.minorCreditorAccountType).should('contain.text', 'Minor Creditor');
+    cy.get(DOM.minorCreditorBusinessUnit).should('contain.text', 'Camberwell Green (77)');
 
-      cy.get(DOM.summaryMetricBar).within(() => {
-        cy.contains(DOM.labelAwaitingPayout)
-          .should('be.visible')
-          .closest(DOM.summaryMetricBarItem)
-          .should('contain.text', '£100.00');
-        cy.contains(DOM.labelAwarded)
-          .should('be.visible')
-          .closest(DOM.summaryMetricBarItem)
-          .should('contain.text', '£200.00');
-        cy.contains(DOM.labelPaidOut)
-          .should('be.visible')
-          .closest(DOM.summaryMetricBarItem)
-          .should('contain.text', '£50.00');
-        cy.contains(DOM.labelOutstanding)
-          .should('be.visible')
-          .closest(DOM.summaryMetricBarItem)
-          .should('contain.text', '£150.00');
-      });
-    },
-  );
+    cy.get(DOM.summaryMetricBar).within(() => {
+      cy.contains(DOM.labelAwaitingPayout)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£100.00');
+      cy.contains(DOM.labelAwarded)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£200.00');
+      cy.contains(DOM.labelPaidOut)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£50.00');
+      cy.contains(DOM.labelOutstanding)
+        .should('be.visible')
+        .closest(DOM.summaryMetricBarItem)
+        .should('contain.text', '£150.00');
+    });
+  });
 
   it(
     'AC2b: hides Awarded and Outstanding when no defendant is associated',

@@ -828,39 +828,35 @@ describe('Account Enquiry Payment Terms', () => {
     },
   );
 
-  it(
-    'AC3: Payment terms with amendments panel - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1637') },
-    () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
+  it('AC3: Payment terms with amendments panel - Company', { tags: buildTags('@JIRA-STORY:PO-1637') }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
 
-      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+    let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+    const accountId = header.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptPaymentTerms(accountId, paymentTermsMock, '123');
+    interceptResultByCode('REM');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
 
-      paymentTermsMock.payment_terms.extension = true;
-      paymentTermsMock.payment_terms.reason_for_extension = 'Payment delay reason';
+    paymentTermsMock.payment_terms.extension = true;
+    paymentTermsMock.payment_terms.reason_for_extension = 'Payment delay reason';
 
-      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
-      cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
-      cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Payment terms amendments');
-      cy.get(PAYMENT_TERMS_TAB.dateLastAmended).should('exist').and('contain.text', '21 October 2025');
-      cy.get(PAYMENT_TERMS_TAB.lastAmendedBy).should('exist').and('contain.text', 'opal-test-2');
-      cy.get(PAYMENT_TERMS_TAB.amendmentReason).should('exist').and('contain.text', 'Payment delay reason');
-    },
-  );
+    cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+    cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
+    cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Payment terms amendments');
+    cy.get(PAYMENT_TERMS_TAB.dateLastAmended).should('exist').and('contain.text', '21 October 2025');
+    cy.get(PAYMENT_TERMS_TAB.lastAmendedBy).should('exist').and('contain.text', 'opal-test-2');
+    cy.get(PAYMENT_TERMS_TAB.amendmentReason).should('exist').and('contain.text', 'Payment delay reason');
+  });
 
   it(
     'AC1: Individual with permission to amend payment terms can request a payment card',

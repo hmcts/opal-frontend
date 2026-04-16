@@ -63,12 +63,7 @@ describe('ReviewSummaryComponent', () => {
   it(
     '(AC.1)should render component',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-417',
-        '@JIRA-STORY:PO-676',
-        '@JIRA-STORY:PO-679',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent();

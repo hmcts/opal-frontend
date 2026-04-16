@@ -75,27 +75,23 @@ describe('FinesAccCommentsAddComponent', () => {
     });
   };
 
-  it(
-    'should display the comments form with all required fields',
-    { tags: buildTags('@JIRA-STORY:PO-777') },
-    () => {
-      setupComponent();
+  it('should display the comments form with all required fields', { tags: buildTags('@JIRA-STORY:PO-777') }, () => {
+    setupComponent();
 
-      cy.get(AccountCommentsAddLocators.form).should('exist');
-      cy.get(CommentFields.comment).should('exist');
-      cy.get(CommentFields.line1).should('exist');
-      cy.get(CommentFields.line2).should('exist');
-      cy.get(CommentFields.line3).should('exist');
+    cy.get(AccountCommentsAddLocators.form).should('exist');
+    cy.get(CommentFields.comment).should('exist');
+    cy.get(CommentFields.line1).should('exist');
+    cy.get(CommentFields.line2).should('exist');
+    cy.get(CommentFields.line3).should('exist');
 
-      cy.get(CommentFields.comment).should('have.value', '');
-      cy.get(CommentFields.line1).should('have.value', '');
-      cy.get(CommentFields.line2).should('have.value', '');
-      cy.get(CommentFields.line3).should('have.value', '');
+    cy.get(CommentFields.comment).should('have.value', '');
+    cy.get(CommentFields.line1).should('have.value', '');
+    cy.get(CommentFields.line2).should('have.value', '');
+    cy.get(CommentFields.line3).should('have.value', '');
 
-      cy.get(CommentActions.saveButton).should('exist');
-      cy.get(CommentActions.cancelLink).should('exist');
-    },
-  );
+    cy.get(CommentActions.saveButton).should('exist');
+    cy.get(CommentActions.cancelLink).should('exist');
+  });
 
   it(
     'should enforce field length limits according to specifications (AC2a)',
@@ -111,18 +107,14 @@ describe('FinesAccCommentsAddComponent', () => {
     },
   );
 
-  it(
-    'should accept alphanumeric characters in all fields (AC2a)',
-    { tags: buildTags('@JIRA-STORY:PO-777') },
-    () => {
-      setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK);
+  it('should accept alphanumeric characters in all fields (AC2a)', { tags: buildTags('@JIRA-STORY:PO-777') }, () => {
+    setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK);
 
-      cy.get(CommentFields.comment).should('have.value', 'Test123');
-      cy.get(CommentFields.line1).should('have.value', 'ABC123');
-      cy.get(CommentFields.line2).should('have.value', 'ABC123');
-      cy.get(CommentFields.line3).should('have.value', 'ABC123');
-    },
-  );
+    cy.get(CommentFields.comment).should('have.value', 'Test123');
+    cy.get(CommentFields.line1).should('have.value', 'ABC123');
+    cy.get(CommentFields.line2).should('have.value', 'ABC123');
+    cy.get(CommentFields.line3).should('have.value', 'ABC123');
+  });
 
   it(
     'should handle character count and allow clearing fields without errors (AC3, AC3a, AC2a)',
@@ -331,24 +323,20 @@ describe('FinesAccCommentsAddComponent', () => {
     },
   );
 
-  it(
-    'should allow saving when user has not made amendments (AC8)',
-    { tags: buildTags('@JIRA-STORY:PO-777') },
-    () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      // Start with pre-filled data to simulate existing comments
-      setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK, mockFormSubmit);
+  it('should allow saving when user has not made amendments (AC8)', { tags: buildTags('@JIRA-STORY:PO-777') }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    // Start with pre-filled data to simulate existing comments
+    setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK, mockFormSubmit);
 
-      // Verify data is pre-filled
-      cy.get(CommentFields.comment).should('have.value', 'Test123');
-      cy.get(CommentFields.line1).should('have.value', 'ABC123');
+    // Verify data is pre-filled
+    cy.get(CommentFields.comment).should('have.value', 'Test123');
+    cy.get(CommentFields.line1).should('have.value', 'ABC123');
 
-      // Don't make any changes - just click Save comment button
-      cy.get(CommentActions.saveButton).should('not.be.disabled');
-      cy.get(CommentActions.saveButton).click();
+    // Don't make any changes - just click Save comment button
+    cy.get(CommentActions.saveButton).should('not.be.disabled');
+    cy.get(CommentActions.saveButton).click();
 
-      // Verify form submission was triggered even without changes (AC8a - API call will be made)
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
-    },
-  );
+    // Verify form submission was triggered even without changes (AC8a - API call will be made)
+    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+  });
 });

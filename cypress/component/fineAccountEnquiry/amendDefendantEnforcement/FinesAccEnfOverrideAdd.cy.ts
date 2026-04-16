@@ -106,52 +106,44 @@ describe(
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
     });
 
-    it(
-      'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link',
-      { tags: [] },
-      () => {
-        commonSetup();
+    it('AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link', { tags: [] }, () => {
+      commonSetup();
 
-        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-        cy.get(ENF_OVR.enfOverrideDropdown).click();
-        cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('DW').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).click();
+      cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('DW').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
 
-        cy.get(ENF_OVR.addOverrideButton).should('exist');
-        cy.get(ENF_OVR.cancelLink).should('exist');
-      },
-    );
+      cy.get(ENF_OVR.addOverrideButton).should('exist');
+      cy.get(ENF_OVR.cancelLink).should('exist');
+    });
 
-    it(
-      'Should support forward keyboard navigation across the add enforcement override form',
-      { tags: [] },
-      () => {
-        commonSetup();
+    it('Should support forward keyboard navigation across the add enforcement override form', { tags: [] }, () => {
+      commonSetup();
 
-        cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
-        cy.get(ENF_OVR.enfOverrideDropdown).should('be.visible').focus();
-        cy.get(ENF_OVR.enfOverrideDropdown).should('have.focus');
+      cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('be.visible').focus();
+      cy.get(ENF_OVR.enfOverrideDropdown).should('have.focus');
 
-        cy.press(Cypress.Keyboard.Keys.TAB);
-        cy.get(ENF_OVR.addOverrideButton).should('have.focus');
+      cy.press(Cypress.Keyboard.Keys.TAB);
+      cy.get(ENF_OVR.addOverrideButton).should('have.focus');
 
-        cy.press(Cypress.Keyboard.Keys.TAB);
-        cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
+      cy.press(Cypress.Keyboard.Keys.TAB);
+      cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
 
-        cy.get('@getResults.all').should('have.length', 0);
-      },
-    );
+      cy.get('@getResults.all').should('have.length', 0);
+    });
 
     it('AC2. Enforcer dropdown for valid override', { tags: [] }, () => {
       commonSetup();
@@ -487,54 +479,46 @@ describe(
       },
     );
 
-    it(
-      'AC2. Enforcer dropdown for valid override (Add Enforcement Override - Parent/Guardian)',
-      { tags: [] },
-      () => {
-        parentGuardianSetup();
+    it('AC2. Enforcer dropdown for valid override (Add Enforcement Override - Parent/Guardian)', { tags: [] }, () => {
+      parentGuardianSetup();
 
-        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-        cy.get(ENF_OVR.enfOverrideDropdown).click().type('AB');
-        cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('DW').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('not.exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('not.exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).click().type('AB');
+      cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('DW').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('not.exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('not.exist');
 
-        cy.get(ENF_OVR.dropdownOptions).contains('ABDC').click();
-        cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'ABDC');
+      cy.get(ENF_OVR.dropdownOptions).contains('ABDC').click();
+      cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'ABDC');
 
-        cy.get(ENF_OVR.enforcerDropdown).should('exist');
-        cy.get(ENF_OVR.enforcerDropdown).click();
-        cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
-      },
-    );
+      cy.get(ENF_OVR.enforcerDropdown).should('exist');
+      cy.get(ENF_OVR.enforcerDropdown).click();
+      cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
+    });
 
-    it(
-      'AC3. LJA dropdown for valid override (Add Enforcement Override - Parent/Guardian)',
-      { tags: [] },
-      () => {
-        parentGuardianSetup();
+    it('AC3. LJA dropdown for valid override (Add Enforcement Override - Parent/Guardian)', { tags: [] }, () => {
+      parentGuardianSetup();
 
-        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-        cy.get(ENF_OVR.enfOverrideDropdown).click().type('TFO');
-        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).click().type('TFO');
+      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
 
-        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').click();
-        cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'TFOOUT');
-        cy.get(ENF_OVR.localJusticeAreaDropdown).should('exist');
-        cy.get(ENF_OVR.localJusticeAreaDropdown).click();
-        cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
-      },
-    );
+      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').click();
+      cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'TFOOUT');
+      cy.get(ENF_OVR.localJusticeAreaDropdown).should('exist');
+      cy.get(ENF_OVR.localJusticeAreaDropdown).click();
+      cy.get(ENF_OVR.dropdownOptions).contains("Bedfordshire Magistrates' Court (4165)").should('exist');
+    });
 
     it(
       'AC4a. Error when no enforcement override is selected (Add Enforcement Override - Parent/Guardian)',
@@ -552,50 +536,42 @@ describe(
       },
     );
 
-    it(
-      'AC4b. Error when no enforcer is selected (Add Enforcement Override - Parent/Guardian)',
-      { tags: [] },
-      () => {
-        parentGuardianSetup();
+    it('AC4b. Error when no enforcer is selected (Add Enforcement Override - Parent/Guardian)', { tags: [] }, () => {
+      parentGuardianSetup();
 
-        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-        cy.get(ENF_OVR.enfOverrideDropdown).click().type('BW');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').click();
-        cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'BWTD');
-        cy.get(ENF_OVR.enforcerDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).click().type('BW');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').click();
+      cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'BWTD');
+      cy.get(ENF_OVR.enforcerDropdown).should('exist');
 
-        cy.get(ENF_OVR.addOverrideButton).click();
-        cy.get(ENF_OVR.errorSummary)
-          .should('exist')
-          .contains('There is a problem')
-          .next()
-          .should('contain.text', 'Select an enforcer');
-      },
-    );
+      cy.get(ENF_OVR.addOverrideButton).click();
+      cy.get(ENF_OVR.errorSummary)
+        .should('exist')
+        .contains('There is a problem')
+        .next()
+        .should('contain.text', 'Select an enforcer');
+    });
 
-    it(
-      'AC4c. Error when no LJA is selected (Add Enforcement Override - Parent/Guardian)',
-      { tags: [] },
-      () => {
-        parentGuardianSetup();
+    it('AC4c. Error when no LJA is selected (Add Enforcement Override - Parent/Guardian)', { tags: [] }, () => {
+      parentGuardianSetup();
 
-        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-        cy.get(ENF_OVR.enfOverrideDropdown).click().type('TFO');
-        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').click();
-        cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'TFOOUT');
-        cy.get(ENF_OVR.localJusticeAreaDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).click().type('TFO');
+      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').click();
+      cy.get(ENF_OVR.enfOverrideDropdown).should('contain.value', 'TFOOUT');
+      cy.get(ENF_OVR.localJusticeAreaDropdown).should('exist');
 
-        cy.get(ENF_OVR.addOverrideButton).click();
-        cy.get(ENF_OVR.errorSummary)
-          .should('exist')
-          .contains('There is a problem')
-          .next()
-          .should('contain.text', 'Select a Local Justice Area');
-      },
-    );
+      cy.get(ENF_OVR.addOverrideButton).click();
+      cy.get(ENF_OVR.errorSummary)
+        .should('exist')
+        .contains('There is a problem')
+        .next()
+        .should('contain.text', 'Select a Local Justice Area');
+    });
 
     it(
       'AC5. Valid submission returns to Enforcement tab with success banner and new override panel (Add Enforcement Override - Parent/Guardian)',

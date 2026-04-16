@@ -103,12 +103,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.1 , AC.2) should render the form',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -120,12 +115,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.2, AC.2a, AC.3, AC.4, AC.6) should render all elements on the page correctly',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -177,12 +167,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.2) should display length validation errors with individual type',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -215,12 +200,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.2) should display format validation errors',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -254,12 +234,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '( AC.9, AC.7 ) should display required field validation errors',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -275,12 +250,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.2) should have Length check in place for company creditor types',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -296,12 +266,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.2) should have Format check in place for company creditor types',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -316,12 +281,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.4ai , AC.8bii) should have Required check in place for company creditor types',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -335,12 +295,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.3)should have format check in place for individual creditor types',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -358,12 +313,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     ' (AC.8bi) Should check for required fields for individual creditor types',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -377,12 +327,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.10) Should check when user re-clicks on BACS payment details it clears the fields',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent(null);
@@ -410,12 +355,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     ' (AC.11) should allow form submission with valid data for individual creditor',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -443,12 +383,7 @@ describe('FinesMacMinorCreditor', () => {
   it(
     '(AC.11) should allow form submission with valid data for company creditor',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-412',
-        '@JIRA-STORY:PO-668',
-        '@JIRA-STORY:PO-669',
-        '@JIRA-STORY:PO-545',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669', '@JIRA-STORY:PO-545'),
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();

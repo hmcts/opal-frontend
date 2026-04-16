@@ -174,49 +174,45 @@ describe('FinesMacCourtDetailsComponent', () => {
     },
   );
 
-  it(
-    '(AC.5) should validate mandatory fields',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389') },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
+  it('(AC.5) should validate mandatory fields', { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389') }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
 
-      //Submit without input
-      cy.get(L.returnToAccountDetailsButton).click();
+    //Submit without input
+    cy.get(L.returnToAccountDetailsButton).click();
 
-      //Verify page did not change
-      cy.get(L.pageHeader).should('have.text', 'Court details');
+    //Verify page did not change
+    cy.get(L.pageHeader).should('have.text', 'Court details');
 
-      //Verify error summary
-      cy.get(L.errorSummary).should('exist');
+    //Verify error summary
+    cy.get(L.errorSummary).should('exist');
 
-      Object.values(MISSING_ERRORS).forEach((key) => {
-        cy.get(L.errorSummary).should('contain', key);
-      });
+    Object.values(MISSING_ERRORS).forEach((key) => {
+      cy.get(L.errorSummary).should('contain', key);
+    });
 
-      //Verify input field error messages
-      cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-      cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
-      cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+    //Verify input field error messages
+    cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+    cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
+    cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
 
-      //Submit without input
-      cy.get(L.nestedFlowButton).click();
+    //Submit without input
+    cy.get(L.nestedFlowButton).click();
 
-      //Verify page did not change
-      cy.get(L.pageHeader).should('have.text', 'Court details');
+    //Verify page did not change
+    cy.get(L.pageHeader).should('have.text', 'Court details');
 
-      //Verify error summary
-      cy.get(L.errorSummary).should('exist');
+    //Verify error summary
+    cy.get(L.errorSummary).should('exist');
 
-      Object.values(MISSING_ERRORS).forEach((key) => {
-        cy.get(L.errorSummary).should('contain', key);
-      });
+    Object.values(MISSING_ERRORS).forEach((key) => {
+      cy.get(L.errorSummary).should('contain', key);
+    });
 
-      //Verify input field error messages
-      cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
-      cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
-      cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
-    },
-  );
+    //Verify input field error messages
+    cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
+    cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
+    cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
+  });
 
   it(
     '(AC.6) should validate mandatory fields even when data exists in another',
@@ -263,21 +259,17 @@ describe('FinesMacCourtDetailsComponent', () => {
     },
   );
 
-  it(
-    '(AC.7) should validate PRC field length',
-    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389') },
-    () => {
-      finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
+  it('(AC.7) should validate PRC field length', { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389') }, () => {
+    finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
 
-      setupComponent(null);
+    setupComponent(null);
 
-      //Submit with invalid input
-      cy.get(L.returnToAccountDetailsButton).click();
+    //Submit with invalid input
+    cy.get(L.returnToAccountDetailsButton).click();
 
-      //Verify error message
-      cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.tooLongPCR);
-    },
-  );
+    //Verify error message
+    cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.tooLongPCR);
+  });
 
   it(
     '(AC.7) should validate PCR field allowed characters',

@@ -588,74 +588,66 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
 
   //PO-969
-  it(
-    'AC.1b update draft account with patch method',
-    { tags: buildTags('@JIRA-STORY:PO-969') },
-    () => {
-      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
-      let payload = structuredClone(finesAccountPayload);
-      payload.draft_account_id = 342;
-      setupComponent(finesAccountPayload, payload, false, true);
+  it('AC.1b update draft account with patch method', { tags: buildTags('@JIRA-STORY:PO-969') }, () => {
+    cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
+    let payload = structuredClone(finesAccountPayload);
+    payload.draft_account_id = 342;
+    setupComponent(finesAccountPayload, payload, false, true);
 
-      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
-      cy.get(DOM_ELEMENTS.rejectionText).type('I have rejected this account because the surname is incorrect');
-      cy.get(DOM_ELEMENTS.continue).click();
+    cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
+    cy.get(DOM_ELEMENTS.rejectionText).type('I have rejected this account because the surname is incorrect');
+    cy.get(DOM_ELEMENTS.continue).click();
 
-      cy.wait('@patchDraftAccount').then(({ request }) => {
-        expect(request.body).to.exist;
-        expect(request.url).to.include('/opal-fines-service/draft-accounts/342');
-        expect(request.method).to.equal('PATCH');
+    cy.wait('@patchDraftAccount').then(({ request }) => {
+      expect(request.body).to.exist;
+      expect(request.url).to.include('/opal-fines-service/draft-accounts/342');
+      expect(request.method).to.equal('PATCH');
 
-        expect(request.body).to.have.property('account_status', 'Rejected');
-        expect(request.body).to.have.property('timeline_data');
+      expect(request.body).to.have.property('account_status', 'Rejected');
+      expect(request.body).to.have.property('timeline_data');
 
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
+      expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
+      expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
+      expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
+      expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
 
-        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[1]).to.have.property('status', 'Rejected');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).to.have.property(
-          'reason_text',
-          'I have rejected this account because the surname is incorrect',
-        );
-      });
-    },
-  );
+      expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
+      expect(request.body.timeline_data[1]).to.have.property('status', 'Rejected');
+      expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
+      expect(request.body.timeline_data[1]).to.have.property(
+        'reason_text',
+        'I have rejected this account because the surname is incorrect',
+      );
+    });
+  });
 
   //PO-968
-  it(
-    'AC.1b approve draft account with patch method',
-    { tags: buildTags('@JIRA-STORY:PO-968') },
-    () => {
-      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
-      let payload = structuredClone(finesAccountPayload);
-      payload.draft_account_id = 42;
-      setupComponent(finesAccountPayload, payload, false, true);
+  it('AC.1b approve draft account with patch method', { tags: buildTags('@JIRA-STORY:PO-968') }, () => {
+    cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
+    let payload = structuredClone(finesAccountPayload);
+    payload.draft_account_id = 42;
+    setupComponent(finesAccountPayload, payload, false, true);
 
-      cy.get(DOM_ELEMENTS.approveRadioButton).should('exist').click();
-      cy.get(DOM_ELEMENTS.continue).click();
+    cy.get(DOM_ELEMENTS.approveRadioButton).should('exist').click();
+    cy.get(DOM_ELEMENTS.continue).click();
 
-      cy.wait('@patchDraftAccount').then(({ request }) => {
-        expect(request.body).to.exist;
-        expect(request.url).to.include('/opal-fines-service/draft-accounts/42');
-        expect(request.method).to.equal('PATCH');
+    cy.wait('@patchDraftAccount').then(({ request }) => {
+      expect(request.body).to.exist;
+      expect(request.url).to.include('/opal-fines-service/draft-accounts/42');
+      expect(request.method).to.equal('PATCH');
 
-        expect(request.body).to.have.property('account_status', 'Publishing Pending');
-        expect(request.body).to.have.property('timeline_data');
+      expect(request.body).to.have.property('account_status', 'Publishing Pending');
+      expect(request.body).to.have.property('timeline_data');
 
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
-        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
-        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
+      expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
+      expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
+      expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
+      expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
 
-        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
-        expect(request.body.timeline_data[1]).to.have.property('status', 'Publishing Pending');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).not.to.have.property('reason_text');
-      });
-    },
-  );
+      expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
+      expect(request.body.timeline_data[1]).to.have.property('status', 'Publishing Pending');
+      expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
+      expect(request.body.timeline_data[1]).not.to.have.property('reason_text');
+    });
+  });
 });

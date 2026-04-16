@@ -297,83 +297,79 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     },
   );
 
-  it(
-    'AC2. Alias add/remove and clear behaviour',
-    { tags: buildTags('@JIRA-STORY:PO-1110') },
-    () => {
-      setupComponent('INDIVIDUAL', minimalMock);
+  it('AC2. Alias add/remove and clear behaviour', { tags: buildTags('@JIRA-STORY:PO-1110') }, () => {
+    setupComponent('INDIVIDUAL', minimalMock);
 
-      // Pre-condition: checkbox unchecked & section hidden
-      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+    // Pre-condition: checkbox unchecked & section hidden
+    cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
-      // AC2: Tick the Add aliases checkbox
-      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+    // AC2: Tick the Add aliases checkbox
+    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
 
-      // AC2a: Subheading 'Alias 1' displayed
-      cy.contains('legend', 'Alias 1').should('exist').and('have.class', 'govuk-fieldset__legend');
+    // AC2a: Subheading 'Alias 1' displayed
+    cy.contains('legend', 'Alias 1').should('exist').and('have.class', 'govuk-fieldset__legend');
 
-      // AC2b: Two free text boxes with titles First names / Last name for Alias 1
-      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
-      cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
-      cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
+    // AC2b: Two free text boxes with titles First names / Last name for Alias 1
+    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
+    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
+    cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
+    cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
 
-      // Enter some data to later verify clearing behaviour (AC2f)
-      cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
+    // Enter some data to later verify clearing behaviour (AC2f)
+    cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
+    cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
 
-      // AC2c: Grey 'Add another alias' button displayed
-      cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
+    // AC2c: Grey 'Add another alias' button displayed
+    cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
 
-      // Helper to add alias and assert its presence
-      const addAliasAndAssert = (aliasNumber: number) => {
-        cy.get(DOM_ELEMENTS.addAliasButton).click();
-        cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
-        const index = aliasNumber - 1;
-        cy.get(getAliasForenamesInput(index)).should('exist');
-        cy.get(getAliasSurnameInput(index)).should('exist');
-      };
+    // Helper to add alias and assert its presence
+    const addAliasAndAssert = (aliasNumber: number) => {
+      cy.get(DOM_ELEMENTS.addAliasButton).click();
+      cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
+      const index = aliasNumber - 1;
+      cy.get(getAliasForenamesInput(index)).should('exist');
+      cy.get(getAliasSurnameInput(index)).should('exist');
+    };
 
-      // AC2d / AC2di: Add aliases 2 through 5 incrementally
-      addAliasAndAssert(2);
-      cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
-      addAliasAndAssert(3);
-      addAliasAndAssert(4);
-      addAliasAndAssert(5);
+    // AC2d / AC2di: Add aliases 2 through 5 incrementally
+    addAliasAndAssert(2);
+    cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
+    addAliasAndAssert(3);
+    addAliasAndAssert(4);
+    addAliasAndAssert(5);
 
-      // AC2dii: Once 5 alias rows added, add button disappears
-      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+    // AC2dii: Once 5 alias rows added, add button disappears
+    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-      // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
-      cy.get('a.govuk-link').contains('Remove').should('exist');
-      cy.contains('legend', 'Alias 1')
-        .parent('fieldset')
-        .within(() => {
-          cy.contains('Remove').should('not.exist');
-        });
+    // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
+    cy.get('a.govuk-link').contains('Remove').should('exist');
+    cy.contains('legend', 'Alias 1')
+      .parent('fieldset')
+      .within(() => {
+        cy.contains('Remove').should('not.exist');
+      });
 
-      // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
-      cy.get('a.govuk-link').contains('Remove').click();
-      cy.contains('legend', 'Alias 5').should('not.exist');
-      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
+    // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
+    cy.get('a.govuk-link').contains('Remove').click();
+    cy.contains('legend', 'Alias 5').should('not.exist');
+    cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
 
-      // Add back up to 5 to demonstrate cap again
-      addAliasAndAssert(5);
-      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+    // Add back up to 5 to demonstrate cap again
+    addAliasAndAssert(5);
+    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-      // AC2f: Untick Add aliases checkbox hides & wipes alias data
-      cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+    // AC2f: Untick Add aliases checkbox hides & wipes alias data
+    cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
-      // Re-check and ensure a fresh empty Alias 1 row (data wiped)
-      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
-      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
-    },
-  );
+    // Re-check and ensure a fresh empty Alias 1 row (data wiped)
+    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
+  });
 
   it('AC5. Required field validation (core)', { tags: buildTags('@JIRA-STORY:PO-1110') }, () => {
     const emptyCoreMock = structuredClone(minimalMock);
@@ -406,66 +402,54 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_EMPLOYER_REFERENCE_OR_NI);
   });
 
-  it(
-    'AC5. Required field validation (employer name)',
-    { tags: buildTags('@JIRA-STORY:PO-1110') },
-    () => {
-      minimalMock.defendant_account_party.employer_details!.employer_name = 'Test Company';
-      setupComponent('INDIVIDUAL', minimalMock);
+  it('AC5. Required field validation (employer name)', { tags: buildTags('@JIRA-STORY:PO-1110') }, () => {
+    minimalMock.defendant_account_party.employer_details!.employer_name = 'Test Company';
+    setupComponent('INDIVIDUAL', minimalMock);
 
-      // Leave all employer values blank then submit
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    // Leave all employer values blank then submit
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      // Now the employer required messages appears (conditional activation)
-      EMPLOYER_REQUIRED_MESSAGES.forEach((msg) => {
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
-      });
-    },
-  );
+    // Now the employer required messages appears (conditional activation)
+    EMPLOYER_REQUIRED_MESSAGES.forEach((msg) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+    });
+  });
 
-  it(
-    'AC5. Required field validation (employer address)',
-    { tags: buildTags('@JIRA-STORY:PO-1110') },
-    () => {
-      minimalMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = 'Address';
-      setupComponent('INDIVIDUAL', minimalMock);
+  it('AC5. Required field validation (employer address)', { tags: buildTags('@JIRA-STORY:PO-1110') }, () => {
+    minimalMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = 'Address';
+    setupComponent('INDIVIDUAL', minimalMock);
 
-      // Leave all employer values blank then submit
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    // Leave all employer values blank then submit
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      // Now the employer required messages appears (conditional activation)
-      const employerRequiredMessages = [
-        ERROR_MESSAGES.REQUIRED_EMPLOYER_REFERENCE_OR_NI,
-        ERROR_MESSAGES.REQUIRED_EMPLOYER_NAME,
-      ];
+    // Now the employer required messages appears (conditional activation)
+    const employerRequiredMessages = [
+      ERROR_MESSAGES.REQUIRED_EMPLOYER_REFERENCE_OR_NI,
+      ERROR_MESSAGES.REQUIRED_EMPLOYER_NAME,
+    ];
 
-      employerRequiredMessages.forEach((msg) => {
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
-      });
-    },
-  );
+    employerRequiredMessages.forEach((msg) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+    });
+  });
 
-  it(
-    'AC5. Required field validation (employer reference number)',
-    { tags: buildTags('@JIRA-STORY:PO-1110') },
-    () => {
-      minimalMock.defendant_account_party.employer_details!.employer_reference = 'Ref123';
-      setupComponent('INDIVIDUAL', minimalMock);
+  it('AC5. Required field validation (employer reference number)', { tags: buildTags('@JIRA-STORY:PO-1110') }, () => {
+    minimalMock.defendant_account_party.employer_details!.employer_reference = 'Ref123';
+    setupComponent('INDIVIDUAL', minimalMock);
 
-      // Leave all employer values blank then submit
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    // Leave all employer values blank then submit
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      // Now the employer required messages appears (conditional activation)
-      const employerRequiredMessages = [
-        ERROR_MESSAGES.REQUIRED_EMPLOYER_ADDRESS_LINE_1,
-        ERROR_MESSAGES.REQUIRED_EMPLOYER_NAME,
-      ];
+    // Now the employer required messages appears (conditional activation)
+    const employerRequiredMessages = [
+      ERROR_MESSAGES.REQUIRED_EMPLOYER_ADDRESS_LINE_1,
+      ERROR_MESSAGES.REQUIRED_EMPLOYER_NAME,
+    ];
 
-      employerRequiredMessages.forEach((msg) => {
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
-      });
-    },
-  );
+    employerRequiredMessages.forEach((msg) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+    });
+  });
 
   it(
     'AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5)',
@@ -532,44 +516,32 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     },
   );
 
-  it(
-    'AC6a. DOB with non-numerical characters shows format error',
-    { tags: buildTags('@JIRA-STORY:PO-1110') },
-    () => {
-      minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = 'AA/BB/CCCC';
-      setupComponent('INDIVIDUAL', minimalMock);
+  it('AC6a. DOB with non-numerical characters shows format error', { tags: buildTags('@JIRA-STORY:PO-1110') }, () => {
+    minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = 'AA/BB/CCCC';
+    setupComponent('INDIVIDUAL', minimalMock);
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_INVALID);
-    },
-  );
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_INVALID);
+  });
 
-  it(
-    'AC6b. DOB in the future shows past-date error',
-    { tags: buildTags('@JIRA-STORY:PO-1110') },
-    () => {
-      minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
-      setupComponent('INDIVIDUAL', minimalMock);
+  it('AC6b. DOB in the future shows past-date error', { tags: buildTags('@JIRA-STORY:PO-1110') }, () => {
+    minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
+    setupComponent('INDIVIDUAL', minimalMock);
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_FUTURE);
-    },
-  );
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_FUTURE);
+  });
 
-  it(
-    'AC6c. NI number invalid format shows NI format error',
-    { tags: buildTags('@JIRA-STORY:PO-1110') },
-    () => {
-      minimalMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12345';
-      setupComponent('INDIVIDUAL', minimalMock);
+  it('AC6c. NI number invalid format shows NI format error', { tags: buildTags('@JIRA-STORY:PO-1110') }, () => {
+    minimalMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12345';
+    setupComponent('INDIVIDUAL', minimalMock);
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_NI_NUMBER);
-    },
-  );
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_NI_NUMBER);
+  });
 
   // AC7: Email format validation
   it(
@@ -758,113 +730,109 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     },
   );
 
-  it(
-    'AC1. Amend Company Details screen opens successfully',
-    { tags: buildTags('@JIRA-STORY:PO-1111') },
-    () => {
-      setupComponent('COMPANY', companyfullMock);
+  it('AC1. Amend Company Details screen opens successfully', { tags: buildTags('@JIRA-STORY:PO-1111') }, () => {
+    setupComponent('COMPANY', companyfullMock);
 
-      // Verify the page loads successfully
-      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+    // Verify the page loads successfully
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 
-      // === Company Details Section ===
-      cy.get(DOM_ELEMENTS.organisationNameInput).should('exist');
-      cy.get(DOM_ELEMENTS.organisationNameInput).should('have.value', 'ABC Corporation Ltd');
-      cy.get(DOM_ELEMENTS.organisationNameLabel).should('contain', 'Company name');
+    // === Company Details Section ===
+    cy.get(DOM_ELEMENTS.organisationNameInput).should('exist');
+    cy.get(DOM_ELEMENTS.organisationNameInput).should('have.value', 'ABC Corporation Ltd');
+    cy.get(DOM_ELEMENTS.organisationNameLabel).should('contain', 'Company name');
 
-      // Verify company aliases checkbox (ticked when aliases are present)
-      cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
-      cy.get(DOM_ELEMENTS.aliasCheckbox).should('be.checked');
-      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+    // Verify company aliases checkbox (ticked when aliases are present)
+    cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
+    cy.get(DOM_ELEMENTS.aliasCheckbox).should('be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
 
-      // Verify all 5 organisation aliases from mock data
-      cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'ABC Corp');
-      cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
+    // Verify all 5 organisation aliases from mock data
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'ABC Corp');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
 
-      cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'ABC Limited');
-      cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'ABC Limited');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
 
-      cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'ABC Trading');
-      cy.get(DOM_ELEMENTS.organisationAliasLabel2).should('contain', 'Company name');
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'ABC Trading');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel2).should('contain', 'Company name');
 
-      cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'ABC Enterprises');
-      cy.get(DOM_ELEMENTS.organisationAliasLabel3).should('contain', 'Company name');
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'ABC Enterprises');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel3).should('contain', 'Company name');
 
-      cy.get(DOM_ELEMENTS.organisationAliasInput4).should('have.value', 'ABC Holdings');
-      cy.get(DOM_ELEMENTS.organisationAliasLabel4).should('contain', 'Company name');
+    cy.get(DOM_ELEMENTS.organisationAliasInput4).should('have.value', 'ABC Holdings');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel4).should('contain', 'Company name');
 
-      // === Individual fields should NOT be present for company ===
-      cy.get(DOM_ELEMENTS.titleSelect).should('not.exist');
-      cy.get(DOM_ELEMENTS.forenamesInput).should('not.exist');
-      cy.get(DOM_ELEMENTS.surnameInput).should('not.exist');
-      cy.get(DOM_ELEMENTS.dobInput).should('not.exist');
-      cy.get(DOM_ELEMENTS.niNumberInput).should('not.exist');
+    // === Individual fields should NOT be present for company ===
+    cy.get(DOM_ELEMENTS.titleSelect).should('not.exist');
+    cy.get(DOM_ELEMENTS.forenamesInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.surnameInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.dobInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.niNumberInput).should('not.exist');
 
-      // === Address Information ===
-      cy.get(DOM_ELEMENTS.addressFieldset).should('exist');
-      cy.get(DOM_ELEMENTS.addressLegend).should('contain', 'Address');
+    // === Address Information ===
+    cy.get(DOM_ELEMENTS.addressFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.addressLegend).should('contain', 'Address');
 
-      cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
-      cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '100 Corporate Plaza');
-      cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '100 Corporate Plaza');
+    cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
 
-      cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
-      cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '25th Floor');
-      cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
+    cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '25th Floor');
+    cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
 
-      cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
-      cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', 'Financial');
-      cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
+    cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', 'Financial');
+    cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
 
-      cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
-      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'EC2Y 8DS');
-      cy.get(DOM_ELEMENTS.postcodeLabel).should('contain', 'Postcode');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'EC2Y 8DS');
+    cy.get(DOM_ELEMENTS.postcodeLabel).should('contain', 'Postcode');
 
-      // === Contact Information ===
-      cy.get(DOM_ELEMENTS.contactFieldset).should('exist');
-      cy.get(DOM_ELEMENTS.contactLegend).should('contain', 'Contact details');
+    // === Contact Information ===
+    cy.get(DOM_ELEMENTS.contactFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.contactLegend).should('contain', 'Contact details');
 
-      cy.get(DOM_ELEMENTS.email1Input).should('exist');
-      cy.get(DOM_ELEMENTS.email1Input).should('have.value', 'contact@abccorporation.co.uk');
-      cy.get(DOM_ELEMENTS.email1Label).should('contain', 'Primary email address');
+    cy.get(DOM_ELEMENTS.email1Input).should('exist');
+    cy.get(DOM_ELEMENTS.email1Input).should('have.value', 'contact@abccorporation.co.uk');
+    cy.get(DOM_ELEMENTS.email1Label).should('contain', 'Primary email address');
 
-      cy.get(DOM_ELEMENTS.email2Input).should('exist');
-      cy.get(DOM_ELEMENTS.email2Input).should('have.value', 'legal@abccorporation.co.uk');
-      cy.get(DOM_ELEMENTS.email2Label).should('contain', 'Secondary email address');
+    cy.get(DOM_ELEMENTS.email2Input).should('exist');
+    cy.get(DOM_ELEMENTS.email2Input).should('have.value', 'legal@abccorporation.co.uk');
+    cy.get(DOM_ELEMENTS.email2Label).should('contain', 'Secondary email address');
 
-      cy.get(DOM_ELEMENTS.mobilePhoneInput).should('exist');
-      cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '07900123456');
-      cy.get(DOM_ELEMENTS.mobilePhoneLabel).should('contain', 'Mobile telephone number');
+    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '07900123456');
+    cy.get(DOM_ELEMENTS.mobilePhoneLabel).should('contain', 'Mobile telephone number');
 
-      cy.get(DOM_ELEMENTS.homePhoneInput).should('exist');
-      cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '02071234567');
-      cy.get(DOM_ELEMENTS.homePhoneLabel).should('contain', 'Home telephone number');
+    cy.get(DOM_ELEMENTS.homePhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '02071234567');
+    cy.get(DOM_ELEMENTS.homePhoneLabel).should('contain', 'Home telephone number');
 
-      cy.get(DOM_ELEMENTS.businessPhoneInput).should('exist');
-      cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '02071234567');
-      cy.get(DOM_ELEMENTS.businessPhoneLabel).should('contain', 'Work telephone number');
+    cy.get(DOM_ELEMENTS.businessPhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '02071234567');
+    cy.get(DOM_ELEMENTS.businessPhoneLabel).should('contain', 'Work telephone number');
 
-      // Should not be present for non-Welsh speaking BU
-      cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('not.exist');
+    // Should not be present for non-Welsh speaking BU
+    cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('not.exist');
 
-      // === Vehicle Information ===
-      cy.get(DOM_ELEMENTS.vehicleFieldset).should('exist');
-      cy.get(DOM_ELEMENTS.vehicleLegend).should('contain', 'Vehicle details');
+    // === Vehicle Information ===
+    cy.get(DOM_ELEMENTS.vehicleFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleLegend).should('contain', 'Vehicle details');
 
-      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('exist');
-      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', 'Mercedes Sprinter');
-      cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
+    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', 'Mercedes Sprinter');
+    cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
 
-      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
-      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', 'ABC123D');
-      cy.get(DOM_ELEMENTS.vehicleRegistrationLabel).should('contain', 'Registration number');
+    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', 'ABC123D');
+    cy.get(DOM_ELEMENTS.vehicleRegistrationLabel).should('contain', 'Registration number');
 
-      // Employer section is not relevant for companies
-      cy.get(DOM_ELEMENTS.employerFieldset).should('not.exist');
+    // Employer section is not relevant for companies
+    cy.get(DOM_ELEMENTS.employerFieldset).should('not.exist');
 
-      cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
-    },
-  );
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
+  });
 
   it(
     'AC1b. Company Details screen shows language preferences for Welsh speaking business units',
@@ -945,196 +913,184 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     },
   );
 
-  it(
-    'AC2. Company alias add/remove and clear behaviour',
-    { tags: buildTags('@JIRA-STORY:PO-1111') },
-    () => {
-      // Start with company mock without aliases
-      const testMock = structuredClone(companyfullMock);
-      testMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [];
+  it('AC2. Company alias add/remove and clear behaviour', { tags: buildTags('@JIRA-STORY:PO-1111') }, () => {
+    // Start with company mock without aliases
+    const testMock = structuredClone(companyfullMock);
+    testMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [];
 
-      setupComponent('COMPANY', testMock);
+    setupComponent('COMPANY', testMock);
 
-      // AC2 - Initially, alias checkbox should be unchecked and alias section hidden
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
+    // AC2 - Initially, alias checkbox should be unchecked and alias section hidden
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
 
-      // AC2a - Check the "Add aliases" checkbox to reveal alias section
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
+    // AC2a - Check the "Add aliases" checkbox to reveal alias section
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
 
-      // AC2a - Verify "Alias 1" subheading is displayed in bold
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
+    // AC2a - Verify "Alias 1" subheading is displayed in bold
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
 
-      // AC2b - Verify "Company name" field is displayed below subheading
-      cy.get(DOM_ELEMENTS.organisationAliasInput0).should('exist');
-      cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
+    // AC2b - Verify "Company name" field is displayed below subheading
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('exist');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
 
-      // AC2c - Verify "Add another alias" button is displayed
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('contain', 'Add another alias');
+    // AC2c - Verify "Add another alias" button is displayed
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('contain', 'Add another alias');
 
-      // AC2d - Click "Add another alias" for the first time
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click();
+    // AC2d - Click "Add another alias" for the first time
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click();
 
-      // AC2di - Verify "Alias 2" subheading is displayed
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
-      cy.get(DOM_ELEMENTS.organisationAliasInput1).should('exist');
-      cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
+    // AC2di - Verify "Alias 2" subheading is displayed
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('exist');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
 
-      // AC2e, AC2ei - Verify remove button exists for Alias 2 but not for Alias 1
-      cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('have.length', 1);
+    // AC2e, AC2ei - Verify remove button exists for Alias 2 but not for Alias 1
+    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('have.length', 1);
 
-      // Add more aliases to test incremental numbering
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 3
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
-      cy.get(DOM_ELEMENTS.organisationAliasInput2).should('exist');
+    // Add more aliases to test incremental numbering
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 3
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('exist');
 
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 4
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
-      cy.get(DOM_ELEMENTS.organisationAliasInput3).should('exist');
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 4
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('exist');
 
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 5
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 5');
-      cy.get(DOM_ELEMENTS.organisationAliasInput4).should('exist');
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 5
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 5');
+    cy.get(DOM_ELEMENTS.organisationAliasInput4).should('exist');
 
-      // AC2dii - Verify "Add another alias" button is no longer displayed after 5 aliases
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('not.exist');
+    // AC2dii - Verify "Add another alias" button is no longer displayed after 5 aliases
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('not.exist');
 
-      // Fill in some test data for alias removal test
-      cy.get(DOM_ELEMENTS.organisationAliasInput0).type('Company One', { delay: 0 });
-      cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Company Two', { delay: 0 });
-      cy.get(DOM_ELEMENTS.organisationAliasInput2).type('Company Three', { delay: 0 });
-      cy.get(DOM_ELEMENTS.organisationAliasInput3).type('Company Four', { delay: 0 });
-      cy.get(DOM_ELEMENTS.organisationAliasInput4).type('Company Five', { delay: 0 });
+    // Fill in some test data for alias removal test
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).type('Company One', { delay: 0 });
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Company Two', { delay: 0 });
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).type('Company Three', { delay: 0 });
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).type('Company Four', { delay: 0 });
+    cy.get(DOM_ELEMENTS.organisationAliasInput4).type('Company Five', { delay: 0 });
 
-      // AC2eii - Test removing and verify renumbering
-      cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).click();
+    // AC2eii - Test removing and verify renumbering
+    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).click();
 
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 5');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 5');
 
-      // Verify data has been adjusted accordingly
-      cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'COMPANY ONE');
-      cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'COMPANY TWO');
-      cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'COMPANY THREE');
-      cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'COMPANY FOUR');
+    // Verify data has been adjusted accordingly
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'COMPANY ONE');
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'COMPANY TWO');
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'COMPANY THREE');
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'COMPANY FOUR');
 
-      // Verify "Add another alias" button reappears since we're now under 5 aliases
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
+    // Verify "Add another alias" button reappears since we're now under 5 aliases
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
 
-      // AC2f - Test unchecking "Add aliases" checkbox clears all data and hides section
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).uncheck();
+    // AC2f - Test unchecking "Add aliases" checkbox clears all data and hides section
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).uncheck();
 
-      // Re-check to verify all alias data has been wiped
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
+    // Re-check to verify all alias data has been wiped
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
 
-      // Should only show Alias 1 with empty data
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 2');
-      cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', '');
-      cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('not.exist');
-    },
-  );
+    // Should only show Alias 1 with empty data
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 2');
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', '');
+    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('not.exist');
+  });
 
-  it(
-    'AC3. Required field validation for company mandatory fields',
-    { tags: buildTags('@JIRA-STORY:PO-1111') },
-    () => {
-      const testMock = structuredClone(companyfullMock);
-      testMock.defendant_account_party.party_details.organisation_details!.organisation_name = '';
-      testMock.defendant_account_party.address!.address_line_1 = '';
-      testMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [
-        { alias_id: '1', sequence_number: 1, organisation_name: '' },
-        { alias_id: '2', sequence_number: 2, organisation_name: '' },
-      ];
+  it('AC3. Required field validation for company mandatory fields', { tags: buildTags('@JIRA-STORY:PO-1111') }, () => {
+    const testMock = structuredClone(companyfullMock);
+    testMock.defendant_account_party.party_details.organisation_details!.organisation_name = '';
+    testMock.defendant_account_party.address!.address_line_1 = '';
+    testMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [
+      { alias_id: '1', sequence_number: 1, organisation_name: '' },
+      { alias_id: '2', sequence_number: 2, organisation_name: '' },
+    ];
 
-      setupComponent('COMPANY', testMock);
+    setupComponent('COMPANY', testMock);
 
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 
-      // AC3a. Verify Company name error message
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_NAME);
+    // AC3a. Verify Company name error message
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_NAME);
 
-      // AC3b. Verify Address Line 1 error message
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
+    // AC3b. Verify Address Line 1 error message
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
 
-      // AC3c. Verify Alias Company name error messages for each alias row
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
+    // AC3c. Verify Alias Company name error messages for each alias row
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
 
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
-      cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 4);
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
+    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 4);
 
-      cy.get(DOM_ELEMENTS.organisationNameInput).type('Test Company Ltd');
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.organisationNameInput).type('Test Company Ltd');
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_COMPANY_NAME);
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
-      cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 3);
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_COMPANY_NAME);
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
+    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 3);
 
-      cy.get(DOM_ELEMENTS.addressLine1Input).type('123 Business Street');
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.addressLine1Input).type('123 Business Street');
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      // Verify address error is gone but alias errors remain
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
-      cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 2);
+    // Verify address error is gone but alias errors remain
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1);
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
+    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 2);
 
-      // Fix first alias
-      cy.get(DOM_ELEMENTS.organisationAliasInput0).type('First Alias Company');
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    // Fix first alias
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).type('First Alias Company');
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      // Verify first alias error is gone but second alias error remains
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
-      cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 1);
+    // Verify first alias error is gone but second alias error remains
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(1));
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.REQUIRED_COMPANY_ALIAS(2));
+    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 1);
 
-      // Fix second alias
-      cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Second Alias Company');
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    // Fix second alias
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Second Alias Company');
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      // Verify all errors are gone
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    },
-  );
+    // Verify all errors are gone
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+  });
 
-  it(
-    'AC4. Email format validation for company forms',
-    { tags: buildTags('@JIRA-STORY:PO-1111') },
-    () => {
-      const testMock = structuredClone(companyfullMock);
-      testMock.defendant_account_party.contact_details!.primary_email_address = 'invalid-email-no-at';
-      testMock.defendant_account_party.contact_details!.secondary_email_address = 'missing-domain@';
+  it('AC4. Email format validation for company forms', { tags: buildTags('@JIRA-STORY:PO-1111') }, () => {
+    const testMock = structuredClone(companyfullMock);
+    testMock.defendant_account_party.contact_details!.primary_email_address = 'invalid-email-no-at';
+    testMock.defendant_account_party.contact_details!.secondary_email_address = 'missing-domain@';
 
-      setupComponent('COMPANY', testMock);
+    setupComponent('COMPANY', testMock);
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 
-      // AC4a. Verify Primary email address error message
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.FORMAT_EMAIL_PRIMARY);
+    // AC4a. Verify Primary email address error message
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.FORMAT_EMAIL_PRIMARY);
 
-      // AC4b. Verify Secondary email address error message
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.FORMAT_EMAIL_SECONDARY);
+    // AC4b. Verify Secondary email address error message
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ERROR_MESSAGES.FORMAT_EMAIL_SECONDARY);
 
-      cy.get(DOM_ELEMENTS.email1Input).clear();
-      cy.get(DOM_ELEMENTS.email2Input).clear();
-      cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.email1Input).clear();
+    cy.get(DOM_ELEMENTS.email2Input).clear();
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
-      // Verify all errors are gone
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    },
-  );
+    // Verify all errors are gone
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+  });
 
   it(
     'AC5a. Home telephone invalid format shows home telephone error for company',

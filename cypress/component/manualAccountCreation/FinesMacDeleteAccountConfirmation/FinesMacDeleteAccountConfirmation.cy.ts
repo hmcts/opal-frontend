@@ -47,15 +47,11 @@ describe('FinesMacDeleteAccountConfirmation', () => {
     });
   };
 
-  it(
-    '(AC.2)should render the component and have all elements ',
-    { tags: buildTags('@JIRA-STORY:PO-518') },
-    () => {
-      setupComponent();
+  it('(AC.2)should render the component and have all elements ', { tags: buildTags('@JIRA-STORY:PO-518') }, () => {
+    setupComponent();
 
-      cy.get('h1').should('contain', 'Are you sure you want to delete this account?');
-      cy.get('button[id = "confirmDeletion"]').should('contain', 'Yes - delete');
-      cy.get('a').should('contain', 'No - cancel');
-    },
-  );
+    cy.get('h1').should('contain', 'Are you sure you want to delete this account?');
+    cy.get('button[id = "confirmDeletion"]').should('contain', 'Yes - delete');
+    cy.get('a').should('contain', 'No - cancel');
+  });
 });
