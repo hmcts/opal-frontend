@@ -7,6 +7,9 @@
  * - Preserves the legacy export name used by component specs to keep migration mechanical.
  */
 export const DOM_ELEMENTS = {
+  // Header actions
+  changeLink: 'a.govuk-link.govuk-\\!-margin-bottom-0',
+
   // Personal Details
   parentOrGuardianDetailsName: '#parentOrGuardianDetailsNameValue',
   parentOrGuardianDetailsAliases: '#parentOrGuardianDetailsAliasesKey',

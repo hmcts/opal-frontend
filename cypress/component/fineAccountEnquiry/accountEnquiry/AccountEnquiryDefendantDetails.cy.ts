@@ -1,5 +1,9 @@
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+import {
+  DEFENDANT_HEADER_MOCK,
+  DEFENDANT_HEADER_ORG_MOCK,
+  DEFENDANT_HEADER_YOUTH_MOCK,
+} from './mocks/defendant_details_mock';
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import { DEFENDANT_DETAILS } from '../../../shared/selectors/account-enquiry/account.enquiry.defendant-details.locators';
 
@@ -421,6 +425,76 @@ describe('Account Enquiry Defendant Details Tab', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
       cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+    },
+  );
+
+  it(
+    'AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action',
+    { tags: buildTags('@JIRA-STORY:PO-1874', '@JIRA-KEY:POT-4892') },
+    () => {
+      const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
+      const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      const accountId = headerMock.defendant_account_party_id;
+
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      setLanguagePref(language_preferences!.document_language_preference);
+      setLanguagePref(language_preferences!.hearing_language_preference);
+
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, accountId);
+      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+      setupAccountEnquiryComponent({ ...componentProperties, accountId });
+
+      cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('be.visible');
+    },
+  );
+
+  it(
+    'AC2. Non youth-only accounts do not show the Add parent or guardian details action',
+    { tags: buildTags('@JIRA-STORY:PO-1874', '@JIRA-KEY:POT-4893') },
+    () => {
+      const scenarios = [
+        {
+          // Adult Account
+          headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
+          isCompany: false,
+        },
+        {
+          // Youth Account with parent or guardian already linked
+          headerMock: {
+            ...structuredClone(DEFENDANT_HEADER_YOUTH_MOCK),
+            parent_guardian_party_id: '99',
+          },
+          isCompany: false,
+        },
+        {
+          // Company Account
+          headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
+          isCompany: true,
+        },
+      ];
+
+      scenarios.forEach(({ headerMock, isCompany }) => {
+        const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+        const { language_preferences } = defendantDetailsMock.defendant_account_party;
+        const accountId = headerMock.defendant_account_party_id;
+
+        defendantDetailsMock.defendant_account_party.party_details.organisation_flag = isCompany;
+        defendantDetailsMock.defendant_account_party.is_debtor = true;
+        setLanguagePref(language_preferences!.document_language_preference);
+        setLanguagePref(language_preferences!.hearing_language_preference);
+
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, accountId);
+        interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+        setupAccountEnquiryComponent({ ...componentProperties, accountId });
+
+        cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('not.exist');
+      });
     },
   );
 });
