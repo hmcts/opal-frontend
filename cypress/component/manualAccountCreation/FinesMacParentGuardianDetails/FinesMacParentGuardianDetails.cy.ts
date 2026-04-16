@@ -106,7 +106,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should load all elements on the screen correctly',
+    '(AC.1) should load all elements on the screen correctly (FinesMacParentGuardianDetailsComponent)',
     {
       tags: buildTags(
         '@JIRA-STORY:PO-344',

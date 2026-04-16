@@ -1,4 +1,5 @@
 @JIRA-LABEL:manual-account-creation
+@JIRA-STORY:PO-2322
 Feature: Accessibility Tests for Populate and Submit Screens
   # This feature file ensures that key populate and submit screens meet accessibility standards using Axe-Core.
 
@@ -26,7 +27,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
     Then I check the page for accessibility
 
   @JIRA-STORY:PO-2790 @JIRA-KEY:POT-3301
-  Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core
+  Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core (task list)
     When I start creating a new manual account for business unit "West London" with account type "Conditional Caution"
     Then I am taken to the manual account details page
     And I see the section titled "Police and court details"

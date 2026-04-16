@@ -1,4 +1,4 @@
-import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 
 import {
@@ -186,7 +186,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.enforcementStatusTag)
         .should('be.visible')
         .and('contain.text', 'Welsh and English')
-        .and('have.css', 'color', 'rgb(12, 45, 74)');
+        .and('have.class', 'govuk-tag');
     },
   );
 
@@ -716,10 +716,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.badgeBlue)
-        .contains('Collection Order')
-        .should('be.visible')
-        .and('have.css', 'color', 'rgb(29, 112, 184)');
+      cy.get(DOM.badgeBlue).contains('Collection Order').should('be.visible').and('have.class', 'moj-badge--blue');
     },
   );
   it(
@@ -739,10 +736,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.badgeRed)
-        .contains('No collection Order')
-        .should('be.visible')
-        .and('have.css', 'color', 'rgb(212, 53, 28)');
+      cy.get(DOM.badgeRed).contains('No collection Order').should('be.visible').and('have.class', 'moj-badge--red');
     },
   );
 
@@ -762,10 +756,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.badgeRed)
-        .contains('No collection Order')
-        .should('be.visible')
-        .and('have.css', 'color', 'rgb(212, 53, 28)');
+      cy.get(DOM.badgeRed).contains('No collection Order').should('be.visible').and('have.class', 'moj-badge--red');
     },
   );
 

@@ -8,7 +8,6 @@ import {
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
@@ -21,7 +20,6 @@ import { IFinesAccEnfCourtChangeFormState } from '../interfaces/fines-acc-enf-co
     FormsModule,
     ReactiveFormsModule,
     AlphagovAccessibleAutocompleteComponent,
-    GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukHeadingWithCaptionComponent,

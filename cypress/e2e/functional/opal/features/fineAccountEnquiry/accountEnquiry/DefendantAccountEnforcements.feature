@@ -123,7 +123,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | account.defendant.parent_guardian.dob           | 1980-02-15                       |
         | account.payment_terms.enforcements[0].result_id | PRIS                             |
 
-    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
+    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4755
     Scenario: Parent or guardian save an enforcement override and return to the Enforcement tab
       When I search for the account by last name "AddEnfOverridePG{uniq}" and open the latest result
       And I go to the Enforcement tab

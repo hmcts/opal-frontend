@@ -240,7 +240,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   );
 
   it(
-    'AC4ai - should show language preferences if business unit is welsh speaking - AY',
+    'AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Failed Account)',
     { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4385') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
@@ -256,7 +256,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     },
   );
   it(
-    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
+    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Failed Account)',
     { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4386') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
@@ -273,7 +273,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     },
   );
   it(
-    'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
+    'AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Failed Account)',
     { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4387') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
@@ -291,7 +291,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   );
 
   it(
-    'AC.7 - should show em-dash for empty values',
+    'AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Failed Account)',
     { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4388') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);

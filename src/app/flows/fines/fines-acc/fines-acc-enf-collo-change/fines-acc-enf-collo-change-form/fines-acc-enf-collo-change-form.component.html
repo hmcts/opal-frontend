@@ -1,0 +1,63 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<opal-lib-govuk-heading-with-caption
+  [captionText]="`${accountNumber} - ${partyName}`"
+  [headingText]="'Change Collection Order Status'"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
+>
+</opal-lib-govuk-heading-with-caption>
+
+<p class="govuk-body govuk-!-margin-bottom-6">If the status of a Collection Order is incorrect you can change it.</p>
+<p class="govuk-body govuk-!-margin-bottom-6"><strong>This will not issue a new notice.</strong></p>
+<p class="govuk-body govuk-!-margin-bottom-6">
+  To add a new Collection Order and issue a notice you should
+  <a
+    class="govuk-link govuk-link--no-visited-state"
+    href=""
+    id="facc_enf_collection_order_go_back"
+    (click)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement', event: $event })"
+    >go back</a
+  >
+  and add an enforcement action.
+</p>
+
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+  <opal-lib-govuk-radio
+    radioClasses="govuk-radios--inline"
+    fieldSetId="facc_enf_collection_order_made"
+    legendText="Is this account subject to a Collection Order?"
+    legendClasses="govuk-fieldset__legend--m"
+    [errors]="formControlErrorMessages['facc_enf_collection_order_made']"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Yes"
+      inputId="facc_enf_collection_order_made_true"
+      inputName="facc_enf_collection_order_made"
+      [inputValue]="true"
+      [control]="form.get('facc_enf_collection_order_made')"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="No"
+      inputId="facc_enf_collection_order_made_false"
+      inputName="facc_enf_collection_order_made"
+      [inputValue]="false"
+      [control]="form.get('facc_enf_collection_order_made')"
+    ></div>
+  </opal-lib-govuk-radio>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
+      <div class="govuk-button-group govuk-!-margin-bottom-0">
+        <button class="govuk-button govuk-!-margin-right-4" id="submitForm" type="submit">Change</button>
+        <opal-lib-govuk-cancel-link
+          (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement' })"
+        ></opal-lib-govuk-cancel-link>
+      </div>
+    </div>
+  </div>
+</form>

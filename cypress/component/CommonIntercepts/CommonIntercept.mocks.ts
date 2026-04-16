@@ -265,7 +265,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
 };
 
 export const OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK: IOpalFinesLocalJusticeAreaRefData = {
-  count: 5,
+  count: 6,
   refData: [
     {
       name: 'Asylum & Immigration Tribunal',
@@ -280,6 +280,13 @@ export const OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK: IOpalFinesLocalJustice
       address_line_1: "The Magistrates' Court",
       local_justice_area_id: 5735,
       lja_code: '1450',
+    },
+    {
+      name: 'Aberdeen Sheriff Court District',
+      postcode: 'AB10 1WP',
+      address_line_1: 'Castle Street',
+      local_justice_area_id: 9701,
+      lja_code: '9701',
     },
     {
       name: "Bedfordshire Magistrates' Court",

@@ -160,10 +160,12 @@
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [canAddParentOrGuardianDetails]="canAddParentOrGuardianDetails"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
         (convertAccount)="navigateToAmendPartyDetailsPage($event)"
+        (addParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
       ></app-fines-acc-defendant-details-defendant-tab>
     }
   }
@@ -209,6 +211,7 @@
         (changeEnforcementOverride)="navigateToChangeEnforcementOverridePage()"
         (removeEnforcementOverride)="navigateToRemoveEnforcementOverridePage()"
         (changeEnforcementCourt)="navigateToChangeEnforcementCourtPage()"
+        (changeCollectionOrder)="navigateToChangeCollectionOrderPage($event)"
       ></app-fines-acc-defendant-details-enforcement-tab>
     }
   }

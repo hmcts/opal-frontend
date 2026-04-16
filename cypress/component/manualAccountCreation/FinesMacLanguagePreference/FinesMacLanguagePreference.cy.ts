@@ -53,12 +53,16 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     });
   });
 
-  it('should render the component', { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4155') }, () => {
-    setupComponent(null);
+  it(
+    'should render the component (FinesMacLanguagePreferenceComponent)',
+    { tags: buildTags('@JIRA-STORY:PO-464', '@JIRA-KEY:POT-4155') },
+    () => {
+      setupComponent(null);
 
-    // Verify the component is rendered
-    cy.get(L.app).should('exist');
-  });
+      // Verify the component is rendered
+      cy.get(L.app).should('exist');
+    },
+  );
 
   it(
     '(AC.1,AC.2)should load all elements on the screen correctly',

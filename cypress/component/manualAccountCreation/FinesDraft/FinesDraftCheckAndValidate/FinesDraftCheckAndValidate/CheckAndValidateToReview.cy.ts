@@ -52,7 +52,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   };
 
   it(
-    '(AC.1) Review account is created as per design artefact',
+    '(AC.1) Review account is created as per design artefact (FinesDraftCheckAndValidateToReviewComponent)',
     { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-STORY:PO-600', '@JIRA-KEY:POT-3900') },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
@@ -160,7 +160,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   );
 
   it(
-    '(AC.4a) should have default sort order for created accounts set to ascending',
+    '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateToReviewComponent)',
     { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3903') },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
@@ -222,7 +222,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   );
 
   it(
-    '(AC.4b) should have pagination for over 25 accounts',
+    '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateToReviewComponent)',
     { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3904') },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);

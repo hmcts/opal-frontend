@@ -108,4 +108,15 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
+
+  it('should emit changeCollectionOrder when handleChangeCollectionOrder is called', () => {
+    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+    component.hasAccountMaintenancePermission = true;
+
+    component.handleChangeCollectionOrder();
+
+    expect(eventEmitterSpy).toHaveBeenCalledWith(
+      component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
+    );
+  });
 });
