@@ -138,7 +138,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   });
 
   it(
-    '(AC.4) should render summary tables under review account for AY',
+    '(AC.4) should render summary tables under review account for AY (ReviewAccountRejectedApproveComponent)',
     { tags: buildTags('@JIRA-STORY:PO-594', '@JIRA-KEY:POT-4360') },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
@@ -262,7 +262,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
 
   it(
-    '(AC.5) should render all elements on the screen for AYPG',
+    '(AC.5) should render all elements on the screen for AYPG (ReviewAccountRejectedApproveComponent)',
     { tags: buildTags('@JIRA-STORY:PO-594', '@JIRA-KEY:POT-4361') },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
@@ -413,7 +413,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
 
   it(
-    '(AC.6) should render all elements on the screen for company defendant type',
+    '(AC.6) should render all elements on the screen for company defendant type (ReviewAccountRejectedApproveComponent)',
     { tags: buildTags('@JIRA-STORY:PO-594', '@JIRA-KEY:POT-4362') },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
@@ -495,7 +495,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
 
   it(
-    '(AC.7) should show dashed line if Data is empty for non required details for all defendant types',
+    '(AC.7) should show dashed line if Data is empty for non required details for all defendant types (ReviewAccountRejectedApproveComponent)',
     { tags: buildTags('@JIRA-STORY:PO-594', '@JIRA-KEY:POT-4363') },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
@@ -532,7 +532,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     },
   );
   it(
-    'AC.2 The Review Account screen will be created as per the design artefact',
+    'AC.2 The Review Account screen will be created as per the design artefact (ReviewAccountRejectedApproveComponent)',
     { tags: buildTags('@JIRA-STORY:PO-594', '@JIRA-KEY:POT-4364') },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
@@ -545,7 +545,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
 
   it(
-    'AC.8, Decision table will be shown as per the design artefact',
+    'AC.8, Decision table will be shown as per the design artefact (ReviewAccountRejectedApproveComponent)',
     { tags: buildTags('@JIRA-STORY:PO-594', '@JIRA-KEY:POT-4365') },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
@@ -557,7 +557,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     },
   );
   it(
-    'AC.8a user does not select any radio button and selects the Continue button',
+    'AC.8a user does not select any radio button and selects the Continue button (ReviewAccountRejectedApproveComponent)',
     { tags: buildTags('@JIRA-STORY:PO-594', '@JIRA-KEY:POT-4366') },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
@@ -567,7 +567,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     },
   );
   it(
-    'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button',
+    'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button (ReviewAccountRejectedApproveComponent)',
     { tags: buildTags('@JIRA-STORY:PO-594', '@JIRA-KEY:POT-4367') },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
@@ -590,7 +590,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   //PO-969
   it(
     'AC.1b update draft account with patch method',
-    { tags: buildTags('@JIRA-STORY:PO-969', '@JIRA-KEY:POT-4368', '@JIRA-KEY:POT-4369') },
+    { tags: buildTags('@JIRA-STORY:PO-969', '@JIRA-KEY:POT-4368') },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
@@ -627,8 +627,8 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   //PO-968
   it(
-    'AC.1b update draft account with patch method',
-    { tags: buildTags('@JIRA-STORY:PO-968', '@JIRA-KEY:POT-4368', '@JIRA-KEY:POT-4369') },
+    'AC.1b approve draft account with patch method',
+    { tags: buildTags('@JIRA-STORY:PO-968', '@JIRA-KEY:POT-4369') },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);

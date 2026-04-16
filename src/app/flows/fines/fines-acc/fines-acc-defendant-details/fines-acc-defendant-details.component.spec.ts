@@ -139,6 +139,50 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component.activeTab).toBe('at-a-glance');
   });
 
+  it('should allow adding parent or guardian details for a youth debtor account with no parent guardian', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(true);
+  });
+
+  it('should not allow adding parent or guardian details when a parent guardian already exists', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: '123',
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
+  it('should not allow adding parent or guardian details for non-youth accounts', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: false,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
+  it('should not allow adding parent or guardian details when the parent guardian is the debtor', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.parentGuardian,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
   it('should handle tab switch', () => {
     component.handleTabSwitch('details');
     expect(component.activeTab).toBe('details');

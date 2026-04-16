@@ -1,4 +1,5 @@
 @JIRA-LABEL:consolidation
+@JIRA-STORY:PO-2322
 Feature: Accessibility Tests for Fines Consolidation
   # This feature file ensures consolidation entry points meet accessibility standards using Axe-Core.
 

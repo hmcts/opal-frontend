@@ -61,15 +61,19 @@ describe('FinesMacContactDetailsComponent', () => {
     });
   });
 
-  it('should render the component', { tags: buildTags('@JIRA-KEY:POT-4079') }, () => {
-    setupComponent(null);
+  it(
+    'should render the component (FinesMacContactDetailsComponent)',
+    { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-KEY:POT-4079') },
+    () => {
+      setupComponent(null);
 
-    // Verify the component is rendered
-    cy.get(L.primaryEmailInput).should('exist');
-  });
+      // Verify the component is rendered
+      cy.get(L.primaryEmailInput).should('exist');
+    },
+  );
 
   it(
-    '(AC.1) should load all elements on the screen correctly',
+    '(AC.1) should load all elements on the screen correctly (FinesMacContactDetailsComponent)',
     { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419', '@JIRA-KEY:POT-4080') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');

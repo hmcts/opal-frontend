@@ -30,4 +30,13 @@ export const SearchFilterByBUCommonLocators = {
 
   /** Cancel link at the bottom of the form. */
   cancelLink: 'opal-lib-govuk-cancel-link a.govuk-link.button-link',
+
+  /** Error summary wrapper rendered above the sub-navigation. */
+  errorSummary: 'opal-lib-govuk-error-summary, .govuk-error-summary',
+
+  /** Error summary title element. */
+  errorSummaryTitle: '.govuk-error-summary__title',
+
+  /** Error summary list containing validation messages. */
+  errorSummaryList: '.govuk-error-summary__list',
 };

@@ -99,7 +99,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should be created as per the design artefact',
+    '(AC.1) should be created as per the design artefact (FinesMacEmployerDetailsComponent)',
     { tags: buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-280', '@JIRA-KEY:POT-4140') },
     () => {
       setupComponent(null, 'adultOrYouthOnly');

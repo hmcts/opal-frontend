@@ -1,5 +1,13 @@
-// Stable selectors / visible text hooks for Account Enquiry header pages.
-
+/**
+ * @file account.enquiry.header.locators.ts
+ * @description
+ * Shared selector and text-hook map for the Account Enquiry header shell and
+ * shared summary widgets.
+ *
+ * @remarks
+ * - Preserves the legacy export name used by component specs to keep migration mechanical.
+ * - Includes a small number of visible-text hooks that existing tests assert directly.
+ */
 export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
   headingName: 'h1.govuk-heading-l',
@@ -46,4 +54,4 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   // Minor creditor info fields
   minorCreditorAccountType: '#minor-creditor-account-type',
   minorCreditorBusinessUnit: '#minor-creditor-business-unit',
-};
+} as const;

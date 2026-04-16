@@ -1,5 +1,12 @@
-// Stable selectors / visible text hooks for the Defendant Details page.
-
+/**
+ * @file account.enquiry.defendant-details.locators.ts
+ * @description
+ * Shared selector and text-hook map for Account Enquiry defendant and company details tabs.
+ *
+ * @remarks
+ * - Preserves the legacy export name used by component specs to keep migration mechanical.
+ * - Includes a small number of visible-text hooks that existing tests assert directly.
+ */
 export const DEFENDANT_DETAILS = {
   // Defendant details table
   defendantTitle: '.govuk-summary-card__title',
@@ -38,6 +45,7 @@ export const DEFENDANT_DETAILS = {
   labelDefendant: 'Defendant',
   labelPaymentTerms: 'Payment terms',
   labelEnforcementStatus: 'Enforcement status',
+
   // Company details table
   companyTitle: '.govuk-summary-card__title',
   companyName: '#companyDetailsNameValue',
@@ -63,10 +71,11 @@ export const DEFENDANT_DETAILS = {
   linkText: 'a[class="govuk-link govuk-link--no-visited-state"]',
   badgeBlue: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--blue"]',
   badgeRed: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--red"]',
+
   // Language preferences details table
   documentLanguage: '#languagePreferencesDocument_languageValue',
   courtHearingLanguage: '#languagePreferencesHearing_languageValue',
 
   // Links
-  defendantChange: 'a[class="govuk-!-margin-bottom-0 govuk-link"]',
-};
+  defendantChange: 'a.govuk-link.govuk-\\!-margin-bottom-0',
+} as const;

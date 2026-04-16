@@ -14,7 +14,7 @@ import {
 } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK } from './mocks/parentGuardianDebtor.mock';
-import { DOM_ELEMENTS as DOM } from './constants/defendant_parent_or_guardian_elements';
+import { DOM_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.parent-guardian-details.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 
@@ -456,10 +456,10 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
       // AC2: Verify Change button is displayed when user has Account Maintenance permission in current BU
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').should('be.visible');
+      cy.get(DOM.changeLink).contains('Change').should('be.visible');
 
       // // Click Change button and verify it navigates to the change screen
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').click();
+      cy.get(DOM.changeLink).contains('Change').click();
 
       cy.get('@routerNavigate').should('have.been.calledWith', ['../party/parentGuardian/amend']);
     },
@@ -500,10 +500,10 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
       // AC2a: Verify Change button is displayed even when user lacks permission in current BU
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').should('be.visible');
+      cy.get(DOM.changeLink).contains('Change').should('be.visible');
 
       // Click Change button and verify it navigates to access denied
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').click();
+      cy.get(DOM.changeLink).contains('Change').click();
       cy.get('@routerNavigate').should('have.been.calledWith', ['/access-denied']);
     },
   );
@@ -561,7 +561,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
       // AC2b: Verify Change button is NOT displayed when user has no Account Maintenance permission
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').should('not.exist');
+      cy.get(DOM.changeLink).should('not.exist');
       //Verify other content is still displayed normally
       cy.get(DOM.parentOrGuardianDetailsName).should('be.visible');
       cy.get(DOM.contactSummaryCardTitle).should('be.visible');

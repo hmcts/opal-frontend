@@ -75,7 +75,7 @@ Feature: Manual account creation - Court Details
     Then I check the page for accessibility
 
   @JIRA-STORY:PO-2790 @JIRA-KEY:POT-3189
-  Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core
+  Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core (court details)
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I open Manual Account Creation from the dashboard
     And I select manual account business unit "West London"

@@ -106,7 +106,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
   );
 
   it(
-    '(AC.4a) should have default sort order for created accounts set to ascending',
+    '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateRejectedComponent)',
     { tags: buildTags('@JIRA-STORY:PO-600', '@JIRA-KEY:POT-3898') },
     () => {
       const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
@@ -168,7 +168,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
   );
 
   it(
-    '(AC.4b) should have pagination for over 25 accounts',
+    '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateRejectedComponent)',
     { tags: buildTags('@JIRA-STORY:PO-600', '@JIRA-KEY:POT-3899') },
     () => {
       const rejectedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);

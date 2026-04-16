@@ -6,7 +6,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
-import { DOM_ELEMENTS } from './constants/search_account_filter_by_bu';
+import { SearchFilterByBUCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.filter-by-bu.common.locators';
+import { FinesFilterBusinessUnitConfiscationLocators as ConfiscationLocators } from '../../../shared/selectors/account-search/account.search.filter-by-bu-confiscation.locators';
+import { FinesFilterBusinessUnitLocators as FinesLocators } from '../../../shared/selectors/account-search/account.search.filter-by-bu-fines.locators';
+import { SearchFilterByBUNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.filter-by-bu.nav.locators';
 import { FinesSaStore } from 'src/app/flows/fines/fines-sa/stores/fines-sa.store';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesSaSearchFilterBusinessUnitComponent } from 'src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-filter-business-unit/fines-sa-search-filter-business-unit.component';
@@ -15,8 +18,42 @@ import { FinesSaSearchFilterBusinessUnitComponent } from 'src/app/flows/fines/fi
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ACCOUNT_ENQUIRY_STORY_TAG = '@JIRA-STORY:PO-711';
+const EXACT_ERROR_TEXT = 'You must select at least one business unit';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+type BusinessUnitTab = 'fines' | 'confiscation';
+
+const TAB_LABELS: Record<BusinessUnitTab, string> = {
+  fines: 'Fines',
+  confiscation: 'Confiscation',
+};
+
+const MASTER_LABEL_TEXT: Record<BusinessUnitTab, string> = {
+  fines: 'Fines business units',
+  confiscation: 'Confiscation business units',
+};
+
+const TAB_LINK_SELECTORS: Record<BusinessUnitTab, string> = {
+  fines: NavLocators.finesTabLink,
+  confiscation: NavLocators.confiscationTabLink,
+};
+
+const MASTER_LABEL_SELECTORS: Record<BusinessUnitTab, string> = {
+  fines: FinesLocators.selectAllBusinessUnitsLabel,
+  confiscation: ConfiscationLocators.selectAllBusinessUnitsLabel,
+};
+
+const ROW_LABEL_SELECTORS: Record<BusinessUnitTab, string> = {
+  fines: FinesLocators.businessUnitLabels,
+  confiscation: ConfiscationLocators.businessUnitLabels,
+};
+
+const ROW_CHECKBOX_SELECTORS: Record<BusinessUnitTab, string> = {
+  fines: FinesLocators.businessUnitCheckboxes,
+  confiscation: ConfiscationLocators.businessUnitCheckboxes,
+};
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_STORY_TAG, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Filter by Business Unit (CT)', () => {
   let resolverPayload: typeof OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
@@ -33,17 +70,18 @@ describe('Filter by Business Unit (CT)', () => {
     // Avoid TS casts: use jQuery -> array, then DOM API safely
     Cypress.$.makeArray($labels).map((el) => (el.textContent ?? '').trim());
 
-  const getRowLabels = () => cy.get(`${DOM_ELEMENTS.tableRows} ${DOM_ELEMENTS.rowLabel}`);
+  const getRowLabels = (tab: BusinessUnitTab) => cy.get(ROW_LABEL_SELECTORS[tab]);
 
-  const getRowCheckboxes = () => cy.get(`${DOM_ELEMENTS.tableBody} ${DOM_ELEMENTS.rowCheckbox}`);
+  const getRowCheckboxes = (tab: BusinessUnitTab) => cy.get(ROW_CHECKBOX_SELECTORS[tab]);
 
-  const clickTabByText = (txt: string) =>
-    cy.contains(DOM_ELEMENTS.tabLink, txt).scrollIntoView().click({ force: true });
+  const getMasterLabel = (tab: BusinessUnitTab) => cy.contains(MASTER_LABEL_SELECTORS[tab], MASTER_LABEL_TEXT[tab]);
+
+  const clickTab = (tab: BusinessUnitTab) => cy.get(TAB_LINK_SELECTORS[tab]).scrollIntoView().click({ force: true });
 
   const textNorm = (s: string) => s.replace(/\s+/g, ' ').trim();
 
   const assertSaveCount = (n: number) => {
-    cy.get(DOM_ELEMENTS.saveButton)
+    cy.get(CommonLocators.saveSelectionButton)
       .invoke('text')
       .then((t) => {
         const txt = textNorm(t);
@@ -52,19 +90,19 @@ describe('Filter by Business Unit (CT)', () => {
       });
   };
 
-  const ensureAtLeastNRows = (n: number) =>
-    getRowCheckboxes().should(($rows) => {
+  const ensureAtLeastNRows = (tab: BusinessUnitTab, n: number) =>
+    getRowCheckboxes(tab).should(($rows) => {
       expect($rows.length, `need at least ${n} rows`).to.be.gte(n);
     });
 
   const switchToConfiscation = () => {
-    clickTabByText(DOM_ELEMENTS.confiscationTabText);
+    clickTab('confiscation');
     cy.then(() => {
       fragment$.next('confiscation');
       window.location.hash = '#confiscation';
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     });
-    cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('be.visible');
+    getMasterLabel('confiscation').should('be.visible');
   };
 
   const setupComponent = () => {
@@ -122,28 +160,28 @@ describe('Filter by Business Unit (CT)', () => {
       setupComponent();
 
       // Tabs exist by visible text
-      cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.finesTabText).should('exist');
-      cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.confiscationTabText).should('exist');
+      cy.get(NavLocators.finesTabLink).should('contain.text', TAB_LABELS.fines);
+      cy.get(NavLocators.confiscationTabLink).should('contain.text', TAB_LABELS.confiscation);
 
       // Master checkbox label (Fines)
-      cy.get(DOM_ELEMENTS.masterCheckboxLabel)
+      getMasterLabel('fines')
         .invoke('text')
-        .then((t) => expect(t.trim()).to.eq(DOM_ELEMENTS.finesMasterText));
+        .then((t) => expect(t.trim()).to.eq(MASTER_LABEL_TEXT.fines));
 
       // Fines BU labels in the table
-      getRowLabels().then(($labels) => {
+      getRowLabels('fines').then(($labels) => {
         const actual = extractLabels($labels);
         expect(norm(actual), 'Fines members match').to.deep.equal(norm(expectedFinesNames));
         expect(actual, 'Fines alphabetical (A→Z)').to.deep.equal(norm(actual));
       });
 
       // Controls
-      cy.get(DOM_ELEMENTS.saveButton)
+      cy.get(CommonLocators.saveSelectionButton)
         .invoke('text')
         .then((t) => {
           expect(t.trim()).to.match(/^Save selection/);
         });
-      cy.get(DOM_ELEMENTS.cancelLink).should('have.text', 'Cancel');
+      cy.get(CommonLocators.cancelLink).should('have.text', 'Cancel');
     },
   );
 
@@ -160,14 +198,14 @@ describe('Filter by Business Unit (CT)', () => {
 
       setupComponent();
 
-      getRowCheckboxes()
+      getRowCheckboxes('fines')
         .should('have.length', preselectedIds.length)
         .each(($input) => {
           expect(($input[0] as HTMLInputElement).checked, 'row is checked').to.eq(true);
         });
 
       // “n of n selected”
-      cy.get(DOM_ELEMENTS.selectedCounter)
+      cy.get(CommonLocators.selectedCountLabel)
         .invoke('text')
         .then((t) => {
           const txt = t.trim();
@@ -181,8 +219,8 @@ describe('Filter by Business Unit (CT)', () => {
 
   it('AC2a: shows two tabs – Fines and Confiscation', { tags: buildTags('@JIRA-KEY:POT-3750') }, () => {
     setupComponent();
-    cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.finesTabText).should('exist');
-    cy.contains(DOM_ELEMENTS.tabLink, DOM_ELEMENTS.confiscationTabText).should('exist');
+    cy.get(NavLocators.finesTabLink).should('contain.text', TAB_LABELS.fines);
+    cy.get(NavLocators.confiscationTabLink).should('contain.text', TAB_LABELS.confiscation);
   });
 
   // ---------------- AC2 (Fines) ----------------
@@ -192,9 +230,9 @@ describe('Filter by Business Unit (CT)', () => {
     { tags: buildTags('@JIRA-KEY:POT-3751') },
     () => {
       setupComponent();
-      clickTabByText(DOM_ELEMENTS.finesTabText);
+      clickTab('fines');
 
-      getRowLabels().then(($labels) => {
+      getRowLabels('fines').then(($labels) => {
         const actual = extractLabels($labels);
         expect(norm(actual), 'Fines membership').to.deep.equal(norm(expectedFinesNames));
         actual.forEach((label) => expect(expectedFinesNames, 'label equals BU name').to.include(label));
@@ -214,9 +252,9 @@ describe('Filter by Business Unit (CT)', () => {
       fragment$.next('confiscation');
 
       cy.wrap(null).then(() => {
-        cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('exist');
+        getMasterLabel('confiscation').should('exist').and('contain.text', MASTER_LABEL_TEXT.confiscation);
 
-        getRowLabels().then(($labels) => {
+        getRowLabels('confiscation').then(($labels) => {
           const actual = extractLabels($labels);
 
           // membership + exact names (ignoring order)
@@ -238,19 +276,19 @@ describe('Filter by Business Unit (CT)', () => {
       preselectedIds = [];
       setupComponent();
 
-      clickTabByText(DOM_ELEMENTS.finesTabText);
+      clickTab('fines');
       const n = expectedFinesNames.length;
 
       // Toggle ON via label
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).click();
+      getMasterLabel('fines').click();
 
       // All checked
-      getRowCheckboxes()
+      getRowCheckboxes('fines')
         .should('have.length', n)
         .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
 
       // Counter "n of n"
-      cy.get(DOM_ELEMENTS.selectedCounter)
+      cy.get(CommonLocators.selectedCountLabel)
         .invoke('text')
         .then((txt) => {
           expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
@@ -268,19 +306,19 @@ describe('Filter by Business Unit (CT)', () => {
 
       setupComponent();
 
-      clickTabByText(DOM_ELEMENTS.finesTabText);
+      clickTab('fines');
       const n = expectedFinesNames.length;
 
       // Toggle OFF
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).click();
+      getMasterLabel('fines').click();
 
       // All unchecked
-      getRowCheckboxes()
+      getRowCheckboxes('fines')
         .should('have.length', n)
         .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(false));
 
       // Counter "0 of n"
-      cy.get(DOM_ELEMENTS.selectedCounter)
+      cy.get(CommonLocators.selectedCountLabel)
         .invoke('text')
         .then((txt) => {
           expect(txt.trim()).to.match(new RegExp(`^\\s*0\\s+of\\s+${n}\\s+selected\\s*$`));
@@ -299,16 +337,16 @@ describe('Filter by Business Unit (CT)', () => {
 
       fragment$.next('confiscation');
       cy.wrap(null).then(() => {
-        cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('exist');
+        getMasterLabel('confiscation').should('exist').and('contain.text', MASTER_LABEL_TEXT.confiscation);
 
         const n = expectedConfNames.length;
-        cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).click();
+        getMasterLabel('confiscation').click();
 
-        getRowCheckboxes()
+        getRowCheckboxes('confiscation')
           .should('have.length', n)
           .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
 
-        cy.get(DOM_ELEMENTS.selectedCounter)
+        cy.get(CommonLocators.selectedCountLabel)
           .invoke('text')
           .then((txt) => {
             expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
@@ -330,13 +368,13 @@ describe('Filter by Business Unit (CT)', () => {
       fragment$.next('confiscation');
       cy.wrap(null).then(() => {
         const n = expectedConfNames.length;
-        cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).click();
+        getMasterLabel('confiscation').click();
 
-        getRowCheckboxes()
+        getRowCheckboxes('confiscation')
           .should('have.length', n)
           .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(false));
 
-        cy.get(DOM_ELEMENTS.selectedCounter)
+        cy.get(CommonLocators.selectedCountLabel)
           .invoke('text')
           .then((txt) => {
             expect(txt.trim()).to.match(new RegExp(`^\\s*0\\s+of\\s+${n}\\s+selected\\s*$`));
@@ -358,23 +396,23 @@ describe('Filter by Business Unit (CT)', () => {
       assertSaveCount(0);
 
       // Tick two Fines rows
-      ensureAtLeastNRows(2);
-      getRowCheckboxes().eq(0).check({ force: true });
+      ensureAtLeastNRows('fines', 2);
+      getRowCheckboxes('fines').eq(0).check({ force: true });
       assertSaveCount(1);
-      getRowCheckboxes().eq(1).check({ force: true });
+      getRowCheckboxes('fines').eq(1).check({ force: true });
       assertSaveCount(2);
 
       // Switch to Confiscation and tick one more
       switchToConfiscation();
-      getRowCheckboxes().first().check({ force: true });
+      getRowCheckboxes('confiscation').first().check({ force: true });
       assertSaveCount(3);
 
       // Uncheck it -> total back to 2
-      getRowCheckboxes().first().uncheck({ force: true });
+      getRowCheckboxes('confiscation').first().uncheck({ force: true });
       assertSaveCount(2);
 
       // Back to Fines; total should persist
-      clickTabByText(DOM_ELEMENTS.finesTabText);
+      clickTab('fines');
       cy.then(() => {
         fragment$.next('fines');
         window.location.hash = '#fines';
@@ -386,22 +424,22 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ============ AC6 (error when saving with no selection) ============
 
-  const clickSave = () => cy.get(DOM_ELEMENTS.saveButton).click();
+  const clickSave = () => cy.get(CommonLocators.saveSelectionButton).click();
 
   const assertErrorSummaryVisible = () => {
-    cy.get(DOM_ELEMENTS.errorSummary).should('be.visible');
+    cy.get(CommonLocators.errorSummary).should('be.visible');
 
     cy.get('body').then(($body) => {
       // Prefer the GOV.UK list if present
-      if ($body.find(DOM_ELEMENTS.errorSummaryList).length) {
-        cy.get(DOM_ELEMENTS.errorSummaryList)
+      if ($body.find(CommonLocators.errorSummaryList).length) {
+        cy.get(CommonLocators.errorSummaryList)
           .invoke('text')
-          .then((t) => expect(textNorm(t)).to.include(DOM_ELEMENTS.exactErrorText));
+          .then((t) => expect(textNorm(t)).to.include(EXACT_ERROR_TEXT));
       } else {
         // Fallback: check any visible text inside the summary wrapper
-        cy.get(DOM_ELEMENTS.errorSummary)
+        cy.get(CommonLocators.errorSummary)
           .invoke('text')
-          .then((t) => expect(textNorm(t)).to.include(DOM_ELEMENTS.exactErrorText));
+          .then((t) => expect(textNorm(t)).to.include(EXACT_ERROR_TEXT));
       }
     });
   };
@@ -424,7 +462,7 @@ describe('Filter by Business Unit (CT)', () => {
       assertErrorSummaryVisible();
 
       // Still on Fines tab (header unchanged)
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.finesMasterText).should('be.visible');
+      getMasterLabel('fines').should('be.visible');
     },
   );
 
@@ -437,7 +475,7 @@ describe('Filter by Business Unit (CT)', () => {
 
       // Switch to Confiscation
       fragment$.next('confiscation');
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('be.visible');
+      getMasterLabel('confiscation').should('be.visible');
 
       // Sanity: Save shows (0)
       assertSaveCount(0);
@@ -449,7 +487,7 @@ describe('Filter by Business Unit (CT)', () => {
       assertErrorSummaryVisible();
 
       // Still on Confiscation tab (header unchanged)
-      cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('be.visible');
+      getMasterLabel('confiscation').should('be.visible');
     },
   );
 });
