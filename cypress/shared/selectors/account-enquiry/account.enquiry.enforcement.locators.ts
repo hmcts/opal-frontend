@@ -52,4 +52,5 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
 
   actionsColumnHeader: '.govuk-grid-column-one-third > .govuk-\\!-margin-bottom-2',
   changeEnforcementOverrideLink: '#enforcementOverrideDetailsEnforcement_overrideActions > .govuk-link',
+  removeEnforcementOverrideLink: '#enforcement-override-summary-card-list .govuk-summary-card__action .govuk-link',
 } as const;

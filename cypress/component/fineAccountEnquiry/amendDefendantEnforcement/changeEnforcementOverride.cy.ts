@@ -132,7 +132,7 @@ function setupChangeEnforcementOverride(
   const { accountId } = registerChangeEnforcementOverrideIntercepts(headerMock);
 
   setupAccountEnquiryComponent({ ...componentProperties, accountId });
-  cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions(ABDC)');
+  cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions (ABDC)');
   cy.get(ENF.changeEnforcementOverrideLink).click();
 
   return { accountId };
@@ -171,7 +171,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
     const { accountId } = registerChangeEnforcementOverrideIntercepts(buildParentGuardianHeaderMock());
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
-    cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions(ABDC)');
+    cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions (ABDC)');
     cy.get(ENF.changeEnforcementOverrideLink).should('exist');
     openChangeEnforcementOverrideFromSummary();
 
@@ -182,7 +182,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
   it('AC1a, AC1b. Should render the change enforcement override form with the individual account identifier', () => {
     parentGuardianSetup();
 
-    cy.get(ENF_OVR.title).should('contain.text', 'Mr Robert THOMSON - 177A');
+    cy.get(ENF_OVR.title).should('contain.text', '177A - Mr Robert THOMSON');
     cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');
   });
 
@@ -366,7 +366,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@PO-1870'] }
     cy.get(ENF.enforcementOverride).should('exist').and('contain.text', 'Enforcement override');
     cy.get(ENF.enforcementOverrideValue).and(
       'contain.text',
-      'Transfer of Fine Order to a Court in England or Wales(TFOOUT)',
+      'Transfer of Fine Order to a Court in England or Wales (TFOOUT)',
     );
     cy.get(ENF.localJusticeArea).should('exist').and('contain.text', 'Local Justice Area (LJA)');
     cy.get(ENF.localJusticeAreaValue).should('exist').and('contain.text', "Bedfordshire Magistrates' Court(4165)");
@@ -422,7 +422,7 @@ describe('Change Enforcement Override - Company', { tags: ['@PO-1871'] }, () => 
     const { accountId } = registerChangeEnforcementOverrideIntercepts(buildCompanyHeaderMock());
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
-    cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions(ABDC)');
+    cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions (ABDC)');
     cy.get(ENF.changeEnforcementOverrideLink).should('exist');
     openChangeEnforcementOverrideFromSummary();
 
@@ -433,7 +433,7 @@ describe('Change Enforcement Override - Company', { tags: ['@PO-1871'] }, () => 
   it('AC1a, AC1b. Should render the change enforcement override form with the company account identifier', () => {
     companySetup();
 
-    cy.get(ENF_OVR.title).should('contain.text', 'Test Org Ltd - 177A');
+    cy.get(ENF_OVR.title).should('contain.text', '177A - Test Org Ltd');
     cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
   });
@@ -444,7 +444,7 @@ describe('Change Enforcement Override - Adult or youth only', { tags: ['@PO-1869
     const { accountId } = registerChangeEnforcementOverrideIntercepts(buildAdultOrYouthHeaderMock());
     setupAccountEnquiryComponent({ ...componentProperties, accountId });
 
-    cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions(ABDC)');
+    cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions (ABDC)');
     cy.get(ENF.changeEnforcementOverrideLink).should('exist');
     openChangeEnforcementOverrideFromSummary();
 
@@ -455,7 +455,7 @@ describe('Change Enforcement Override - Adult or youth only', { tags: ['@PO-1869
   it('AC1a, AC1b. Should render the change enforcement override form with the adult or youth only account identifier', () => {
     adultOrYouthOnlySetup();
 
-    cy.get(ENF_OVR.title).should('contain.text', 'Mr Robert THOMSON - 177A');
+    cy.get(ENF_OVR.title).should('contain.text', '177A - Mr Robert THOMSON');
     cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
   });

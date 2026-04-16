@@ -378,7 +378,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Collection Order status')
         .next()
-        .should('contain.text', 'No collection order');
+        .should('contain.text', 'No Collection Order');
     },
   );
 
@@ -682,7 +682,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Collection Order status')
         .next()
-        .should('contain.text', 'No collection order');
+        .should('contain.text', 'No Collection Order');
     },
   );
 
@@ -1000,7 +1000,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Collection Order status')
         .next()
-        .should('contain.text', 'No collection order');
+        .should('contain.text', 'No Collection Order');
     },
   );
 
@@ -1870,7 +1870,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)');
+        .should('contain.text', 'Override Result Name (EOR123)');
       cy.get(ENFORCEMENT_STATUS_TAB.enfOverrideEnforcer)
         .should('exist')
         .and('contain.text', 'Enforcer')
@@ -2009,7 +2009,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)')
+        .should('contain.text', 'Override Result Name (EOR123)')
         .next()
         .find('a')
         .should('contain.text', 'Change');
@@ -2045,7 +2045,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)');
+        .should('contain.text', 'Override Result Name (EOR123)');
       cy.contains('a', 'Change').should('not.exist');
     },
   );
@@ -2081,7 +2081,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)');
+        .should('contain.text', 'Override Result Name (EOR123)');
       cy.get(ENFORCEMENT_STATUS_TAB.enfOverrideEnforcer)
         .should('exist')
         .and('contain.text', 'Enforcer')
@@ -2227,7 +2227,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)')
+        .should('contain.text', 'Override Result Name (EOR123)')
         .next()
         .find('a')
         .should('contain.text', 'Change');
@@ -2264,7 +2264,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)');
+        .should('contain.text', 'Override Result Name (EOR123)');
       cy.contains('a', 'Change').should('not.exist');
     },
   );
@@ -2302,7 +2302,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)');
+        .should('contain.text', 'Override Result Name (EOR123)');
       cy.get(ENFORCEMENT_STATUS_TAB.enfOverrideEnforcer)
         .should('exist')
         .and('contain.text', 'Enforcer')
@@ -2457,7 +2457,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)')
+        .should('contain.text', 'Override Result Name (EOR123)')
         .next()
         .find('a')
         .should('contain.text', 'Change');
@@ -2497,7 +2497,7 @@ describe('Account Enquiry Enforcement Status', () => {
         .should('exist')
         .and('contain.text', 'Enforcement override')
         .next()
-        .should('contain.text', 'Override Result Name(EOR123)');
+        .should('contain.text', 'Override Result Name (EOR123)');
       cy.contains('a', 'Change').should('not.exist');
     },
   );
