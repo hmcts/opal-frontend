@@ -43,7 +43,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Adult or youth only',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3455') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -78,7 +78,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for instalments only - Adult or youth only',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3456') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -110,7 +110,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for lump sum plus instalments - Adult or youth only',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3457') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -146,7 +146,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, change link - Adult or youth only',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3458') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -169,7 +169,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms in different BU, no change link - Adult or youth only',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3459') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -192,7 +192,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User without permission to amend payment terms, no change link - Adult or youth only',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3460') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -214,7 +214,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - extend_ttp_disallow true',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3461') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -238,7 +238,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status CS',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3462') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -262,7 +262,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status WO',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3463') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -286,7 +286,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status TO',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3464') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -310,7 +310,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status TS',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3465') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -334,7 +334,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status TA',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3466') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -358,7 +358,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - extend_ttp_disallow true and account status CS',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3467') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -383,7 +383,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Payment terms with amendments panel - Adult or youth only',
-    { tags: buildTags('@JIRA-STORY:PO-1146', '@JIRA-KEY:POT-3468') },
+    { tags: buildTags('@JIRA-STORY:PO-1146') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -411,7 +411,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Parent or guardian',
-    { tags: buildTags('@JIRA-STORY:PO-1636', '@JIRA-KEY:POT-3469') },
+    { tags: buildTags('@JIRA-STORY:PO-1636') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -448,7 +448,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for instalments only - Parent or guardian',
-    { tags: buildTags('@JIRA-STORY:PO-1636', '@JIRA-KEY:POT-3470') },
+    { tags: buildTags('@JIRA-STORY:PO-1636') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -482,7 +482,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for lump sum plus instalments - Parent or guardian',
-    { tags: buildTags('@JIRA-STORY:PO-1636', '@JIRA-KEY:POT-3471') },
+    { tags: buildTags('@JIRA-STORY:PO-1636') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -520,7 +520,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, change link - Parent or guardian',
-    { tags: buildTags('@JIRA-STORY:PO-1636', '@JIRA-KEY:POT-3472') },
+    { tags: buildTags('@JIRA-STORY:PO-1636') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -545,7 +545,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms in different BU, no change link - Parent or guardian',
-    { tags: buildTags('@JIRA-STORY:PO-1636', '@JIRA-KEY:POT-3473') },
+    { tags: buildTags('@JIRA-STORY:PO-1636') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -569,7 +569,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User without permission to amend payment terms, no change link - Parent or guardian',
-    { tags: buildTags('@JIRA-STORY:PO-1636', '@JIRA-KEY:POT-3474') },
+    { tags: buildTags('@JIRA-STORY:PO-1636') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -593,7 +593,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Payment terms with amendments panel - Parent or guardian',
-    { tags: buildTags('@JIRA-STORY:PO-1636', '@JIRA-KEY:POT-3475') },
+    { tags: buildTags('@JIRA-STORY:PO-1636') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -623,7 +623,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1637', '@JIRA-KEY:POT-3476') },
+    { tags: buildTags('@JIRA-STORY:PO-1637') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -665,7 +665,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for instalments only - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1637', '@JIRA-KEY:POT-3477') },
+    { tags: buildTags('@JIRA-STORY:PO-1637') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -703,7 +703,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for lump sum plus instalments - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1637', '@JIRA-KEY:POT-3478') },
+    { tags: buildTags('@JIRA-STORY:PO-1637') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -745,7 +745,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, change link - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1637', '@JIRA-KEY:POT-3479') },
+    { tags: buildTags('@JIRA-STORY:PO-1637') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -774,7 +774,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms in different BU, no change link - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1637', '@JIRA-KEY:POT-3480') },
+    { tags: buildTags('@JIRA-STORY:PO-1637') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -802,7 +802,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User without permission to amend payment terms, no change link - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1637', '@JIRA-KEY:POT-3481') },
+    { tags: buildTags('@JIRA-STORY:PO-1637') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -830,7 +830,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Payment terms with amendments panel - Company',
-    { tags: buildTags('@JIRA-STORY:PO-1637', '@JIRA-KEY:POT-3482') },
+    { tags: buildTags('@JIRA-STORY:PO-1637') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -864,7 +864,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Individual with permission to amend payment terms can request a payment card',
-    { tags: buildTags('@JIRA-STORY:PO-1700', '@JIRA-KEY:POT-3483') },
+    { tags: buildTags('@JIRA-STORY:PO-1700') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -887,7 +887,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1b: Individual with permission to amend payment terms cannot request a payment card when enforcement prevents it',
-    { tags: buildTags('@JIRA-STORY:PO-1700', '@JIRA-KEY:POT-3484') },
+    { tags: buildTags('@JIRA-STORY:PO-1700') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -910,7 +910,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1a: Individual without amend payment terms permission does not see Request payment card',
-    { tags: buildTags('@JIRA-STORY:PO-1700', '@JIRA-KEY:POT-3485') },
+    { tags: buildTags('@JIRA-STORY:PO-1700') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -932,7 +932,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Parent or guardian can request a payment card when enforcement allows',
-    { tags: buildTags('@JIRA-STORY:PO-1701', '@JIRA-KEY:POT-3486') },
+    { tags: buildTags('@JIRA-STORY:PO-1701') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -956,7 +956,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1b: Parent or guardian cannot request a payment card when enforcement prevents it',
-    { tags: buildTags('@JIRA-STORY:PO-1701', '@JIRA-KEY:POT-3487') },
+    { tags: buildTags('@JIRA-STORY:PO-1701') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -979,7 +979,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1a:  Parent or guardian without amend payment terms permission does not see Request payment card',
-    { tags: buildTags('@JIRA-STORY:PO-1701', '@JIRA-KEY:POT-3488') },
+    { tags: buildTags('@JIRA-STORY:PO-1701') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -1002,7 +1002,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Company can request a payment card when enforcement allows',
-    { tags: buildTags('@JIRA-STORY:PO-1702', '@JIRA-KEY:POT-3489') },
+    { tags: buildTags('@JIRA-STORY:PO-1702') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1030,7 +1030,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1b: Company cannot request a payment card when enforcement prevents it',
-    { tags: buildTags('@JIRA-STORY:PO-1702', '@JIRA-KEY:POT-3490') },
+    { tags: buildTags('@JIRA-STORY:PO-1702') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1055,7 +1055,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1a:  Company without amend payment terms permission does not see Request payment card',
-    { tags: buildTags('@JIRA-STORY:PO-1702', '@JIRA-KEY:POT-3491') },
+    { tags: buildTags('@JIRA-STORY:PO-1702') },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;

@@ -108,7 +108,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4184',
       ),
     },
     () => {
@@ -126,7 +125,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4185',
       ),
     },
     () => {
@@ -184,7 +182,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4186',
       ),
     },
     () => {
@@ -223,7 +220,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4187',
       ),
     },
     () => {
@@ -263,7 +259,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4188',
       ),
     },
     () => {
@@ -285,7 +280,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4189',
       ),
     },
     () => {
@@ -307,7 +301,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4190',
       ),
     },
     () => {
@@ -328,7 +321,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4191',
       ),
     },
     () => {
@@ -348,7 +340,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4192',
       ),
     },
     () => {
@@ -372,7 +363,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4193',
       ),
     },
     () => {
@@ -392,7 +382,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4194',
       ),
     },
     () => {
@@ -426,7 +415,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4195',
       ),
     },
     () => {
@@ -460,7 +448,6 @@ describe('FinesMacMinorCreditor', () => {
         '@JIRA-STORY:PO-668',
         '@JIRA-STORY:PO-669',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4196',
       ),
     },
     () => {
@@ -485,7 +472,7 @@ describe('FinesMacMinorCreditor', () => {
   );
   it(
     '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
-    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-1450', '@JIRA-KEY:POT-4197') },
+    { tags: buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-1450') },
     () => {
       setupComponent(null, 'company');
 
@@ -500,7 +487,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.1) Payment reference should be capitalise - AYPG',
-    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-1449', '@JIRA-KEY:POT-4198') },
+    { tags: buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-1449') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');
@@ -530,7 +517,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input (Adult or youth only)',
-    { tags: buildTags('@JIRA-STORY:PO-242', '@JIRA-STORY:PO-1448', '@JIRA-KEY:POT-4199') },
+    { tags: buildTags('@JIRA-STORY:PO-242', '@JIRA-STORY:PO-1448') },
     () => {
       setupComponent(null, 'AdultOrYouthOnly');
 
@@ -544,7 +531,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.1a, AC.3) updated conditionality and validation on minor creditor screen for individual',
-    { tags: buildTags('@JIRA-STORY:PO-1075', '@JIRA-KEY:POT-4200') },
+    { tags: buildTags('@JIRA-STORY:PO-1075') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);

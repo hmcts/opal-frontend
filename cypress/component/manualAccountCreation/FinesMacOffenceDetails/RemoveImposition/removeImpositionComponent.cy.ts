@@ -74,7 +74,6 @@ describe('FinesRemoveImpositionComponent', () => {
         '@JIRA-STORY:PO-672',
         '@JIRA-STORY:PO-673',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4205',
       ),
     },
     () => {
@@ -92,7 +91,6 @@ describe('FinesRemoveImpositionComponent', () => {
         '@JIRA-STORY:PO-672',
         '@JIRA-STORY:PO-673',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4206',
       ),
     },
     () => {
@@ -120,7 +118,6 @@ describe('FinesRemoveImpositionComponent', () => {
         '@JIRA-STORY:PO-672',
         '@JIRA-STORY:PO-673',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4207',
       ),
     },
     () => {
@@ -149,7 +146,6 @@ describe('FinesRemoveImpositionComponent', () => {
         '@JIRA-STORY:PO-672',
         '@JIRA-STORY:PO-673',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4208',
       ),
     },
     () => {

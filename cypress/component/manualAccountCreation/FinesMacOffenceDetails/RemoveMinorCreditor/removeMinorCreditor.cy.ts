@@ -70,7 +70,6 @@ describe('FinesMacRemoveMinorCreditor', () => {
         '@JIRA-STORY:PO-671',
         '@JIRA-STORY:PO-414',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4209',
       ),
     },
     () => {
@@ -85,7 +84,6 @@ describe('FinesMacRemoveMinorCreditor', () => {
         '@JIRA-STORY:PO-671',
         '@JIRA-STORY:PO-414',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4210',
       ),
     },
     () => {
@@ -120,7 +118,6 @@ describe('FinesMacRemoveMinorCreditor', () => {
         '@JIRA-STORY:PO-671',
         '@JIRA-STORY:PO-414',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4211',
       ),
     },
     () => {
@@ -147,7 +144,6 @@ describe('FinesMacRemoveMinorCreditor', () => {
         '@JIRA-STORY:PO-671',
         '@JIRA-STORY:PO-414',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4212',
       ),
     },
     () => {
@@ -175,7 +171,6 @@ describe('FinesMacRemoveMinorCreditor', () => {
         '@JIRA-STORY:PO-671',
         '@JIRA-STORY:PO-414',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4213',
       ),
     },
     () => {

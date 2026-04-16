@@ -86,7 +86,6 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
         '@JIRA-STORY:PO-682',
         '@JIRA-STORY:PO-680',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4214',
       ),
     },
     () => {
@@ -102,7 +101,6 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
         '@JIRA-STORY:PO-682',
         '@JIRA-STORY:PO-680',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4215',
       ),
     },
     () => {
@@ -134,7 +132,6 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
         '@JIRA-STORY:PO-682',
         '@JIRA-STORY:PO-680',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4216',
       ),
     },
     () => {
@@ -168,7 +165,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     },
   );
 
-  it('should have only one h1 element', { tags: buildTags('@JIRA-STORY:PO-2717', '@JIRA-KEY:POT-4217') }, () => {
+  it('should have only one h1 element', { tags: buildTags('@JIRA-STORY:PO-2717') }, () => {
     setupComponent();
     cy.get('h1').should('have.length', 1);
   });

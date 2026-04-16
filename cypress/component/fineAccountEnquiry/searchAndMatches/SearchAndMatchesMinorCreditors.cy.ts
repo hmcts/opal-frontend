@@ -76,7 +76,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC1-AC3. should render the search for an account screen and minor creditors tab',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3734') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
 
@@ -120,7 +120,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC6a. should show error for non-alphabetical last name',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3735') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
@@ -139,7 +139,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC6b. should show error for non-alphabetical first name',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3736') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
@@ -159,7 +159,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC6c. should show error for non-alphabetical company name',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3737') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
@@ -181,7 +181,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC6d. should show error for non-alphabetical address line 1',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3738') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 =
@@ -199,7 +199,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC6e. should show error for non-alphabetical post code',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3739') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
@@ -218,7 +218,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC7a. should validate last name maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3740') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
@@ -234,7 +234,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC7b. should validate first names maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3741') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
@@ -250,7 +250,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC7c. should validate company name maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3742') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
@@ -266,7 +266,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC7d. should validate address line 1 maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3743') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1 =
@@ -285,7 +285,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC7e. should validate post code maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-715', '@JIRA-KEY:POT-3744') },
+    { tags: buildTags('@JIRA-STORY:PO-715') },
     () => {
       setupComponent(null);
       minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
@@ -301,7 +301,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC3a. Should validate last name field when "Search exact match" for last name is selected on Minor Creditor Individual',
-    { tags: buildTags('@JIRA-STORY:PO-1969', '@JIRA-KEY:POT-3745') },
+    { tags: buildTags('@JIRA-STORY:PO-1969') },
     () => {
       setupComponent(null);
 
@@ -316,7 +316,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC3b. Should validate first name field when "Search exact match" for first name is selected on Minor Creditor Individual',
-    { tags: buildTags('@JIRA-STORY:PO-1969', '@JIRA-KEY:POT-3746') },
+    { tags: buildTags('@JIRA-STORY:PO-1969') },
     () => {
       setupComponent(null);
 
@@ -331,7 +331,7 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it(
     'AC4a. Should validate company name field when "Search exact match" for company name is selected on Minor Creditor Company',
-    { tags: buildTags('@JIRA-STORY:PO-1969', '@JIRA-KEY:POT-3747') },
+    { tags: buildTags('@JIRA-STORY:PO-1969') },
     () => {
       setupComponent(null);
 

@@ -79,7 +79,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC1. should render the search for an account screen and major creditors tab',
-    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3726') },
+    { tags: buildTags('@JIRA-STORY:PO-716') },
     () => {
       setupComponent();
 
@@ -108,7 +108,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC2a, AC2b, AC2c. Single BU filtered and dropdown contents',
-    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3727') },
+    { tags: buildTags('@JIRA-STORY:PO-716') },
     () => {
       setupComponent();
 
@@ -125,7 +125,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC2d. Type ahead and non-case sensitive search',
-    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3728') },
+    { tags: buildTags('@JIRA-STORY:PO-716') },
     () => {
       setupComponent();
 
@@ -137,7 +137,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC2f. Navigated to account enquiry when major creditor is selected and searched for',
-    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3729') },
+    { tags: buildTags('@JIRA-STORY:PO-716') },
     () => {
       setupComponent();
 
@@ -157,7 +157,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC2h. Data cleared when another tab is selected',
-    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3730') },
+    { tags: buildTags('@JIRA-STORY:PO-716') },
     () => {
       setupComponent();
 
@@ -175,7 +175,7 @@ describe('Search Account Component - Major Creditors', () => {
     },
   );
 
-  it('AC3. Multiple BUs filtered unhappy path', { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3731') }, () => {
+  it('AC3. Multiple BUs filtered unhappy path', { tags: buildTags('@JIRA-STORY:PO-716') }, () => {
     setupComponent();
 
     majorCreditorsSearchMock.fsa_search_account_business_unit_ids = [61, 67, 68, 69, 70, 71, 73];
@@ -188,7 +188,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC4, AC5. Major creditor tab error validation',
-    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3732') },
+    { tags: buildTags('@JIRA-STORY:PO-716') },
     () => {
       setupComponent();
 
@@ -200,7 +200,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC6. Validation passes navigated to problem screen',
-    { tags: buildTags('@JIRA-STORY:PO-716', '@JIRA-KEY:POT-3733') },
+    { tags: buildTags('@JIRA-STORY:PO-716') },
     () => {
       setupComponent();
       majorCreditorsSearchMock.fsa_search_account_number = '12345678';

@@ -24,7 +24,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | account.defendant.dob                           | 2002-05-15                   |
         | account.payment_terms.enforcements[0].result_id | PRIS                         |
 
-    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4599
+    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675
     Scenario: Save an enforcement override and return to the Enforcement tab
       When I search for the account by last name "AddEnfOverride{uniq}" and open the latest result
       And I go to the Enforcement tab
@@ -72,7 +72,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | account.payment_card_request                    | false                               |
         | account.payment_terms.enforcements[0].result_id | PRIS                                |
 
-    @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4600
+    @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
     Scenario: Company save an enforcement override and return to the Enforcement tab
       When I open the company account details for "Add Override Company{uniq}"
       And I go to the Enforcement tab
@@ -123,7 +123,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | account.defendant.parent_guardian.dob           | 1980-02-15                       |
         | account.payment_terms.enforcements[0].result_id | PRIS                             |
 
-    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4755
+    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
     Scenario: Parent or guardian save an enforcement override and return to the Enforcement tab
       When I search for the account by last name "AddEnfOverridePG{uniq}" and open the latest result
       And I go to the Enforcement tab

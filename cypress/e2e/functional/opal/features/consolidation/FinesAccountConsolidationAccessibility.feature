@@ -7,7 +7,7 @@ Feature: Accessibility Tests for Fines Consolidation
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
-  @JIRA-STORY:PO-2413 @JIRA-STORY:PO-2415 @JIRA-STORY:PO-2417 @JIRA-KEY:POT-3210
+  @JIRA-STORY:PO-2413 @JIRA-STORY:PO-2415 @JIRA-STORY:PO-2417
   Scenario: Consolidate Accessibility for Individuals
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                                  |
@@ -50,7 +50,7 @@ Feature: Accessibility Tests for Fines Consolidation
     Then I am on the consolidation Results tab
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-2414 @JIRA-STORY:PO-2421 @JIRA-STORY:PO-2417 @JIRA-KEY:POT-3211
+  @JIRA-STORY:PO-2414 @JIRA-STORY:PO-2421 @JIRA-STORY:PO-2417
   Scenario: Consolidate Accessibility for Companies
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                                |

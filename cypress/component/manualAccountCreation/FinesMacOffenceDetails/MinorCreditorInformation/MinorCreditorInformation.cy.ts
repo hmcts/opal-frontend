@@ -54,7 +54,6 @@ describe('FinesMacMinorCreditorInformation', () => {
         '@JIRA-STORY:PO-671',
         '@JIRA-STORY:PO-414',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4201',
       ),
     },
     () => {
@@ -66,7 +65,7 @@ describe('FinesMacMinorCreditorInformation', () => {
 
   it(
     '(AC.1) should render all elements on the page',
-    { tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-KEY:POT-4202') },
+    { tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414') },
     () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.name).should('exist');
@@ -94,7 +93,6 @@ describe('FinesMacMinorCreditorInformation', () => {
         '@JIRA-STORY:PO-671',
         '@JIRA-STORY:PO-414',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4203',
       ),
     },
     () => {
@@ -116,7 +114,6 @@ describe('FinesMacMinorCreditorInformation', () => {
         '@JIRA-STORY:PO-671',
         '@JIRA-STORY:PO-414',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4204',
       ),
     },
     () => {

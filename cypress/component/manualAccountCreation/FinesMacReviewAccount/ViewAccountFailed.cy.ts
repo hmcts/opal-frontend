@@ -88,7 +88,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     interceptOffences();
   });
 
-  it('AC.2,4 - should render correctly - AY', { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4381') }, () => {
+  it('AC.2,4 - should render correctly - AY', { tags: buildTags('@JIRA-STORY:PO-1073') }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type =
@@ -123,7 +123,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
   it(
     'AC.3 - should render Review History section correctly',
-    { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4382') },
+    { tags: buildTags('@JIRA-STORY:PO-1073') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -169,7 +169,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
   it(
     'AC.2,5 - should render correctly - AYPG',
-    { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4383') },
+    { tags: buildTags('@JIRA-STORY:PO-1073') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -205,7 +205,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
   it(
     'AC.2,6 - should render correctly - COMP',
-    { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4384') },
+    { tags: buildTags('@JIRA-STORY:PO-1073') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -241,7 +241,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
   it(
     'AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Failed Account)',
-    { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4385') },
+    { tags: buildTags('@JIRA-STORY:PO-1073') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -257,7 +257,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   );
   it(
     'AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Failed Account)',
-    { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4386') },
+    { tags: buildTags('@JIRA-STORY:PO-1073') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -274,7 +274,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   );
   it(
     'AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Failed Account)',
-    { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4387') },
+    { tags: buildTags('@JIRA-STORY:PO-1073') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -292,7 +292,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
   it(
     'AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Failed Account)',
-    { tags: buildTags('@JIRA-STORY:PO-1073', '@JIRA-KEY:POT-4388') },
+    { tags: buildTags('@JIRA-STORY:PO-1073') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';

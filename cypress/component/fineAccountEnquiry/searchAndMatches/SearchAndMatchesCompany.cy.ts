@@ -70,7 +70,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC1a-b. should render the search for an account screen and companies tab',
-    { tags: buildTags('@JIRA-STORY:PO-712', '@JIRA-KEY:POT-3691') },
+    { tags: buildTags('@JIRA-STORY:PO-712') },
     () => {
       setupComponent(null);
 
@@ -103,7 +103,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3a. should show error for non-alphabetical company name',
-    { tags: buildTags('@JIRA-STORY:PO-712', '@JIRA-KEY:POT-3692') },
+    { tags: buildTags('@JIRA-STORY:PO-712') },
     () => {
       setupComponent(null);
       companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
@@ -124,7 +124,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3b. should show error for non-alphabetical address line 1',
-    { tags: buildTags('@JIRA-STORY:PO-712', '@JIRA-KEY:POT-3693') },
+    { tags: buildTags('@JIRA-STORY:PO-712') },
     () => {
       setupComponent(null);
       companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
@@ -142,7 +142,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3c. should show error for non-alphabetical post code',
-    { tags: buildTags('@JIRA-STORY:PO-712', '@JIRA-KEY:POT-3694') },
+    { tags: buildTags('@JIRA-STORY:PO-712') },
     () => {
       setupComponent(null);
       companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code =
@@ -159,7 +159,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4a. should validate company name maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-712', '@JIRA-KEY:POT-3695') },
+    { tags: buildTags('@JIRA-STORY:PO-712') },
     () => {
       setupComponent(null);
       companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
@@ -174,7 +174,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4b. should validate address line 1 maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-712', '@JIRA-KEY:POT-3696') },
+    { tags: buildTags('@JIRA-STORY:PO-712') },
     () => {
       setupComponent(null);
       companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
@@ -189,7 +189,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4c. should validate post code maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-712', '@JIRA-KEY:POT-3697') },
+    { tags: buildTags('@JIRA-STORY:PO-712') },
     () => {
       setupComponent(null);
       companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code =
@@ -204,7 +204,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC5a. should validate post code maximum field length',
-    { tags: buildTags('@JIRA-STORY:PO-712', '@JIRA-KEY:POT-3698') },
+    { tags: buildTags('@JIRA-STORY:PO-712') },
     () => {
       setupComponent(null);
       companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code =
@@ -219,7 +219,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC2a. Should validate company name field when "Alias" checkbox is selected',
-    { tags: buildTags('@JIRA-STORY:PO-1969', '@JIRA-KEY:POT-3699') },
+    { tags: buildTags('@JIRA-STORY:PO-1969') },
     () => {
       setupComponent(null);
 
@@ -233,7 +233,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC2b. Should validate company name field when "Search exact match" for company name is selected',
-    { tags: buildTags('@JIRA-STORY:PO-1969', '@JIRA-KEY:POT-3700') },
+    { tags: buildTags('@JIRA-STORY:PO-1969') },
     () => {
       setupComponent(null);
 

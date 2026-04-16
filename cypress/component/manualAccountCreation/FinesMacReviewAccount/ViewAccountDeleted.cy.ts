@@ -91,7 +91,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
   it(
     '(AC.2,AC.2d) The Reason for Deletion screen will be created as per the design artefact',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-STORY:PO-2767', '@JIRA-KEY:POT-4372') },
+    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-STORY:PO-2767') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -108,7 +108,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
   it(
     'AC.3 - should render Delete History section correctly',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4373') },
+    { tags: buildTags('@JIRA-STORY:PO-603') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -163,7 +163,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
   it(
     'AC.2,4 should render summary tables under review account for AY',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4374') },
+    { tags: buildTags('@JIRA-STORY:PO-603') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -194,7 +194,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
   it(
     '(AC2,.5) should render all elements on the screen for AYPG',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4375') },
+    { tags: buildTags('@JIRA-STORY:PO-603') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -226,7 +226,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
   it(
     '(AC.6) should render all elements on the screen for company defendant type (FinesMacReviewAccountComponent - View Deleted Account)',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4376') },
+    { tags: buildTags('@JIRA-STORY:PO-603') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -257,7 +257,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   );
   it(
     'AC4ai - should show language preferences if business unit is welsh speaking - AY',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4377') },
+    { tags: buildTags('@JIRA-STORY:PO-603') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -273,7 +273,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   );
   it(
     'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4378') },
+    { tags: buildTags('@JIRA-STORY:PO-603') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -290,7 +290,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   );
   it(
     'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4379') },
+    { tags: buildTags('@JIRA-STORY:PO-603') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
@@ -308,7 +308,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
   it(
     'AC.7 - should show em-dash for empty values',
-    { tags: buildTags('@JIRA-STORY:PO-603', '@JIRA-KEY:POT-4380') },
+    { tags: buildTags('@JIRA-STORY:PO-603') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';

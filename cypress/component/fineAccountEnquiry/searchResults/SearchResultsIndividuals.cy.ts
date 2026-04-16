@@ -76,7 +76,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     'Search results component is created correctly',
-    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3776') },
+    { tags: buildTags('@JIRA-STORY:PO-717') },
     () => {
       setupComponent();
 
@@ -87,7 +87,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC2) Displays error message when no search matches are found (FinesSaResultsComponent - Individuals)',
-    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3777') },
+    { tags: buildTags('@JIRA-STORY:PO-717') },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
@@ -105,7 +105,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC3) Handles more than 100 search matches correctly (FinesSaResultsComponent - Individuals)',
-    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3778') },
+    { tags: buildTags('@JIRA-STORY:PO-717') },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
@@ -130,7 +130,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results',
-    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3779') },
+    { tags: buildTags('@JIRA-STORY:PO-717') },
     () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
@@ -193,7 +193,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC4d) Displays pagination with 25 results per page and 4 pages for 100 results',
-    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3780') },
+    { tags: buildTags('@JIRA-STORY:PO-717') },
     () => {
       setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
@@ -264,7 +264,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC4f) Should sort by each column - ascending then descending',
-    { tags: buildTags('@JIRA-STORY:PO-717', '@JIRA-KEY:POT-3781') },
+    { tags: buildTags('@JIRA-STORY:PO-717') },
     () => {
       setupComponent(SORTING_SEARCH_RESULTS_MOCK);
 

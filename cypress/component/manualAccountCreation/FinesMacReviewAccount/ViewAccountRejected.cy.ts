@@ -87,7 +87,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
   it(
     'AC.2,4 - should render correctly - AY (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4389') },
+    { tags: buildTags('@JIRA-STORY:PO-601') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -118,7 +118,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
   it(
     'AC.3 - should render Review History section correctly (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4390') },
+    { tags: buildTags('@JIRA-STORY:PO-601') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -173,7 +173,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
   it(
     'AC.2,5 - should render correctly - AYPG (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4391') },
+    { tags: buildTags('@JIRA-STORY:PO-601') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -205,7 +205,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
   it(
     'AC.2,6 - should render correctly - COMP (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4392') },
+    { tags: buildTags('@JIRA-STORY:PO-601') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -237,7 +237,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
   it(
     'AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4393') },
+    { tags: buildTags('@JIRA-STORY:PO-601') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -253,7 +253,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   );
   it(
     'AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4394') },
+    { tags: buildTags('@JIRA-STORY:PO-601') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -270,7 +270,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   );
   it(
     'AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4395') },
+    { tags: buildTags('@JIRA-STORY:PO-601') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
@@ -288,7 +288,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
   it(
     'AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: buildTags('@JIRA-STORY:PO-601', '@JIRA-KEY:POT-4396') },
+    { tags: buildTags('@JIRA-STORY:PO-601') },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';

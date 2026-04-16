@@ -69,7 +69,6 @@ describe('ReviewOffenceComponent', () => {
         '@JIRA-STORY:PO-682',
         '@JIRA-STORY:PO-680',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4218',
       ),
     },
     () => {
@@ -87,7 +86,6 @@ describe('ReviewOffenceComponent', () => {
         '@JIRA-STORY:PO-682',
         '@JIRA-STORY:PO-680',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4219',
       ),
     },
     () => {
@@ -115,7 +113,6 @@ describe('ReviewOffenceComponent', () => {
         '@JIRA-STORY:PO-682',
         '@JIRA-STORY:PO-680',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4220',
       ),
     },
     () => {
@@ -148,7 +145,6 @@ describe('ReviewOffenceComponent', () => {
         '@JIRA-STORY:PO-682',
         '@JIRA-STORY:PO-680',
         '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4221',
       ),
     },
     () => {
