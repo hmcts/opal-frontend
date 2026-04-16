@@ -74,19 +74,15 @@ describe('FinesMacCreateAccountComponent', () => {
     buinessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });
 
-  it(
-    'should render the component (FinesMacCreateAccountComponent)',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4112') },
-    () => {
-      setupComponent(null);
+  it('should render the component (FinesMacCreateAccountComponent)', { tags: buildTags('@JIRA-STORY:PO-523') }, () => {
+    setupComponent(null);
 
-      cy.get(L.app).should('exist');
-    },
-  );
+    cy.get(L.app).should('exist');
+  });
 
   it(
     '(AC.1)should render all elements on the page correctly and have correct text',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4113') },
+    { tags: buildTags('@JIRA-STORY:PO-523') },
     () => {
       setupComponent(null);
 
@@ -119,7 +115,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.1,AC.2)should render all elements for fine account type correctly and have correct text',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4114') },
+    { tags: buildTags('@JIRA-STORY:PO-523') },
     () => {
       setupComponent(null);
 
@@ -143,7 +139,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.1,AC.2) should render all elements for fixed penalty account type correctly and have correct text',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4115') },
+    { tags: buildTags('@JIRA-STORY:PO-523') },
     () => {
       setupComponent(null);
 
@@ -159,7 +155,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4a) should have validation if empty business unit but valid account type',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4116') },
+    { tags: buildTags('@JIRA-STORY:PO-523') },
     () => {
       setupComponent(null);
 
@@ -171,7 +167,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4b) should have validation in place if empty account type but valid business unit',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4117') },
+    { tags: buildTags('@JIRA-STORY:PO-523') },
     () => {
       setupComponent(null);
 
@@ -185,7 +181,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4d) should have validation if both business unit and account type are empty',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4118') },
+    { tags: buildTags('@JIRA-STORY:PO-523') },
     () => {
       setupComponent(null);
 
@@ -196,22 +192,18 @@ describe('FinesMacCreateAccountComponent', () => {
     },
   );
 
-  it(
-    '(AC.2b) should check only 1 account type can be selected',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4119') },
-    () => {
-      setupComponent(null);
+  it('(AC.2b) should check only 1 account type can be selected', { tags: buildTags('@JIRA-STORY:PO-523') }, () => {
+    setupComponent(null);
 
-      cy.get(L.fineInput).click();
-      cy.get(L.fixedPenaltyInput).click();
-      cy.get(L.fineInput).should('not.be.checked');
-      cy.get(L.fixedPenaltyInput).should('be.checked');
-    },
-  );
+    cy.get(L.fineInput).click();
+    cy.get(L.fixedPenaltyInput).click();
+    cy.get(L.fineInput).should('not.be.checked');
+    cy.get(L.fixedPenaltyInput).should('be.checked');
+  });
 
   it(
     '(AC5) should pass validation if both business unit and account type are filled in',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4120') },
+    { tags: buildTags('@JIRA-STORY:PO-523') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
@@ -229,7 +221,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4c)should check through each account type to ensure that error is given when a defendant type is not selected except conditional caution',
-    { tags: buildTags('@JIRA-STORY:PO-523', '@JIRA-KEY:POT-4121') },
+    { tags: buildTags('@JIRA-STORY:PO-523') },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -251,64 +243,60 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
-  it(
-    'Should be accessible with forward keyboard navigation',
-    { tags: buildTags('@JIRA-STORY:PO-2715', '@JIRA-KEY:POT-4122') },
-    () => {
-      setupComponent(null);
+  it('Should be accessible with forward keyboard navigation', { tags: buildTags('@JIRA-STORY:PO-2715') }, () => {
+    setupComponent(null);
 
-      // Ensure the page is loaded
-      cy.get(L.pageHeader).should('contain', 'Create account');
-      cy.get(L.businessUnit.input).should('be.visible');
+    // Ensure the page is loaded
+    cy.get(L.pageHeader).should('contain', 'Create account');
+    cy.get(L.businessUnit.input).should('be.visible');
 
-      // Start from the top of the page
-      cy.press(Cypress.Keyboard.Keys.TAB);
-      cy.get(L.backLink).should('have.focus');
+    // Start from the top of the page
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(L.backLink).should('have.focus');
 
-      //Move to Business unit container
-      cy.press(Cypress.Keyboard.Keys.TAB);
-      cy.get(L.businessUnit.container).should('have.focus');
+    //Move to Business unit container
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(L.businessUnit.container).should('have.focus');
 
-      // Move to business unit input
-      cy.press(Cypress.Keyboard.Keys.TAB);
-      cy.get(L.businessUnit.input).should('have.focus');
-      // Move to account type radio buttons
-      cy.press(Cypress.Keyboard.Keys.TAB);
-      cy.get(L.accountType.fine).should('have.focus');
+    // Move to business unit input
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(L.businessUnit.input).should('have.focus');
+    // Move to account type radio buttons
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(L.accountType.fine).should('have.focus');
 
-      // Navigate through account type radio buttons
-      cy.press(Cypress.Keyboard.Keys.DOWN);
-      cy.get(L.accountType.fixedPenalty).should('have.focus');
-      cy.press(Cypress.Keyboard.Keys.DOWN);
-      cy.get(L.accountType.conditionalCaution).should('have.focus');
+    // Navigate through account type radio buttons
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(L.accountType.fixedPenalty).should('have.focus');
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(L.accountType.conditionalCaution).should('have.focus');
 
-      // Loop back to first account type
-      cy.press(Cypress.Keyboard.Keys.DOWN);
-      cy.get(L.accountType.fine).should('have.focus');
-      // Select fine account type to reveal defendant type options
-      // Move through defendant type radio buttons
-      cy.press(Cypress.Keyboard.Keys.TAB);
-      cy.get(L.defendantType.adultOrYouth).should('have.focus');
-      cy.press(Cypress.Keyboard.Keys.DOWN);
-      cy.get(L.defendantType.parentOrGuardianToPay).should('have.focus');
+    // Loop back to first account type
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(L.accountType.fine).should('have.focus');
+    // Select fine account type to reveal defendant type options
+    // Move through defendant type radio buttons
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(L.defendantType.adultOrYouth).should('have.focus');
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(L.defendantType.parentOrGuardianToPay).should('have.focus');
 
-      cy.press(Cypress.Keyboard.Keys.DOWN);
-      cy.get(L.defendantType.company).should('have.focus');
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(L.defendantType.company).should('have.focus');
 
-      cy.press(Cypress.Keyboard.Keys.DOWN);
-      cy.get(L.defendantType.adultOrYouth).should('have.focus');
+    cy.press(Cypress.Keyboard.Keys.DOWN);
+    cy.get(L.defendantType.adultOrYouth).should('have.focus');
 
-      // Move to continue button
-      cy.press(Cypress.Keyboard.Keys.TAB);
-      cy.get(L.continueButton).should('have.focus');
-      // Cypress cannot yet handle SHIFT+TAB keypresses for reverse tabbing
-    },
-  );
+    // Move to continue button
+    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.get(L.continueButton).should('have.focus');
+    // Cypress cannot yet handle SHIFT+TAB keypresses for reverse tabbing
+  });
 
   // Section of tests below cover 'Transfer in' account creation page
   it(
     '(AC2,2a,2b)should render all elements on the page correctly and have correct text',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4123') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
@@ -339,7 +327,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.2c)should render all elements for fine account type correctly and have correct text',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4124') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
@@ -365,7 +353,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC2c) should render all elements for fixed penalty account type correctly and have correct text',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4125') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
@@ -383,7 +371,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.3) should have validation if empty business unit but valid account type',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4126') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
@@ -397,7 +385,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.3) should have validation in place if empty account type but valid business unit',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4127') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
@@ -413,7 +401,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.3) should have validation if both business unit and account type are empty',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4128') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       setupComponent(null);
 
@@ -424,24 +412,20 @@ describe('FinesMacCreateAccountComponent', () => {
     },
   );
 
-  it(
-    '(AC.3) should check only 1 account type can be selected',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4129') },
-    () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
+  it('(AC.3) should check only 1 account type can be selected', { tags: buildTags('@JIRA-STORY:PO-2766') }, () => {
+    accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
-      setupComponent(null);
+    setupComponent(null);
 
-      cy.get(L.fineInput).click();
-      cy.get(L.fixedPenaltyInput).click();
-      cy.get(L.fineInput).should('not.be.checked');
-      cy.get(L.fixedPenaltyInput).should('be.checked');
-    },
-  );
+    cy.get(L.fineInput).click();
+    cy.get(L.fixedPenaltyInput).click();
+    cy.get(L.fineInput).should('not.be.checked');
+    cy.get(L.fixedPenaltyInput).should('be.checked');
+  });
 
   it(
     '(AC3) should pass validation if both business unit and account type are filled in',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4130') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
@@ -461,7 +445,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC5a) should navigate to account details for a valid Fine transfer in account',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4131') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
@@ -481,7 +465,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC5b) should navigate to fixed penalty details for a valid Fixed Penalty transfer in account',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4132') },
+    { tags: buildTags('@JIRA-STORY:PO-2766') },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
 
@@ -502,18 +486,14 @@ describe('FinesMacCreateAccountComponent', () => {
     },
   );
 
-  it(
-    '(AC4) should auto select a single business unit',
-    { tags: buildTags('@JIRA-STORY:PO-2766', '@JIRA-KEY:POT-4133') },
-    () => {
-      accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-      buinessUnitMock.refData = buinessUnitMock.refData.slice(0, 1);
-      buinessUnitMock.count = buinessUnitMock.refData.length;
+  it('(AC4) should auto select a single business unit', { tags: buildTags('@JIRA-STORY:PO-2766') }, () => {
+    accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
+    buinessUnitMock.refData = buinessUnitMock.refData.slice(0, 1);
+    buinessUnitMock.count = buinessUnitMock.refData.length;
 
-      setupComponent(buinessUnitMock);
+    setupComponent(buinessUnitMock);
 
-      cy.get(L.businessUnitDefault).should('have.text', `The account will be created in Historical Debt`);
-      cy.get(L.businessUnitInput).should('not.exist');
-    },
-  );
+    cy.get(L.businessUnitDefault).should('have.text', `The account will be created in Historical Debt`);
+    cy.get(L.businessUnitInput).should('not.exist');
+  });
 });

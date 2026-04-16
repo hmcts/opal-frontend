@@ -68,7 +68,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1a, AC1b, AC1d. Defendant details tab layout, debtor flag true',
-    { tags: buildTags('@JIRA-STORY:PO-784', '@JIRA-KEY:POT-3499') },
+    { tags: buildTags('@JIRA-STORY:PO-784') },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -123,7 +123,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC1a, AC1c, AC1d. Defendant details tab layout, debtor flag false',
-    { tags: buildTags('@JIRA-STORY:PO-784', '@JIRA-STORY:PO-2365', '@JIRA-KEY:POT-3500') },
+    { tags: buildTags('@JIRA-STORY:PO-784', '@JIRA-STORY:PO-2365') },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -160,34 +160,30 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
   );
 
-  it(
-    'AC1div. Should display em-dash for blank row',
-    { tags: buildTags('@JIRA-STORY:PO-784', '@JIRA-KEY:POT-3501') },
-    () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      defendantDetailsMock.defendant_account_party.contact_details!.secondary_email_address = null;
-      defendantDetailsMock.defendant_account_party.employer_details!.employer_telephone_number = null;
-      const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      const accountId = headerMock.defendant_account_party_id;
-      setLanguagePref(language_preferences!.document_language_preference);
-      setLanguagePref(language_preferences!.hearing_language_preference);
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, accountId);
-      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+  it('AC1div. Should display em-dash for blank row', { tags: buildTags('@JIRA-STORY:PO-784') }, () => {
+    let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+    defendantDetailsMock.defendant_account_party.is_debtor = true;
+    defendantDetailsMock.defendant_account_party.contact_details!.secondary_email_address = null;
+    defendantDetailsMock.defendant_account_party.employer_details!.employer_telephone_number = null;
+    const { language_preferences } = defendantDetailsMock.defendant_account_party;
+    const accountId = headerMock.defendant_account_party_id;
+    setLanguagePref(language_preferences!.document_language_preference);
+    setLanguagePref(language_preferences!.hearing_language_preference);
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, headerMock, accountId);
+    interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
-      cy.get(DEFENDANT_DETAILS.defendantEmployerPhone).should('exist').and('contain.text', '—');
-    },
-  );
+    cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
+    cy.get(DEFENDANT_DETAILS.defendantEmployerPhone).should('exist').and('contain.text', '—');
+  });
 
   it(
     'AC1bi. Should display language preferences sub-section when applicable',
-    { tags: buildTags('@JIRA-STORY:PO-784', '@JIRA-KEY:POT-3502') },
+    { tags: buildTags('@JIRA-STORY:PO-784') },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -210,7 +206,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2. Account maintenance permission true, BU associated with account',
-    { tags: buildTags('@JIRA-STORY:PO-784', '@JIRA-KEY:POT-3503') },
+    { tags: buildTags('@JIRA-STORY:PO-784') },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -233,7 +229,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2a. Account maintenance permission true, BU not associated with account',
-    { tags: buildTags('@JIRA-STORY:PO-784', '@JIRA-KEY:POT-3504') },
+    { tags: buildTags('@JIRA-STORY:PO-784') },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -254,29 +250,25 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
   );
 
-  it(
-    'AC2b. Account maintenance permission false',
-    { tags: buildTags('@JIRA-STORY:PO-784', '@JIRA-KEY:POT-3505') },
-    () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      const accountId = headerMock.defendant_account_party_id;
-      setLanguagePref(language_preferences!.document_language_preference);
-      setLanguagePref(language_preferences!.hearing_language_preference);
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
-      interceptDefendantHeader(accountId, headerMock, accountId);
-      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+  it('AC2b. Account maintenance permission false', { tags: buildTags('@JIRA-STORY:PO-784') }, () => {
+    let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+    defendantDetailsMock.defendant_account_party.is_debtor = true;
+    const { language_preferences } = defendantDetailsMock.defendant_account_party;
+    const accountId = headerMock.defendant_account_party_id;
+    setLanguagePref(language_preferences!.document_language_preference);
+    setLanguagePref(language_preferences!.hearing_language_preference);
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptDefendantHeader(accountId, headerMock, accountId);
+    interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
-    },
-  );
+    cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+  });
 
-  it('Company - Defendant details tab layout', { tags: buildTags('@JIRA-STORY:PO-790', '@JIRA-KEY:POT-3506') }, () => {
+  it('Company - Defendant details tab layout', { tags: buildTags('@JIRA-STORY:PO-790') }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
@@ -313,33 +305,29 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.companyWorkPhone).should('exist').and('contain.text', '09876 543210');
   });
 
-  it(
-    'AC1ciii. Company - Should display em-dash for blank row',
-    { tags: buildTags('@JIRA-STORY:PO-790', '@JIRA-KEY:POT-3507') },
-    () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      defendantDetailsMock.defendant_account_party.contact_details!.secondary_email_address = null;
-      defendantDetailsMock.defendant_account_party.employer_details!.employer_telephone_number = null;
-      const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      const accountId = headerMock.defendant_account_party_id;
-      setLanguagePref(language_preferences!.document_language_preference);
-      setLanguagePref(language_preferences!.hearing_language_preference);
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, accountId);
-      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+  it('AC1ciii. Company - Should display em-dash for blank row', { tags: buildTags('@JIRA-STORY:PO-790') }, () => {
+    let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+    defendantDetailsMock.defendant_account_party.is_debtor = true;
+    defendantDetailsMock.defendant_account_party.contact_details!.secondary_email_address = null;
+    defendantDetailsMock.defendant_account_party.employer_details!.employer_telephone_number = null;
+    const { language_preferences } = defendantDetailsMock.defendant_account_party;
+    const accountId = headerMock.defendant_account_party_id;
+    setLanguagePref(language_preferences!.document_language_preference);
+    setLanguagePref(language_preferences!.hearing_language_preference);
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, headerMock, accountId);
+    interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
-    },
-  );
+    cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
+  });
 
   it(
     'AC1b. Company - Should display language preferences sub-section when applicable',
-    { tags: buildTags('@JIRA-STORY:PO-790', '@JIRA-KEY:POT-3508') },
+    { tags: buildTags('@JIRA-STORY:PO-790') },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -362,7 +350,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2. Company - Account maintenance permission true, BU associated with account',
-    { tags: buildTags('@JIRA-STORY:PO-790', '@JIRA-KEY:POT-3509') },
+    { tags: buildTags('@JIRA-STORY:PO-790') },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -385,7 +373,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2a. Company - Account maintenance permission true, BU not associated with account',
-    { tags: buildTags('@JIRA-STORY:PO-790', '@JIRA-KEY:POT-3510') },
+    { tags: buildTags('@JIRA-STORY:PO-790') },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
       let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -406,31 +394,27 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
   );
 
-  it(
-    'AC2b. Company - Account maintenance permission false',
-    { tags: buildTags('@JIRA-STORY:PO-790', '@JIRA-KEY:POT-3511') },
-    () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      const accountId = headerMock.defendant_account_party_id;
-      setLanguagePref(language_preferences!.document_language_preference);
-      setLanguagePref(language_preferences!.hearing_language_preference);
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
-      interceptDefendantHeader(accountId, headerMock, accountId);
-      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+  it('AC2b. Company - Account maintenance permission false', { tags: buildTags('@JIRA-STORY:PO-790') }, () => {
+    let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+    defendantDetailsMock.defendant_account_party.is_debtor = true;
+    const { language_preferences } = defendantDetailsMock.defendant_account_party;
+    const accountId = headerMock.defendant_account_party_id;
+    setLanguagePref(language_preferences!.document_language_preference);
+    setLanguagePref(language_preferences!.hearing_language_preference);
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptDefendantHeader(accountId, headerMock, accountId);
+    interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
-    },
-  );
+    cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
+  });
 
   it(
     'AC1, AC1a, AC1b. Youth-only accounts show the Add parent or guardian details action',
-    { tags: buildTags('@JIRA-STORY:PO-1874', '@JIRA-KEY:POT-4892') },
+    { tags: buildTags('@JIRA-STORY:PO-1874') },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
@@ -454,7 +438,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
   it(
     'AC2. Non youth-only accounts do not show the Add parent or guardian details action',
-    { tags: buildTags('@JIRA-STORY:PO-1874', '@JIRA-KEY:POT-4893') },
+    { tags: buildTags('@JIRA-STORY:PO-1874') },
     () => {
       const scenarios = [
         {
