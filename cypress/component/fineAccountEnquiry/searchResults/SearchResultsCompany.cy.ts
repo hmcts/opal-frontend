@@ -74,131 +74,155 @@ describe('FinesSaResultsComponent - Companies', () => {
     });
   };
 
-  it('Search company results component is created correctly', { tags: buildTags('@JIRA-STORY:PO-707') }, () => {
-    setupComponent();
+  it(
+    'Search company results component is created correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7049'] },
+    () => {
+      setupComponent();
 
-    cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
-    cy.get(ResultsPageLocators.backLinkHost).should('exist');
-  });
+      cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
+      cy.get(ResultsPageLocators.backLinkHost).should('exist');
+    },
+  );
 
-  it('(AC2) Displays error message when no search matches are found', { tags: buildTags('@JIRA-STORY:PO-707') }, () => {
-    setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
+  it(
+    '(AC2) Displays error message when no search matches are found',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7050'] },
+    () => {
+      setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
-    cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
 
-    //(AC2b) Check your search link is clickable and functional
-    // Test that the link is clickable (Full Test to be implemented when API complete)
-    cy.get(ResultsMessageLocators.checkYourSearchLink).should('have.class', 'govuk-link');
-    cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible').click();
-    cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
-  });
+      //(AC2b) Check your search link is clickable and functional
+      // Test that the link is clickable (Full Test to be implemented when API complete)
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible').click();
+      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
+    },
+  );
 
-  it('(AC3) Handles more than 100 search matches correctly', { tags: buildTags('@JIRA-STORY:PO-717') }, () => {
-    setupComponent(LARGE_SEARCH_RESULTS_MOCK);
+  it(
+    '(AC3) Handles more than 100 search matches correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7051'] },
+    () => {
+      setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
-    cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
-    cy.get(ResultsLocators.table.root).should('not.exist');
-    cy.get(ResultsMessageLocators.addMoreInfoLink).should('contain', 'Try adding more information');
-    cy.get(ResultsLocators.table.root).should('not.exist');
+      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsLocators.table.root).should('not.exist');
+      cy.get(ResultsMessageLocators.addMoreInfoLink).should('contain', 'Try adding more information');
+      cy.get(ResultsLocators.table.root).should('not.exist');
 
-    //(AC3b) Try adding more information link is clickable and functional
-    // Test that the link is clickable (Full Test to be implemented when API complete)
-    cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
-    cy.get(ResultsMessageLocators.addMoreInfoLink).click();
-  });
+      //(AC3b) Try adding more information link is clickable and functional
+      // Test that the link is clickable (Full Test to be implemented when API complete)
+      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
+    },
+  );
 
-  it('(AC4a-c) Displays results correctly for 100 or fewer matches', { tags: buildTags('@JIRA-STORY:PO-707') }, () => {
-    setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
+  it(
+    '(AC4a-c) Displays results correctly for 100 or fewer matches',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7052'] },
+    () => {
+      setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
-    // Check table exists and headers match design
-    cy.get(ResultsLocators.table.root).should('exist');
-    cy.get(ResultsHeaderCellLocators.account).should('contain', 'Account');
-    cy.get(ResultsHeaderCellLocators.addr1).should('contain', 'Address line 1');
-    cy.get(ResultsHeaderCellLocators.postcode).should('contain', 'Postcode');
-    cy.get(ResultsHeaderCellLocators.bu).should('contain', 'Business unit');
-    cy.get(ResultsHeaderCellLocators.ref).should('contain', 'Ref');
-    cy.get(ResultsHeaderCellLocators.enf).should('contain', 'ENF');
-    cy.get(ResultsHeaderCellLocators.balance).should('contain', 'Balance');
+      // Check table exists and headers match design
+      cy.get(ResultsLocators.table.root).should('exist');
+      cy.get(ResultsHeaderCellLocators.account).should('contain', 'Account');
+      cy.get(ResultsHeaderCellLocators.addr1).should('contain', 'Address line 1');
+      cy.get(ResultsHeaderCellLocators.postcode).should('contain', 'Postcode');
+      cy.get(ResultsHeaderCellLocators.bu).should('contain', 'Business unit');
+      cy.get(ResultsHeaderCellLocators.ref).should('contain', 'Ref');
+      cy.get(ResultsHeaderCellLocators.enf).should('contain', 'ENF');
+      cy.get(ResultsHeaderCellLocators.balance).should('contain', 'Balance');
 
-    // Check first row matches mock data
-    cy.get(ResultsCellLocators.name).first().should('contain', 'ACME LTD');
-    cy.get(ResultsCellLocators.addr1).first().should('contain', '10 Downing Street');
-    cy.get(ResultsCellLocators.balance).first().should('contain', '£1,000.00');
-  });
+      // Check first row matches mock data
+      cy.get(ResultsCellLocators.name).first().should('contain', 'ACME LTD');
+      cy.get(ResultsCellLocators.addr1).first().should('contain', '10 Downing Street');
+      cy.get(ResultsCellLocators.balance).first().should('contain', '£1,000.00');
+    },
+  );
 
-  it('(AC4d) Displays pagination correctly for companies', { tags: buildTags('@JIRA-STORY:PO-707') }, () => {
-    setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
+  it(
+    '(AC4d) Displays pagination correctly for companies',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7053'] },
+    () => {
+      setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
-    cy.get(ResultsPaginationLocators.root).should('exist');
-    cy.get(ResultsPaginationLocators.resultsText).should('contain', '100 total results');
-    cy.get(ResultsLocators.table.rows).should('have.length', 25);
+      cy.get(ResultsPaginationLocators.root).should('exist');
+      cy.get(ResultsPaginationLocators.resultsText).should('contain', '100 total results');
+      cy.get(ResultsLocators.table.rows).should('have.length', 25);
 
-    cy.get(ResultsPaginationLocators.pageNumber(2)).click();
-    cy.get(ResultsPaginationLocators.currentPage).should('contain', '2');
-  });
+      cy.get(ResultsPaginationLocators.pageNumber(2)).click();
+      cy.get(ResultsPaginationLocators.currentPage).should('contain', '2');
+    },
+  );
 
-  it('(AC4e) Default sorting of results is correct', { tags: buildTags('@JIRA-STORY:PO-707') }, () => {
-    setupComponent(SORTING_SEARCH_RESULTS_MOCK_COMPANIES);
+  it(
+    '(AC4e) Default sorting of results is correct',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7054'] },
+    () => {
+      setupComponent(SORTING_SEARCH_RESULTS_MOCK_COMPANIES);
 
-    // Default sort = order in the mock
-    cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ACME LTD');
-    cy.get(ResultsCellLocators.name).eq(1).should('contain', 'ZENITH CORP');
-    cy.get(ResultsCellLocators.name).eq(2).should('contain', 'BETA LTD');
-    cy.get(ResultsCellLocators.name).eq(3).should('contain', 'OMEGA INC');
-    cy.get(ResultsCellLocators.name).eq(4).should('contain', 'DELTA PLC');
+      // Default sort = order in the mock
+      cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ACME LTD');
+      cy.get(ResultsCellLocators.name).eq(1).should('contain', 'ZENITH CORP');
+      cy.get(ResultsCellLocators.name).eq(2).should('contain', 'BETA LTD');
+      cy.get(ResultsCellLocators.name).eq(3).should('contain', 'OMEGA INC');
+      cy.get(ResultsCellLocators.name).eq(4).should('contain', 'DELTA PLC');
 
-    cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13006BU');
-    cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13007BU');
-    cy.get(ResultsCellLocators.accountCell).eq(2).should('contain', '13008BU');
-    cy.get(ResultsCellLocators.accountCell).eq(3).should('contain', '13009BU');
-    cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13010BU');
+      cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13006BU');
+      cy.get(ResultsCellLocators.accountCell).eq(1).should('contain', '13007BU');
+      cy.get(ResultsCellLocators.accountCell).eq(2).should('contain', '13008BU');
+      cy.get(ResultsCellLocators.accountCell).eq(3).should('contain', '13009BU');
+      cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13010BU');
 
-    cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'SW1A 2AA');
-    cy.get(ResultsCellLocators.postcode).eq(1).should('contain', 'EC4Y 1AA');
-    cy.get(ResultsCellLocators.postcode).eq(2).should('contain', 'NW1 6XE');
-    cy.get(ResultsCellLocators.postcode).eq(3).should('contain', 'NE1 2DF');
-    cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'L3 8GH');
+      cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'SW1A 2AA');
+      cy.get(ResultsCellLocators.postcode).eq(1).should('contain', 'EC4Y 1AA');
+      cy.get(ResultsCellLocators.postcode).eq(2).should('contain', 'NW1 6XE');
+      cy.get(ResultsCellLocators.postcode).eq(3).should('contain', 'NE1 2DF');
+      cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'L3 8GH');
 
-    cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£1,000.00');
-    cy.get(ResultsCellLocators.balance).eq(1).should('contain', '£1,200.00');
-    cy.get(ResultsCellLocators.balance).eq(2).should('contain', '£850.00');
-    cy.get(ResultsCellLocators.balance).eq(3).should('contain', '£675.00');
-    cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
+      cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£1,000.00');
+      cy.get(ResultsCellLocators.balance).eq(1).should('contain', '£1,200.00');
+      cy.get(ResultsCellLocators.balance).eq(2).should('contain', '£850.00');
+      cy.get(ResultsCellLocators.balance).eq(3).should('contain', '£675.00');
+      cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
 
-    // Account column sorting
-    cy.get(ResultsHeaderButtonLocators.account).click(); // Ascending
-    cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13006BU');
-    cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13010BU');
+      // Account column sorting
+      cy.get(ResultsHeaderButtonLocators.account).click(); // Ascending
+      cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13006BU');
+      cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13010BU');
 
-    cy.get(ResultsHeaderButtonLocators.account).click(); // Descending
-    cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13010BU');
-    cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13006BU');
+      cy.get(ResultsHeaderButtonLocators.account).click(); // Descending
+      cy.get(ResultsCellLocators.accountCell).eq(0).should('contain', '13010BU');
+      cy.get(ResultsCellLocators.accountCell).eq(4).should('contain', '13006BU');
 
-    // Name column sorting
-    cy.get(ResultsHeaderButtonLocators.name).click(); // Ascending
-    cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ACME LTD');
-    cy.get(ResultsCellLocators.name).eq(4).should('contain', 'ZENITH CORP');
+      // Name column sorting
+      cy.get(ResultsHeaderButtonLocators.name).click(); // Ascending
+      cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ACME LTD');
+      cy.get(ResultsCellLocators.name).eq(4).should('contain', 'ZENITH CORP');
 
-    cy.get(ResultsHeaderButtonLocators.name).click(); // Descending
-    cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ZENITH CORP');
-    cy.get(ResultsCellLocators.name).eq(4).should('contain', 'ACME LTD');
+      cy.get(ResultsHeaderButtonLocators.name).click(); // Descending
+      cy.get(ResultsCellLocators.name).eq(0).should('contain', 'ZENITH CORP');
+      cy.get(ResultsCellLocators.name).eq(4).should('contain', 'ACME LTD');
 
-    // Postcode column sorting
-    cy.get(ResultsHeaderButtonLocators.postcode).click(); // Ascending
-    cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'EC4Y 1AA');
-    cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'SW1A 2AA');
+      // Postcode column sorting
+      cy.get(ResultsHeaderButtonLocators.postcode).click(); // Ascending
+      cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'EC4Y 1AA');
+      cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'SW1A 2AA');
 
-    cy.get(ResultsHeaderButtonLocators.postcode).click(); // Descending
-    cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'SW1A 2AA');
-    cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'EC4Y 1AA');
+      cy.get(ResultsHeaderButtonLocators.postcode).click(); // Descending
+      cy.get(ResultsCellLocators.postcode).eq(0).should('contain', 'SW1A 2AA');
+      cy.get(ResultsCellLocators.postcode).eq(4).should('contain', 'EC4Y 1AA');
 
-    // Balance column sorting
-    cy.get(ResultsHeaderButtonLocators.balance).click(); // Ascending
-    cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£524.00');
-    cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£1,200.00');
+      // Balance column sorting
+      cy.get(ResultsHeaderButtonLocators.balance).click(); // Ascending
+      cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£524.00');
+      cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£1,200.00');
 
-    cy.get(ResultsHeaderButtonLocators.balance).click(); // Descending
-    cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£1,200.00');
-    cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
-  });
+      cy.get(ResultsHeaderButtonLocators.balance).click(); // Descending
+      cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£1,200.00');
+      cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
+    },
+  );
 });

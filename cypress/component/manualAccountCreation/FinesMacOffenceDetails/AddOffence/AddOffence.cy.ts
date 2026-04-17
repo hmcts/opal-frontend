@@ -553,13 +553,14 @@ describe('FinesMacAddOffenceComponent', () => {
   );
 
   it(
-    ' (AC.5a) should not show remove imposition link for only 1 imposition',
+    '(AC.5a) should not show remove imposition link for only 1 imposition',
     {
       tags: [
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
+        '@JIRA-KEY:POT-7422',
         '@JIRA-LABEL:manual-account-creation',
       ],
     },

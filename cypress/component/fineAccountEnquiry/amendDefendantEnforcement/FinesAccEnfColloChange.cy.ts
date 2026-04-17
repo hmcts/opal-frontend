@@ -462,7 +462,7 @@ function assertCollectionOrderChangedNavigatesToEnforcementTab(
   updatedEnforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
 
   interceptEnforcementStatus(accountId, updatedEnforcementMock, '124');
-  navigateToCollectionOrderChange('No collection order');
+  navigateToCollectionOrderChange('No Collection Order');
 
   cy.get(COLLECTION_ORDER_CHANGE.yesRadio).check({ force: true });
   cy.get(COLLECTION_ORDER_CHANGE.submitButton).click();

@@ -155,7 +155,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC1c: shows tabs, master label, Fines list alphabetical (A→Z), and Save/Cancel controls',
-    { tags: buildTags() },
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7027'] },
     () => {
       setupComponent();
 
@@ -189,7 +189,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC1ci: all business units are selected when filter is set to "All business units" (Fines tab)',
-    { tags: buildTags() },
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7028'] },
     () => {
       // Preselect all Fines IDs
       preselectedIds = resolverPayload.refData
@@ -217,7 +217,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2a ----------------
 
-  it('AC2a: shows two tabs – Fines and Confiscation', { tags: buildTags() }, () => {
+  it('AC2a: shows two tabs – Fines and Confiscation', { tags: [...buildTags(), '@JIRA-KEY:POT-7029'] }, () => {
     setupComponent();
     cy.get(NavLocators.finesTabLink).should('contain.text', TAB_LABELS.fines);
     cy.get(NavLocators.confiscationTabLink).should('contain.text', TAB_LABELS.confiscation);
@@ -225,23 +225,27 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2 (Fines) ----------------
 
-  it('AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z', { tags: buildTags() }, () => {
-    setupComponent();
-    clickTab('fines');
+  it(
+    'AC2ai/2b/2c (Fines): only Fines units, labels equal names, alphabetical A→Z',
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7030'] },
+    () => {
+      setupComponent();
+      clickTab('fines');
 
-    getRowLabels('fines').then(($labels) => {
-      const actual = extractLabels($labels);
-      expect(norm(actual), 'Fines membership').to.deep.equal(norm(expectedFinesNames));
-      actual.forEach((label) => expect(expectedFinesNames, 'label equals BU name').to.include(label));
-      expect(actual, 'Fines alphabetical').to.deep.equal(norm(actual));
-    });
-  });
+      getRowLabels('fines').then(($labels) => {
+        const actual = extractLabels($labels);
+        expect(norm(actual), 'Fines membership').to.deep.equal(norm(expectedFinesNames));
+        actual.forEach((label) => expect(expectedFinesNames, 'label equals BU name').to.include(label));
+        expect(actual, 'Fines alphabetical').to.deep.equal(norm(actual));
+      });
+    },
+  );
 
   // ---------------- AC2 (Confiscation) ----------------
 
   it(
     'AC2aii/2b/2c (Confiscation): only Confiscation units, labels equal names, alphabetical A→Z',
-    { tags: buildTags() },
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7031'] },
     () => {
       setupComponent();
       // Drive fragment to switch tab in CT
@@ -265,32 +269,36 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC3 (Fines select-all) ----------------
 
-  it('AC3a (Fines): master checkbox selects all fines units and counter shows n of n', { tags: buildTags() }, () => {
-    preselectedIds = [];
-    setupComponent();
+  it(
+    'AC3a (Fines): master checkbox selects all fines units and counter shows n of n',
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7032'] },
+    () => {
+      preselectedIds = [];
+      setupComponent();
 
-    clickTab('fines');
-    const n = expectedFinesNames.length;
+      clickTab('fines');
+      const n = expectedFinesNames.length;
 
-    // Toggle ON via label
-    getMasterLabel('fines').click();
+      // Toggle ON via label
+      getMasterLabel('fines').click();
 
-    // All checked
-    getRowCheckboxes('fines')
-      .should('have.length', n)
-      .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
+      // All checked
+      getRowCheckboxes('fines')
+        .should('have.length', n)
+        .each(($input) => expect(($input[0] as HTMLInputElement).checked).to.eq(true));
 
-    // Counter "n of n"
-    cy.get(CommonLocators.selectedCountLabel)
-      .invoke('text')
-      .then((txt) => {
-        expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
-      });
-  });
+      // Counter "n of n"
+      cy.get(CommonLocators.selectedCountLabel)
+        .invoke('text')
+        .then((txt) => {
+          expect(txt.trim()).to.match(new RegExp(`^\\s*${n}\\s+of\\s+${n}\\s+selected\\s*$`));
+        });
+    },
+  );
 
   it(
     'AC3ai (Fines): unticking master checkbox clears all fines units and counter shows 0 of n',
-    { tags: buildTags() },
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7033'] },
     () => {
       preselectedIds = resolverPayload.refData
         .filter((bu) => String(bu.opal_domain).toLowerCase() === 'fines')
@@ -322,7 +330,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC4a (Confiscation): master checkbox selects all confiscation units and counter shows n of n',
-    { tags: buildTags() },
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7034'] },
     () => {
       preselectedIds = [];
       setupComponent();
@@ -349,7 +357,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC4ai (Confiscation): unticking master checkbox clears all confiscation units and counter shows 0 of n',
-    { tags: buildTags() },
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7035'] },
     () => {
       preselectedIds = resolverPayload.refData
         .filter((bu) => String(bu.opal_domain).toLowerCase() === 'confiscation')
@@ -380,7 +388,7 @@ describe('Filter by Business Unit (CT)', () => {
 
   it(
     'AC5: Save button count shows total across Fines + Confiscation and updates dynamically',
-    { tags: buildTags() },
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7036'] },
     () => {
       setupComponent();
 
@@ -436,27 +444,31 @@ describe('Filter by Business Unit (CT)', () => {
     });
   };
 
-  it('AC6a (Fines): shows an error when clicking Save with no business units selected', { tags: buildTags() }, () => {
-    // Start clean (no preselectedIds)
-    preselectedIds = [];
-    setupComponent();
+  it(
+    'AC6a (Fines): shows an error when clicking Save with no business units selected',
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7037'] },
+    () => {
+      // Start clean (no preselectedIds)
+      preselectedIds = [];
+      setupComponent();
 
-    // Sanity: Save shows (0)
-    assertSaveCount(0);
+      // Sanity: Save shows (0)
+      assertSaveCount(0);
 
-    // Click Save with nothing selected
-    clickSave();
+      // Click Save with nothing selected
+      clickSave();
 
-    // Error summary appears with message
-    assertErrorSummaryVisible();
+      // Error summary appears with message
+      assertErrorSummaryVisible();
 
-    // Still on Fines tab (header unchanged)
-    getMasterLabel('fines').should('be.visible');
-  });
+      // Still on Fines tab (header unchanged)
+      getMasterLabel('fines').should('be.visible');
+    },
+  );
 
   it(
     'AC6b (Confiscation): shows an error when clicking Save with no business units selected',
-    { tags: buildTags() },
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7038'] },
     () => {
       preselectedIds = [];
       setupComponent();
