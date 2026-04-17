@@ -169,7 +169,7 @@ function adultOrYouthOnlySetup() {
 describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:PO-1870'] }, () => {
   it(
     'AC1. Parent/Guardian: selecting Change enforcement override on the Enforcement tab navigates to the change screen',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5679'] },
     () => {
       const { accountId } = registerChangeEnforcementOverrideIntercepts(buildParentGuardianHeaderMock());
       setupAccountEnquiryComponent({ ...componentProperties, accountId });
@@ -185,7 +185,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC1a, AC1b. Parent/Guardian: should render the change enforcement override form with the individual account identifier',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5680'] },
     () => {
       parentGuardianSetup();
 
@@ -196,7 +196,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC1c, AC1ci, AC1d. Parent/Guardian: should display the override dropdown, results reference data, add override button and cancel link',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5681'] },
     () => {
       parentGuardianSetup();
 
@@ -225,7 +225,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC2, AC2a, AC2ai. Parent/Guardian: enforcer dropdown displays dynamically for overrides that require an enforcer',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5682'] },
     () => {
       parentGuardianSetup();
 
@@ -261,7 +261,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC3, AC3a, AC3ai. Parent/Guardian: LJA dropdown displays dynamically for overrides that require a Local Justice Area',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5683'] },
     () => {
       parentGuardianSetup();
 
@@ -281,7 +281,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
     },
   );
 
-  it('AC4a. Parent/Guardian: error when no enforcement override is selected', { tags: [] }, () => {
+  it('AC4a. Parent/Guardian: error when no enforcement override is selected', { tags: ['@JIRA-KEY:POT-5684'] }, () => {
     parentGuardianSetup();
 
     clearEnforcementOverrideSelection();
@@ -296,7 +296,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC4b. Parent/Guardian: error when no enforcer is selected for an override that requires one',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5685'] },
     () => {
       parentGuardianSetup();
 
@@ -321,7 +321,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC4c. Parent/Guardian: error when no Local Justice Area is selected for an override that requires one',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5686'] },
     () => {
       parentGuardianSetup();
 
@@ -344,7 +344,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC5. Parent/Guardian: valid submission returns to Enforcement tab with success banner and updated override panel',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5687'] },
     () => {
       const { accountId } = parentGuardianSetup();
       const updatedEnforcementMock = structuredClone(
@@ -410,7 +410,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC6a. Parent/Guardian: cancel without changes returns to the Enforcement tab without confirmation',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5688'] },
     () => {
       parentGuardianSetup();
 
@@ -432,7 +432,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
   it(
     'AC6b. Parent/Guardian: cancel after selecting a value shows confirmation before navigating away',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5689'] },
     () => {
       parentGuardianSetup();
 
@@ -464,7 +464,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871'] }, () => {
   it(
     'AC1. Company: selecting Change enforcement override on the company Enforcement tab navigates to the change screen',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5690'] },
     () => {
       const { accountId } = registerChangeEnforcementOverrideIntercepts(buildCompanyHeaderMock());
       setupAccountEnquiryComponent({ ...componentProperties, accountId });
@@ -480,7 +480,7 @@ describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871'
 
   it(
     'AC1a, AC1b. Company: should render the change enforcement override form with the company account identifier',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5691'] },
     () => {
       companySetup();
 
@@ -494,7 +494,7 @@ describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871'
 describe('Change Enforcement Override - Adult or youth only', { tags: ['@JIRA-STORY:PO-1869'] }, () => {
   it(
     'AC1. Adult or youth only: selecting Change enforcement override on the Enforcement tab navigates to the change screen',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5692'] },
     () => {
       const { accountId } = registerChangeEnforcementOverrideIntercepts(buildAdultOrYouthHeaderMock());
       setupAccountEnquiryComponent({ ...componentProperties, accountId });
@@ -510,7 +510,7 @@ describe('Change Enforcement Override - Adult or youth only', { tags: ['@JIRA-ST
 
   it(
     'AC1a, AC1b. Adult or youth only: should render the change enforcement override form with the adult or youth only account identifier',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5693'] },
     () => {
       adultOrYouthOnlySetup();
 

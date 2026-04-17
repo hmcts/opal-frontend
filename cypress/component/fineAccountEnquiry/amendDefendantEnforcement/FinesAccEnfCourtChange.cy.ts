@@ -188,7 +188,7 @@ function assertErrors() {
 describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Individual: navigates to the change enforcement court screen and displays the form',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5647'] },
     () => {
       // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
       const { courtsMock, expectedCaption } = commonSetup();
@@ -204,21 +204,25 @@ describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS },
     },
   );
 
-  it('AC3a. Individual: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
-    // AC3a
-    commonSetup();
+  it(
+    'AC3a. Individual: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-KEY:POT-5648'] },
+    () => {
+      // AC3a
+      commonSetup();
 
-    navigateToChangeEnforcementCourt();
-    submitForm();
+      navigateToChangeEnforcementCourt();
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });
 
 describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Parent/Guardian: navigates to the change enforcement court screen and displays the form',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5649'] },
     () => {
       // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
       const { courtsMock, expectedCaption } = parentGuardianSetup();
@@ -234,21 +238,25 @@ describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_T
     },
   );
 
-  it('AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
-    // AC3a
-    parentGuardianSetup();
+  it(
+    'AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-KEY:POT-5650'] },
+    () => {
+      // AC3a
+      parentGuardianSetup();
 
-    navigateToChangeEnforcementCourt();
-    submitForm();
+      navigateToChangeEnforcementCourt();
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });
 
 describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Company: navigates to the change enforcement court screen and displays the form',
-    { tags: [] },
+    { tags: ['@JIRA-KEY:POT-5651'] },
     () => {
       // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
       const { courtsMock, expectedCaption } = companySetup();
@@ -264,13 +272,17 @@ describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
     },
   );
 
-  it('AC3a. Company: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
-    // AC3a
-    companySetup();
+  it(
+    'AC3a. Company: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-KEY:POT-5652'] },
+    () => {
+      // AC3a
+      companySetup();
 
-    navigateToChangeEnforcementCourt();
-    submitForm();
+      navigateToChangeEnforcementCourt();
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });
