@@ -24,7 +24,7 @@
                   >Collection Order</opal-lib-moj-badge
                 >
               } @else {
-                {{ 'No collection order' }}
+                {{ 'No Collection Order' }}
               }
             </ng-container>
             @if (hasAccountMaintenancePermission) {
@@ -268,7 +268,12 @@
     <opal-lib-govuk-summary-card-list cardTitle="Enforcement override" summaryCardListId="enforcement-override">
       @if (hasAccountMaintenancePermission) {
         <ng-container actions>
-          <opal-lib-govuk-summary-card-action actionText="Remove" actionRoute="#"></opal-lib-govuk-summary-card-action>
+          <opal-lib-govuk-summary-card-action
+            actionText="Remove"
+            actionRoute="remove"
+            visuallyHiddenText="Enforcement override"
+            (clickEvent)="handleRemoveEnforcementOverride()"
+          ></opal-lib-govuk-summary-card-action>
         </ng-container>
       }
       <ng-container content>
@@ -287,7 +292,7 @@
           >
             <ng-container name>Enforcement override</ng-container>
             <ng-container value>
-              {{ tabData.enforcement_override.enforcement_override_result.enforcement_override_result_name }}({{
+              {{ tabData.enforcement_override.enforcement_override_result.enforcement_override_result_name }} ({{
                 tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
               }})
             </ng-container>

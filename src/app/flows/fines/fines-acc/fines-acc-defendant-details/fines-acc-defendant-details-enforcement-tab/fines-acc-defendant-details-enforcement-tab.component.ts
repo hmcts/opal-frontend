@@ -40,6 +40,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() hasEnterEnforcementPermission: boolean = false;
   @Output() addEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementOverride = new EventEmitter<void>();
+  @Output() removeEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementCourt = new EventEmitter<void>();
   @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
@@ -65,6 +66,13 @@ export class FinesAccDefendantDetailsEnforcementTab {
    */
   public handleChangeEnforcementCourt(): void {
     this.changeEnforcementCourt.emit();
+  }
+
+  /**
+   * Emits a request to navigate to the remove enforcement override page.
+   */
+  public handleRemoveEnforcementOverride(): void {
+    this.removeEnforcementOverride.emit();
   }
 
   /**

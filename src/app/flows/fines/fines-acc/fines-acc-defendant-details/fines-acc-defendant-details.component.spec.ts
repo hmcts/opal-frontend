@@ -24,6 +24,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@servic
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -138,6 +139,50 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component.activeTab).toBe('at-a-glance');
   });
 
+  it('should allow adding parent or guardian details for a youth debtor account with no parent guardian', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(true);
+  });
+
+  it('should not allow adding parent or guardian details when a parent guardian already exists', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: '123',
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
+  it('should not allow adding parent or guardian details for non-youth accounts', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: false,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
+  it('should not allow adding parent or guardian details when the parent guardian is the debtor', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.parentGuardian,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
   it('should handle tab switch', () => {
     component.handleTabSwitch('details');
     expect(component.activeTab).toBe('details');
@@ -162,7 +207,33 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should call router.navigate when navigateToAddEnforcementOverridePage is called', () => {
     component.navigateToAddEnforcementOverridePage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/add`],
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToChangeEnforcementOverridePage is called', () => {
+    component.navigateToChangeEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.change}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToRemoveEnforcementOverridePage is called', () => {
+    component.navigateToRemoveEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
+      ],
       {
         relativeTo: component['activatedRoute'],
       },
