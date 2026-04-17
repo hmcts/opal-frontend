@@ -1,5 +1,5 @@
 <opal-lib-govuk-heading-with-caption
-  [captionText]="`${partyName} - ${accountNumber}`"
+  [captionText]="`${accountNumber} - ${partyName}`"
   [headingText]="pageTitle"
   headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
 >
@@ -49,14 +49,14 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <opal-lib-govuk-button buttonId="submitForm" type="submit" buttonClasses="nested-flow govuk-button--primary">
-        Add override
-      </opal-lib-govuk-button>
-    </div>
-    <div class="govuk-grid-column-two-thirds">
-      <opal-lib-govuk-cancel-link
-        (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement' })"
-      ></opal-lib-govuk-cancel-link>
+      <div class="govuk-button-group govuk-!-padding-top-2">
+        <button id="submitForm" type="submit" class="govuk-button govuk-button--primary govuk-!-margin-right-4">
+          Add override
+        </button>
+        <opal-lib-govuk-cancel-link
+          (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details, { fragment: 'enforcement' })"
+        ></opal-lib-govuk-cancel-link>
+      </div>
     </div>
   </div>
 </form>
