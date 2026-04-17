@@ -65,13 +65,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
   it(
     '(AC.1) should render the component',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-670',
-        '@JIRA-STORY:PO-671',
-        '@JIRA-STORY:PO-414',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4209',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent();
@@ -80,13 +74,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
   it(
     'AC.1) should render all elements on the page',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-670',
-        '@JIRA-STORY:PO-671',
-        '@JIRA-STORY:PO-414',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4210',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent();
@@ -115,13 +103,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
   it(
     ' AC.2) should load all keys and elements with correct text',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-670',
-        '@JIRA-STORY:PO-671',
-        '@JIRA-STORY:PO-414',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4211',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent();
@@ -142,13 +124,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
   it(
     'AC.2) should load all fields with the correct values',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-670',
-        '@JIRA-STORY:PO-671',
-        '@JIRA-STORY:PO-414',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4212',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent();
@@ -170,13 +146,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
   it(
     'AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-670',
-        '@JIRA-STORY:PO-671',
-        '@JIRA-STORY:PO-414',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4213',
-      ),
+      tags: buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
     },
     () => {
       setupComponent();

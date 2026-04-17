@@ -1,5 +1,11 @@
-// Stable selectors / visible text hooks for the Defendant Details page.
-
+/**
+ * @file account.enquiry.payment-terms.locators.ts
+ * @description
+ * Shared selector map for the Account Enquiry payment-terms tab and related flows.
+ *
+ * @remarks
+ * - Preserves the legacy export name used by component specs to keep migration mechanical.
+ */
 export const ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
   headingName: 'h1.govuk-heading-l',
@@ -35,4 +41,4 @@ export const ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS = {
   dateLastAmended: '#payment-terms-amendmentsDate-last-amendedValue',
   lastAmendedBy: '#payment-terms-amendmentsLast-amended-byValue',
   amendmentReason: '#payment-terms-amendmentsAmendement-reasonValue',
-};
+} as const;

@@ -100,6 +100,15 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
+  it('should emit when handleRemoveEnforcementOverride is called', () => {
+    const eventEmitterSpy = vi.spyOn(component.removeEnforcementOverride, 'emit');
+    component.hasAccountMaintenancePermission = true;
+
+    component.handleRemoveEnforcementOverride();
+
+    expect(eventEmitterSpy).toHaveBeenCalled();
+  });
+
   it('should not render actions when permissions are missing', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     tabData.enforcement_override = null;

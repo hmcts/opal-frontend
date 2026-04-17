@@ -52,8 +52,8 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   };
 
   it(
-    '(AC.1) Review account is created as per design artefact',
-    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-STORY:PO-600', '@JIRA-KEY:POT-3900') },
+    '(AC.1) Review account is created as per design artefact (FinesDraftCheckAndValidateToReviewComponent)',
+    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-STORY:PO-600') },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -107,7 +107,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.2) should display To review tab correctly when there are zero draft records',
-    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3901') },
+    { tags: buildTags('@JIRA-STORY:PO-593') },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -128,7 +128,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.3) should display To review tab correctly when there are draft records',
-    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3902') },
+    { tags: buildTags('@JIRA-STORY:PO-593') },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -160,8 +160,8 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   );
 
   it(
-    '(AC.4a) should have default sort order for created accounts set to ascending',
-    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3903') },
+    '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateToReviewComponent)',
+    { tags: buildTags('@JIRA-STORY:PO-593') },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -222,8 +222,8 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   );
 
   it(
-    '(AC.4b) should have pagination for over 25 accounts',
-    { tags: buildTags('@JIRA-STORY:PO-593', '@JIRA-KEY:POT-3904') },
+    '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateToReviewComponent)',
+    { tags: buildTags('@JIRA-STORY:PO-593') },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
