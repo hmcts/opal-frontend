@@ -14,7 +14,7 @@ import {
 } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK } from './mocks/parentGuardianDebtor.mock';
-import { DOM_ELEMENTS as DOM } from './constants/defendant_parent_or_guardian_elements';
+import { DOM_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.parent-guardian-details.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 
@@ -37,7 +37,7 @@ const componentProperties: IComponentProperties = {
 describe('Account Enquiry Parent or Guardian Component', () => {
   it(
     'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',
-    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3541') },
+    { tags: buildTags('@JIRA-STORY:PO-788') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -98,7 +98,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1bi: should not display Language preferences sub-section when account is not associated with Welsh speaking BU',
-    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3542') },
+    { tags: buildTags('@JIRA-STORY:PO-788') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -167,7 +167,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1c: should display only Parent or Guardian details sub-section when debtor flag is false',
-    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3543') },
+    { tags: buildTags('@JIRA-STORY:PO-788') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -225,7 +225,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1d, AC1ci, AC1cii, AC1ciii: should display data fields with correct format and all fields read-only',
-    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3544') },
+    { tags: buildTags('@JIRA-STORY:PO-788') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -340,7 +340,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1civ: should display em-dash (—) for fields that have not been provided',
-    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3545') },
+    { tags: buildTags('@JIRA-STORY:PO-788') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -423,7 +423,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2: should display Change button and navigate to change screen when user has Account Maintenance permission in current BU',
-    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3546') },
+    { tags: buildTags('@JIRA-STORY:PO-788') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -456,10 +456,10 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
       // AC2: Verify Change button is displayed when user has Account Maintenance permission in current BU
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').should('be.visible');
+      cy.get(DOM.changeLink).contains('Change').should('be.visible');
 
       // // Click Change button and verify it navigates to the change screen
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').click();
+      cy.get(DOM.changeLink).contains('Change').click();
 
       cy.get('@routerNavigate').should('have.been.calledWith', ['../party/parentGuardian/amend']);
     },
@@ -467,7 +467,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2a: should display Change button but navigate to access denied when user lacks permission in current BU',
-    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3547') },
+    { tags: buildTags('@JIRA-STORY:PO-788') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -500,17 +500,17 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
       // AC2a: Verify Change button is displayed even when user lacks permission in current BU
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').should('be.visible');
+      cy.get(DOM.changeLink).contains('Change').should('be.visible');
 
       // Click Change button and verify it navigates to access denied
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').click();
+      cy.get(DOM.changeLink).contains('Change').click();
       cy.get('@routerNavigate').should('have.been.calledWith', ['/access-denied']);
     },
   );
 
   it(
     'AC2b: should not display Change button when user has no Account Maintenance permission in any BU',
-    { tags: buildTags('@JIRA-STORY:PO-788', '@JIRA-KEY:POT-3548') },
+    { tags: buildTags('@JIRA-STORY:PO-788') },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -561,7 +561,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
       // AC2b: Verify Change button is NOT displayed when user has no Account Maintenance permission
-      cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').should('not.exist');
+      cy.get(DOM.changeLink).should('not.exist');
       //Verify other content is still displayed normally
       cy.get(DOM.parentOrGuardianDetailsName).should('be.visible');
       cy.get(DOM.contactSummaryCardTitle).should('be.visible');

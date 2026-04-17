@@ -37,12 +37,12 @@ Feature: Defendant account enforcement - Collection order
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
-    Scenario: Cancel without making a selection returns to the Enforcement tab
+    Scenario: Cancel without making a selection returns to the Enforcement tab (adult or youth account)
       And I open the Change Collection Order status form
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
-    Scenario: Cancel after selecting a value shows a route guard
+    Scenario: Cancel after selecting a value shows a route guard (adult or youth account)
       And I open the Change Collection Order status form
       And I select "Yes" for Collection Order status
       And I cancel the Change Collection Order status form and choose to stay
@@ -76,12 +76,12 @@ Feature: Defendant account enforcement - Collection order
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
-    Scenario: Cancel without making a selection returns to the Enforcement tab
+    Scenario: Cancel without making a selection returns to the Enforcement tab (parent or guardian account)
       And I open the Change Collection Order status form
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
-    Scenario: Cancel after selecting a value shows a route guard
+    Scenario: Cancel after selecting a value shows a route guard (parent or guardian account)
       And I open the Change Collection Order status form
       And I select "Yes" for Collection Order status
       And I cancel the Change Collection Order status form and choose to stay
@@ -115,12 +115,12 @@ Feature: Defendant account enforcement - Collection order
       And I should see the collection order success banner "Collection Order status changed"
       And the collection order summary should show "Collection Order"
 
-    Scenario: Cancel without making a selection returns to the Enforcement tab
+    Scenario: Cancel without making a selection returns to the Enforcement tab (company account)
       And I open the Change Collection Order status form
       And I cancel the Change Collection Order status form without making changes
       Then I should return to the Enforcement tab
 
-    Scenario: Cancel after selecting a value shows a route guard
+    Scenario: Cancel after selecting a value shows a route guard (company account)
       And I open the Change Collection Order status form
       And I select "Yes" for Collection Order status
       And I cancel the Change Collection Order status form and choose to stay
