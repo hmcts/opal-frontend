@@ -1031,7 +1031,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'Should show error message for invalid amount imposed being a zero value',
     {
-      tags: buildTags('@JIRA-STORY:PO-3550', '@JIRA-KEY:POT-????'),
+      tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-3550', '@JIRA-LABEL:manual-account-creation'],
     },
     () => {
       setupComponent(null);
@@ -1056,7 +1056,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'Should show error message for invalid amount imposed being a minus value',
     {
-      tags: buildTags('@JIRA-STORY:PO-3550', '@JIRA-KEY:POT-????'),
+      tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-3550', '@JIRA-LABEL:manual-account-creation'],
     },
     () => {
       setupComponent(null);
