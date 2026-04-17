@@ -1027,4 +1027,54 @@ describe('FinesMacAddOffenceComponent', () => {
         });
     },
   );
+
+  it(
+    'Should show error message for invalid amount imposed being a zero value',
+    {
+      tags: buildTags('@JIRA-STORY:PO-3550', '@JIRA-KEY:POT-????'),
+    },
+    () => {
+      setupComponent(null);
+
+      const SELECTOR = impositionSelectors(0);
+
+      let Imposition = structuredClone(IMPOSITION_MOCK_1);
+      Imposition[0].fm_offence_details_amount_imposed = 0;
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidZeroValue);
+    },
+  );
+
+  it(
+    'Should show error message for invalid amount imposed being a minus value',
+    {
+      tags: buildTags('@JIRA-STORY:PO-3550', '@JIRA-KEY:POT-????'),
+    },
+    () => {
+      setupComponent(null);
+
+      const SELECTOR = impositionSelectors(0);
+
+      let Imposition = structuredClone(IMPOSITION_MOCK_1);
+      Imposition[0].fm_offence_details_amount_imposed = -200;
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
+    },
+  );
 });
