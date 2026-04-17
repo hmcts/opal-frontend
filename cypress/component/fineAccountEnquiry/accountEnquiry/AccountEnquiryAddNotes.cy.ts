@@ -57,7 +57,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     'should render the component',
-    { tags: buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809') },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6761'] },
     () => {
       setupComponent();
 
@@ -67,7 +67,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.2) should load all elements on the screen correctly',
-    { tags: buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809') },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6762'] },
     () => {
       setupComponent();
 
@@ -83,7 +83,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC2a,2b) should have character limits for account notes',
-    { tags: buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809') },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6763'] },
     () => {
       setupComponent();
 
@@ -102,7 +102,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit',
-    { tags: buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809') },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6764'] },
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('a'.repeat(1001), { delay: 0 });
@@ -114,7 +114,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.3b, 3bi, 3bii) click submit button after entering non-alphanumeric characters shows an error',
-    { tags: buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809') },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6765'] },
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('Test @#$%^&*()');
@@ -135,7 +135,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.3c, 3ci, 3cii)click submit without entering data shows an error',
-    { tags: buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809') },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6766'] },
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear();
@@ -147,7 +147,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.4c, 4ci, 4cii)click submit button after entering valid data',
-    { tags: buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809') },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6767'] },
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('a'.repeat(10), { delay: 0 });

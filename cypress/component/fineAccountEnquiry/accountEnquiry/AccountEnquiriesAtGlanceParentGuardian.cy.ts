@@ -42,7 +42,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   };
   it(
     'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for parent/guardian',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6636'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK);
       header.party_details.organisation_flag = false;
@@ -98,7 +98,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC2a: Displays read-only Language Preferences section below National Insurance Number',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6637'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -121,7 +121,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC2b: displays Document language and Court hearing language values in Language Preferences section (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6638'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -151,7 +151,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   );
   it(
     'AC2bi: Label Welsh and Language is displayed in blue (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6639'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -168,7 +168,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC2bia: Label Welsh and Language is not displayed (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6640'] },
     () => {
       let PGAtAGlance = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       const { language_preferences } = PGAtAGlance;
@@ -188,7 +188,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC2c: Labels not displayed (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6641'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -209,7 +209,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC3: displays Aliases section when defendant has one or more aliases (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6642'] },
     () => {
       const mockDataWithAlias = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       const aliasOne = {
@@ -248,7 +248,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC3b: does not display Aliases section when defendant has no aliases (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6643'] },
     () => {
       const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       headerNoAliases.party_details.individual_details!.individual_aliases = null;
@@ -264,7 +264,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC4,AC4a: displays Comments section with no Account Comment or Free Text Notes (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6644'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -288,7 +288,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6645'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -311,7 +311,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC4c, AC9: displays Comments section with Free Text Notes but no Account Comment, showing em-dash for empty fields',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6646'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -335,7 +335,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC4d: displays Comments section with both Account Comment and Free Text Notes (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6647'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -358,7 +358,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5: Shows Add comments link and navigates to Comments screen when user has Account Maintenance permission in associated  BU (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6648'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -385,7 +385,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5: Shows Change link and navigates to Comments screen when user has Account Maintenance permission in associated BU (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6649'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -410,7 +410,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5a: Add Comment link exists when user has permission in at least one BU but not the BU associated to the account (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6650'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -437,7 +437,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5a: Change link exists when user has permission in at least one BU but not the BU associated to the account (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6651'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -454,7 +454,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5b: Change link and add comment do not exist when user has no permission in any BU (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6652'] },
     () => {
       interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -470,7 +470,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC6a: displays Payment Terms section for "Pay by date" scenario (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6653'] },
     () => {
       const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataPayByDate.payment_terms = {
@@ -502,7 +502,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6654'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -526,7 +526,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC6c: displays Payment Terms section for "Instalments only" scenario (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6655'] },
     () => {
       const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataPayByDate.payment_terms = {
@@ -557,7 +557,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC7a, AC7b, AC7c, AC7d: displays Last Enforcement Action field only when value is present (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6656'] },
     () => {
       const mockDataNoEnforcementAction = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoEnforcementAction.enforcement_status = {
@@ -600,7 +600,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC8a: displays blue "collection order" label when defendant is adult and CO flag is true (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6657'] },
     () => {
       const mockDataAdultWithCO = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataAdultWithCO.is_youth = false;
@@ -619,7 +619,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC8b: displays red "no collection order" label when defendant is adult and CO flag is false (Account Enquiries At Glance Parent Guardian)',
-    { tags: buildTags('@JIRA-STORY:PO-779') },
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-KEY:POT-6658'] },
     () => {
       const mockDataAdultNoCO = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataAdultNoCO.is_youth = false;
