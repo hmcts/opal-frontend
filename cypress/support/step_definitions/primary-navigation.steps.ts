@@ -7,8 +7,15 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import { PrimaryNavigationFlow } from '../../e2e/functional/opal/flows/primary-navigation.flow';
 import { log } from '../utils/log.helper';
+import { AccountSearchFlow } from '../../e2e/functional/opal/flows/account-search.flow';
+import { AccountEnquiryFlow } from '../../e2e/functional/opal/flows/account-enquiry.flow';
+import { PrimaryNavigationActions } from '../../e2e/functional/opal/actions/primary-navigation.actions';
+import { applyUniqPlaceholder } from '../utils/stringUtils';
 
 const primaryNavigationFlow = () => new PrimaryNavigationFlow();
+const accountSearch = () => new AccountSearchFlow();
+const accountEnquiry = () => new AccountEnquiryFlow();
+const primaryNavigation = () => new PrimaryNavigationActions();
 
 /**
  * Logs in and verifies the default Fines Search landing page.
@@ -25,6 +32,60 @@ Given('I am logged in on the Fines Search landing page with email {string}', (em
 Then('I see the Fines primary navigation with Search selected by default', () => {
   log('assert', 'Checking default Fines primary navigation state');
   primaryNavigationFlow().assertDefaultSearchLanding();
+});
+
+/**
+ * Asserts that the Fines primary navigation is visible.
+ */
+Then('I see the Fines primary navigation', () => {
+  log('assert', 'Checking the Fines primary navigation is visible');
+  primaryNavigationFlow().assertVisible();
+});
+
+/**
+ * Asserts that the Fines primary navigation is hidden.
+ */
+Then('I do not see the Fines primary navigation', () => {
+  log('assert', 'Checking the Fines primary navigation is hidden');
+  primaryNavigationFlow().assertHidden();
+});
+
+/**
+ * Starts the Add account note journey from an account found in browse mode.
+ * @param surname - Surname used to locate the published account.
+ */
+When('I start the Add account note journey for {string}', (surname: string) => {
+  const surnameWithUniq = applyUniqPlaceholder(surname);
+
+  log('step', 'Starting Add account note journey from browse mode', { surname: surnameWithUniq });
+
+  accountSearch().navigateAndVerifySearchFromDashboard();
+  primaryNavigation().assertVisible();
+
+  accountEnquiry().searchBySurname(surnameWithUniq);
+  primaryNavigation().assertVisible();
+
+  accountEnquiry().openMostRecentFromResults();
+  primaryNavigation().assertVisible();
+
+  accountEnquiry().openAddAccountNoteAndVerifyHeader();
+});
+
+/**
+ * Completes the Add account note journey and returns to browse mode.
+ * @param note - Note text to save.
+ */
+When('I complete the Add account note journey with note {string}', (note: string) => {
+  log('step', 'Completing Add account note journey and returning to browse mode', { note });
+  accountEnquiry().enterAndSaveNote(note);
+});
+
+/**
+ * Cancels the Add account note journey and returns to browse mode.
+ */
+When('I cancel the Add account note journey', () => {
+  log('step', 'Cancelling Add account note journey and returning to browse mode');
+  accountEnquiry().cancelAccountNoteWithoutEntering();
 });
 
 /**
