@@ -221,6 +221,22 @@ export const routing: Routes = [
         },
       },
       {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
+        loadComponent: () =>
+          import('../fines-acc-enf-override-remove/fines-acc-enf-override-remove.component').then(
+            (c) => c.FinesAccEnfOverrideRemoveComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        data: {
+          title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.remove,
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+        },
+        resolve: {
+          titleResolver: TitleResolver,
+          enforcementStatus: defendantAccountEnforcementStatusResolver,
+        },
+      },
+      {
         path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
         loadComponent: () =>
           import('../fines-acc-enf-court-change/fines-acc-enf-court-change.component').then(

@@ -36,7 +36,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deductions(ABDC) |
+        | enforcement override | Application made for Benefit Deductions (ABDC) |
       # AC4a/AC4b/AC4c - Change the enforcement court to a different value and verify the Enforcement tab, new value, and success banner
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab
@@ -84,7 +84,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deductions(ABDC) |
+        | enforcement override | Application made for Benefit Deductions (ABDC) |
       # AC4a/AC4b/AC4c - Change the enforcement court to a different value and verify the Enforcement tab, new value, and success banner
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab
@@ -135,7 +135,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deductions(ABDC) |
+        | enforcement override | Application made for Benefit Deductions (ABDC) |
       # AC4a/AC4b/AC4c - Change the enforcement court to a different value and verify the Enforcement tab, new value, and success banner
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab

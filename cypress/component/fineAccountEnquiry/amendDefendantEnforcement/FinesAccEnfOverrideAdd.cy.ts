@@ -102,7 +102,7 @@ describe(
     it('AC1a, AC1b. Should render the form with title', { tags: ['@JIRA-KEY:POT-5653'] }, () => {
       commonSetup();
 
-      cy.get(ENF_OVR.title).should('contain.text', 'Mr Robert THOMSON - 177A');
+      cy.get(ENF_OVR.title).should('contain.text', '177A - Mr Robert THOMSON');
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
     });
 
@@ -304,7 +304,7 @@ describe(
         cy.get(ENF.enforcementOverride).should('exist').and('contain.text', 'Enforcement override');
         cy.get(ENF.enforcementOverrideValue).and(
           'contain.text',
-          'Transfer of Fine Order to a Court in England or Wales(TFOOUT)',
+          'Transfer of Fine Order to a Court in England or Wales (TFOOUT)',
         );
         cy.get(ENF.localJusticeArea).should('exist').and('contain.text', 'Local Justice Area (LJA)');
         cy.get(ENF.localJusticeAreaValue).should('exist').and('contain.text', "Bedfordshire Magistrates' Court(4165)");
@@ -399,7 +399,7 @@ describe(
     it('AC1a, AC1b. Should render the form with company title', { tags: ['@JIRA-KEY:POT-5665'] }, () => {
       companySetup();
 
-      cy.get(ENF_OVR.title).should('contain.text', 'Test Org Ltd - 177A');
+      cy.get(ENF_OVR.title).should('contain.text', '177A - Test Org Ltd');
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
     });
 
@@ -435,7 +435,7 @@ describe(
       () => {
         parentGuardianSetup();
 
-        cy.get(ENF_OVR.title).should('contain.text', 'Mr Roberto THOMSON - 177A');
+        cy.get(ENF_OVR.title).should('contain.text', '177A - Mr Roberto THOMSON');
         cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
       },
     );
@@ -654,7 +654,7 @@ describe(
         cy.get(ENF.enforcementOverride).should('exist').and('contain.text', 'Enforcement override');
         cy.get(ENF.enforcementOverrideValue).and(
           'contain.text',
-          'Transfer of Fine Order to a Court in England or Wales(TFOOUT)',
+          'Transfer of Fine Order to a Court in England or Wales (TFOOUT)',
         );
         cy.get(ENF.localJusticeArea).should('exist').and('contain.text', 'Local Justice Area (LJA)');
         cy.get(ENF.localJusticeAreaValue).should('exist').and('contain.text', "Bedfordshire Magistrates' Court(4165)");
