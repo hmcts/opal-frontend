@@ -138,6 +138,23 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         { alias_id: '', sequence_number: 3, surname: 'Johnson', forenames: 'Jane' },
       ]);
     });
+
+    it('should return null when all supplied individual aliases are empty', () => {
+      const aliases: IFinesAccPartyAddAmendConvertIndividualAliasState[] = [
+        {
+          facc_party_add_amend_convert_alias_surname_0: '',
+          facc_party_add_amend_convert_alias_forenames_0: '',
+        },
+        {
+          facc_party_add_amend_convert_alias_surname_1: '',
+          facc_party_add_amend_convert_alias_forenames_1: '',
+        },
+      ];
+
+      const result = buildIndividualAliases(aliases);
+
+      expect(result).toBeNull();
+    });
   });
 
   describe('buildOrganisationAliases', () => {
@@ -250,6 +267,17 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         { alias_id: '99000000002031', sequence_number: 1, organisation_name: 'Acme Corp' },
         { alias_id: '', sequence_number: 3, organisation_name: 'Beta Inc' },
       ]);
+    });
+
+    it('should return null when all supplied organisation aliases are empty', () => {
+      const aliases: IFinesAccPartyAddAmendConvertOrganisationAliasState[] = [
+        { facc_party_add_amend_convert_alias_organisation_name_0: '' },
+        { facc_party_add_amend_convert_alias_organisation_name_1: '' },
+      ];
+
+      const result = buildOrganisationAliases(aliases);
+
+      expect(result).toBeNull();
     });
   });
 
@@ -477,6 +505,50 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
       );
       expect(result.language_preferences?.hearing_language_preference?.language_code).toBe('CY');
       expect(result.language_preferences?.hearing_language_preference?.language_display_name).toBe('Welsh and English');
+    });
+
+    it('should fall back to the English display name when a language code is unknown', () => {
+      const formState: IFinesAccPartyAddAmendConvertState = {
+        facc_party_add_amend_convert_title: 'Mr',
+        facc_party_add_amend_convert_forenames: 'John',
+        facc_party_add_amend_convert_surname: 'Doe',
+        facc_party_add_amend_convert_dob: null,
+        facc_party_add_amend_convert_national_insurance_number: null,
+        facc_party_add_amend_convert_address_line_1: '123 Main St',
+        facc_party_add_amend_convert_address_line_2: null,
+        facc_party_add_amend_convert_address_line_3: null,
+        facc_party_add_amend_convert_post_code: 'AB12 3CD',
+        facc_party_add_amend_convert_contact_email_address_1: null,
+        facc_party_add_amend_convert_contact_email_address_2: null,
+        facc_party_add_amend_convert_contact_telephone_number_mobile: null,
+        facc_party_add_amend_convert_contact_telephone_number_home: null,
+        facc_party_add_amend_convert_contact_telephone_number_business: null,
+        facc_party_add_amend_convert_vehicle_registration_mark: null,
+        facc_party_add_amend_convert_vehicle_make: null,
+        facc_party_add_amend_convert_individual_aliases: [],
+        facc_party_add_amend_convert_organisation_aliases: [],
+        facc_party_add_amend_convert_add_alias: null,
+        facc_party_add_amend_convert_organisation_name: null,
+        facc_party_add_amend_convert_language_preferences_document_language: 'FR' as never,
+        facc_party_add_amend_convert_language_preferences_hearing_language: null,
+        facc_party_add_amend_convert_employer_company_name: null,
+        facc_party_add_amend_convert_employer_reference: null,
+        facc_party_add_amend_convert_employer_email_address: null,
+        facc_party_add_amend_convert_employer_telephone_number: null,
+        facc_party_add_amend_convert_employer_address_line_1: null,
+        facc_party_add_amend_convert_employer_address_line_2: null,
+        facc_party_add_amend_convert_employer_address_line_3: null,
+        facc_party_add_amend_convert_employer_address_line_4: null,
+        facc_party_add_amend_convert_employer_address_line_5: null,
+        facc_party_add_amend_convert_employer_post_code: null,
+      };
+
+      const result = buildAccountPartyFromFormState(formState, 'individual', false, 'party123');
+
+      expect(result.language_preferences?.document_language_preference).toEqual({
+        language_code: 'FR',
+        language_display_name: 'English only',
+      });
     });
   });
 });

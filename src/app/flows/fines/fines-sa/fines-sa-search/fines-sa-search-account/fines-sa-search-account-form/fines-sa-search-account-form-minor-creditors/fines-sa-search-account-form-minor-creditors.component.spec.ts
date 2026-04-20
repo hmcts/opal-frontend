@@ -283,6 +283,25 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(individual.pristine).toBe(true);
       expect(individual.untouched).toBe(true);
     });
+
+    it('does not clear either nested group when the selected type is reset to null', () => {
+      const { type } = getControls(component.form);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const clearCompanyDynamicValidatorsSpy = vi.spyOn<any, any>(component, 'clearCompanyDynamicValidators');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const clearIndividualDynamicValidatorsSpy = vi.spyOn<any, any>(component, 'clearIndividualDynamicValidators');
+
+      type.setValue('individual');
+      clearCompanyDynamicValidatorsSpy.mockClear();
+      clearIndividualDynamicValidatorsSpy.mockClear();
+
+      type.setValue(null);
+
+      expect(component.individualGroup.disabled).toBe(true);
+      expect(component.companyGroup.disabled).toBe(true);
+      expect(clearCompanyDynamicValidatorsSpy).not.toHaveBeenCalled();
+      expect(clearIndividualDynamicValidatorsSpy).not.toHaveBeenCalled();
+    });
   });
 
   // Helper to create a fresh component instance with a custom form shape but DO NOT run detectChanges/ngOnInit
@@ -592,6 +611,45 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(company.pristine).toBe(true);
       expect(company.untouched).toBe(true);
     });
+  });
+
+  it('should no-op in setupMinorCreditorTypeListener when the type control is missing', () => {
+    const badForm = new FormGroup({
+      fsa_search_account_minor_creditors_individual: new FormGroup({}),
+      fsa_search_account_minor_creditors_company: new FormGroup({}),
+    });
+
+    const { cmp } = createComponentWithFormNoInit(badForm);
+
+    expect(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).setupMinorCreditorTypeListener();
+    }).not.toThrow();
+  });
+
+  it('should exercise the company reset branch in the type listener explicitly', () => {
+    const { type } = getControls(component.form);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const clearIndividualDynamicValidatorsSpy = vi.spyOn<any, any>(component, 'clearIndividualDynamicValidators');
+
+    type.setValue('company');
+
+    expect(clearIndividualDynamicValidatorsSpy).toHaveBeenCalled();
+  });
+
+  it('should handle missing nested groups when toggling creditor type directly', () => {
+    const badForm = new FormGroup({
+      fsa_search_account_minor_creditors_minor_creditor_type: new FormControl<string | null>(null),
+    });
+
+    const { cmp } = createComponentWithFormNoInit(badForm);
+
+    expect(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).handleMinorCreditorTypeChange('individual');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).handleMinorCreditorTypeChange('company');
+    }).not.toThrow();
   });
 
   it('should remove its installed controls on destroy when nested in a parent group', () => {

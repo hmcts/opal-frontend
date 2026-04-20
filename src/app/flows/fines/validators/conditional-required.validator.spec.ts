@@ -98,6 +98,25 @@ describe('createConditionalRequiredValidator', () => {
     expect(result).toEqual({ invalidConditionalRequiredRuleConfig: true });
   });
 
+  it('should treat missing trigger controls as empty values', () => {
+    const rules: ConditionalRequiredRuleConfig[] = [
+      {
+        dependentField: 'lastName',
+        triggerFields: ['missingTrigger'],
+      },
+    ];
+
+    const form = new FormGroup({
+      lastName: new FormControl<string | null>(null),
+    });
+
+    const validator = createConditionalRequiredValidator(rules);
+    const result = validator(form);
+
+    expect(result).toBeNull();
+    expect(form.get('lastName')?.hasValidator(Validators.required)).toBe(false);
+  });
+
   it('should evaluate multiple rules independently', () => {
     const rules: ConditionalRequiredRuleConfig[] = [
       {

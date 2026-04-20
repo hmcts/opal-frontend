@@ -42,6 +42,12 @@ describe('FinesMacComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should instantiate directly within an injection context', () => {
+    const instance = TestBed.runInInjectionContext(() => new FinesMacComponent());
+
+    expect(instance).toBeInstanceOf(FinesMacComponent);
+  });
+
   it('should call on destroy and clear state', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const destroy = vi.spyOn<any, any>(component, 'ngOnDestroy');
@@ -66,6 +72,14 @@ describe('FinesMacComponent', () => {
     finesMacStore.setStateChanges(false);
     finesMacStore.setUnsavedChanges(false);
     expect(component.handleBeforeUnload()).toBeTruthy();
+  });
+
+  it('should invoke the beforeunload host listener when the window event fires', () => {
+    const handleBeforeUnloadSpy = vi.spyOn(component, 'handleBeforeUnload');
+
+    window.dispatchEvent(new Event('beforeunload'));
+
+    expect(handleBeforeUnloadSpy).toHaveBeenCalled();
   });
 
   it('should call canDeactivate ', () => {

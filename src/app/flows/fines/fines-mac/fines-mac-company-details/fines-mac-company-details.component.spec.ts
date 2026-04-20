@@ -75,6 +75,18 @@ describe('FinesMacCompanyDetailsComponent', () => {
     });
   });
 
+  it('should not navigate when nested flow has no configured next route', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    formSubmit.nestedFlow = true;
+
+    component.handleCompanyDetailsSubmit(formSubmit);
+
+    expect(finesMacStore.companyDetails()).toEqual(formSubmit);
+    expect(routerSpy).not.toHaveBeenCalled();
+  });
+
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
     expect(finesMacStore.unsavedChanges()).toBeTruthy();

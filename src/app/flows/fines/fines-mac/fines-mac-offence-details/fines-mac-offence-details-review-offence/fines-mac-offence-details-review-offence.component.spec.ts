@@ -13,6 +13,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceComponent>;
+  const activatedRouteMock = {
+    parent: of('offence-details'),
+    snapshot: {
+      data: {
+        results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+        majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+      },
+    },
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,15 +32,7 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
-          useValue: {
-            parent: of('offence-details'),
-            snapshot: {
-              data: {
-                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
-                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
-              },
-            },
-          },
+          useValue: activatedRouteMock,
         },
       ],
     }).compileComponents();
@@ -54,6 +55,10 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   });
 
   beforeEach(() => {
+    activatedRouteMock.snapshot.data = {
+      results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+      majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+    };
     component.offence = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
@@ -72,5 +77,18 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     component.emitAction(event);
 
     expect(emitSpy).toHaveBeenCalledWith(event);
+  });
+
+  it('should leave existing reference data unchanged when route data is missing', () => {
+    const existingResults = structuredClone(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    const existingMajorCreditors = structuredClone(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK);
+    activatedRouteMock.snapshot.data = {} as never;
+    component.impositionRefData = existingResults;
+    component.majorCreditorRefData = existingMajorCreditors;
+
+    component.ngOnInit();
+
+    expect(component.impositionRefData).toEqual(existingResults);
+    expect(component.majorCreditorRefData).toEqual(existingMajorCreditors);
   });
 });
