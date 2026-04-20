@@ -9,7 +9,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
   Background:
     Given I clear all approved accounts
 
-  @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866
+  @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-KEY:POT-5107
   Scenario: Search for an adult or youth defendant account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:

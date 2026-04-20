@@ -103,6 +103,133 @@ function resolveReportPaths(suite, browser, mode) {
 }
 
 /**
+ * Create a stable replacement for a colliding runtime Cucumber `testCaseStarted.id`.
+ * These ids are only used to link runtime envelopes together, so remapping them is safe
+ * as long as every `testCaseStartedId` reference in the same shard is updated as well.
+ * @param {string} originalId
+ * @param {string} sourceFile
+ * @param {Set<string>} usedIds
+ * @returns {string}
+ */
+function createRemappedTestCaseStartedId(originalId, sourceFile, usedIds) {
+  const shardName = path.basename(sourceFile, path.extname(sourceFile)).replace(/[^a-zA-Z0-9_-]/g, '_');
+  let suffix = 1;
+  let candidate = `${originalId}__${shardName}`;
+
+  while (usedIds.has(candidate)) {
+    suffix += 1;
+    candidate = `${originalId}__${shardName}_${suffix}`;
+  }
+
+  return candidate;
+}
+
+/**
+ * Recursively rewrite any `testCaseStartedId` reference using the supplied remap table.
+ * @param {unknown} value
+ * @param {Map<string, string>} remappedIds
+ * @returns {unknown}
+ */
+function remapTestCaseStartedReferences(value, remappedIds) {
+  if (Array.isArray(value)) {
+    let changed = false;
+    const next = value.map((item) => {
+      const remapped = remapTestCaseStartedReferences(item, remappedIds);
+      if (remapped !== item) changed = true;
+      return remapped;
+    });
+
+    return changed ? next : value;
+  }
+
+  if (!value || typeof value !== 'object') {
+    return value;
+  }
+
+  let changed = false;
+  const next = {};
+
+  for (const [key, nestedValue] of Object.entries(value)) {
+    let remappedValue = nestedValue;
+
+    if (key === 'testCaseStartedId' && typeof nestedValue === 'string' && remappedIds.has(nestedValue)) {
+      remappedValue = remappedIds.get(nestedValue);
+    } else {
+      remappedValue = remapTestCaseStartedReferences(nestedValue, remappedIds);
+    }
+
+    if (remappedValue !== nestedValue) {
+      changed = true;
+    }
+
+    next[key] = remappedValue;
+  }
+
+  return changed ? next : value;
+}
+
+/**
+ * Ensure runtime `testCaseStarted.id` values are unique across parallel shards.
+ * Some parallel smoke shards can reuse the same runtime ids, which causes the
+ * downstream Cucumber JSON formatter to merge unrelated scenarios together.
+ * @param {object[][]} messageCollections
+ * @param {string[]} sourceFiles
+ * @returns {object[][]}
+ */
+function normalizeRuntimeMessageIds(messageCollections, sourceFiles) {
+  const usedTestCaseStartedIds = new Set();
+
+  return messageCollections.map((collection, index) => {
+    const sourceFile = sourceFiles[index];
+    const remappedIds = new Map();
+
+    for (const message of collection) {
+      const runtimeId = message.testCaseStarted?.id;
+
+      if (!runtimeId) {
+        continue;
+      }
+
+      if (usedTestCaseStartedIds.has(runtimeId)) {
+        if (!remappedIds.has(runtimeId)) {
+          const remappedId = createRemappedTestCaseStartedId(runtimeId, sourceFile, usedTestCaseStartedIds);
+          remappedIds.set(runtimeId, remappedId);
+          usedTestCaseStartedIds.add(remappedId);
+        }
+
+        continue;
+      }
+
+      usedTestCaseStartedIds.add(runtimeId);
+    }
+
+    if (remappedIds.size === 0) {
+      return collection;
+    }
+
+    console.log(
+      `[build-cucumber-report] remapped ${remappedIds.size} colliding testCaseStarted id(s) in ${path.basename(sourceFile)}`,
+    );
+
+    return collection.map((message) => {
+      const remappedRuntimeId = message.testCaseStarted?.id && remappedIds.get(message.testCaseStarted.id);
+      const messageWithRuntimeId =
+        remappedRuntimeId == null
+          ? message
+          : {
+              ...message,
+              testCaseStarted: {
+                ...message.testCaseStarted,
+                id: remappedRuntimeId,
+              },
+            };
+
+      return remapTestCaseStartedReferences(messageWithRuntimeId, remappedIds);
+    });
+  });
+}
+
+/**
  * Load and parse source ndjson files while excluding stale merged outputs.
  * @param {string} inputDir
  * @param {string} mergedPath
@@ -147,8 +274,10 @@ function loadMessages(inputDir, mergedPath) {
     throw new Error(`All ndjson inputs in ${inputDir} were empty`);
   }
 
+  const normalizedCollections = normalizeRuntimeMessageIds(messageCollections, sourceFiles);
+
   return {
-    messages: mergeMessages(messageCollections),
+    messages: mergeMessages(normalizedCollections),
     sourceFiles,
   };
 }

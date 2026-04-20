@@ -4,6 +4,7 @@
  * Audit Cypress component specs and Opal functional features for:
  * - missing `@JIRA-STORY:*` tags
  * - missing `@JIRA-KEY:POT-*` tags
+ * - component tag shapes that Zephyr cannot rewrite to add a POT tag
  * - multiple POT tags on one executable test
  * - shared POT tags across executable tests
  * - duplicate test names
@@ -518,6 +519,49 @@ function extractComponentTests(file) {
   }
 
   /**
+   * Find the `tags` property within a Cypress config object.
+   * @param {import('typescript').ObjectLiteralExpression | undefined} config
+   * @returns {import('typescript').ObjectLiteralElementLike | undefined}
+   */
+  function findTagsProperty(config) {
+    if (!config) return undefined;
+
+    for (const prop of config.properties) {
+      if (ts.isPropertyAssignment(prop)) {
+        const key = ts.isIdentifier(prop.name) || ts.isStringLiteral(prop.name) ? prop.name.text : undefined;
+        if (key === 'tags') return prop;
+      }
+
+      if (ts.isShorthandPropertyAssignment(prop) && prop.name.text === 'tags') {
+        return prop;
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Return whether Zephyr can safely inject a POT tag into this `it(...)` call.
+   * Zephyr's Cypress tagger only rewrites tests when the config is inline and
+   * `tags` is either absent or a literal array expression.
+   * @param {import('typescript').CallExpression} node
+   * @returns {boolean}
+   */
+  function isAutoPotWritableTest(node) {
+    if (node.arguments.length < 3) return true;
+
+    const maybeConfig = unwrap(node.arguments[1]);
+    if (!maybeConfig) return true;
+    if (!ts.isObjectLiteralExpression(maybeConfig)) return false;
+
+    const tagsProp = findTagsProperty(maybeConfig);
+    if (!tagsProp) return true;
+    if (!ts.isPropertyAssignment(tagsProp)) return false;
+
+    return ts.isArrayLiteralExpression(unwrap(tagsProp.initializer));
+  }
+
+  /**
    * Resolve a literal or helper-computed title.
    * @param {import('typescript').Expression | undefined} node
    * @param {Map<string, unknown>} env
@@ -593,6 +637,7 @@ function extractComponentTests(file) {
         title,
         qualifiedTitle: [...ctx.suites, title].join(' > '),
         tags: uniq([...ctx.tags, ...ownTags]),
+        autoPotWritable: isAutoPotWritableTest(node),
       });
       return;
     }
@@ -615,6 +660,7 @@ function extractComponentTests(file) {
  *   total: number,
  *   missingStory: ExecutableTest[],
  *   missingPot: ExecutableTest[],
+ *   autoPotIncompatible: ExecutableTest[],
  *   multiplePot: Array<ExecutableTest & { potTags: string[] }>,
  *   sharedPot: Array<{ key: string, tests: ExecutableTest[] }>,
  *   duplicateTitle: Array<{ key: string, tests: ExecutableTest[] }>,
@@ -624,6 +670,7 @@ function extractComponentTests(file) {
 function analyse(tests) {
   const missingStory = [];
   const missingPot = [];
+  const autoPotIncompatible = [];
   const multiplePot = [];
   const testsByPot = new Map();
   const testsByTitle = new Map();
@@ -635,6 +682,7 @@ function analyse(tests) {
 
     if (storyTags.length === 0) missingStory.push(test);
     if (potTags.length === 0) missingPot.push(test);
+    if (test.scope === 'component' && test.autoPotWritable === false) autoPotIncompatible.push(test);
     if (potTags.length > 1) multiplePot.push({ ...test, potTags });
 
     for (const potTag of potTags) {
@@ -653,6 +701,7 @@ function analyse(tests) {
     total: tests.length,
     missingStory,
     missingPot,
+    autoPotIncompatible,
     multiplePot,
     sharedPot: [...testsByPot.entries()]
       .filter(([, group]) => group.length > 1)
@@ -668,7 +717,7 @@ function analyse(tests) {
 
 /**
  * Create one CSV row per offending test occurrence.
- * @param {"missing_story"|"missing_pot"|"multiple_pot"|"shared_pot"|"duplicate_title"|"duplicate_qualified_title"} issueType
+ * @param {"missing_story"|"missing_pot"|"auto_pot_incompatible_tags"|"multiple_pot"|"shared_pot"|"duplicate_title"|"duplicate_qualified_title"} issueType
  * @param {ExecutableTest[]} tests
  * @param {{ key?: string, relatedTests?: ExecutableTest[], potTagsByTest?: Map<string, string[]> }} options
  * @returns {CsvRow[]}
@@ -693,6 +742,7 @@ function buildIssueRows(issueType, tests, options = {}) {
       qualified_title: test.qualifiedTitle,
       story_tags: storyTags.join(' | '),
       pot_tags: potTags.join(' | '),
+      auto_pot_writable: test.autoPotWritable === undefined ? '' : test.autoPotWritable ? 'true' : 'false',
       group_key: options.key || '',
       related_count: relatedCount,
       related_locations: relatedLocations.join(' | '),
@@ -711,6 +761,7 @@ function buildRows(result) {
 
   rows.push(...buildIssueRows('missing_story', result.missingStory));
   rows.push(...buildIssueRows('missing_pot', result.missingPot));
+  rows.push(...buildIssueRows('auto_pot_incompatible_tags', result.autoPotIncompatible));
 
   if (result.multiplePot.length > 0) {
     const potTagsByTest = new Map(
@@ -755,10 +806,10 @@ function buildRows(result) {
 function printSummary(outputPath, component, functional, rowCount) {
   console.log(`[check-cypress-test-metadata] wrote ${rel(outputPath)}`);
   console.log(
-    `[check-cypress-test-metadata] component total=${component.total} missing_story=${component.missingStory.length} missing_pot=${component.missingPot.length} multiple_pot=${component.multiplePot.length} shared_pot=${component.sharedPot.length} duplicate_title=${component.duplicateTitle.length} duplicate_qualified_title=${component.duplicateQualifiedTitle.length}`,
+    `[check-cypress-test-metadata] component total=${component.total} missing_story=${component.missingStory.length} missing_pot=${component.missingPot.length} auto_pot_incompatible=${component.autoPotIncompatible.length} multiple_pot=${component.multiplePot.length} shared_pot=${component.sharedPot.length} duplicate_title=${component.duplicateTitle.length} duplicate_qualified_title=${component.duplicateQualifiedTitle.length}`,
   );
   console.log(
-    `[check-cypress-test-metadata] functional total=${functional.total} missing_story=${functional.missingStory.length} missing_pot=${functional.missingPot.length} multiple_pot=${functional.multiplePot.length} shared_pot=${functional.sharedPot.length} duplicate_title=${functional.duplicateTitle.length} duplicate_qualified_title=${functional.duplicateQualifiedTitle.length}`,
+    `[check-cypress-test-metadata] functional total=${functional.total} missing_story=${functional.missingStory.length} missing_pot=${functional.missingPot.length} auto_pot_incompatible=${functional.autoPotIncompatible.length} multiple_pot=${functional.multiplePot.length} shared_pot=${functional.sharedPot.length} duplicate_title=${functional.duplicateTitle.length} duplicate_qualified_title=${functional.duplicateQualifiedTitle.length}`,
   );
   console.log(`[check-cypress-test-metadata] csv_rows=${rowCount}`);
 }
@@ -785,6 +836,7 @@ const headers = [
   'qualified_title',
   'story_tags',
   'pot_tags',
+  'auto_pot_writable',
   'group_key',
   'related_count',
   'related_locations',
@@ -803,7 +855,8 @@ process.exit(rows.length === 0 ? 0 : 1);
  *   line: number,
  *   title: string,
  *   qualifiedTitle: string,
- *   tags: string[]
+ *   tags: string[],
+ *   autoPotWritable?: boolean
  * }} ExecutableTest
  */
 
@@ -817,6 +870,7 @@ process.exit(rows.length === 0 ? 0 : 1);
  *   qualified_title: string,
  *   story_tags: string,
  *   pot_tags: string,
+ *   auto_pot_writable: string,
  *   group_key: string,
  *   related_count: string | number,
  *   related_locations: string,

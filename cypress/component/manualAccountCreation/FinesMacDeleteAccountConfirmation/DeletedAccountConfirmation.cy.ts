@@ -133,7 +133,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
   it(
     'AC.1, AC.2 Reason for deletion screen created as per the design artefact',
-    { tags: buildTags('@JIRA-STORY:PO-597') },
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7396'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
@@ -146,8 +146,8 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     },
   );
   it(
-    'AC.3ai,AC.3aii Yes - Delete button under the character count once a reason is entered ',
-    { tags: buildTags('@JIRA-STORY:PO-597') },
+    'AC.3ai,AC.3aii Yes - Delete button under the character count once a reason is entered',
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7397'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
       cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
@@ -164,7 +164,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
   it(
     'AC.3bii a request to update draft account with patch method with status of deleted',
-    { tags: buildTags('@JIRA-STORY:PO-597') },
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7398'] },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
