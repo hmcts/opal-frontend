@@ -10,6 +10,8 @@ import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-se
 import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -52,6 +54,29 @@ describe('FinesSaResultsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should enforce current template link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesSaResultsComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesSaResultsComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const actionLinkConsts = templateConsts.filter(
+      (entry) => entry.includes('govuk-link') && entry.includes('href') && entry.includes('click'),
+    );
+
+    expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
+    actionLinkConsts.forEach((entry) => {
+      expect(entry).toContain('govuk-link--no-visited-state');
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
   });
 
   it('should initialise resultView, load snapshot data, and set up fragment listener on init', () => {
@@ -115,7 +140,7 @@ describe('FinesSaResultsComponent', () => {
     router.serializeUrl.mockReturnValue(mockUrl);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(window, 'open');
+    vi.spyOn<any, any>(globalThis, 'open');
     component.onAccountIdClick(1);
 
     expect(router.serializeUrl).toHaveBeenCalled();
@@ -262,16 +287,81 @@ describe('FinesSaResultsComponent', () => {
     expect(setTabSpy).toHaveBeenCalledWith('' as FinesSaSearchAccountTab);
   });
 
+  it('should not subscribe to fragment changes for non-defendant result views', () => {
+    component.resultView = 'minorCreditors';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setTabSpy = vi.spyOn<any, any>(finesSaStore, 'setResultsActiveTab');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).setupFragmentListener();
+
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(setTabSpy).not.toHaveBeenCalled();
+  });
+
   it('should navigate back to search page with correct fragment', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(finesSaStore, 'activeTab').mockReturnValue('individuals');
 
     component.navigateBackToSearch();
 
-    expect(router.navigate).toHaveBeenCalledWith([component['finesSaSearchRoutingPaths'].root], {
-      relativeTo: component['activatedRoute'].parent,
-      fragment: 'individuals',
-    });
+    expect(router.navigate).toHaveBeenCalledWith(
+      [
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.children.search,
+      ],
+      {
+        fragment: 'individuals',
+      },
+    );
+  });
+
+  it('should prevent default and navigate when navigateBackToSearch is called with an event', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesSaStore, 'activeTab').mockReturnValue('companies');
+
+    component.navigateBackToSearch(event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(
+      [
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.root,
+        FINES_DASHBOARD_ROUTING_PATHS.children.search,
+      ],
+      {
+        fragment: 'companies',
+      },
+    );
+  });
+
+  it('should click "Check your search" link and prevent default via the passed template event', () => {
+    component.resultView = 'individuals';
+    component.individualsData = [];
+    fixture.detectChanges();
+
+    const link = Array.from(
+      fixture.nativeElement.querySelectorAll('a.govuk-link') as NodeListOf<HTMLAnchorElement>,
+    ).find((anchor) => anchor.textContent?.includes('Check your search'));
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Check your search link not found');
+
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'navigateBackToSearch');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(event);
+    expect(event.defaultPrevented).toBe(true);
   });
 
   it('should return mapped individual defendant data with aliases', () => {

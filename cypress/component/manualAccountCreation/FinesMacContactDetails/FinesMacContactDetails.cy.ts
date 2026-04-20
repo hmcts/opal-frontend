@@ -8,6 +8,10 @@ import { INVALID_DETAILS } from './constants/fines_mac_contact_details_errors';
 import { MacContactDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.contact-details.locators';
 import { of } from 'rxjs';
 
+const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+
+const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
+
 describe('FinesMacContactDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
@@ -57,44 +61,56 @@ describe('FinesMacContactDetailsComponent', () => {
     });
   });
 
-  it('should render the component', () => {
-    setupComponent(null);
+  it(
+    'should render the component (FinesMacContactDetailsComponent)',
+    { tags: [...buildTags('@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7341'] },
+    () => {
+      setupComponent(null);
 
-    // Verify the component is rendered
-    cy.get(L.primaryEmailInput).should('exist');
-  });
+      // Verify the component is rendered
+      cy.get(L.primaryEmailInput).should('exist');
+    },
+  );
 
-  it('(AC.1) should load all elements on the screen correctly', { tags: ['@PO-272', '@PO-419'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    '(AC.1) should load all elements on the screen correctly (FinesMacContactDetailsComponent)',
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7342'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(L.pageHeader).should('contain', 'Defendant contact details');
+      cy.get(L.pageHeader).should('contain', 'Defendant contact details');
 
-    cy.get(L.primaryEmailInput).should('exist');
-    cy.get(L.secondaryEmailInput).should('exist');
-    cy.get(L.mobileTelephoneInput).should('exist');
-    cy.get(L.homeTelephoneInput).should('exist');
-    cy.get(L.workTelephoneInput).should('exist');
-    cy.get(L.returnToAccountDetailsButton).should('exist');
+      cy.get(L.primaryEmailInput).should('exist');
+      cy.get(L.secondaryEmailInput).should('exist');
+      cy.get(L.mobileTelephoneInput).should('exist');
+      cy.get(L.homeTelephoneInput).should('exist');
+      cy.get(L.workTelephoneInput).should('exist');
+      cy.get(L.returnToAccountDetailsButton).should('exist');
 
-    cy.get(L.primaryEmailLabel).should('contain', 'Primary email address');
-    cy.get(L.secondaryEmailLabel).should('contain', 'Secondary email address');
-    cy.get(L.mobileTelephoneLabel).should('contain', 'Mobile telephone number');
-    cy.get(L.homeTelephoneLabel).should('contain', 'Home telephone number');
-    cy.get(L.workTelephoneLabel).should('contain', 'Work telephone number');
+      cy.get(L.primaryEmailLabel).should('contain', 'Primary email address');
+      cy.get(L.secondaryEmailLabel).should('contain', 'Secondary email address');
+      cy.get(L.mobileTelephoneLabel).should('contain', 'Mobile telephone number');
+      cy.get(L.homeTelephoneLabel).should('contain', 'Home telephone number');
+      cy.get(L.workTelephoneLabel).should('contain', 'Work telephone number');
 
-    cy.get(L.returnToAccountDetailsButton).should('contain', 'Return to account details');
-    cy.get(L.cancelLink).should('contain', 'Cancel');
-  });
+      cy.get(L.returnToAccountDetailsButton).should('contain', 'Return to account details');
+      cy.get(L.cancelLink).should('contain', 'Cancel');
+    },
+  );
 
-  it('(AC.1) should load button for next page for adultOrYouthOnly Defendant', { tags: ['@PO-272', '@PO-419'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    '(AC.1) should load button for next page for adultOrYouthOnly Defendant',
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7343'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(L.addEmployerDetailsButton).should('contain', 'Add employer details');
-  });
+      cy.get(L.addEmployerDetailsButton).should('contain', 'Add employer details');
+    },
+  );
 
   it(
     '(AC.2) should not have any mandatory inputs - Return to account details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7344'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -106,31 +122,43 @@ describe('FinesMacContactDetailsComponent', () => {
     },
   );
 
-  it('(AC.2) should not have any mandatory inputs - Add employer details', { tags: ['@PO-272', '@PO-419'] }, () => {
-    const formSubmitSpy = Cypress.sinon.spy();
+  it(
+    '(AC.2) should not have any mandatory inputs - Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7345'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
 
-    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
-    cy.get(L.addEmployerDetailsButton).click();
+      cy.get(L.addEmployerDetailsButton).click();
 
-    cy.wrap(formSubmitSpy).should('have.been.called');
-  });
+      cy.wrap(formSubmitSpy).should('have.been.called');
+    },
+  );
 
-  it('(AC.3) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-370'] }, () => {
-    setupComponent(null, 'pgToPay');
+  it(
+    '(AC.3) should load button for next page for AYPG Defendant',
+    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-370'), '@JIRA-KEY:POT-7346'] },
+    () => {
+      setupComponent(null, 'pgToPay');
 
-    cy.get(L.addEmployerDetailsButton).should('contain', 'Add employer details');
-  });
+      cy.get(L.addEmployerDetailsButton).should('contain', 'Add employer details');
+    },
+  );
 
-  it('(AC.3) should load button for next page for Company Defendant', { tags: ['@PO-345', '@PO-371'] }, () => {
-    setupComponent(null, 'company');
+  it(
+    '(AC.3) should load button for next page for Company Defendant',
+    { tags: [...buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-371'), '@JIRA-KEY:POT-7347'] },
+    () => {
+      setupComponent(null, 'company');
 
-    cy.get(L.addOffenceDetailsButton).should('contain', 'Add offence details');
-  });
+      cy.get(L.addOffenceDetailsButton).should('contain', 'Add offence details');
+    },
+  );
 
   it(
     '(AC.4) should accept valid email addresses - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7348'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -156,7 +184,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.5) should accept valid telephone numbers - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7349'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -182,7 +210,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.6) should accept valid contact details - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7350'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -208,7 +236,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.7) should error when primary email address validation is not met - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7351'] },
     () => {
       const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(invalidEmails).each((email: string) => {
@@ -226,7 +254,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.7) should error when secondary email address validation is not met - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7352'] },
     () => {
       const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(invalidEmails).each((email: string) => {
@@ -244,7 +272,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when home telephone number validation is not met - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7353'] },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
@@ -262,7 +290,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when business telephone number validation is not met - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7354'] },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
@@ -280,7 +308,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when mobile telephone number validation is not met - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7355'] },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
@@ -298,7 +326,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.9) should allow submission when validation errors are corrected - Return to account details + Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7356'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 

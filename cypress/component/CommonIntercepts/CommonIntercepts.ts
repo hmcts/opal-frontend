@@ -8,6 +8,8 @@ import {
   OPAL_OFFENCE_BY_ID_MOCK,
   OPAL_FINES_OFFENCES_REF_DATA_MOCK,
   OPAL_FINES_RESULT_REF_DATA_MOCK,
+  OPAL_FINES_ENFORCER_REF_DATA_MOCK,
+  OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK,
 } from './CommonIntercept.mocks';
 
 /**
@@ -75,7 +77,7 @@ export function interceptOffencesById(offenceId: number) {
  * Intercepts the GET request to the `/sso/authenticated` endpoint and mocks the response
  * to indicate that the user is authenticated.
  *
- * @returns Cypress.Chainable<Cypress.Interception> - The Cypress chainable object for further chaining.
+ * @returns Cypress.Chainable<> - The Cypress chainable object for further chaining.
  *
  * @example
  * // Usage in a Cypress test
@@ -215,4 +217,49 @@ export function interceptResultByCode(resultCode: string) {
       },
     )
     .as('getResultByCode');
+}
+
+/**
+ *
+ * @returns {Cypress.Chainable<Cypress.Interception>} A Cypress chainable that represents the intercepted request,
+ * aliased as 'getEnforcementOverrideResults' for later reference in tests.
+ *
+ * @example
+ * ```typescript
+ * interceptEnforcementOverrideResults();
+ * cy.wait('@getEnforcementOverrideResults');
+ * ```
+ */
+
+export function interceptEnforcementOverrideResults() {
+  const overrideResults = OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK;
+  return cy
+    .intercept('GET', `/opal-fines-service/results?enforcement_override=true`, {
+      statusCode: 200,
+      body: { count: overrideResults.refData.length, refData: overrideResults.refData },
+    })
+    .as('getEnforcementOverrideResults');
+}
+
+/**
+ * Intercepts GET requests to the enforcers endpoint and returns mock enforcer data.
+ *
+ * @returns {Cypress.Chainable<Cypress.Interception>} A Cypress chainable that represents the intercepted request,
+ * aliased as 'getEnforcersByBU' for later reference in tests.
+ *
+ * @example
+ * ```typescript
+ * interceptEnforcers();
+ * cy.get('[data-testid="enforcer-select"]').click();
+ * cy.wait('@getEnforcersByBU');
+ * ```
+ */
+export function interceptEnforcers() {
+  const enforcers = OPAL_FINES_ENFORCER_REF_DATA_MOCK;
+  return cy
+    .intercept('GET', `/opal-fines-service/enforcers`, {
+      statusCode: 200,
+      body: enforcers,
+    })
+    .as('getEnforcersByBU');
 }

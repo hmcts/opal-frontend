@@ -16,10 +16,10 @@ describe('FinesAccBannerMessagesComponent', () => {
     component = fixture.componentInstance;
     component.hasVersionMismatch = false;
     component.successMessage = null;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 

@@ -57,7 +57,23 @@ const ssrLogger = Logger.getLogger('SSR');
 function app(): Express {
   const server = express();
 
-  const commonEngine = new CommonEngine();
+  const commonEngine = new CommonEngine({
+    allowedHosts: [
+      'localhost',
+      'opal-frontend.staging.platform.hmcts.net',
+      'opal-frontend-staging.staging.platform.hmcts.net',
+      'opal-frontend.demo.platform.hmcts.net',
+      'opal-frontend.ithc.platform.hmcts.net',
+      'opal-frontend.test.platform.hmcts.net',
+      '*.dev.platform.hmcts.net',
+      'opal-frontend.staging.apps.hmcts.net',
+      'opal-frontend-staging.staging.apps.hmcts.net',
+      'opal-frontend.demo.apps.hmcts.net',
+      'opal-frontend.ithc.apps.hmcts.net',
+      'opal-frontend.test.apps.hmcts.net',
+      '*.dev.apps.hmcts.net',
+    ],
+  });
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
@@ -68,23 +84,25 @@ function app(): Express {
   configureSecurityHeaders(server);
   new HealthCheck().enableFor(server, 'opal-frontend');
 
-  const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration } = getRoutesConfig();
+  const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration, proxyConfiguration } =
+    getRoutesConfig();
 
-  configureApiProxyRoutes(server);
+  configureApiProxyRoutes(server, proxyConfiguration);
 
   server.get('/health', (_req: Request, res: Response) => {
     res.status(200).send('OK');
   });
 
-  new Routes().enableFor(
-    server,
-    config.get('features.sso.enabled'),
-    sessionExpiryConfiguration,
+  new Routes().enableFor({
+    app: server,
+    ssoEnabled: config.get('features.sso.enabled'),
+    expiryConfiguration: sessionExpiryConfiguration,
     routesConfiguration,
     sessionConfiguration,
     ssoConfiguration,
-    opalUserServiceConfiguration,
-  );
+    opalUserServiceConfig: opalUserServiceConfiguration,
+    proxyConfiguration,
+  });
 
   const serverTransferState = configureMonitoring();
 

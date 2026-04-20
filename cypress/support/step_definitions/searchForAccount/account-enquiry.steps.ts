@@ -25,8 +25,10 @@ import { EditDefendantDetailsActions } from '../../..//e2e/functional/opal/actio
 import { EditCompanyDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.company-details.actions';
 import { AccountDetailsNavActions } from '../../..//e2e/functional/opal/actions/account-details/details.nav.actions';
 import { EditParentGuardianDetailsActions } from '../../..//e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
+import { AccountDetailsFixedPenaltyActions } from '../../..//e2e/functional/opal/actions/account-details/details.fixed-penalty.actions';
 import { log } from '../../utils/log.helper';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
+import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 
 // Factory functions so each step gets a fresh instance with its own Cypress chain
 const flow = () => new AccountEnquiryFlow();
@@ -36,6 +38,7 @@ const common = () => new CommonActions();
 const editDefendantDetails = () => new EditDefendantDetailsActions();
 const editCompanyDetails = () => new EditCompanyDetailsActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
+const fixedPenaltyDetails = () => new AccountDetailsFixedPenaltyActions();
 const navActions = () => new AccountDetailsNavActions();
 
 type CommentRow = { [key: string]: string };
@@ -86,6 +89,26 @@ When('I search for the account by last name {string} and open the latest result'
 });
 
 /**
+ * @step Opens the latest matching account from the current Search results page.
+ *
+ * @remarks
+ * - Intended for journey scenarios where the results page has already been asserted.
+ * - Delegates to the shared AccountEnquiryFlow/ResultsActions open helper.
+ */
+When('I open the latest matching result from the search results', () => {
+  log('step', 'Opening latest matching result from search results');
+  flow().openMostRecentFromResults();
+});
+
+/**
+ * @step Opens the latest matching account from the Companies tab on the Search results page.
+ */
+When('I open the latest matching result from the Companies search results', () => {
+  log('step', 'Opening latest matching result from Companies search results');
+  flow().openMostRecentFromCompaniesResults();
+});
+
+/**
  * @step Verifies that any page/account/summary header contains the given string.
  *
  * @remarks
@@ -125,6 +148,17 @@ When('I go to the Parent or guardian details section and the header is {string}'
 });
 
 /**
+ * @step Navigates to the Fixed penalty section and validates the header text.
+ *
+ * @param expected - Expected header text for the section.
+ */
+When('I go to the Fixed penalty section and the header is {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('step', 'Navigate to Fixed penalty details', { expected: expectedWithUniq });
+  flow().goToFixedPenaltyDetailsAndAssert(expectedWithUniq);
+});
+
+/**
  * @step Navigates to the Payment terms tab.
  */
 When('I go to the Payment terms tab', () => {
@@ -138,6 +172,200 @@ When('I go to the Payment terms tab', () => {
 When('I open the amend payment terms form', () => {
   log('step', 'Open amend payment terms form');
   flow().openPaymentTermsAmendForm();
+});
+
+/**
+ * @step Navigates to the Enforcement tab.
+ */
+When('I go to the Enforcement tab', () => {
+  log('step', 'Navigate to Enforcement tab');
+  flow().goToEnforcementTab();
+});
+
+/**
+ * @step Opens the add enforcement override form from the Enforcement tab.
+ */
+When('I open the add enforcement override form', () => {
+  log('step', 'Open add enforcement override form');
+  flow().openAddEnforcementOverrideForm();
+});
+
+/**
+ * @step Opens the Change Collection Order status form from the Enforcement tab.
+ */
+When('I open the Change Collection Order status form', () => {
+  log('step', 'Open Change Collection Order status form');
+  flow().openChangeCollectionOrderForm();
+});
+
+/**
+ * @step Verifies the Change Collection Order status page is visible.
+ */
+Then('I should see the Change Collection Order status page', () => {
+  log('assert', 'Change Collection Order status page is visible');
+  flow().assertChangeCollectionOrderFormVisible();
+});
+
+/**
+ * @step Verifies the account identifier shown on the Change Collection Order status page.
+ */
+Then('I should see the account identifier {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Change Collection Order account identifier', { expected: expectedWithUniq });
+  flow().assertChangeCollectionOrderAccountIdentifier(expectedWithUniq);
+});
+
+/**
+ * @step Selects the requested Collection Order status option on the change form.
+ */
+When('I select {string} for Collection Order status', (option: string) => {
+  log('step', 'Select Collection Order status', { option });
+  flow().selectChangeCollectionOrderStatus(option);
+});
+
+/**
+ * @step Submits the Change Collection Order status form.
+ */
+When('I submit the Change Collection Order status form', () => {
+  log('step', 'Submit Change Collection Order status form');
+  flow().submitChangeCollectionOrderForm();
+});
+
+/**
+ * @step Cancels the Change Collection Order status form without making changes.
+ */
+When('I cancel the Change Collection Order status form without making changes', () => {
+  log('step', 'Cancel Change Collection Order status form without changes');
+  flow().cancelChangeCollectionOrderFormWithoutChanges();
+});
+
+/**
+ * @step Cancels the Change Collection Order status form and chooses to stay on the page.
+ */
+When('I cancel the Change Collection Order status form and choose to stay', () => {
+  log('step', 'Cancel Change Collection Order status form and choose to stay');
+  flow().cancelChangeCollectionOrderFormAndStay();
+});
+
+/**
+ * @step Verifies the Collection Order success banner text.
+ */
+Then('I should see the collection order success banner {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Collection Order success banner text', { expected: expectedWithUniq });
+  flow().assertCollectionOrderSuccessBanner(expectedWithUniq);
+});
+
+/**
+ * @step Verifies the Collection Order summary value shown on the Enforcement tab.
+ */
+Then('the collection order summary should show {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Collection Order summary value', { expected: expectedWithUniq });
+  flow().assertCollectionOrderSummary(expectedWithUniq);
+});
+
+/**
+ * @step Verifies we remain on the Change Collection Order status page.
+ */
+Then('I should remain on the Change Collection Order status page', () => {
+  log('assert', 'Remain on Change Collection Order status page');
+  flow().assertChangeCollectionOrderFormVisible();
+});
+
+/**
+ * @step Selects an enforcement override on the add form.
+ */
+When('I choose the enforcement override {string}', (resultCode: string) => {
+  log('step', 'Choose enforcement override', { resultCode });
+  flow().selectEnforcementOverride(resultCode);
+});
+
+/**
+ * @step Selects a Local Justice Area on the add form.
+ */
+When('I choose the Local Justice Area {string}', (localJusticeArea: string) => {
+  log('step', 'Choose Local Justice Area', { localJusticeArea });
+  flow().selectEnforcementOverrideLocalJusticeArea(localJusticeArea);
+});
+
+/**
+ * @step Selects an enforcer on the add form.
+ */
+When('I choose the enforcer {string}', (enforcer: string) => {
+  log('step', 'Choose enforcer', { enforcer });
+  flow().selectEnforcementOverrideEnforcer(enforcer);
+});
+
+/**
+ * @step Submits the add enforcement override form.
+ */
+When('I add the enforcement override', () => {
+  log('step', 'Submit add enforcement override form');
+  flow().submitAddEnforcementOverride();
+});
+
+/**
+ * @step Completes the add enforcement override form with the provided values and submits it.
+ */
+When(
+  'I add the enforcement override {string} with the Local Justice Area {string}',
+  (resultCode: string, lja: string) => {
+    log('step', 'Add enforcement override with Local Justice Area', { resultCode, lja });
+    flow().selectEnforcementOverride(resultCode);
+    flow().selectEnforcementOverrideLocalJusticeArea(lja);
+    flow().submitAddEnforcementOverride();
+  },
+);
+
+/**
+ * @step Completes the add enforcement override form with the provided values and submits it.
+ */
+When('I add the enforcement override {string} with the enforcer {string}', (resultCode: string, enforcer: string) => {
+  log('step', 'Add enforcement override with enforcer', { resultCode, enforcer });
+  flow().selectEnforcementOverride(resultCode);
+  flow().selectEnforcementOverrideEnforcer(enforcer);
+  flow().submitAddEnforcementOverride();
+});
+
+/**
+ * @step Opens the change enforcement court form from the Enforcement tab.
+ */
+When('I open the change enforcement court form', () => {
+  log('step', 'Open change enforcement court form');
+  flow().openChangeEnforcementCourtForm();
+});
+
+/**
+ * @step Changes the enforcement court to a different available value.
+ */
+When('I change the enforcement court to a different value', () => {
+  log('step', 'Change enforcement court to a different value');
+  flow().changeEnforcementCourtToDifferentValue();
+});
+
+/**
+ * @step Saves the currently displayed enforcement court value again.
+ */
+When('I save the same enforcement court value again', () => {
+  log('step', 'Save the same enforcement court value again');
+  flow().saveSameEnforcementCourtValueAgain();
+});
+
+/**
+ * @step Cancels the change enforcement court form after selecting a value and confirms leaving.
+ */
+When('I cancel the change enforcement court form after selecting a value and discarding changes', () => {
+  log('step', 'Cancel dirty change enforcement court form and discard changes');
+  flow().cancelDirtyChangeEnforcementCourtAndDiscardChanges();
+});
+
+/**
+ * @step Cancels the add enforcement override form and discards changes.
+ */
+When('I cancel the add enforcement override form and discard changes', () => {
+  log('step', 'Cancel add enforcement override form and discard changes');
+  flow().cancelAddEnforcementOverrideAndDiscardChanges();
 });
 
 /**
@@ -157,11 +385,143 @@ When('I cancel payment terms amendments', () => {
 });
 
 /**
+ * @step Asserts the At a glance tab is active.
+ */
+Then('the At a glance tab should be selected by default', () => {
+  log('assert', 'At a glance tab is active by default');
+  navActions().assertAtAGlanceTabIsActive();
+});
+
+/**
+ * @step Asserts the Fixed penalty tab is visible on the account details page.
+ */
+Then('I should see the Fixed penalty tab', () => {
+  log('assert', 'Fixed penalty tab is visible');
+  navActions().assertFixedPenaltyTabIsVisible();
+});
+
+/**
+ * @step Asserts the expected read-only sections are visible on the At a glance tab.
+ */
+Then('I should see the read only sections on the At a glance tab:', (table: DataTable) => {
+  const rows = normalizeTableRows(table);
+  const expectedSections = rows.map((row) => row[0] ?? '').filter(Boolean);
+
+  log('assert', 'Asserting read only sections on the At a glance tab', { expectedSections });
+  atAGlanceDetails().assertReadOnlySections(expectedSections);
+});
+
+/**
+ * @step Asserts the account header summary values displayed above the details tabs.
+ */
+Then('I should see the account header summary values:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting account header summary values', { expectedValues });
+  atAGlanceDetails().assertAccountHeaderSummaryValues(expectedValues);
+});
+
+/**
+ * @step Asserts the fixed-penalty detail values shown on the Fixed penalty tab.
+ */
+Then('I should see the fixed penalty details:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting fixed penalty details', { expectedValues });
+  fixedPenaltyDetails().assertDetails(expectedValues);
+});
+
+/**
+ * @step Asserts the vehicle-only fixed-penalty fields are not shown on the Fixed penalty tab.
+ */
+Then('I should not see the vehicle fixed penalty fields', () => {
+  log('assert', 'Asserting vehicle fixed penalty fields are absent');
+  fixedPenaltyDetails().assertVehicleFieldsNotPresent();
+});
+
+/**
+ * @step Asserts the language preferences shown on the At a glance tab.
+ */
+Then('I should see the following language preferences on the At a glance tab:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting language preferences on the At a glance tab', { expectedValues });
+  atAGlanceDetails().assertLanguagePreferences(expectedValues);
+});
+
+/**
  * @step Asserts the payment terms tab is active.
  */
 Then('I should return to the Payment terms tab', () => {
   log('assert', 'Payment terms tab is active');
   flow().assertPaymentTermsTabIsActive();
+});
+
+/**
+ * @step Asserts the Enforcement tab is active.
+ */
+Then('I should return to the Enforcement tab', () => {
+  log('assert', 'Enforcement tab is active');
+  flow().assertEnforcementTabIsActive();
+});
+
+/**
+ * @step Asserts the enforcement override success banner text.
+ */
+Then('the enforcement override success banner is {string}', (expected: string) => {
+  log('assert', 'Enforcement override success banner text', { expected });
+  flow().assertEnforcementOverrideSuccessBanner(expected);
+});
+
+/**
+ * @step Asserts the enforcement court success banner text.
+ */
+Then('the enforcement court success banner is {string}', (expected: string) => {
+  log('assert', 'Enforcement court success banner text', { expected });
+  flow().assertEnforcementCourtSuccessBanner(expected);
+});
+
+/**
+ * @step Asserts the selected enforcement court value is shown in the summary row.
+ */
+Then('the enforcement court summary shows the selected value', () => {
+  log('assert', 'Selected enforcement court summary value');
+  flow().assertSelectedEnforcementCourtSummary();
+});
+
+/**
+ * @step Asserts no enforcement success banner is displayed.
+ */
+Then('the enforcement success banner is not displayed', () => {
+  log('assert', 'Enforcement success banner is not displayed');
+  flow().assertEnforcementSuccessBannerNotVisible();
+});
+
+/**
+ * @step Asserts the intercepted enforcement override save request body.
+ */
+Then('the enforcement override save request shows:', (table: DataTable) => {
+  const rows = rowsHashSafe(table);
+  const overrideId =
+    rows['enforcement override result id'] ?? rows['enforcement override'] ?? rows['override result id'] ?? '';
+  const enforcerId = rows['enforcer id'] ?? '';
+  const ljaId = rows['lja id'] ?? rows['local justice area id'] ?? '';
+
+  log('assert', 'Enforcement override save request payload', { overrideId, enforcerId, ljaId });
+  flow().assertEnforcementOverrideSaveRequest({ overrideId, enforcerId, ljaId });
+});
+
+/**
+ * @step Asserts the enforcement override summary card values.
+ */
+Then('the enforcement override summary shows:', (table: DataTable) => {
+  const rows = rowsHashSafe(table);
+  const override = rows['enforcement override'] ?? '';
+  const enforcer = rows['enforcer'] ?? '';
+  const lja = rows['local justice area'] ?? rows['local justice area (lja)'] ?? '';
+
+  log('assert', 'Enforcement override summary values', { override, enforcer, lja });
+  flow().assertEnforcementOverrideSummary({ override, enforcer, lja });
 });
 
 /**

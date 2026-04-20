@@ -1,6 +1,6 @@
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
-import { DOM_ELEMENTS } from './constants/global_version_control_elements';
+import { DOM_ELEMENTS } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import {
@@ -19,6 +19,10 @@ import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+
+const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Global Version Control Mechanism - Component Tests', () => {
   beforeEach(() => {
@@ -39,7 +43,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
 
   it(
     'AC1: Warning banner will not be displayed when version control mechanism confirms account-level-data has not changed',
-    { tags: ['@PO-2140'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-KEY:POT-6820'] },
     () => {
       // Use same ETag for both header and at-a-glance to simulate no version change
       const etag = 'W/"version-1"';
@@ -83,7 +87,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
 
   it(
     '(AC2a, AC2b, AC2bi) When navigating to a new tab with version changes, tab displays with orange warning banner matching design',
-    { tags: ['@PO-2140'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-KEY:POT-6821'] },
     () => {
       // Use different ETags to simulate version changes
       const headerEtag = 'W/"version-1"';
@@ -132,7 +136,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
 
   it(
     '(AC2c, AC2ci, AC2cii, AC2ciii, AC2ciiia) When refresh button is clicked, page refreshes and shows green success banner',
-    { tags: ['@PO-2140'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-KEY:POT-6822'] },
     () => {
       // Start with different ETags to show version mismatch
       const headerEtag = 'W/"version-1"';

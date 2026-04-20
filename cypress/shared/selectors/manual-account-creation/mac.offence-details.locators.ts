@@ -23,7 +23,7 @@ export const MacOffenceDetailsLocators = {
   cancelLink: 'a.button-link, button.button-link, [role="button"].button-link',
   searchOffenceLink: 'a[href*="search-offences"]',
   imposition: {
-    container: 'opal-lib-moj-ticket-panel',
+    container: 'fieldset.govuk-fieldset',
     resultCodeInput: (index: number) => `input[id = "fm_offence_details_result_id_${index}-autocomplete"]`,
     resultCodeList: (index: number) => `ul[id = "fm_offence_details_result_id_${index}-autocomplete__listbox"]`,
     amountImposedInput: (index: number) => `input[id = "fm_offence_details_amount_imposed_${index}"]`,
@@ -187,7 +187,7 @@ export const MacOffenceDetailsMinorCreditorLocators = {
 // Minor creditor information summary locators.
 export const MacOffenceDetailsMinorCreditorInformationLocators = {
   app: 'opal-lib-govuk-summary-card-list',
-  name: 'h5.govuk-summary-card__title',
+  name: '.govuk-summary-card__title',
   address: 'dd[id = "minorCreditorAddressMinorCreditorValue"]',
   paymentMethod: 'dd[id = "minorCreditorPaymentMethodMinorCreditorValue"]',
   accountName: 'dd[id = "minorCreditorAccountNameMinorCreditorValue"]',
@@ -333,12 +333,13 @@ export const MacOffenceDetailsSearchOffenceResultsLocators = {
   backLink: 'opal-lib-govuk-back-link',
   paginationElement: 'opal-lib-moj-pagination',
   paginationText: '.moj-pagination__results',
-  previousPageButton: '.govuk-pagination__prev',
-  nextPageButton: '.govuk-pagination__next',
+  previousPageButton: '.govuk-pagination__prev a.govuk-pagination__link',
+  nextPageButton: '.govuk-pagination__next a.govuk-pagination__link',
   paginationList: '.govuk-pagination__list',
   paginationListItem: '.govuk-pagination__item',
   paginationCurrentPage: '.govuk-pagination__item--current',
-  paginationPageNumber: (pageNum: number | string) => `.govuk-pagination__item:contains("${pageNum}")`,
+  paginationPageNumber: (pageNum: number | string) =>
+    `.govuk-pagination__item a.govuk-pagination__link:contains("${pageNum}"), .govuk-pagination__item--current:contains("${pageNum}")`,
   noResultsMessage: '.govuk-grid-column-full-width > p:nth-of-type(1)',
   noResultsFollowupMessage: '.govuk-grid-column-full-width > p:nth-of-type(2)',
   tableStatusMessage: 'opal-lib-moj-sortable-table-status',

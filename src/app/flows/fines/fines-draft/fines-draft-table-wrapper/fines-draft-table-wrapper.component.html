@@ -97,9 +97,8 @@
           <td opal-lib-moj-sortable-table-row-data id="account">
             <a
               class="govuk-link govuk-link--no-visited-state"
-              (click)="onAccountClick(row['Defendant id'])"
-              (keydown.enter)="onAccountClick(row['Defendant id'])"
-              tabindex="0"
+              href=""
+              (click)="onAccountClick(row['Defendant id'], $event)"
               >{{ row['Account'] }}</a
             >
           </td>
@@ -108,13 +107,9 @@
           @if (activeTab === 'approved') {
             {{ row['Defendant'] }}
           } @else {
-            <a
-              class="govuk-link govuk-link--no-visited-state"
-              (click)="onDefendantClick(row)"
-              (keydown.enter)="onDefendantClick(row)"
-              tabindex="0"
-              >{{ row['Defendant'] }}</a
-            >
+            <a class="govuk-link govuk-link--no-visited-state" href="" (click)="onDefendantClick(row, $event)">{{
+              row['Defendant']
+            }}</a>
           }
         </td>
         <td opal-lib-moj-sortable-table-row-data id="dob">

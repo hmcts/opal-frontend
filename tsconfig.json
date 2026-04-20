@@ -2,8 +2,8 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "rootDir": "./src",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
@@ -12,7 +12,6 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
@@ -23,13 +22,19 @@
     "resolveJsonModule": false,
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
+    "ignoreDeprecations": "6.0",
     "paths": {
+      "src/*": ["./src/*"],
       "@app/*": ["./src/app/*"],
       "@constants/*": ["./src/app/constants/*"],
       "@services/fines/*": ["./src/app/flows/fines/services/*"],
       "@routing/pages/*": ["./src/app/pages/routing/*"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*"],
-      "@routing/flows/*": ["./src/app/flows/routing/*"]
+      "@routing/flows/*": ["./src/app/flows/routing/*"],
+      "cypress/component/*": ["./cypress/component/*"],
+      "cypress/e2e/*": ["./cypress/e2e/*"],
+      "cypress/shared/*": ["./cypress/shared/*"],
+      "cypress/support/*": ["./cypress/support/*"]
     }
   },
   "angularCompilerOptions": {
@@ -38,12 +43,6 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src", "node_modules/cypress", "src/app/interfaces/**/*.ts"],
-  "exclude": [
-    "node_modules/cypress",
-    "**/helpers/*.ts",
-    "src/test-setup.ts",
-    "**/interfaces/generated/**",
-    "**/types/generated/**"
-  ]
+  "include": ["src", "src/app/interfaces/**/*.ts"],
+  "exclude": ["node_modules", "**/helpers/*.ts", "src/test-setup.ts", "**/interfaces/generated/**", "**/types/generated/**"]
 }

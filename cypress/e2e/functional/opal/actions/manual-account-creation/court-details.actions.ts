@@ -5,6 +5,7 @@
 import { MacCourtDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/mac.court-details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+import { selectFirstAutocompleteOption, typeAndSelectAutocompleteOption } from '../common/autocomplete.helper';
 
 const log = createScopedLogger('ManualCourtDetailsActions');
 
@@ -143,7 +144,13 @@ export class ManualCourtDetailsActions {
    */
   private setLja(lja: string): void {
     log('type', 'Setting LJA', { lja });
-    this.typeAutocomplete(L.ljaInput, L.ljaListbox, lja, 'LJA');
+    typeAndSelectAutocompleteOption({
+      inputSelector: L.ljaInput,
+      listboxSelector: L.ljaListbox,
+      value: lja,
+      label: 'LJA',
+      timeoutOptions: this.common.getTimeoutOptions(),
+    });
   }
 
   /**
@@ -161,7 +168,13 @@ export class ManualCourtDetailsActions {
    */
   private setEnforcementCourt(enforcementCourt: string): void {
     log('type', 'Setting enforcement court', { enforcementCourt });
-    this.typeAutocomplete(L.enforcementCourtInput, L.enforcementCourtListbox, enforcementCourt, 'Enforcement court');
+    typeAndSelectAutocompleteOption({
+      inputSelector: L.enforcementCourtInput,
+      listboxSelector: L.enforcementCourtListbox,
+      value: enforcementCourt,
+      label: 'Enforcement court',
+      timeoutOptions: this.common.getTimeoutOptions(),
+    });
   }
 
   /**
@@ -187,59 +200,18 @@ export class ManualCourtDetailsActions {
   }
 
   /**
-   * Handles autocomplete inputs by typing, waiting for the listbox, and selecting
-   * the best matching option for the typed value (falling back to first option).
-   * @param inputSelector Selector for the autocomplete input.
-   * @param listboxSelector Selector for the listbox options.
-   * @param value Value to type into the autocomplete.
-   * @param label Logical label for logging.
-   */
-  private typeAutocomplete(inputSelector: string, listboxSelector: string, value: string, label: string): void {
-    const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
-    input.scrollIntoView().clear({ force: true });
-
-    if (value === '') {
-      log('clear', `${label} autocomplete cleared`);
-      input.should('have.value', '');
-      return;
-    }
-
-    input.type(value, { delay: 0, force: true }).should('have.value', value);
-    cy.get(listboxSelector, this.common.getTimeoutOptions()).should('exist');
-
-    cy.get(`${listboxSelector} li`, this.common.getTimeoutOptions()).then(($options) => {
-      const expected = value.toLowerCase();
-      const matchedOption = Array.from($options).find((option) =>
-        (option.textContent ?? '').toLowerCase().includes(expected),
-      );
-
-      if (matchedOption) {
-        cy.wrap(matchedOption).click({ force: true });
-        return;
-      }
-
-      log('warn', `${label} autocomplete did not return a direct match, falling back to first option`, { value });
-      cy.get(inputSelector).type('{downarrow}{enter}', { force: true });
-    });
-
-    cy.get(inputSelector, this.common.getTimeoutOptions()).should(($input) => {
-      const actual = ($input.val() ?? '').toString().toLowerCase();
-      expect(actual, `${label} autocomplete selected value`).to.include(value.toLowerCase());
-    });
-  }
-
-  /**
    * Selects the first option in an autocomplete without relying on typed text.
    * @param inputSelector Selector for the autocomplete input.
    * @param listboxSelector Selector for the listbox options.
    * @param label Logical label for logging.
    */
   private selectFirstAutocompleteOption(inputSelector: string, listboxSelector: string, label: string): void {
-    const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
-    input.scrollIntoView().clear({ force: true }).type('{downarrow}{enter}', { force: true });
-    cy.get(listboxSelector, this.common.getTimeoutOptions()).should('exist');
-    cy.get(inputSelector, this.common.getTimeoutOptions()).invoke('val').should('not.be.empty');
-    log('select', `Selected first option for ${label}`);
+    selectFirstAutocompleteOption({
+      inputSelector,
+      listboxSelector,
+      label,
+      timeoutOptions: this.common.getTimeoutOptions(),
+    });
   }
 
   /**

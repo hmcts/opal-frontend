@@ -2,7 +2,7 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 
 export const NO_PERMS_DASHBOARD_USER_STATE_MOCK: IOpalUserState = {
   user_id: 50000000,
-  username: 'noPermissionsTestUser@HMCTS.NET',
+  username: 'noPermissionsTestUser@dev.platform.hmcts.net',
   name: 'Test User',
   status: 'active',
   version: 1,

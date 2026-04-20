@@ -27,6 +27,8 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { NavigationEnd } from '@angular/router';
+import { Subject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
@@ -93,6 +95,105 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should leave timelineData unchanged when timeline data is undefined', () => {
+    component.timelineData = [];
+    finesDraftStore.setFinesDraftState({ ...structuredClone(FINES_DRAFT_STATE), timeline_data: undefined as never });
+
+    component['fetchTimelineData']();
+
+    expect(component.timelineData).toEqual([]);
+  });
+
+  it('should enforce template link attributes and classes for action links', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesMacAccountDetailsComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesMacAccountDetailsComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+
+    const findConst = (value: string) => templateConsts.find((entry) => entry.includes(value));
+
+    const deleteAccountConst = findConst('govuk-error-colour');
+    expect(deleteAccountConst).toBeTruthy();
+    expect(deleteAccountConst).toContain('href');
+    expect(deleteAccountConst).toContain('');
+    expect(deleteAccountConst).toContain('click');
+
+    const actionLinkAriaIds = [
+      'courtDetailsStatus',
+      'personalDetailsStatus',
+      'contactDetailsStatus',
+      'employerDetailsStatus',
+      'offenceDetailsStatus',
+      'paymentTermsStatus',
+      'accountCommentsAndNotesStatus',
+    ];
+
+    actionLinkAriaIds.forEach((ariaId) => {
+      const linkConst = templateConsts.find(
+        (entry) => entry.includes('aria-describedby') && entry.includes(ariaId) && entry.includes('click'),
+      );
+
+      expect(linkConst).toBeTruthy();
+      expect(linkConst).toContain('href');
+      expect(linkConst).toContain('');
+      expect(linkConst).toContain('govuk-task-list__link');
+      expect(linkConst).toContain('govuk-link--no-visited-state');
+      expect(linkConst).not.toContain('tabindex');
+    });
+
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it.each([
+    { linkText: 'Delete account', route: 'deleteAccountConfirmation' },
+    { linkText: 'Court details', route: 'courtDetails' },
+    { linkText: 'Personal details', route: 'personalDetails' },
+    { linkText: 'Contact details', route: 'contactDetails' },
+    { linkText: 'Employer details', route: 'employerDetails' },
+    { linkText: 'Offence details', route: 'offenceDetails' },
+    { linkText: 'Payment terms', route: 'paymentTerms' },
+    {
+      linkText: 'Account comments and notes',
+      route: 'accountCommentsNotes',
+    },
+  ])('should pass $event and preserve navigation logic for %s', ({ linkText, route }) => {
+    // Force all requested links to render in a single view state.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'canAccessPaymentTerms').mockReturnValue(true);
+    const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.accountDetails.formData = {
+      ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
+    };
+    finesMacStore.setFinesMacStore(finesMacState);
+    component['setDefendantType']();
+    finesDraftStore.setAmend(false);
+    fixture.detectChanges();
+
+    const allLinks = Array.from(fixture.nativeElement.querySelectorAll('a.govuk-link')) as HTMLAnchorElement[];
+    const link = allLinks.find((candidate) => candidate.textContent?.trim() === linkText) ?? null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error(`Link not found: ${linkText}`);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerNavigateSpy = vi.spyOn<any, any>(component, 'routerNavigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    const routePath =
+      component['fineMacRoutes'].children[route as keyof (typeof component)['fineMacRoutes']['children']];
+
+    link.dispatchEvent(event);
+
+    expect(routerNavigateSpy).toHaveBeenCalledWith(routePath, false, event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(routerSpy).toHaveBeenCalledWith([routePath], { relativeTo: component['activatedRoute'].parent });
   });
 
   it('should navigate back on navigateBack', () => {
@@ -285,6 +386,26 @@ describe('FinesMacAccountDetailsComponent', () => {
     component.navigateBack();
 
     expect(routerSpy).toHaveBeenCalled();
+  });
+
+  it('should ignore non-NavigationStart router events', () => {
+    const events$ = new Subject<NavigationEnd>();
+    Object.defineProperty(component['router'], 'events', {
+      configurable: true,
+      value: events$.asObservable(),
+    });
+    component.pageNavigation = false;
+
+    component['routerListener']();
+    events$.next(
+      new NavigationEnd(
+        1,
+        '/fines/manual-account-creation/create-account',
+        '/fines/manual-account-creation/create-account',
+      ),
+    );
+
+    expect(component.pageNavigation).toBe(false);
   });
 
   it('should call canDeactivate ', () => {

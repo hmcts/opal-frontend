@@ -22,7 +22,9 @@ import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-part
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -68,7 +70,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       getDefendantAccountHistoryAndNotesTabData: vi
         .fn()
         .mockName('OpalFines.getDefendantAccountHistoryAndNotesTabData'),
-      getDefendantAccountEnforcementTabData: vi.fn().mockName('OpalFines.getDefendantAccountEnforcementTabData'),
+      getDefendantAccountEnforcementStatus: vi.fn().mockName('OpalFines.getDefendantAccountEnforcementStatus'),
       getDefendantAccountPaymentTermsLatest: vi.fn().mockName('OpalFines.getDefendantAccountPaymentTermsLatest'),
       getDefendantAccountParty: vi.fn().mockName('OpalFines.getDefendantAccountParty'),
       getParentOrGuardianAccountParty: vi.fn().mockName('OpalFines.getParentOrGuardianAccountParty'),
@@ -87,7 +89,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     mockOpalFinesService.getDefendantAccountFixedPenalty.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountEnforcementTabData.mockReturnValue(
+    mockOpalFinesService.getDefendantAccountEnforcementStatus.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
     );
     mockOpalFinesService.getDefendantAccountPaymentTermsLatest.mockReturnValue(
@@ -137,6 +139,50 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component.activeTab).toBe('at-a-glance');
   });
 
+  it('should allow adding parent or guardian details for a youth debtor account with no parent guardian', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(true);
+  });
+
+  it('should not allow adding parent or guardian details when a parent guardian already exists', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: '123',
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
+  it('should not allow adding parent or guardian details for non-youth accounts', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: false,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
+  it('should not allow adding parent or guardian details when the parent guardian is the debtor', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.parentGuardian,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.canAddParentOrGuardianDetails).toBe(false);
+  });
+
   it('should handle tab switch', () => {
     component.handleTabSwitch('details');
     expect(component.activeTab).toBe('details');
@@ -156,6 +202,76 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.comments}/add`], {
       relativeTo: component['activatedRoute'],
     });
+  });
+
+  it('should call router.navigate when navigateToAddEnforcementOverridePage is called', () => {
+    component.navigateToAddEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToChangeEnforcementOverridePage is called', () => {
+    component.navigateToChangeEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.change}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToRemoveEnforcementOverridePage is called', () => {
+    component.navigateToRemoveEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToChangeEnforcementOverridePage is called', () => {
+    component.navigateToChangeEnforcementOverridePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/change`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToChangeEnforcementCourtPage is called', () => {
+    component.navigateToChangeEnforcementCourtPage();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToChangeCollectionOrderPage is called', () => {
+    component.navigateToChangeCollectionOrderPage(true);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`],
+      {
+        relativeTo: component['activatedRoute'],
+        state: { currentCollectionOrderFlag: true },
+      },
+    );
   });
 
   it('should fetch the defendant tab data when fragment is changed to defendant', () => {
@@ -186,7 +302,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component['refreshFragment$'].next('enforcement');
     // Subscribe to trigger the pipe execution
     component.tabEnforcement$.subscribe();
-    expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
+    expect(mockOpalFinesService.getDefendantAccountEnforcementStatus).toHaveBeenCalled();
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
@@ -195,6 +311,23 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.tabPaymentTerms$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalled();
     expect(mockOpalFinesService.getResult).toHaveBeenCalled();
+  });
+
+  it('should not fetch the enforcement result when payment terms has no last enforcement', () => {
+    mockOpalFinesService.getResult.mockClear();
+    mockOpalFinesService.getDefendantAccountPaymentTermsLatest.mockReturnValue(
+      of({
+        ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK),
+        last_enforcement: null,
+      }),
+    );
+
+    component['refreshFragment$'].next('payment-terms');
+    component.tabPaymentTerms$.subscribe();
+
+    expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalled();
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+    expect(component.lastEnforcement).toBeNull();
   });
 
   it('should fetch the history and notes tab data when fragment is changed to history-and-notes', () => {

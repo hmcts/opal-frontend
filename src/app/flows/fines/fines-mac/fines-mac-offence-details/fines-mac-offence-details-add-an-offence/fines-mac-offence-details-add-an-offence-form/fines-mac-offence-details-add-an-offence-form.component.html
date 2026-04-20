@@ -61,6 +61,8 @@
     @if (offenceCode$ | async; as offenceCode) {
       <app-fines-mac-offence-code-hint
         [offenceCode]="offenceCode"
+        [offenceId]="form.controls['fm_offence_details_offence_id'].value"
+        [searchedOffenceCode]="form.controls['fm_offence_details_offence_cjs_code'].value"
         [selectedOffenceConfirmation]="selectedOffenceConfirmation"
       ></app-fines-mac-offence-code-hint>
     }
@@ -70,9 +72,10 @@
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
   </h2>
   @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
-    <fieldset class="govuk-fieldset">
-      <opal-lib-moj-ticket-panel>
-        <div class="govuk-grid-row govuk-form-group">
+    <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+      <legend class="govuk-fieldset__legend govuk-visually-hidden">Imposition {{ rowIndex + 1 }}</legend>
+      <div class="govuk-!-padding-4 govuk-light-grey-background-colour">
+        <div class="govuk-grid-row govuk-form-group govuk-!-margin-bottom-4 imposition-panel">
           <div class="govuk-grid-column-one-half">
             <opal-lib-alphagov-accessible-autocomplete
               [control]="
@@ -138,7 +141,7 @@
             formArrayControl['fm_offence_details_needs_creditor'].controlName,
           ])!.value === true
         ) {
-          <div class="govuk-grid-row govuk-form-group">
+          <div class="govuk-grid-row govuk-form-group govuk-!-margin-bottom-4 imposition-panel">
             <div class="govuk-grid-column-full">
               @if (minorCreditors[rowIndex]) {
                 <fieldset class="govuk-fieldset">
@@ -150,6 +153,7 @@
                     [showActions]="true"
                     [isDetailsHidden]="minorCreditorsHidden[rowIndex]"
                     (actionClicked)="minorCreditorActions($event)"
+                    [classes]="'govuk-!-margin-bottom-0'"
                   ></app-fines-mac-offence-details-minor-creditor-information>
                 </fieldset>
               } @else {
@@ -220,9 +224,8 @@
                       >
                         <a
                           class="govuk-link govuk-link--no-visited-state"
-                          (click)="goToMinorCreditor(rowIndex)"
-                          (keyup.enter)="goToMinorCreditor(rowIndex)"
-                          tabindex="0"
+                          href=""
+                          (click)="goToMinorCreditor(rowIndex, $event)"
                         >
                           Add minor creditor details
                         </a>
@@ -238,15 +241,14 @@
           <div class="govuk-!-margin-top-3">
             <a
               class="govuk-link govuk-link--no-visited-state"
-              tabindex="0"
-              (click)="removeImpositionConfirmation(rowIndex)"
-              (keyup.enter)="removeImpositionConfirmation(rowIndex)"
+              href=""
+              (click)="removeImpositionConfirmation(rowIndex, $event)"
             >
               Remove imposition
             </a>
           </div>
         }
-      </opal-lib-moj-ticket-panel>
+      </div>
     </fieldset>
   }
   <opal-lib-govuk-button

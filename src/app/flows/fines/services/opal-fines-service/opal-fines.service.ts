@@ -50,6 +50,9 @@ import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './inter
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../../fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IOpalFinesAccountRequestPaymentCardResponse } from './interfaces/opal-fines-account-request-payment-card-response.interface';
+import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.interface';
+import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
+import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -317,12 +320,18 @@ export class OpalFines {
   /**
    * Retrieves the Opal fines results based on the provided result IDs.
    * @param result_ids - An array of result IDs.
+   * @param params - The parameters for fetching the results.
    * @returns An Observable that emits the Opal fines results reference data.
    */
-  public getResults(result_ids: string[]): Observable<IOpalFinesResultsRefData> {
+  public getResults(
+    result_ids: string[],
+    params: IOpalFinesResultsParams | null = null,
+  ): Observable<IOpalFinesResultsRefData> {
     if (!this.cache.resultsCache$) {
       this.cache.resultsCache$ = this.http
-        .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, { params: { result_ids } })
+        .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, {
+          params: { result_ids, ...params },
+        })
         .pipe(shareReplay(1));
     }
 
@@ -477,7 +486,7 @@ export class OpalFines {
     const accountCaches: (keyof IOpalFinesCache)[] = [
       'defendantAccountAtAGlanceCache$',
       'defendantAccountPartyCache$',
-      'defendantAccountparentOrGuardianAccountPartyCache$',
+      'defendantAccountParentOrGuardianAccountPartyCache$',
       'defendantAccountEnforcementCache$',
       'defendantAccountImpositionsCache$',
       'defendantAccountHistoryAndNotesCache$',
@@ -609,6 +618,31 @@ export class OpalFines {
   }
 
   /**
+   * Retrieves the prosecutor data for a specific business unit.
+   * If the prosecutor data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * @param business_unit - The business unit for which to retrieve the prosecutor data.
+   * @returns An Observable that emits the prosecutor data for the specified business unit.
+   */
+  public getEnforcers(): Observable<IOpalFinesEnforcersRefData> {
+    if (!this.cache.enforcersCache$) {
+      this.cache.enforcersCache$ = this.http
+        .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.enforcersCache$;
+  }
+
+  /**
+   * Returns the pretty name of an enforcer.
+   * @param enforcer - The enforcer object.
+   * @returns The pretty name of the enforcer.
+   */
+  public getEnforcerPrettyName(enforcer: IOpalFinesEnforcer): string {
+    return `${enforcer.name} (${enforcer.enforcer_code})`;
+  }
+
+  /**
    * Retrieves the defendant account details at a glance for a specific tab.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
@@ -679,9 +713,9 @@ export class OpalFines {
     account_id: number | null,
     party_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    if (!this.cache.defendantAccountparentOrGuardianAccountPartyCache$) {
+    if (!this.cache.defendantAccountParentOrGuardianAccountPartyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}`;
-      this.cache.defendantAccountparentOrGuardianAccountPartyCache$ = this.http
+      this.cache.defendantAccountParentOrGuardianAccountPartyCache$ = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
@@ -695,7 +729,7 @@ export class OpalFines {
           shareReplay(1),
         );
     }
-    return this.cache.defendantAccountparentOrGuardianAccountPartyCache$;
+    return this.cache.defendantAccountParentOrGuardianAccountPartyCache$;
   }
 
   /**
@@ -728,13 +762,13 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the defendant account details enforcement tab data.
-   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * Retrieves the defendant account details enforcement status.
+   * If the account details for the enforcement status are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
-   * @returns An Observable that emits the account details at a glance for the specified tab.
+   * @returns An Observable of the defendants enforcement status.
    */
-  public getDefendantAccountEnforcementTabData(
+  public getDefendantAccountEnforcementStatus(
     account_id: number | null,
   ): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
     if (!this.cache.defendantAccountEnforcementCache$) {

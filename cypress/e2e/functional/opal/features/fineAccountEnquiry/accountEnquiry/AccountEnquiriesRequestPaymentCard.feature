@@ -1,15 +1,16 @@
+@JIRA-LABEL:account-enquiry
 Feature: Account Enquiries – Request Payment Card
   As an Opal user
   I want to request a payment card for a defendant
   So that I can confirm or cancel the request
 
   Background:
-    Given I am logged in with email "opal-test@HMCTS.NET"
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
   Rule: Eligible account baseline
     Background:
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@hmcts.net":
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | Account_status                          | Submitted                           |
         | account.defendant.forenames             | Jamie                               |
         | account.defendant.surname               | PayCardRequest{uniq}                |
@@ -25,7 +26,7 @@ Feature: Account Enquiries – Request Payment Card
       Then I should see the page header contains "Mr Jamie PAYCARDREQUEST{uniqUpper}"
       When I go to the Payment terms section
 
-    @PO-1803
+    @JIRA-STORY:PO-1803 @JIRA-KEY:POT-5220
     Scenario: Confirming a payment card request shows success and updates the last requested date
       #AC1bii/AC1biii - Successfully requesting a payment card shows a success message and updates the last requested date
       When I start a payment card request

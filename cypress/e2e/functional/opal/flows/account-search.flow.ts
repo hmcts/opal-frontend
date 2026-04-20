@@ -6,7 +6,6 @@
 
 import { createScopedLogger } from '../../../../support/utils/log.helper';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchNavActions } from '../actions/search/search.nav.actions';
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { AccountSearchCompanyActions } from '../actions/search/search.companies.actions';
@@ -16,6 +15,7 @@ import { AccountSearchCommonActions } from '../actions/search/search.common.acti
 import { ResultsActions } from '../actions/search/search.results.actions';
 import { CommonActions } from '../actions/common/common.actions';
 import { MinorCreditorType } from '../../../../support/utils/macFieldResolvers';
+import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
 
 /**
  * Normalised Minor Creditor types used in flow processing.
@@ -35,7 +35,6 @@ const log = createScopedLogger('AccountSearchFlow');
  * - All logging uses shared `log()` helper for consistent output.
  */
 export class AccountSearchFlow {
-  private readonly dashboard = new DashboardActions();
   private readonly nav = new AccountSearchNavActions();
   private readonly individuals = new AccountSearchIndividualsActions();
   private readonly companies = new AccountSearchCompanyActions();
@@ -58,7 +57,7 @@ export class AccountSearchFlow {
     const out: Record<string, string> = {};
 
     for (const [k, v] of Object.entries(raw)) {
-      out[k.trim()] = v;
+      out[k.trim()] = applyUniqPlaceholder(String(v ?? '').trim());
     }
 
     return out;
@@ -74,11 +73,28 @@ export class AccountSearchFlow {
   }
 
   /**
+   * Resolves the account number of the last created/published account from `@etagUpdate`.
+   *
+   * @returns Cypress chainable resolving to a non-empty account number.
+   */
+  private resolveLastCreatedAccountNumber(): Cypress.Chainable<string> {
+    return cy.get('@etagUpdate').then((etag: any) => {
+      const accountNumber = typeof etag?.accountNumber === 'string' ? etag.accountNumber.trim() : '';
+
+      if (!accountNumber) {
+        throw new Error('Expected @etagUpdate to contain a non-empty accountNumber for last created account search.');
+      }
+
+      return accountNumber;
+    });
+  }
+
+  /**
    * Navigate from dashboard and verify the Individuals form is active by default.
    */
   public navigateAndVerifySearchFromDashboard(): void {
     log('navigate', 'Go to Account Search from dashboard');
-    this.dashboard.goToAccountSearch();
+    this.individuals.assertOnSearchLandingPage();
 
     log('assert', 'Verify Individuals form is active by default');
     this.individuals.assertDefaultIndividualsActive();
@@ -652,7 +668,7 @@ export class AccountSearchFlow {
    */
   public navigateAndEnterIndividualsFormWithoutSubmit(table: DataTable): void {
     log('navigate', 'Go to Account Search and enter Individuals form (no submit)');
-    this.dashboard.goToAccountSearch();
+    this.individuals.assertOnSearchLandingPage();
 
     // Reuse existing helper to populate all text-like fields
     this.enterIndividualsFormWithoutSubmit(table);
@@ -898,6 +914,22 @@ export class AccountSearchFlow {
   }
 
   /**
+   * Searches using the account number of the last created/published account.
+   *
+   * This is intended for end-to-end journey scenarios that seed an account via the
+   * draft-account API helpers, which expose the created metadata through `@etagUpdate`.
+   */
+  public searchForLastCreatedAccountByAccountNumber(): void {
+    log('flow', 'Searching for last created account by account number');
+
+    this.resolveLastCreatedAccountNumber().then((accountNumber) => {
+      log('input', 'Entering last created account number into search', { accountNumber });
+      this.commonSearch.enterAccountNumber(accountNumber);
+      this.submitSearchAndWaitForResults();
+    });
+  }
+
+  /**
    * Submits the account search request and waits for the application
    * to transition to the results page.
    *
@@ -1106,7 +1138,7 @@ export class AccountSearchFlow {
   /**
    * Flow:
    *  - Assert the Search results page header is visible.
-   *  - Assert the "Individuals" tab is selected.
+   *  - Assert the Individuals table structure is correct for the current view.
    *  - Assert there is a row in the Individuals results whose columns
    *    match all key/value pairs from the provided table.
    *
@@ -1118,18 +1150,38 @@ export class AccountSearchFlow {
   public assertIndividualsResultsForReference(table: DataTable): void {
     const expectations = this.buildExpectationMap(table);
 
-    log('verify', 'Verifying Individuals search results header, tab and row match', {
+    log('verify', 'Verifying Individuals search results header, structure and row match', {
       expectations,
     });
 
     // Header + base results assertion
     this.results.assertOnResults();
 
-    // Tab state
-    this.results.assertIndividualsTabSelected();
+    this.results.assertIndividualsResultsTableStructure();
 
     // Row match (single row that satisfies all column/value pairs)
     this.results.assertResultsRowMatchesColumns(expectations);
+  }
+
+  /**
+   * Flow:
+   *  - Resolve the last created account number from `@etagUpdate`.
+   *  - Assert the Search results page is displayed.
+   *  - Assert the Individuals table structure is correct for the current view.
+   *  - Assert there is a row whose Account column matches that account number.
+   */
+  public assertIndividualsResultsForLastCreatedAccount(): void {
+    this.resolveLastCreatedAccountNumber().then((accountNumber) => {
+      const expectations = { Account: accountNumber };
+
+      log('verify', 'Verifying Individuals results for last created account', {
+        expectations,
+      });
+
+      this.results.assertOnResults();
+      this.results.assertIndividualsResultsTableStructure();
+      this.results.assertResultsRowMatchesColumns(expectations);
+    });
   }
 
   /**
@@ -1147,7 +1199,7 @@ export class AccountSearchFlow {
   public assertCompaniesResultsWithTabSwitch(table: DataTable): void {
     const expectations = this.buildExpectationMap(table);
 
-    log('verify', 'Verifying Companies search results header, tab and row match', {
+    log('verify', 'Verifying Companies search results header, tab, structure and row match', {
       expectations,
     });
 
@@ -1156,16 +1208,17 @@ export class AccountSearchFlow {
 
     // Tab state
     this.results.assertCompaniesTabSelected();
+    this.results.assertCompaniesResultsTableStructure();
 
     // Row match (same semantics as Individuals)
     this.results.assertResultsRowMatchesColumns(expectations);
   }
 
   /**
-   * Positive results verification for pages where ONLY the Companies tab exists.
+   * Positive results verification for single-type Companies searches.
    *
    * - Asserts the Search results header.
-   * - Asserts the Companies tab is already selected.
+   * - Asserts the Companies table structure matches the single-type results view.
    * - Asserts at least one row matches the provided expectations.
    *
    * @param table Two-column Cucumber table of column/value pairs to assert.
@@ -1176,10 +1229,31 @@ export class AccountSearchFlow {
   public assertCompaniesResultsAlreadyOnCompanies(table: DataTable): void {
     const expectations = this.buildExpectationMap(table);
 
-    log('verify', 'Verifying Companies results (no tab switching)', { expectations });
+    log('verify', 'Verifying Companies results structure and row match', { expectations });
 
     this.results.assertOnResults();
-    this.results.assertCompaniesTabSelected();
+    this.results.assertCompaniesResultsTableStructure();
+    this.results.assertResultsRowMatchesColumns(expectations);
+  }
+
+  /**
+   * Positive results verification for Minor creditors searches.
+   *
+   * - Asserts the Search results header.
+   * - Asserts at least one row matches the provided expectations.
+   *
+   * @param table Two-column Cucumber table of column/value pairs to assert.
+   * @example
+   *   Then I see the Minor creditors search results:
+   *     | Ref | PCRAUTO011 |
+   */
+  public assertMinorCreditorsResults(table: DataTable): void {
+    const expectations = this.buildExpectationMap(table);
+
+    log('verify', 'Verifying Minor creditors results', { expectations });
+
+    this.results.assertOnResults();
+    this.results.assertMinorCreditorResultsTableStructure();
     this.results.assertResultsRowMatchesColumns(expectations);
   }
 
@@ -1217,7 +1291,6 @@ export class AccountSearchFlow {
   /**
    * Flow:
    *  - Asserts the Search results page is displayed.
-   *  - Asserts the "Companies" tab is selected.
    *  - Asserts there is NO row in the results whose columns match all
    *    key/value pairs from the provided table.
    *
@@ -1236,9 +1309,6 @@ export class AccountSearchFlow {
 
     // We should already be on the results page.
     this.results.assertOnResults();
-
-    // For this scenario there is only a Companies tab; still assert it.
-    this.results.assertCompaniesTabSelected();
 
     // Assert that no row matches the forbidden values.
     this.results.assertNoResultsRowMatchesColumns(expectations);
@@ -1263,7 +1333,7 @@ export class AccountSearchFlow {
    * - Delegates the actual DOM interaction to CommonActions.clickHmctsHomeLink(),
    *   which owns all locator logic for the HMCTS brand link.
    * - Asserts that the dashboard is displayed after navigation via
-   *   DashboardActions.assertOnDashboard().
+   *   AccountSearchIndividualsActions.assertOnSearchLandingPage().
    *
    * Notes:
    * - Flow method is intentionally small to satisfy Sonar and keep responsibilities clear.
@@ -1272,6 +1342,6 @@ export class AccountSearchFlow {
   public returnToDashboardViaHmctsLink(): void {
     log('navigate', 'Returning to dashboard via HMCTS header link');
     this.common.clickHmctsHomeLink();
-    this.dashboard.assertDashboard();
+    this.individuals.assertOnSearchLandingPage();
   }
 }

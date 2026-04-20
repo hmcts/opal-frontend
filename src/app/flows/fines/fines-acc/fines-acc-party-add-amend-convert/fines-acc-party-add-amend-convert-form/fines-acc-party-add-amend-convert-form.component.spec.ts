@@ -72,6 +72,96 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should enforce remove link template semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesAccPartyAddAmendConvertFormComponent as any).ɵcmp?.consts ?? []).filter(
+      (entry: unknown) => Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesAccPartyAddAmendConvertFormComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const removeLinkConsts = templateConsts.filter(
+      (entry) =>
+        entry.includes('govuk-link') &&
+        entry.includes('govuk-link--no-visited-state') &&
+        entry.includes('href') &&
+        entry.includes('click'),
+    );
+
+    expect(removeLinkConsts.length).toBeGreaterThanOrEqual(1);
+    removeLinkConsts.forEach((entry) => {
+      expect(entry).toContain('href');
+      expect(entry).toContain('');
+      expect(entry).not.toContain('tabindex');
+    });
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should render individual remove alias link with href and call removeAlias', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+
+    component.form.get('facc_party_add_amend_convert_add_alias')?.setValue(true);
+    while (component.aliasControls.length < 2) {
+      component.addAlias(component.aliasControls.length, 'facc_party_add_amend_convert_individual_aliases');
+    }
+    fixture.detectChanges();
+
+    const link =
+      (Array.from(
+        fixture.nativeElement.querySelectorAll(
+          'a.govuk-link.govuk-link--no-visited-state',
+        ) as NodeListOf<HTMLAnchorElement>,
+      ).find((anchor) => anchor.textContent?.trim().startsWith('Remove')) as HTMLAnchorElement | undefined) ?? null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Individual remove alias link not found');
+
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const expectedIndex = component.aliasControls.length - 1;
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const removeAliasSpy = vi.spyOn<any, any>(component, 'removeAlias');
+
+    link.dispatchEvent(event);
+
+    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'facc_party_add_amend_convert_individual_aliases');
+  });
+
+  it('should render company remove alias link with href and call removeAlias', () => {
+    component.partyType = 'company';
+    fixture.detectChanges();
+
+    component.form.get('facc_party_add_amend_convert_add_alias')?.setValue(true);
+    while (component.aliasControls.length < 2) {
+      component.addAlias(component.aliasControls.length, 'facc_party_add_amend_convert_organisation_aliases');
+    }
+    fixture.detectChanges();
+
+    const link =
+      (Array.from(
+        fixture.nativeElement.querySelectorAll(
+          'a.govuk-link.govuk-link--no-visited-state',
+        ) as NodeListOf<HTMLAnchorElement>,
+      ).find((anchor) => anchor.textContent?.trim().startsWith('Remove')) as HTMLAnchorElement | undefined) ?? null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Company remove alias link not found');
+
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const expectedIndex = component.aliasControls.length - 1;
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const removeAliasSpy = vi.spyOn<any, any>(component, 'removeAlias');
+
+    link.dispatchEvent(event);
+
+    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'facc_party_add_amend_convert_organisation_aliases');
+  });
+
   it('should initialize form with empty values when no initial data provided', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
@@ -255,6 +345,31 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     titleControl?.setValue('Mr');
     expect(titleControl?.hasError('required')).toBe(false);
+  });
+
+  it('should initialise unknown party types with base controls only', () => {
+    const freshFixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    freshComponent.partyType = 'unknown';
+    freshComponent.isDebtor = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addIndividualFormControlsSpy = vi.spyOn<any, any>(freshComponent, 'addIndividualFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addCompanyFormControlsSpy = vi.spyOn<any, any>(freshComponent, 'addCompanyFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupAliasFormControlsSpy = vi.spyOn<any, any>(freshComponent, 'setupAliasFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setUpAliasCheckboxListenerSpy = vi.spyOn<any, any>(freshComponent, 'setUpAliasCheckboxListener');
+
+    freshFixture.detectChanges();
+
+    expect(addIndividualFormControlsSpy).not.toHaveBeenCalled();
+    expect(addCompanyFormControlsSpy).not.toHaveBeenCalled();
+    expect(setupAliasFormControlsSpy).not.toHaveBeenCalled();
+    expect(setUpAliasCheckboxListenerSpy).not.toHaveBeenCalled();
+    expect(freshComponent.form.get('facc_party_add_amend_convert_add_alias')).toBeTruthy();
+    expect(freshComponent.form.get('facc_party_add_amend_convert_title')).toBeNull();
+    expect(freshComponent.form.get('facc_party_add_amend_convert_company_name')).toBeNull();
   });
 
   it('should require forenames field with max length validation', () => {
@@ -892,5 +1007,58 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_title')).toBeNull();
     expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeNull();
     expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeNull();
+  });
+
+  it('should set up company alias controls and checkbox listener during initial setup', () => {
+    component.partyType = 'company';
+    component.initialFormData = {
+      nestedFlow: false,
+      formData: {
+        facc_party_add_amend_convert_organisation_aliases: [
+          { facc_party_add_amend_convert_alias_organisation_name_0: 'Alias Company Ltd' },
+        ],
+      },
+    } as never;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupAliasFormControlsSpy = vi.spyOn<any, any>(component, 'setupAliasFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setUpAliasCheckboxListenerSpy = vi.spyOn<any, any>(component, 'setUpAliasCheckboxListener');
+
+    fixture.detectChanges();
+
+    expect(setupAliasFormControlsSpy).toHaveBeenCalledWith([0], 'facc_party_add_amend_convert_organisation_aliases');
+    expect(setUpAliasCheckboxListenerSpy).toHaveBeenCalledWith(
+      'facc_party_add_amend_convert_add_alias',
+      'facc_party_add_amend_convert_organisation_aliases',
+    );
+  });
+
+  it('should repopulate with null when initial form data payload is missing', () => {
+    component.partyType = 'company';
+    component.initialFormData = { nestedFlow: false } as never;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rePopulateFormSpy = vi.spyOn<any, any>(component, 'rePopulateForm');
+
+    fixture.detectChanges();
+
+    expect(rePopulateFormSpy).toHaveBeenCalledWith(null);
+  });
+
+  it('should default age and age label when initial DOB is populated but age lookup returns no value', () => {
+    component.partyType = 'individual';
+    component.initialFormData = {
+      nestedFlow: false,
+      formData: {
+        facc_party_add_amend_convert_dob: '1990-01-01',
+      },
+    } as never;
+    mockDateService.getAgeObject.mockReturnValue(null);
+
+    fixture.detectChanges();
+
+    expect(component.age).toBe(0);
+    expect(component.ageLabel).toBe('');
   });
 });

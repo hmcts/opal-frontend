@@ -1,7 +1,7 @@
 import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { defendantAccountPaymentTermsLatestResolver } from './defendant-account-payment-terms-latest.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { MOCK_PAYMENT_TERMS_DATA } from './mocks/defendant-account-payment-terms-data.mock';
@@ -111,6 +111,26 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
       } else {
         throw new Error('Expected Observable but got something else');
       }
+    });
+  });
+
+  it('should return null result data when no enforcement result exists', async () => {
+    (mockRoute.paramMap.get as Mock).mockReturnValue('12345');
+    const paymentTermsDataWithoutEnforcement = {
+      ...MOCK_PAYMENT_TERMS_DATA,
+      last_enforcement: '',
+    };
+    mockOpalFinesService.getDefendantAccountPaymentTermsLatest.mockReturnValue(of(paymentTermsDataWithoutEnforcement));
+
+    const result = await TestBed.runInInjectionContext(() =>
+      firstValueFrom(defendantAccountPaymentTermsLatestResolver(mockRoute, {} as never) as never),
+    );
+
+    expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalledWith(12345);
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      paymentTermsData: paymentTermsDataWithoutEnforcement,
+      resultData: null,
     });
   });
 });

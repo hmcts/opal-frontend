@@ -11,6 +11,7 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-servi
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from './mocks/fines-mac-court-details-form.mock';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes.constant';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
 import { OPAL_FINES_COURT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-pretty-name.mock';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
@@ -95,6 +96,24 @@ describe('FinesMacCourtDetailsComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.personalDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should not navigate when nested flow has no configured next route', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    const originalRoute = FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].courtDetails;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    formSubmit.nestedFlow = true;
+    FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].courtDetails = null;
+
+    try {
+      component.handleCourtDetailsSubmit(formSubmit);
+
+      expect(finesMacStore.courtDetails()).toEqual(formSubmit);
+      expect(routerSpy).not.toHaveBeenCalled();
+    } finally {
+      FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].courtDetails = originalRoute;
+    }
   });
 
   it('should test handleUnsavedChanges', () => {

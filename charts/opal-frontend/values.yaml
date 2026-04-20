@@ -1,8 +1,8 @@
 nodejs:
   applicationPort: 4000
   aadIdentityName: opal
-  ingressHost: opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
-  image: 'sdshmctspublic.azurecr.io/opal/frontend:latest'
+  ingressHost: opal-frontend.{{ .Values.global.environment }}.apps.hmcts.net
+  image: 'hmctsprod.azurecr.io/opal/frontend:latest'
   keyVaults:
     opal:
       secrets:
@@ -21,7 +21,7 @@ nodejs:
     OPAL_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     OPAL_FINES_SERVICE_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
-    FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
+    FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.apps.hmcts.net
     SESSION_SECURE_ENABLED: true
     CSRF_SECURE_ENABLED: true
     FEATURES_HELMET_ENABLED: true
@@ -35,7 +35,7 @@ nodejs:
 redis:
   enabled: false
   image:
-    registry: hmctspublic.azurecr.io
+    registry: hmctsprod.azurecr.io
     repository: imported/bitnami/redis
 
 opal-fines-service:
@@ -44,7 +44,7 @@ opal-fines-service:
 postgresql:
   enabled: false
   image:
-    registry: hmctspublic.azurecr.io
+    registry: hmctsprod.azurecr.io
     repository: imported/bitnami/postgresql
     tag: '17.5.0'
 

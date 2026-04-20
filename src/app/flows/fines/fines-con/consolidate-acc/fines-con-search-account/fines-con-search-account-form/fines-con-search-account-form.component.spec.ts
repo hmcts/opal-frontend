@@ -2,10 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinesConSearchAccountFormComponent } from './fines-con-search-account-form.component';
 import { FinesConStore } from '../../../stores/fines-con.store';
 import { FinesConStoreType } from '../../../stores/types/fines-con-store.type';
+import { FINES_CON_ROUTING_PATHS } from '../../../routing/constants/fines-con-routing-paths.constant';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 
 describe('FinesConSearchAccountFormComponent', () => {
   let component: FinesConSearchAccountFormComponent;
@@ -16,11 +19,18 @@ describe('FinesConSearchAccountFormComponent', () => {
     const activatedRouteSpy = {
       params: { subscribe: () => {} },
       queryParams: { subscribe: () => {} },
+      parent: {},
+    };
+    const routerSpy = {
+      navigate: vi.fn().mockName('Router.navigate'),
     };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FinesConSearchAccountFormComponent],
-      providers: [{ provide: ActivatedRoute, useValue: activatedRouteSpy }],
+      providers: [
+        { provide: ActivatedRoute, useValue: activatedRouteSpy },
+        { provide: Router, useValue: routerSpy },
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
@@ -86,5 +96,134 @@ describe('FinesConSearchAccountFormComponent', () => {
     component.clearSearchForm(new Event('click'));
 
     expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
+  });
+
+  it('should reset form when clearSearchForm is called without an event', () => {
+    const preventDefault = vi.fn();
+    component.form.patchValue({ fcon_search_account_number: '12345678' });
+
+    component.clearSearchForm();
+
+    expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
+    expect(preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('should enforce current clear search link semantics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const templateConsts = ((FinesConSearchAccountFormComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>
+      Array.isArray(entry),
+    ) as unknown[][];
+    const templateFunction =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((FinesConSearchAccountFormComponent as any).ɵcmp?.template?.toString() as string | undefined) ?? '';
+    const clearSearchLinkConst = templateConsts.find(
+      (entry) =>
+        entry.includes('govuk-link') &&
+        entry.includes('govuk-link--no-visited-state') &&
+        entry.includes('href') &&
+        entry.includes('click'),
+    );
+
+    expect(clearSearchLinkConst).toBeTruthy();
+    expect(clearSearchLinkConst).toContain('href');
+    expect(clearSearchLinkConst).toContain('');
+    expect(clearSearchLinkConst).not.toContain('tabindex');
+    expect(templateFunction).not.toContain('keydown.enter');
+    expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should pass $event from the clear search link click and preserve current behaviour', () => {
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Clear search link not found');
+
+    component.form.patchValue({ fcon_search_account_number: '12345678' });
+
+    expect(link.textContent?.trim()).toBe('Clear search');
+    expect(link.classList.contains('govuk-link')).toBe(true);
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    const handlerSpy = vi.spyOn(component, 'clearSearchForm');
+    const resetSpy = vi.spyOn(finesConStore, 'resetSearchAccountForm');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(resetSpy).toHaveBeenCalled();
+    expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
+  });
+
+  it('should prevent default and keep the existing reset logic when clearSearchForm is called', () => {
+    component.form.patchValue({ fcon_search_account_number: '12345678' });
+
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const clearAllErrorMessagesSpy = vi.spyOn<any, any>(component, 'clearAllErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setInitialErrorMessagesSpy = vi.spyOn<any, any>(component, 'setInitialErrorMessages');
+    const resetSpy = vi.spyOn(finesConStore, 'resetSearchAccountForm');
+
+    component.clearSearchForm(event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(clearAllErrorMessagesSpy).toHaveBeenCalled();
+    expect(setInitialErrorMessagesSpy).toHaveBeenCalled();
+    expect(resetSpy).toHaveBeenCalled();
+    expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
+  });
+
+  it('should persist form and navigate to search error page when conflicting criteria are submitted', () => {
+    const router = TestBed.inject(Router);
+    const updateTemporarySpy = vi.spyOn(finesConStore, 'updateSearchAccountFormTemporary');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const submitEmitSpy = vi.spyOn<any, any>(component['formSubmit'], 'emit');
+
+    component.form.patchValue({
+      fcon_search_account_number: '12345678',
+      fcon_search_account_national_insurance_number: 'AB123456C',
+    });
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(updateTemporarySpy).toHaveBeenCalledWith(component.form.value);
+    expect(router.navigate).toHaveBeenCalledWith([FINES_CON_ROUTING_PATHS.children.searchError], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+    expect(submitEmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not call super.handleFormSubmit when form is empty (formEmpty)', () => {
+    const superSubmitSpy = vi.spyOn(AbstractFormBaseComponent.prototype, 'handleFormSubmit');
+
+    component.form.reset();
+    component.form.updateValueAndValidity({ emitEvent: false });
+    expect(component.form.errors?.['formEmpty']).toBe(true);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(superSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should call super.handleFormSubmit when form submission is valid', () => {
+    const superSubmitSpy = vi.spyOn(AbstractFormBaseComponent.prototype, 'handleFormSubmit');
+    const router = TestBed.inject(Router);
+
+    component.form.patchValue({
+      fcon_search_account_number: '12345678',
+    });
+    component.form.updateValueAndValidity({ emitEvent: false });
+    expect(component.form.errors).toBeNull();
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(superSubmitSpy).toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalledWith([FINES_CON_ROUTING_PATHS.children.searchError], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 });

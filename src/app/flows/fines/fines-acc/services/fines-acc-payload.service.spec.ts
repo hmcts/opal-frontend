@@ -14,6 +14,8 @@ import { IOpalFinesAccountDefendantAccountParty } from '../../services/opal-fine
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
+import { IFinesAccEnfOverrideAddChangeFormState } from '../fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
+import { IFinesAccEnfCourtChangeFormState } from '../fines-acc-enf-court-change/interfaces/fines-acc-enf-court-change-form-state.interface';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-map-transform-items-config.constant';
 import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines-acc-party-add-amend-convert/mocks/fines-acc-party-add-amend-convert-form-empty.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
@@ -86,7 +88,7 @@ describe('FinesAccPayloadService', () => {
 
       expect(result).toEqual({
         activity_note: {
-          record_type: 'DEFENDANT_ACCOUNTS',
+          record_type: 'defendant_accounts',
           record_id: 77,
           note_type: 'AA',
           note_text: 'Test note content',
@@ -200,19 +202,30 @@ describe('FinesAccPayloadService', () => {
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
+  it('should return an empty party name when organisation details are missing', () => {
+    const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = null;
+
+    const result = service.transformAccountHeaderForStore(77, header, 'defendant');
+
+    expect(result.party_name).toBe('');
+  });
+
   it('should handle missing surname gracefully', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     header.party_details.organisation_flag = false;
+    if (header.party_details.individual_details) {
+      header.party_details.individual_details.surname = '';
+    }
     const account_id = 77;
 
     const result = service.transformAccountHeaderForStore(account_id, header, 'defendant');
 
     expect(result.party_name).toBe(
-      header.party_details.individual_details?.title +
-        ' ' +
-        header.party_details.individual_details?.forenames +
-        ' ' +
-        header.party_details.individual_details?.surname?.toUpperCase(),
+      [header.party_details.individual_details?.title, header.party_details.individual_details?.forenames]
+        .filter(Boolean)
+        .join(' '),
     );
     expect(result.base_version).toBe(header.version);
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
@@ -568,6 +581,22 @@ describe('FinesAccPayloadService', () => {
         });
       });
 
+      it('should build collection order payload correctly', () => {
+        const result = service.buildCollectionOrderPayload({
+          formData: {
+            facc_enf_collection_order_made: true,
+          },
+          nestedFlow: false,
+        });
+
+        expect(result).toEqual({
+          collection_order: {
+            collection_order_date: null,
+            collection_order_flag: true,
+          },
+        });
+      });
+
       it('should transform payload using the transformation service', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         vi.spyOn<any, any>(service['transformationService'], 'transformObjectValues').mockImplementation(
@@ -606,6 +635,51 @@ describe('FinesAccPayloadService', () => {
         expect(result).toEqual(inputPayload);
       });
     });
+
+    describe('buildEnforcementOverrideFormPayload', () => {
+      it('should transform enforcement override form state to update payload correctly', () => {
+        const formState: IFinesAccEnfOverrideAddChangeFormState = {
+          fenf_account_enforcement_action: 'R1',
+          fenf_account_enforcement_enforcer: 'E1',
+          fenf_account_enforcement_lja: 'L1',
+        };
+
+        const result = service.buildEnforcementOverrideFormPayload(formState);
+
+        expect(result).toEqual({
+          enforcement_override: {
+            enforcement_override_result: {
+              enforcement_override_result_id: 'R1',
+            },
+            enforcer: {
+              enforcer_id: 'E1',
+            },
+            lja: {
+              lja_id: 'L1',
+            },
+          },
+        });
+      });
+
+      it('should map empty enforcement override form values to null nested payload values', () => {
+        const formState: IFinesAccEnfOverrideAddChangeFormState = {
+          fenf_account_enforcement_action: null,
+          fenf_account_enforcement_enforcer: '',
+          fenf_account_enforcement_lja: null,
+        };
+
+        const result = service.buildEnforcementOverrideFormPayload(formState);
+
+        expect(result).toEqual({
+          enforcement_override: {
+            enforcement_override_result: null,
+            enforcer: null,
+            lja: null,
+          },
+        });
+      });
+    });
+
     it('should delegate to buildAccountPartyPayload utility function', () => {
       // This test ensures the service method properly delegates to the utility
       const formState = {
@@ -626,6 +700,66 @@ describe('FinesAccPayloadService', () => {
       expect(result.address).toBeDefined();
       expect(result.contact_details).toBeDefined();
       expect(result.language_preferences).toBeDefined();
+    });
+  });
+
+  describe('buildEnforcementCourtFormPayload', () => {
+    it('should build the correct payload for an enforcement court change', () => {
+      const formState: IFinesAccEnfCourtChangeFormState = {
+        facc_enf_court: 202,
+      };
+
+      const result = service.buildEnforcementCourtFormPayload(formState);
+
+      expect(result).toEqual({
+        enforcement_court: {
+          court_id: 202,
+        },
+      });
+    });
+  });
+
+  describe('buildEnforcementOverrideFormPayload', () => {
+    it('should build the correct payload when all enforcement override values are present', () => {
+      const formState: IFinesAccEnfOverrideAddChangeFormState = {
+        fenf_account_enforcement_action: '101',
+        fenf_account_enforcement_enforcer: '202',
+        fenf_account_enforcement_lja: '303',
+      };
+
+      const result = service.buildEnforcementOverrideFormPayload(formState);
+
+      expect(result).toEqual({
+        enforcement_override: {
+          enforcement_override_result: {
+            enforcement_override_result_id: '101',
+          },
+          enforcer: {
+            enforcer_id: '202',
+          },
+          lja: {
+            lja_id: '303',
+          },
+        },
+      });
+    });
+
+    it('should return null nested values when enforcement override fields are empty', () => {
+      const formState: IFinesAccEnfOverrideAddChangeFormState = {
+        fenf_account_enforcement_action: null,
+        fenf_account_enforcement_enforcer: null,
+        fenf_account_enforcement_lja: null,
+      };
+
+      const result = service.buildEnforcementOverrideFormPayload(formState);
+
+      expect(result).toEqual({
+        enforcement_override: {
+          enforcement_override_result: null,
+          enforcer: null,
+          lja: null,
+        },
+      });
     });
   });
 

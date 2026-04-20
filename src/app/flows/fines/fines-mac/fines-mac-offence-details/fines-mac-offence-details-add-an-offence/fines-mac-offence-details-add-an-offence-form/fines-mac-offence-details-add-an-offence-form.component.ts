@@ -27,7 +27,6 @@ import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../../validators/fines-ma
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-impositions-field-errors.constant';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
-import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -78,7 +77,6 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     GovukErrorSummaryComponent,
     MojDatePickerComponent,
     AlphagovAccessibleAutocompleteComponent,
-    MojTicketPanelComponent,
     GovukButtonComponent,
     GovukTextInputPrefixSuffixComponent,
     GovukRadioComponent,
@@ -94,12 +92,14 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     FinesMacOffenceCodeHintComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
+  styleUrl: './fines-mac-offence-details-add-an-offence-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   extends AbstractFormArrayBaseComponent
   implements OnInit, OnDestroy
 {
+  private hasAttemptedSubmit = false;
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
@@ -138,6 +138,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   };
   public majorCreditorItemsByCode: Record<string, IAlphagovAccessibleAutocompleteItem[]> = {};
   public currentResultCodeByRow: Record<number, string> = {};
+
+  /**
+   * Replaced during listener setup with a callback that retries the current offence-code lookup.
+   */
+  private retryOffenceCodeLookup = (): void => {};
 
   /**
    * Sets up the form for adding an offence.
@@ -197,7 +202,25 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     this.setInitialErrorMessages();
     this.getMinorCreditors();
     this.rePopulateForm(formData);
-    this.setupOffenceCodeListener();
+    this.retryOffenceCodeLookup = this.offenceDetailsService.setupOffenceCodeLookup({
+      form: this.form,
+      codeControlName: 'fm_offence_details_offence_cjs_code',
+      idControlName: 'fm_offence_details_offence_id',
+      destroy$: this.ngUnsubscribe,
+      getOffenceByCjsCode: this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
+      onResult: (result) => {
+        this.changeDetector.markForCheck();
+        this.offenceCode$ = of(result);
+      },
+      onConfirmChange: (confirmed) => {
+        this.selectedOffenceConfirmation = confirmed;
+      },
+      hasAttemptedSubmit: () => this.hasAttemptedSubmit,
+      refreshSubmittedErrors: () => {
+        this.handleErrorMessages();
+        this.changeDetector.markForCheck();
+      },
+    });
 
     if (!hasOffenceDetailsDraft && impositionsLength === 0) {
       this.addControlsToFormArray(0, impositionsKey);
@@ -207,27 +230,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       }
     }
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
-  }
-
-  /**
-   * Sets up the offence code listener for the fines-mac-offence-details-add-an-offence component.
-   * This method initializes the offence code listener and updates the offenceCode$ observable
-   * with the result from the service.
-   */
-  private setupOffenceCodeListener(): void {
-    this.offenceDetailsService.initOffenceCodeListener(
-      this.form,
-      'fm_offence_details_offence_cjs_code',
-      'fm_offence_details_offence_id',
-      this.ngUnsubscribe,
-      this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
-      (result) => {
-        this.offenceCode$ = of(result);
-      },
-      (confirmed) => {
-        this.selectedOffenceConfirmation = confirmed;
-      },
-    );
   }
 
   /**
@@ -484,8 +486,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * Navigates to the minor creditor page for the specified row index.
    *
    * @param rowIndex - The index of the row.
+   * @param event - The optional DOM event that triggered the navigation.
    */
-  public goToMinorCreditor(rowIndex: number): void {
+  public goToMinorCreditor(rowIndex: number, event?: Event): void {
+    event?.preventDefault();
     this.finesMacOffenceDetailsStore.setRemoveMinorCreditor(null);
     this.finesMacOffenceDetailsStore.setRowIndex(rowIndex);
 
@@ -497,9 +501,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * Removes the imposition at the specified rowIndex from the form.
    *
    * @param rowIndex - The index of the imposition to be removed.
+   * @param event - The optional DOM event that triggered the removal flow.
    * @returns void
    */
-  public removeImpositionConfirmation(rowIndex: number): void {
+  public removeImpositionConfirmation(rowIndex: number, event?: Event): void {
+    event?.preventDefault();
     this.finesMacOffenceDetailsStore.setRowIndex(rowIndex);
     this.finesMacOffenceDetailsStore.setFormArrayControls(this.formArrayControls);
 
@@ -603,13 +609,21 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   /**
    * Handles the form submission for adding an offence.
-   * This method first validates minor creditor selections and then
-   * invokes the base class submission logic.
+   * This method marks that submit was attempted, validates minor creditor
+   * selections, enforces offence-code validation, and then invokes the base
+   * class submission logic.
    *
    * @param event - The submit event triggered by the form submission.
    */
   public override handleFormSubmit(event: SubmitEvent): void {
+    this.hasAttemptedSubmit = true;
     this.checkImpositionMinorCreditors();
+    this.offenceDetailsService.enforceOffenceCodeValidationBeforeSubmit(
+      this.form,
+      'fm_offence_details_offence_cjs_code',
+      'fm_offence_details_offence_id',
+      this.retryOffenceCodeLookup,
+    );
     super.handleFormSubmit(event);
   }
 

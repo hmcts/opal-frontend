@@ -23,7 +23,7 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
       lja_id: number;
       lja_name: string;
     };
-  };
+  } | null;
   enforcement_overview: {
     collection_order: IOpalFinesAccountDefendantDetailsEnforcementTabRefDataEnforcementOverviewCollectionOrder | null;
     days_in_default: number | null;
@@ -51,5 +51,5 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
     }>;
     warrant_number: string;
   } | null;
-  next_enforcement_action_data: string;
+  next_enforcement_action_data: string | null;
 }

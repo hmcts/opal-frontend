@@ -4,14 +4,18 @@ import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines
 import { IFinesRoutingPaths } from '@routing/fines/interfaces/fines-routing-paths.interface';
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { FINES_CON_ROUTING_PATHS } from '../../fines-con/routing/constants/fines-con-routing-paths.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
+import { FINES_REPORTS_ROUTING_PATHS } from '../../fines-reports/routing/constants/fines-reports-routing-paths.constant';
 
 export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
   root: 'fines',
   children: {
+    dashboard: FINES_DASHBOARD_ROUTING_PATHS,
     mac: FINES_MAC_ROUTING_PATHS,
     draft: FINES_DRAFT_ROUTING_PATHS,
     acc: FINES_ACC_ROUTING_PATHS,
     sa: FINES_SA_ROUTING_PATHS,
     con: FINES_CON_ROUTING_PATHS,
+    reports: FINES_REPORTS_ROUTING_PATHS,
   },
 };

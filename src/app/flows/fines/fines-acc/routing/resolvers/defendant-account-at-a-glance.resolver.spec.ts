@@ -67,4 +67,13 @@ describe('defendantAccountAtAGlanceResolver', () => {
       OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
     );
   });
+
+  it('should throw when accountId is missing', () => {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    const route = { paramMap: convertToParamMap({}) } as any;
+
+    expect(() => defendantAccountAtAGlanceResolver(route, {} as never)).toThrowError('Account ID is required');
+    expect(mockOpalFinesService.getDefendantAccountAtAGlance).not.toHaveBeenCalled();
+    expect(mockPayloadService.transformAtAGlanceDataToCommentsForm).not.toHaveBeenCalled();
+  });
 });
