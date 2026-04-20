@@ -60,4 +60,13 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
       FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
     );
   });
+
+  it('should handle add parent or guardian details', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.addParentOrGuardianDetails, 'emit');
+    component.handleAddParentOrGuardianDetails();
+    expect(component.addParentOrGuardianDetails.emit).toHaveBeenCalledWith(
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+    );
+  });
 });

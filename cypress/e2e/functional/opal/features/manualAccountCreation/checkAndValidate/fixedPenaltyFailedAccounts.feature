@@ -8,7 +8,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @JIRA-STORY:PO-1816 @JIRA-KEY:POT-3324
+  @JIRA-STORY:PO-1816 @JIRA-KEY:POT-5146
   Scenario: AC1 - Failed individual fixed penalty draft appears in Failed tab with expected details
     Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status              | failed      |
@@ -33,7 +33,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
       | Business unit | Camberwell Green    |
       | Submitted by  | opal-test           |
 
-  @JIRA-STORY:PO-1816 @JIRA-KEY:POT-3325
+  @JIRA-STORY:PO-1816 @JIRA-KEY:POT-5147
   Scenario: AC1a - Failed individual fixed penalty draft returns to Failed tab after viewing details
     Given I create a "failedAdultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status              | failed      |
@@ -48,7 +48,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
     And I sort the draft accounts table by column "Date failed" in "descending" order
     And the draft accounts table should contain "GREEN{uniq}, Oliver" in column "Defendant"
 
-  @JIRA-STORY:PO-1816 @JIRA-KEY:POT-3326
+  @JIRA-STORY:PO-1816 @JIRA-KEY:POT-5148
   Scenario: AC2 - Failed company fixed penalty draft appears in Failed tab with expected details
     Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                 | Submitted                            |
@@ -74,7 +74,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
       | Submitted by  | opal-test                            |
 
 
-  @JIRA-STORY:PO-1816 @JIRA-KEY:POT-3327
+  @JIRA-STORY:PO-1816 @JIRA-KEY:POT-5149
   Scenario: AC2a - Failed company fixed penalty draft returns to Failed tab after viewing details
     Given I create a "failedCompany" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                 | Submitted                            |

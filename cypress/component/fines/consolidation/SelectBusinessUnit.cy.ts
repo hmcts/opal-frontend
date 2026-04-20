@@ -13,10 +13,6 @@ import { SelectBusinessUnitLocators } from 'cypress/shared/selectors/consolidati
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
-const CONSOLIDATION_JIRA_LABEL = '@JIRA-LABEL:consolidation';
-
-const buildTags = (...tags: string[]): string[] => [...tags, CONSOLIDATION_JIRA_LABEL];
-
 describe('FinesConSelectBuFormComponent', () => {
   let finesConFormData = structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
   let autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
@@ -73,7 +69,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC1, AC2, AC3) should show business unit and defendant type fields',
-    { tags: buildTags('@JIRA-STORY:PO-2412', '@JIRA-KEY:POT-3882') },
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5920'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = 1;
@@ -106,7 +102,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC2) should list available business units in the autocomplete',
-    { tags: buildTags('@JIRA-STORY:PO-2412', '@JIRA-KEY:POT-3883') },
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5921'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = null;
@@ -126,7 +122,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC2a) should auto select a single business unit',
-    { tags: buildTags('@JIRA-STORY:PO-2412', '@JIRA-KEY:POT-3884') },
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5922'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK.slice(0, 1));
@@ -143,7 +139,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC4) should show an error when continuing without selecting a business unit',
-    { tags: buildTags('@JIRA-STORY:PO-2412', '@JIRA-KEY:POT-3885') },
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5923'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = null;

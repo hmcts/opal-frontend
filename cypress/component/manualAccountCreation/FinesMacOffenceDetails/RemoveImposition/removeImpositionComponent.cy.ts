@@ -69,13 +69,10 @@ describe('FinesRemoveImpositionComponent', () => {
   it(
     '(AC.1)should render the component correctly',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-418',
-        '@JIRA-STORY:PO-672',
-        '@JIRA-STORY:PO-673',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4205',
-      ),
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
+        '@JIRA-KEY:POT-7444',
+      ],
     },
     () => {
       setupComponent();
@@ -87,13 +84,10 @@ describe('FinesRemoveImpositionComponent', () => {
   it(
     '(AC.1)(AC.2)should render all elements correctly',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-418',
-        '@JIRA-STORY:PO-672',
-        '@JIRA-STORY:PO-673',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4206',
-      ),
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
+        '@JIRA-KEY:POT-7445',
+      ],
     },
     () => {
       setupComponent();
@@ -115,13 +109,10 @@ describe('FinesRemoveImpositionComponent', () => {
   it(
     '(AC.2)should have correct field labels and names in the elements when loading data',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-418',
-        '@JIRA-STORY:PO-672',
-        '@JIRA-STORY:PO-673',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4207',
-      ),
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
+        '@JIRA-KEY:POT-7446',
+      ],
     },
     () => {
       setupComponent();
@@ -144,13 +135,10 @@ describe('FinesRemoveImpositionComponent', () => {
   it(
     '(AC.4)should set values to defaults or null after pressing the remove imposition button',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-418',
-        '@JIRA-STORY:PO-672',
-        '@JIRA-STORY:PO-673',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4208',
-      ),
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
+        '@JIRA-KEY:POT-7447',
+      ],
     },
     () => {
       setupComponent();

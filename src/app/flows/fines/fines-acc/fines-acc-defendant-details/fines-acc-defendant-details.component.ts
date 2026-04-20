@@ -52,6 +52,7 @@ import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/inte
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 
 @Component({
@@ -335,9 +336,28 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
-   * Navigates to the amend party details page for the specified party type.
-   * Or navigates to the access-denied page if the user lacks the required permission in this BU.
-   * @param partyType
+   * Determines whether the Defendant tab should show the add parent/guardian link.
+   *
+   * The link is only available for youth-only accounts where the defendant is the
+   * debtor and no parent or guardian party is currently attached to the account.
+   */
+  public get canAddParentOrGuardianDetails(): boolean {
+    return (
+      this.accountData.is_youth &&
+      this.accountData.debtor_type === this.debtorTypes.defendant &&
+      !this.accountData.parent_guardian_party_id
+    );
+  }
+
+  /**
+   * Navigates to the shared party details journey for the selected party type.
+   *
+   * This is used by the Defendant details actions and currently routes to the
+   * existing amend page for the chosen party. If the user does not have account
+   * maintenance permission in the active business unit, they are redirected to
+   * the access-denied page instead.
+   *
+   * @param partyType - The party type to open in the party details flow.
    */
   public navigateToAmendPartyDetailsPage(partyType: string): void {
     if (this.hasBusinessUnitPermissionKey('account-maintenance')) {
@@ -395,18 +415,42 @@ export class FinesAccDefendantDetailsComponent
    * Navigates to the add enforcement override page or access denied page based on user permissions.
    */
   public navigateToAddEnforcementOverridePage(): void {
-    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/add`], {
-      relativeTo: this.activatedRoute,
-    });
+    this['router'].navigate(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
+      ],
+      {
+        relativeTo: this.activatedRoute,
+      },
+    );
   }
 
   /**
    * Navigates to the change enforcement override page or access denied page based on user permissions.
    */
   public navigateToChangeEnforcementOverridePage(): void {
-    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/override/change`], {
-      relativeTo: this.activatedRoute,
-    });
+    this['router'].navigate(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.change}`,
+      ],
+      {
+        relativeTo: this.activatedRoute,
+      },
+    );
+  }
+
+  /**
+   * Navigates to the remove enforcement override page or access denied page based on user permissions.
+   */
+  public navigateToRemoveEnforcementOverridePage(): void {
+    this['router'].navigate(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
+      ],
+      {
+        relativeTo: this.activatedRoute,
+      },
+    );
   }
 
   /**
