@@ -75,23 +75,22 @@ function mapInstalmentAmount(formData: IFinesAccPaymentTermsAmendState): number 
 /**
  * Maps payment terms type code to display name
  */
-function mapPaymentTermsTypeDisplayName(paymentTermsTypeCode: string | null): string | null {
-  return paymentTermsTypeCode
-    ? FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS[
-        paymentTermsTypeCode as keyof typeof FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS
-      ] || null
-    : null;
+function mapPaymentTermsTypeDisplayName(paymentTermsTypeCode: string): string | null {
+  return (
+    FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS[
+      paymentTermsTypeCode as keyof typeof FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS
+    ] || null
+  );
 }
 
 /**
  * Maps instalment period code to display name
  */
-function mapInstalmentPeriodDisplayName(instalmentPeriodCode: string | null): string | null {
-  return instalmentPeriodCode
-    ? FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS[
-        instalmentPeriodCode as keyof typeof FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS
-      ] || null
-    : null;
+function mapInstalmentPeriodDisplayName(instalmentPeriodCode: string): string | null {
+  return (
+    FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS[instalmentPeriodCode as keyof typeof FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS] ||
+    null
+  );
 }
 
 /**

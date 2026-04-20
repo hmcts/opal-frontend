@@ -24,7 +24,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | account.defendant.dob                           | 2002-05-15                   |
         | account.payment_terms.enforcements[0].result_id | PRIS                         |
 
-    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675
+    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4956
     Scenario: Save an enforcement override and return to the Enforcement tab
       When I search for the account by last name "AddEnfOverride{uniq}" and open the latest result
       And I go to the Enforcement tab
@@ -36,7 +36,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deductions(ABDC) |
+        | enforcement override | Application made for Benefit Deductions (ABDC) |
       # AC4a/AC4b/AC4c - Change the enforcement court to a different value and verify the Enforcement tab, new value, and success banner
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab
@@ -72,7 +72,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | account.payment_card_request                    | false                               |
         | account.payment_terms.enforcements[0].result_id | PRIS                                |
 
-    @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
+    @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4957
     Scenario: Company save an enforcement override and return to the Enforcement tab
       When I open the company account details for "Add Override Company{uniq}"
       And I go to the Enforcement tab
@@ -84,7 +84,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deductions(ABDC) |
+        | enforcement override | Application made for Benefit Deductions (ABDC) |
       # AC4a/AC4b/AC4c - Change the enforcement court to a different value and verify the Enforcement tab, new value, and success banner
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab
@@ -123,7 +123,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | account.defendant.parent_guardian.dob           | 1980-02-15                       |
         | account.payment_terms.enforcements[0].result_id | PRIS                             |
 
-    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
+    @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-4958
     Scenario: Parent or guardian save an enforcement override and return to the Enforcement tab
       When I search for the account by last name "AddEnfOverridePG{uniq}" and open the latest result
       And I go to the Enforcement tab
@@ -135,7 +135,7 @@ Feature: Account Enquiries - Add Enforcement Override
         | enforcement override result id | ABDC         |
         | enforcer id                    | 770000000003 |
       And the enforcement override summary shows:
-        | enforcement override | Application made for Benefit Deductions(ABDC) |
+        | enforcement override | Application made for Benefit Deductions (ABDC) |
       # AC4a/AC4b/AC4c - Change the enforcement court to a different value and verify the Enforcement tab, new value, and success banner
       When I change the enforcement court to a different value
       Then I should return to the Enforcement tab
