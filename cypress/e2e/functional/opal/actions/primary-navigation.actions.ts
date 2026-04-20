@@ -46,6 +46,14 @@ export class PrimaryNavigationActions {
   }
 
   /**
+   * Asserts that the Fines primary navigation is hidden.
+   */
+  public assertHidden(): void {
+    log('assert', 'Checking primary navigation is hidden');
+    cy.get('body', this.common.getTimeoutOptions()).find(L.container).should('not.exist');
+  }
+
+  /**
    * Asserts that the top-level Fines navigation items appear in the expected order.
    */
   public assertMenuItemsInOrder(): void {

@@ -205,6 +205,15 @@ describe('FinesConSearchResultComponent', () => {
     );
   });
 
+  it('should treat null defendantAccounts input as an empty results set', () => {
+    component.defendantAccounts = null;
+    fixture.detectChanges();
+
+    expect(component.tableData).toEqual([]);
+    expect(component.checksByAccountId).toEqual({});
+    expect(component.invalidResultsState).toBe('noResults');
+  });
+
   it('should map checks from errors and warnings arrays', () => {
     const defendantAccounts: IFinesConSearchResultDefendantAccount[] =
       FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_WITH_CHECKS_MOCK;
