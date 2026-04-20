@@ -29,8 +29,8 @@ describe('Fixed Penalty - Review Account Details', () => {
     interceptOffences();
   });
   it(
-    '(AC.1)should display submitted account details correctly for company in Review  ',
-    { tags: buildTags('@JIRA-STORY:PO-1804') },
+    '(AC.1)should display submitted account details correctly for company in Review',
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7284'] },
     () => {
       const draftAccountId = '1002';
       const props: IFinesComponentProperties = {
@@ -96,7 +96,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display submitted defendant account details correctly for individual defendant in Review',
-    { tags: buildTags('@JIRA-STORY:PO-1804') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7285'] },
     () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
@@ -161,7 +161,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display "To review" defendant account details correctly',
-    { tags: buildTags('@JIRA-STORY:PO-1804') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7286'] },
     () => {
       const draftAccountId = '1004';
       const props: IFinesComponentProperties = {
@@ -248,7 +248,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display "To review" company account details correctly',
-    { tags: buildTags('@JIRA-STORY:PO-1804') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7287'] },
     () => {
       const draftAccountId = '1005';
       const props: IFinesComponentProperties = {

@@ -88,148 +88,164 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     interceptOffences();
   });
 
-  it('AC.2,4 - should render correctly - AY', { tags: buildTags('@JIRA-STORY:PO-1073') }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type =
-      defendantTypesKeys.adultOrYouthOnly;
+  it(
+    'AC.2,4 - should render correctly - AY',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-KEY:POT-7620'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type =
+        defendantTypesKeys.adultOrYouthOnly;
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.errorBanner).should(
-      'contain.text',
-      'There was a problem publishing this account. Please contact your line manager.',
-    );
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.errorBanner).should(
+        'contain.text',
+        'There was a problem publishing this account. Please contact your line manager.',
+      );
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#personal-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#employer-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#personal-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#employer-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
 
-    cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
-    cy.get('#company-details-summary-card-list').should('not.exist');
-    cy.get('#defendant-details-summary-card-list').should('not.exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
+      cy.get('#company-details-summary-card-list').should('not.exist');
+      cy.get('#defendant-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
 
-  it('AC.3 - should render Review History section correctly', { tags: buildTags('@JIRA-STORY:PO-1073') }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'Admin1',
-      status: 'Approved',
-      status_date: '2025-02-01',
-      reason_text: 'All good',
-    });
+  it(
+    'AC.3 - should render Review History section correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-KEY:POT-7621'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+      fetchMap.finesMacDraft.timeline_data.push({
+        username: 'Admin1',
+        status: 'Approved',
+        status_date: '2025-02-01',
+        reason_text: 'All good',
+      });
 
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'Admin2',
-      status: 'Deleted',
-      status_date: '2025-02-02',
-      reason_text: 'Created in error',
-    });
+      fetchMap.finesMacDraft.timeline_data.push({
+        username: 'Admin2',
+        status: 'Deleted',
+        status_date: '2025-02-02',
+        reason_text: 'Created in error',
+      });
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
-    cy.get(DOM_ELEMENTS.timeLine).should('exist');
-    cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
-    cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');
-    cy.get(DOM_ELEMENTS.timelineDate).should('exist');
-    cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
+      cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
+      cy.get(DOM_ELEMENTS.timeLine).should('exist');
+      cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
+      cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');
+      cy.get(DOM_ELEMENTS.timelineDate).should('exist');
+      cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'Admin2');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 February 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Deleted');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', 'Created in error');
+      cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'Admin2');
+      cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 February 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Deleted');
+      cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', 'Created in error');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin1');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 February 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Approved');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'All good');
+      cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin1');
+      cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 February 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Approved');
+      cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'All good');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).should('contain.text', 'Test User 1');
-    cy.get(DOM_ELEMENTS.timelineDate).should('contain.text', '01 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).should('contain.text', 'Rejected');
-    cy.get(DOM_ELEMENTS.timelineDescription).should('contain.text', '');
-  });
+      cy.get(DOM_ELEMENTS.timelineAuthor).should('contain.text', 'Test User 1');
+      cy.get(DOM_ELEMENTS.timelineDate).should('contain.text', '01 January 2025');
+      cy.get(DOM_ELEMENTS.timeLineTitle).should('contain.text', 'Rejected');
+      cy.get(DOM_ELEMENTS.timelineDescription).should('contain.text', '');
+    },
+  );
 
-  it('AC.2,5 - should render correctly - AYPG', { tags: buildTags('@JIRA-STORY:PO-1073') }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypesKeys.pgToPay;
+  it(
+    'AC.2,5 - should render correctly - AYPG',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-KEY:POT-7622'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypesKeys.pgToPay;
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.errorBanner).should(
-      'contain.text',
-      'There was a problem publishing this account. Please contact your line manager.',
-    );
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+      cy.get(DOM_ELEMENTS.errorBanner).should(
+        'contain.text',
+        'There was a problem publishing this account. Please contact your line manager.',
+      );
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#defendant-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#employer-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
-    cy.get('#parent-guardian-details-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#defendant-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#employer-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('exist');
 
-    cy.get('#company-details-summary-card-list').should('not.exist');
-    cy.get('#personal-details-summary-card-list').should('not.exist');
+      cy.get('#company-details-summary-card-list').should('not.exist');
+      cy.get('#personal-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
 
-  it('AC.2,6 - should render correctly - COMP', { tags: buildTags('@JIRA-STORY:PO-1073') }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypesKeys.company;
+  it(
+    'AC.2,6 - should render correctly - COMP',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-KEY:POT-7623'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypesKeys.company;
 
-    setupComponent(fetchMap);
+      setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'test company');
-    cy.get(DOM_ELEMENTS.errorBanner).should(
-      'contain.text',
-      'There was a problem publishing this account. Please contact your line manager.',
-    );
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+      cy.get(DOM_ELEMENTS.heading).should('contain.text', 'test company');
+      cy.get(DOM_ELEMENTS.errorBanner).should(
+        'contain.text',
+        'There was a problem publishing this account. Please contact your line manager.',
+      );
+      cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
-    cy.get('#account-details-summary-card-list').should('exist');
-    cy.get('#court-details-summary-card-list').should('exist');
-    cy.get('#company-details-summary-card-list').should('exist');
-    cy.get('#contact-details-summary-card-list').should('exist');
-    cy.get('#offences-and-imposition-summary-card-list').should('exist');
-    cy.get('#payment-terms-summary-card-list').should('exist');
-    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+      cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
+      cy.get('#account-details-summary-card-list').should('exist');
+      cy.get('#court-details-summary-card-list').should('exist');
+      cy.get('#company-details-summary-card-list').should('exist');
+      cy.get('#contact-details-summary-card-list').should('exist');
+      cy.get('#offences-and-imposition-summary-card-list').should('exist');
+      cy.get('#payment-terms-summary-card-list').should('exist');
+      cy.get('#account-comments-and-notes-summary-card-list').should('exist');
 
-    cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
-    cy.get('#personal-details-summary-card-list').should('not.exist');
-    cy.get('#employer-details-summary-card-list').should('not.exist');
-    cy.get('#defendant-details-summary-card-list').should('not.exist');
+      cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
+      cy.get('#personal-details-summary-card-list').should('not.exist');
+      cy.get('#employer-details-summary-card-list').should('not.exist');
+      cy.get('#defendant-details-summary-card-list').should('not.exist');
 
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    },
+  );
 
   it(
     'AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Failed Account)',
-    { tags: buildTags('@JIRA-STORY:PO-1073') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-KEY:POT-7624'] },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -245,7 +261,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   );
   it(
     'AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Failed Account)',
-    { tags: buildTags('@JIRA-STORY:PO-1073') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-KEY:POT-7625'] },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -262,7 +278,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   );
   it(
     'AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Failed Account)',
-    { tags: buildTags('@JIRA-STORY:PO-1073') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-KEY:POT-7626'] },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
@@ -280,7 +296,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
   it(
     'AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Failed Account)',
-    { tags: buildTags('@JIRA-STORY:PO-1073') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-KEY:POT-7627'] },
     () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
