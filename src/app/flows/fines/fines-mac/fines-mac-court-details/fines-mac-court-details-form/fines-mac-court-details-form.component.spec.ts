@@ -111,6 +111,15 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Asylum & Immigration Tribunal');
   });
 
+  it('should leave the originator name unchanged when no originator id is set', () => {
+    component['setupCourtDetailsForm']();
+    component.form.get('fm_court_details_originator_name')?.setValue('Existing name');
+
+    component['setOriginatorName']();
+
+    expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Existing name');
+  });
+
   it('should validate the label text and hint text for conditional caution and fines', () => {
     finesMacStore.setAccountDetails(
       {

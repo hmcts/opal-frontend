@@ -313,6 +313,23 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(mockOpalFinesService.getResult).toHaveBeenCalled();
   });
 
+  it('should not fetch the enforcement result when payment terms has no last enforcement', () => {
+    mockOpalFinesService.getResult.mockClear();
+    mockOpalFinesService.getDefendantAccountPaymentTermsLatest.mockReturnValue(
+      of({
+        ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK),
+        last_enforcement: null,
+      }),
+    );
+
+    component['refreshFragment$'].next('payment-terms');
+    component.tabPaymentTerms$.subscribe();
+
+    expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalled();
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
+    expect(component.lastEnforcement).toBeNull();
+  });
+
   it('should fetch the history and notes tab data when fragment is changed to history-and-notes', () => {
     component['refreshFragment$'].next('history-and-notes');
     expect(mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData).toHaveBeenCalled();

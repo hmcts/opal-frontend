@@ -1,7 +1,7 @@
 nodejs:
   applicationPort: 4000
   aadIdentityName: opal
-  ingressHost: opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
+  ingressHost: opal-frontend.{{ .Values.global.environment }}.apps.hmcts.net
   image: 'hmctsprod.azurecr.io/opal/frontend:latest'
   keyVaults:
     opal:
@@ -21,7 +21,7 @@ nodejs:
     OPAL_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     OPAL_FINES_SERVICE_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
-    FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
+    FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.apps.hmcts.net
     SESSION_SECURE_ENABLED: true
     CSRF_SECURE_ENABLED: true
     FEATURES_HELMET_ENABLED: true
