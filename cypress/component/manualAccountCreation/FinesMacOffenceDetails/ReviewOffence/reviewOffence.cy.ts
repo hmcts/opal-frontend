@@ -64,13 +64,10 @@ describe('ReviewOffenceComponent', () => {
   it(
     'should render component',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-416',
-        '@JIRA-STORY:PO-682',
-        '@JIRA-STORY:PO-680',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4218',
-      ),
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        '@JIRA-KEY:POT-7457',
+      ],
     },
     () => {
       setupComponent();
@@ -82,13 +79,10 @@ describe('ReviewOffenceComponent', () => {
   it(
     'should load all elements on the screen correctly',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-416',
-        '@JIRA-STORY:PO-682',
-        '@JIRA-STORY:PO-680',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4219',
-      ),
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        '@JIRA-KEY:POT-7458',
+      ],
     },
     () => {
       setupComponent();
@@ -110,13 +104,10 @@ describe('ReviewOffenceComponent', () => {
   it(
     'should have correct values in the elements',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-416',
-        '@JIRA-STORY:PO-682',
-        '@JIRA-STORY:PO-680',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4220',
-      ),
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        '@JIRA-KEY:POT-7459',
+      ],
     },
     () => {
       setupComponent();
@@ -143,13 +134,10 @@ describe('ReviewOffenceComponent', () => {
   it(
     'should update value according to imposition type',
     {
-      tags: buildTags(
-        '@JIRA-STORY:PO-416',
-        '@JIRA-STORY:PO-682',
-        '@JIRA-STORY:PO-680',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-4221',
-      ),
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        '@JIRA-KEY:POT-7460',
+      ],
     },
     () => {
       setupComponent(1);

@@ -588,6 +588,7 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 
 ## Project Scripts (zephyr:*)
 
+- Zephyr scripts still use the JSON report paths listed below as their inputs. Their console output is also mirrored to `tmp/zephyr/*.log`, with each script overwriting its own log file on the next run. `/tmp` is gitignored.
 - `zephyr:cypress:jira-create`: Create Jira tickets from the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
 - `zephyr:cypress:jira-update`: Update Jira tickets using the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
 - `zephyr:cypress:jira-execute`: Create a Zephyr execution from the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.

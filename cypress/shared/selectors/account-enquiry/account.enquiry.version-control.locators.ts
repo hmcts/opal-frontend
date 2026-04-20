@@ -1,3 +1,11 @@
+/**
+ * @file account.enquiry.version-control.locators.ts
+ * @description
+ * Shared selector map for account-enquiry version-control banners and shell tab navigation.
+ *
+ * @remarks
+ * - Preserves the legacy export name used by component specs to keep migration mechanical.
+ */
 export const DOM_ELEMENTS = {
   // Warning Banner Elements
   warningBanner: '.moj-alert',
@@ -20,4 +28,4 @@ export const DOM_ELEMENTS = {
   parentGuardianTab: '[subnavitemid="parent-or-guardian-tab"] > .moj-sub-navigation__link',
   paymentTermsTab: '[subnavitemid="payment-terms-tab"] > .moj-sub-navigation__link',
   enforcementTab: '[subnavitemid="enforcement-tab"] > .moj-sub-navigation__link',
-};
+} as const;

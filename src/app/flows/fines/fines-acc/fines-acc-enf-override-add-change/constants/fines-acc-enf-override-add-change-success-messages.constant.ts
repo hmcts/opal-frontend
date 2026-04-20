@@ -3,4 +3,5 @@ import { IFinesAccEnfOverrideAddChangeSuccessMessages } from '../interfaces/fine
 export const FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES: IFinesAccEnfOverrideAddChangeSuccessMessages = {
   add: 'Enforcement override added',
   change: 'Enforcement override changed',
+  remove: 'Enforcement override removed',
 };
