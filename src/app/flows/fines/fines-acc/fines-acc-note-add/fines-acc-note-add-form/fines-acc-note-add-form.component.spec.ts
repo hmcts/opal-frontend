@@ -97,10 +97,10 @@ describe('FinesAccNoteAddFormComponent', () => {
     const noteControl = component.form.get('facc_add_notes');
 
     noteControl?.setValue('/$£');
-    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeTruthy();
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBeTruthy();
 
     noteControl?.setValue('Valid note text');
-    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeFalsy();
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBeFalsy();
   });
 
   it('should emit formSubmit event when form is submitted with valid data', () => {
@@ -142,8 +142,9 @@ describe('FinesAccNoteAddFormComponent', () => {
     expect(component.fieldErrors.facc_add_notes['maxlength'].message).toBe(
       FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['maxlength'].message,
     );
-    expect(component.fieldErrors.facc_add_notes['alphanumericWithHyphensSpacesApostrophesDotPattern'].message).toBe(
-      FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['alphanumericWithHyphensSpacesApostrophesDotPattern'].message,
+    expect(component.fieldErrors.facc_add_notes['alphanumericWithHyphensSpacesApostrophesCommasDotPattern'].message).toBe(
+      FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']
+        .message,
     );
   });
 
@@ -186,13 +187,22 @@ describe('FinesAccNoteAddFormComponent', () => {
   it('should validate special characters correctly', () => {
     const noteControl = component.form.get('facc_add_notes');
 
-    const allowedSpecialChars = 'Note with spaces';
+    const allowedSpecialChars = 'Note, with spaces';
     noteControl?.setValue(allowedSpecialChars);
-    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeFalsy();
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBeFalsy();
 
     const disallowedSpecialChars = 'Note with /$£';
     noteControl?.setValue(disallowedSpecialChars);
-    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeTruthy();
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBeTruthy();
+  });
+
+  it('should accept commas in the add account notes field', () => {
+    const noteControl = component.form.get('facc_add_notes');
+
+    noteControl?.setValue('Customer called, requested update, case reviewed.');
+
+    expect(noteControl?.errors).toBeNull();
+    expect(noteControl?.valid).toBe(true);
   });
 
   it('should have component created', () => {

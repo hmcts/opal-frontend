@@ -18,14 +18,14 @@ import { IFinesAccAddCommentsForm } from '../interfaces/fines-acc-comments-add-f
 import { IFinesAccAddCommentsFormState } from '../interfaces/fines-acc-comments-add-form-state.interface';
 import { IFinesAccAddCommentsFieldErrors } from '../interfaces/fines-acc-comments-add-field-errors.interface';
 import { FINES_ACC_ADD_COMMENTS_FIELD_ERRORS } from '../constants/fines-acc-comments-add-form-field-errors.constant';
-import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
   'alphanumericWithHyphensSpacesApostrophesDotPattern',
 );
 
@@ -56,7 +56,7 @@ export class FinesAccCommentsAddFormComponent extends AbstractFormBaseComponent 
    * Sets up the form for adding comments.
    *
    * This method initializes a new FormGroup with four FormControls:
-   * - facc_add_comment: Accepts a value from initial form data and is validated with a maximum length of 30 characters alongside a custom validator allowing alphanumeric characters, hyphens, spaces, apostrophes, and dots.
+   * - facc_add_comment: Accepts a value from initial form data and is validated with a maximum length of 30 characters alongside a custom validator allowing alphanumeric characters, hyphens, spaces, apostrophes, commas, and dots.
    * - facc_add_free_text_1, facc_add_free_text_2, facc_add_free_text_3: These are also initialized with values from the initial form data and constrained to a maximum of 76 characters, using the same custom validator as above.
    *
    * The method ensures that each form control is correctly initialized whether or not initial data is provided.
@@ -67,19 +67,19 @@ export class FinesAccCommentsAddFormComponent extends AbstractFormBaseComponent 
     this.form = new FormGroup({
       facc_add_comment: new FormControl(this.initialFormData.facc_add_comment, [
         Validators.maxLength(30),
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_VALIDATOR,
       ]),
       facc_add_free_text_1: new FormControl(this.initialFormData.facc_add_free_text_1, [
         Validators.maxLength(76),
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_VALIDATOR,
       ]),
       facc_add_free_text_2: new FormControl(this.initialFormData.facc_add_free_text_2, [
         Validators.maxLength(76),
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_VALIDATOR,
       ]),
       facc_add_free_text_3: new FormControl(this.initialFormData.facc_add_free_text_3, [
         Validators.maxLength(76),
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_VALIDATOR,
       ]),
     });
   }

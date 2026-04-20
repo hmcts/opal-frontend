@@ -96,16 +96,40 @@ describe('FinesAccCommentsAddFormComponent', () => {
     expect(freeText1Control.errors?.['maxlength']).toBeFalsy();
   });
 
-  it('should validate pattern for alphanumeric with hyphens, spaces, apostrophes, and dots', () => {
+  it('should validate pattern for alphanumeric with hyphens, spaces, apostrophes, commas, and dots', () => {
     const commentControl = component.form.get('facc_add_comment') as FormControl;
 
     // Valid patterns
-    commentControl.setValue("Valid text-123 with's dots.");
+    commentControl.setValue("Valid text-123, with's dots.");
     expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeFalsy();
 
     // Invalid patterns
     commentControl.setValue('Invalid@symbol');
     expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeTruthy();
+  });
+
+  it('should accept commas in the comment field', () => {
+    const commentControl = component.form.get('facc_add_comment') as FormControl;
+
+    commentControl.setValue('Warning, ref 123.');
+
+    expect(commentControl.errors).toBeNull();
+    expect(commentControl.valid).toBe(true);
+  });
+
+  it('should accept commas in the free text fields', () => {
+    const freeTextControls = [
+      component.form.get('facc_add_free_text_1') as FormControl,
+      component.form.get('facc_add_free_text_2') as FormControl,
+      component.form.get('facc_add_free_text_3') as FormControl,
+    ];
+
+    freeTextControls.forEach((control, index) => {
+      control.setValue(`Free text, line ${index + 1}.`);
+
+      expect(control.errors).toBeNull();
+      expect(control.valid).toBe(true);
+    });
   });
 
   it('should emit formSubmit event when form is submitted', () => {
