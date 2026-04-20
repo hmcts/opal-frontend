@@ -19,9 +19,22 @@ When(
   },
 );
 
+When(
+  'I continue to the consolidation account search as an {string} defendant selecting business unit {string}',
+  (defendantType: ConsolidationDefendantType, businessUnit: string) => {
+    log('step', 'Continuing to consolidation account search with business unit', { defendantType, businessUnit });
+    consolidationFlow().continueToConsolidationAccountSearch(defendantType, businessUnit);
+  },
+);
+
 When('I click Search on consolidation account search', () => {
   log('step', 'Clicking Search on consolidation account search');
   consolidationFlow().clickConsolidationSearch();
+});
+
+When('I clear the consolidation search', () => {
+  log('step', 'Clearing the consolidation search form');
+  consolidationFlow().clearConsolidationSearch();
 });
 
 Then('I am on the consolidation Search tab for Individuals', () => {
@@ -29,9 +42,79 @@ Then('I am on the consolidation Search tab for Individuals', () => {
   consolidationFlow().assertSearchTabForIndividuals();
 });
 
+Then('I am on the consolidation business unit and defendant type selection screen', () => {
+  log('step', 'Verifying consolidation business unit and defendant type selection screen');
+  consolidationFlow().assertSelectBusinessUnitScreen();
+});
+
 Then('I am on the consolidation Search tab for Companies', () => {
   log('step', 'Verifying consolidation account search defaults for Companies');
   consolidationFlow().assertSearchTabForCompanies();
+});
+
+Then('the consolidation page header back link is displayed', () => {
+  log('step', 'Verifying consolidation page header back link is displayed');
+  consolidationFlow().assertBackLinkIsDisplayed();
+});
+
+When('I click the consolidation page header back link', () => {
+  log('step', 'Clicking the consolidation page header back link');
+  consolidationFlow().clickBackLink();
+});
+
+When('I open the consolidation Results tab', () => {
+  log('step', 'Opening the consolidation Results tab');
+  consolidationFlow().openResultsTab();
+});
+
+Then('I am on the consolidation Results tab', () => {
+  log('step', 'Verifying consolidation Results tab is active');
+  consolidationFlow().assertResultsTab();
+});
+
+Then('I am on the consolidation Results tab for Individuals', () => {
+  log('step', 'Verifying consolidation Results tab summary for Individuals');
+  consolidationFlow().assertResultsTabForIndividuals();
+});
+
+Then('I am on the consolidation Results tab for Companies', () => {
+  log('step', 'Verifying consolidation Results tab summary for Companies');
+  consolidationFlow().assertResultsTabForCompanies();
+});
+
+Then('the created consolidation result account number is displayed as a hyperlink', () => {
+  log('step', 'Verifying created consolidation result account number is displayed as a hyperlink');
+  consolidationFlow().assertCreatedAccountLinkIsDisplayed();
+});
+
+Then('I see the consolidation no matching results state', () => {
+  log('step', 'Verifying consolidation no matching results state');
+  consolidationFlow().assertNoMatchingResultsState();
+});
+
+Then('the consolidation results exclude accounts with a balance of {string}', (balance: string) => {
+  log('step', 'Verifying consolidation results exclude accounts with balance', { balance });
+  consolidationFlow().assertResultsExcludeBalance(balance);
+});
+
+When('I click Check your search on consolidation no matching results', () => {
+  log('step', 'Clicking Check your search on consolidation no matching results');
+  consolidationFlow().clickCheckYourSearchFromNoMatchingResults();
+});
+
+When('I open the created consolidation result account in a new tab', () => {
+  log('step', 'Opening created consolidation result account in a new tab');
+  consolidationFlow().openCreatedAccountFromResultsInNewTab();
+});
+
+Then('I see the consolidation search error page for {string}', (defendantType: ConsolidationDefendantType) => {
+  log('step', 'Verifying consolidation search error page', { defendantType });
+  consolidationFlow().assertSearchErrorPage(defendantType);
+});
+
+When('I go back from the consolidation search error page', () => {
+  log('step', 'Going back from the consolidation search error page');
+  consolidationFlow().goBackFromSearchError();
 });
 
 When('I enter the following consolidation search details:', (table: DataTable) => {

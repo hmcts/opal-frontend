@@ -65,10 +65,10 @@ Clone the [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-c
 
 ```bash
 yarn
-yarn build
+yarn pack:local
 ```
 
-This is required if you want to develop the frontend against the local version of the UI library using `yarn dev:local-lib:ssr`.
+This is required if you want to develop the frontend against the local version of the UI library using `yarn dev:local-lib:ssr`. It generates a local `.tgz` package in the repository root.
 
 #### 3. Clone opal-frontend-common-node-lib
 
@@ -76,10 +76,10 @@ Clone the [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend
 
 ```bash
 yarn
-yarn build
+yarn pack:local
 ```
 
-This is required if you want to develop the frontend against the local version of the Node library using `yarn dev:local-lib:ssr`.
+This is required if you want to develop the frontend against the local version of the Node library using `yarn dev:local-lib:ssr`. It generates a local `.tgz` package in the repository root.
 
 #### 4. Development server
 
@@ -95,14 +95,14 @@ There are two ways to run the Angular SSR application depending on whether you a
 
 - To use **local** versions of the libraries:
 
-  First, ensure you've built the libraries locally and set the environment variables:
+  First, ensure you've run `yarn pack:local` in both libraries and set the environment variables:
 
   ```bash
-  export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB DIST FOLDER]"
-  export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB DIST FOLDER]"
+  export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB REPOSITORY ROOT]"
+  export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB REPOSITORY ROOT]"
   ```
 
-  **Ensure you've built both libraries and exported the environment variables before running this command.**
+  **Ensure you've run `yarn pack:local` in both libraries and exported the environment variables before running this command.**
 
   Then run:
 
@@ -110,7 +110,7 @@ There are two ways to run the Angular SSR application depending on whether you a
   yarn dev:local-lib:ssr
   ```
 
-  This will import the local builds and start the SSR dev server with those versions.
+  This will install local `.tgz` packages and start the SSR dev server with those versions.
 
 The application's home page will be available at **http://localhost:4200**.
 
@@ -132,14 +132,14 @@ There are two options depending on whether you're working with local or publishe
 
 - To build and serve the application using **local** libraries:
 
-  First, ensure you've built both common libraries and set the environment variables:
+  First, ensure you've run `yarn pack:local` in both common libraries and set the environment variables:
 
   ```bash
-  export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB DIST FOLDER]"
-  export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB DIST FOLDER]"
+  export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB REPOSITORY ROOT]"
+  export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB REPOSITORY ROOT]"
   ```
 
-  **Ensure you've built both libraries and exported the environment variables before running this command.**
+  **Ensure you've run `yarn pack:local` in both libraries and exported the environment variables before running this command.**
 
   Then run:
 
@@ -148,7 +148,7 @@ There are two options depending on whether you're working with local or publishe
   ```
 
   This will:
-  - Import the local builds of the common libraries
+  - Install local `.tgz` packages for the common libraries
   - Build the application for production
   - Serve it on **http://localhost:4000**
 
@@ -276,13 +276,32 @@ TAGS=@UAT-Technical yarn test:functional:tags
 
 ```
 
-### Legacy mode
+Run `yarn test:component` to execute the Cypress component suite.
 
-To run Opal functional tests in legacy app mode, used for UAT-Technical coverage:
+All three top-level runners accept:
+
+- `--browser=<chrome|edge|firefox>` for an explicit browser
+- `--mode=<opal|legacy>` for suite mode selection
+- `--parallel` or `--serial` to override the default execution style
+
+Examples:
 
 ```bash
 
-yarn test:functional:uat-legacy
+yarn test:component --browser=chrome --parallel
+yarn test:smoke --mode=legacy --serial
+yarn test:functional --browser=firefox --mode=opal --parallel
+
+```
+
+### Legacy app mode
+
+To run the UAT-Technical-tagged functional tests against legacy app mode locally:
+This keeps the functional suite on the normal OPAL spec tree and only switches the app/helpers into legacy mode.
+
+```bash
+
+yarn test:functional:uat_legacy
 
 ```
 
@@ -302,7 +321,77 @@ yarn cypress
 
 ### Reports
 
-Artifacts and reports are written to `smoke-output/` and `functional-output/`, using browser-specific subdirectories where applicable.
+After a clean run, artifacts and reports are written to `functional-output/` and `smoke-output/`.
+Replace `<browser>` with `chrome`, `edge`, or `firefox`.
+
+```text
+functional-output/
+  component/
+    <browser>/
+      html/
+        component-report.html
+        assets/...
+      json/
+        .jsons/
+          mochawesome*.json
+      junit/
+        component-test-output-*.xml
+      screenshots/...
+  prod/
+    <browser>/
+      opal-mode-test-output-*.xml
+      <browser>-test-result.xml
+      cucumber/
+        OPAL-report-*.ndjson
+        <browser>-report.ndjson
+        <browser>-report.html
+      legacy/
+        legacy-mode-test-output-*.xml
+        legacy-test-result.xml
+        cucumber/
+          LEGACY-report-*.ndjson
+          legacy-report.ndjson
+          legacy-report.html
+  screenshots/
+    <browser>/...
+    <browser>/legacy/...
+  videos/...
+  zephyr/
+    cypress-report-1.json
+    cucumber-report.json
+    temp/...
+  account_evidence/...
+
+smoke-output/
+  prod/
+    <browser>/
+      opal-mode-test-output-*.xml
+      <browser>-test-result.xml
+      cucumber/
+        OPAL-report-*.ndjson
+        smoke-report.ndjson
+        smoke-report.html
+      legacy/
+        legacy-mode-test-output-*.xml
+        legacy-test-result.xml
+        cucumber/
+          LEGACY-report-*.ndjson
+          legacy-report.ndjson
+          legacy-report.html
+  screenshots/
+    <browser>/...
+    <browser>/legacy/...
+  zephyr/
+    cucumber-report.json
+```
+
+Notes:
+
+- `functional-output/component/<browser>/json/.jsons/` is the raw Mochawesome JSON used to build `html/component-report.html`.
+- `functional-output/prod/<browser>/legacy/` and `smoke-output/prod/<browser>/legacy/` are only created for legacy-mode runs.
+- `videos/` is only expected when using `yarn test:functionalOpalVideo`.
+- `account_evidence/` is only expected when legacy evidence capture is enabled.
+- These older component paths should not be recreated on a clean run: `functional-output/component-report/`, `functional-output/component-html/`, and `functional-output/prod/<browser>/component/`.
 
 ## Running accessibility tests
 
@@ -317,12 +406,12 @@ This project supports switching between local and published versions of the `opa
 
 ### Switching to Local Versions
 
-First, ensure you've built the libraries locally and exported the paths to the built `dist` folders:
+First, ensure you've run `yarn pack:local` in both library repos and exported the repository root paths (where the `.tgz` files are created):
 
 ```bash
 # In your shell config file (.zshrc, .bash_profile, etc.)
 export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB FOLDER]"
-export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB DIST FOLDER]"
+export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB FOLDER]"
 ```
 
 Then, run the following scripts:
@@ -332,20 +421,32 @@ yarn import:local:common-ui-lib
 yarn import:local:common-node-lib
 ```
 
-These commands will remove the published versions and install the local builds from the paths you specified.
+These commands will remove the published versions and install local `.tgz` packages from each configured path.
 
 ### Switching to Published Versions
 
-To reinstall the published packages **at the exact versions declared in `package.json`** (not the latest):
+If you have installed local `.tgz` packages and want to return to npm-published packages, first ensure your `package.json` dependencies are semver values (not `file:` tarball paths), then reinstall.
+
+```bash
+yarn add @hmcts/opal-frontend-common@<VERSION> @hmcts/opal-frontend-common-node@<VERSION>
+yarn install
+```
+
+You can also use:
 
 ```bash
 yarn import:published:common-ui-lib
 yarn import:published:common-node-lib
 ```
 
+These scripts read the target version from package.json.
+If package.json still contains `file:...tgz` values, they will reinstall local tarballs rather than npm-published versions.
+
 This is useful when you're no longer working on the libraries directly or want to verify against the published versions that your project is pinned to.
 
 **Note:** Version upgrades should come via Renovate PRs. These commands do **not** upgrade to the latest; they reinstall the exact versions specified in `package.json`. For extra safety in CI, consider using `yarn install --immutable` to prevent lockfile drift.
+
+**Platform note:** `import:*` scripts use Unix shell commands (`rm`, `ls`, `grep`) and are intended for macOS/Linux environments.
 
 ## Angular code scaffolding
 
@@ -487,6 +588,7 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 
 ## Project Scripts (zephyr:*)
 
+- Zephyr scripts still use the JSON report paths listed below as their inputs. Their console output is also mirrored to `tmp/zephyr/*.log`, with each script overwriting its own log file on the next run. `/tmp` is gitignored.
 - `zephyr:cypress:jira-create`: Create Jira tickets from the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
 - `zephyr:cypress:jira-update`: Update Jira tickets using the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
 - `zephyr:cypress:jira-execute`: Create a Zephyr execution from the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
@@ -496,7 +598,7 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:cucumber:smoke:jira-create`: Create Jira tickets from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-update`: Update Jira tickets using the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
 - `zephyr:cucumber:smoke:jira-execute`: Create a Zephyr execution from the smoke Cucumber JSON report at `smoke-output/zephyr/cucumber-report.json`.
-- `zephyr:test:opalComponent`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
+- `zephyr:test:component`: Reset outputs, run component tests, then create a Zephyr execution from the Cypress JSON report.
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
 

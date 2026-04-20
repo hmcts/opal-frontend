@@ -5,7 +5,7 @@ Feature: Check and Validate - Checker
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
-  @JIRA-STORY:PO-594 @JIRA-KEY:POT-3157
+  @JIRA-STORY:PO-594 @JIRA-KEY:POT-5130
   Scenario: Back navigation returns to Review accounts from an in-review draft
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                       |
@@ -20,7 +20,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "To review"
 
-  @JIRA-STORY:PO-594 @UAT-Technical @JIRA-KEY:POT-3158
+  @R1A @JIRA-STORY:PO-594 @UAT-Technical @JIRA-KEY:POT-5131
   Scenario: Approve an in-review draft account from the review screen
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                                            | Submitted                                                                                                                                                                   |
@@ -40,7 +40,7 @@ Feature: Check and Validate - Checker
     Then I should see the checker header "Review accounts" and status heading "To review"
     And the draft success banner is "You have approved Larry Lincoln{uniq}'s account"
 
-  @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-KEY:POT-3159
+  @JIRA-STORY:PO-969 @JIRA-STORY:PO-601 @JIRA-KEY:POT-5132
   Scenario: Reject an in-review draft account and review it from the Rejected tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                      |
@@ -63,7 +63,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Rejected"
 
-  @JIRA-STORY:PO-2609 @JIRA-KEY:POT-3160
+  @JIRA-STORY:PO-2609 @JIRA-KEY:POT-5133
   Scenario: Inputter cannot delete a rejected account,checker-only deletion post-submission
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                      |
@@ -95,7 +95,7 @@ Feature: Check and Validate - Checker
     And I do not see the "Delete account" link
 
 
-  @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-KEY:POT-3161
+  @JIRA-STORY:PO-597 @JIRA-STORY:PO-616 @JIRA-KEY:POT-5134
   Scenario: Delete an in-review draft account and verify it on the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -121,7 +121,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Deleted"
 
-  @JIRA-STORY:PO-597 @JIRA-KEY:POT-3162
+  @JIRA-STORY:PO-597 @JIRA-KEY:POT-5135
   Scenario: Cancel draft deletion and remain on the confirmation page
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -136,7 +136,7 @@ Feature: Check and Validate - Checker
     And I cancel draft deletion choosing "No - Cancel"
     Then I should be back on the page "Mr Peter BARN{uniqUpper}" with status "In review"
 
-  @JIRA-STORY:PO-597 @JIRA-KEY:POT-3163
+  @JIRA-STORY:PO-597 @JIRA-KEY:POT-5136
   Scenario: Cancel draft deletion after entering a reason and return to the account
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -155,7 +155,7 @@ Feature: Check and Validate - Checker
     When I cancel draft deletion choosing "Ok"
     Then I should see the header containing text "Mr Peter BARN{uniqUpper}"
 
-  @JIRA-STORY:PO-968 @JIRA-KEY:POT-3164
+  @JIRA-STORY:PO-968 @JIRA-KEY:POT-5137
   Scenario: Show a global error banner when approving fails
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                    |
@@ -172,7 +172,7 @@ Feature: Check and Validate - Checker
       | Decision | Approve |
     Then I should see the draft global error banner
 
-  @JIRA-STORY:PO-1073 @JIRA-KEY:POT-3165
+  @JIRA-STORY:PO-1073 @JIRA-KEY:POT-5138
   Scenario: View a failed draft account and return to the Failed tab
     Given failed draft accounts are stubbed with one result
     When I open Check and Validate Draft Accounts
@@ -183,7 +183,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Failed"
 
-  @JIRA-STORY:PO-603 @JIRA-KEY:POT-3166
+  @JIRA-STORY:PO-603 @JIRA-KEY:POT-5139
   Scenario: Open an existing deleted draft account from the Deleted tab
     Given a "adultOrYouthOnly" draft account exists with:
       | Account_status                          | Submitted                   |
@@ -201,7 +201,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the header containing text "Review accounts"
 
-  @JIRA-STORY:PO-1804 @JIRA-KEY:POT-3167
+  @JIRA-STORY:PO-1804 @JIRA-KEY:POT-5140
   Scenario: Open a fixed penalty account from the To review tab and return using Back
     Given a "fixedPenalty" draft account exists with:
       | Account_status              | Submitted      |
@@ -213,7 +213,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the header containing text "Review accounts"
 
-  @JIRA-STORY:PO-1804 @JIRA-KEY:POT-3168
+  @JIRA-STORY:PO-1804 @JIRA-KEY:POT-5141
   Scenario: Open a fixed penalty company account from the To review tab and return using Back
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |
@@ -225,7 +225,7 @@ Feature: Check and Validate - Checker
     Then I should see the header containing text "Review accounts"
 
 
-  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-3169
+  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-5142
   Scenario: Delete a fixed penalty company draft and return from the Deleted tab
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |
@@ -244,7 +244,7 @@ Feature: Check and Validate - Checker
     Then I should see the checker header "Review accounts" and status heading "Deleted"
 
 
-  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-3170
+  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-5143
   Scenario: Delete a fixed penalty draft and return from the Deleted tab
     Given a "fixedPenalty" draft account exists with:
       | Account_status              | Submitted      |
@@ -263,7 +263,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the checker header "Review accounts" and status heading "Deleted"
 
-  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-3171
+  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-5144
   Scenario: Reject a fixed penalty draft and return from the Rejected tab
     Given a "fixedPenalty" draft account exists with:
       | Account_status              | Submitted      |
@@ -283,7 +283,7 @@ Feature: Check and Validate - Checker
     When I go back to Check and Validate Draft Accounts
     Then I should see the header containing text "Review accounts"
 
-  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-3172
+  @JIRA-STORY:PO-2463 @JIRA-KEY:POT-5145
   Scenario: Reject a fixed penalty company draft and return from the Rejected tab
     Given a "fixedPenaltyCompany" draft account exists with:
       | Account_status                 | Submitted                      |

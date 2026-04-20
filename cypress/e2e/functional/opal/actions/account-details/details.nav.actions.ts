@@ -83,6 +83,35 @@ export class AccountDetailsNavActions {
   }
 
   /**
+   * Navigates to the "Fixed penalty" tab within the Account Details shell.
+   *
+   * @description
+   * Clicks the “Fixed penalty” sub-navigation tab and prepares for assertions
+   * or further content checks within the tab panel.
+   */
+  goToFixedPenaltyTab(): void {
+    log('navigate', 'Navigating to "Fixed penalty" tab');
+
+    cy.get(N.subNav.fixedPenaltyTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
+   * Asserts that the "Fixed penalty" tab is visible within the Account Details shell.
+   *
+   * @description
+   * Confirms that the fixed-penalty sub-navigation tab is rendered and available to the user.
+   *
+   * @example
+   *  const nav = new AccountDetailsNavActions();
+   *  nav.assertFixedPenaltyTabIsVisible();
+   */
+  assertFixedPenaltyTabIsVisible(): void {
+    log('assert', 'Asserting "Fixed penalty" tab is visible');
+
+    cy.get(N.subNav.fixedPenaltyTab, { timeout: 10_000 }).should('be.visible').and('contain.text', 'Fixed penalty');
+  }
+
+  /**
    * Navigates to the "Payment terms" tab within the Account Details shell.
    *
    * @description
@@ -101,6 +130,19 @@ export class AccountDetailsNavActions {
     log('navigate', 'Navigating to "Payment terms" tab');
 
     cy.get(N.subNav.paymentTermsTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
+   * Navigates to the "Enforcement" tab within the Account Details shell.
+   *
+   * @description
+   * Clicks the “Enforcement” sub-navigation tab and prepares for assertions
+   * or further content checks within the tab panel.
+   */
+  goToEnforcementTab(): void {
+    log('navigate', 'Navigating to "Enforcement" tab');
+
+    cy.get(N.subNav.enforcementTab, { timeout: 10_000 }).should('be.visible').click();
   }
 
   /**
@@ -180,5 +222,21 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Payment terms');
+  }
+
+  /**
+   * Asserts that the "Enforcement" tab is currently active.
+   *
+   * @description
+   * Confirms that the active tab link displays “Enforcement”
+   * and has the `aria-current="page"` attribute.
+   */
+  assertEnforcementTabIsActive(): void {
+    log('assert', 'Asserting "Enforcement" tab is active');
+
+    cy.get(N.subNav.enforcementTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Enforcement');
   }
 }

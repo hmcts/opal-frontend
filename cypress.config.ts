@@ -4,6 +4,7 @@
  */
 import { defineConfig } from 'cypress';
 import { mergeZephyrReports, cleanZephyrReports } from '@hmcts/zephyr-automation-nodejs';
+import { readFileSync } from 'node:fs';
 
 import {
   addCucumberPreprocessorPlugin,
@@ -26,8 +27,53 @@ import { cleanupEmptyScreenshotDirs, registerScreenshotTasks } from './cypress/s
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
+interface IAngularWorkspaceProjectBuildOptions {
+  tsConfig?: string;
+  assets?: unknown[];
+  styles?: string[];
+  stylePreprocessorOptions?: {
+    includePaths?: string[];
+  };
+  scripts?: string[];
+  allowedCommonJsDependencies?: string[];
+  inlineStyleLanguage?: string;
+  [key: string]: unknown;
+}
+
+interface IAngularWorkspaceProject {
+  root?: string;
+  sourceRoot: string;
+  architect: {
+    build: {
+      options: IAngularWorkspaceProjectBuildOptions;
+      configurations?: {
+        development?: Record<string, unknown>;
+      };
+    };
+  };
+}
+
+interface IAngularWorkspaceConfig {
+  projects: Record<string, IAngularWorkspaceProject>;
+}
+
 const resolveBrowserToRun = (): string => (process.env.BROWSER_TO_RUN || 'edge').trim().toLowerCase();
 const resolvedBrowserToRun = resolveBrowserToRun();
+const componentTsconfigPath = path.resolve(__dirname, 'cypress/tsconfig.json');
+const componentStylesPath = path.resolve(__dirname, 'cypress/support/component-styles.scss');
+const angularWorkspace = JSON.parse(
+  readFileSync(path.resolve(__dirname, 'angular.json'), 'utf8'),
+) as IAngularWorkspaceConfig;
+const angularProject = angularWorkspace.projects['opal-frontend'];
+const componentProjectConfig = {
+  root: angularProject.root || '.',
+  sourceRoot: angularProject.sourceRoot,
+  buildOptions: {
+    ...angularProject.architect.build.options,
+    ...(angularProject.architect.build.configurations?.development || {}),
+    styles: [path.relative(__dirname, componentStylesPath)],
+  },
+};
 
 /**
  * Register browser launch hooks to standardize window size in headless runs.
@@ -79,6 +125,8 @@ async function setupNodeEvents(
   on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
+  const e2eTsconfigPath = path.resolve(__dirname, 'e2e.tsconfig.json');
+
   await addCucumberPreprocessorPlugin(on, config, {
     omitAfterScreenshotHandler: true,
     omitAfterSpecHandler: true,
@@ -127,7 +175,7 @@ async function setupNodeEvents(
           extensions: ['.ts', '.js'],
           plugins: [
             new TsconfigPathsPlugin({
-              configFile: path.resolve(__dirname, 'e2e.tsconfig.json'),
+              configFile: e2eTsconfigPath,
             }),
           ],
         },
@@ -140,7 +188,8 @@ async function setupNodeEvents(
                 {
                   loader: 'ts-loader',
                   options: {
-                    configFile: 'e2e.tsconfig.json',
+                    context: __dirname,
+                    configFile: e2eTsconfigPath,
                     // keep transpileOnly to speed up bundling for Cypress
                     transpileOnly: true,
                     compilerOptions: {
@@ -209,7 +258,6 @@ async function setupNodeEvents(
   });
 
   const browserToRun = resolveBrowserToRun();
-  const testStage = (process.env.TEST_STAGE || '').trim().toLowerCase();
 
   // OPAL runs keep browser-specific artifacts for all browsers and stages.
   if (process.env.TEST_MODE === 'OPAL') {
@@ -264,6 +312,9 @@ export default defineConfig({
     devServer: {
       framework: 'angular',
       bundler: 'webpack',
+      options: {
+        projectConfig: componentProjectConfig,
+      },
       webpackConfig: {
         devServer: {
           port: Number(`809${process.env.CYPRESS_THREAD || '0'}`),
@@ -272,7 +323,7 @@ export default defineConfig({
           extensions: ['.ts', '.js'],
           plugins: [
             new TsconfigPathsPlugin({
-              configFile: path.resolve(__dirname, 'tsconfig.cypress.json'),
+              configFile: componentTsconfigPath,
             }),
           ],
         },
@@ -284,11 +335,11 @@ export default defineConfig({
       reporterEnabled:
         'cypress-mochawesome-reporter, mocha-junit-reporter, @hmcts/zephyr-automation-nodejs/cypress/ZephyrReporter',
       mochaJunitReporterReporterOptions: {
-        mochaFile: `functional-output/prod/${resolvedBrowserToRun}/component/component-test-output-[hash].xml`,
+        mochaFile: `functional-output/component/${resolvedBrowserToRun}/junit/component-test-output-[hash].xml`,
         toConsole: false,
       },
       cypressMochawesomeReporterReporterOptions: {
-        reportDir: `functional-output/component-report/${resolvedBrowserToRun}`,
+        reportDir: `functional-output/component/${resolvedBrowserToRun}/json`,
         overwrite: false,
         html: false,
         json: true,

@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
   "language": "en-GB",
   "words": [
@@ -49,6 +48,7 @@
     "finesmac",
     "firstname",
     "firstnames",
+    "FIXEDPENALTYNV",
     "FNAME",
     "FNAMECHANGE",
     "Followup",
@@ -62,6 +62,7 @@
     "impositions",
     "inputname",
     "inputvalue",
+    "JCDE",
     "lastname",
     "linters",
     "LJA",
@@ -101,9 +102,11 @@
     "stepshelper",
     "subnavitemfragment",
     "subnavitemid",
+    "SUMMARYADULT",
     "summarycardlistid",
     "summarylistrowid",
     "summarytext",
+    "SUMMARYWELSHPG",
     "TESTNONPAYEE",
     "testone",
     "testpcr",

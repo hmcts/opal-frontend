@@ -15,6 +15,7 @@
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="collection_order_status"
             [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeCollectionOrder()"
           >
             <ng-container name>Collection Order status</ng-container>
             <ng-container value>
@@ -23,13 +24,10 @@
                   >Collection Order</opal-lib-moj-badge
                 >
               } @else {
-                {{ 'No collection order' }}
+                {{ 'No Collection Order' }}
               }
             </ng-container>
-            @if (
-              hasAccountMaintenancePermission &&
-              (!isCompanyAccount || tabData.enforcement_overview.collection_order.collection_order_flag)
-            ) {
+            @if (hasAccountMaintenancePermission) {
               <ng-container action>Change</ng-container>
             }
           </div>
@@ -63,6 +61,7 @@
             summaryListId="enforcementOverviewDetails"
             summaryListRowId="enforcement_court"
             [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeEnforcementCourt()"
           >
             <ng-container name>Enforcement court</ng-container>
             <ng-container value>
@@ -86,7 +85,7 @@
     </ng-container>
   </opal-lib-govuk-summary-card-list>
   <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action" summaryCardListId="last-enforcement-action">
-    @if (tabData.last_enforcement_action !== null) {
+    @if (tabData.last_enforcement_action) {
       <ng-container content>
         <opal-lib-govuk-summary-list summaryListId="lastEnforcementActionDetails">
           <div
@@ -261,11 +260,20 @@
     }
   </opal-lib-govuk-summary-card-list>
 
-  @if (tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id) {
+  @if (
+    tabData.enforcement_override &&
+    tabData.enforcement_override.enforcement_override_result &&
+    tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+  ) {
     <opal-lib-govuk-summary-card-list cardTitle="Enforcement override" summaryCardListId="enforcement-override">
       @if (hasAccountMaintenancePermission) {
         <ng-container actions>
-          <opal-lib-govuk-summary-card-action actionText="Remove" actionRoute="#"></opal-lib-govuk-summary-card-action>
+          <opal-lib-govuk-summary-card-action
+            actionText="Remove"
+            actionRoute="remove"
+            visuallyHiddenText="Enforcement override"
+            (clickEvent)="handleRemoveEnforcementOverride()"
+          ></opal-lib-govuk-summary-card-action>
         </ng-container>
       }
       <ng-container content>
@@ -280,14 +288,18 @@
             summaryListId="enforcementOverrideDetails"
             summaryListRowId="enforcement_override"
             [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+            (actionClick)="handleChangeEnforcementOverride()"
           >
             <ng-container name>Enforcement override</ng-container>
             <ng-container value>
-              {{ tabData.enforcement_override.enforcement_override_result.enforcement_override_result_name }}({{
+              {{ tabData.enforcement_override.enforcement_override_result.enforcement_override_result_name }} ({{
                 tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
               }})
             </ng-container>
-            @if (hasAccountMaintenancePermission) {
+            @if (
+              hasAccountMaintenancePermission &&
+              this.tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+            ) {
               <ng-container action>Change</ng-container>
             }
           </div>
@@ -328,19 +340,21 @@
     <h2 [class]="style.heading">Actions</h2>
     @if (hasEnterEnforcementPermission) {
       <p>
-        <a class="govuk-link" tabindex="0">Add enforcement action</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="">Add enforcement action</a>
       </p>
     }
     @if (
       hasAccountMaintenancePermission &&
-      !tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+      !tabData.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
     ) {
       <p>
-        <a class="govuk-link" tabindex="0">Add enforcement override</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="" (click)="handleAddEnforcementOverride($event)"
+          >Add enforcement override</a
+        >
       </p>
     }
     <p>
-      <a class="govuk-link" tabindex="0">Request an HMRC check</a>
+      <a class="govuk-link govuk-link--no-visited-state" href="">Request an HMRC check</a>
     </p>
   </div>
 }

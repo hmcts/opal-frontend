@@ -16,6 +16,17 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES } from './constants/fines-acc-m
 import { defendantAccountPartyResolver } from './resolvers/defendant-account-party.resolver';
 import { defendantAccountPaymentTermsLatestResolver } from './resolvers/defendant-account-payment-terms-latest.resolver';
 import { minorCreditorAccountHeadingResolver } from './resolvers/defendant-minor-creditor-heading.resolver';
+import { fetchResultsWithParamsResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-results-with-params-resolver';
+import { IOpalFinesResultsParams } from '../../services/opal-fines-service/interfaces/opal-fines-results-params.interface';
+import { fetchLocalJusticeAreasResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-ljas-resolver';
+import { fetchEnforcersResolver } from '../../routing/resolvers/fetch-results-with-params-resolver/fetch-enforcers-resolver';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-titles.constant';
+import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
+import { defendantAccountEnforcementStatusResolver } from './resolvers/defendant-account-enforcement-status.resolver';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
+import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-titles.constant';
+import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
+import { FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-collo-change/constants/fines-acc-enf-collo-change-routing-titles.constant';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -166,6 +177,96 @@ export const routing: Routes = [
         resolve: {
           title: TitleResolver,
           defendantAccountPaymentTermsData: defendantAccountPaymentTermsLatestResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
+        loadComponent: () =>
+          import('../fines-acc-enf-override-add-change/fines-acc-enf-override-add-change.component').then(
+            (c) => c.FinesAccEnfOverrideAddChangeComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
+          title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.add,
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+        },
+        resolve: {
+          titleResolver: TitleResolver,
+          resultsRefData: fetchResultsWithParamsResolver,
+          localJusticeAreasRefData: fetchLocalJusticeAreasResolver,
+          enforcersRefData: fetchEnforcersResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.change}`,
+        loadComponent: () =>
+          import('../fines-acc-enf-override-add-change/fines-acc-enf-override-add-change.component').then(
+            (c) => c.FinesAccEnfOverrideAddChangeComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
+          title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.change,
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+        },
+        resolve: {
+          titleResolver: TitleResolver,
+          resultsRefData: fetchResultsWithParamsResolver,
+          localJusticeAreasRefData: fetchLocalJusticeAreasResolver,
+          enforcersRefData: fetchEnforcersResolver,
+          enforcementStatus: defendantAccountEnforcementStatusResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
+        loadComponent: () =>
+          import('../fines-acc-enf-override-remove/fines-acc-enf-override-remove.component').then(
+            (c) => c.FinesAccEnfOverrideRemoveComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        data: {
+          title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.remove,
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+        },
+        resolve: {
+          titleResolver: TitleResolver,
+          enforcementStatus: defendantAccountEnforcementStatusResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
+        loadComponent: () =>
+          import('../fines-acc-enf-court-change/fines-acc-enf-court-change.component').then(
+            (c) => c.FinesAccEnfCourtChangeComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          title: FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES.children.change,
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+        },
+        resolve: {
+          title: TitleResolver,
+          courtsRefData: fetchAccCourtsResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/collection-order/change`,
+        loadComponent: () =>
+          import('../fines-acc-enf-collo-change/fines-acc-enf-collo-change.component').then(
+            (c) => c.FinesAccEnfColloChangeComponent,
+          ),
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          title: FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES.children.change,
+        },
+        resolve: {
+          title: TitleResolver,
         },
       },
     ],

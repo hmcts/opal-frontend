@@ -18,7 +18,7 @@ export const FINES_DRAFT_LINKS: IDashboardPageConfigurationLink[] = [
     fragment: 'review',
     permissionIds: [FINES_PERMISSIONS['create-and-manage-draft-accounts']],
     newTab: false,
-    style: 'guidance-panel-blue',
+    style: null,
   },
   {
     id: 'finesCavCheckerLink',
@@ -33,6 +33,6 @@ export const FINES_DRAFT_LINKS: IDashboardPageConfigurationLink[] = [
     fragment: 'to-review',
     permissionIds: [FINES_PERMISSIONS['check-and-validate-draft-accounts']],
     newTab: false,
-    style: 'guidance-panel-blue',
+    style: null,
   },
 ];

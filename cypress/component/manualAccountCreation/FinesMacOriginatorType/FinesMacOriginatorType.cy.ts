@@ -17,7 +17,7 @@ describe('Manual account creation - Originator Type', () => {
 
   it(
     'Validate Originator Type page renders as designed',
-    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4238') },
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-KEY:POT-7477'] },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
@@ -50,7 +50,7 @@ describe('Manual account creation - Originator Type', () => {
 
   it(
     'AC2: routes to Create account view when "New account" is selected and Continue is clicked',
-    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4239') },
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-KEY:POT-7478'] },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
@@ -70,7 +70,7 @@ describe('Manual account creation - Originator Type', () => {
 
   it(
     'AC2: routes to Create account view when "Transfer in from England or Wales" is selected and Continue is clicked',
-    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4240') },
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-KEY:POT-7479'] },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
@@ -90,7 +90,7 @@ describe('Manual account creation - Originator Type', () => {
 
   it(
     'AC4: clicking Continue without making a selection shows error "Select an option" and does not navigate',
-    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4241') },
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-KEY:POT-7480'] },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
@@ -110,7 +110,7 @@ describe('Manual account creation - Originator Type', () => {
 
   it(
     'AC5: clicking Cancel without entering anything returns to the Inputter Dashboard',
-    { tags: buildTags('@JIRA-STORY:PO-2763', '@JIRA-KEY:POT-4242') },
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-KEY:POT-7481'] },
     () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',

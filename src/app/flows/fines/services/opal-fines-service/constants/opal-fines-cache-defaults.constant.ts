@@ -14,10 +14,11 @@ export const OPAL_FINES_CACHE_DEFAULTS: IOpalFinesCache = {
   prosecutorDataCache$: {},
   defendantAccountAtAGlanceCache$: null,
   defendantAccountPartyCache$: null,
-  defendantAccountparentOrGuardianAccountPartyCache$: null,
+  defendantAccountParentOrGuardianAccountPartyCache$: null,
   defendantAccountEnforcementCache$: null,
   defendantAccountImpositionsCache$: null,
   defendantAccountHistoryAndNotesCache$: null,
   defendantAccountPaymentTermsLatestCache$: null,
   defendantAccountFixedPenaltyCache$: null,
+  enforcersCache$: null,
 };

@@ -43,7 +43,7 @@ export const MacPersonalDetailsLocators = {
   legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   aliasAdd: '#fm_personal_details_add_alias',
   aliasAddButton: 'button[id="addAlias"]',
-  aliasRemoveButton: '.govuk-link--no-visited-state',
+  aliasRemoveButton: '#fm_personal_details_add_alias-conditional a.govuk-link--no-visited-state',
   aliasContainer: 'div[id="fm_personal_details_alias_container"]',
   submitButton: 'button[type="submit"]',
   returnToAccountDetailsButton: 'button:contains("Return to account details")',
