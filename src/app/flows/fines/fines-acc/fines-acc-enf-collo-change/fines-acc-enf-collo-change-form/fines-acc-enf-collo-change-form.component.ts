@@ -6,7 +6,6 @@ import {
   IAbstractFormBaseForm,
 } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
@@ -23,7 +22,6 @@ import { FINES_ACC_ENF_COLLO_CHANGE_FIELD_ERRORS } from '../constants/fines-acc-
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukHeadingWithCaptionComponent,

@@ -5,7 +5,7 @@ import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUs
 
 import { interceptDefendantHeader, interceptFixedPenaltyDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
-import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from './constants/account_enquiry_fixed_penalty_elements';
+import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.fixed-penalty.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 
@@ -27,7 +27,7 @@ const componentProperties: IComponentProperties = {
 describe('Account Enquiry Fixed Penalty', () => {
   it(
     'AC1a: Adult/Youth only - Fixed Penalty details tab, vehicle fixed penalty, all fields shown',
-    { tags: buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818', '@JIRA-KEY:POT-3512') },
+    { tags: [...buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818'), '@JIRA-KEY:POT-6783'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -67,7 +67,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC1b: Adult/Youth only - Fixed Penalty details tab, non-vehicle fixed penalty, partial view',
-    { tags: buildTags('@JIRA-STORY:PO-994', '@JIRA-KEY:POT-3513') },
+    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6784'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -96,7 +96,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC1c: Adult/Youth only - Fixed Penalty details tab, show em-dash for missing fields',
-    { tags: buildTags('@JIRA-STORY:PO-994', '@JIRA-KEY:POT-3514') },
+    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6785'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -129,7 +129,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC2: Company - Fixed Penalty details tab, vehicle fixed penalty, all fields shown',
-    { tags: buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818', '@JIRA-KEY:POT-3515') },
+    { tags: [...buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818'), '@JIRA-KEY:POT-6786'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.account_type = 'Fixed Penalty';
@@ -168,7 +168,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC2: Company - Fixed Penalty details tab, non-vehicle fixed penalty, partial view',
-    { tags: buildTags('@JIRA-STORY:PO-994', '@JIRA-KEY:POT-3516') },
+    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6787'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.account_type = 'Fixed Penalty';
@@ -196,7 +196,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC2: Company - Fixed Penalty details tab, show em-dash for missing fields',
-    { tags: buildTags('@JIRA-STORY:PO-994', '@JIRA-KEY:POT-3517') },
+    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6788'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.account_type = 'Fixed Penalty';

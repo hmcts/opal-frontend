@@ -48,7 +48,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
 
   it(
     '(AC.1) render all the fields In review account',
-    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3917') },
+    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-KEY:POT-7179'] },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
@@ -77,7 +77,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
 
   it(
     'AC.2 When user has not associated accounts, that are in review',
-    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3918') },
+    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-KEY:POT-7180'] },
     () => {
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
@@ -93,7 +93,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
 
   it(
     'AC.3 verify the table of headers in review tab',
-    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3919') },
+    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-KEY:POT-7181'] },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
@@ -135,7 +135,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
 
   it(
     '(AC.4a) The table should have the correct default ordering',
-    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3920') },
+    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-KEY:POT-7182'] },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
@@ -180,7 +180,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
 
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
-    { tags: buildTags('@JIRA-STORY:PO-584', '@JIRA-KEY:POT-3921') },
+    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-KEY:POT-7183'] },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 

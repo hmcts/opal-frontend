@@ -1,0 +1,36 @@
+/**
+ * @file account.enquiry.fixed-penalty.locators.ts
+ * @description
+ * Shared selector map for the Account Enquiry fixed-penalty tab.
+ *
+ * @remarks
+ * - Preserves the legacy export name used by component specs to keep migration mechanical.
+ */
+export const ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS = {
+  headingWithCaption: 'opal-lib-govuk-heading-with-caption',
+  headingName: 'h1.govuk-heading-l',
+  pageHeader: 'opal-lib-custom-page-header',
+  headerLabel: '[opal-lib-custom-account-information-item-label]',
+  headerValue: '[opal-lib-custom-account-information-item-value]',
+
+  // Buttons
+  addNoteButton: 'button[id$="addAccountNote"]',
+
+  // Info sections
+  summaryMetricBar: 'opal-lib-custom-summary-metric-bar',
+  accountInfo: 'opal-lib-custom-account-information',
+
+  // Tabs
+  tabName: '[subnavitemid="fixed-penalty-tab"] > .moj-sub-navigation__link',
+
+  // Table labels
+  tableTitle: '.govuk-summary-card__title',
+  labelIssuingAuthority: '#fixedPenaltyDetailsIssuing_authorityValue',
+  labelTicketNumber: '#fixedPenaltyDetailsTicket_numberValue',
+  labelRegistrationNumber: '#fixedPenaltyDetailsRegistration_numberValue',
+  labelDrivingLicence: '#fixedPenaltyDetailsLicence_numberValue',
+  labelNoticeNumber: '#fixedPenaltyDetailsNotice_numberValue',
+  labelNoticeDate: '#fixedPenaltyDetailsIssued_dateValue',
+  labelTimeOfOffence: '#fixedPenaltyDetailsTime_of_offenceValue',
+  labelPlaceOfOffence: '#fixedPenaltyDetailsPlace_of_offenceValue',
+} as const;

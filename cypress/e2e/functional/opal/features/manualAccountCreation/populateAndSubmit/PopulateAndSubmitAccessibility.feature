@@ -1,4 +1,5 @@
 @JIRA-LABEL:manual-account-creation
+@JIRA-STORY:PO-2322
 Feature: Accessibility Tests for Populate and Submit Screens
   # This feature file ensures that key populate and submit screens meet accessibility standards using Axe-Core.
 
@@ -6,11 +7,11 @@ Feature: Accessibility Tests for Populate and Submit Screens
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
-  @JIRA-KEY:POT-3298
+  @JIRA-KEY:POT-4986
   Scenario: Dashboard is accessible after sign in
     Then I check the page for accessibility
 
-  @JIRA-KEY:POT-3299
+  @JIRA-KEY:POT-4987
   Scenario: Manual account creation start page is accessible
     When I open Manual Account Creation from the dashboard
     And I select manual account business unit "West London"
@@ -20,24 +21,24 @@ Feature: Accessibility Tests for Populate and Submit Screens
 
   @JIRA-STORY:PO-2763
   #AC-7 Originator type page with warning banner passes accessibility checks
-  @JIRA-KEY:POT-3300
+  @JIRA-KEY:POT-4988
   Scenario: Originator type page passes accessibility checks
     When I open Manual Account Creation
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-2790 @JIRA-KEY:POT-3301
-  Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core
+  @JIRA-STORY:PO-2790 @JIRA-KEY:POT-4989
+  Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core (task list)
     When I start creating a new manual account for business unit "West London" with account type "Conditional Caution"
     Then I am taken to the manual account details page
     And I see the section titled "Police and court details"
     And I check the page for accessibility
 
-  @JIRA-KEY:POT-3302
+  @JIRA-KEY:POT-4990
   Scenario: Account details task list is accessible for fine accounts
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     Then I check the page for accessibility
 
-  @JIRA-KEY:POT-3303
+  @JIRA-KEY:POT-4991
   Scenario: Check account details page accessibility after completing required tasks
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
@@ -84,7 +85,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
     When I check the manual account details
     Then I check the page for accessibility
 
-  @JIRA-KEY:POT-3304
+  @JIRA-KEY:POT-4992
   Scenario: Submission confirmation page is accessible
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only" and originator type "New"
     And I complete manual account creation with the following fields and defaults:
@@ -133,7 +134,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
     Then I see the following text on the page "You've submitted this account for review"
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-2766 @JIRA-KEY:POT-3305
+  @JIRA-STORY:PO-2766 @JIRA-KEY:POT-4993
   Scenario: Transfer in page is accessible
     When I open Manual Account Creation
     Then I choose 'Transfer in' and continue to create account page

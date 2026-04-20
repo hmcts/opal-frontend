@@ -82,11 +82,29 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
+  it('should emit changeEnforcementOverride when user has permission and an override result exists', () => {
+    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
+
+    component.hasAccountMaintenancePermission = true;
+    component.handleChangeEnforcementOverride();
+
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
   it('should emit when handleChangeEnforcementCourt is called', () => {
     const eventEmitterSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
     component.hasAccountMaintenancePermission = true;
 
     component.handleChangeEnforcementCourt();
+
+    expect(eventEmitterSpy).toHaveBeenCalled();
+  });
+
+  it('should emit when handleRemoveEnforcementOverride is called', () => {
+    const eventEmitterSpy = vi.spyOn(component.removeEnforcementOverride, 'emit');
+    component.hasAccountMaintenancePermission = true;
+
+    component.handleRemoveEnforcementOverride();
 
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
