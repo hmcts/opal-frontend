@@ -119,4 +119,22 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     component['checkMandatorySections']();
     expect(component.mandatorySectionsCompleted).toBe(false);
   });
+
+  it('should accept commas in the add comment field', () => {
+    const commentsControl = component.form.controls['fm_account_comments_notes_comments'];
+
+    commentsControl.setValue('Warning, account reviewed.');
+
+    expect(commentsControl.errors).toBeNull();
+    expect(commentsControl.valid).toBe(true);
+  });
+
+  it('should accept commas in the add account notes field', () => {
+    const notesControl = component.form.controls['fm_account_comments_notes_notes'];
+
+    notesControl.setValue('Customer called, requested update, case reviewed.');
+
+    expect(notesControl.errors).toBeNull();
+    expect(notesControl.valid).toBe(true);
+  });
 });
