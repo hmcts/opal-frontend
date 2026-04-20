@@ -97,6 +97,33 @@ describe('FinesAccEnfColloChangeComponent', () => {
     expect(component.partyName).toBe('Mr Robert THOMSON');
   });
 
+  it('should fall back to empty strings when store page data is missing', async () => {
+    mockAccountStore = {
+      ...mockAccountStore,
+      getAccountNumber: signal(null) as unknown as typeof mockAccountStore.getAccountNumber,
+      party_name: signal(null) as unknown as typeof mockAccountStore.party_name,
+    };
+
+    await TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [FinesAccEnfColloChangeComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: Router, useValue: mockRouter },
+        { provide: FinesAccountStore, useValue: mockAccountStore },
+        { provide: FinesAccPayloadService, useValue: mockPayloadService },
+        { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: UtilsService, useValue: mockUtilsService },
+      ],
+    }).compileComponents();
+
+    const emptyFixture = TestBed.createComponent(FinesAccEnfColloChangeComponent);
+    const emptyComponent = emptyFixture.componentInstance;
+
+    expect(emptyComponent.accountNumber).toBe('');
+    expect(emptyComponent.partyName).toBe('');
+  });
+
   it('should patch and navigate on success when the selection changes', () => {
     const routerNavigateSpy = vi.spyOn(component as never, 'routerNavigate');
 

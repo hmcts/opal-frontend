@@ -25,6 +25,18 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should not initialise form state when there is no accountId on init', () => {
+    const freshFixture = TestBed.createComponent(FinesMacDeleteAccountConfirmationFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    freshComponent.accountId = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const initialSetupSpy = vi.spyOn<any, any>(freshComponent, 'initialDeleteAccountConfirmationSetup');
+
+    freshComponent.ngOnInit();
+
+    expect(initialSetupSpy).not.toHaveBeenCalled();
+  });
+
   it('should render the reason textarea', () => {
     const textarea = fixture.debugElement.query(By.css('textarea'));
     expect(textarea).toBeTruthy();

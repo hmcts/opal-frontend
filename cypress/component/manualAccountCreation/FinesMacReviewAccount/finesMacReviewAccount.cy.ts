@@ -185,7 +185,6 @@ describe('FinesMacReviewAccountComponent', () => {
           '@JIRA-STORY:PO-545',
           '@JIRA-STORY:PO-657',
         ),
-        ,
         '@JIRA-KEY:POT-7638',
       ],
     },

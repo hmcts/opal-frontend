@@ -47,6 +47,40 @@ describe('FinesMacOffenceDetailsService', () => {
     expect(offence.childFormData).toEqual([{ formData: { fm_offence_details_imposition_position: 1 } }]);
   });
 
+  it('updateChildFormData - should decrement later child form positions when no child matches the removed index', () => {
+    const offence = {
+      childFormData: [
+        { formData: { fm_offence_details_imposition_position: 2 } },
+        { formData: { fm_offence_details_imposition_position: 3 } },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (service as any).updateChildFormData(offence, 1);
+
+    expect(offence.childFormData).toEqual([
+      { formData: { fm_offence_details_imposition_position: 1 } },
+      { formData: { fm_offence_details_imposition_position: 2 } },
+    ]);
+  });
+
+  it('updateChildFormData - should leave earlier child form positions unchanged', () => {
+    const offence = {
+      childFormData: [
+        { formData: { fm_offence_details_imposition_position: 0 } },
+        { formData: { fm_offence_details_imposition_position: 1 } },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (service as any).updateChildFormData(offence, 2);
+
+    expect(offence.childFormData).toEqual([
+      { formData: { fm_offence_details_imposition_position: 0 } },
+      { formData: { fm_offence_details_imposition_position: 1 } },
+    ]);
+  });
+
   it('removeImposition - should remove imposition correctly', () => {
     const data = [
       {
@@ -137,6 +171,29 @@ describe('FinesMacOffenceDetailsService', () => {
     const result = service.findExactOffenceMatch(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK, 'GMMET001', 41800);
 
     expect(result).toEqual(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK.refData[1]);
+  });
+
+  it('findExactOffenceMatch - should match legacy cjs_code values when get_cjs_code is absent', () => {
+    const legacyCodeResponse = {
+      count: 1,
+      refData: [
+        {
+          offence_id: 41799,
+          cjs_code: 'AB12345',
+          business_unit_id: 52,
+          offence_title: 'Legacy offence title',
+          offence_title_cy: null,
+          date_used_from: '1971-01-01T00:00:00Z',
+          date_used_to: null,
+          offence_oas: 'Legacy offence',
+          offence_oas_cy: null,
+        },
+      ],
+    } as unknown as IOpalFinesOffencesRefData;
+
+    const result = service.findExactOffenceMatch(legacyCodeResponse, 'ab12345');
+
+    expect(result).toEqual(legacyCodeResponse.refData[0]);
   });
 
   describe('initOffenceListener', () => {
@@ -547,6 +604,35 @@ describe('FinesMacOffenceDetailsService', () => {
       expect(onConfirmChangeSpy).toHaveBeenLastCalledWith(false);
     });
 
+    it('should handle successful lookups without a confirmation callback', () => {
+      vi.useFakeTimers();
+
+      service.initOffenceCodeListener(form, 'code', 'id', destroy$, getOffenceByCjsCode, onResultSpy);
+
+      expect(() => {
+        form.get('code')?.setValue('ak123456');
+        vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      }).not.toThrow();
+
+      expect(form.get('id')?.value).toBe(314441);
+      expect(onResultSpy).toHaveBeenCalledWith(offenceMockResponse);
+    });
+
+    it('should handle failed lookups without a confirmation callback', () => {
+      vi.useFakeTimers();
+      getOffenceByCjsCode = () => throwError(() => new Error('request failed'));
+
+      service.initOffenceCodeListener(form, 'code', 'id', destroy$, getOffenceByCjsCode, onResultSpy);
+
+      expect(() => {
+        form.get('code')?.setValue('zz99999');
+        vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      }).not.toThrow();
+
+      expect(form.get('code')?.errors).toEqual({ offenceCodeLookupFailed: true });
+      expect(form.get('id')?.value).toBeNull();
+    });
+
     it('should return a retry callback that reruns a failed lookup for the same code', () => {
       vi.useFakeTimers();
       const getOffenceByCjsCodeSpy = vi
@@ -635,6 +721,48 @@ describe('FinesMacOffenceDetailsService', () => {
       vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(false);
+    });
+
+    it('should handle short codes without a confirmation callback', () => {
+      vi.useFakeTimers();
+
+      service.initOffenceCodeListener(form, 'code', 'id', destroy$, getOffenceByCjsCode, onResultSpy);
+
+      expect(() => {
+        form.get('code')?.setValue('ab12');
+        vi.advanceTimersByTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+      }).not.toThrow();
+
+      expect(form.get('id')?.value).toBeNull();
+      expect(form.get('code')?.errors).toBeNull();
+    });
+
+    it('should return early from the retry callback when the current code is not a string', () => {
+      vi.useFakeTimers();
+      const getOffenceByCjsCodeSpy = vi.fn().mockReturnValue(of(offenceMockResponse));
+      const codeControl = form.get('code') as FormControl;
+      const setValueSpy = vi.spyOn(codeControl, 'setValue');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(service.utilsService, 'upperCaseAllLetters').mockReturnValue(null);
+
+      const retryLookup = service.initOffenceCodeListener(
+        form,
+        'code',
+        'id',
+        destroy$,
+        getOffenceByCjsCodeSpy,
+        onResultSpy,
+        onConfirmChangeSpy,
+      );
+
+      getOffenceByCjsCodeSpy.mockClear();
+      setValueSpy.mockClear();
+
+      retryLookup();
+
+      expect(getOffenceByCjsCodeSpy).not.toHaveBeenCalled();
+      expect(setValueSpy).not.toHaveBeenCalled();
+      expect(codeControl.value).toBe('');
     });
   });
 });

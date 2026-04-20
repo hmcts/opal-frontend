@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { FinesAccCommentsAddComponent } from './fines-acc-comments-add.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -40,6 +40,7 @@ describe('FinesAccCommentsAddComponent', () => {
     };
     mockUtilsService = {
       upperCaseFirstLetter: vi.fn().mockName('UtilsService.upperCaseFirstLetter'),
+      scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
     };
     mockFinesAccStore = {
       account_number: signal('123456'),
@@ -243,6 +244,35 @@ describe('FinesAccCommentsAddComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const componentElement = compiled.querySelector('app-fines-acc-comments-add-form');
     expect(componentElement).toBeTruthy();
+  });
+
+  it('should scroll to top and not navigate when the patch request fails', () => {
+    const mockFormData: IFinesAccAddCommentsForm = {
+      formData: {
+        facc_add_comment: 'Test comment',
+        facc_add_free_text_1: 'Free text 1',
+        facc_add_free_text_2: null,
+        facc_add_free_text_3: null,
+      },
+      nestedFlow: false,
+    };
+    const mockPayload = {
+      comment_and_notes: {
+        account_comment: 'Test comment',
+        free_text_note_1: 'Free text 1',
+        free_text_note_2: null,
+        free_text_note_3: null,
+      },
+    };
+    const routerNavigateSpy = vi.spyOn(component, 'routerNavigate' as never);
+
+    mockFinesAccPayloadService.buildCommentsFormPayload.mockReturnValue(mockPayload);
+    mockOpalFinesService.patchDefendantAccount.mockReturnValue(throwError(() => new Error('Patch failed')));
+
+    component.handleAddNoteSubmit(mockFormData);
+
+    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(routerNavigateSpy).not.toHaveBeenCalled();
   });
 
   it('should test handleUnsavedChanges', () => {

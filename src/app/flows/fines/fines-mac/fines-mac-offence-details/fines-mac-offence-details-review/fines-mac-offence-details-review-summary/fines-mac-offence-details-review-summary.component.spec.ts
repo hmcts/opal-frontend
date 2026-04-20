@@ -98,6 +98,22 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(result).toBe(0);
   });
 
+  it('should ignore offences with a null offence id when building the hidden map', () => {
+    component.offencesImpositions = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0]),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0].formData),
+          fm_offence_details_id: null,
+        } as unknown as (typeof FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK)[number]['formData'],
+      },
+    ];
+
+    component['offenceDetailsHidden']();
+
+    expect(component.offencesHidden).toEqual({});
+  });
+
   it('should set the offenceIndex and navigate to addOffence route when actionName is "Change"', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
