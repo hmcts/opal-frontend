@@ -184,7 +184,7 @@ function assertGoBackLinkNavigatesToEnforcementTab() {
 }
 function assertCollectionOrderStatusChanged() {
   cy.get(VERSION_CONTROL.successBanner).should('exist');
-  cy.get(VERSION_CONTROL.successBannerText).should('contain.text', 'Collection Order status changed');
+  cy.get(VERSION_CONTROL.bannerText).should('contain.text', 'Collection Order status changed');
 }
 
 function assertCollectionOrderChangeScreen(
@@ -449,7 +449,7 @@ function assertChangeSelectionReturnsToEnforcementTab(updatedCollectionOrderFlag
   cy.wait('@getEnforcementStatus');
   cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('contain.text', 'Enforcement');
   // cy.get(VERSION_CONTROL.successBanner).should('exist');
-  // cy.get(VERSION_CONTROL.successBannerText).should('contain.text', 'Collection Order status changed');
+  // cy.get(VERSION_CONTROL.bannerText).should('contain.text', 'Collection Order status changed');
 }
 
 function assertCollectionOrderChangedNavigatesToEnforcementTab(

@@ -17,7 +17,7 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacCreateAccountComponent', () => {
-  let buinessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+  let businessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   let accountMock = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
   const setupComponent = (formSubmit?: any, onComponentReady?: (component: any) => void) => {
     return mount(FinesMacCreateAccountComponent, {
@@ -38,7 +38,7 @@ describe('FinesMacCreateAccountComponent', () => {
             parent: of('manual-account-creation'),
             snapshot: {
               data: {
-                businessUnits: buinessUnitMock,
+                businessUnits: businessUnitMock,
               },
             },
           },
@@ -71,7 +71,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   afterEach(() => {
     accountMock = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
-    buinessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+    businessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });
 
   it(
@@ -96,7 +96,7 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.businessUnitInput).should('exist');
       cy.get(L.businessUnitLabel).should('exist');
 
-      cy.get(L.accountTypeHeading).should('exist');
+      cy.get(L.sectionLegend).should('exist');
       cy.get(L.fineInput).should('exist');
       cy.get(L.fineLabel).should('exist');
       cy.get(L.fixedPenaltyInput).should('exist');
@@ -109,7 +109,7 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.businessUnitHint).should('contain', 'Enter area where the account is to be created');
       cy.get(L.businessUnitLabel).should('contain', 'Business unit');
 
-      cy.get(L.accountTypeHeading).should('contain', 'Account type');
+      cy.get(L.sectionLegend).should('contain', 'Account type');
       cy.get(L.fineLabel).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(L.fixedPenaltyLabel).should('contain', FINES_ACCOUNT_TYPES['Fixed Penalty']);
       cy.get(L.conditionalCautionLabel).should('contain', FINES_ACCOUNT_TYPES['Conditional Caution']);
@@ -124,7 +124,7 @@ describe('FinesMacCreateAccountComponent', () => {
       setupComponent(null);
 
       cy.get(L.fineInput).click();
-      cy.get(L.defendantTypeTitle).should('exist');
+      cy.get(L.sectionLegend).should('exist');
       cy.get(L.defendantTypeHint).should('exist');
       cy.get(L.adultOrYouthInput).should('exist');
       cy.get(L.adultOrYouthLabel).should('exist');
@@ -133,7 +133,7 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.companyInput).should('exist');
       cy.get(L.companyLabel).should('exist');
 
-      cy.get(L.defendantTypeTitle).should('contain', 'Defendant type');
+      cy.get(L.sectionLegend).should('contain', 'Defendant type');
       cy.get(L.defendantTypeHint).should('contain', "If sole trader, choose 'Adult or youth only'");
       cy.get(L.adultOrYouthLabel).should('contain', 'Adult or youth only');
       cy.get(L.parentOrGuardianToPayLabel).should('contain', 'Adult or youth with parent or guardian to pay');
@@ -148,7 +148,7 @@ describe('FinesMacCreateAccountComponent', () => {
       setupComponent(null);
 
       cy.get(L.fixedPenaltyInput).click();
-      cy.get(L.defendantTypeTitle).should('exist');
+      cy.get(L.sectionLegend).should('exist');
       cy.get(L.FPdefendantTypeHint).should('exist');
       cy.get(L.FPAdultOrYouthInput).should('exist');
       cy.get(L.FPAdultOrYouthLabel).should('exist');
@@ -258,7 +258,7 @@ describe('FinesMacCreateAccountComponent', () => {
       setupComponent(null);
 
       // Ensure the page is loaded
-      cy.get(L.pageHeader).should('contain', 'Create account');
+      cy.get(L.heading).should('contain', 'Create account');
       cy.get(L.businessUnit.input).should('be.visible');
 
       // Start from the top of the page
@@ -320,7 +320,7 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.businessUnitInput).should('exist');
       cy.get(L.businessUnitLabel).should('exist');
 
-      cy.get(L.accountTypeHeading).should('exist');
+      cy.get(L.sectionLegend).should('exist');
       cy.get(L.fineInput).should('exist');
       cy.get(L.fineLabel).should('exist');
       cy.get(L.fixedPenaltyInput).should('exist');
@@ -331,7 +331,7 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.businessUnitHint).should('contain', 'Enter area where the account is to be created');
       cy.get(L.businessUnitLabel).should('contain', 'Business unit');
 
-      cy.get(L.accountTypeHeading).should('contain', 'Account type');
+      cy.get(L.sectionLegend).should('contain', 'Account type');
       cy.get(L.fineLabel).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(L.fixedPenaltyLabel).should('contain', FINES_ACCOUNT_TYPES['Fixed Penalty']);
     },
@@ -346,7 +346,7 @@ describe('FinesMacCreateAccountComponent', () => {
       setupComponent(null);
 
       cy.get(L.fineInput).click();
-      cy.get(L.defendantTypeTitle).should('exist');
+      cy.get(L.sectionLegend).should('exist');
       cy.get(L.defendantTypeHint).should('exist');
       cy.get(L.adultOrYouthInput).should('exist');
       cy.get(L.adultOrYouthLabel).should('exist');
@@ -355,7 +355,7 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.companyInput).should('exist');
       cy.get(L.companyLabel).should('exist');
 
-      cy.get(L.defendantTypeTitle).should('contain', 'Defendant type');
+      cy.get(L.sectionLegend).should('contain', 'Defendant type');
       cy.get(L.defendantTypeHint).should('contain', "If sole trader, choose 'Adult or youth only'");
       cy.get(L.adultOrYouthLabel).should('contain', 'Adult or youth only');
       cy.get(L.parentOrGuardianToPayLabel).should('contain', 'Adult or youth with parent or guardian to pay');
@@ -372,7 +372,7 @@ describe('FinesMacCreateAccountComponent', () => {
       setupComponent(null);
 
       cy.get(L.fixedPenaltyInput).click();
-      cy.get(L.defendantTypeTitle).should('exist');
+      cy.get(L.sectionLegend).should('exist');
       cy.get(L.FPdefendantTypeHint).should('exist');
       cy.get(L.FPAdultOrYouthInput).should('exist');
       cy.get(L.FPAdultOrYouthLabel).should('exist');
@@ -507,10 +507,10 @@ describe('FinesMacCreateAccountComponent', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-KEY:POT-7395'] },
     () => {
       accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
-      buinessUnitMock.refData = buinessUnitMock.refData.slice(0, 1);
-      buinessUnitMock.count = buinessUnitMock.refData.length;
+      businessUnitMock.refData = businessUnitMock.refData.slice(0, 1);
+      businessUnitMock.count = businessUnitMock.refData.length;
 
-      setupComponent(buinessUnitMock);
+      setupComponent(businessUnitMock);
 
       cy.get(L.businessUnitDefault).should('have.text', `The account will be created in Historical Debt`);
       cy.get(L.businessUnitInput).should('not.exist');

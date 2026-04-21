@@ -186,7 +186,7 @@ describe(
 
         cy.get(ENF.tabName).should('exist').and('contain.text', 'Enforcement');
         cy.get(VERSION_CONTROL.successBanner).should('exist');
-        cy.get(VERSION_CONTROL.successBannerText).should('contain.text', 'Enforcement override removed');
+        cy.get(VERSION_CONTROL.bannerText).should('contain.text', 'Enforcement override removed');
         cy.get(ENF.addEnforcementOverrideLink).should('exist');
         cy.get(ENF.enforcementOverride).should('not.exist');
       },

@@ -10,7 +10,6 @@
  */
 export const MacParentGuardianDetailsLocators = {
   app: 'app-fines-mac-parent-guardian-details-form',
-  pageHeader: 'h1.govuk-heading-l',
   pageTitle: 'h1.govuk-heading-l',
   formRoot: 'form',
   legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',

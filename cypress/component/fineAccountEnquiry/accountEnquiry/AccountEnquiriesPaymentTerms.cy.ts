@@ -69,7 +69,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Pay in full');
-      cy.get(PAYMENT_TERMS_TAB.payByDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -101,7 +101,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Instalments only');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -137,7 +137,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.lumpSumAmount).should('exist').and('contain.text', '£10.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '9');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -439,7 +439,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Pay in full');
-      cy.get(PAYMENT_TERMS_TAB.payByDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -473,7 +473,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Instalments only');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -511,7 +511,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.lumpSumAmount).should('exist').and('contain.text', '£10.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '9');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -656,7 +656,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Pay in full');
-      cy.get(PAYMENT_TERMS_TAB.payByDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -694,7 +694,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Instalments only');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -736,7 +736,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.lumpSumAmount).should('exist').and('contain.text', '£10.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '9');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');

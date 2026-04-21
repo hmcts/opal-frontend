@@ -15,7 +15,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/fines_mac_review_account_mocks';
-import { DOM_ELEMENTS } from 'cypress/component/manualAccountCreation/FinesDraft/FinesDraftCheckAndValidate/FinesDraftCheckAndValidate/constants/fines_draft_review_account_elements';
+import { CheckAndValidateReviewLocators as DOM_ELEMENTS } from '../../../shared/selectors/manual-account-creation/check-and-validate/check-and-validate.review.locators';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { FinesMacDeleteAccountConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component';
@@ -150,12 +150,12 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7397'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
       cy.get('p').should('contain', 'Enter reason for deletion');
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
 
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').type('a23;b:');
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get(DOM_ELEMENTS.commentInput).should('exist').type('a23;b:');
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
 
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');
@@ -172,7 +172,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
       setupComponent(finesAccountPayload, payload, false, true);
 
       cy.get(DOM_ELEMENTS.commentInput).should('exist').type('test reason');
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
 
       cy.wait('@patchDraftAccount').then(({ request }) => {
         expect(request.body).to.exist;

@@ -147,7 +147,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
       setupComponent(fetchMap);
 
-      cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
+      cy.get(DOM_ELEMENTS.sectionHeading).should('contain.text', 'Review history');
       cy.get(DOM_ELEMENTS.timeLine).should('exist');
       cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
       cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');

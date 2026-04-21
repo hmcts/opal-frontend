@@ -3,7 +3,6 @@
  * @description Selector map for the Manual Account Creation **Fixed Penalty details** page.
  */
 export const MacFixedPenaltyDetailsLocators = {
-  header: 'h1.govuk-heading-l',
   app: 'app-fines-mac-fixed-penalty-details-form',
   pageTitle: 'h1.govuk-heading-l',
 
@@ -28,7 +27,6 @@ export const MacFixedPenaltyDetailsLocators = {
   postcodeInput: 'input[id="fm_fp_personal_details_post_code"]',
 
   companyNameInput: '#fm_fp_company_details_company_name',
-  companyName: '#fm_fp_company_details_company_name',
   companyAddressLine1Input: '#fm_fp_company_details_address_line_1',
   companyAddressLine2Input: '#fm_fp_company_details_address_line_2',
   companyAddressLine3Input: '#fm_fp_company_details_address_line_3',
@@ -57,9 +55,8 @@ export const MacFixedPenaltyDetailsLocators = {
   commentInput: '#fm_fp_account_comments_notes_comments',
   noteInput: '#fm_fp_account_comments_notes_notes',
   commentsInput: 'textarea[id="fm_fp_account_comments_notes_comments"]',
-  commentsInputHint: 'div.govuk-character-count__message.govuk-character-count__status',
+  characterCountHint: 'div.govuk-character-count__message.govuk-character-count__status',
   accountNoteInput: 'textarea[id="fm_fp_account_comments_notes_notes"]',
-  accountNoteInputHint: 'div.govuk-character-count__message.govuk-character-count__status',
 
   documentLanguageSelect: 'input[name="fm_fp_language_preferences_document_language"][value="EN"]',
   hearingLanguageSelect: 'input[name="fm_fp_language_preferences_hearing_language"][value="EN"]',

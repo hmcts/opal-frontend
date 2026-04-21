@@ -87,7 +87,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
   const assertNoMatchingResultsState = (defendantType: 'Individual' | 'Company' = 'Individual') => {
     assertResultsTabSummary(defendantType);
     cy.get(AccountResultsLocators.resultsTable).should('not.exist');
-    cy.get(AccountResultsLocators.invalidResultsHeading).should('contain', 'There are no matching results.');
+    cy.get(AccountResultsLocators.messageHeading).should('contain', 'There are no matching results.');
     cy.get(AccountResultsLocators.invalidResultsBody)
       .invoke('text')
       .then((text) => {
@@ -99,7 +99,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
   const assertTooManyResultsState = (defendantType: 'Individual' | 'Company' = 'Individual') => {
     assertResultsTabSummary(defendantType);
     cy.get(AccountResultsLocators.resultsTable).should('not.exist');
-    cy.get(AccountResultsLocators.invalidResultsHeading).should('contain', 'There are more than 100 results.');
+    cy.get(AccountResultsLocators.messageHeading).should('contain', 'There are more than 100 results.');
     cy.get(AccountResultsLocators.invalidResultsBody)
       .invoke('text')
       .then((text) => {
@@ -182,7 +182,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountSearchLocators.resultsTab).should('have.attr', 'aria-current', 'page');
 
         // AC1. Results tab content renders with the results table and actions.
-        cy.get(AccountResultsLocators.resultsHeading).should('contain', 'Select accounts to consolidate');
+        cy.get(AccountResultsLocators.messageHeading).should('contain', 'Select accounts to consolidate');
         cy.get(AccountResultsLocators.addToListButton).should('contain', 'Add to list');
         cy.get(AccountResultsLocators.selectedAccountsHint).should('be.visible');
         cy.get(AccountResultsLocators.resultsTable).should('be.visible');
@@ -456,7 +456,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountSearchLocators.defendantTypeValue).should('contain', 'Company');
         cy.get(AccountSearchLocators.resultsTab).should('have.attr', 'aria-current', 'page');
 
-        cy.get(AccountResultsLocators.resultsHeading).should('contain', 'Select accounts to consolidate');
+        cy.get(AccountResultsLocators.messageHeading).should('contain', 'Select accounts to consolidate');
         cy.get(AccountResultsLocators.addToListButton).should('contain', 'Add to list');
         cy.get(AccountResultsLocators.selectedAccountsHint).should('be.visible');
         cy.get(AccountResultsLocators.resultsTable).should('be.visible');
