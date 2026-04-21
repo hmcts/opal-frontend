@@ -68,7 +68,7 @@ const mapInstalmentFields = (
  * @returns Lump sum amount field value
  */
 const mapLumpSumFields = (paymentTermsType: string | null, lumpSumAmount: number | null): number | null => {
-  return paymentTermsType === 'lumpSumPlusInstalments' ? lumpSumAmount || null : null;
+  return paymentTermsType === 'lumpSumPlusInstalments' ? lumpSumAmount : null;
 };
 
 /**

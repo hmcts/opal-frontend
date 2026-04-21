@@ -77,4 +77,19 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
       relativeTo: component['activatedRoute'].parent,
     });
   });
+
+  it('should still navigate without mutating the draft when the minor creditor is missing', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    const setDraftSpy = vi.spyOn(finesMacOffenceDetailsStore, 'setOffenceDetailsDraft');
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(99);
+
+    component.confirmMinorCreditorRemoval();
+
+    expect(setDraftSpy).not.toHaveBeenCalled();
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData).toHaveLength(1);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
 });

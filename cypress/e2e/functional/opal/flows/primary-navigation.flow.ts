@@ -76,6 +76,20 @@ export class PrimaryNavigationFlow {
   }
 
   /**
+   * Asserts that the primary navigation is visible.
+   */
+  public assertVisible(): void {
+    this.actions.assertVisible();
+  }
+
+  /**
+   * Asserts that the primary navigation is hidden.
+   */
+  public assertHidden(): void {
+    this.actions.assertHidden();
+  }
+
+  /**
    * Asserts the selected landing state for a top-level Fines area.
    * @param itemLabel - Visible label of the active area.
    * @param expectedHeader - Heading expected in the content area.

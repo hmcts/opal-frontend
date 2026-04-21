@@ -208,6 +208,35 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(component.minorCreditor).toEqual('Joe Bloggs');
   });
 
+  it('should not set a major creditor when the id does not match reference data', () => {
+    (mockOpalFinesService.getMajorCreditorPrettyName as unknown as { mockClear: () => void }).mockClear();
+    component.majorCreditor = undefined as never;
+
+    component['setMajorCreditorDetails'](999999);
+
+    expect(mockOpalFinesService.getMajorCreditorPrettyName).not.toHaveBeenCalled();
+    expect(component.majorCreditor).toBeUndefined();
+  });
+
+  it('should leave the minor creditor unset when no matching child form data exists', () => {
+    const offenceWithMinorCreditors = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    offenceWithMinorCreditors[0].childFormData = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
+          fm_offence_details_imposition_position: 5,
+        },
+      },
+    ];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceWithMinorCreditors);
+    component.minorCreditor = undefined as never;
+
+    component['setMinorCreditorDetails'](0);
+
+    expect(component.minorCreditor).toBeUndefined();
+  });
+
   it('should return default value for result code', () => {
     const offence = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     offence[0].formData.fm_offence_details_impositions[0] = {
@@ -225,5 +254,25 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(component.imposition).toEqual(FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault);
     expect(component.amountImposedString).toEqual(FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault);
     expect(component.amountPaidString).toEqual(FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault);
+  });
+
+  it('should keep the default imposition when the result code has no matching reference data', () => {
+    const offence = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    offence[0].formData.fm_offence_details_impositions[0] = {
+      ...structuredClone(
+        FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft[0].formData.fm_offence_details_impositions[0],
+      ),
+      fm_offence_details_result_id: 'UNKNOWN',
+    };
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(offence);
+    component.imposition = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
+    component.defaultCreditor = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
+    (mockOpalFinesService.getResultPrettyName as unknown as { mockClear: () => void }).mockClear();
+
+    component['getImpositionToBeRemoved']();
+
+    expect(mockOpalFinesService.getResultPrettyName).not.toHaveBeenCalled();
+    expect(component.imposition).toEqual(FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault);
+    expect(component.defaultCreditor).toEqual(FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault);
   });
 });
