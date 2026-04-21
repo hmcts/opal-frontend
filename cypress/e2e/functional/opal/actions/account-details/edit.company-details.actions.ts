@@ -12,7 +12,21 @@ const log = createScopedLogger('EditCompanyDetailsActions');
 
 /** Actions for editing company details within Account Details. */
 export class EditCompanyDetailsActions {
+  private static readonly DEFAULT_TIMEOUT = 10_000;
   private readonly common = new CommonActions();
+  private readonly companyFieldLocators = {
+    'Address line 1': L.fields.addressLine1,
+    'Address line 2': L.fields.addressLine2,
+    'Address line 3': L.fields.addressLine3,
+    Postcode: L.fields.postcode,
+    'Primary email address': L.fields.primaryEmail,
+    'Secondary email address': L.fields.secondaryEmail,
+    'Mobile telephone number': L.fields.mobileTelephone,
+    'Home telephone number': L.fields.homeTelephone,
+    'Work telephone number': L.fields.workTelephone,
+    'Make and model': L.fields.vehicleMakeModel,
+    'Registration number': L.fields.vehicleRegistration,
+  } as const;
 
   /**
    * Ensure we are still on the edit page (form visible, not navigated away).
@@ -21,6 +35,18 @@ export class EditCompanyDetailsActions {
     log('assert', 'Asserting company edit form is still visible');
     cy.get(L.form, { timeout: 10_000 }).should('be.visible');
     log('done', 'Company edit form is visible');
+  }
+
+  /**
+   * Asserts the convert handoff lands on the Company details convert route.
+   */
+  public assertOnConvertRoute(): void {
+    log('assert', 'Asserting Company details convert route');
+    cy.location('pathname', { timeout: this.common.getPathTimeout() }).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/party\/company\/convert$/,
+    );
+    cy.get(L.form, { timeout: EditCompanyDetailsActions.DEFAULT_TIMEOUT }).should('be.visible');
   }
 
   /**
@@ -101,5 +127,38 @@ export class EditCompanyDetailsActions {
     log('assert', `Asserting company name summary contains "${expected}"`);
     cy.get(SummaryL.fields.name, this.common.getTimeoutOptions()).should('be.visible').and('contain.text', expected);
     log('done', `Verified company name contains "${expected}"`);
+  }
+
+  /**
+   * Asserts the company summary card is rendered in the Defendant tab.
+   */
+  public assertCompanySummaryVisible(): void {
+    log('assert', 'Asserting company summary card is visible');
+    cy.get(SummaryL.card, this.common.getTimeoutOptions()).should('be.visible');
+  }
+
+  /**
+   * Asserts the company summary card is not rendered in the Defendant tab.
+   */
+  public assertCompanySummaryNotPresent(): void {
+    log('assert', 'Asserting company summary card is absent');
+    cy.get(SummaryL.card, this.common.getTimeoutOptions()).should('not.exist');
+  }
+
+  /**
+   * Asserts Company details form fields are pre-populated with the expected values.
+   *
+   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
+   */
+  public assertPrefilledFieldValues(expectedFieldValues: Record<string, string>): void {
+    Object.entries(expectedFieldValues).forEach(([fieldName, expectedValue]) => {
+      const fieldSelector = this.companyFieldLocators[fieldName as keyof typeof this.companyFieldLocators];
+      if (!fieldSelector) {
+        throw new Error(`Unsupported company prefill field: ${fieldName}`);
+      }
+
+      log('assert', 'Asserting company field prefill', { fieldName, expectedValue });
+      cy.get(fieldSelector, this.common.getTimeoutOptions()).should('have.value', expectedValue);
+    });
   }
 }
