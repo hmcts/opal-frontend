@@ -479,6 +479,42 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_party_add_amend_convert_add_alias).toBe(false);
   });
 
+  it('should default to company mapping when no explicit party type is provided for an organisation source', () => {
+    const mockCompanyData = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
+      defendant_account_party: {
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party,
+        party_details: {
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.party_details,
+          organisation_flag: true,
+          organisation_details: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.party_details
+              .organisation_details!,
+            organisation_name: 'Fallback Company Ltd',
+            organisation_aliases: [
+              {
+                alias_id: 'ORG-ALIAS-1',
+                sequence_number: 1,
+                organisation_name: 'Fallback Alias',
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    const result = transformDefendantAccountPartyPayload(mockCompanyData, '', true);
+
+    expect(result.facc_party_add_amend_convert_organisation_name).toBe('Fallback Company Ltd');
+    expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([
+      {
+        facc_party_add_amend_convert_alias_organisation_name_0: 'Fallback Alias',
+        facc_party_add_amend_convert_alias_id_0: 'ORG-ALIAS-1',
+      },
+    ]);
+    expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
+  });
+
   it('should limit organisation aliases to maximum of 5', () => {
     const manyOrgAliases = Array.from({ length: 10 }, (_, i) => ({
       alias_id: `ORG-ALIAS-${i + 1}`,

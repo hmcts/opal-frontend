@@ -166,4 +166,15 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
       FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
     );
   });
+
+  it('should not emit a convert event when no convert action is available', () => {
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component.convertAccount, 'emit');
+    component.handleConvertAccount(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(component.convertAccount.emit).not.toHaveBeenCalled();
+  });
 });

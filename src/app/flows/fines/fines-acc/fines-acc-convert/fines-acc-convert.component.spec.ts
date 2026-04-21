@@ -254,6 +254,20 @@ describe('FinesAccConvertComponent', () => {
     );
   });
 
+  it('should navigate back to account summary when continue is clicked for an invalid conversion target', () => {
+    configureRoute('unsupported-target');
+
+    createComponent();
+    mockRouter.navigate.mockClear();
+
+    component.handleContinue();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../', FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'defendant',
+    });
+  });
+
   it('should navigate back to defendant details when cancel is clicked', () => {
     createComponent();
 
