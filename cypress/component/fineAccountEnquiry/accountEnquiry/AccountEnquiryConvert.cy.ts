@@ -87,7 +87,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
   describe('Convert To Company', { tags: ['@JIRA-STORY:PO-1942'] }, () => {
     it(
       'renders the confirmation screen for an individual defendant and continues to the convert form',
-      { tags: ['@JIRA-KEY:POT-4629'] },
+      { tags: [''] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/company',
@@ -115,93 +115,85 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
       },
     );
 
-    it(
-      'submits the company convert form with the expected API payload structure',
-      { tags: ['@JIRA-KEY:POT-4630'] },
-      () => {
-        interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
+    it('submits the company convert form with the expected API payload structure', { tags: [''] }, () => {
+      interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
 
-        setupConvertRoute({
-          targetPath: '/fines/account/defendant/77/convert/company',
-          headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
-          partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
+      setupConvertRoute({
+        targetPath: '/fines/account/defendant/77/convert/company',
+        headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
+        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
+      });
+
+      cy.get(AccountConvertLocators.page.confirmButton).click();
+      cy.get(DOM_ELEMENTS.organisationNameInput).type('Converted Co Ltd');
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.wait('@putDefendantAccountParty').then(({ request }) => {
+        expect(request.headers['if-match']).to.equal('1');
+        expect(request.headers['business-unit-id']).to.equal('77');
+        expect(request.body).to.deep.include({
+          defendant_account_party_type: 'Defendant',
+          is_debtor: true,
         });
-
-        cy.get(AccountConvertLocators.page.confirmButton).click();
-        cy.get(DOM_ELEMENTS.organisationNameInput).type('Converted Co Ltd');
-        cy.get(DOM_ELEMENTS.submitButton).click();
-
-        cy.wait('@putDefendantAccountParty').then(({ request }) => {
-          expect(request.headers['if-match']).to.equal('1');
-          expect(request.headers['business-unit-id']).to.equal('77');
-          expect(request.body).to.deep.include({
-            defendant_account_party_type: 'Defendant',
-            is_debtor: true,
-          });
-          expect(request.body.party_details).to.deep.equal({
-            party_id: 'PTY-1001',
-            organisation_flag: true,
-            organisation_details: {
-              organisation_name: 'Converted Co Ltd',
-              organisation_aliases: null,
-            },
-            individual_details: null,
-          });
-          expect(request.body.address).to.deep.include({
-            address_line_1: '123 Test Street',
-            address_line_2: 'Second Floor',
-            address_line_3: 'City Center',
-            postcode: 'TE5T 1NG',
-          });
-          expect(request.body.contact_details).to.deep.include({
-            primary_email_address: 'john@example.com',
-            secondary_email_address: 'john.doe@secondary.com',
-            mobile_telephone_number: '07123456789',
-            home_telephone_number: '01234567890',
-            work_telephone_number: '02087654321',
-          });
-          expect(request.body.vehicle_details).to.deep.equal({
-            vehicle_registration: 'ABC123',
-            vehicle_make_and_model: 'Toyota Corolla',
-          });
-          expect(request.body.employer_details).to.deep.equal(null);
+        expect(request.body.party_details).to.deep.equal({
+          party_id: 'PTY-1001',
+          organisation_flag: true,
+          organisation_details: {
+            organisation_name: 'Converted Co Ltd',
+            organisation_aliases: null,
+          },
+          individual_details: null,
         });
+        expect(request.body.address).to.deep.include({
+          address_line_1: '123 Test Street',
+          address_line_2: 'Second Floor',
+          address_line_3: 'City Center',
+          postcode: 'TE5T 1NG',
+        });
+        expect(request.body.contact_details).to.deep.include({
+          primary_email_address: 'john@example.com',
+          secondary_email_address: 'john.doe@secondary.com',
+          mobile_telephone_number: '07123456789',
+          home_telephone_number: '01234567890',
+          work_telephone_number: '02087654321',
+        });
+        expect(request.body.vehicle_details).to.deep.equal({
+          vehicle_registration: 'ABC123',
+          vehicle_make_and_model: 'Toyota Corolla',
+        });
+        expect(request.body.employer_details).to.deep.equal(null);
+      });
 
-        cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-      },
-    );
+      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+    });
   });
 
   describe('Convert To Individual', { tags: ['@JIRA-STORY:PO-1956'] }, () => {
-    it(
-      'renders the confirmation screen for a company account and supports cancel',
-      { tags: ['@JIRA-KEY:POT-4631'] },
-      () => {
-        setupConvertRoute({
-          targetPath: '/fines/account/defendant/77/convert/individual',
-          headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
-          partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK),
-        });
+    it('renders the confirmation screen for a company account and supports cancel', { tags: [''] }, () => {
+      setupConvertRoute({
+        targetPath: '/fines/account/defendant/77/convert/individual',
+        headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
+        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK),
+      });
 
-        cy.get(AccountConvertLocators.page.heading).should(
-          'contain.text',
-          'Are you sure you want to convert this account to an individual account?',
-        );
-        cy.get(AccountConvertLocators.page.caption).should('contain.text', '177A - Sainsco');
-        cy.get(AccountConvertLocators.page.warningText).should(
-          'contain.text',
-          'Some information specific to company accounts, such as company name, will be removed.',
-        );
+      cy.get(AccountConvertLocators.page.heading).should(
+        'contain.text',
+        'Are you sure you want to convert this account to an individual account?',
+      );
+      cy.get(AccountConvertLocators.page.caption).should('contain.text', '177A - Sainsco');
+      cy.get(AccountConvertLocators.page.warningText).should(
+        'contain.text',
+        'Some information specific to company accounts, such as company name, will be removed.',
+      );
 
-        cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/convert/individual');
+      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/convert/individual');
 
-        cy.get(AccountConvertLocators.page.cancelLink).click();
+      cy.get(AccountConvertLocators.page.cancelLink).click();
 
-        cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-      },
-    );
+      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+    });
 
-    it('renders the convert form with company data mapped into shared fields', { tags: ['@JIRA-KEY:POT-4632'] }, () => {
+    it('renders the convert form with company data mapped into shared fields', { tags: [''] }, () => {
       setupConvertRoute({
         targetPath: '/fines/account/defendant/77/convert/individual',
         headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
@@ -221,106 +213,98 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
       cy.get(DOM_ELEMENTS.organisationNameInput).should('not.exist');
     });
 
-    it(
-      'submits the individual convert form with the expected API payload structure',
-      { tags: ['@JIRA-KEY:POT-4633'] },
-      () => {
-        interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
+    it('submits the individual convert form with the expected API payload structure', { tags: [''] }, () => {
+      interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
 
-        setupConvertRoute({
-          targetPath: '/fines/account/defendant/77/convert/individual',
-          headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
-          partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK),
-        });
-
-        cy.get(AccountConvertLocators.page.confirmButton).click();
-        cy.get(DOM_ELEMENTS.titleSelect).select('Miss');
-        cy.get(DOM_ELEMENTS.forenamesInput).type('Jamie', { delay: 0 });
-        cy.get(DOM_ELEMENTS.surnameInput).type('Converted', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerCompanyInput).type('ABC Corporation', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerReferenceInput).type('EMP123', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerEmailInput).type('hr@company.com', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerPhoneInput).type('01234567890', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerAddressLine1Input).type('456 Business Park', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerAddressLine2Input).type('Suite 200', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerAddressLine3Input).type('Industrial Estate', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerAddressLine4Input).type('Business District', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerAddressLine5Input).type('Metropolitan Area', { delay: 0 });
-        cy.get(DOM_ELEMENTS.employerPostcodeInput).type('BU5 1NE', { delay: 0 });
-        cy.get(DOM_ELEMENTS.submitButton).click();
-
-        cy.wait('@putDefendantAccountParty').then(({ request }) => {
-          expect(request.headers['if-match']).to.equal('1');
-          expect(request.headers['business-unit-id']).to.equal('77');
-          expect(request.body).to.deep.include({
-            defendant_account_party_type: 'Defendant',
-            is_debtor: true,
-          });
-          expect(request.body.party_details.organisation_flag).to.equal(false);
-          expect(request.body.party_details.organisation_details).to.equal(null);
-          expect(request.body.party_details.party_id).to.equal('PTY-2001');
-          expect(request.body.party_details.individual_details).to.deep.include({
-            title: 'Miss',
-            forenames: 'Jamie',
-            surname: 'CONVERTED',
-            date_of_birth: null,
-            national_insurance_number: null,
-          });
-          expect(request.body.address).to.deep.include({
-            address_line_1: '100 Corporate Plaza',
-            address_line_2: '25th Floor',
-            address_line_3: 'Financial',
-            postcode: 'EC2Y 8DS',
-          });
-          expect(request.body.contact_details).to.deep.include({
-            primary_email_address: 'contact@abccorporation.co.uk',
-            secondary_email_address: 'legal@abccorporation.co.uk',
-            mobile_telephone_number: '07900123456',
-            home_telephone_number: '02071234567',
-            work_telephone_number: '02071234567',
-          });
-          expect(request.body.vehicle_details).to.deep.equal({
-            vehicle_registration: 'ABC123D',
-            vehicle_make_and_model: 'Mercedes Sprinter',
-          });
-          expect(request.body.employer_details).to.deep.include({
-            employer_name: 'ABC Corporation',
-            employer_reference: 'EMP123',
-            employer_email_address: 'hr@company.com',
-            employer_telephone_number: '01234567890',
-            employer_address: {
-              address_line_1: '456 Business Park',
-              address_line_2: 'Suite 200',
-              address_line_3: 'Industrial Estate',
-              address_line_4: 'Business District',
-              address_line_5: 'Metropolitan Area',
-              postcode: 'BU5 1NE',
-            },
-          });
-        });
-
-        cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-      },
-    );
-  });
-
-  it(
-    'redirects back to defendant details when the target conversion is unsupported',
-    { tags: ['@JIRA-KEY:POT-4627'] },
-    () => {
       setupConvertRoute({
-        targetPath: '/fines/account/defendant/77/convert/unsupported-target',
-        headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
-        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
+        targetPath: '/fines/account/defendant/77/convert/individual',
+        headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
+        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK),
+      });
+
+      cy.get(AccountConvertLocators.page.confirmButton).click();
+      cy.get(DOM_ELEMENTS.titleSelect).select('Miss');
+      cy.get(DOM_ELEMENTS.forenamesInput).type('Jamie', { delay: 0 });
+      cy.get(DOM_ELEMENTS.surnameInput).type('Converted', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerCompanyInput).type('ABC Corporation', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerReferenceInput).type('EMP123', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerEmailInput).type('hr@company.com', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerPhoneInput).type('01234567890', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerAddressLine1Input).type('456 Business Park', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerAddressLine2Input).type('Suite 200', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerAddressLine3Input).type('Industrial Estate', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerAddressLine4Input).type('Business District', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerAddressLine5Input).type('Metropolitan Area', { delay: 0 });
+      cy.get(DOM_ELEMENTS.employerPostcodeInput).type('BU5 1NE', { delay: 0 });
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.wait('@putDefendantAccountParty').then(({ request }) => {
+        expect(request.headers['if-match']).to.equal('1');
+        expect(request.headers['business-unit-id']).to.equal('77');
+        expect(request.body).to.deep.include({
+          defendant_account_party_type: 'Defendant',
+          is_debtor: true,
+        });
+        expect(request.body.party_details.organisation_flag).to.equal(false);
+        expect(request.body.party_details.organisation_details).to.equal(null);
+        expect(request.body.party_details.party_id).to.equal('PTY-2001');
+        expect(request.body.party_details.individual_details).to.deep.include({
+          title: 'Miss',
+          forenames: 'Jamie',
+          surname: 'CONVERTED',
+          date_of_birth: null,
+          national_insurance_number: null,
+        });
+        expect(request.body.address).to.deep.include({
+          address_line_1: '100 Corporate Plaza',
+          address_line_2: '25th Floor',
+          address_line_3: 'Financial',
+          postcode: 'EC2Y 8DS',
+        });
+        expect(request.body.contact_details).to.deep.include({
+          primary_email_address: 'contact@abccorporation.co.uk',
+          secondary_email_address: 'legal@abccorporation.co.uk',
+          mobile_telephone_number: '07900123456',
+          home_telephone_number: '02071234567',
+          work_telephone_number: '02071234567',
+        });
+        expect(request.body.vehicle_details).to.deep.equal({
+          vehicle_registration: 'ABC123D',
+          vehicle_make_and_model: 'Mercedes Sprinter',
+        });
+        expect(request.body.employer_details).to.deep.include({
+          employer_name: 'ABC Corporation',
+          employer_reference: 'EMP123',
+          employer_email_address: 'hr@company.com',
+          employer_telephone_number: '01234567890',
+          employer_address: {
+            address_line_1: '456 Business Park',
+            address_line_2: 'Suite 200',
+            address_line_3: 'Industrial Estate',
+            address_line_4: 'Business District',
+            address_line_5: 'Metropolitan Area',
+            postcode: 'BU5 1NE',
+          },
+        });
       });
 
       cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-    },
-  );
+    });
+  });
+
+  it('redirects back to defendant details when the target conversion is unsupported', { tags: [''] }, () => {
+    setupConvertRoute({
+      targetPath: '/fines/account/defendant/77/convert/unsupported-target',
+      headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
+      partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
+    });
+
+    cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+  });
 
   it(
     'redirects back to defendant details when a parent or guardian account tries to convert to company',
-    { tags: ['@JIRA-KEY:POT-4628'] },
+    { tags: [''] },
     () => {
       setupConvertRoute({
         targetPath: '/fines/account/defendant/77/convert/company',
