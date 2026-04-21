@@ -32,8 +32,8 @@ describe('FinesAccEnfActionSelectComponent', () => {
   };
 
   const mockAccountStore = {
-    getAccountNumber: signal('123456'),
-    party_name: signal('Test Company Ltd'),
+    getAccountNumber: signal<string | null>('123456'),
+    party_name: signal<string | null>('Test Company Ltd'),
   };
 
   const mockOpalFinesService = {
@@ -104,6 +104,16 @@ describe('FinesAccEnfActionSelectComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should default accountNumber and partyName to empty strings when the store values are null', () => {
+    mockAccountStore.getAccountNumber.set(null);
+    mockAccountStore.party_name.set(null);
+
+    createComponent();
+
+    expect(component.accountNumber).toBe('');
+    expect(component.partyName).toBe('');
   });
 
   it('should build warning messages for collection order, youth and company accounts', () => {
