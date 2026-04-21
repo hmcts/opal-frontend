@@ -294,7 +294,22 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
       cy.get(L.returnToAccountDetailsButton).first().click();
 
-      cy.get('.errorSummary').should('not.exist');
+      // Error TBC (may need to define elsewhere in some way for cleaner look)
+      cy.get(L.errorSummary)
+        .should('exist')
+        .contains(
+          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        );
+      cy.get(L.commentsErrorMessage)
+        .should('exist')
+        .contains(
+          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        );
+      cy.get(L.notesErrorMessage)
+        .should('exist')
+        .contains(
+          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        );
     },
   );
 });
