@@ -67,7 +67,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Mr Updated ACCDETAILSURNAME{uniqUpper}"
       And I verify no amendments were created via API
 
-    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1942 @JIRA-STORY:PO-1943
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1942 @JIRA-STORY:PO-1943 @JIRA-STORY:PO-1953
     Scenario: Convert to company saves and shows the converted company account details
       When I start converting the account to a company account
       Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
@@ -147,7 +147,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Accdetail comp updated{uniq}"
       And I verify no amendments were created via API for company details
 
-    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1956
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957
     Scenario: Convert to individual saves and shows the converted defendant account details
       When I start converting the account to an individual account
       Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
@@ -165,7 +165,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the defendant name contains "Jamie"
       And I should see the primary email address contains "Test@email.com"
 
-    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1956
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957
     Scenario: Convert to individual confirmation cancel returns to Defendant details with no changes made
       When I start converting the account to an individual account
       Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
