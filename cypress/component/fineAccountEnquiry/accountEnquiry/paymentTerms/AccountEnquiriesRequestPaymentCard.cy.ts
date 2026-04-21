@@ -5,7 +5,7 @@ import {
 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
-import { ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS as PAYMENT_TERMS_TAB } from '../constants/account_enquiry_payment_terms_elements';
+import { ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS as PAYMENT_TERMS_TAB } from '../../../../shared/selectors/account-enquiry/account.enquiry.payment-terms.locators';
 import { interceptDefendantHeader, interceptPaymentTerms } from '../intercept/defendantAccountIntercepts';
 import {
   interceptAuthenticatedUser,
@@ -41,7 +41,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
 
   it(
     'Last enforcement action prevents the adding of a payment card',
-    { tags: buildTags('@JIRA-STORY:PO-1802', '@JIRA-KEY:POT-3687') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1802'), '@JIRA-KEY:POT-6958'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -68,7 +68,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
 
   it(
     'No permission in BU prevents the adding of a payment card',
-    { tags: buildTags('@JIRA-STORY:PO-1802', '@JIRA-KEY:POT-3688') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1802'), '@JIRA-KEY:POT-6959'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -95,7 +95,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
 
   it(
     'AC1a: User can request a payment card and sees the confirmation screen',
-    { tags: buildTags('@JIRA-STORY:PO-1700', '@JIRA-KEY:POT-3689') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-KEY:POT-6960'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -123,7 +123,7 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
 
   it(
     'AC1bi: Cancel returns to Payment terms with no changes made',
-    { tags: buildTags('@JIRA-STORY:PO-1700', '@JIRA-KEY:POT-3690') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-KEY:POT-6961'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';

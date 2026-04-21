@@ -30,7 +30,7 @@ Feature: Account Enquiries – View Account Details
       When I go to the Defendant details section and the header is "Defendant details"
       Then I should see the convert to company account action
 
-    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-3143
+    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-4959
     Scenario: Defendant edit warning retains changes when I stay on the form
       # AC4 – Route Guard (Cancel and stay)
       And I edit the Defendant details and change the First name to "Test"
@@ -38,7 +38,7 @@ Feature: Account Enquiries – View Account Details
       Then I should remain on the defendant edit page
       And I should see the First name field still contains "Test"
 
-    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-3144
+    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-4960
     Scenario: Defendant edit warning discards changes when I leave the form
       # AC4 – Route Guard (Cancel and leave)
       And I edit the Defendant details and change the First name to "Test"
@@ -46,7 +46,7 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
 
-    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-3145
+    @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-4961
     Scenario: Saving defendant details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -56,7 +56,7 @@ Feature: Account Enquiries – View Account Details
       # AC3/4 – Verify via API and store amendment count baseline
       And I verify defendant amendments via API for first name "Updated"
 
-    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-3146
+    @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-4962
     Scenario: Saving unchanged defendant details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a defendant amendment baseline with first name "Updated"
@@ -110,7 +110,7 @@ Feature: Account Enquiries – View Account Details
       Then I should see the convert to individual account action
       And I should not see the convert to company account text
 
-    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-3147
+    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-4963
     Scenario: Company edit warning retains changes when I stay on the form
       # AC4 - Route Guard (stay on edit)
       And I edit the Company details and change the Company name to "Test"
@@ -118,7 +118,7 @@ Feature: Account Enquiries – View Account Details
       Then I should remain on the company edit page
       And I should see the company name field contains "Test"
 
-    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-3148
+    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-4964
     Scenario: Company edit warning discards changes when I leave the form
       # AC4 - Route Guard (discard changes)
       And I edit the Company details and change the Company name to "Test"
@@ -126,7 +126,7 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Accdetail comp{uniq}"
 
-    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-3149
+    @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-4965
     Scenario: Saving company details updates the organisation name and audit trail
       # AC3 - Edit and save changes
       And I edit the Company details and change the Company name to "Accdetail comp updated{uniq}"
@@ -136,7 +136,7 @@ Feature: Account Enquiries – View Account Details
       # AC3/4 - Verify via API
       And I verify Company amendments via API for company name "Accdetail comp updated{uniq}"
 
-    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-3150
+    @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-4966
     Scenario: Saving unchanged company details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a company amendment baseline with company name "Accdetail comp updated{uniq}"
@@ -190,7 +190,7 @@ Feature: Account Enquiries – View Account Details
       When I go to the Defendant details section and the header is "Defendant details"
       Then I should not see the convert to company account action
 
-    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-3151
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-4967
     Scenario: Defendant edit warning retains changes for a non-paying account when I stay
       # AC4 – Route Guard (Cancel and stay)
       And I edit the Defendant details and change the First name to "Test"
@@ -198,7 +198,7 @@ Feature: Account Enquiries – View Account Details
       Then I should remain on the defendant edit page
       And I should see the First name field still contains "Test"
 
-    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-3152
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-4968
     Scenario: Defendant edit warning discards changes for a non-paying account when I leave
       # AC4 – Route Guard (Cancel and leave)
       And I edit the Defendant details and change the First name to "Test"
@@ -206,7 +206,7 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
 
-    @R1B @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-3153
+    @R1B @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-4969
     Scenario: Saving defendant details updates the name and audit trail for a non-paying account
       # AC1 – Edit and save changes
       And I edit the Defendant details and change the First name to "Updated"
@@ -216,7 +216,7 @@ Feature: Account Enquiries – View Account Details
       # AC3/4 – Verify via API and store amendment count baseline
       And I verify defendant amendments via API for first name "Updated"
 
-    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-3154
+    @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-4970
     Scenario: Saving unchanged defendant details does not create amendments for a non-paying account
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a defendant amendment baseline with first name "Updated"
@@ -249,7 +249,7 @@ Feature: Account Enquiries – View Account Details
       # AC3 – Navigate to Parent or guardian details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
 
-    @R1B @JIRA-STORY:PO-1129 @JIRA-KEY:POT-3155
+    @R1B @JIRA-STORY:PO-1129 @JIRA-KEY:POT-4971
     Scenario: Saving parent or guardian details updates the name and audit trail
       # AC1 – Edit and save changes
       And I edit the Parent or guardian details and change the First name to "Updated"
@@ -259,7 +259,7 @@ Feature: Account Enquiries – View Account Details
       # AC3/4 - Verify via API
       And I verify parent or guardian amendments via API for guardian name "Updated"
 
-    @JIRA-STORY:PO-1129 @JIRA-KEY:POT-3156
+    @JIRA-STORY:PO-1129 @JIRA-KEY:POT-4972
     Scenario: Saving unchanged parent or guardian details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
       And I establish a parent or guardian amendment baseline with first name "Updated"

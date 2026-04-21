@@ -1,11 +1,12 @@
 @JIRA-LABEL:account-enquiry
+@JIRA-STORY:PO-2322
 Feature: Search and Matches Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I am on the Account Search page - Individuals form displayed by default
 
-  @JIRA-KEY:POT-3122
+  @JIRA-KEY:POT-5055
   Scenario: Check Search and Matches Accessibility with Axe-Core
     ## Check Accessibility on Individuals Tab
     When I search using the following inputs:

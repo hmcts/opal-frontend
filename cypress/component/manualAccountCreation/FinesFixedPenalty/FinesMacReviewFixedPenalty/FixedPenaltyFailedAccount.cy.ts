@@ -33,7 +33,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
   });
   it(
     '(AC.1) should display failed defendant account details correctly for individual defendant in Review',
-    { tags: buildTags('@JIRA-STORY:PO-1816', '@JIRA-KEY:POT-4020') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-KEY:POT-7282'] },
     () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
@@ -70,7 +70,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
       });
 
       // Ac4b - Issuing Authority and court details - AC4b
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('be.visible');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('contain', 'Aberdeen Sheriff Court District (9701)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('contain', 'Camberwell Green Magistrates Court (104)');
 
       // Ac4a - Account Details (No heading) - AC4a
@@ -116,7 +116,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
   );
   it(
     '(AC.1) should display failed defendant account details correctly for company defendant in Review',
-    { tags: buildTags('@JIRA-STORY:PO-1816', '@JIRA-KEY:POT-4021') },
+    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-KEY:POT-7283'] },
     () => {
       const draftAccountId = '1004';
       const props: IFinesComponentProperties = {
@@ -151,7 +151,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
         cy.wrap($el).should('contain', expectedSections[index]);
       });
       // Issuing authority and enforcement court
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('be.visible');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('contain', 'Aberdeen Sheriff Court District (9701)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('contain', 'Camberwell Green Magistrates Court (104)');
 
       // Account details and defendant type

@@ -98,6 +98,16 @@ describe('FinesConSearchAccountFormComponent', () => {
     expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
   });
 
+  it('should reset form when clearSearchForm is called without an event', () => {
+    const preventDefault = vi.fn();
+    component.form.patchValue({ fcon_search_account_number: '12345678' });
+
+    component.clearSearchForm();
+
+    expect(component.form.get('fcon_search_account_number')?.value).toBeNull();
+    expect(preventDefault).not.toHaveBeenCalled();
+  });
+
   it('should enforce current clear search link semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templateConsts = ((FinesConSearchAccountFormComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>

@@ -10,31 +10,32 @@
       </div>
       @if (hasAccountMaintenencePermission) {
         <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-          <a
-            tabindex="0"
-            [class]="style.changeLink"
-            (click)="handleChangeDefendantDetails()"
-            (keyup.enter)="handleChangeDefendantDetails()"
-            >Change</a
-          >
+          <a href="" [class]="style.changeLink" (click)="handleChangeDefendantDetails($event)">Change</a>
         </div>
       }
     </div>
     <hr [class]="style.hr" />
 
-    <app-fines-acc-party-details
+  <app-fines-acc-party-details
       [party]="party"
       cardTitle="Defendant details"
       summaryCardListId="defendant"
       summaryListId="defendantDetails"
     ></app-fines-acc-party-details>
   </div>
-  @if (convertAction) {
+  @if (canAddParentOrGuardianDetails || convertAction) {
     <div id="defendant-convert-actions" class="govuk-grid-column-one-third">
       <hr [class]="style.hr" />
       <h2 [class]="style.heading">Actions</h2>
-      <p id="defendant-convert-action">
-        @if (convertAction.interactive) {
+      @if (canAddParentOrGuardianDetails) {
+        <p>
+        <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddParentOrGuardianDetails($event)"
+          >Add parent or guardian details</a
+        >
+        </p>
+      }
+      @if (convertAction) {
+        <p id="defendant-convert-action">
           <a
             id="defendant-convert-action-link"
             class="govuk-link govuk-link--no-visited-state"
@@ -42,10 +43,8 @@
             (click)="handleConvertAccount($event)"
             >{{ convertAction.label }}</a
           >
-        } @else {
-          <span id="defendant-convert-action-text">{{ convertAction.label }}</span>
-        }
-      </p>
+        </p>
+      }
     </div>
   }
 }

@@ -20,6 +20,7 @@ import { finesAccStateGuard } from '../routing/guards/fines-acc-state-guard/fine
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_TEXT } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-text.constant';
+import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from '@app/constants/route-data.constant';
 
 describe('FinesAccConvertComponent', () => {
   let fixture: ComponentFixture<FinesAccConvertComponent>;
@@ -125,7 +126,10 @@ describe('FinesAccConvertComponent', () => {
     const defendantRoute = routing.find(
       (route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
     );
-    const convertRoute = defendantRoute?.children?.find(
+    const defendantJourneyGroup = defendantRoute?.children?.find(
+      (child) => child.path === '' && child.data?.[HIDE_PRIMARY_NAV_ROUTE_DATA_KEY] === true,
+    );
+    const convertRoute = defendantJourneyGroup?.children?.find(
       (child) => child.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/:partyType`,
     );
 
@@ -145,7 +149,10 @@ describe('FinesAccConvertComponent', () => {
     const defendantRoute = routing.find(
       (route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
     );
-    const partyRoute = defendantRoute?.children?.find(
+    const defendantJourneyGroup = defendantRoute?.children?.find(
+      (child) => child.path === '' && child.data?.[HIDE_PRIMARY_NAV_ROUTE_DATA_KEY] === true,
+    );
+    const partyRoute = defendantJourneyGroup?.children?.find(
       (child) => child.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/:partyType/:mode`,
     );
 

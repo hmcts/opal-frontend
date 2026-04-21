@@ -168,4 +168,23 @@ describe('FinesMacCreateAccountComponent', () => {
     );
     expect(finesMacStore.setOriginatorType).toHaveBeenCalledWith(FINES_MAC_STATE_MOCK.originatorType, false);
   });
+
+  it('should not restore originator type when it is missing from the store', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setBusinessUnitId');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'setOriginatorType');
+    finesMacStore.setFinesMacStore({
+      ...FINES_MAC_STATE_MOCK,
+      originatorType: null as never,
+    });
+    finesMacStore.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+
+    component.ngOnInit();
+
+    expect(finesMacStore.setBusinessUnitId).toHaveBeenCalledWith(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id,
+    );
+    expect(finesMacStore.setOriginatorType).not.toHaveBeenCalledWith(null, false);
+  });
 });
