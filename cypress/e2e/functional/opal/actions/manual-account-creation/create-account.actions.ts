@@ -47,7 +47,7 @@ export class ManualCreateAccountActions {
    */
   assertOnCreateAccountPage(expectedHeader: string = 'Create account'): void {
     log('assert', 'Asserting manual account creation landing page', { expectedHeader });
-    cy.get(L.pageHeader, { timeout: 15_000 }).should('contain.text', expectedHeader);
+    cy.get(L.heading, { timeout: 15_000 }).should('contain.text', expectedHeader);
   }
 
   /**
@@ -169,7 +169,7 @@ export class ManualCreateAccountActions {
    */
   assertOnTransferInPage(expectedHeader: string = 'Transfer in'): void {
     log('assert', 'Asserting manual account creation landing page', { expectedHeader });
-    cy.get(L.pageHeader, { timeout: 15_000 }).should('contain.text', expectedHeader);
+    cy.get(L.heading, { timeout: 15_000 }).should('contain.text', expectedHeader);
   }
 
   /**

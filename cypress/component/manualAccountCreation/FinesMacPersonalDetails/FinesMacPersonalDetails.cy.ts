@@ -95,9 +95,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Personal details');
 
-      cy.get(DOM_ELEMENTS.firstNameInput).should('exist');
+      cy.get(DOM_ELEMENTS.firstNamesInput).should('exist');
       cy.get(DOM_ELEMENTS.lastNameInput).should('exist');
-      cy.get(DOM_ELEMENTS.dobInput).should('exist');
+      cy.get(DOM_ELEMENTS.dateOfBirthInput).should('exist');
       cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
       cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
       cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
@@ -461,8 +461,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
 
-      cy.get(DOM_ELEMENTS.titleInput).select('Mr');
-      cy.get(DOM_ELEMENTS.firstNameInput).clear().type('f', { delay: 0 });
+      cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
+      cy.get(DOM_ELEMENTS.firstNamesInput).clear().type('f', { delay: 0 });
       cy.get(DOM_ELEMENTS.lastNameInput).clear().type('s', { delay: 0 });
       cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
 
@@ -482,8 +482,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       // Verify the vehicle details section is rendered
       cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('contain', 'Registration number');
       cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
-      cy.get(DOM_ELEMENTS.vehicle_makeInput).should('exist');
-      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
       finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = 'a'.repeat(51);
       finesMacState.personalDetails.formData.fm_personal_details_vehicle_registration_mark = 'a'.repeat(24);
 
@@ -528,8 +528,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       // Verify the vehicle details section is not rendered
       cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('not.exist');
       cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('not.exist');
-      cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
-      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('not.exist');
     },
   );
 
@@ -540,8 +540,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');
 
-      cy.get(DOM_ELEMENTS.titleInput).select('Mr');
-      cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
+      cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
+      cy.get(DOM_ELEMENTS.firstNamesInput).clear().type('fname', { delay: 0 });
       cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
 
       cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
@@ -579,7 +579,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
       cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
-      cy.get(DOM_ELEMENTS.vehicle_registration_markInput)
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput)
         .type('xy12 abc', { delay: 0 })
         .should('have.value', 'XY12 ABC');
       cy.get(DOM_ELEMENTS.niNumberInput).type('ab123456c', { delay: 0 }).should('have.value', 'AB123456C');

@@ -125,7 +125,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       // pay in full
       cy.get(DOM_ELEMENTS.payInFull).click();
       cy.get(DOM_ELEMENTS.payByDateLabel).should('contain', 'Enter pay by date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
@@ -147,7 +147,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
@@ -171,7 +171,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
@@ -190,7 +190,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.prisonAndPrisonNumberLabel).should('contain', 'Prison and prison number');
       cy.get(DOM_ELEMENTS.prisonAndPrisonNumber).should('exist');
       cy.get(DOM_ELEMENTS.prisHint).should('contain', 'Held as enforcement comment');
-      cy.get(DOM_ELEMENTS.prisCharHint).should('contain', 'You have 28 characters remaining');
+      cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 28 characters remaining');
 
       // enforcement action NOENF
 
@@ -199,18 +199,18 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.noenf).click();
       cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenfLabel).should('contain', 'Reason account is on NOENF');
       cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenf).should('exist');
-      cy.get(DOM_ELEMENTS.noenfCharHint).should('contain', 'You have 28 characters remaining');
+      cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 28 characters remaining');
 
       // collection order
-      cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).should('exist');
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).should('exist');
       cy.get(DOM_ELEMENTS.collectionNo).should('exist');
-      cy.get(DOM_ELEMENTS.collectionYes).should('exist');
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).should('exist');
       cy.get(DOM_ELEMENTS.collectionYesLabel).should('contain', 'Yes');
       cy.get(DOM_ELEMENTS.collectionNoLabel).should('contain', 'No');
-      cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).click();
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).click();
       cy.get(DOM_ELEMENTS.collectionOrderDate).should('exist');
       cy.get(DOM_ELEMENTS.collectionOrderDateLabel).should('contain', 'Date of collection order');
-      cy.get(DOM_ELEMENTS.collectionOrderHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
     },
   );
 
@@ -262,7 +262,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       // pay in full
       cy.get(DOM_ELEMENTS.payInFull).click();
       cy.get(DOM_ELEMENTS.payByDateLabel).should('contain', 'Enter pay by date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
@@ -284,7 +284,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
@@ -308,7 +308,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
@@ -317,15 +317,15 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
 
       // collection order
-      cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).should('exist');
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).should('exist');
       cy.get(DOM_ELEMENTS.collectionNo).should('exist');
-      cy.get(DOM_ELEMENTS.collectionYes).should('exist');
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).should('exist');
       cy.get(DOM_ELEMENTS.collectionYesLabel).should('contain', 'Yes');
       cy.get(DOM_ELEMENTS.collectionNoLabel).should('contain', 'No');
-      cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).click();
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).click();
       cy.get(DOM_ELEMENTS.collectionOrderDate).should('exist');
       cy.get(DOM_ELEMENTS.collectionOrderDateLabel).should('contain', 'Date of collection order');
-      cy.get(DOM_ELEMENTS.collectionOrderHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
     },
   );
 
@@ -348,7 +348,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       // pay in full
       cy.get(DOM_ELEMENTS.payInFull).click();
       cy.get(DOM_ELEMENTS.payByDateLabel).should('contain', 'Enter pay by date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
@@ -370,7 +370,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.instalmentsOnlyFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
@@ -394,7 +394,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.lumpSumFrequencyWeekly).should('exist');
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
-      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.hint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).filter(':visible').first().click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
@@ -411,9 +411,9 @@ describe('FinesMacPaymentTermsComponent', () => {
       setupComponent('adultOrYouthOnly');
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).should('exist');
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).should('exist');
       cy.get(DOM_ELEMENTS.collectionNo).should('exist');
-      cy.get(DOM_ELEMENTS.collectionYes).should('exist');
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).should('exist');
       cy.get(DOM_ELEMENTS.collectionYesLabel).should('contain', 'Yes');
       cy.get(DOM_ELEMENTS.collectionNoLabel).should('contain', 'No');
     },
@@ -449,7 +449,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2020';
       cy.get(DOM_ELEMENTS.collectionNo).should('not.exist');
-      cy.get(DOM_ELEMENTS.collectionYes).should('not.exist');
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).should('not.exist');
     },
   );
   //collection order validation check
@@ -461,7 +461,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
-          cy.get(DOM_ELEMENTS.collectionYes).click();
+          cy.get(DOM_ELEMENTS.collectionOrder.yes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).should('have.value', '01/10/2022');
         });
       }
@@ -475,7 +475,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
-          cy.get(DOM_ELEMENTS.collectionYes).click();
+          cy.get(DOM_ELEMENTS.collectionOrder.yes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.collectionOrderDate).type('01/02/2004', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).first().click();
@@ -518,7 +518,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
 
-          cy.get(DOM_ELEMENTS.collectionYes).click();
+          cy.get(DOM_ELEMENTS.collectionOrder.yes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.submitButton).first().click();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDateError);
@@ -540,7 +540,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
 
-          cy.get(DOM_ELEMENTS.collectionYes).click();
+          cy.get(DOM_ELEMENTS.collectionOrder.yes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.collectionOrderDate).type('32/01/2022', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).first().click();
@@ -1111,7 +1111,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.defaultDaysInJail).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.suspendedCommittalDateLabel).should('contain', 'Date days in default were imposed');
-      cy.get(DOM_ELEMENTS.dateHint).should(
+      cy.get(DOM_ELEMENTS.hint).should(
         'contain',
         'This should be whichever date is most recent - the sentencing date or the date of the suspended committal order.',
       );
@@ -1306,14 +1306,14 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.prisonAndPrisonNumberLabel).should('contain', 'Prison and prison number');
           cy.get(DOM_ELEMENTS.prisonAndPrisonNumber).should('exist');
           cy.get(DOM_ELEMENTS.prisHint).should('contain', 'Held as enforcement comment');
-          cy.get(DOM_ELEMENTS.prisCharHint).should('contain', 'You have 28 characters remaining');
+          cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 28 characters remaining');
 
           cy.get(DOM_ELEMENTS.noenfLabel).should('exist');
           cy.get(DOM_ELEMENTS.noenf).should('exist');
           cy.get(DOM_ELEMENTS.noenf).click();
           cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenfLabel).should('contain', 'Reason account is on NOENF');
           cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenf).should('exist');
-          cy.get(DOM_ELEMENTS.noenfCharHint).should('contain', 'You have 28 characters remaining');
+          cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 28 characters remaining');
         });
       }
     },
@@ -1554,7 +1554,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
       });
 
-      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).check();
       cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -1599,7 +1599,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
       });
 
-      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrder.yes).check();
       cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 

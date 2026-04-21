@@ -9,21 +9,21 @@
  */
 export const DEFENDANT_DETAILS = {
   // Defendant details table
-  defendantTitle: '.govuk-summary-card__title',
+  detailsTitle: '.govuk-summary-card__title',
   defendantName: '#defendantDetailsNameValue',
   defendantAlias: '[summaryListRowId="aliases"]',
   defendantDOB: '[summaryListRowId="dob"]',
   defendantNI: '[summaryListRowId="national_insurance_number"]',
   defendantAddress: '#defendantDetailsAddressValue',
-  defendantVehicle: '[summaryListRowId="vehicle_make_and_model"]',
-  defendantVehicleReg: '[summaryListRowId="vehicle_registration"]',
+  vehicle: '[summaryListRowId="vehicle_make_and_model"]',
+  vehicleReg: '[summaryListRowId="vehicle_registration"]',
 
   // Defendant contact details table
-  defendantPrimaryEmail: '[summaryListRowId="primary_email_address"]',
-  defendantSecondaryEmail: '[summaryListRowId="secondary_email_address"]',
-  defendantMobilePhone: '[summaryListRowId="mobile_telephone_number"]',
-  defendantHomePhone: '[summaryListRowId="home_telephone_number"]',
-  defendantWorkPhone: '[summaryListRowId="work_telephone_number"]',
+  primaryEmail: '[summaryListRowId="primary_email_address"]',
+  secondaryEmail: '[summaryListRowId="secondary_email_address"]',
+  mobilePhone: '[summaryListRowId="mobile_telephone_number"]',
+  homePhone: '[summaryListRowId="home_telephone_number"]',
+  workPhone: '[summaryListRowId="work_telephone_number"]',
 
   // Defendant employer details table
   defendantEmployerName: '[summaryListRowId="employer_name"]',
@@ -33,7 +33,7 @@ export const DEFENDANT_DETAILS = {
   defendantEmployerAddress: '#employerDetailsEmployer_addressValue',
 
   // Parent/Guardian details table
-  parentGuardianTag: '#status',
+  statusTag: '#status',
   parentGuardianTableSections: '.govuk-\\!-margin-top-2',
 
   // Visible labels used in assertions
@@ -47,22 +47,12 @@ export const DEFENDANT_DETAILS = {
   labelEnforcementStatus: 'Enforcement status',
 
   // Company details table
-  companyTitle: '.govuk-summary-card__title',
   companyName: '#companyDetailsNameValue',
   companyAlias: '#companyDetailsAliasesValue',
   companyAddress: '#companyDetailsAddressValue',
-  companyVehicle: '[summaryListRowId="vehicle_make_and_model"]',
-  companyVehicleReg: '[summaryListRowId="vehicle_registration"]',
 
   // Company contact details table
-  companyPrimaryEmail: '[summaryListRowId="primary_email_address"]',
-  companySecondaryEmail: '[summaryListRowId="secondary_email_address"]',
-  companyMobilePhone: '[summaryListRowId="mobile_telephone_number"]',
-  companyHomePhone: '[summaryListRowId="home_telephone_number"]',
-  companyWorkPhone: '[summaryListRowId="work_telephone_number"]',
-
-  // Conditional tag
-  statusTag: '#status',
+  
 
   // Enforcement status tag
   enforcementStatusTag: ':nth-child(1) > opal-lib-govuk-tag > #enforcement_status',

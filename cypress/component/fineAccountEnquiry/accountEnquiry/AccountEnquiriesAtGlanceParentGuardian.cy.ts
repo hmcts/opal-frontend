@@ -56,7 +56,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.pageHeader).should('exist');
       cy.get(DOM.headingWithCaption).should('exist');
       cy.get(DOM.headingName).should('exist').and('contain.text', 'Mr Anna GRAHAM');
-      cy.get(DEFENDANT_DETAILS.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
+      cy.get(DEFENDANT_DETAILS.statusTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
       cy.get(DOM.accountInfo).should('exist');
       cy.get(DOM.summaryMetricBar).should('exist');
       cy.get(DOM.subnav).should('exist');

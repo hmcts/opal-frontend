@@ -298,7 +298,7 @@ describe(
         cy.get(ENF.tabName).should('exist').and('contain.text', 'Enforcement');
 
         cy.get(VERSION_CONTROL.successBanner).should('exist');
-        cy.get(VERSION_CONTROL.successBannerText).should('contain', 'Enforcement override added');
+        cy.get(VERSION_CONTROL.bannerText).should('contain', 'Enforcement override added');
 
         cy.get(ENF.tableTitle).should('contain.text', 'Enforcement override');
         cy.get(ENF.enforcementOverride).should('exist').and('contain.text', 'Enforcement override');
@@ -648,7 +648,7 @@ describe(
         cy.get(ENF.tabName).should('exist').and('contain.text', 'Enforcement');
 
         cy.get(VERSION_CONTROL.successBanner).should('exist');
-        cy.get(VERSION_CONTROL.successBannerText).should('contain', 'Enforcement override added');
+        cy.get(VERSION_CONTROL.bannerText).should('contain', 'Enforcement override added');
 
         cy.get(ENF.tableTitle).should('contain.text', 'Enforcement override');
         cy.get(ENF.enforcementOverride).should('exist').and('contain.text', 'Enforcement override');

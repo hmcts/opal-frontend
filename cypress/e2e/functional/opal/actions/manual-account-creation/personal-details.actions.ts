@@ -258,7 +258,7 @@ export class ManualPersonalDetailsActions {
       case 'dob':
         return L.dateOfBirthInput;
       case 'nationalInsuranceNumber':
-        return L.nationalInsuranceInput;
+        return L.niNumberInput;
       case 'addressLine1':
         return L.addressLine1Input;
       case 'addressLine2':

@@ -273,7 +273,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
       cy.get(L.checkAccountButton).should('exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
@@ -287,7 +287,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
       cy.get(L.checkAccountButton).should('not.exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should(
         'contain',
         'You cannot proceed until all required sections have been completed.',
@@ -303,7 +303,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       cy.get(L.checkAccountButton).should('exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
@@ -317,7 +317,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       cy.get(L.checkAccountButton).should('not.exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should('exist');
     },
   );
@@ -330,7 +330,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
       cy.get(L.checkAccountButton).should('exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
@@ -344,7 +344,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
       cy.get(L.checkAccountButton).should('not.exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should(
         'contain',
         'You cannot proceed until all required sections have been completed.',
@@ -358,7 +358,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
       cy.get(L.reviewComponent).should('exist');
       cy.get(L.status).contains('Rejected').should('exist');
-      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.sectionHeading).contains('Review history').should('exist');
       cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
       cy.get(L.timeLine).should('exist');
       cy.get(L.timeLineTitle).contains('Rejected').should('exist');
@@ -420,7 +420,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
       cy.get(L.reviewComponent).should('exist');
       cy.get(L.status).contains('Rejected').should('exist');
-      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.sectionHeading).contains('Review history').should('exist');
       cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
       cy.get(L.timeLine).should('exist');
       cy.get(L.timeLineTitle).contains('Rejected').should('exist');
@@ -459,7 +459,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
       cy.get(L.reviewComponent).should('exist');
       cy.get(L.status).contains('Rejected').should('exist');
-      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.sectionHeading).contains('Review history').should('exist');
       cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
       cy.get(L.timeLine).should('exist');
       cy.get(L.timeLineTitle).contains('Rejected').should('exist');
@@ -501,7 +501,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
       cy.get(L.reviewComponent).should('exist');
       cy.get(L.status).contains('Rejected').should('exist');
-      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.sectionHeading).contains('Review history').should('exist');
       cy.get(L.pageTitle).contains('Company Name').should('exist');
       cy.get(L.timeLine).should('exist');
       cy.get(L.timeLineTitle).contains('Rejected').should('exist');

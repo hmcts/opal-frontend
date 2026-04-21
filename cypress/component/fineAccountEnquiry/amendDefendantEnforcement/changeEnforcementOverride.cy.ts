@@ -395,7 +395,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
 
       cy.get(ENF.tabName).should('exist').and('contain.text', 'Enforcement');
       cy.get(VERSION_CONTROL.successBanner).should('exist');
-      cy.get(VERSION_CONTROL.successBannerText).should('contain', 'Enforcement override changed');
+      cy.get(VERSION_CONTROL.bannerText).should('contain', 'Enforcement override changed');
 
       cy.get(ENF.tableTitle).should('contain.text', 'Enforcement override');
       cy.get(ENF.enforcementOverride).should('exist').and('contain.text', 'Enforcement override');

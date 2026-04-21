@@ -88,7 +88,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       cy.get(HEADER.pageHeader).should('exist');
       cy.get(HEADER.headingWithCaption).should('exist');
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
-      cy.get(DEFENDANT_DETAILS.defendantTitle).should('exist').and('contain.text', 'Defendant details');
+      cy.get(DEFENDANT_DETAILS.detailsTitle).should('exist').and('contain.text', 'Defendant details');
       cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
       cy.get(DEFENDANT_DETAILS.defendantAlias).should('exist').and('contain.text', 'S. J. TAYLOR John PETERS');
       cy.get(DEFENDANT_DETAILS.defendantDOB).should('exist').and('contain.text', '12 April 1988');
@@ -99,14 +99,14 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .then((text) => {
           expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
         });
-      cy.get(DEFENDANT_DETAILS.defendantVehicle).should('exist').and('contain.text', 'Ford Focus');
-      cy.get(DEFENDANT_DETAILS.defendantVehicleReg).should('exist').and('contain.text', 'XY21 ABC');
+      cy.get(DEFENDANT_DETAILS.vehicle).should('exist').and('contain.text', 'Ford Focus');
+      cy.get(DEFENDANT_DETAILS.vehicleReg).should('exist').and('contain.text', 'XY21 ABC');
 
-      cy.get(DEFENDANT_DETAILS.defendantPrimaryEmail).should('exist').and('contain.text', 'sarah.thompson@example.com');
-      cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', 'sarah.t@example.com');
-      cy.get(DEFENDANT_DETAILS.defendantMobilePhone).should('exist').and('contain.text', '07123 456789');
-      cy.get(DEFENDANT_DETAILS.defendantHomePhone).should('exist').and('contain.text', '01234 567890');
-      cy.get(DEFENDANT_DETAILS.defendantWorkPhone).should('exist').and('contain.text', '09876 543210');
+      cy.get(DEFENDANT_DETAILS.primaryEmail).should('exist').and('contain.text', 'sarah.thompson@example.com');
+      cy.get(DEFENDANT_DETAILS.secondaryEmail).should('exist').and('contain.text', 'sarah.t@example.com');
+      cy.get(DEFENDANT_DETAILS.mobilePhone).should('exist').and('contain.text', '07123 456789');
+      cy.get(DEFENDANT_DETAILS.homePhone).should('exist').and('contain.text', '01234 567890');
+      cy.get(DEFENDANT_DETAILS.workPhone).should('exist').and('contain.text', '09876 543210');
 
       cy.get(DEFENDANT_DETAILS.defendantEmployerName).should('exist').and('contain.text', 'Tech Solutions Ltd');
       cy.get(DEFENDANT_DETAILS.defendantEmployerReference).should('exist').and('contain.text', 'EMP-001234');
@@ -142,7 +142,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       cy.get(HEADER.pageHeader).should('exist');
       cy.get(HEADER.headingWithCaption).should('exist');
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
-      cy.get(DEFENDANT_DETAILS.defendantTitle).should('exist').and('contain.text', 'Defendant details');
+      cy.get(DEFENDANT_DETAILS.detailsTitle).should('exist').and('contain.text', 'Defendant details');
       cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
       cy.get(DEFENDANT_DETAILS.defendantAlias).should('exist').and('contain.text', 'S. J. TAYLOR John PETERS');
       cy.get(DEFENDANT_DETAILS.defendantDOB).should('exist').and('contain.text', '12 April 1988');
@@ -153,8 +153,8 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .then((text) => {
           expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
         });
-      cy.get(DEFENDANT_DETAILS.defendantVehicle).should('not.exist');
-      cy.get(DEFENDANT_DETAILS.defendantVehicleReg).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.vehicle).should('not.exist');
+      cy.get(DEFENDANT_DETAILS.vehicleReg).should('not.exist');
       cy.get('h2').contains('Contact details').should('not.exist');
       cy.get('h2').contains('Employer details').should('not.exist');
     },
@@ -180,7 +180,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
+      cy.get(DEFENDANT_DETAILS.secondaryEmail).should('exist').and('contain.text', '—');
       cy.get(DEFENDANT_DETAILS.defendantEmployerPhone).should('exist').and('contain.text', '—');
     },
   );
@@ -297,7 +297,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       cy.get(HEADER.pageHeader).should('exist');
       cy.get(HEADER.headingWithCaption).should('exist');
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
-      cy.get(DEFENDANT_DETAILS.companyTitle).should('exist').and('contain.text', 'Company details');
+      cy.get(DEFENDANT_DETAILS.detailsTitle).should('exist').and('contain.text', 'Company details');
       cy.get(DEFENDANT_DETAILS.companyName).should('exist').and('contain.text', 'Acme Corporation');
       cy.get(DEFENDANT_DETAILS.companyAlias).should('exist').and('contain.text', 'Acme Corp');
       cy.get(DEFENDANT_DETAILS.companyAddress)
@@ -306,14 +306,14 @@ describe('Account Enquiry Defendant Details Tab', () => {
         .then((text) => {
           expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
         });
-      cy.get(DEFENDANT_DETAILS.companyVehicle).should('exist').and('contain.text', 'Ford Focus');
-      cy.get(DEFENDANT_DETAILS.companyVehicleReg).should('exist').and('contain.text', 'XY21 ABC');
+      cy.get(DEFENDANT_DETAILS.vehicle).should('exist').and('contain.text', 'Ford Focus');
+      cy.get(DEFENDANT_DETAILS.vehicleReg).should('exist').and('contain.text', 'XY21 ABC');
 
-      cy.get(DEFENDANT_DETAILS.companyPrimaryEmail).should('exist').and('contain.text', 'sarah.thompson@example.com');
-      cy.get(DEFENDANT_DETAILS.companySecondaryEmail).should('exist').and('contain.text', 'sarah.t@example.com');
-      cy.get(DEFENDANT_DETAILS.companyMobilePhone).should('exist').and('contain.text', '07123 456789');
-      cy.get(DEFENDANT_DETAILS.companyHomePhone).should('exist').and('contain.text', '01234 567890');
-      cy.get(DEFENDANT_DETAILS.companyWorkPhone).should('exist').and('contain.text', '09876 543210');
+      cy.get(DEFENDANT_DETAILS.primaryEmail).should('exist').and('contain.text', 'sarah.thompson@example.com');
+      cy.get(DEFENDANT_DETAILS.secondaryEmail).should('exist').and('contain.text', 'sarah.t@example.com');
+      cy.get(DEFENDANT_DETAILS.mobilePhone).should('exist').and('contain.text', '07123 456789');
+      cy.get(DEFENDANT_DETAILS.homePhone).should('exist').and('contain.text', '01234 567890');
+      cy.get(DEFENDANT_DETAILS.workPhone).should('exist').and('contain.text', '09876 543210');
     },
   );
 
@@ -337,7 +337,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-      cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
+      cy.get(DEFENDANT_DETAILS.secondaryEmail).should('exist').and('contain.text', '—');
     },
   );
 
