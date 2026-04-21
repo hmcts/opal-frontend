@@ -400,6 +400,36 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should issue a new request when result ids differ', () => {
+    const firstResultIds = ['1', '2', '3'];
+    const secondResultIds = ['4', '5'];
+    const firstUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${firstResultIds[0]}&result_ids=${firstResultIds[1]}&result_ids=${firstResultIds[2]}`;
+    const secondUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${secondResultIds[0]}&result_ids=${secondResultIds[1]}`;
+
+    service.getResults(firstResultIds).subscribe();
+    httpMock.expectOne(firstUrl).flush(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+
+    service.getResults(secondResultIds).subscribe();
+    httpMock.expectOne(secondUrl).flush(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+  });
+
+  it('should cache results requests independently by params', () => {
+    const params = { enforcement: true, enforcement_override: false };
+    const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}?enforcement=true&enforcement_override=false`;
+
+    service.getResults([], params).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    });
+
+    httpMock.expectOne(expectedUrl).flush(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+
+    service.getResults([], params).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
   it('should send a GET request/{id} to results ref data API', () => {
     const resultId = '1';
     const expectedResponse: IOpalFinesResultRefData = OPAL_FINES_RESULT_REF_DATA_MOCK;

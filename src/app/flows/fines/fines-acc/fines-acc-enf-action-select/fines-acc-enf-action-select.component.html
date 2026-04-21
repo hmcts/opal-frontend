@@ -1,0 +1,11 @@
+<div class="govuk-grid">
+  <app-fines-acc-enf-action-select-form
+    [accountNumber]="accountNumber"
+    [actionOptions]="actionOptions"
+    [partyName]="partyName"
+    [warningMessages]="warningMessages"
+    (formSubmit)="handleSubmit($event)"
+    (cancelRequested)="handleCancel()"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-acc-enf-action-select-form>
+</div>

@@ -340,7 +340,9 @@
     <h2 [class]="style.heading">Actions</h2>
     @if (hasEnterEnforcementPermission) {
       <p>
-        <a class="govuk-link govuk-link--no-visited-state" href="">Add enforcement action</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="" (click)="handleAddEnforcementAction($event)"
+          >Add enforcement action</a
+        >
       </p>
     }
     @if (

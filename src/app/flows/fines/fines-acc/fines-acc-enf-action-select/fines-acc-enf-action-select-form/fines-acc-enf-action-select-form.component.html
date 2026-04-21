@@ -1,0 +1,53 @@
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
+
+  @if (warningMessages.length > 0) {
+    <opal-lib-moj-alert type="information" ariaLabel="Important account information">
+      <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>
+          @if (warningMessages.length === 1) {
+            {{ warningMessages[0] }}
+          } @else {
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+              @for (message of warningMessages; track message) {
+                <li>{{ message }}</li>
+              }
+            </ul>
+          }
+        </opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  }
+
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="`${accountNumber} - ${partyName}`"
+    [headingText]="'Add enforcement action'"
+    headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+  >
+  </opal-lib-govuk-heading-with-caption>
+</div>
+
+<div class="govuk-grid-column-one-half">
+  <form (submit)="handleFormSubmit($event)" [formGroup]="form" class="govuk-form">
+    <opal-lib-alphagov-accessible-autocomplete
+      [control]="form.get('facc_enf_action')"
+      labelText="Select an enforcement action"
+      labelClasses="govuk-fieldset__legend--m"
+      inputId="facc_enf_action"
+      inputName="facc_enf_action"
+      label="Select an enforcement action"
+      [autoCompleteItems]="actionOptions"
+      [errors]="formControlErrorMessages['facc_enf_action']"
+      [tabIndex]="0"
+    ></opal-lib-alphagov-accessible-autocomplete>
+
+    <div class="govuk-button-group">
+      <button class="govuk-button govuk-!-margin-right-4" id="submitForm" type="submit">Continue</button>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+    </div>
+  </form>
+</div>
