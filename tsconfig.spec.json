@@ -9,5 +9,5 @@
     "types": ["vitest/globals"]
   },
   "include": ["src/**/*.spec.ts", "src/test-setup.ts", "src/**/*.d.ts"],
-  "exclude": ["src/**/*.routing.ts"]
+  "exclude": ["src/**/*.routing.ts", "**/interfaces/generated/**", "**/types/generated/**"]
 }
