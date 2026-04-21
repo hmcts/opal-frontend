@@ -71,4 +71,17 @@ describe('FinesMacReviewAccountFixedPenaltyDetailsComponent', () => {
 
     expect(component.offence).toBe('Duplicate offence title A (GMMET001)');
   });
+
+  it('should fall back to the offence code when no title data is returned', () => {
+    mockOpalFinesService.getOffenceByCjsCode = vi.fn().mockReturnValue(
+      of({
+        count: 0,
+        refData: [],
+      }),
+    );
+
+    component.getOffence('UNKNOWN123');
+
+    expect(component.offence).toBe('UNKNOWN123 (UNKNOWN123)');
+  });
 });

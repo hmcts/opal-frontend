@@ -8,6 +8,7 @@ import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/co
 import { FinesConStore } from '../../../../stores/fines-con.store';
 import { FinesConStoreType } from '../../../../stores/types/fines-con-store.type';
 import { FINES_CON_SEARCH_ACCOUNT_FORM_INDIVIDUALS_MOCK } from '../../mocks/fines-con-search-account-form-individuals.mock';
+import { FINES_CON_SEARCH_ACCOUNT_STATE } from '../../constants/fines-con-search-account-state.constant';
 
 describe('FinesConSearchAccountFormIndividualsComponent', () => {
   let component: FinesConSearchAccountFormIndividualsComponent;
@@ -49,6 +50,28 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
 
     expect(() => component['setupIndividualForm']()).not.toThrow();
     expect(component.form.get('fcon_search_account_individuals_search_criteria')).toBeNull();
+  });
+
+  it('should patch an empty object when no individual criteria are stored', () => {
+    finesConStore.updateSearchAccountFormTemporary({
+      ...FINES_CON_SEARCH_ACCOUNT_STATE,
+      fcon_search_account_individuals_search_criteria: undefined as never,
+    });
+
+    const blankFixture = TestBed.createComponent(FinesConSearchAccountFormIndividualsComponent);
+    const blankComponent = blankFixture.componentInstance;
+    blankComponent.form = new FormGroup({
+      fcon_search_account_individuals_search_criteria: new FormGroup({}),
+    });
+    blankComponent.formControlErrorMessages = {} as IAbstractFormControlErrorMessage;
+
+    blankFixture.detectChanges();
+
+    expect(
+      blankComponent.form.get(
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_last_name',
+      )?.value,
+    ).toBeNull();
   });
 
   it('should initialize all individuals nested form controls', () => {
@@ -132,5 +155,14 @@ describe('FinesConSearchAccountFormIndividualsComponent', () => {
         'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_date_of_birth',
       )?.value,
     ).toBe('02/02/1992');
+  });
+
+  it('should ignore setInputValue calls when the target control is missing', () => {
+    expect(() =>
+      component.setInputValue(
+        '02/02/1992',
+        'fcon_search_account_individuals_search_criteria.fcon_search_account_individuals_missing',
+      ),
+    ).not.toThrow();
   });
 });

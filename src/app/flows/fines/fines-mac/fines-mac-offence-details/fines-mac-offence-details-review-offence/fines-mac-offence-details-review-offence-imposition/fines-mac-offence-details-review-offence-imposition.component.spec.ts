@@ -266,6 +266,18 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     expect(component.impositions).toEqual(expected);
   });
 
+  it('should throw when sorting impositions that cannot be resolved from result ref data', () => {
+    component.impositions = [
+      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]), fm_offence_details_result_id: 'FCC' },
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]),
+        fm_offence_details_result_id: 'UNKNOWN_RESULT',
+      },
+    ];
+
+    expect(() => component['sortImpositionsByAllocationOrder']()).toThrow();
+  });
+
   it('should invert showMinorCreditorData', () => {
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component['getImpositionData']();

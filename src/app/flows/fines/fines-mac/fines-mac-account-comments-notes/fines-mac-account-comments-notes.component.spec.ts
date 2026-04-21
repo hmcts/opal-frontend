@@ -7,6 +7,7 @@ import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from './mocks/fines-mac-account-comments-notes-form.mock';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from './mocks/fines-mac-account-comments-notes-state.mock';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from './constants/fines-mac-account-comments-notes-state';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
@@ -93,6 +94,24 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.reviewAccount], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should not navigate when nested flow has no configured next route', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    const originalRoute = FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].accountCommentsNotes;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    formSubmit.nestedFlow = true;
+    FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].accountCommentsNotes = null;
+
+    try {
+      component.handleAccountCommentsNoteSubmit(formSubmit);
+
+      expect(finesMacStore.accountCommentsNotes()).toEqual(formSubmit);
+      expect(routerSpy).not.toHaveBeenCalled();
+    } finally {
+      FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].accountCommentsNotes = originalRoute;
+    }
   });
 
   it('should test handleUnsavedChanges', () => {

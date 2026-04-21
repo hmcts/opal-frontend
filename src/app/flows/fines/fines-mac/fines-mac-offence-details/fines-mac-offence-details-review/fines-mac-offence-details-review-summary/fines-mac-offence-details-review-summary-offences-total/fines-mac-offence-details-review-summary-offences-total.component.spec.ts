@@ -35,4 +35,33 @@ describe('FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent', () => {
     expect(component.totals.amountPaidTotal).toEqual(expectedAmountPaidTotal);
     expect(component.totals.balanceRemainingTotal).toEqual(expectedBalanceRemainingTotal);
   });
+
+  it('should ignore impositions without both imposed and remaining balances', () => {
+    const skippedFixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent);
+    const skippedComponent = skippedFixture.componentInstance;
+    skippedComponent.offences = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0]),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0].formData),
+          fm_offence_details_impositions: [
+            {
+              ...structuredClone(
+                FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0].formData.fm_offence_details_impositions[0],
+              ),
+              fm_offence_details_amount_imposed: 0,
+              fm_offence_details_amount_paid: 10,
+              fm_offence_details_balance_remaining: 5,
+            },
+          ],
+        },
+      },
+    ];
+
+    skippedFixture.detectChanges();
+
+    expect(skippedComponent.totals.amountImposedTotal).toEqual('£0.00');
+    expect(skippedComponent.totals.amountPaidTotal).toEqual('£0.00');
+    expect(skippedComponent.totals.balanceRemainingTotal).toEqual('£0.00');
+  });
 });

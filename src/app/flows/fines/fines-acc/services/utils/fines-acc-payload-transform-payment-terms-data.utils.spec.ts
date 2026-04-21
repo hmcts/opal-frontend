@@ -161,12 +161,44 @@ describe('transformPaymentTermsData', () => {
     expect(result.facc_payment_terms_pay_by_date).toBeNull();
   });
 
+  it('should map a pay-in-full effective date to null when the API value is empty', () => {
+    const result = transformPaymentTermsData(
+      {
+        ...PAYMENT_TERMS_BY_DATE_NO_LUMP_SUM_MOCK,
+        payment_terms: {
+          ...PAYMENT_TERMS_BY_DATE_NO_LUMP_SUM_MOCK.payment_terms,
+          effective_date: null,
+        },
+      },
+      MOCK_RESULT_DATA,
+    );
+
+    expect(result.facc_payment_terms_payment_terms).toBe('payInFull');
+    expect(result.facc_payment_terms_pay_by_date).toBeNull();
+  });
+
   it('should handle null instalment amounts and periods', () => {
     const result = transformPaymentTermsData(PAYMENT_TERMS_NULL_INSTALMENT_DATA_MOCK, MOCK_RESULT_DATA);
 
     expect(result.facc_payment_terms_instalment_amount).toBeNull();
     expect(result.facc_payment_terms_instalment_period).toBeNull();
     expect(result.facc_payment_terms_start_date).toBe('2025-01-15');
+  });
+
+  it('should map an instalment start date to null when the API value is empty', () => {
+    const result = transformPaymentTermsData(
+      {
+        ...PAYMENT_TERMS_INSTALMENTS_ONLY_MOCK,
+        payment_terms: {
+          ...PAYMENT_TERMS_INSTALMENTS_ONLY_MOCK.payment_terms,
+          effective_date: null,
+        },
+      },
+      MOCK_RESULT_DATA,
+    );
+
+    expect(result.facc_payment_terms_payment_terms).toBe('instalmentsOnly');
+    expect(result.facc_payment_terms_start_date).toBeNull();
   });
 
   it('should handle undefined instalment_period_code', () => {
