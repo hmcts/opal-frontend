@@ -638,6 +638,28 @@ describe('FinesMacReviewAccountComponent', () => {
       component['reviewAccountFetchedMappedPayload']();
       expect(component.isReadOnly).toBe(false);
     });
+
+    it('should leave timelineData unset when the draft store has no timeline data', () => {
+      const snapshotData: IFetchMapFinesMacPayload = {
+        finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+        finesMacDraft: {
+          ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+          timeline_data: undefined as unknown as typeof FINES_MAC_PAYLOAD_ADD_ACCOUNT.timeline_data,
+        },
+        courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+        localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+        majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+        results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+        prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
+      };
+      const setup = createTestModule({ reviewAccountFetchMap: snapshotData });
+      component = setup.component;
+
+      component['reviewAccountFetchedMappedPayload']();
+
+      expect(component.showTimeline).toBe(true);
+      expect(component.timelineData).toBeUndefined();
+    });
   });
 
   describe('when ActivatedRoute.snapshot is nullish', () => {

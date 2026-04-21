@@ -34,6 +34,12 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should return custom classes when provided', () => {
+    component.classes = 'app-custom-class';
+
+    expect(component.getClasses).toBe('app-custom-class');
+  });
+
   it('should set name to formatted individual name if creditor_type is individual', () => {
     component.minorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK);
 

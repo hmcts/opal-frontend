@@ -23,6 +23,7 @@ import {
 import { finesSaMinorCreditorAccountsResolver } from '../fines-sa/routing/resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
 import { dashboardLandingGuard } from './guards/dashboard-landing/dashboard-landing.guard';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
+import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 
 export const finesRouting: Routes = [
   {
@@ -91,6 +92,9 @@ export const finesRouting: Routes = [
         children: macRouting,
         canActivate: [authGuard],
         canDeactivate: [canDeactivateGuard],
+        data: {
+          ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
+        },
       },
       {
         path: FINES_ROUTING_PATHS.children.draft.root,
@@ -123,6 +127,7 @@ export const finesRouting: Routes = [
         canActivate: [authGuard, finesSectionPermissionsGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
+          ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
         },
       },
       {
