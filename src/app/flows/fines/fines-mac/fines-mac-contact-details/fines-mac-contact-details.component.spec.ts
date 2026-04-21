@@ -6,6 +6,7 @@ import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from './mocks/fines-mac-contact-d
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_CONTACT_DETAILS_STATE } from './constants/fines-mac-contact-details-state';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
@@ -91,6 +92,24 @@ describe('FinesMacContactDetailsComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.employerDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should not navigate when nested flow has no configured next route', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    const originalRoute = FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].contactDetails;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    formSubmit.nestedFlow = true;
+    FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].contactDetails = null;
+
+    try {
+      component.handleContactDetailsSubmit(formSubmit);
+
+      expect(finesMacStore.contactDetails()).toEqual(formSubmit);
+      expect(routerSpy).not.toHaveBeenCalled();
+    } finally {
+      FINES_MAC_ROUTING_NESTED_ROUTES[FINES_MAC_DEFENDANT_TYPES_KEYS.company].contactDetails = originalRoute;
+    }
   });
 
   it('should test handleUnsavedChanges', () => {

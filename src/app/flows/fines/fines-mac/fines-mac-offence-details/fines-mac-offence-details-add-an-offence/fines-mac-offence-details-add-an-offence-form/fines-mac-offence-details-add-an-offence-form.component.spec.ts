@@ -119,6 +119,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should allow the default retryOffenceCodeLookup callback to be invoked before listener setup', () => {
+    const freshFixture = TestBed.createComponent(FinesMacOffenceDetailsAddAnOffenceFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+
+    expect(() => freshComponent['retryOffenceCodeLookup']()).not.toThrow();
+  });
+
   it('should enforce current template link semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templateConsts = ((FinesMacOffenceDetailsAddAnOffenceFormComponent as any).ɵcmp?.consts ?? []).filter(
@@ -720,6 +727,22 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.minorCreditors[0]).toBeUndefined();
   });
 
+  it('should keep the draft unchanged when removing a minor creditor index that does not exist', () => {
+    const draft = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
+    draft[0].childFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(draft);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setOffenceDetailsDraftSpy = vi.spyOn<any, any>(
+      component['finesMacOffenceDetailsStore'],
+      'setOffenceDetailsDraft',
+    );
+
+    component['removeMinorCreditorFromDraftState'](99);
+
+    expect(setOffenceDetailsDraftSpy).toHaveBeenCalledWith(draft);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData).toHaveLength(1);
+  });
+
   it('should not remove any minor creditor if the index does not exist', () => {
     component.minorCreditors = {
       0: FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK,
@@ -792,6 +815,30 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
+  it('should ignore draft minor creditors without an imposition position when building lookup maps', () => {
+    const draftOffenceDetails = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    draftOffenceDetails.childFormData = [
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
+          fm_offence_details_imposition_position: null,
+        },
+      },
+    ];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([draftOffenceDetails]);
+
+    component.getMinorCreditors();
+
+    expect(component.minorCreditors).toEqual({
+      0: FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+    });
+    expect(component.minorCreditorsHidden).toEqual({
+      0: true,
+    });
+  });
+
   it('should set minorCreditors and minorCreditorsHidden to empty objects if no minor creditors are found', () => {
     finesMacStore.setFinesMacStore({
       ...FINES_MAC_STATE_MOCK,
@@ -831,6 +878,61 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(checkImpositionSpy).toHaveBeenCalled();
     expect(superHandleFormSubmitSpy).toHaveBeenCalledWith(event);
+  });
+
+  it('should flag amount imposed as invalid when the value is zero', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(0);
+    amountImposedControl.updateValueAndValidity();
+
+    expect(amountImposedControl.errors).toEqual(expect.objectContaining({ invalidZeroAmount: true }));
+  });
+
+  it('should expose a non-numeric amount imposed error message when the value is invalid text', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue('abc');
+    amountImposedControl.updateValueAndValidity();
+
+    expect(amountImposedControl.errors).toEqual(expect.objectContaining({ invalidAmountValue: true }));
+    expect(component['fieldErrors']['fm_offence_details_amount_imposed_0']).toEqual(
+      expect.objectContaining({
+        invalidAmountValue: expect.objectContaining({
+          message: 'Enter a valid amount',
+          priority: 2,
+        }),
+      }),
+    );
+  });
+
+  it('should not emit form submission when amount imposed is negative', () => {
+    const formSubmitSpy = vi.spyOn(component['formSubmit'], 'emit');
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = component.form.controls['fm_offence_details_offence_id'];
+
+    offenceCodeControl.setValue('OFF1234');
+    offenceIdControl.setValue(123);
+    amountImposedControl.setValue(-10);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(amountImposedControl.errors).toEqual(expect.objectContaining({ invalidNegativeAmount: true }));
+    expect(component.form.invalid).toBe(true);
+    expect(formSubmitSpy).not.toHaveBeenCalled();
   });
 
   it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {
@@ -947,6 +1049,39 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component.handleFormSubmit(new SubmitEvent('submit'));
 
     expect(offenceCodeControl.errors?.['offenceCodeValidationPending']).toBeUndefined();
+  });
+
+  it('should handle result code changes without a major creditor control', () => {
+    const impositionsFormArray = new FormArray([
+      new FormGroup({
+        fm_offence_details_result_id_0: new FormControl(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.fineOnly),
+        fm_offence_details_needs_creditor_0: new FormControl(false),
+        fm_offence_details_creditor_0: new FormControl('major'),
+      }),
+    ]);
+    component.form.setControl('fm_offence_details_impositions', impositionsFormArray);
+    const resultCodeControl = impositionsFormArray.at(0).get('fm_offence_details_result_id_0') as FormControl;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const removeMinorCreditorDataSpy = vi.spyOn<any, any>(component, 'removeMinorCreditorData');
+
+    expect(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (component as any).resultCodeListener(0);
+      resultCodeControl.setValue(null);
+    }).not.toThrow();
+
+    expect(removeMinorCreditorDataSpy).toHaveBeenCalledWith(0);
+  });
+
+  it('should ignore unsupported minor creditor actions', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRouteSpy = vi.spyOn<any, any>(component, 'handleRoute');
+    const setRemoveMinorCreditorSpy = vi.spyOn(component['finesMacOffenceDetailsStore'], 'setRemoveMinorCreditor');
+
+    component.minorCreditorActions({ action: 'unsupported', index: 0 });
+
+    expect(handleRouteSpy).not.toHaveBeenCalled();
+    expect(setRemoveMinorCreditorSpy).not.toHaveBeenCalled();
   });
 
   it('should return early when offence code or offence id controls are missing', () => {

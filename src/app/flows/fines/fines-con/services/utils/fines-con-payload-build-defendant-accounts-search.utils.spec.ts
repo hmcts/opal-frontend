@@ -129,4 +129,41 @@ describe('buildDefendantAccountsSearchPayload', () => {
       }),
     );
   });
+
+  it('should default individual exact-match flags and include aliases to false when omitted', () => {
+    formData = structuredClone(FINES_CON_PAYLOAD_BUILD_DEFENDANT_ACCOUNTS_SEARCH_FORM_DATA_INDIVIDUAL_CRITERIA_MOCK);
+    formData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_last_name_exact_match =
+      undefined as never;
+    formData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_first_names_exact_match =
+      undefined as never;
+    formData.fcon_search_account_individuals_search_criteria!.fcon_search_account_individuals_include_aliases =
+      undefined as never;
+
+    const payload = buildDefendantAccountsSearchPayload(formData, 606, 'individual');
+
+    expect(payload.defendant).toEqual(
+      expect.objectContaining({
+        exact_match_surname: false,
+        exact_match_forenames: false,
+        include_aliases: false,
+      }),
+    );
+  });
+
+  it('should default company exact-match and include aliases flags to false when omitted', () => {
+    formData = structuredClone(FINES_CON_PAYLOAD_BUILD_DEFENDANT_ACCOUNTS_SEARCH_FORM_DATA_COMPANY_CRITERIA_MOCK);
+    formData.fcon_search_account_companies_search_criteria!.fcon_search_account_companies_company_name_exact_match =
+      undefined as never;
+    formData.fcon_search_account_companies_search_criteria!.fcon_search_account_companies_include_aliases =
+      undefined as never;
+
+    const payload = buildDefendantAccountsSearchPayload(formData, 707, 'company');
+
+    expect(payload.defendant).toEqual(
+      expect.objectContaining({
+        exact_match_organisation_name: false,
+        include_aliases: false,
+      }),
+    );
+  });
 });

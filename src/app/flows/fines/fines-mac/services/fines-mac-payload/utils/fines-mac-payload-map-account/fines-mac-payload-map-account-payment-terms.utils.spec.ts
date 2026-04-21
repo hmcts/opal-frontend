@@ -119,4 +119,50 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     expect(result.paymentTerms.formData.fm_payment_terms_prison_and_prison_number).toBe('12345');
     expect(result.paymentTerms.formData.fm_payment_terms_reason_account_is_on_noenf).toBe('Test reason');
   });
+
+  it('should ignore unknown enforcement response parameters', () => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+      return;
+    }
+
+    payload.payment_terms.enforcements = [
+      {
+        result_id: 'NOENF',
+        enforcement_result_responses: [{ parameter_name: 'unknownparameter', response: 'ignored value' }],
+      },
+    ];
+
+    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
+
+    expect(result.paymentTerms.formData.fm_payment_terms_enforcement_action).toBe('NOENF');
+    expect(result.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account).toBe(true);
+    expect(result.paymentTerms.formData.fm_payment_terms_add_enforcement_action).toBe(true);
+    expect(result.paymentTerms.formData.fm_payment_terms_earliest_release_date).toBeUndefined();
+    expect(result.paymentTerms.formData.fm_payment_terms_prison_and_prison_number).toBeUndefined();
+    expect(result.paymentTerms.formData.fm_payment_terms_reason_account_is_on_noenf).toBeUndefined();
+  });
+
+  it('should keep enforcement-response fields untouched when an action has no responses', () => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+      return;
+    }
+
+    payload.payment_terms.enforcements = [
+      {
+        result_id: 'NOENF',
+        enforcement_result_responses: [],
+      },
+    ];
+
+    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
+
+    expect(result.paymentTerms.formData.fm_payment_terms_enforcement_action).toBe('NOENF');
+    expect(result.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account).toBe(true);
+    expect(result.paymentTerms.formData.fm_payment_terms_add_enforcement_action).toBe(false);
+    expect(result.paymentTerms.formData.fm_payment_terms_earliest_release_date).toBeUndefined();
+    expect(result.paymentTerms.formData.fm_payment_terms_prison_and_prison_number).toBeUndefined();
+    expect(result.paymentTerms.formData.fm_payment_terms_reason_account_is_on_noenf).toBeUndefined();
+  });
 });

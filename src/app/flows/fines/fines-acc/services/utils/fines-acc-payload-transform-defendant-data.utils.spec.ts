@@ -286,6 +286,27 @@ describe('transformDefendantAccountPartyPayload', () => {
     ).toBeNull();
   });
 
+  it('should map empty individual alias forenames and surname values to null', () => {
+    mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases = [
+      {
+        alias_id: 'ALIAS-1',
+        sequence_number: 1,
+        forenames: '',
+        surname: '',
+      },
+    ];
+
+    const result = transformDefendantAccountPartyPayload(mockDefendantData, 'individual', true);
+
+    expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([
+      {
+        facc_party_add_amend_convert_alias_forenames_0: null,
+        facc_party_add_amend_convert_alias_surname_0: null,
+        facc_party_add_amend_convert_alias_id_0: 'ALIAS-1',
+      },
+    ]);
+  });
+
   it('should handle missing individual_details', () => {
     mockDefendantData.defendant_account_party.party_details.individual_details = null;
 
@@ -641,6 +662,41 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
   });
 
+  it('should map empty organisation names and alias ids to null for company payloads', () => {
+    const mockCompanyData = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
+      defendant_account_party: {
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party,
+        party_details: {
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.party_details,
+          organisation_flag: true,
+          organisation_details: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.party_details
+              .organisation_details!,
+            organisation_name: '',
+            organisation_aliases: [
+              {
+                alias_id: '',
+                sequence_number: 1,
+                organisation_name: '',
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    const result = transformDefendantAccountPartyPayload(mockCompanyData, 'company', true);
+
+    expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+    expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([
+      {
+        facc_party_add_amend_convert_alias_organisation_name_0: null,
+        facc_party_add_amend_convert_alias_id_0: null,
+      },
+    ]);
+  });
+
   describe('Party type specific field filtering', () => {
     it('should return only company fields when partyType is "company"', () => {
       // Create a mock with both individual and organization data
@@ -807,6 +863,18 @@ describe('transformDefendantAccountPartyPayload', () => {
       // Organisation-specific fields should be null
       expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
       expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
+    });
+
+    it('should return null individual fields for a non-debtor when individual details are missing', () => {
+      mockDefendantData.defendant_account_party.party_details.individual_details = null;
+
+      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'individual', false);
+
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull();
+      expect(result.facc_party_add_amend_convert_surname).toBeNull();
+      expect(result.facc_party_add_amend_convert_dob).toBeNull();
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBeNull();
     });
 
     it('should handle company data with individual flag correctly when partyType is specified', () => {

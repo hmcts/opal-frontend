@@ -3,6 +3,7 @@ import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-rout
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
 import { finesRouting } from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
+import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 
 describe('fines routes', () => {
   const childRoutes =
@@ -23,6 +24,13 @@ describe('fines routes', () => {
     expect(consolidationRoute?.canActivate).toContain(finesSectionPermissionsGuard);
     expect(consolidationRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
+      ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
     });
+  });
+
+  it('should hide the primary navigation for the MAC journey root', () => {
+    const macRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.mac.root);
+
+    expect(macRoute?.data).toEqual(PRIMARY_NAV_HIDDEN_ROUTE_DATA);
   });
 });

@@ -32,6 +32,12 @@ describe('FinesSaComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should instantiate directly within an injection context', () => {
+    const instance = TestBed.runInInjectionContext(() => new FinesSaComponent());
+
+    expect(instance).toBeInstanceOf(FinesSaComponent);
+  });
+
   it('should call on destroy and clear state', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const destroy = vi.spyOn<any, any>(component, 'ngOnDestroy');
@@ -56,5 +62,13 @@ describe('FinesSaComponent', () => {
     finesSaStore.setStateChanges(false);
     finesSaStore.setUnsavedChanges(false);
     expect(component.handleBeforeUnload()).toBeTruthy();
+  });
+
+  it('should invoke the beforeunload host listener when the window event fires', () => {
+    const handleBeforeUnloadSpy = vi.spyOn(component, 'handleBeforeUnload');
+
+    window.dispatchEvent(new Event('beforeunload'));
+
+    expect(handleBeforeUnloadSpy).toHaveBeenCalled();
   });
 });
