@@ -215,7 +215,7 @@ export class FinesAccMinorCreditorDetailsComponent
    * Navigates to the add payment hold page.
    */
   public navigateToAddPaymentHoldPage(): void {
-    if (this.hasBusinessUnitPermissionKey('add-remove-payment-hold2')) {
+    if (this.hasBusinessUnitPermissionKey('add-remove-payment-hold')) {
       this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`], {
         relativeTo: this.activatedRoute,
       });
@@ -235,7 +235,7 @@ export class FinesAccMinorCreditorDetailsComponent
         relativeTo: this.activatedRoute,
       });
     } else {
-      this['router'].navigate(['/access-denied'], {
+      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`], {
         relativeTo: this.activatedRoute,
       });
     }

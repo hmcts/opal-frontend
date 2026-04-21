@@ -146,7 +146,6 @@ describe('FinesAccPaymentHoldAddComponent', () => {
 
     const updatePayload = opalFinesServiceMock.updateMinorCreditorAccount.mock.calls[0][1];
     expect(updatePayload.payment.hold_payment).toBe(true);
-    expect(finesAccStoreMock.setSuccessMessage).toHaveBeenCalledWith('Payment hold added');
     expect(routerMock.navigate).toHaveBeenCalledWith(
       [`../../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details}`],
       {
@@ -165,7 +164,6 @@ describe('FinesAccPaymentHoldAddComponent', () => {
     expect(finesAccPayloadServiceMock.buildMinorCreditorAccountUpdatePayload).toHaveBeenCalledWith(
       routeMock.snapshot.data.minorCreditorAccountAtAGlance,
     );
-    expect(finesAccStoreMock.setSuccessMessage).not.toHaveBeenCalled();
     expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 

@@ -66,6 +66,7 @@ describe('FinesAccAddRemovePaymentHoldAccessDeniedComponent', () => {
   });
 
   it('should navigate back to account summary on navigateBackToAccountSummary', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const event = new Event('click');
     const preventDefaultSpy = vi.spyOn(event, 'preventDefault');

@@ -58,6 +58,7 @@ import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-re
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
+import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -1682,6 +1683,47 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`);
       expect(req.request.method).toBe('GET');
       req.flush(expectedResponse);
+    });
+  });
+
+  describe('updateMinorCreditorAccount', () => {
+    it('should send a PATCH request with If-Match and Business-Unit-Id headers when provided', () => {
+      const accountId = 99000000000800;
+      const payload = OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK;
+      const version = 'v1';
+      const businessUnitId = '77';
+      const expectedUrl = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}`;
+
+      service.updateMinorCreditorAccount(accountId, payload, version, businessUnitId).subscribe((response) => {
+        expect(response).toEqual(payload);
+      });
+
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+
+      req.flush(payload);
+    });
+
+    it('should send a PATCH request without optional headers when values are not provided', () => {
+      const accountId = 99000000000800;
+      const payload = OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK;
+      const version = '';
+      const expectedUrl = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}`;
+
+      service.updateMinorCreditorAccount(accountId, payload, version).subscribe((response) => {
+        expect(response).toEqual(payload);
+      });
+
+      const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+
+      req.flush(payload);
     });
   });
 });

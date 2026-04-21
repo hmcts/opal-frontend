@@ -6,10 +6,10 @@ export interface IOpalFinesUpdateMinorCreditorAccountPayload {
   party_details: IOpalFinesDefendantAccountPartyDetails;
   address: IOpalFinesDefendantAccountAddress;
   payment: {
-    account_name: string | null;
-    sort_code: string | null;
-    account_number: string | null;
-    account_reference: string | null;
+    account_name?: string | null;
+    sort_code?: string | null;
+    account_number?: string | null;
+    account_reference?: string | null;
     pay_by_bacs: boolean;
     hold_payment: boolean;
   };

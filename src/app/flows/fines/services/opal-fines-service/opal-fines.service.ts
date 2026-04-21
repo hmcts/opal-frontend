@@ -1092,12 +1092,11 @@ export class OpalFines {
   }
 
   /**
-   * Updates a minor creditor account with new account notes and comments.
-   * Currently returns a mock response since the API is not yet developed.
+   * Updates/Patches new data to a minor creditor account.
    *
    * @param accountId - The unique identifier of the minor creditor account to update.
-   * @param payload - The payload containing the updated account notes and version for concurrency control.
-   * @returns An Observable that emits the updated minor creditor account response.
+   * @param payload - The payload containing the updated account information.
+   * @returns An Observable that emits the updated minor creditor account.
    */
   public updateMinorCreditorAccount(
     accountId: number,

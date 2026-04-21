@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -16,7 +16,7 @@ import { OpalFines } from '../../services/opal-fines-service/opal-fines.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [GovukCancelLinkComponent, GovukHeadingWithCaptionComponent],
 })
-export class FinesAccPaymentHoldAddComponent {
+export class FinesAccPaymentHoldAddComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -55,8 +55,6 @@ export class FinesAccPaymentHoldAddComponent {
 
     payload.payment.hold_payment = true; // Set hold_payment to true to add the payment hold
 
-    console.log('Base version from store:', this.finesAccStore.base_version());
-
     this.opalFinesService
       .updateMinorCreditorAccount(
         this.finesAccStore.account_id()!,
@@ -71,7 +69,6 @@ export class FinesAccPaymentHoldAddComponent {
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe(() => {
-        this.finesAccStore.setSuccessMessage('Payment hold added');
         this.navigateToMinorCreditorDetailsPage();
       });
   }

@@ -352,10 +352,6 @@ export class FinesAccPayloadService {
       party_details: data.party,
       address: data.address,
       payment: {
-        account_name: null,
-        sort_code: null,
-        account_number: null,
-        account_reference: null,
         pay_by_bacs: data.payment.is_bacs,
         hold_payment: data.payment.hold_payment,
       },
