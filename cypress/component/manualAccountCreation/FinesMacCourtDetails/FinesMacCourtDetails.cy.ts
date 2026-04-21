@@ -13,20 +13,26 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
 import { IOpalFinesLocalJusticeAreaRefData } from '../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
-import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacCourtDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_COURTS_DETAILS_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
+  beforeEach(() => {
+    finesMacStateTemplate = structuredClone(FINES_COURTS_DETAILS_MOCK);
+    finesMacState = finesMacStateTemplate;
+  });
 
   const setupComponent = (
     formSubmit?: any,
     defType?: string,
     localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
   ) => {
+    finesMacState = structuredClone(finesMacStateTemplate);
     finesMacState.businessUnit.business_unit_id = 73;
     if (defType) {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = defType;
@@ -74,17 +80,6 @@ describe('FinesMacCourtDetailsComponent', () => {
       fixture.detectChanges();
     });
   };
-  //Clean up after each test
-  afterEach(() => {
-    finesMacState.courtDetails.formData = {
-      fm_court_details_originator_id: '',
-      fm_court_details_originator_name: '',
-      fm_court_details_prosecutor_case_reference: '',
-      fm_court_details_imposing_court_id: '',
-    };
-    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
-  });
-
   it(
     'should render the component correctly for AY',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389'), '@JIRA-KEY:POT-7357'] },

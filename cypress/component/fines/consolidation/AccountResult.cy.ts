@@ -63,6 +63,8 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
   };
 
   const setupComponent = (componentProperties: IComponentProperties = {}) => {
+    defendantAccountResults = structuredClone(defendantAccountResults);
+
     return mountConsolidationComponent({
       ...defaultComponentProperties,
       ...componentProperties,

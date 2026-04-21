@@ -3,6 +3,7 @@ import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../sha
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
 import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
+import { mount } from 'cypress/angular';
 import {
   interceptAuthenticatedUser,
   interceptUserState,
@@ -12,6 +13,11 @@ import {
   interceptEnforcers,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
+import {
+  OPAL_FINES_ENFORCER_REF_DATA_MOCK,
+  OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK,
+  OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+} from '../../CommonIntercepts/CommonIntercept.mocks';
 import {
   interceptDefendantHeader,
   interceptEnforcementStatus,
@@ -24,6 +30,12 @@ import {
   DEFENDANT_HEADER_YOUTH_MOCK,
 } from '../accountEnquiry/mocks/defendant_details_mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { OpalFines } from '@app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { of } from 'rxjs';
+import { FinesAccEnfOverrideAddChangeFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-enf-override-add-change/fines-acc-enf-override-add-change-form/fines-acc-enf-override-add-change-form.component';
+import { IFinesAccEnfOverrideAddChangeFormState } from 'src/app/flows/fines/fines-acc/fines-acc-enf-override-add-change/interfaces/fines-acc-enf-override-add-change-form-state.interface';
 
 const componentProperties: IComponentProperties = {
   accountId: '77',
@@ -53,6 +65,68 @@ const ENFORCEMENT_OVERRIDE_RESULT_CODES = [
   'SUMA',
   'TFOOUT',
 ] as const;
+
+const ENFORCEMENT_OVERRIDE_OPTIONS = OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK.refData.map((result) => ({
+  value: result.result_id,
+  name: result.result_id,
+}));
+const ENFORCER_OPTIONS = OPAL_FINES_ENFORCER_REF_DATA_MOCK.refData
+  .filter((enforcer) => enforcer.name === 'The DWP')
+  .map((enforcer) => ({
+    value: `${enforcer.name} (${enforcer.enforcer_code})`,
+    name: `${enforcer.name} (${enforcer.enforcer_code})`,
+  }));
+const LOCAL_JUSTICE_AREA_OPTIONS = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.map((lja) => ({
+  value: `${lja.name} (${lja.local_justice_area_id})`,
+  name: `${lja.name} (${lja.local_justice_area_id})`,
+}));
+const EXISTING_OVERRIDE_FORM_VALUES: IFinesAccEnfOverrideAddChangeFormState = {
+  fenf_account_enforcement_action: 'ABDC',
+  fenf_account_enforcement_enforcer: 'The DWP (3)',
+  fenf_account_enforcement_lja: null,
+};
+
+function mountChangeEnforcementOverrideForm(
+  expectedCaption: string,
+  formValues: IFinesAccEnfOverrideAddChangeFormState = EXISTING_OVERRIDE_FORM_VALUES,
+) {
+  const [accountNumber, partyName] = expectedCaption.split(' - ');
+
+  mount(FinesAccEnfOverrideAddChangeFormComponent, {
+    providers: [
+      provideRouter([]),
+      UtilsService,
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: {
+            params: {},
+            data: {},
+          },
+        },
+      },
+      {
+        provide: OpalFines,
+        useValue: {
+          getResult: (id: string) =>
+            of({
+              requires_enforcer: ['ABDC', 'BWTD', 'BWTU'].includes(id),
+              requires_lja: id === 'TFOOUT',
+            }),
+        },
+      },
+    ],
+    componentProperties: {
+      enforcementActionOptions: ENFORCEMENT_OVERRIDE_OPTIONS,
+      enforcerOptions: ENFORCER_OPTIONS,
+      localJusticeAreaOptions: LOCAL_JUSTICE_AREA_OPTIONS,
+      partyName,
+      accountNumber,
+      pageTitle: 'Change enforcement override',
+      formValues,
+    },
+  });
+}
 
 function buildParentGuardianHeaderMock() {
   const headerMock = structuredClone(createParentGuardianHeaderMockWithName('Robert', 'Thomson'));
@@ -158,14 +232,6 @@ function parentGuardianSetup() {
   return setupChangeEnforcementOverride(buildParentGuardianHeaderMock());
 }
 
-function companySetup() {
-  return setupChangeEnforcementOverride(buildCompanyHeaderMock());
-}
-
-function adultOrYouthOnlySetup() {
-  return setupChangeEnforcementOverride(buildAdultOrYouthHeaderMock());
-}
-
 describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:PO-1870'] }, () => {
   it(
     'AC1. Parent/Guardian: selecting Change enforcement override on the Enforcement tab navigates to the change screen',
@@ -187,7 +253,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
     'AC1a, AC1b. Parent/Guardian: should render the change enforcement override form with the individual account identifier',
     { tags: ['@JIRA-KEY:POT-5680'] },
     () => {
-      parentGuardianSetup();
+      mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.title).should('contain.text', '177A - Mr Robert THOMSON');
       cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');
@@ -198,7 +264,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
     'AC1c, AC1ci, AC1d. Parent/Guardian: should display the override dropdown, results reference data, add override button and cancel link',
     { tags: ['@JIRA-KEY:POT-5681'] },
     () => {
-      parentGuardianSetup();
+      mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.subtitle).should('contain.text', 'Select an enforcement override');
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -227,7 +293,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
     'AC2, AC2a, AC2ai. Parent/Guardian: enforcer dropdown displays dynamically for overrides that require an enforcer',
     { tags: ['@JIRA-KEY:POT-5682'] },
     () => {
-      parentGuardianSetup();
+      mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
       clearEnforcerSelection();
@@ -282,7 +348,7 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
   );
 
   it('AC4a. Parent/Guardian: error when no enforcement override is selected', { tags: ['@JIRA-KEY:POT-5684'] }, () => {
-    parentGuardianSetup();
+    mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
     clearEnforcementOverrideSelection();
     cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -482,7 +548,7 @@ describe('Change Enforcement Override - Company', { tags: ['@JIRA-STORY:PO-1871'
     'AC1a, AC1b. Company: should render the change enforcement override form with the company account identifier',
     { tags: ['@JIRA-KEY:POT-5691'] },
     () => {
-      companySetup();
+      mountChangeEnforcementOverrideForm('177A - Test Org Ltd');
 
       cy.get(ENF_OVR.title).should('contain.text', '177A - Test Org Ltd');
       cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');
@@ -512,7 +578,7 @@ describe('Change Enforcement Override - Adult or youth only', { tags: ['@JIRA-ST
     'AC1a, AC1b. Adult or youth only: should render the change enforcement override form with the adult or youth only account identifier',
     { tags: ['@JIRA-KEY:POT-5693'] },
     () => {
-      adultOrYouthOnlySetup();
+      mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.title).should('contain.text', '177A - Mr Robert THOMSON');
       cy.get(ENF_OVR.title).should('contain.text', 'Change enforcement override');

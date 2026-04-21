@@ -20,9 +20,12 @@ const MinorCompanyLocators = MinorCreditorsLocators.company;
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Search Account Component - Minor Creditors', () => {
-  let minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
+  let minorCreditorsSearchMockTemplate = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
+  let minorCreditorsSearchMock = minorCreditorsSearchMockTemplate;
 
   const setupComponent = (formSubmit: any = null) => {
+    minorCreditorsSearchMock = structuredClone(minorCreditorsSearchMockTemplate);
+
     const componentProperties: any = {};
     if (formSubmit) {
       componentProperties.handleSearchAccountSubmit = formSubmit;
@@ -71,7 +74,8 @@ describe('Search Account Component - Minor Creditors', () => {
     });
   };
   beforeEach(() => {
-    minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
+    minorCreditorsSearchMockTemplate = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
+    minorCreditorsSearchMock = minorCreditorsSearchMockTemplate;
   });
 
   it(

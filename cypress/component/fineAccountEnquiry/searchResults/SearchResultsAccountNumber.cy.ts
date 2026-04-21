@@ -20,20 +20,18 @@ const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIR
 
 describe('FinesSaResultsComponent - All Account Types', () => {
   let fragmentSubject: BehaviorSubject<string>;
-
-  let searchResultState = {
-    searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
+  const createSearchResultState = () => ({
+    searchAccount: structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK),
     unsavedChanges: false,
     stateChanges: false,
-  };
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
 
-  afterEach(() => {
+  beforeEach(() => {
     fragmentSubject?.complete();
-    searchResultState = {
-      searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
   });
 
   const setupComponent = (
@@ -44,6 +42,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
     // Create BehaviorSubject for reactive fragment changes (signals-compatible)
     fragmentSubject = new BehaviorSubject(initialFragment);
+    searchResultState = structuredClone(searchResultStateTemplate);
 
     mount(FinesSaResultsComponent, {
       providers: [
@@ -136,9 +135,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
       // Note: AC4b The 'Try adding more information' link will navigate a user back to the Search for an Account screen - Full Test to be implemented when API complete
       // AC4b: Verify 'Try adding more information' link is present
-      cy.get(ResultsMessageLocators.link)
-        .should('be.visible')
-        .should('contain', 'Try adding more information');
+      cy.get(ResultsMessageLocators.link).should('be.visible').should('contain', 'Try adding more information');
       cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
       cy.get(ResultsMessageLocators.link).click();
     },

@@ -2,16 +2,19 @@ import { interceptAuthenticatedUser, interceptUserState } from '../../CommonInte
 import { DEFENDANT_HEADER_ORG_MOCK, createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
 
 import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
+import { mount } from 'cypress/angular';
 
 import { interceptDefendantHeader, interceptFixedPenaltyDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.fixed-penalty.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
+import { FinesAccDefendantDetailsFixedPenaltyTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-fixed-penalty-tab/fines-acc-defendant-details-fixed-penalty-tab.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+type FixedPenaltyMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK;
 
 const componentProperties: IComponentProperties = {
   accountId: '77',
@@ -25,6 +28,14 @@ const componentProperties: IComponentProperties = {
   ],
 };
 describe('Account Enquiry Fixed Penalty', () => {
+  const mountFixedPenaltyTab = (fixedPenaltyDetailsMock: FixedPenaltyMock) => {
+    mount(FinesAccDefendantDetailsFixedPenaltyTabComponent, {
+      componentProperties: {
+        tabData: fixedPenaltyDetailsMock,
+      },
+    });
+  };
+
   it(
     'AC1a: Adult/Youth only - Fixed Penalty details tab, vehicle fixed penalty, all fields shown',
     { tags: [...buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818'), '@JIRA-KEY:POT-6783'] },
@@ -69,18 +80,9 @@ describe('Account Enquiry Fixed Penalty', () => {
     'AC1b: Adult/Youth only - Fixed Penalty details tab, non-vehicle fixed penalty, partial view',
     { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6784'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      headerMock.account_type = 'Fixed Penalty';
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptFixedPenaltyDetails(accountId, fixedPenaltyDetailsMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      mountFixedPenaltyTab(fixedPenaltyDetailsMock);
 
       cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
       cy.get(FIXED_PENALTY_TAB.labelIssuingAuthority).should('exist').and('contain.text', 'City of Metropolis');
@@ -98,9 +100,6 @@ describe('Account Enquiry Fixed Penalty', () => {
     'AC1c: Adult/Youth only - Fixed Penalty details tab, show em-dash for missing fields',
     { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6785'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      headerMock.account_type = 'Fixed Penalty';
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
       fixedPenaltyDetailsMock.vehicle_fixed_penalty_flag = true;
 
@@ -111,13 +110,7 @@ describe('Account Enquiry Fixed Penalty', () => {
       nullFields.notice_number = null;
       nullFields.date_notice_issued = null;
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptFixedPenaltyDetails(accountId, fixedPenaltyDetailsMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      mountFixedPenaltyTab(fixedPenaltyDetailsMock);
 
       cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
       cy.get(FIXED_PENALTY_TAB.labelRegistrationNumber).should('exist').and('contain.text', '—');
@@ -170,17 +163,9 @@ describe('Account Enquiry Fixed Penalty', () => {
     'AC2: Company - Fixed Penalty details tab, non-vehicle fixed penalty, partial view',
     { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6787'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-      headerMock.account_type = 'Fixed Penalty';
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptFixedPenaltyDetails(accountId, fixedPenaltyDetailsMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      mountFixedPenaltyTab(fixedPenaltyDetailsMock);
 
       cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
       cy.get(FIXED_PENALTY_TAB.labelIssuingAuthority).should('exist').and('contain.text', 'City of Metropolis');
@@ -198,8 +183,6 @@ describe('Account Enquiry Fixed Penalty', () => {
     'AC2: Company - Fixed Penalty details tab, show em-dash for missing fields',
     { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6788'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-      headerMock.account_type = 'Fixed Penalty';
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
       fixedPenaltyDetailsMock.vehicle_fixed_penalty_flag = true;
 
@@ -210,13 +193,7 @@ describe('Account Enquiry Fixed Penalty', () => {
       nullFields.notice_number = null;
       nullFields.date_notice_issued = null;
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptFixedPenaltyDetails(accountId, fixedPenaltyDetailsMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      mountFixedPenaltyTab(fixedPenaltyDetailsMock);
 
       cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
       cy.get(FIXED_PENALTY_TAB.labelRegistrationNumber).should('exist').and('contain.text', '—');

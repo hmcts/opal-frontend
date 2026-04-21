@@ -26,21 +26,22 @@ const ResultsPaginationLocators = ResultsLocators.pagination;
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('FinesSaResultsComponent - Individuals', () => {
-  let searchResultState = {
-    searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
+  const createSearchResultState = () => ({
+    searchAccount: structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK),
     unsavedChanges: false,
     stateChanges: false,
-  };
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
 
-  afterEach(() => {
-    searchResultState = {
-      searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+  beforeEach(() => {
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
   });
 
   const setupComponent = (mockSearchResults = EMPTY_SEARCH_RESULTS_MOCK) => {
+    searchResultState = structuredClone(searchResultStateTemplate);
+
     mount(FinesSaResultsComponent, {
       providers: [
         provideHttpClient(),

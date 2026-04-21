@@ -17,9 +17,22 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacCreateAccountComponent', () => {
-  let businessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
-  let accountMock = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
+  let businessUnitMockTemplate = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+  let businessUnitMock = businessUnitMockTemplate;
+  let accountMockTemplate = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
+  let accountMock = accountMockTemplate;
+
+  beforeEach(() => {
+    businessUnitMockTemplate = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+    businessUnitMock = businessUnitMockTemplate;
+    accountMockTemplate = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
+    accountMock = accountMockTemplate;
+  });
+
   const setupComponent = (formSubmit?: any, onComponentReady?: (component: any) => void) => {
+    businessUnitMock = structuredClone(businessUnitMockTemplate);
+    accountMock = structuredClone(accountMockTemplate);
+
     return mount(FinesMacCreateAccountComponent, {
       providers: [
         OpalFines,
@@ -68,11 +81,6 @@ describe('FinesMacCreateAccountComponent', () => {
       fixture.detectChanges();
     });
   };
-
-  afterEach(() => {
-    accountMock = structuredClone(FINES_CREATE_ACCOUNT_MOCK);
-    businessUnitMock = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
-  });
 
   it(
     'should render the component (FinesMacCreateAccountComponent)',

@@ -24,6 +24,8 @@ describe('FinesMacManualFixedPenalty', () => {
     formSubmit?: any,
     localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
   ) => {
+    fixedPenaltyMock = structuredClone(fixedPenaltyMock);
+
     return mount(FinesMacFixedPenaltyDetailsComponent, {
       providers: [
         provideHttpClient(),

@@ -535,10 +535,7 @@ export class ResultsActions {
   public clickCheckYourSearchLink(): Cypress.Chainable<JQuery<HTMLElement>> {
     log('click', 'Clicking "Check your search" link');
 
-    return cy
-      .get(R.messages.link, { timeout: ResultsActions.WAIT_MS })
-      .should('be.visible')
-      .click({ force: true });
+    return cy.get(R.messages.link, { timeout: ResultsActions.WAIT_MS }).should('be.visible').click({ force: true });
   }
 }
 

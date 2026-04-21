@@ -65,6 +65,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   const setupComponent = (activatedRouteMock: any = FINES_DRAFT_STATE, defendantType: string = 'adultOrYouthOnly') => {
     // Select the appropriate mock data based on defendant type
     fixedPenaltyMock = structuredClone(mockDataMap[defendantType] || FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK);
+    const finesDraftState = structuredClone(activatedRouteMock);
 
     console.log(`Setting up component with mock data for ${defendantType}:`, fixedPenaltyMock);
 
@@ -108,7 +109,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           provide: FinesDraftStore,
           useFactory: () => {
             const store = new FinesDraftStore();
-            store.setFinesDraftState(activatedRouteMock);
+            store.setFinesDraftState(finesDraftState);
             return store;
           },
         },

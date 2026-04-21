@@ -25,9 +25,16 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacPersonalDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
+  beforeEach(() => {
+    finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState = finesMacStateTemplate;
+  });
 
   const setupComponent = (formSubmit?: any, defendantTypeMock: string = '') => {
+    finesMacState = structuredClone(finesMacStateTemplate);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypeMock;
 
     return mount(FinesMacPersonalDetailsComponent, {
@@ -68,25 +75,6 @@ describe('FinesMacPersonalDetailsComponent', () => {
     });
   };
 
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.personalDetails.formData = {
-        fm_personal_details_title: '',
-        fm_personal_details_forenames: '',
-        fm_personal_details_surname: '',
-        fm_personal_details_add_alias: null,
-        fm_personal_details_aliases: [],
-        fm_personal_details_dob: '',
-        fm_personal_details_national_insurance_number: '',
-        fm_personal_details_address_line_1: '',
-        fm_personal_details_address_line_2: '',
-        fm_personal_details_address_line_3: '',
-        fm_personal_details_post_code: '',
-        fm_personal_details_vehicle_make: '',
-        fm_personal_details_vehicle_registration_mark: '',
-      };
-    });
-  });
   it(
     '(AC.1a) should load all elements on the screen correctly',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7575'] },
@@ -579,9 +567,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
       cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
-      cy.get(DOM_ELEMENTS.vehicleRegistrationInput)
-        .type('xy12 abc', { delay: 0 })
-        .should('have.value', 'XY12 ABC');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).type('xy12 abc', { delay: 0 }).should('have.value', 'XY12 ABC');
       cy.get(DOM_ELEMENTS.niNumberInput).type('ab123456c', { delay: 0 }).should('have.value', 'AB123456C');
 
       cy.get(DOM_ELEMENTS.aliasAdd).click();

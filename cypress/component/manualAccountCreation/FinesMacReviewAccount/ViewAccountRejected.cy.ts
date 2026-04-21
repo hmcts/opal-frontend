@@ -39,6 +39,8 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   };
 
   const setupComponent = (FetchMap = reviewAccountFetchMap) => {
+    const reviewAccountState = structuredClone(FetchMap);
+
     mount(FinesMacReviewAccountComponent, {
       providers: [
         provideHttpClient(),
@@ -67,7 +69,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
           useValue: {
             snapshot: {
               data: {
-                reviewAccountFetchMap: FetchMap,
+                reviewAccountFetchMap: reviewAccountState,
               },
               paramMap: {
                 get: (key: string) => {

@@ -13,9 +13,16 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacContactDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
+  beforeEach(() => {
+    finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState = finesMacStateTemplate;
+  });
 
   const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+    finesMacState = structuredClone(finesMacStateTemplate);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
     return mount(FinesMacContactDetailsComponent, {
       providers: [
@@ -49,18 +56,6 @@ describe('FinesMacContactDetailsComponent', () => {
       fixture.detectChanges();
     });
   };
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.contactDetails.formData = {
-        fm_contact_details_email_address_1: '',
-        fm_contact_details_email_address_2: '',
-        fm_contact_details_telephone_number_mobile: '',
-        fm_contact_details_telephone_number_home: '',
-        fm_contact_details_telephone_number_business: '',
-      };
-    });
-  });
-
   it(
     'should render the component (FinesMacContactDetailsComponent)',
     { tags: [...buildTags('@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7341'] },

@@ -21,14 +21,66 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacPaymentTermsComponent', () => {
-  let finesMacState = structuredClone(FINES_PAYMENT_TERMS_MOCK);
   const date = new Date();
   const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
+  type FinesMacPaymentTermsState = typeof FINES_PAYMENT_TERMS_MOCK;
+  type ConfigureState = (state: FinesMacPaymentTermsState) => void;
+
+  const createFinesMacState = (configureState?: ConfigureState): FinesMacPaymentTermsState => {
+    const finesMacState = structuredClone(FINES_PAYMENT_TERMS_MOCK);
+    configureState?.(finesMacState);
+    return finesMacState;
+  };
+
+  const setBusinessUnitPermission = (state: FinesMacPaymentTermsState, businessUnitId: number = 17) => {
+    state.accountDetails.formData.fm_create_account_business_unit_id = businessUnitId;
+    state.businessUnit.business_unit_id = businessUnitId;
+  };
+
+  const setDateOfBirth = (state: FinesMacPaymentTermsState, dob: string) => {
+    state.personalDetails.formData.fm_personal_details_dob = dob;
+  };
+
+  const setPayInFull = (state: FinesMacPaymentTermsState, payByDate: string) => {
+    state.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+    state.paymentTerms.formData.fm_payment_terms_pay_by_date = payByDate;
+  };
+
+  const setInstalmentsOnly = (state: FinesMacPaymentTermsState, instalmentAmount: number | null, startDate: string) => {
+    state.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
+    state.paymentTerms.formData.fm_payment_terms_instalment_amount = instalmentAmount;
+    state.paymentTerms.formData.fm_payment_terms_start_date = startDate;
+  };
+
+  const setLumpSumPlusInstalments = (
+    state: FinesMacPaymentTermsState,
+    lumpSumAmount: number | null,
+    instalmentAmount: number | null,
+    startDate: string,
+  ) => {
+    state.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
+    state.paymentTerms.formData.fm_payment_terms_lump_sum_amount = lumpSumAmount;
+    state.paymentTerms.formData.fm_payment_terms_instalment_amount = instalmentAmount;
+    state.paymentTerms.formData.fm_payment_terms_start_date = startDate;
+  };
+
+  const setCollectionOrderPreviouslyMade = (state: FinesMacPaymentTermsState, collectionOrderDate: string) => {
+    state.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
+    state.paymentTerms.formData.fm_payment_terms_collection_order_date = collectionOrderDate;
+  };
+
+  const setCollectionOrderMadeToday = (state: FinesMacPaymentTermsState) => {
+    state.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
+    state.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
+  };
 
   const setupComponent = (
     defendantTypeMock: string | undefined = '',
     mockSetAccountCommentsNote: any | undefined = null,
+    configureState?: ConfigureState,
   ) => {
+    const finesMacState = createFinesMacState(configureState);
+
     mount(FinesMacPaymentTermsComponent, {
       providers: [
         OpalFines,
@@ -63,32 +115,6 @@ describe('FinesMacPaymentTermsComponent', () => {
       },
     });
   };
-
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.paymentTerms.formData = {
-        fm_payment_terms_payment_terms: '',
-        fm_payment_terms_pay_by_date: '',
-        fm_payment_terms_lump_sum_amount: null,
-        fm_payment_terms_instalment_amount: null,
-        fm_payment_terms_instalment_period: '',
-        fm_payment_terms_start_date: '',
-        fm_payment_terms_payment_card_request: null,
-        fm_payment_terms_has_days_in_default: null,
-        fm_payment_terms_suspended_committal_date: '',
-        fm_payment_terms_default_days_in_jail: null,
-        fm_payment_terms_add_enforcement_action: null,
-        fm_payment_terms_hold_enforcement_on_account: null,
-        fm_payment_terms_reason_account_is_on_noenf: '',
-        fm_payment_terms_earliest_release_date: '',
-        fm_payment_terms_prison_and_prison_number: '',
-        fm_payment_terms_enforcement_action: '',
-        fm_payment_terms_collection_order_made: null,
-        fm_payment_terms_collection_order_date: '',
-        fm_payment_terms_collection_order_made_today: null,
-      };
-    });
-  });
 
   it(
     '(AC.1) should render the component (FinesMacPaymentTermsComponent)',
@@ -408,9 +434,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1) should only load collection order for adult over 18 years old',
     { tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7520'] },
     () => {
-      setupComponent('adultOrYouthOnly');
+      setupComponent('adultOrYouthOnly', null, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+      });
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
       cy.get(DOM_ELEMENTS.collectionOrder.yes).should('exist');
       cy.get(DOM_ELEMENTS.collectionNo).should('exist');
       cy.get(DOM_ELEMENTS.collectionOrder.yes).should('exist');
@@ -428,11 +455,11 @@ describe('FinesMacPaymentTermsComponent', () => {
       ],
     },
     () => {
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(defendantTypes[i]);
+          setupComponent(defendantTypes[i], null, (state) => {
+            setBusinessUnitPermission(state);
+          });
           cy.get(DOM_ELEMENTS.collectionNo).click();
           cy.get(DOM_ELEMENTS.makeCollection).should('exist');
           cy.get(DOM_ELEMENTS.makeCollectionLabel).should('contain', 'Make collection order today');
@@ -445,9 +472,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1) should not load collection order for adult or youth under 18 years old',
     { tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7522'] },
     () => {
-      setupComponent('adultOrYouthOnly');
+      setupComponent('adultOrYouthOnly', null, (state) => {
+        setDateOfBirth(state, '01/01/2020');
+      });
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2020';
       cy.get(DOM_ELEMENTS.collectionNo).should('not.exist');
       cy.get(DOM_ELEMENTS.collectionOrder.yes).should('not.exist');
     },
@@ -457,10 +485,11 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1, AC.2)should prefill date of sentence in date of collection order field',
     { tags: [...buildTags('@JIRA-STORY:PO-853', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'), '@JIRA-KEY:POT-7523'] },
     () => {
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(defendantTypes[i]);
+          setupComponent(defendantTypes[i], null, (state) => {
+            setDateOfBirth(state, '01/01/2000');
+          });
           cy.get(DOM_ELEMENTS.collectionOrder.yes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).should('have.value', '01/10/2022');
         });
@@ -665,10 +694,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setPayInFull(state, '01/01/2022');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-          finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2022';
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.dateInPast);
         });
       });
@@ -692,10 +721,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setPayInFull(state, '01/01/2033');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-          finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2033';
           cy.get(DOM_ELEMENTS.mojTicketPanel)
             .should('contain', ERROR_MESSAGES.dateInFuture)
             .and('contain', ERROR_MESSAGES.dateInFutureMessage);
@@ -715,11 +744,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setInstalmentsOnly(state, 1000, '01/01/2022');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-          finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
-          finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2022';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInPast);
         });
@@ -738,11 +766,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setInstalmentsOnly(state, 1000, '01/01/2030');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-          finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
-          finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2030';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInFuture);
         });
@@ -761,12 +788,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setLumpSumPlusInstalments(state, 500, 1000, '01/01/2022');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-          finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
-          finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
-          finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2022';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInPast);
         });
@@ -785,12 +810,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setLumpSumPlusInstalments(state, 500, 1000, '01/01/2030');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-          finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
-          finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
-          finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2030';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInFuture);
         });
@@ -859,10 +882,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setPayInFull(state, '01,01.2022');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-          finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01,01.2022';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDateFormat);
         });
@@ -881,10 +904,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setPayInFull(state, '32/01/2022');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-          finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '32/01/2022';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
@@ -928,10 +951,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setInstalmentsOnly(state, -1, '');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-          finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentAmount);
         });
@@ -950,10 +973,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setInstalmentsOnly(state, null, '01/21/12212');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-          finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/21/12212';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentDateFormat);
         });
@@ -972,10 +995,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setInstalmentsOnly(state, null, '32/09/2025');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-          finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
@@ -1018,10 +1041,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setLumpSumPlusInstalments(state, -1, null, '');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-          finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = -1;
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validLumpSumAmount);
         });
@@ -1040,10 +1063,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setLumpSumPlusInstalments(state, null, -1, '');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-          finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentAmount);
         });
@@ -1062,10 +1085,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setLumpSumPlusInstalments(state, null, null, '32/09/202555');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-          finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/202555';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentDateFormat);
         });
@@ -1084,10 +1107,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(defendantType);
+          setupComponent(defendantType, null, (state) => {
+            setLumpSumPlusInstalments(state, null, null, '32/09/2025');
+          });
 
-          finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-          finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
@@ -1100,8 +1123,9 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.2,AC.3) should load days in default for adult or youth over 18 only',
     { tags: [...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7552'] },
     () => {
-      setupComponent('adultOrYouthOnly');
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      setupComponent('adultOrYouthOnly', null, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+      });
 
       cy.get(DOM_ELEMENTS.hasDaysInDefault).should('exist');
       cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
@@ -1123,9 +1147,9 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1) should not load days in default for adult or youth under 18 years old',
     { tags: [...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7553'] },
     () => {
-      setupComponent('adultOrYouthOnly');
-
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2010';
+      setupComponent('adultOrYouthOnly', null, (state) => {
+        setDateOfBirth(state, '01/01/2010');
+      });
       cy.get(DOM_ELEMENTS.hasDaysInDefault).should('not.exist');
     },
   );
@@ -1141,9 +1165,9 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(defendantTypes[i]);
-
-          finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+          setupComponent(defendantTypes[i], null, (state) => {
+            setDateOfBirth(state, '01/01/2000');
+          });
           cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
           cy.get(DOM_ELEMENTS.defaultDaysInJail).type('123456', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
@@ -1164,10 +1188,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(defendantTypes[i]);
-
-          finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
-          finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '32/09/2025';
+          setupComponent(defendantTypes[i], null, (state) => {
+            state.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
+            state.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '32/09/2025';
+          });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage)
             .should('contain', ERROR_MESSAGES.validDate)
@@ -1188,10 +1212,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(defendantTypes[i]);
-
-          finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
-          finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '20/09/2200';
+          setupComponent(defendantTypes[i], null, (state) => {
+            state.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
+            state.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '20/09/2200';
+          });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.futureDate);
         });
@@ -1273,10 +1297,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
     () => {
       for (let i = 0; i < 2; i++) {
-        setupComponent(defendantTypes[i]);
-
-        finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
-        finesMacState.paymentTerms.formData.fm_payment_terms_default_days_in_jail = -1;
+        setupComponent(defendantTypes[i], null, (state) => {
+          state.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
+          state.paymentTerms.formData.fm_payment_terms_default_days_in_jail = -1;
+        });
         cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
         cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.defaultDaysTypeCheck);
       }
@@ -1351,11 +1375,11 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(defendantTypes[i]);
-
-          finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
-          finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'PRIS';
-          finesMacState.paymentTerms.formData.fm_payment_terms_prison_and_prison_number = 'HMP:Example-Prison';
+          setupComponent(defendantTypes[i], null, (state) => {
+            state.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
+            state.paymentTerms.formData.fm_payment_terms_enforcement_action = 'PRIS';
+            state.paymentTerms.formData.fm_payment_terms_prison_and_prison_number = 'HMP:Example-Prison';
+          });
           cy.get(DOM_ELEMENTS.earliestReleaseDate).type('32/09/2025', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
 
@@ -1386,10 +1410,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(defendantTypes[i]);
-
-          finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
-          finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
+          setupComponent(defendantTypes[i], null, (state) => {
+            state.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
+            state.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
+          });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfReason);
         });
@@ -1408,10 +1432,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(defendantTypes[i]);
-
-          finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
-          finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
+          setupComponent(defendantTypes[i], null, (state) => {
+            state.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
+            state.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
+          });
           cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenf).type('@', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfTypeCheck);
@@ -1426,15 +1450,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '05/01/2023';
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
+      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderPreviouslyMade(state, '05/01/2023');
+        setPayInFull(state, '01/01/2023');
+      });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
@@ -1453,16 +1474,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '05/01/2023';
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderPreviouslyMade(state, '05/01/2023');
+        setPayInFull(state, '01/01/2023');
+      });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
@@ -1481,16 +1498,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
+      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderMadeToday(state);
+        setPayInFull(state, '01/01/2023');
+      });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
@@ -1507,16 +1520,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7568'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderMadeToday(state);
+        setPayInFull(state, '01/01/2023');
+      });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
       cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
@@ -1533,16 +1542,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
+      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderMadeToday(state);
+        setPayInFull(state, '01/01/2023');
+      });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
@@ -1577,16 +1582,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderMadeToday(state);
+        setPayInFull(state, '01/01/2023');
+      });
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -1622,16 +1623,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '05/01/2023';
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
+      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderPreviouslyMade(state, '05/01/2023');
+        setPayInFull(state, '01/01/2023');
+      });
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -1671,16 +1668,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '05/01/2023';
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderPreviouslyMade(state, '05/01/2023');
+        setPayInFull(state, '01/01/2023');
+      });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
@@ -1719,16 +1712,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '05/01/2023';
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderPreviouslyMade(state, '05/01/2023');
+        setPayInFull(state, '01/01/2023');
+      });
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
@@ -1768,16 +1757,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
 
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
-      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
-      finesMacState.businessUnit.business_unit_id = 17;
-
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
-      finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
-      finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-      finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
-
-      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
+        setDateOfBirth(state, '01/01/2000');
+        setBusinessUnitPermission(state);
+        setCollectionOrderMadeToday(state);
+        setPayInFull(state, '01/01/2023');
+      });
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
