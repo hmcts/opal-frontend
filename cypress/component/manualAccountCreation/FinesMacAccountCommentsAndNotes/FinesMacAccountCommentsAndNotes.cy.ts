@@ -264,4 +264,16 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.noteCharHint).should('contain', 'You have 900 characters remaining');
     },
   );
+  it(
+    'Available character checks for accunt notes',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+      cy.get(L.noteInput).clear().type('Aa1.-, ', { delay: 0 });
+      cy.get(L.noteCharHint).should('contain', 'You have 999 characters remaining');
+
+      cy.get(L.noteInput).clear().type('a'.repeat(100), { delay: 0 });
+      cy.get(L.noteCharHint).should('contain', 'You have 900 characters remaining');
+    },
+  );
 });
