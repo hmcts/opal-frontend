@@ -265,15 +265,34 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     },
   );
   it(
-    'Available character checks for accunt notes',
+    'Valid character checks for account notes',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+
+      cy.get(L.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+      cy.get(L.noteInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+
+      cy.get(L.returnToAccountDetailsButton).first().click();
+
+      cy.get('.errorSummary').should('not.exist');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+    },
+  );
+  it(
+    'Invalid character - confirm updated errors',
     { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
-      cy.get(L.noteInput).clear().type('Aa1.-, ', { delay: 0 });
-      cy.get(L.noteCharHint).should('contain', 'You have 999 characters remaining');
 
-      cy.get(L.noteInput).clear().type('a'.repeat(100), { delay: 0 });
-      cy.get(L.noteCharHint).should('contain', 'You have 900 characters remaining');
+      cy.get(L.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+      cy.get(L.noteInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+
+      cy.get(L.returnToAccountDetailsButton).first().click();
+
+      cy.get('.errorSummary').should('not.exist');
     },
   );
 });
