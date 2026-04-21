@@ -19,9 +19,17 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         message: 'Enter a valid amount',
         priority: 2,
       },
+      invalidNegativeAmount: {
+        message: 'Amount cannot be a negative value',
+        priority: 3,
+      },
+      invalidZeroAmount: {
+        message: 'Amount cannot be zero',
+        priority: 4,
+      },
       invalidAmount: {
         message: 'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
-        priority: 3,
+        priority: 5,
       },
     },
     [`fm_offence_details_amount_paid${indexSuffix}`]: {
