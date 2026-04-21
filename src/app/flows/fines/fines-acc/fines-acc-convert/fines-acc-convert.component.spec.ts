@@ -81,6 +81,13 @@ describe('FinesAccConvertComponent', () => {
     } as never;
   };
 
+  const configureRouteWithoutPartyType = (headingData = defaultHeadingData) => {
+    mockActivatedRoute.snapshot = {
+      data: { defendantAccountHeadingData: headingData },
+      paramMap: convertToParamMap({ accountId: '123' }),
+    } as never;
+  };
+
   const createComponent = () => {
     fixture = TestBed.createComponent(FinesAccConvertComponent);
     component = fixture.componentInstance;
@@ -214,6 +221,27 @@ describe('FinesAccConvertComponent', () => {
     );
     expect(compiled.textContent).toContain('Yes - continue');
     expect(compiled.textContent).toContain('No - cancel');
+  });
+
+  it('should default the route party type to an empty string when the param is missing', () => {
+    configureRouteWithoutPartyType();
+
+    createComponent();
+
+    expect(component.routePartyType).toBe('');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../', FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details], {
+      relativeTo: mockActivatedRoute,
+      fragment: 'defendant',
+    });
+  });
+
+  it('should build the caption using blank fallbacks when account details are missing from the store', () => {
+    mockAccountStore.account_number.mockReturnValue(null);
+    mockAccountStore.party_name.mockReturnValue(null);
+
+    createComponent();
+
+    expect(component.captionText).toBe(' - ');
   });
 
   it('should navigate to the company details page when continue is clicked', () => {
