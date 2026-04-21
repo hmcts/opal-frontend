@@ -72,3 +72,9 @@ runner-results
 cypress/parallel/weights
 multi-reporter-config.json
 /openapi/opal-merged.yaml
+
+# codex
+.codex/skills/opal-frontend-component-test-review
+.codex/skills/opal-frontend-component-tests
+.codex/skills/opal-frontend-e2e-test-review
+.codex/skills/opal-frontend-e2e-tests
