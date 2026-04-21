@@ -1,4 +1,4 @@
-export interface IFinesAccEnfActionSelectRoutingPaths {
+export interface IFinesAccEnfActionRoutingPaths {
   root: string;
   children: {
     select: string;

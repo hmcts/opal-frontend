@@ -28,8 +28,8 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-cour
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import { FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-collo-change/constants/fines-acc-enf-collo-change-routing-titles.constant';
-import { FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
-import { FINES_ACC_ENF_ACTION_SELECT_ROUTING_TITLES } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-titles.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_TITLES } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-titles.constant';
 import { nextPermittedEnfActionsResolver } from './resolvers/defendant-account-next-permitted-enf-actions.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
@@ -246,7 +246,7 @@ export const routing: Routes = [
             },
           },
           {
-            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS.children.select}`,
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
             loadComponent: () =>
               import('../fines-acc-enf-action-select/fines-acc-enf-action-select.component').then(
                 (c) => c.FinesAccEnfActionSelectComponent,
@@ -254,7 +254,7 @@ export const routing: Routes = [
             canActivate: [routePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
-              title: FINES_ACC_ENF_ACTION_SELECT_ROUTING_TITLES.children.select,
+              title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.select,
               routePermissionId: [accRootPermissionIds['enter-enforcement']],
             },
             resolve: {

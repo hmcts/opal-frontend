@@ -57,7 +57,7 @@ import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-de
 import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fines-acc-summary-header.component';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
-import { FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -492,7 +492,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public navigateToAddEnforcementActionPage(): void {
     this['router'].navigate(
       [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS.children.select}`,
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
       ],
       {
         relativeTo: this.activatedRoute,
