@@ -205,6 +205,29 @@ describe('FinesAccNoteAddFormComponent', () => {
     expect(noteControl?.valid).toBe(true);
   });
 
+  it('should prevent submission and show an error message for unexpected special characters', () => {
+    const noteControl = component.form.get('facc_add_notes');
+    const mockEvent = {} as SubmitEvent;
+    const expectedErrorMessage =
+      FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']
+        .message;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+    noteControl?.setValue('Invalid?');
+
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBeTruthy();
+
+    component.handleFormSubmit(mockEvent);
+
+    expect(component['formSubmit'].emit).not.toHaveBeenCalled();
+    expect(component.formControlErrorMessages['facc_add_notes']).toBe(expectedErrorMessage);
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'facc_add_notes',
+      message: expectedErrorMessage,
+    });
+  });
+
   it('should have component created', () => {
     expect(component).toBeDefined();
   });

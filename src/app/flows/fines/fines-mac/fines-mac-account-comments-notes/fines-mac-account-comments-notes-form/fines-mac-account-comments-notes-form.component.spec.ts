@@ -9,6 +9,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../constants/fines-mac-account-comments-notes-field-errors.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
@@ -136,5 +137,29 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
 
     expect(notesControl.errors).toBeNull();
     expect(notesControl.valid).toBe(true);
+  });
+
+  it('should prevent submission and show an error message for invalid special characters in the comment field', () => {
+    const event = {} as SubmitEvent;
+    const commentsControl = component.form.controls['fm_account_comments_notes_comments'];
+    const expectedErrorMessage =
+      FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_comments[
+        'alphanumericWithHyphensSpacesApostrophesCommasDotPattern'
+      ].message;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+    commentsControl.setValue('Invalid?');
+
+    expect(commentsControl.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBe(true);
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).not.toHaveBeenCalled();
+    expect(component.formControlErrorMessages['fm_account_comments_notes_comments']).toBe(expectedErrorMessage);
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_account_comments_notes_comments',
+      message: expectedErrorMessage,
+    });
   });
 });
