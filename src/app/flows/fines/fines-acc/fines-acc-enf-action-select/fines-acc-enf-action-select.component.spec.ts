@@ -15,6 +15,7 @@ import { FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK } from './m
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 
 describe('FinesAccEnfActionSelectComponent', () => {
   let component: FinesAccEnfActionSelectComponent;
@@ -164,31 +165,29 @@ describe('FinesAccEnfActionSelectComponent', () => {
     );
   });
 
-  it('should clear dirty state after a valid submit when employment data is required but not present', () => {
+  it('should clear dirty state when processSelectedAction receives a result that does not require employment data', () => {
+    const selectedAction = {
+      result_id: 'WOA',
+      result_title: 'Warrant of Arrest',
+      requires_employment_data: false,
+    } as IOpalFinesResultRefData;
+
     component.handleUnsavedChanges(true);
 
-    component.handleSubmit({
-      formData: { facc_enf_action: 'WOC' },
-      nestedFlow: false,
-    });
+    (
+      component as unknown as { processSelectedAction: (result: IOpalFinesResultRefData) => void }
+    ).processSelectedAction(selectedAction);
 
-    expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('WOC');
     expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(false);
   });
 
-  it('should clear dirty state after a valid submit when employment data is not required', () => {
-    component.handleUnsavedChanges(true);
+  it('should clear dirty state when processSelectedAction receives a result that requires employment data and employer data exists', () => {
+    const selectedAction = {
+      result_id: 'WOC',
+      result_title: 'Warrant of Control',
+      requires_employment_data: true,
+    } as IOpalFinesResultRefData;
 
-    component.handleSubmit({
-      formData: { facc_enf_action: 'WOA' },
-      nestedFlow: false,
-    });
-
-    expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('WOA');
-    expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(false);
-  });
-
-  it('should clear dirty state after a valid submit when employment data is required and present', () => {
     activatedRouteStub.snapshot.data.enforcementStatus = {
       ...structuredClone(FINES_ACC_ENF_ACTION_SELECT_ENFORCEMENT_STATUS_MOCK),
       employer_flag: true,
@@ -196,13 +195,46 @@ describe('FinesAccEnfActionSelectComponent', () => {
     createComponent();
     component.handleUnsavedChanges(true);
 
+    (
+      component as unknown as { processSelectedAction: (result: IOpalFinesResultRefData) => void }
+    ).processSelectedAction(selectedAction);
+
+    expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(false);
+  });
+
+  it('should clear dirty state when processSelectedAction receives a result that requires employment data and employer data does not exist', () => {
+    const selectedAction = {
+      result_id: 'WOC',
+      result_title: 'Warrant of Control',
+      requires_employment_data: true,
+    } as IOpalFinesResultRefData;
+
+    component.handleUnsavedChanges(true);
+
+    (
+      component as unknown as { processSelectedAction: (result: IOpalFinesResultRefData) => void }
+    ).processSelectedAction(selectedAction);
+
+    expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(false);
+  });
+
+  it('should fetch the selected action and delegate processing when handleSubmit is called', () => {
+    const processSelectedActionSpy = vi.spyOn(
+      component as unknown as { processSelectedAction: (result: IOpalFinesResultRefData) => void },
+      'processSelectedAction',
+    );
+
     component.handleSubmit({
       formData: { facc_enf_action: 'WOC' },
       nestedFlow: false,
     });
 
     expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('WOC');
-    expect((component as unknown as { stateUnsavedChanges: boolean }).stateUnsavedChanges).toBe(false);
+    expect(processSelectedActionSpy).toHaveBeenCalledWith({
+      result_id: 'WOC',
+      result_title: 'Warrant of Control',
+      requires_employment_data: true,
+    });
   });
 
   it('should scroll to top when fetching the selected action fails', () => {

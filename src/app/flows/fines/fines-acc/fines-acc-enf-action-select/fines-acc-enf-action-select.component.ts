@@ -13,6 +13,8 @@ import { FinesAccEnfActionSelectFormComponent } from './fines-acc-enf-action-sel
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
+import { FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES } from './constants/fines-acc-enf-action-select-warning-messages.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-action-select',
@@ -51,15 +53,15 @@ export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComp
     this.warningMessages = [];
 
     if (this.enforcementStatus.enforcement_overview.collection_order?.collection_order_flag === false) {
-      this.warningMessages.push('There is no collection order on this account');
+      this.warningMessages.push(FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.collectionOrderMissing);
     }
 
     if (headerData.is_youth) {
-      this.warningMessages.push('This is a youth account');
+      this.warningMessages.push(FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.youthAccount);
     }
 
     if (headerData.party_details.organisation_flag) {
-      this.warningMessages.push('This is a company account');
+      this.warningMessages.push(FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.companyAccount);
     }
   }
 
@@ -73,6 +75,21 @@ export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComp
       value: result.result_id,
       name: this.opalFinesService.getResultPrettyName(result),
     }));
+  }
+
+  /**
+   * Applies the selected action result to the current flow state.
+   */
+  private processSelectedAction(selectedAction: IOpalFinesResultRefData): void {
+    const requiresEmploymentData = !!selectedAction.requires_employment_data;
+    const hasEmployerData = !!this.enforcementStatus.employer_flag;
+
+    this.stateUnsavedChanges = false;
+
+    if (requiresEmploymentData && !hasEmployerData) {
+      return;
+      // Submission logic handled in future ticket.
+    }
   }
 
   /**
@@ -93,17 +110,7 @@ export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComp
         }),
         takeUntil(this.ngUnsubscribe),
       )
-      .subscribe((selectedAction) => {
-        const requiresEmploymentData = !!selectedAction.requires_employment_data;
-        const hasEmployerData = !!this.enforcementStatus.employer_flag;
-
-        this.stateUnsavedChanges = false;
-
-        if (requiresEmploymentData && !hasEmployerData) {
-          return;
-          //Submission logic handled in future ticket.
-        }
-      });
+      .subscribe((selectedAction) => this.processSelectedAction(selectedAction));
   }
 
   /**
