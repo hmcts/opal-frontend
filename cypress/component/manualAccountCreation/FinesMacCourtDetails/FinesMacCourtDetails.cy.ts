@@ -1,9 +1,5 @@
-import { mount } from 'cypress/angular';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
-import { ActivatedRoute } from '@angular/router';
 import { FINES_COURTS_DETAILS_MOCK } from './mocks/fines-mac-court-details-mock';
 import { FinesMacCourtDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-court-details/fines-mac-court-details.component';
-import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { MacCourtDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.court-details.locators';
@@ -11,73 +7,42 @@ import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_deta
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { of } from 'rxjs';
 import { IOpalFinesLocalJusticeAreaRefData } from '../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { mountMacStoreComponent } from '../support/mountMacStoreComponent';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacCourtDetailsComponent', () => {
-  let finesMacStateTemplate = structuredClone(FINES_COURTS_DETAILS_MOCK);
-  let finesMacState = finesMacStateTemplate;
-
-  beforeEach(() => {
-    finesMacStateTemplate = structuredClone(FINES_COURTS_DETAILS_MOCK);
-    finesMacState = finesMacStateTemplate;
-  });
+  type FinesMacCourtDetailsState = typeof FINES_COURTS_DETAILS_MOCK;
 
   const setupComponent = (
     formSubmit?: any,
     defType?: string,
     localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+    configure?: (finesMacState: FinesMacCourtDetailsState) => void,
   ) => {
-    finesMacState = structuredClone(finesMacStateTemplate);
+    const finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
     finesMacState.businessUnit.business_unit_id = 73;
     if (defType) {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = defType;
     }
+    configure?.(finesMacState);
 
-    return mount(FinesMacCourtDetailsComponent, {
-      providers: [
-        provideHttpClient(),
-        OpalFines,
-        DateService,
-        UtilsService,
-        {
-          provide: FinesMacStore,
-          useFactory: () => {
-            const store = new FinesMacStore();
-            store.setFinesMacStore(finesMacState);
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: of('manual-account-creation'),
-            snapshot: {
-              data: {
-                localJusticeAreas,
-                courts: OPAL_FINES_COURT_REF_DATA_MOCK,
-              },
-            },
-          },
-        },
-      ],
+    return mountMacStoreComponent({
+      additionalProviders: [provideHttpClient(), DateService, UtilsService],
+      component: FinesMacCourtDetailsComponent,
       componentProperties: {
-        // Only Inputs here
         defendantType: defType,
       },
-    }).then(({ fixture }) => {
-      if (!formSubmit) return;
-      const comp: any = fixture.componentInstance as any;
-      if (comp?.handleCourtDetailsSubmit?.subscribe) {
-        comp.handleCourtDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
-      } else if (typeof comp?.handleCourtDetailsSubmit === 'function') {
-        comp.handleCourtDetailsSubmit = formSubmit;
-      }
-      fixture.detectChanges();
+      formSubmit,
+      initialState: finesMacState,
+      routeSnapshotData: {
+        localJusticeAreas,
+        courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+      },
+      submitHandlerName: 'handleCourtDetailsSubmit',
     });
   };
   it(
@@ -217,8 +182,9 @@ describe('FinesMacCourtDetailsComponent', () => {
     '(AC.6) should validate mandatory fields even when data exists in another',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389'), '@JIRA-KEY:POT-7364'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
-      finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = '1234';
+      setupComponent(null, 'adultOrYouthOnly', undefined, (finesMacState) => {
+        finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = '1234';
+      });
 
       //Submit without input
       cy.get(L.returnToAccountDetailsButton).click();
@@ -262,9 +228,9 @@ describe('FinesMacCourtDetailsComponent', () => {
     '(AC.7) should validate PRC field length',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-389'), '@JIRA-KEY:POT-7365'] },
     () => {
-      finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
-
-      setupComponent(null);
+      setupComponent(null, undefined, OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK, (finesMacState) => {
+        finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
+      });
 
       //Submit with invalid input
       cy.get(L.returnToAccountDetailsButton).click();
@@ -281,8 +247,9 @@ describe('FinesMacCourtDetailsComponent', () => {
       const invalidInputs = ['1234!', '1@', 'test@', 'test1234@', 'abc#', '123$', 'abc%', '123^', 'abc&', '123*'];
       cy.wrap(invalidInputs).each((input: string) => {
         cy.then(() => {
-          setupComponent(null);
-          finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = input;
+          setupComponent(null, undefined, OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK, (finesMacState) => {
+            finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = input;
+          });
           cy.get(L.returnToAccountDetailsButton).click();
           cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.invalidPCR);
         });
