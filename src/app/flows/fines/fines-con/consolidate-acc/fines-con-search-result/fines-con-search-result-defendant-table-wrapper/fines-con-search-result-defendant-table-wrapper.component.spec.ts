@@ -99,6 +99,12 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     expect(checkMessage).toContain('Account status is Consolidated');
   });
 
+  it('should reset checks map to empty when checksByAccountId input is null', () => {
+    component.checksByAccountId = null;
+
+    expect(component['checksByAccountIdSignal']()).toEqual({});
+  });
+
   it('should bold delimited text in rendered check messages', () => {
     component.tableData = GENERATE_FINES_CON_SEARCH_RESULT_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_MOCKS(1);
     component.checksByAccountId = {
@@ -225,6 +231,24 @@ describe('FinesConSearchResultDefendantTableWrapperComponent', () => {
     fixture.detectChanges();
 
     expect(component.getRowChecks(row)).toEqual([]);
+  });
+
+  it('should fall back to Account when Account ID is null in row identifier', () => {
+    const row = {
+      Account: 'ACC-123',
+      'Account ID': null,
+    } as never;
+
+    expect(component.getRowIdentifier(row, 0)).toBe('ACC-123');
+  });
+
+  it('should fall back to the row index when Account ID and Account are null', () => {
+    const row = {
+      Account: null,
+      'Account ID': null,
+    } as never;
+
+    expect(component.getRowIdentifier(row, 7)).toBe(7);
   });
 
   it('should return false for all/some selected when no selectable rows exist', () => {

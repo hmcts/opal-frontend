@@ -336,7 +336,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6318',
       ],
     },
@@ -356,7 +355,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6319',
       ],
     },
@@ -404,7 +402,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-344',
         '@JIRA-STORY:PO-345',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6320',
       ],
     },
@@ -430,7 +427,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6321',
       ],
     },
@@ -456,7 +452,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6322',
       ],
     },
@@ -486,7 +481,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6323',
       ],
     },
@@ -529,7 +523,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6324',
       ],
     },
@@ -580,7 +573,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6326',
       ],
     },
@@ -617,7 +609,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6327',
       ],
     },
@@ -651,7 +642,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6328',
       ],
     },
@@ -685,7 +675,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6329',
       ],
     },
@@ -708,7 +697,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6330',
       ],
     },
@@ -732,7 +720,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6331',
       ],
     },
@@ -761,7 +748,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6332',
       ],
     },
@@ -796,7 +782,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6333',
       ],
     },
@@ -831,7 +816,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6334',
       ],
     },
@@ -857,7 +841,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6335',
       ],
     },
@@ -883,7 +866,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6336',
       ],
     },
@@ -911,7 +893,6 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-684',
         '@JIRA-STORY:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        ,
         '@JIRA-KEY:POT-6337',
       ],
     },
@@ -1064,6 +1045,56 @@ describe('FinesMacAddOffenceComponent', () => {
           expect(impositionCount, 'impositions on screen').to.be.greaterThan(0);
           expect(fieldsetCount, 'fieldset per imposition').to.eq(impositionCount);
         });
+    },
+  );
+
+  it(
+    'Should show error message for invalid amount imposed being a zero value',
+    {
+      tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-3550', '@JIRA-LABEL:manual-account-creation'],
+    },
+    () => {
+      setupComponent(null);
+
+      const SELECTOR = impositionSelectors(0);
+
+      let Imposition = structuredClone(IMPOSITION_MOCK_1);
+      Imposition[0].fm_offence_details_amount_imposed = 0;
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidZeroValue);
+    },
+  );
+
+  it(
+    'Should show error message for invalid amount imposed being a minus value',
+    {
+      tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-3550', '@JIRA-LABEL:manual-account-creation'],
+    },
+    () => {
+      setupComponent(null);
+
+      const SELECTOR = impositionSelectors(0);
+
+      let Imposition = structuredClone(IMPOSITION_MOCK_1);
+      Imposition[0].fm_offence_details_amount_imposed = -200;
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
     },
   );
 });

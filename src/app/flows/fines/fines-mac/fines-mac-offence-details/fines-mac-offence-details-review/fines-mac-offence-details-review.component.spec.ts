@@ -121,6 +121,27 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     expect(component.offencesImpositions).toEqual(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK);
   });
 
+  it('should keep existing route inputs when results and major creditors are not provided in route data', () => {
+    const activatedRoute = TestBed.inject(ActivatedRoute);
+    const existingResults = structuredClone(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+    const existingMajorCreditors = structuredClone(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const getOffencesImpositionsSpy = vi.spyOn<any, any>(component, 'getOffencesImpositions');
+
+    Object.defineProperty(activatedRoute.snapshot, 'data', {
+      configurable: true,
+      value: {},
+    });
+    component.results = existingResults;
+    component.majorCreditors = existingMajorCreditors;
+
+    component.ngOnInit();
+
+    expect(component.results).toEqual(existingResults);
+    expect(component.majorCreditors).toEqual(existingMajorCreditors);
+    expect(getOffencesImpositionsSpy).toHaveBeenCalled();
+  });
+
   it('should reset addedOffenceCode and offenceDetailsDraft on ngOnDestroy', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     finesMacOffenceDetailsStore.setRowIndex(0);
@@ -134,5 +155,19 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     expect(finesMacOffenceDetailsStore.minorCreditorAdded()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
+  });
+
+  it('should not reset offenceDetailsDraft on ngOnDestroy when there is no draft to clear', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setOffenceDetailsDraftSpy = vi.spyOn<any, any>(finesMacOffenceDetailsStore, 'setOffenceDetailsDraft');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacOffenceDetailsStore, 'offenceDetailsDraft').mockReturnValue(null);
+
+    component.ngOnDestroy();
+
+    expect(finesMacOffenceDetailsStore.addedOffenceCode()).toEqual('');
+    expect(finesMacOffenceDetailsStore.minorCreditorAdded()).toBe(false);
+    expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(false);
+    expect(setOffenceDetailsDraftSpy).not.toHaveBeenCalled();
   });
 });

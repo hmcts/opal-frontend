@@ -419,6 +419,22 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component.form.get('fm_payment_terms_reason_account_is_on_noenf')?.disabled).toBe(true);
   });
 
+  it('should not add or remove enforcement controls when the hold enforcement value is null', () => {
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    component['addEnforcementFields']();
+    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addControlsSpy = vi.spyOn<any, any>(component, 'addControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const removeControlsSpy = vi.spyOn<any, any>(component, 'removeControls');
+
+    component['noEnfListener']();
+    NOENFControl.setValue(null);
+
+    expect(addControlsSpy).not.toHaveBeenCalled();
+    expect(removeControlsSpy).not.toHaveBeenCalled();
+  });
+
   it('should reset and create collection order date when has collection order value is "yes"', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component.accessCollectionOrder = true;
@@ -511,6 +527,51 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component.form.get('fm_payment_terms_collection_order_date')!.value).toBeNull();
   });
 
+  it('should not overwrite an existing collection order date when one is already set', () => {
+    mockDateService.toDateStringFormat.mockReturnValue('05/09/2024');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'removeControls').mockImplementation(() => {});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'addControls').mockImplementation(() => {
+      component.form.get('fm_payment_terms_collection_order_date')?.setValue('01/01/2020');
+    });
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    component.accessCollectionOrder = true;
+    component['addCollectionOrderFormControls']();
+    component['hasCollectionOrderListener']();
+
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
+    const collectionOrderDateControl = component.form.get('fm_payment_terms_collection_order_date')!;
+
+    hasCollectionOrderControl.setValue(true);
+
+    expect(collectionOrderDateControl.value).toBe('01/01/2020');
+    expect(mockDateService.toDateStringFormat).not.toHaveBeenCalled();
+  });
+
+  it('should preserve an existing collection order date when sentence date exists', () => {
+    mockDateService.toDateStringFormat.mockReturnValue('05/09/2024');
+    vi.spyOn(finesMacStore, 'getEarliestDateOfSentence').mockReturnValue(new Date('2024-09-05'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'removeControls').mockImplementation(() => {});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'addControls').mockImplementation(() => {
+      component.form.get('fm_payment_terms_collection_order_date')?.setValue('01/01/2020');
+    });
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    component.accessCollectionOrder = true;
+    component['addCollectionOrderFormControls']();
+    component['hasCollectionOrderListener']();
+
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
+    const collectionOrderDateControl = component.form.get('fm_payment_terms_collection_order_date')!;
+
+    hasCollectionOrderControl.setValue(true);
+
+    expect(collectionOrderDateControl.value).toBe('01/01/2020');
+    expect(mockDateService.toDateStringFormat).not.toHaveBeenCalled();
+  });
+
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
@@ -575,6 +636,18 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     });
   });
 
+  it('should skip enabling a control when updateControl does not install it', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'updateControl').mockImplementation(() => {});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const dateListenerSpy = vi.spyOn<any, any>(component, 'dateListener');
+
+    component['addControls']([{ controlName: 'missing_control', validators: [] }]);
+
+    expect(component.form.get('missing_control')).toBeNull();
+    expect(dateListenerSpy).not.toHaveBeenCalled();
+  });
+
   it('should toggle payment term conditional panels and enable controls', async () => {
     await fixture.whenStable();
     const payInFullConditionalId = `${component.paymentTermsConditionalIdPrefix}payInFull`;
@@ -617,5 +690,12 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       const formControl = component.form.get(control.controlName);
       expect(formControl?.disabled).toBe(true);
     });
+  });
+
+  it('should ignore missing conditional controls when disabling them', () => {
+    component.form.removeControl('fm_payment_terms_collection_order_date');
+
+    expect(() => component['disableConditionalControls']()).not.toThrow();
+    expect(component.form.get('fm_payment_terms_collection_order_date')).toBeNull();
   });
 });
