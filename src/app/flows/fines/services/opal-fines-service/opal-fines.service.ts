@@ -54,6 +54,7 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from './interfaces/opal-fines
 import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.interface';
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
+import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -1087,7 +1088,36 @@ export class OpalFines {
           shareReplay(1),
         );
     }
-
     return this.cache.minorCreditorAccountAtAGlanceCache$;
+  }
+
+  /**
+   * Updates a minor creditor account with new account notes and comments.
+   * Currently returns a mock response since the API is not yet developed.
+   *
+   * @param accountId - The unique identifier of the minor creditor account to update.
+   * @param payload - The payload containing the updated account notes and version for concurrency control.
+   * @returns An Observable that emits the updated minor creditor account response.
+   */
+  public updateMinorCreditorAccount(
+    accountId: number,
+    payload: IOpalFinesUpdateMinorCreditorAccountPayload,
+    version: string,
+    businessUnitId?: string,
+  ): Observable<IOpalFinesUpdateMinorCreditorAccountPayload> {
+    const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}`;
+
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    console.log('Updating minor creditor account with payload:', payload);
+    console.log('Using headers:', headers);
+
+    return this.http.patch<IOpalFinesUpdateMinorCreditorAccountPayload>(url, payload, { headers });
   }
 }

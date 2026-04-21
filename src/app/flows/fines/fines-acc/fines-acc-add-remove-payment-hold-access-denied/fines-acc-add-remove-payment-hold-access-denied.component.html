@@ -1,0 +1,17 @@
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-heading-with-caption
+    captionText="{{ accountStore.getAccountState().account_number }} - {{ accountStore.getAccountState().party_name }}"
+    headingText="You cannot add or remove a payment hold."
+    headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
+  />
+
+  <p class="govuk-!-margin-bottom-6">You do not have the required permissions for this business unit.</p>
+
+  <a
+    href=""
+    (click)="navigateBackToAccountSummary($event)"
+    class="govuk-link govuk-link--no-visited-state govuk-!-margin-top-4"
+  >
+    Go back</a
+  >
+</div>

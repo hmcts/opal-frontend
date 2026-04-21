@@ -27,6 +27,7 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-titles.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 import { FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-collo-change/constants/fines-acc-enf-collo-change-routing-titles.constant';
+import { minorCreditorAccountAtAGlanceResolver } from './resolvers/defendant-minor-creditor-at-a-glance.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -311,11 +312,12 @@ export const routing: Routes = [
             (c) => c.FinesAccPaymentHoldAddComponent,
           ),
         canActivate: [authGuard, finesAccStateGuard],
-        canDeactivate: [canDeactivateGuard],
         data: {
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
+          routePermissionId: [accRootPermissionIds['add-remove-payment-hold']],
+          accessDeniedPath: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`,
         },
-        resolve: { title: TitleResolver },
+        resolve: { title: TitleResolver, minorCreditorAccountAtAGlance: minorCreditorAccountAtAGlanceResolver },
       },
       {
         path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`,
@@ -325,7 +327,21 @@ export const routing: Routes = [
             (c) => c.FinesAccPaymentHoldRemoveComponent,
           ),
         canActivate: [authGuard, finesAccStateGuard],
-        canDeactivate: [canDeactivateGuard],
+        data: {
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
+          routePermissionId: [accRootPermissionIds['add-remove-payment-hold']],
+          accessDeniedPath: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`,
+        },
+        resolve: { title: TitleResolver, minorCreditorAccountAtAGlance: minorCreditorAccountAtAGlanceResolver },
+      },
+      {
+        path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`,
+
+        loadComponent: () =>
+          import('../fines-acc-add-remove-payment-hold-access-denied/fines-acc-add-remove-payment-hold-access-denied.component').then(
+            (c) => c.FinesAccAddRemovePaymentHoldAccessDeniedComponent,
+          ),
+        canActivate: [authGuard, finesAccStateGuard],
         data: {
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
         },
