@@ -98,4 +98,25 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
     expect(finesMacStore.offenceDetails().length).toBe(1);
   });
+
+  it('should leave offences without an id unchanged when reindexing after removal', () => {
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData),
+          fm_offence_details_id: undefined as never,
+        },
+      },
+    ];
+    finesMacStore.setFinesMacStore(finesMacState);
+    finesMacOffenceDetailsStore.setOffenceIndex(0);
+
+    component.confirmOffenceRemoval();
+
+    expect(finesMacStore.offenceDetails()).toHaveLength(1);
+    expect(finesMacStore.offenceDetails()[0].formData.fm_offence_details_id).toBeUndefined();
+  });
 });

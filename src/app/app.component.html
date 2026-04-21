@@ -10,7 +10,7 @@
       }
     </opal-lib-moj-header-navigation-item>
   </opal-lib-moj-header>
-  @if (globalStore.authenticated() && globalStore.userState().status === 'active') {
+  @if (showPrimaryNavigation()) {
     <opal-lib-moj-primary-navigation
       primaryNavigationId="primaryNavigation"
       [useFragmentNavigation]="false"

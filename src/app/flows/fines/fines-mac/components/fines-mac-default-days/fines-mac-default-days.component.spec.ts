@@ -62,6 +62,14 @@ describe('FinesMacDefaultDaysComponent', () => {
     expect(component.daysInDefaultCalculated).toBe(450);
   });
 
+  it('should not recalculate days in default on the first date change', () => {
+    const calculateSpy = vi.spyOn(component, 'calculateDaysInDefault');
+
+    component.ngOnChanges({ date: new SimpleChange(undefined, '01/01/2024', true) });
+
+    expect(calculateSpy).not.toHaveBeenCalled();
+  });
+
   it('should unsubscribe from valueChanges on component destroy', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['ngUnsubscribe'], 'next');

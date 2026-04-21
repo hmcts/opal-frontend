@@ -9,6 +9,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacPersonalDetailsComponent', () => {
@@ -73,6 +74,24 @@ describe('FinesMacPersonalDetailsComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.contactDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should not navigate in nested flow when there is no configured personal details route', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    formSubmit.nestedFlow = true;
+    const originalRoute = FINES_MAC_ROUTING_NESTED_ROUTES['company'].personalDetails;
+    FINES_MAC_ROUTING_NESTED_ROUTES['company'].personalDetails = null;
+
+    try {
+      component.handlePersonalDetailsSubmit(formSubmit);
+
+      expect(finesMacStore.personalDetails()).toEqual(formSubmit);
+      expect(routerSpy).not.toHaveBeenCalled();
+    } finally {
+      FINES_MAC_ROUTING_NESTED_ROUTES['company'].personalDetails = originalRoute;
+    }
   });
 
   it('should test handleUnsavedChanges', () => {

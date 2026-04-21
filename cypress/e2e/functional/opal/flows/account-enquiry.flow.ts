@@ -1122,9 +1122,17 @@ export class AccountEnquiryFlow {
    */
   public openAddAccountNoteAndVerifyHeader(): void {
     logAE('method', 'openAddAccountNoteAndVerifyHeader()');
+    cy.location('pathname').then((pathname) => {
+      const alreadyOnAddAccountNotePage = pathname.includes('/note/add');
 
-    logAE('navigate', 'Opening "Add account note" screen');
-    this.detailsNav.clickAddAccountNoteButton();
+      if (alreadyOnAddAccountNotePage) {
+        logAE('state', 'Already on "Add account note" screen');
+        return;
+      }
+
+      logAE('navigate', 'Opening "Add account note" screen');
+      this.detailsNav.clickAddAccountNoteButton();
+    });
 
     this.notes.assertHeaderContains('Add account note');
   }
