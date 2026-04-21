@@ -37,6 +37,12 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     amend: boolean = true,
     checker: boolean = true,
   ) => {
+    finesMacState = structuredClone(finesMacState);
+    finesDraftState = structuredClone(finesDraftState);
+    finesAccountPayload = structuredClone(finesAccountPayload);
+    finesDraftStateMock = structuredClone(finesDraftStateMock);
+    activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
+
     mount(FinesMacDeleteAccountConfirmationComponent, {
       providers: [
         provideHttpClient(),

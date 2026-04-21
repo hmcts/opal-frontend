@@ -16,6 +16,8 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   };
 
   const setupConsolidationComponent = (componentProperties: IComponentProperties = {}) => {
+    finesConSearchAccountFormData = structuredClone(finesConSearchAccountFormData);
+
     return mountConsolidationComponent({
       ...defaultComponentProperties,
       ...componentProperties,

@@ -42,6 +42,8 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   let defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   const setupComponent = (FetchMap = reviewAccountFetchMap) => {
+    const reviewAccountState = structuredClone(FetchMap);
+
     mount(FinesMacReviewAccountComponent, {
       providers: [
         provideHttpClient(),
@@ -70,7 +72,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
           useValue: {
             snapshot: {
               data: {
-                reviewAccountFetchMap: FetchMap,
+                reviewAccountFetchMap: reviewAccountState,
               },
               paramMap: {
                 get: (key: string) => {

@@ -39,6 +39,12 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     amend: boolean = true,
     checker: boolean = true,
   ) => {
+    finesMacState = structuredClone(finesMacState);
+    finesDraftState = structuredClone(finesDraftState);
+    finesAccountPayload = structuredClone(finesAccountPayload);
+    finesDraftStateMock = structuredClone(finesDraftStateMock);
+    activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
+
     mount(FinesMacReviewAccountComponent, {
       providers: [
         provideHttpClient(),

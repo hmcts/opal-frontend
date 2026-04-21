@@ -52,7 +52,6 @@ export const DEFENDANT_DETAILS = {
   companyAddress: '#companyDetailsAddressValue',
 
   // Company contact details table
-  
 
   // Enforcement status tag
   enforcementStatusTag: ':nth-child(1) > opal-lib-govuk-tag > #enforcement_status',

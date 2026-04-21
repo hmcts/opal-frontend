@@ -19,10 +19,13 @@ const MajorRequirementLocators = MajorCreditorsLocators.businessUnitRequirement;
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Search Account Component - Major Creditors', () => {
-  let majorCreditorsSearchMock = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
+  let majorCreditorsSearchMockTemplate = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
+  let majorCreditorsSearchMock = majorCreditorsSearchMockTemplate;
   const fragment$ = new BehaviorSubject<string | null>('majorCreditors');
 
   const setupComponent = () => {
+    majorCreditorsSearchMock = structuredClone(majorCreditorsSearchMockTemplate);
+
     mount(FinesSaSearchAccountComponent, {
       providers: [
         provideHttpClient(),
@@ -70,7 +73,8 @@ describe('Search Account Component - Major Creditors', () => {
     });
   };
   beforeEach(() => {
-    majorCreditorsSearchMock = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
+    majorCreditorsSearchMockTemplate = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
+    majorCreditorsSearchMock = majorCreditorsSearchMockTemplate;
 
     cy.window().then((win) => {
       cy.stub(win, 'open').as('windowOpen');

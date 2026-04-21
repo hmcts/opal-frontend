@@ -42,6 +42,12 @@ describe('FinesMacReviewAccountComponent', () => {
     amend: boolean = true,
     checker: boolean = false,
   ) => {
+    finesMacState = structuredClone(finesMacState);
+    finesDraftState = structuredClone(finesDraftState);
+    finesAccountPayload = structuredClone(finesAccountPayload);
+    finesDraftStateMock = structuredClone(finesDraftStateMock);
+    activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
+
     const reviewAccountFetchMap = activatedRouteMock
       ? {
           finesMacState: finesMacState,

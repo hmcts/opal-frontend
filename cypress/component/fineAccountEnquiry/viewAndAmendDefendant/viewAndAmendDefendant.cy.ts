@@ -80,10 +80,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     });
   };
 
-  afterEach(() => {
-    cy.then(() => {});
-  });
-
   it(
     'AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
     { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7074'] },

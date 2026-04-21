@@ -16,9 +16,12 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Search Account Component - Company', () => {
-  let companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
+  let companySearchMockTemplate = structuredClone(COMPANY_SEARCH_STATE_MOCK);
+  let companySearchMock = companySearchMockTemplate;
 
   const setupComponent = (formSubmit: any = null) => {
+    companySearchMock = structuredClone(companySearchMockTemplate);
+
     mount(FinesSaSearchAccountComponent, {
       providers: [
         provideHttpClient(),
@@ -65,7 +68,8 @@ describe('Search Account Component - Company', () => {
     });
   };
   beforeEach(() => {
-    companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
+    companySearchMockTemplate = structuredClone(COMPANY_SEARCH_STATE_MOCK);
+    companySearchMock = companySearchMockTemplate;
   });
 
   it(

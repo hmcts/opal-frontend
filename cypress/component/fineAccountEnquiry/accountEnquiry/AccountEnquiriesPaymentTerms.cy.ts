@@ -41,6 +41,39 @@ describe('Account Enquiry Payment Terms', () => {
     ],
   };
 
+  const setupPaymentTermsScreen = (
+    headerMock: typeof DEFENDANT_HEADER_MOCK,
+    paymentTermsMock: typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK,
+  ) => {
+    const accountId = headerMock.defendant_account_party_id;
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, headerMock, '123');
+    interceptPaymentTerms(accountId, paymentTermsMock, '123');
+    interceptResultByCode('REM');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId });
+    cy.get('router-outlet').should('exist');
+  };
+
+  const buildParentGuardianHeaderMock = () => {
+    const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+    headerMock.debtor_type = 'Parent/Guardian';
+    headerMock.parent_guardian_party_id = '1770000001';
+
+    return headerMock;
+  };
+
+  const buildCompanyHeaderMock = () => {
+    const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+    headerMock.party_details.organisation_flag = true;
+    headerMock.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+
+    return headerMock;
+  };
+
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Adult or youth only',
     { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6724'] },
@@ -86,14 +119,7 @@ describe('Account Enquiry Payment Terms', () => {
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -121,14 +147,7 @@ describe('Account Enquiry Payment Terms', () => {
       paymentTermsMock.payment_terms.days_in_default = 9;
       paymentTermsMock.payment_terms.date_days_in_default_imposed = '2025-10-21';
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -388,18 +407,10 @@ describe('Account Enquiry Payment Terms', () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
       paymentTermsMock.payment_terms.extension = true;
       paymentTermsMock.payment_terms.reason_for_extension = 'Payment delay reason';
+
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Payment terms amendments');
@@ -450,21 +461,12 @@ describe('Account Enquiry Payment Terms', () => {
     'AC1: The Payment Terms tab is built as per the design artefact for instalments only - Parent or guardian',
     { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6739'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Parent/Guardian';
-      headerMock.parent_guardian_party_id = '1770000001';
+      let headerMock = buildParentGuardianHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -484,9 +486,7 @@ describe('Account Enquiry Payment Terms', () => {
     'AC1: The Payment Terms tab is built as per the design artefact for lump sum plus instalments - Parent or guardian',
     { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6740'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Parent/Guardian';
-      headerMock.parent_guardian_party_id = '1770000001';
+      let headerMock = buildParentGuardianHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
@@ -494,14 +494,7 @@ describe('Account Enquiry Payment Terms', () => {
       paymentTermsMock.payment_terms.days_in_default = 9;
       paymentTermsMock.payment_terms.date_days_in_default_imposed = '2025-10-21';
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -595,22 +588,12 @@ describe('Account Enquiry Payment Terms', () => {
     'AC3: Payment terms with amendments panel - Parent or guardian',
     { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6744'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Parent/Guardian';
-      headerMock.parent_guardian_party_id = '1770000001';
+      let headerMock = buildParentGuardianHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
       paymentTermsMock.payment_terms.extension = true;
       paymentTermsMock.payment_terms.reason_for_extension = 'Payment delay reason';
+
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
@@ -667,25 +650,12 @@ describe('Account Enquiry Payment Terms', () => {
     'AC1: The Payment Terms tab is built as per the design artefact for instalments only - Company',
     { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6746'] },
     () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-
+      const header = buildCompanyHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(header, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -705,13 +675,7 @@ describe('Account Enquiry Payment Terms', () => {
     'AC1: The Payment Terms tab is built as per the design artefact for lump sum plus instalments - Company',
     { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6747'] },
     () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-
+      const header = buildCompanyHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
@@ -719,14 +683,7 @@ describe('Account Enquiry Payment Terms', () => {
       paymentTermsMock.payment_terms.days_in_default = 9;
       paymentTermsMock.payment_terms.date_days_in_default_imposed = '2025-10-21';
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(header, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -832,26 +789,12 @@ describe('Account Enquiry Payment Terms', () => {
     'AC3: Payment terms with amendments panel - Company',
     { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6751'] },
     () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-
+      const header = buildCompanyHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
       paymentTermsMock.payment_terms.extension = true;
       paymentTermsMock.payment_terms.reason_for_extension = 'Payment delay reason';
+
+      setupPaymentTermsScreen(header, paymentTermsMock);
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
