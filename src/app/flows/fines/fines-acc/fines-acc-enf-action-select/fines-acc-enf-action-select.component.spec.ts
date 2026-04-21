@@ -16,6 +16,7 @@ import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
+import { FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES } from './constants/fines-acc-enf-action-select-warning-messages.constant';
 
 describe('FinesAccEnfActionSelectComponent', () => {
   let component: FinesAccEnfActionSelectComponent;
@@ -107,9 +108,9 @@ describe('FinesAccEnfActionSelectComponent', () => {
 
   it('should build warning messages for collection order, youth and company accounts', () => {
     expect(component.warningMessages).toEqual([
-      'There is no collection order on this account',
-      'This is a youth account',
-      'This is a company account',
+      FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.collectionOrderMissing,
+      FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.youthAccount,
+      FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.companyAccount,
     ]);
   });
 
