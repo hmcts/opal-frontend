@@ -16,7 +16,7 @@
     </div>
     <hr [class]="style.hr" />
 
-  <app-fines-acc-party-details
+    <app-fines-acc-party-details
       [party]="party"
       cardTitle="Defendant details"
       summaryCardListId="defendant"
@@ -29,9 +29,9 @@
       <h2 [class]="style.heading">Actions</h2>
       @if (canAddParentOrGuardianDetails) {
         <p>
-        <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddParentOrGuardianDetails($event)"
-          >Add parent or guardian details</a
-        >
+          <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddParentOrGuardianDetails($event)"
+            >Add parent or guardian details</a
+          >
         </p>
       }
       @if (convertAction) {
