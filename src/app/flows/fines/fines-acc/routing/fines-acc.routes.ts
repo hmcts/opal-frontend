@@ -246,25 +246,25 @@ export const routing: Routes = [
             },
           },
           {
-        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS.children.select}`,
-        loadComponent: () =>
-          import('../fines-acc-enf-action-select/fines-acc-enf-action-select.component').then(
-            (c) => c.FinesAccEnfActionSelectComponent,
-          ),
-        canActivate: [routePermissionsGuard, finesAccStateGuard],
-        canDeactivate: [canDeactivateGuard],
-        data: {
-          title: FINES_ACC_ENF_ACTION_SELECT_ROUTING_TITLES.children.select,
-          routePermissionId: [accRootPermissionIds['enter-enforcement']],
-        },
-        resolve: {
-          title: TitleResolver,
-          defendantAccountHeadingData: defendantAccountHeadingResolver,
-          enforcementStatus: defendantAccountEnforcementStatusResolver,
-          nextPermittedEnfActions: nextPermittedEnfActionsResolver,
-        },
-      },
-      {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_SELECT_ROUTING_PATHS.children.select}`,
+            loadComponent: () =>
+              import('../fines-acc-enf-action-select/fines-acc-enf-action-select.component').then(
+                (c) => c.FinesAccEnfActionSelectComponent,
+              ),
+            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              title: FINES_ACC_ENF_ACTION_SELECT_ROUTING_TITLES.children.select,
+              routePermissionId: [accRootPermissionIds['enter-enforcement']],
+            },
+            resolve: {
+              title: TitleResolver,
+              defendantAccountHeadingData: defendantAccountHeadingResolver,
+              enforcementStatus: defendantAccountEnforcementStatusResolver,
+              nextPermittedEnfActions: nextPermittedEnfActionsResolver,
+            },
+          },
+          {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
             loadComponent: () =>
               import('../fines-acc-enf-court-change/fines-acc-enf-court-change.component').then(
