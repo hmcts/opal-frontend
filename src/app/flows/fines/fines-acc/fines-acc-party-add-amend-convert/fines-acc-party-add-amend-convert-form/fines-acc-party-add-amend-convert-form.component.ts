@@ -57,6 +57,7 @@ import { FinesAccPartyAddAmendConvertCd } from './components/fines-acc-party-add
 import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add-amend-convert-vd/fines-acc-party-add-amend-convert-vd.component';
 import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
@@ -108,6 +109,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
 
   @Input({ required: true }) public isDebtor!: boolean;
   @Input({ required: true }) public partyType!: string;
+  @Input({ required: false }) public mode: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND;
   @Input({ required: false }) public initialFormData: IFinesAccPartyAddAmendConvertForm =
     FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
   override fieldErrors: IFinesAccPartyAddAmendConvertFieldErrors = {

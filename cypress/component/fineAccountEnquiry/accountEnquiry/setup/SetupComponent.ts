@@ -27,13 +27,24 @@ export const setupAccountEnquiryComponent = (componentProperties: IComponentProp
       providers: [
         provideHttpClient(),
         // Provides the Angular Router with the application's routing configuration.
-        provideRouter([...routing]),
+        provideRouter(componentProperties.routerConfig ?? [...routing]),
         FinesAccPayloadService,
         OpalFines,
         PermissionsService,
         UtilsService,
-        GlobalStore,
-        FinesAccountStore,
+        componentProperties.globalStoreFactory
+          ? {
+              provide: GlobalStore,
+              useFactory: componentProperties.globalStoreFactory,
+            }
+          : GlobalStore,
+        componentProperties.finesAccountStoreFactory
+          ? {
+              provide: FinesAccountStore,
+              useFactory: componentProperties.finesAccountStoreFactory,
+            }
+          : FinesAccountStore,
+        ...(componentProperties.additionalProviders ?? []),
         // {
         //   // prevents the auth guard from hard-redirecting the test runner
         //   provide: REDIRECT_TO_SSO,
@@ -44,6 +55,7 @@ export const setupAccountEnquiryComponent = (componentProperties: IComponentProp
       // Get the Angular Router instance from the test fixture's injector.
       // This allows us to control and observe navigation during the test.
       const router = fixture.debugElement.injector.get(Router);
+      cy.wrap(router).as('router');
 
       // Save the original navigate method so we can call it for non-intercepted routes.
       const originalNavigate = router.navigate.bind(router);
@@ -56,7 +68,7 @@ export const setupAccountEnquiryComponent = (componentProperties: IComponentProp
           // If the navigation is trying to go to '/access-denied', intercept and resolve immediately.
           // This prevents the actual redirect during the test, allowing us to test other logic.
 
-          if (Array.isArray(commands) && componentProperties.interceptedRoutes.includes(commands[0])) {
+          if (Array.isArray(commands) && componentProperties.interceptedRoutes?.includes(commands[0])) {
             return Promise.resolve(true); // Swallow the redirect, simulating a successful navigation.
           }
           // For all other routes, call the original navigate method to allow normal navigation.
@@ -64,17 +76,22 @@ export const setupAccountEnquiryComponent = (componentProperties: IComponentProp
         });
 
       const routeRoot = componentProperties.routeRoot ?? 'defendant';
+      const routeSegments = componentProperties.routeSegments ?? ['details'];
 
-      // Attempt to navigate to the account details page using the router.
+      const navigateToComponent = componentProperties.targetPath
+        ? router.navigateByUrl(componentProperties.targetPath)
+        : router.navigate([routeRoot, componentProperties.accountId, ...routeSegments], {
+            fragment: componentProperties.fragments,
+          });
+
+      // Attempt to navigate to the requested route using the router.
       // This triggers the stub above, which will allow this navigation to proceed normally.
-      return router
-        .navigate([routeRoot, componentProperties.accountId, 'details'], { fragment: componentProperties.fragments })
-        .then((success) => {
-          // Assert that navigation was successful.
-          expect(success).to.be.true;
-          // Trigger Angular change detection to update the component state after navigation.
-          fixture.detectChanges();
-        });
+      return navigateToComponent.then((success) => {
+        // Assert that navigation was successful.
+        expect(success).to.be.true;
+        // Trigger Angular change detection to update the component state after navigation.
+        fixture.detectChanges();
+      });
     });
   });
 };
