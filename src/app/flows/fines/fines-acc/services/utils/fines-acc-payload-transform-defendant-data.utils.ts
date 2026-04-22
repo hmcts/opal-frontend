@@ -212,38 +212,45 @@ export const transformDefendantAccountPartyPayload = (
   const { organisation_flag } = party_details;
   const individualDetails = party_details.individual_details;
   const organisationDetails = party_details.organisation_details;
+  const isCompany = partyType === 'company';
+  const isIndividual = partyType === 'individual';
+  const isParentGuardian = partyType === 'parentGuardian';
+  const hasExplicitPartyType = isCompany || isIndividual || isParentGuardian;
 
-  // Handle aliases based on party type
+  // Map source aliases separately so each target branch can decide whether to keep them.
   let individualAliases: IFinesAccPartyAddAmendConvertIndividualAliasState[] = [];
   let organisationAliases: IFinesAccPartyAddAmendConvertOrganisationAliasState[] = [];
-  let hasAliases = false;
+  let hasIndividualAliases = false;
+  let hasOrganisationAliases = false;
 
   if (organisation_flag && organisationDetails?.organisation_aliases) {
     organisationAliases = mapOrganisationAliasesToArrayStructure(organisationDetails.organisation_aliases);
-    hasAliases = organisationDetails.organisation_aliases.length > 0;
+    hasOrganisationAliases = organisationDetails.organisation_aliases.length > 0;
   } else if (!organisation_flag && individualDetails?.individual_aliases) {
     individualAliases = mapIndividualAliasesToArrayStructure(individualDetails.individual_aliases);
-    hasAliases = individualDetails.individual_aliases.length > 0;
+    hasIndividualAliases = individualDetails.individual_aliases.length > 0;
   }
-
-  const isCompany = partyType === 'company';
-  const isIndividual = partyType === 'individual';
 
   // Create base state with common fields
   const baseState = createBaseState(address, contact_details, vehicle_details, language_preferences);
 
-  if (isCompany || organisation_flag) {
-    return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
+  if (isCompany || (!hasExplicitPartyType && organisation_flag)) {
+    return getCompanyParty(
+      baseState,
+      organisation_flag ? organisationDetails : null,
+      organisationAliases,
+      hasOrganisationAliases,
+    );
   } else if (isIndividual && !isDebtor) {
     // For individual party type that is not a debtor, only show fields from title to address postcode
-    return getIndividualDebtorParty(baseState, individualDetails, individualAliases, hasAliases);
+    return getIndividualDebtorParty(baseState, individualDetails, individualAliases, hasIndividualAliases);
   } else {
     // For parent/guardian or individual debtor, show all fields including employer details
     return getIndividualOrParentGuardianParty(
       baseState,
       individualDetails,
       individualAliases,
-      hasAliases,
+      hasIndividualAliases,
       employer_details,
     );
   }
