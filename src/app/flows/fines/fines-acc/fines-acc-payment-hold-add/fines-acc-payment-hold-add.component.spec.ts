@@ -7,6 +7,7 @@ import { OpalFines } from '../../services/opal-fines-service/opal-fines.service'
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-minor-creditor-update-payload.mock';
 
 describe('FinesAccPaymentHoldAddComponent', () => {
   let component: FinesAccPaymentHoldAddComponent;
@@ -53,34 +54,7 @@ describe('FinesAccPaymentHoldAddComponent', () => {
     };
 
     finesAccPayloadServiceMock = {
-      buildMinorCreditorAccountUpdatePayload: vi.fn().mockReturnValue({
-        creditor_account_id: '100',
-        party_details: {
-          party_id: '200',
-          organisation_flag: true,
-          organisation_details: {
-            organisation_name: 'Creditor',
-            organisation_aliases: null,
-          },
-          individual_details: null,
-        },
-        address: {
-          address_line_1: 'line1',
-          address_line_2: null,
-          address_line_3: null,
-          address_line_4: null,
-          address_line_5: null,
-          postcode: null,
-        },
-        payment: {
-          account_name: null,
-          sort_code: null,
-          account_number: null,
-          account_reference: null,
-          pay_by_bacs: true,
-          hold_payment: false,
-        },
-      }),
+      buildMinorCreditorAccountUpdatePayload: vi.fn().mockReturnValue(OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK),
     };
 
     opalFinesServiceMock = {

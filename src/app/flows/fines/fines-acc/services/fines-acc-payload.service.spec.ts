@@ -817,10 +817,6 @@ describe('FinesAccPayloadService', () => {
         party_details: atAGlanceData.party,
         address: atAGlanceData.address,
         payment: {
-          account_name: null,
-          sort_code: null,
-          account_number: null,
-          account_reference: null,
           pay_by_bacs: atAGlanceData.payment.is_bacs,
           hold_payment: atAGlanceData.payment.hold_payment,
         },
@@ -836,10 +832,6 @@ describe('FinesAccPayloadService', () => {
 
       expect(result.payment.pay_by_bacs).toBe(false);
       expect(result.payment.hold_payment).toBe(false);
-      expect(result.payment.account_name).toBeNull();
-      expect(result.payment.sort_code).toBeNull();
-      expect(result.payment.account_number).toBeNull();
-      expect(result.payment.account_reference).toBeNull();
     });
   });
 });
