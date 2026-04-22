@@ -228,15 +228,33 @@ export class AccountDetailsNavActions {
    * Asserts that the "Enforcement" tab is currently active.
    *
    * @description
-   * Confirms that the active tab link displays “Enforcement”
-   * and has the `aria-current="page"` attribute.
+   * Confirms that the active tab link displays “Enforcement” and has the
+   * appropriate `aria-current="page"` attribute.
+   *
+   * @example
+   *  const nav = new AccountDetailsNavActions();
+   *  nav.assertEnforcementTabIsActive();
    */
   assertEnforcementTabIsActive(): void {
     log('assert', 'Asserting "Enforcement" tab is active');
 
-    cy.get(N.subNav.enforcementTab, { timeout: 10_000 })
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Enforcement');
+  }
+
+  /**
+   * Asserts the account details success banner shows the expected message.
+   *
+   * @param expected - Expected success banner text.
+   */
+  assertSuccessBannerText(expected: string): void {
+    log('assert', 'Asserting account details success banner text', { expected });
+
+    cy.get(N.banners.success, { timeout: 10_000 })
+      .should('be.visible')
+      .find(N.banners.successText)
+      .should('contain.text', expected);
   }
 }
