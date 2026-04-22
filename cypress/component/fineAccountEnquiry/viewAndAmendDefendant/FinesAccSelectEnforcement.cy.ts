@@ -51,7 +51,7 @@ describe('Add enforcement action in enforcement tab - Individual', () => {
     cy.intercept('GET', '/opal-fines-service/results', EMPTY_RESULTS_RESPONSE).as('getNextPermittedEnfActions');
     setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-    cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('exist').click();
+    cy.contains(ENF.addEnforcementActionLink).should('exist').click();
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
     cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
@@ -77,7 +77,7 @@ describe('Add enforcement action in enforcement tab - Individual', () => {
     cy.intercept('GET', '/opal-fines-service/results', EMPTY_RESULTS_RESPONSE).as('getNextPermittedEnfActions');
     setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-    cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('exist').click();
+    cy.contains(ENF.addEnforcementActionLink).should('exist').click();
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
     cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
@@ -87,5 +87,10 @@ describe('Add enforcement action in enforcement tab - Individual', () => {
     // tbc if needing to add a enforce action here to show can continue or fields being available is sufficient?
 
     cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Robert Thomson');
+    cy.get(ENF_ACTION_SELECT.informationBannerListItems).should('have.length', 2);
+    cy.get(ENF_ACTION_SELECT.informationBannerListItems)
+      .eq(0)
+      .should('contain.text', 'There is no collection order on this account');
+    cy.get(ENF_ACTION_SELECT.informationBannerListItems).eq(1).should('contain.text', 'This is a youth account');
   });
 });
