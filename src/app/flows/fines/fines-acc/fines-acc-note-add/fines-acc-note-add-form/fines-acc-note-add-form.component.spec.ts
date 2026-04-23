@@ -142,7 +142,9 @@ describe('FinesAccNoteAddFormComponent', () => {
     expect(component.fieldErrors.facc_add_notes['maxlength'].message).toBe(
       FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['maxlength'].message,
     );
-    expect(component.fieldErrors.facc_add_notes['alphanumericWithHyphensSpacesApostrophesCommasDotPattern'].message).toBe(
+    expect(
+      component.fieldErrors.facc_add_notes['alphanumericWithHyphensSpacesApostrophesCommasDotPattern'].message,
+    ).toBe(
       FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']
         .message,
     );
