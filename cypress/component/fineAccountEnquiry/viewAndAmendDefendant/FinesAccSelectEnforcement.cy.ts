@@ -38,7 +38,7 @@ const EMPTY_RESULTS_RESPONSE: IOpalFinesResultsRefData = {
 describe('Add enforcement action in enforcement tab', () => {
   it('AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details', () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'individual';
+    headerMock.debtor_type = 'Defendant';
     headerMock.account_status_reference.account_status_code = 'L';
     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
@@ -63,7 +63,7 @@ describe('Add enforcement action in enforcement tab', () => {
 
   it('AC3,a,b,d, Individual: Account meets conditions to cause info banner update', () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'individual';
+    headerMock.debtor_type = 'Defendant';
     headerMock.is_youth = true;
     headerMock.account_status_reference.account_status_code = 'L';
     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
@@ -110,7 +110,7 @@ describe('Add enforcement action in enforcement tab', () => {
 
   it('AC4,a,ai,aii, AC5,a, Individual: Enforcement actions dropdown confirmation', () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'individual';
+    headerMock.debtor_type = 'Defendant';
     headerMock.account_status_reference.account_status_code = 'L';
     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
@@ -193,7 +193,7 @@ describe('Add enforcement action in enforcement tab', () => {
 
   it('AC6,a Individual: Cancel path no warning', () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'individual';
+    headerMock.debtor_type = 'Defendant';
     headerMock.account_status_reference.account_status_code = 'L';
     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
@@ -223,7 +223,7 @@ describe('Add enforcement action in enforcement tab', () => {
 
   it('AC6,b Individual: Cancel path/warning', () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'individual';
+    headerMock.debtor_type = 'Defendant';
     headerMock.account_status_reference.account_status_code = 'L';
     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
