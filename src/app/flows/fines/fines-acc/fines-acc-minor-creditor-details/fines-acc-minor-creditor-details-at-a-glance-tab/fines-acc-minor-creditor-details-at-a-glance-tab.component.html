@@ -5,15 +5,17 @@
       <hr [class]="style.hr" />
 
       @if (tabData.party.organisation_flag) {
-        <h3 [class]="style.key">Company Name</h3>
-        <p [class]="style.value">
-          {{ tabData.party.organisation_details?.organisation_name }}
-        </p>
+        @if (tabData.party.organisation_details && tabData.party.organisation_details.organisation_name) {
+          <h3 [class]="style.key">Company Name</h3>
+          <p [class]="style.value">
+            {{ tabData.party.organisation_details.organisation_name }}
+          </p>
+        }
 
-        @if (tabData.party.organisation_details?.organisation_aliases) {
+        @if (tabData.party.organisation_details && tabData.party.organisation_details.organisation_aliases) {
           <h3 [class]="style.key">Aliases</h3>
           <p [class]="style.value">
-            @for (alias of tabData.party.organisation_details?.organisation_aliases; track alias) {
+            @for (alias of tabData.party.organisation_details.organisation_aliases; track alias) {
               {{ alias.organisation_name }}<br />
             }
           </p>
@@ -21,15 +23,15 @@
       } @else {
         <h3 [class]="style.key">Name</h3>
         <p [class]="style.value">
-          {{ tabData.party.individual_details?.title }}
-          {{ tabData.party.individual_details?.forenames }}
-          {{ tabData.party.individual_details?.surname | uppercase }}
+          {{ tabData.party.individual_details && tabData.party.individual_details.title }}
+          {{ tabData.party.individual_details && tabData.party.individual_details.forenames }}
+          {{ tabData.party.individual_details && tabData.party.individual_details.surname | uppercase }}
         </p>
 
-        @if (tabData.party.individual_details?.individual_aliases) {
+        @if (tabData.party.individual_details && tabData.party.individual_details.individual_aliases) {
           <h3 [class]="style.key">Aliases</h3>
           <p [class]="style.value">
-            @for (alias of tabData.party.individual_details?.individual_aliases; track alias) {
+            @for (alias of tabData.party.individual_details.individual_aliases; track alias) {
               {{ alias.forenames }} {{ alias.surname | uppercase }}<br />
             }
           </p>
@@ -69,8 +71,11 @@
       @if (!tabData.party.organisation_flag) {
         <h3 [class]="style.key">National Insurance Number</h3>
         <p [class]="style.value">
-          @if (tabData.party.individual_details?.national_insurance_number) {
-            {{ tabData.party.individual_details?.national_insurance_number! | nationalInsurance }}
+          @if (tabData.party.individual_details && tabData.party.individual_details.national_insurance_number) {
+            {{
+              tabData.party.individual_details && tabData.party.individual_details.national_insurance_number
+                | nationalInsurance
+            }}
           } @else {
             <app-fines-not-provided></app-fines-not-provided>
           }

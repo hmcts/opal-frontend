@@ -44,6 +44,8 @@ import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
+import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -67,7 +69,7 @@ import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccMinorCreditorDetailsComponent
-  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountMinorCreditorDetailsHeader, { version: string | null }>
+  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountMinorCreditorDetailsHeader, IOpalFinesVersion>
   implements OnInit, OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
@@ -88,7 +90,7 @@ export class FinesAccMinorCreditorDetailsComponent
    * @param serviceCall The observable service call to fetch the tab data.
    * @returns An observable of the typed tab data.
    */
-  private fetchTabDataTyped<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
+  private fetchTabDataTyped<T extends IOpalFinesVersion>(serviceCall: Observable<T>): Observable<T> {
     return this.fetchTabData(serviceCall, (version) => this.accountStore.compareVersion(version)) as Observable<T>;
   }
 
@@ -191,7 +193,7 @@ export class FinesAccMinorCreditorDetailsComponent
    * @param data The tab data to transform, which must include a version property for cache validation.
    * @returns The transformed tab data, typed as the same type as the input data.
    */
-  protected override transformTabData<T extends { version: string | null }>(data: T): T {
+  protected override transformTabData<T extends IOpalFinesVersion>(data: T): T {
     return this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
   }
 
@@ -206,7 +208,7 @@ export class FinesAccMinorCreditorDetailsComponent
     this.accountStore.setHasVersionMismatch(false);
 
     super.refreshPage(Number(this.accountStore.account_id()), (header) => {
-      this.accountStore.setSuccessMessage('Information is up to date');
+      this.accountStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.latest);
       this.accountData = header;
     });
   }

@@ -600,7 +600,7 @@ export class OpalFines {
     return this.http.patch<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       payload,
-      this.buildIfMatchHeader(payload.version),
+      this.buildIfMatchHeader(payload.version!),
     );
   }
 

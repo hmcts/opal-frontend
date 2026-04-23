@@ -33,6 +33,7 @@ import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/
 import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -137,7 +138,7 @@ export class FinesAccPayloadService {
       account_id: Number(account_id),
       pg_party_id: null,
       party_id: headingData.party.party_id,
-      party_type: 'Minor Creditor',
+      party_type: FINES_ACC_PARTY_TYPES.minorCreditor,
       party_name,
       base_version: headingData.version,
       business_unit_id: headingData.business_unit.business_unit_id,

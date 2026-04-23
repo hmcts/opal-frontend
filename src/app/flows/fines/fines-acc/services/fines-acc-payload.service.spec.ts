@@ -306,6 +306,48 @@ describe('FinesAccPayloadService', () => {
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
+  it('should return empty party_name when organisation details are missing for minor creditor organisation', () => {
+    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
+    );
+    const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
+    );
+    const account_id = 77;
+    header.party.organisation_flag = true;
+    delete header.party.organisation_details;
+
+    const result = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
+
+    expect(result.party_name).toBe('');
+    expect(result.account_number).toBe(header.creditor.account_number);
+    expect(result.account_id).toBe(account_id);
+    expect(result.base_version).toBe(header.version);
+  });
+
+  it('should build minor creditor individual party_name without surname when surname is empty', () => {
+    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
+    );
+    const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
+    );
+    const account_id = 77;
+    header.party.organisation_flag = false;
+    header.party.individual_details = {
+      title: 'Ms',
+      forenames: 'Jane',
+      surname: '',
+    };
+    delete header.party.organisation_details;
+
+    const result = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
+
+    expect(result.party_name).toBe('Ms Jane');
+    expect(result.party_type).toBe('Minor Creditor');
+    expect(result.party_id).toBe(header.party.party_id);
+  });
+
   describe('transformDefendantDataToDebtorForm', () => {
     it('should transform complete defendant data to debtor form', () => {
       const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(

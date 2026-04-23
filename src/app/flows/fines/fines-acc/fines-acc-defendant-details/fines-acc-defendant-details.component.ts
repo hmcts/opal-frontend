@@ -54,6 +54,8 @@ import { FinesAccSummaryHeaderComponent } from '../fines-acc-summary-header/fine
 import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-account-summary-base';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
+import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
+import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -84,7 +86,7 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsComponent
-  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountDefendantDetailsHeader, { version: string | null }>
+  extends AbstractAccountSummaryBaseComponent<IOpalFinesAccountDefendantDetailsHeader, IOpalFinesVersion>
   implements OnInit, OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
@@ -106,7 +108,7 @@ export class FinesAccDefendantDetailsComponent
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
-  private fetchTabDataTyped<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
+  private fetchTabDataTyped<T extends IOpalFinesVersion>(serviceCall: Observable<T>): Observable<T> {
     return this.fetchTabData(serviceCall, (version) => this.accountStore.compareVersion(version)) as Observable<T>;
   }
 
@@ -285,7 +287,7 @@ export class FinesAccDefendantDetailsComponent
     return this.payloadService.transformPayload(header, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
   }
 
-  protected override transformTabData<T extends { version: string | null }>(data: T): T {
+  protected override transformTabData<T extends IOpalFinesVersion>(data: T): T {
     return this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
   }
 
@@ -332,7 +334,7 @@ export class FinesAccDefendantDetailsComponent
     this.accountStore.setHasVersionMismatch(false);
 
     super.refreshPage(Number(this.accountStore.account_id()), (header) => {
-      this.accountStore.setSuccessMessage('Information is up to date');
+      this.accountStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.latest);
       this.accountData = header;
     });
   }

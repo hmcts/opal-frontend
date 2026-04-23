@@ -25,4 +25,5 @@ export const OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITHOUT_DEFENDANT_MOC
       is_bacs: false,
       hold_payment: false,
     },
+    defendant: null,
   };

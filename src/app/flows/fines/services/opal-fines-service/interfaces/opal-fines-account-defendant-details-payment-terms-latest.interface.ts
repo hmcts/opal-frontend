@@ -1,7 +1,7 @@
 import { IOpalFinesDefendantAccountPaymentTermsSummary } from './opal-fines-defendant-account-payment-terms-summary.interface';
+import { IOpalFinesVersion } from './opal-fines-version.interface';
 
-export interface IOpalFinesAccountDefendantDetailsPaymentTermsLatest {
-  version: string | null;
+export interface IOpalFinesAccountDefendantDetailsPaymentTermsLatest extends IOpalFinesVersion {
   payment_terms: {
     days_in_default: number | null;
     date_days_in_default_imposed: string | null;
