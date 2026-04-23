@@ -3,13 +3,13 @@ import { IFinesMacAccountCommentsNotesFieldErrors } from '../interfaces/fines-ma
 export const FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS: IFinesMacAccountCommentsNotesFieldErrors = {
   fm_account_comments_notes_comments: {
     alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
-      message: `Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      message: `Add comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 1,
     },
   },
   fm_account_comments_notes_notes: {
     alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
-      message: `Add account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      message: `Add account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 1,
     },
   },

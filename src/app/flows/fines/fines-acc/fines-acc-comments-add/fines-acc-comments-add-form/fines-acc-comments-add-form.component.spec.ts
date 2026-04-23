@@ -102,11 +102,11 @@ describe('FinesAccCommentsAddFormComponent', () => {
 
     // Valid patterns
     commentControl.setValue("Valid text-123, with's dots.");
-    expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeFalsy();
+    expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']).toBeFalsy();
 
     // Invalid patterns
     commentControl.setValue('Invalid@symbol');
-    expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeTruthy();
+    expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']).toBeTruthy();
   });
 
   it('should accept commas in the comment field', () => {
@@ -195,14 +195,14 @@ describe('FinesAccCommentsAddFormComponent', () => {
     const commentControl = component.form.get('facc_add_comment') as FormControl;
     const mockEvent = { submitter: null } as SubmitEvent;
     const expectedErrorMessage =
-      FINES_ACC_ADD_COMMENTS_FIELD_ERRORS.facc_add_comment['alphanumericWithHyphensSpacesApostrophesDotPattern']
+      FINES_ACC_ADD_COMMENTS_FIELD_ERRORS.facc_add_comment['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']
         .message;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
     commentControl.setValue('Invalid?');
 
-    expect(commentControl.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeTruthy();
+    expect(commentControl.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBeTruthy();
 
     component.handleFormSubmit(mockEvent);
 

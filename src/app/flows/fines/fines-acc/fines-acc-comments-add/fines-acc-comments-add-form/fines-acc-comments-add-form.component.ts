@@ -26,7 +26,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines
 
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+  'alphanumericWithHyphensSpacesApostrophesCommasDotPattern',
 );
 
 @Component({
