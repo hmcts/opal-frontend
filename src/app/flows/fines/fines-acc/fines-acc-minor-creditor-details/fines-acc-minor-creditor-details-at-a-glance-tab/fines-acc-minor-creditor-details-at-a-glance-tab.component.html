@@ -5,10 +5,12 @@
       <hr [class]="style.hr" />
 
       @if (tabData.party.organisation_flag) {
-        <h3 [class]="style.key">Company Name</h3>
-        <p [class]="style.value">
-          {{ tabData.party.organisation_details?.organisation_name }}
-        </p>
+        @if (tabData.party.organisation_details && tabData.party.organisation_details.organisation_name) {
+          <h3 [class]="style.key">Company Name</h3>
+          <p [class]="style.value">
+            {{ tabData.party.organisation_details.organisation_name }}
+          </p>
+        }
 
         @if (tabData.party.organisation_details && tabData.party.organisation_details.organisation_aliases) {
           <h3 [class]="style.key">Aliases</h3>
