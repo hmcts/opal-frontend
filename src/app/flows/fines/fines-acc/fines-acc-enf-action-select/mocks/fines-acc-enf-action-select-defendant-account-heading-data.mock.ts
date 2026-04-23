@@ -4,6 +4,7 @@ import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc-defenda
 export const FINES_ACC_ENF_ACTION_SELECT_DEFENDANT_ACCOUNT_HEADING_DATA_MOCK: IOpalFinesAccountDefendantDetailsHeader =
   {
     ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+    debtor_type: 'Defendant',
     is_youth: true,
     party_details: {
       ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.party_details),
