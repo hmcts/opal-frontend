@@ -149,6 +149,32 @@ describe('FinesAccEnfActionSelectComponent', () => {
     expect(component.warningMessages).toEqual([]);
   });
 
+  it('should not show the youth account warning for parent guardian to pay accounts', () => {
+    activatedRouteStub.snapshot.data.defendantAccountHeadingData = {
+      ...structuredClone(FINES_ACC_ENF_ACTION_SELECT_DEFENDANT_ACCOUNT_HEADING_DATA_MOCK),
+      debtor_type: 'Parent/Guardian',
+      is_youth: true,
+      party_details: {
+        ...structuredClone(FINES_ACC_ENF_ACTION_SELECT_DEFENDANT_ACCOUNT_HEADING_DATA_MOCK.party_details),
+        organisation_flag: false,
+      },
+    };
+    activatedRouteStub.snapshot.data.enforcementStatus = {
+      ...structuredClone(FINES_ACC_ENF_ACTION_SELECT_ENFORCEMENT_STATUS_MOCK),
+      enforcement_overview: {
+        ...structuredClone(FINES_ACC_ENF_ACTION_SELECT_ENFORCEMENT_STATUS_MOCK.enforcement_overview),
+        collection_order: {
+          collection_order_date: '2025-12-10',
+          collection_order_flag: true,
+        },
+      },
+    };
+
+    createComponent();
+
+    expect(component.warningMessages).toEqual([]);
+  });
+
   it('should map next permitted actions into autocomplete options', () => {
     expect(mockOpalFinesService.getResultPrettyName).toHaveBeenCalledTimes(2);
     expect(component.actionOptions).toEqual(FINES_ACC_ENF_ACTION_SELECT_ACTION_OPTIONS_MOCK);

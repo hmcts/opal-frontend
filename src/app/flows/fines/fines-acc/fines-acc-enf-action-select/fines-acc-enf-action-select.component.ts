@@ -15,6 +15,7 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@service
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES } from './constants/fines-acc-enf-action-select-warning-messages.constant';
+import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-action-select',
@@ -29,6 +30,7 @@ export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComp
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
+  private readonly debtorTypes = FINES_ACC_DEBTOR_TYPES;
 
   public readonly accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public readonly partyName = this.finesAccStore.party_name() ?? '';
@@ -56,7 +58,7 @@ export class FinesAccEnfActionSelectComponent extends AbstractFormParentBaseComp
       this.warningMessages.push(FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.collectionOrderMissing);
     }
 
-    if (headerData.is_youth) {
+    if (headerData.is_youth && headerData.debtor_type === this.debtorTypes.defendant) {
       this.warningMessages.push(FINES_ACC_ENF_ACTION_SELECT_WARNING_MESSAGES.youthAccount);
     }
 
