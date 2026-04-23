@@ -96,6 +96,22 @@ describe('FinesAccPaymentHoldAddComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should initialise accountNumber and partyName from store values when present', () => {
+    expect(component.accountNumber).toBe('123456');
+    expect(component.partyName).toBe('Test Creditor');
+  });
+
+  it('should default accountNumber and partyName to empty strings when store values are null', () => {
+    finesAccStoreMock.getAccountNumber.mockReturnValue(null);
+    finesAccStoreMock.party_name.mockReturnValue(null);
+
+    const nullishFixture = TestBed.createComponent(FinesAccPaymentHoldAddComponent);
+    const nullishComponent = nullishFixture.componentInstance;
+
+    expect(nullishComponent.accountNumber).toBe('');
+    expect(nullishComponent.partyName).toBe('');
+  });
+
   it('should navigate to minor creditor details page with at-a-glance fragment', () => {
     component.navigateToMinorCreditorDetailsPage();
 
