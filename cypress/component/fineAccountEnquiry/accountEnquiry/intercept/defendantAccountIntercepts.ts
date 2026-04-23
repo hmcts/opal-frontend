@@ -77,6 +77,18 @@ export function interceptDefendantDetails(
     })
     .as('getDefendantDetails');
 }
+
+export function interceptPutDefendantAccountParty(
+  accountId: string | number,
+  mockData: IOpalFinesAccountDefendantAccountParty,
+) {
+  return cy
+    .intercept('PUT', `**/defendant-accounts/${accountId}/defendant-account-parties/**`, {
+      statusCode: 200,
+      body: mockData,
+    })
+    .as('putDefendantAccountParty');
+}
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
