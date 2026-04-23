@@ -6,13 +6,13 @@ export interface IOpalFinesAccountMinorCreditorAtAGlance extends IOpalFinesVersi
   party: IOpalFinesDefendantAccountPartyDetails;
   address: IOpalFinesDefendantAccountAddress;
   creditor_account_id: string;
-  defendant?: {
+  defendant: {
     account_number: string;
     account_id: number;
     title: string;
     forenames: string;
     surname: string;
-  };
+  } | null;
   payment: {
     is_bacs: boolean;
     hold_payment: boolean;
