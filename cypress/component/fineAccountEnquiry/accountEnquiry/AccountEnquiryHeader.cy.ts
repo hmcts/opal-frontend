@@ -420,9 +420,9 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     interceptAuthenticatedUser();
   });
 
-  const minorCreditorAccountId = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.account_number;
+  const minorCreditorAccountId = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.creditor.account_id;
   const minorCreditorComponentProperties: IComponentProperties = {
-    accountId: minorCreditorAccountId,
+    accountId: minorCreditorAccountId.toString(),
     routeRoot: 'minor-creditor',
     fragments: undefined,
     interceptedRoutes: [
@@ -439,11 +439,11 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-KEY:POT-6807'] },
     () => {
       const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
-      header.has_associated_defendant = true;
-      header.awaiting_payout_amount = 100;
-      header.awarded_amount = 200;
-      header.paid_out_amount = 50;
-      header.outstanding_amount = 150;
+      header.creditor.has_associated_defendant = true;
+      header.financials.awaiting_payout = 100;
+      header.financials.awarded = 200;
+      header.financials.paid_out = 50;
+      header.financials.outstanding = 150;
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
@@ -479,8 +479,8 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-KEY:POT-6808'] },
     () => {
       const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
-      header.awaiting_payout_amount = 100;
-      header.paid_out_amount = 50;
+      header.financials.awaiting_payout = 100;
+      header.financials.paid_out = 50;
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
