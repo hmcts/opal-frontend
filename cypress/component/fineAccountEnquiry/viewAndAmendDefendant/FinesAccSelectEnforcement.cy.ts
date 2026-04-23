@@ -266,7 +266,7 @@ describe('Add enforcement action in enforcement tab', () => {
 
   it('AC2b, 3c. Company: navigates to the select enforcement action screen and displays the form incl details', () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-    headerMock.debtor_type = 'company';
+    headerMock.debtor_type = 'Defendant';
     headerMock.account_status_reference.account_status_code = 'L';
     let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
