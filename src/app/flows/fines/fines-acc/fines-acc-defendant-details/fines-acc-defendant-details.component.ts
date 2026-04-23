@@ -55,6 +55,7 @@ import { AbstractAccountSummaryBaseComponent } from '@hmcts/opal-frontend-common
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
+import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -333,7 +334,7 @@ export class FinesAccDefendantDetailsComponent
     this.accountStore.setHasVersionMismatch(false);
 
     super.refreshPage(Number(this.accountStore.account_id()), (header) => {
-      this.accountStore.setSuccessMessage('Information is up to date');
+      this.accountStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.latest);
       this.accountData = header;
     });
   }

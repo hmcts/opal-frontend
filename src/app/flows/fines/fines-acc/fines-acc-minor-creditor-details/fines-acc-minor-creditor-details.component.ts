@@ -45,6 +45,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { IOpalFinesVersion } from '../../services/opal-fines-service/interfaces/opal-fines-version.interface';
+import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
 
 @Component({
   selector: 'app-fines-acc-minor-creditor-details',
@@ -203,7 +204,7 @@ export class FinesAccMinorCreditorDetailsComponent
     this.accountStore.setHasVersionMismatch(false);
 
     super.refreshPage(Number(this.accountStore.account_id()), (header) => {
-      this.accountStore.setSuccessMessage('Information is up to date');
+      this.accountStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.latest);
       this.accountData = header;
     });
   }
