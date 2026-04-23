@@ -968,7 +968,6 @@ export class OpalFines {
     businessUnitId?: string,
   ): Observable<IOpalFinesUpdateDefendantAccountResponse> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`;
-
     const headers: Record<string, string> = {};
     if (version) {
       headers['If-Match'] = version;
@@ -1105,7 +1104,6 @@ export class OpalFines {
     businessUnitId?: string,
   ): Observable<IOpalFinesUpdateMinorCreditorAccountPayload> {
     const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}`;
-
     const headers: Record<string, string> = {};
     if (version) {
       headers['If-Match'] = version;
@@ -1113,9 +1111,6 @@ export class OpalFines {
     if (businessUnitId !== undefined) {
       headers['Business-Unit-Id'] = businessUnitId;
     }
-
-    console.log('Updating minor creditor account with payload:', payload);
-    console.log('Using headers:', headers);
 
     return this.http.patch<IOpalFinesUpdateMinorCreditorAccountPayload>(url, payload, { headers });
   }
