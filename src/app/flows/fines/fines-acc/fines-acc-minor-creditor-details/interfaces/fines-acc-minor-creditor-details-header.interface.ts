@@ -1,5 +1,6 @@
-export interface IOpalFinesAccountMinorCreditorDetailsHeader {
-  version: string | null;
+import { IOpalFinesVersion } from '../../../services/opal-fines-service/interfaces/opal-fines-version.interface';
+
+export interface IOpalFinesAccountMinorCreditorDetailsHeader extends IOpalFinesVersion {
   creditor: {
     account_id: number;
     account_number: string;

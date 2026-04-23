@@ -1,9 +1,10 @@
+import { IOpalFinesVersion } from './opal-fines-version.interface';
+
 interface IOpalFinesAccountDefendantDetailsEnforcementTabRefDataEnforcementOverviewCollectionOrder {
   collection_order_date: string;
   collection_order_flag: boolean;
 }
-export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
-  version: string | null;
+export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData extends IOpalFinesVersion {
   account_status_reference: {
     account_status_code: string;
     account_status_display_name: string;
