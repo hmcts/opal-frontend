@@ -166,4 +166,21 @@ export const AccountAtAGlanceLocators = {
     freeTextNotesValue:
       'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Comments")) h3:contains("Free text notes") + p',
   },
+
+  minorCreditor: {
+    /** Root element for the minor creditor At a glance tab content. */
+    root: 'app-fines-acc-minor-creditor-details-at-a-glance-tab',
+
+    fields: {
+      /** Minor creditor name value. */
+      name: 'app-fines-acc-minor-creditor-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Minor creditor")) h3:contains("Name") + p',
+
+      /** Minor creditor address value (may contain line breaks). */
+      address:
+        'app-fines-acc-minor-creditor-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Minor creditor")) h3:contains("Address") + p',
+
+      /** Minor creditor BACS status badge text. */
+      bacsDetails: 'app-fines-acc-minor-creditor-details-at-a-glance-tab #is_bacs-badge',
+    },
+  },
 };

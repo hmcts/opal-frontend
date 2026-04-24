@@ -603,6 +603,16 @@ Then('I should see the following language preferences on the At a glance tab:', 
 });
 
 /**
+ * @step Asserts selected values shown on the minor creditor At a glance tab.
+ */
+Then('I should see the following minor creditor values on the At a glance tab:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting selected values on the minor creditor At a glance tab', { expectedValues });
+  atAGlanceDetails().assertMinorCreditorAtAGlanceValues(expectedValues);
+});
+
+/**
  * @step Asserts the payment terms tab is active.
  */
 Then('I should return to the Payment terms tab', () => {

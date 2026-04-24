@@ -18,6 +18,8 @@ const log = createScopedLogger('ResultsActions');
 export class ResultsActions {
   /** Default timeout (ms) used by this actions class. */
   private static readonly WAIT_MS = 15_000;
+  private static readonly DETAILS_ROUTE_PATTERN =
+    /^\/fines\/account\/(?:defendant|minor-creditor)\/[A-Za-z0-9-]+\/details$/;
   private static readonly INDIVIDUAL_RESULTS_HEADERS = [
     'Account',
     'Name',
@@ -247,8 +249,15 @@ export class ResultsActions {
     cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS })
       .should('have.length.greaterThan', 0)
       .first()
-      .within(() => {
-        cy.get(R.cols.accountLink, { timeout: 10_000 })
+      .then(($row) => {
+        const linkSelector = $row.find(R.cols.minorCreditorAccountLink).length
+          ? R.cols.minorCreditorAccountLink
+          : R.cols.accountLink;
+
+        log('info', 'Resolved latest results link selector', { linkSelector });
+
+        cy.wrap($row)
+          .find(linkSelector, { timeout: 10_000 })
           .scrollIntoView()
           .then(($a) => {
             const acctNo = $a.text().trim();
@@ -457,7 +466,7 @@ export class ResultsActions {
    */
   private assertNavigatedToDetails(): void {
     cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should((p) => {
-      expect(p, 'navigated to details').to.match(/^\/fines\/account\/defendant\/[A-Za-z0-9-]+\/details$/);
+      expect(p, 'navigated to details').to.match(ResultsActions.DETAILS_ROUTE_PATTERN);
     });
   }
 

@@ -5,13 +5,11 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines
 import { IFinesAccSummaryTabsContentStyles } from '../../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_DEBTOR_TYPES } from '../../constants/fines-acc-debtor-types.constant';
-import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/national-insurance';
-import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '@app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 @Component({
   selector: 'app-fines-acc-minor-creditor-details-at-a-glance-tab',
-  imports: [UpperCasePipe, MojBadgeComponent, NationalInsurancePipe, FinesNotProvidedComponent, DateFormatPipe],
+  imports: [UpperCasePipe, MojBadgeComponent, DateFormatPipe],
   templateUrl: './fines-acc-minor-creditor-details-at-a-glance-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

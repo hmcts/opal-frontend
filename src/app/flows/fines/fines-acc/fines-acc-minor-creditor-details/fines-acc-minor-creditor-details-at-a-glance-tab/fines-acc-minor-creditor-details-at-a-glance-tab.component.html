@@ -67,20 +67,6 @@
         <br />
         {{ tabData.address.postcode | uppercase }}
       </p>
-
-      @if (!tabData.party.organisation_flag) {
-        <h3 [class]="style.key">National Insurance Number</h3>
-        <p [class]="style.value">
-          @if (tabData.party.individual_details && tabData.party.individual_details.national_insurance_number) {
-            {{
-              tabData.party.individual_details && tabData.party.individual_details.national_insurance_number
-                | nationalInsurance
-            }}
-          } @else {
-            <app-fines-not-provided></app-fines-not-provided>
-          }
-        </p>
-      }
     </div>
 
     @if (tabData.defendant && hasAssociatedDefendant) {
@@ -98,7 +84,7 @@
           >
         </p>
 
-        <h3 [class]="style.key">Defendant Name</h3>
+        <h3 [class]="style.key">Defendant name</h3>
         <p [class]="style.value">
           {{ tabData.defendant.title }}
           {{ tabData.defendant.forenames }}
@@ -110,6 +96,7 @@
     <div class="govuk-grid-column-one-third">
       <h2 [class]="style.heading">Payout status</h2>
       <hr [class]="style.hr" />
+      <h3 [class]="style.key">BACS details</h3>
       @if (tabData.payment.is_bacs) {
         <opal-lib-moj-badge badgeId="is_bacs-badge" badgeClasses="moj-badge--blue govuk-!-margin-bottom-2"
           >Provided</opal-lib-moj-badge
