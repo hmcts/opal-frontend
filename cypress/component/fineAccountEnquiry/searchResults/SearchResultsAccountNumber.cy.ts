@@ -20,20 +20,18 @@ const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIR
 
 describe('FinesSaResultsComponent - All Account Types', () => {
   let fragmentSubject: BehaviorSubject<string>;
-
-  let searchResultState = {
-    searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
+  const createSearchResultState = () => ({
+    searchAccount: structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK),
     unsavedChanges: false,
     stateChanges: false,
-  };
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
 
-  afterEach(() => {
+  beforeEach(() => {
     fragmentSubject?.complete();
-    searchResultState = {
-      searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
   });
 
   const setupComponent = (
@@ -44,6 +42,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
     // Create BehaviorSubject for reactive fragment changes (signals-compatible)
     fragmentSubject = new BehaviorSubject(initialFragment);
+    searchResultState = structuredClone(searchResultStateTemplate);
 
     mount(FinesSaResultsComponent, {
       providers: [
@@ -112,13 +111,13 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       setupComponent('EMPTY_RESULTS');
 
       // AC3a: Verify the error screen is displayed when no search matches are found
-      cy.get(ResultsMessageLocators.noResultsHeading).should('be.visible');
-      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.heading).should('be.visible');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are no matching results');
 
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible');
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
+      cy.get(ResultsMessageLocators.link).should('be.visible');
+      cy.get(ResultsMessageLocators.link).should('contain', 'Check your search');
       // AC3b: Verify 'Check your search' link is clickable and functional
-      cy.get(ResultsMessageLocators.checkYourSearchLink).click();
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
@@ -131,16 +130,14 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       setupComponent('LARGE_RESULTS');
 
       // AC4a: Verify the "too many results" error screen is displayed
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('be.visible');
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsMessageLocators.heading).should('be.visible');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are more than 100 results');
 
       // Note: AC4b The 'Try adding more information' link will navigate a user back to the Search for an Account screen - Full Test to be implemented when API complete
       // AC4b: Verify 'Try adding more information' link is present
-      cy.get(ResultsMessageLocators.addMoreInfoLink)
-        .should('be.visible')
-        .should('contain', 'Try adding more information');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
+      cy.get(ResultsMessageLocators.link).should('be.visible').should('contain', 'Try adding more information');
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 

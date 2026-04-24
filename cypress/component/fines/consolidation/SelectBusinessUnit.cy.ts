@@ -19,6 +19,10 @@ describe('FinesConSelectBuFormComponent', () => {
   let defendantTypes = structuredClone(FINES_CON_DEFENDANT_TYPES);
 
   const setupComponent = (formSubmit?: any) => {
+    finesConFormData = structuredClone(finesConFormData);
+    autoCompleteItems = structuredClone(autoCompleteItems);
+    defendantTypes = structuredClone(defendantTypes);
+
     return mount(FinesConSelectBuFormComponent, {
       providers: [
         OpalFines,
@@ -65,6 +69,7 @@ describe('FinesConSelectBuFormComponent', () => {
   beforeEach(() => {
     finesConFormData = structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
     autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
+    defendantTypes = structuredClone(FINES_CON_DEFENDANT_TYPES);
   });
 
   it(
