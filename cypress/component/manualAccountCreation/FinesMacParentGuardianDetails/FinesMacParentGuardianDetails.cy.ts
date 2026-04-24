@@ -26,9 +26,16 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
+  beforeEach(() => {
+    finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState = finesMacStateTemplate;
+  });
 
   const setupComponent = (formSubmit?: any, mockDefendantType: string = '') => {
+    finesMacState = structuredClone(finesMacStateTemplate);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = mockDefendantType;
 
     return mount(FinesMacParentGuardianDetailsComponent, {
@@ -68,25 +75,6 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       fixture.detectChanges();
     });
   };
-
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.parentGuardianDetails.formData = {
-        fm_parent_guardian_details_forenames: '',
-        fm_parent_guardian_details_surname: '',
-        fm_parent_guardian_details_add_alias: false,
-        fm_parent_guardian_details_aliases: [],
-        fm_parent_guardian_details_dob: '',
-        fm_parent_guardian_details_national_insurance_number: '',
-        fm_parent_guardian_details_address_line_1: '',
-        fm_parent_guardian_details_address_line_2: '',
-        fm_parent_guardian_details_address_line_3: '',
-        fm_parent_guardian_details_post_code: '',
-        fm_parent_guardian_details_vehicle_make: '',
-        fm_parent_guardian_details_vehicle_registration_mark: '',
-      };
-    });
-  });
 
   it(
     'should render the ParentGuardianDetails component',

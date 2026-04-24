@@ -17,9 +17,16 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacEmployerDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_EMPLOYER_DETAILS_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_EMPLOYER_DETAILS_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
+  beforeEach(() => {
+    finesMacStateTemplate = structuredClone(FINES_EMPLOYER_DETAILS_MOCK);
+    finesMacState = finesMacStateTemplate;
+  });
 
   const setupComponent = (formSubmit?: any, defendantTypeMock: string = '') => {
+    finesMacState = structuredClone(finesMacStateTemplate);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypeMock;
     return mount(FinesMacEmployerDetailsComponent, {
       providers: [
@@ -58,23 +65,6 @@ describe('FinesMacEmployerDetailsComponent', () => {
       fixture.detectChanges();
     });
   };
-
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.employerDetails.formData = {
-        fm_employer_details_employer_company_name: '',
-        fm_employer_details_employer_reference: '',
-        fm_employer_details_employer_email_address: '',
-        fm_employer_details_employer_telephone_number: '',
-        fm_employer_details_employer_address_line_1: '',
-        fm_employer_details_employer_address_line_2: '',
-        fm_employer_details_employer_address_line_3: '',
-        fm_employer_details_employer_address_line_4: '',
-        fm_employer_details_employer_address_line_5: '',
-        fm_employer_details_employer_post_code: '',
-      };
-    });
-  });
 
   it(
     'should render the component for AY',

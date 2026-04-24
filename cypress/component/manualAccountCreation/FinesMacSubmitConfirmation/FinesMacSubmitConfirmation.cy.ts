@@ -10,18 +10,13 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacSubmitConfirmation', () => {
-  let mockFinesService = {
-    finesMacState: { ...FINES_MAC_STATE_MOCK },
-  };
+  const createMockFinesService = () => ({
+    finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+  });
+  let mockFinesService = createMockFinesService();
 
-  afterEach(() => {
-    cy.then(() => {
-      mockFinesService.finesMacState.accountCommentsNotes.formData = {
-        fm_account_comments_notes_comments: '',
-        fm_account_comments_notes_notes: '',
-        fm_account_comments_notes_system_notes: '',
-      };
-    });
+  beforeEach(() => {
+    mockFinesService = createMockFinesService();
   });
 
   const setupComponent = () => {

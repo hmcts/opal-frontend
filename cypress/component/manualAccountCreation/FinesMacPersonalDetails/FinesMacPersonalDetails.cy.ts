@@ -1,7 +1,4 @@
-import { mount } from 'cypress/angular';
 import { FinesMacPersonalDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/fines-mac-personal-details.component';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
-import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import {
   FORMAT_CHECK,
@@ -16,77 +13,41 @@ import {
   getAliasFirstName,
   getAliasLastName,
 } from '../../../shared/selectors/manual-account-creation/mac.personal-details.locators';
-import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { calculateDOB } from 'cypress/support/utils/dateUtils';
-import { of } from 'rxjs';
+import { mountMacStoreComponent } from '../support/mountMacStoreComponent';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacPersonalDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+  type FinesMacPersonalDetailsState = typeof FINES_MAC_STATE_MOCK;
 
-  const setupComponent = (formSubmit?: any, defendantTypeMock: string = '') => {
+  const buildFinesMacPersonalDetailsState = (
+    defendantTypeMock: string = '',
+    configure?: (finesMacState: FinesMacPersonalDetailsState) => void,
+  ): FinesMacPersonalDetailsState => {
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypeMock;
+    configure?.(finesMacState);
+    return finesMacState;
+  };
 
-    return mount(FinesMacPersonalDetailsComponent, {
-      providers: [
-        OpalFines,
-        {
-          provide: FinesMacStore,
-          useFactory: () => {
-            const store = new FinesMacStore();
-            store.setFinesMacStore(finesMacState);
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: of('manual-account-creation'),
-          },
-        },
-      ],
+  const setupComponent = (
+    formSubmit?: any,
+    defendantTypeMock: string = '',
+    configure?: (finesMacState: FinesMacPersonalDetailsState) => void,
+  ) =>
+    mountMacStoreComponent({
+      component: FinesMacPersonalDetailsComponent,
       componentProperties: {
         defendantType: defendantTypeMock,
       },
-    }).then(({ fixture }) => {
-      if (!formSubmit) {
-        return;
-      }
-
-      const comp: any = fixture.componentInstance as any;
-
-      if (comp?.handlePersonalDetailsSubmit?.subscribe) {
-        comp.handlePersonalDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
-      } else if (typeof comp?.handlePersonalDetailsSubmit === 'function') {
-        comp.handlePersonalDetailsSubmit = formSubmit;
-      }
-
-      fixture.detectChanges();
+      formSubmit,
+      initialState: buildFinesMacPersonalDetailsState(defendantTypeMock, configure),
+      submitHandlerName: 'handlePersonalDetailsSubmit',
     });
-  };
 
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.personalDetails.formData = {
-        fm_personal_details_title: '',
-        fm_personal_details_forenames: '',
-        fm_personal_details_surname: '',
-        fm_personal_details_add_alias: null,
-        fm_personal_details_aliases: [],
-        fm_personal_details_dob: '',
-        fm_personal_details_national_insurance_number: '',
-        fm_personal_details_address_line_1: '',
-        fm_personal_details_address_line_2: '',
-        fm_personal_details_address_line_3: '',
-        fm_personal_details_post_code: '',
-        fm_personal_details_vehicle_make: '',
-        fm_personal_details_vehicle_registration_mark: '',
-      };
-    });
-  });
   it(
     '(AC.1a) should load all elements on the screen correctly',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7575'] },
@@ -95,9 +56,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Personal details');
 
-      cy.get(DOM_ELEMENTS.firstNameInput).should('exist');
+      cy.get(DOM_ELEMENTS.firstNamesInput).should('exist');
       cy.get(DOM_ELEMENTS.lastNameInput).should('exist');
-      cy.get(DOM_ELEMENTS.dobInput).should('exist');
+      cy.get(DOM_ELEMENTS.dateOfBirthInput).should('exist');
       cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
       cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
       cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
@@ -159,11 +120,11 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.1b) should not have any asterisks in address lines',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7579'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'asja*';
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'asja*';
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'asja*';
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'asja*';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'asja*';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'asja*';
+      });
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       for (let i = 1; i <= 3; i++) {
@@ -176,14 +137,14 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.1a) should not allow first names,last names and Address lines 1,2 & 3 to have more than max characters',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7580'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_forenames =
-        'John Smithy Michael John Smithy Michael long';
-      finesMacState.personalDetails.formData.fm_personal_details_surname = 'Astridge Lamsden Langley Treen long';
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'a'.repeat(31);
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'a'.repeat(31);
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'a'.repeat(31);
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_forenames =
+          'John Smithy Michael John Smithy Michael long';
+        finesMacState.personalDetails.formData.fm_personal_details_surname = 'Astridge Lamsden Langley Treen long';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'a'.repeat(31);
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'a'.repeat(31);
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'a'.repeat(31);
+      });
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -270,17 +231,18 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.8) should validate unticking add aliases removes all aliases',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7583'] },
     () => {
-      setupComponent(null);
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+          [`fm_personal_details_alias_forenames_${0}`]: 'AliasFNAME1',
+          [`fm_personal_details_alias_surname_${0}`]: 'AliasLNAME1',
+        });
+        finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+          [`fm_personal_details_alias_forenames_${1}`]: 'AliasFNAME2',
+          [`fm_personal_details_alias_surname_${1}`]: 'AliasLNAME2',
+        });
+      });
       cy.get(DOM_ELEMENTS.aliasAdd).check();
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-        [`fm_personal_details_alias_forenames_${0}`]: 'AliasFNAME1',
-        [`fm_personal_details_alias_surname_${0}`]: 'AliasLNAME1',
-      });
-      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-        [`fm_personal_details_alias_forenames_${1}`]: 'AliasFNAME2',
-        [`fm_personal_details_alias_surname_${1}`]: 'AliasLNAME2',
-      });
       cy.get(getAliasFirstName(0)).should('have.value', 'AliasFNAME1');
       cy.get(getAliasLastName(0)).should('have.value', 'AliasLNAME1');
       cy.get(getAliasFirstName(1)).should('have.value', 'AliasFNAME2');
@@ -312,11 +274,11 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.10) should show error for missing alias last name',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7585'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
-      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-        fm_personal_details_alias_surname_0: 'Smith',
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+        finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+          fm_personal_details_alias_surname_0: 'Smith',
+        });
       });
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
@@ -328,11 +290,11 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.10) should show error for missing alias first name',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7586'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
-      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-        fm_personal_details_alias_forenames_0: 'John',
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+        finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+          fm_personal_details_alias_forenames_0: 'John',
+        });
       });
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
@@ -344,17 +306,17 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.10) should show error for missing additional alias first name',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7587'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
-      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-        fm_personal_details_alias_forenames_0: 'John',
-        fm_personal_details_alias_surname_0: 'Smith',
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+        finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+          fm_personal_details_alias_forenames_0: 'John',
+          fm_personal_details_alias_surname_0: 'Smith',
+        });
+        finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+          fm_personal_details_alias_surname_1: 'Smith',
+        });
       });
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-        fm_personal_details_alias_surname_1: 'Smith',
-      });
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
@@ -372,17 +334,17 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.10) should show error for missing additional alias last name',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7588'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
-      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-        fm_personal_details_alias_forenames_0: 'John',
-        fm_personal_details_alias_surname_0: 'Smith',
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+        finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+          fm_personal_details_alias_forenames_0: 'John',
+          fm_personal_details_alias_surname_0: 'Smith',
+        });
+        finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+          fm_personal_details_alias_forenames_1: 'John',
+        });
       });
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
-        fm_personal_details_alias_forenames_1: 'John',
-      });
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
@@ -400,13 +362,12 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.9) should show error for future date of birth',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7589'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
-      finesMacState.personalDetails.formData.fm_personal_details_forenames = 'John';
-      finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/3000';
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
+        finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
+        finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/3000';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
+      });
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Enter a valid date of birth in the past');
     },
@@ -416,9 +377,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.9) should show error for invalid date format',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7590'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/,.';
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/,.';
+      });
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
     },
@@ -428,14 +389,13 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.11) should not accept national insurance number in the incorrect format',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-360'), '@JIRA-KEY:POT-7591'] },
     () => {
-      setupComponent(null);
-
-      finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
-      finesMacState.personalDetails.formData.fm_personal_details_forenames = 'John';
-      finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/3000';
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
-      finesMacState.personalDetails.formData.fm_personal_details_national_insurance_number = 'AB1234565C';
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
+        finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
+        finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/3000';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
+        finesMacState.personalDetails.formData.fm_personal_details_national_insurance_number = 'AB1234565C';
+      });
 
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['validNationalInsuranceNumber']);
@@ -448,12 +408,13 @@ describe('FinesMacPersonalDetailsComponent', () => {
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
-
-      finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Stuart Philips aarogyam Guuci Coach VII';
-      finesMacState.personalDetails.formData.fm_personal_details_surname =
-        'Chicago bulls Burberry RedBull 2445 PizzaHut';
-      finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'test Road *12';
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_forenames =
+          'Stuart Philips aarogyam Guuci Coach VII';
+        finesMacState.personalDetails.formData.fm_personal_details_surname =
+          'Chicago bulls Burberry RedBull 2445 PizzaHut';
+        finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'test Road *12';
+      });
 
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
 
@@ -461,8 +422,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
 
-      cy.get(DOM_ELEMENTS.titleInput).select('Mr');
-      cy.get(DOM_ELEMENTS.firstNameInput).clear().type('f', { delay: 0 });
+      cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
+      cy.get(DOM_ELEMENTS.firstNamesInput).clear().type('f', { delay: 0 });
       cy.get(DOM_ELEMENTS.lastNameInput).clear().type('s', { delay: 0 });
       cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
 
@@ -477,15 +438,16 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.5) should render vehicle details for adultOrYouthOnly defendant type and validate max length of data',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-502'), '@JIRA-KEY:POT-7593'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
+      setupComponent(null, 'adultOrYouthOnly', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = 'a'.repeat(51);
+        finesMacState.personalDetails.formData.fm_personal_details_vehicle_registration_mark = 'a'.repeat(24);
+      });
 
       // Verify the vehicle details section is rendered
       cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('contain', 'Registration number');
       cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
-      cy.get(DOM_ELEMENTS.vehicle_makeInput).should('exist');
-      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('exist');
-      finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = 'a'.repeat(51);
-      finesMacState.personalDetails.formData.fm_personal_details_vehicle_registration_mark = 'a'.repeat(24);
+      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -498,9 +460,10 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.2) should display age panel when entering a valid age for youth',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-502'), '@JIRA-KEY:POT-7594'] },
     () => {
-      setupComponent(null);
       const age = 17;
-      finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
+      });
       cy.get('.moj-ticket-panel').should('exist');
       cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
       cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Youth');
@@ -510,9 +473,10 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.3) should display age panel when entering a valid age for adult',
     { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-502'), '@JIRA-KEY:POT-7595'] },
     () => {
-      setupComponent(null);
       const age = 18;
-      finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
+      setupComponent(null, '', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
+      });
       cy.get('.moj-ticket-panel').should('exist');
       cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
       cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Adult');
@@ -528,8 +492,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       // Verify the vehicle details section is not rendered
       cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('not.exist');
       cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('not.exist');
-      cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
-      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('not.exist');
     },
   );
 
@@ -540,8 +504,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');
 
-      cy.get(DOM_ELEMENTS.titleInput).select('Mr');
-      cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
+      cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
+      cy.get(DOM_ELEMENTS.firstNamesInput).clear().type('fname', { delay: 0 });
       cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
 
       cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
@@ -579,9 +543,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
       cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
-      cy.get(DOM_ELEMENTS.vehicle_registration_markInput)
-        .type('xy12 abc', { delay: 0 })
-        .should('have.value', 'XY12 ABC');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).type('xy12 abc', { delay: 0 }).should('have.value', 'XY12 ABC');
       cy.get(DOM_ELEMENTS.niNumberInput).type('ab123456c', { delay: 0 }).should('have.value', 'AB123456C');
 
       cy.get(DOM_ELEMENTS.aliasAdd).click();

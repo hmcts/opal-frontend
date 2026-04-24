@@ -14,7 +14,7 @@ const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('FinesAccNoteAddFormComponent', () => {
-  let mockFinesAccountStore: IFinesAccountState = {
+  const mockFinesAccountStore: IFinesAccountState = {
     party_type: 'PERSON',
     party_id: '67890',
     pg_party_id: '12345',
@@ -26,8 +26,11 @@ describe('FinesAccNoteAddFormComponent', () => {
     business_unit_user_id: 'test.user',
     welsh_speaking: null,
   };
+  let finesAccountState = structuredClone(mockFinesAccountStore);
 
   const setupComponent = () => {
+    finesAccountState = structuredClone(mockFinesAccountStore);
+
     mount(FinesAccNoteAddComponent, {
       providers: [
         provideHttpClient(),
@@ -47,7 +50,7 @@ describe('FinesAccNoteAddFormComponent', () => {
           provide: FinesAccountStore,
           useFactory: () => {
             const store = new FinesAccountStore();
-            store.setAccountState(mockFinesAccountStore);
+            store.setAccountState(finesAccountState);
             return store;
           },
         },
@@ -158,7 +161,7 @@ describe('FinesAccNoteAddFormComponent', () => {
         expect(interception.request.body).to.have.nested.property('activity_note.note_type', 'AA');
         expect(interception.request.body).to.have.nested.property(
           'activity_note.record_id',
-          mockFinesAccountStore.account_id,
+          finesAccountState.account_id,
         );
         expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'defendant_accounts');
       });

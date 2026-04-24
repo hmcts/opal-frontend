@@ -10,7 +10,6 @@ export const MacEmployerDetailsLocators = {
   app: 'app-fines-mac-employer-details-form',
   submitButton: 'button[type="submit"]',
   errorSummary: '.govuk-error-summary',
-  pageHeader: 'h1.govuk-heading-l',
   pageTitle: 'h1.govuk-heading-l',
   companyNameLabel: 'label[for="fm_employer_details_employer_company_name"]',
   referenceLabel: 'label[for="fm_employer_details_employer_reference"]',

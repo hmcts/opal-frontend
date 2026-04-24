@@ -42,6 +42,12 @@ describe('FinesMacReviewAccountComponent', () => {
     amend: boolean = true,
     checker: boolean = false,
   ) => {
+    finesMacState = structuredClone(finesMacState);
+    finesDraftState = structuredClone(finesDraftState);
+    finesAccountPayload = structuredClone(finesAccountPayload);
+    finesDraftStateMock = structuredClone(finesDraftStateMock);
+    activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
+
     const reviewAccountFetchMap = activatedRouteMock
       ? {
           finesMacState: finesMacState,
@@ -196,8 +202,8 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.prosecutorCaseReference).should('exist');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist');
 
-      cy.get(DOM_ELEMENTS.headingLarge).should('exist');
-      cy.get(DOM_ELEMENTS.headingMedium).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('exist');
+      cy.get(DOM_ELEMENTS.sectionHeading).should('exist');
       cy.get(DOM_ELEMENTS.dateOfSentence).should('exist');
       cy.get(DOM_ELEMENTS.offencecode).should('exist');
 
@@ -248,7 +254,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
 
-      cy.get(DOM_ELEMENTS.headingMedium).should('contain', 'Totals');
+      cy.get(DOM_ELEMENTS.sectionHeading).should('contain', 'Totals');
       cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£200.00').should('contain', 'Amount imposed');
       cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('contain', '£50.00').should('contain', 'Amount paid');
       cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance)
@@ -874,7 +880,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
       cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
       cy.get(DOM_ELEMENTS.status).contains('In review').should('exist');
-      cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
+      cy.get(DOM_ELEMENTS.sectionHeading).contains('Review history').should('exist');
       cy.get(DOM_ELEMENTS.timeLine).should('exist');
       cy.get(DOM_ELEMENTS.timeLineTitle).contains('Submitted').should('exist');
       cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');

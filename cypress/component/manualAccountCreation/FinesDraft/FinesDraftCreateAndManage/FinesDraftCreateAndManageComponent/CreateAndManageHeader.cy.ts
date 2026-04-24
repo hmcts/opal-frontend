@@ -11,7 +11,7 @@ import {
   DRAFT_SESSION_USER_STATE_INPUTTER_MOCK,
   DRAFT_SESSION_USER_STATE_MOCK,
 } from './mocks/fines-draft-session-mock';
-import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
+import { CreateManageDraftsLocators as DOM_ELEMENTS } from 'cypress/shared/selectors/create-manage-drafts.locators';
 import {
   interceptGetApprovedAccounts,
   interceptGetDeletedAccounts,

@@ -26,21 +26,22 @@ const ResultsPaginationLocators = ResultsLocators.pagination;
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('FinesSaResultsComponent - Companies', () => {
-  let searchResultState = {
-    searchAccount: COMPANY_SEARCH_STATE_MOCK,
+  const createSearchResultState = () => ({
+    searchAccount: structuredClone(COMPANY_SEARCH_STATE_MOCK),
     unsavedChanges: false,
     stateChanges: false,
-  };
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
 
-  afterEach(() => {
-    searchResultState = {
-      searchAccount: COMPANY_SEARCH_STATE_MOCK,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+  beforeEach(() => {
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
   });
 
   const setupComponent = (mockSearchResults = EMPTY_SEARCH_RESULTS_MOCK) => {
+    searchResultState = structuredClone(searchResultStateTemplate);
+
     mount(FinesSaResultsComponent, {
       providers: [
         provideHttpClient(),
@@ -91,13 +92,13 @@ describe('FinesSaResultsComponent - Companies', () => {
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
-      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are no matching results');
 
       //(AC2b) Check your search link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible').click();
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).should('be.visible').click();
+      cy.get(ResultsMessageLocators.link).should('contain', 'Check your search');
     },
   );
 
@@ -107,15 +108,15 @@ describe('FinesSaResultsComponent - Companies', () => {
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are more than 100 results');
       cy.get(ResultsLocators.table.root).should('not.exist');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('contain', 'Try adding more information');
+      cy.get(ResultsMessageLocators.link).should('contain', 'Try adding more information');
       cy.get(ResultsLocators.table.root).should('not.exist');
 
       //(AC3b) Try adding more information link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
