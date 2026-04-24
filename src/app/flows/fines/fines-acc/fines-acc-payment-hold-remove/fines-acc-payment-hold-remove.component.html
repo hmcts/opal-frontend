@@ -1,1 +1,25 @@
-<p>Remove Payment Hold</p>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <opal-lib-govuk-heading-with-caption
+      [captionText]="`${accountNumber} - ${partyName}`"
+      headingText="Do you want to remove the payment hold?"
+      headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+    >
+    </opal-lib-govuk-heading-with-caption>
+
+    <div class="govuk-button-group govuk-!-padding-top-2">
+      <button
+        id="removePaymentHold"
+        type="button"
+        class="govuk-button govuk-button--primary govuk-!-margin-right-4"
+        (click)="handleRemovePaymentHold()"
+      >
+        Yes - remove hold
+      </button>
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="navigateToMinorCreditorDetailsPage()"
+        cancelLinkText="No - cancel"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</div>
