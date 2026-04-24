@@ -6,6 +6,7 @@ export interface IOpalFinesUpdateMinorCreditorAccountPayload {
   party_details: IOpalFinesDefendantAccountPartyDetails;
   address: IOpalFinesDefendantAccountAddress;
   payment: {
+    // Optional fields are currently ignored by the BE, but are included here for completeness and potential future use
     account_name?: string | null;
     sort_code?: string | null;
     account_number?: string | null;
