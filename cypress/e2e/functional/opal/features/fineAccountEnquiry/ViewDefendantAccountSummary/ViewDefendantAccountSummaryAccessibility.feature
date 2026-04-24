@@ -97,3 +97,29 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
 
     # Check accessibility with populated comments
     Then I check the page for accessibility
+
+  @only
+  Scenario: Check View Minor Creditor Account Summary Accessibility with Axe-Core
+    Given a published account exists with an individual minor creditor:
+      | prosecutor case reference | PCRMINA11Y{uniqUpper} |
+      | title                     | Mrs                   |
+      | first name                | Mina                  |
+      | last name                 | AllyMinor{uniq}       |
+      | address line 1            | 1 High Street         |
+      | postcode                  | MC1 1AA               |
+    And I am on the Account Search page - Individuals form displayed by default
+    When I view the Minor creditors search form
+    And I search using the following inputs:
+      | minor creditor type  | Individual      |
+      | individual last name | AllyMinor{uniq} |
+      | first names          | Mina            |
+      | address line 1       | 1 High Street   |
+      | postcode             | MC1 1AA         |
+    Then I see the Search results page
+    And I see the Minor creditors search results:
+      | Name           | AllyMinor{uniq}, Mina |
+      | Address line 1 | 1 High Street         |
+    When I open the latest matching result from the search results
+    Then I should see the account header contains "Mrs Mina ALLYMINOR{uniqUpper}"
+    And the At a glance tab should be selected by default
+    And I check the page for accessibility

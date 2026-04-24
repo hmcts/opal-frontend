@@ -101,6 +101,42 @@ export class AccountDetailsAtAGlanceActions {
   }
 
   /**
+   * Asserts selected minor creditor At a glance values.
+   *
+   * @param expected - Map of minor creditor field labels to expected values.
+   */
+  public assertMinorCreditorAtAGlanceValues(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      name: N.minorCreditor.fields.name,
+      address: N.minorCreditor.fields.address,
+      'bacs details': N.minorCreditor.fields.bacsDetails,
+    };
+
+    cy.get(N.minorCreditor.root, { timeout: 15000 }).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const selector = fieldSelectors[normalizedLabel];
+
+      if (!selector) {
+        throw new Error(
+          `Unsupported minor creditor At a glance label "${label}". Supported labels: ${Object.keys(fieldSelectors).join(', ')}`,
+        );
+      }
+
+      log('assert', 'Asserting minor creditor At a glance value', { label, value });
+
+      cy.get(selector, this.common.getTimeoutOptions())
+        .should('be.visible')
+        .invoke('text')
+        .then((text) => {
+          const normalizedText = text.replace(/\s+/g, ' ').trim();
+          expect(normalizedText).to.contain(value);
+        });
+    });
+  }
+
+  /**
    * AssertSectionHeader.
    *
    * @param expected - Parameter.
