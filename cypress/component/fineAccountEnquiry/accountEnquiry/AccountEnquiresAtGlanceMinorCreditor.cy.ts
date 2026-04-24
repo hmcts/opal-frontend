@@ -12,8 +12,10 @@ import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } fro
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITHOUT_DEFENDANT_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-without-defendant.mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const STORY_TAG = '@JIRA-STORY:PO-1917';
+const EPIC_TAG = '@JIRA-EPIC:PO-2234';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, STORY_TAG, EPIC_TAG, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 const minorCreditorAccountId = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.creditor.account_id;
 
@@ -164,7 +166,8 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
           expect(normalizeText(text)).to.eq('Mr John DOE');
         });
 
-      // AC4a: pay_by_bacs = true displays the BACS status as Provided.
+      // AC1b, AC4a: the Payout status section includes the BACS details heading and the provided badge value.
+      cy.contains(DOM.fieldHeading, DOM.labelBacsDetails).should('be.visible');
       cy.get(DOM.badgeBlue).should('contain.text', DOM.labelProvided).and('have.class', 'moj-badge--blue');
     },
   );
@@ -190,12 +193,13 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
       cy.get(DOM.minorCreditorAtAGlanceTabComponent).find(DOM.sectionHeading).should('have.length', 2);
       cy.contains(DOM.sectionHeading, DOM.labelMinorCreditor).should('be.visible');
       cy.contains(DOM.sectionHeading, DOM.labelPayoutStatus).should('be.visible');
-      cy.contains(DOM.sectionHeading, DOM.labelDefendantAccount).should('not.exist');
+      cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelDefendantAccount);
 
-      // AC4a: pay_by_bacs = false displays the BACS status as Not provided.
+      // AC1b, AC4a: the Payout status section includes the BACS details heading and the not-provided badge value.
+      cy.contains(DOM.fieldHeading, DOM.labelBacsDetails).should('be.visible');
       cy.get(DOM.badgeRed).should('contain.text', DOM.labelNotProvided).and('have.class', 'moj-badge--red');
-      cy.contains(DOM.linkText, DOM.labelAddPaymentHold).should('not.exist');
-      cy.contains(DOM.linkText, DOM.labelRemovePaymentHold).should('not.exist');
+      cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelAddPaymentHold);
+      cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelRemovePaymentHold);
     },
   );
 
@@ -231,7 +235,7 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
       setupMinorCreditorAtAGlance(userState, structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK), atAGlance);
 
-      cy.contains(DOM.linkText, DOM.labelAddPaymentHold).should('not.exist');
+      cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelAddPaymentHold);
       cy.contains(DOM.linkText, DOM.labelRemovePaymentHold).should('be.visible').click();
       cy.get('@routerNavigate')
         .its('lastCall.args.0')
