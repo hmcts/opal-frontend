@@ -98,7 +98,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     # Check accessibility with populated comments
     Then I check the page for accessibility
 
-  @only
+  @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234
   Scenario: Check View Minor Creditor Account Summary Accessibility with Axe-Core
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRMINA11Y{uniqUpper} |
