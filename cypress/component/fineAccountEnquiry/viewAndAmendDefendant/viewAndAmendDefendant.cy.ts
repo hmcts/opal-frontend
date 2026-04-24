@@ -354,24 +354,23 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
         });
 
       // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
-      cy.get('a.govuk-link').contains('Remove').should('exist');
       cy.get('a.govuk-link').contains('Remove').click();
-      // cy.contains('legend', 'Alias 5').should('not.exist');
-      // //cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
+      cy.contains('legend', 'Alias 5').should('not.exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
 
-      // // Add back up to 5 to demonstrate cap again
-      // addAliasAndAssert(5);
-      // cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+      // Add back up to 5 to demonstrate cap again
+      addAliasAndAssert(5);
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-      // //AC2f: Untick Add aliases checkbox hides & wipes alias data
-      // cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
-      // cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+      //AC2f: Untick Add aliases checkbox hides & wipes alias data
+      cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
-      // // Re-check and ensure a fresh empty Alias 1 row (data wiped)
-      // cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-      // cy.get(DOM_ELEMENTS.aliasSection).should('exist');
-      // cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
-      // cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
+      // Re-check and ensure a fresh empty Alias 1 row (data wiped)
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
     },
   );
 
