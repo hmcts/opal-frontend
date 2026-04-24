@@ -1,16 +1,9 @@
-import { mount } from 'cypress/angular';
-import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
-import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { provideHttpClient } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
 import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
 import { AccountSearchMinorCreditorsLocators as MinorCreditorsLocators } from '../../../shared/selectors/account-search/account.search.minor-creditors.locators';
 import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_minor_creditors_mock';
 import { finesSaMinorCreditorAccountsResolver } from '../../../../src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { mountSearchAccount } from './support/mountSearchAccount';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const MinorTypeLocators = MinorCreditorsLocators.type;
@@ -20,65 +13,30 @@ const MinorCompanyLocators = MinorCreditorsLocators.company;
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Search Account Component - Minor Creditors', () => {
-  let minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
+  type MinorCreditorsSearchState = typeof MINOR_CREDITORS_SEARCH_STATE_MOCK;
 
-  const setupComponent = (formSubmit: any = null) => {
-    const componentProperties: any = {};
-    if (formSubmit) {
-      componentProperties.handleSearchAccountSubmit = formSubmit;
-    }
-
-    mount(FinesSaSearchAccountComponent, {
-      providers: [
-        provideHttpClient(),
-        provideRouter([
-          {
-            path: 'fines/search-accounts/results',
-            component: FinesSaSearchAccountComponent,
-            resolve: {
-              minorCreditorAccounts: finesSaMinorCreditorAccountsResolver,
-            },
-            runGuardsAndResolvers: 'always',
-          },
-          {
-            path: 'fines/search-accounts',
-            component: FinesSaSearchAccountComponent,
-          },
-        ]),
-        OpalFines,
-        {
-          provide: FinesSaStore,
-          useFactory: () => {
-            const store = new FinesSaStore();
-            store.setSearchAccount(minorCreditorsSearchMock);
-
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            fragment: of('minorCreditors'),
-            parent: {
-              snapshot: {
-                url: [{ path: 'search' }],
-              },
-            },
-          },
-        },
-      ],
-      componentProperties,
-    });
+  const buildMinorCreditorsSearchState = (
+    configure?: (searchState: MinorCreditorsSearchState) => void,
+  ): MinorCreditorsSearchState => {
+    const searchState = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
+    configure?.(searchState);
+    return searchState;
   };
-  beforeEach(() => {
-    minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
-  });
+
+  const setupComponent = (configure?: (searchState: MinorCreditorsSearchState) => void) =>
+    mountSearchAccount({
+      activeTab: 'minorCreditors',
+      initialState: buildMinorCreditorsSearchState(configure),
+      resultsResolvers: {
+        minorCreditorAccounts: finesSaMinorCreditorAccountsResolver,
+      },
+    });
 
   it(
     'AC1-AC3. should render the search for an account screen and minor creditors tab',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7013'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(CommonLocators.root).should('exist');
       cy.get(CommonLocators.pageHeader).should('contain', 'Search for an account');
@@ -122,9 +80,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC6a. should show error for non-alphabetical last name',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7014'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
-        'Smith123';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
+          'Smith123';
+      });
 
       cy.get(MinorTypeLocators.individualRadio).click();
       cy.get(MinorIndividualLocators.lastNameInput).should('have.value', 'Smith123');
@@ -141,9 +100,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC6b. should show error for non-alphabetical first name',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7015'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
-        'Name123';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
+          'Name123';
+      });
 
       cy.get(MinorTypeLocators.individualRadio).click();
       cy.get(MinorIndividualLocators.firstNamesInput).should('have.value', 'Name123');
@@ -161,9 +121,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC6c. should show error for non-alphabetical company name',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7016'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
-        'Company123?';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
+          'Company123?';
+      });
 
       cy.get(MinorTypeLocators.companyRadio).click();
       cy.get(CommonLocators.searchButton).click();
@@ -183,9 +144,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC6d. should show error for non-alphabetical address line 1',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7017'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 =
-        'Address123?';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 =
+          'Address123?';
+      });
       cy.get(MinorTypeLocators.individualRadio).click();
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should('contain', 'Address line 1 must only contain letters or numbers');
@@ -201,9 +163,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC6e. should show error for non-alphabetical post code',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7018'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
-        'POSTCODE?';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
+          'POSTCODE?';
+      });
 
       cy.get(MinorTypeLocators.companyRadio).click();
       cy.get(CommonLocators.searchButton).click();
@@ -220,9 +183,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC7a. should validate last name maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7019'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
-        'Abcdefghijklmnopqrstuvwxyzabcdefg';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name =
+          'Abcdefghijklmnopqrstuvwxyzabcdefg';
+      });
 
       cy.get(MinorTypeLocators.individualRadio).click();
       cy.get(CommonLocators.searchButton).click();
@@ -236,9 +200,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC7b. should validate first names maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7020'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
-        'AbcdefghijklmnopqrstA';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names =
+          'AbcdefghijklmnopqrstA';
+      });
 
       cy.get(MinorTypeLocators.individualRadio).click();
       cy.get(CommonLocators.searchButton).click();
@@ -252,9 +217,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC7c. should validate company name maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7021'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
-        'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
+          'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
+      });
 
       cy.get(MinorTypeLocators.companyRadio).click();
       cy.get(CommonLocators.searchButton).click();
@@ -268,9 +234,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC7d. should validate address line 1 maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7022'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1 =
-        'Address1234Address1234Address12345';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1 =
+          'Address1234Address1234Address12345';
+      });
 
       cy.get(MinorTypeLocators.companyRadio).click();
       cy.get(CommonLocators.searchButton).click();
@@ -287,9 +254,10 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC7e. should validate post code maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-715'), '@JIRA-KEY:POT-7023'] },
     () => {
-      setupComponent(null);
-      minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
-        'POSTCODES';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code =
+          'POSTCODES';
+      });
 
       cy.get(MinorTypeLocators.companyRadio).click();
       cy.get(CommonLocators.searchButton).click();
@@ -303,7 +271,7 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC3a. Should validate last name field when "Search exact match" for last name is selected on Minor Creditor Individual',
     { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7024'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(NavLocators.minorCreditorsTab).click();
       cy.get(MinorTypeLocators.individualRadio).click();
@@ -318,7 +286,7 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC3b. Should validate first name field when "Search exact match" for first name is selected on Minor Creditor Individual',
     { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7025'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(NavLocators.minorCreditorsTab).click();
       cy.get(MinorTypeLocators.individualRadio).click();
@@ -333,7 +301,7 @@ describe('Search Account Component - Minor Creditors', () => {
     'AC4a. Should validate company name field when "Search exact match" for company name is selected on Minor Creditor Company',
     { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7026'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(NavLocators.minorCreditorsTab).click();
       cy.get(MinorTypeLocators.companyRadio).click();

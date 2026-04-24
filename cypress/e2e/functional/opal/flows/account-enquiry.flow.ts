@@ -1354,7 +1354,7 @@ export class AccountEnquiryFlow {
       const alreadyOnAddAccountNotePage = pathname.includes('/note/add');
 
       if (alreadyOnAddAccountNotePage) {
-        logAE('state', 'Already on "Add account note" screen');
+        logAE('navigate', 'Already on "Add account note" screen');
         return;
       }
 

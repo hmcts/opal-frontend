@@ -24,6 +24,8 @@ describe('FinesMacManualFixedPenalty', () => {
     formSubmit?: any,
     localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
   ) => {
+    fixedPenaltyMock = structuredClone(fixedPenaltyMock);
+
     return mount(FinesMacFixedPenaltyDetailsComponent, {
       providers: [
         provideHttpClient(),
@@ -1069,7 +1071,7 @@ describe('FinesMacManualFixedPenalty', () => {
       fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'A'.repeat(30);
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.commentsInputHint).should('contain', 'You have 0 characters remaining');
+      cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 0 characters remaining');
     },
   );
 
@@ -1095,7 +1097,7 @@ describe('FinesMacManualFixedPenalty', () => {
       fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'A'.repeat(1000);
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.accountNoteInputHint).should('contain', 'You have 0 characters remaining');
+      cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 0 characters remaining');
     },
   );
 
@@ -1122,7 +1124,7 @@ describe('FinesMacManualFixedPenalty', () => {
       setupComponent(null);
 
       // Check company details section
-      cy.get(DOM_ELEMENTS.companyName).should('exist');
+      cy.get(DOM_ELEMENTS.companyNameInput).should('exist');
       cy.get(DOM_ELEMENTS.companyAddressLine1Input).should('exist');
       cy.get(DOM_ELEMENTS.companyAddressLine2Input).should('exist');
       cy.get(DOM_ELEMENTS.companyAddressLine3Input).should('exist');

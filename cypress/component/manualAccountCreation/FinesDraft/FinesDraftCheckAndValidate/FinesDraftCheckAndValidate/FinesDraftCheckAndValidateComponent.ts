@@ -8,7 +8,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
-import { DOM_ELEMENTS } from './constants/fines_draft_cam_checker_inputter_elements';
+import { CheckAndValidateDraftsLocators as DOM_ELEMENTS } from 'cypress/shared/selectors/manual-account-creation/check-and-validate/check-and-validate.drafts.locators';
 import { NAVIGATION_LINKS } from './constants/fines_draft_cav_tableConstants';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-session-mock';

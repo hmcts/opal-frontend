@@ -65,6 +65,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   const setupComponent = (activatedRouteMock: any = FINES_DRAFT_STATE, defendantType: string = 'adultOrYouthOnly') => {
     // Select the appropriate mock data based on defendant type
     fixedPenaltyMock = structuredClone(mockDataMap[defendantType] || FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK);
+    const finesDraftState = structuredClone(activatedRouteMock);
 
     console.log(`Setting up component with mock data for ${defendantType}:`, fixedPenaltyMock);
 
@@ -108,7 +109,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           provide: FinesDraftStore,
           useFactory: () => {
             const store = new FinesDraftStore();
-            store.setFinesDraftState(activatedRouteMock);
+            store.setFinesDraftState(finesDraftState);
             return store;
           },
         },
@@ -182,7 +183,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       //should display field values with correct formatting (AC2b)'
       cy.get(DOM_ELEMENTS.dateOfBirth).should('contain', '1 January 2000 (Adult)');
 
-      cy.get(DOM_ELEMENTS.addressLine1)
+      cy.get(DOM_ELEMENTS.address)
         .should('contain', '123 Fake Street')
         .and('contain', 'Fake Town')
         .and('contain', 'Fake City')
@@ -193,8 +194,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.offenceType).should('contain', 'Vehicle');
       cy.get(DOM_ELEMENTS.registrationNumber).should('contain', 'AB12CDE');
       cy.get(DOM_ELEMENTS.drivingLicenceNumber).should('contain', 'DRIVER123');
-      cy.get(DOM_ELEMENTS.ntoNth).should('contain', 'NTO123');
-      cy.get(DOM_ELEMENTS.dateNtoIssued).should('contain', '20 June 2025');
+      cy.get(DOM_ELEMENTS.noticeNumber).should('contain', 'NTO123');
+      cy.get(DOM_ELEMENTS.noticeDate).should('contain', '20 June 2025');
       cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '15 June 2025');
       cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '14:30');
       cy.get(DOM_ELEMENTS.placeOfOffence).should('contain', 'Main Street');
@@ -227,7 +228,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '—');
       cy.get(DOM_ELEMENTS.comments).should('contain', '—');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', '—');
-      cy.get(DOM_ELEMENTS.ntoNth).should('contain', '—');
+      cy.get(DOM_ELEMENTS.noticeNumber).should('contain', '—');
       cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '—');
       cy.get(DOM_ELEMENTS.drivingLicenceNumber).should('contain', '—');
       cy.get(DOM_ELEMENTS.registrationNumber).should('contain', '—');
@@ -238,7 +239,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         DOM_ELEMENTS.timeOfOffence,
         DOM_ELEMENTS.comments,
         DOM_ELEMENTS.accountNotes,
-        DOM_ELEMENTS.ntoNth,
+        DOM_ELEMENTS.noticeNumber,
         DOM_ELEMENTS.dateOfOffence,
         DOM_ELEMENTS.drivingLicenceNumber,
         DOM_ELEMENTS.registrationNumber,
@@ -316,8 +317,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.noticeNumber).should('contain', 'FPC20250715');
       cy.get(DOM_ELEMENTS.registrationNumber).should('contain', 'CP12 COR');
       cy.get(DOM_ELEMENTS.drivingLicenceNumber).should('contain', 'DRIVER123');
-      cy.get(DOM_ELEMENTS.ntoNth).should('contain', 'CORP2025/456');
-      cy.get(DOM_ELEMENTS.dateNtoIssued).should('contain', '05 July 2025');
+      cy.get(DOM_ELEMENTS.noticeNumber).should('contain', 'CORP2025/456');
+      cy.get(DOM_ELEMENTS.noticeDate).should('contain', '05 July 2025');
       cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '01 July 2025');
       cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '10:15');
       cy.get(DOM_ELEMENTS.placeOfOffence).should('contain', 'London Borough of Westminster');
@@ -348,7 +349,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.timeOfOffence).should('contain', '—');
       cy.get(DOM_ELEMENTS.comments).should('contain', '—');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', '—');
-      cy.get(DOM_ELEMENTS.ntoNth).should('contain', '—');
+      cy.get(DOM_ELEMENTS.noticeNumber).should('contain', '—');
       cy.get(DOM_ELEMENTS.dateOfOffence).should('contain', '—');
       cy.get(DOM_ELEMENTS.registrationNumber).should('contain', '—');
       cy.get(DOM_ELEMENTS.placeOfOffence).should('contain', '—');
@@ -358,7 +359,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         DOM_ELEMENTS.timeOfOffence,
         DOM_ELEMENTS.comments,
         DOM_ELEMENTS.accountNotes,
-        DOM_ELEMENTS.ntoNth,
+        DOM_ELEMENTS.noticeNumber,
         DOM_ELEMENTS.dateOfOffence,
         DOM_ELEMENTS.registrationNumber,
         DOM_ELEMENTS.placeOfOffence,

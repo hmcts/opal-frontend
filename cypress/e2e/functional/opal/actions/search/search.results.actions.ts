@@ -513,7 +513,7 @@ export class ResultsActions {
   public assertNoMatchingResultsMessage(): void {
     log('assert', 'Asserting "There are no matching results" heading is visible');
 
-    cy.get(R.messages.noResultsHeading, { timeout: ResultsActions.WAIT_MS })
+    cy.get(R.messages.heading, { timeout: ResultsActions.WAIT_MS })
       .should('be.visible')
       .and('contain.text', 'There are no matching results');
   }
@@ -535,10 +535,7 @@ export class ResultsActions {
   public clickCheckYourSearchLink(): Cypress.Chainable<JQuery<HTMLElement>> {
     log('click', 'Clicking "Check your search" link');
 
-    return cy
-      .get(R.messages.checkYourSearchLink, { timeout: ResultsActions.WAIT_MS })
-      .should('be.visible')
-      .click({ force: true });
+    return cy.get(R.messages.link, { timeout: ResultsActions.WAIT_MS }).should('be.visible').click({ force: true });
   }
 }
 

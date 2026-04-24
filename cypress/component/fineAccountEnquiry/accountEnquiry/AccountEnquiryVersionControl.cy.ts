@@ -113,7 +113,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       cy.get(DOM_ELEMENTS.warningBanner).should('exist');
       cy.get(DOM_ELEMENTS.warningBanner).should('have.attr', 'type', 'warning');
       cy.get(DOM_ELEMENTS.warningBannerIcon).should('have.attr', 'type', 'warning');
-      cy.get(DOM_ELEMENTS.warningBannerText).should('contain', 'Some information on this page may be out of date');
+      cy.get(DOM_ELEMENTS.bannerText).should('contain', 'Some information on this page may be out of date');
       cy.get(DOM_ELEMENTS.refreshLink).should('contain', 'Refresh').and('be.visible');
 
       // Navigate to other tabs - warning should persist
@@ -180,7 +180,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       cy.get(DOM_ELEMENTS.successBanner).should('have.attr', 'type', 'success');
       cy.get(DOM_ELEMENTS.successBannerIcon).should('exist');
       cy.get(DOM_ELEMENTS.successBannerIcon).should('have.attr', 'type', 'success');
-      cy.get(DOM_ELEMENTS.successBannerText).should('contain', 'Information is up to date');
+      cy.get(DOM_ELEMENTS.bannerText).should('contain', 'Information is up to date');
 
       // Verify success banner can be dismissed
       cy.get(DOM_ELEMENTS.successBannerDismiss).should('exist').click();
