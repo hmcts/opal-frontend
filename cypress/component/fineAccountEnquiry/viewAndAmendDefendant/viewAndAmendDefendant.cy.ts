@@ -80,6 +80,14 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     });
   };
 
+  const addAliasAndAssert = (aliasNumber: number) => {
+    cy.get(DOM_ELEMENTS.addAliasButton).click();
+    cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
+    const index = aliasNumber - 1;
+    cy.get(getAliasForenamesInput(index)).should('exist');
+    cy.get(getAliasSurnameInput(index)).should('exist');
+  };
+
   it(
     'AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
     { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7074'] },
@@ -323,15 +331,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // AC2c: Grey 'Add another alias' button displayed
       cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
 
-      // Helper to add alias and assert its presence
-      const addAliasAndAssert = (aliasNumber: number) => {
-        cy.get(DOM_ELEMENTS.addAliasButton).click();
-        cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
-        const index = aliasNumber - 1;
-        cy.get(getAliasForenamesInput(index)).should('exist');
-        cy.get(getAliasSurnameInput(index)).should('exist');
-      };
-
       // AC2d / AC2di: Add aliases 2 through 5 incrementally
       addAliasAndAssert(2);
       cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
@@ -359,7 +358,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       addAliasAndAssert(5);
       cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-      // AC2f: Untick Add aliases checkbox hides & wipes alias data
+      //AC2f: Untick Add aliases checkbox hides & wipes alias data
       cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
