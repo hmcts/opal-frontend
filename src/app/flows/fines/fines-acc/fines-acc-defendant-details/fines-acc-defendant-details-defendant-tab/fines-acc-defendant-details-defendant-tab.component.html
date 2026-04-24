@@ -23,20 +23,28 @@
       summaryListId="defendantDetails"
     ></app-fines-acc-party-details>
   </div>
-  <div class="govuk-grid-column-one-third">
-    <hr [class]="style.hr" />
-    <h2 [class]="style.heading">Actions</h2>
-    @if (canAddParentOrGuardianDetails) {
-      <p>
-        <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddParentOrGuardianDetails($event)"
-          >Add parent or guardian details</a
-        >
-      </p>
-    }
-    <p>
-      <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleConvertAccount($event)"
-        >Convert to {{ party.party_details.organisation_flag ? 'an individual' : 'a company' }} account</a
-      >
-    </p>
-  </div>
+  @if (canAddParentOrGuardianDetails || convertAction) {
+    <div id="defendant-convert-actions" class="govuk-grid-column-one-third">
+      <hr [class]="style.hr" />
+      <h2 [class]="style.heading">Actions</h2>
+      @if (canAddParentOrGuardianDetails) {
+        <p>
+          <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddParentOrGuardianDetails($event)"
+            >Add parent or guardian details</a
+          >
+        </p>
+      }
+      @if (convertAction) {
+        <p id="defendant-convert-action">
+          <a
+            id="defendant-convert-action-link"
+            class="govuk-link govuk-link--no-visited-state"
+            href=""
+            (click)="handleConvertAccount($event)"
+            >{{ convertAction.label }}</a
+          >
+        </p>
+      }
+    </div>
+  }
 }
