@@ -110,6 +110,7 @@
     <div class="govuk-grid-column-one-third">
       <h2 [class]="style.heading">Payout status</h2>
       <hr [class]="style.hr" />
+      <h3 [class]="style.key">BACS details</h3>
       @if (tabData.payment.is_bacs) {
         <opal-lib-moj-badge badgeId="is_bacs-badge" badgeClasses="moj-badge--blue govuk-!-margin-bottom-2"
           >Provided</opal-lib-moj-badge
