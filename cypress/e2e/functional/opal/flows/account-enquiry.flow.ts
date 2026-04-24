@@ -525,6 +525,15 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the add enforcement action form from the Enforcement tab.
+   */
+  public openAddEnforcementActionForm(): void {
+    logAE('method', 'openAddEnforcementActionForm()');
+    this.enforcement.openAddEnforcementActionForm();
+    this.enforcement.assertAddEnforcementActionFormVisible();
+  }
+
+  /**
    * Opens the Change Collection Order status form from the Enforcement tab.
    */
   public openChangeCollectionOrderForm(): void {

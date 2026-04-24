@@ -35,257 +35,284 @@ const EMPTY_RESULTS_RESPONSE: IOpalFinesResultsRefData = {
 };
 
 // Note: 'Adult or youth with Parent/Guardian' has not been incl - it uses the same common code and results as 'Adult/youth'
-describe('Add enforcement action in enforcement tab', () => {
-  it('AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details', () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'Defendant';
-    headerMock.account_status_reference.account_status_code = 'L';
-    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    enforcementMock.next_enforcement_action_data = null;
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptEnforcementStatus(accountId, enforcementMock, '123');
+describe(
+  'Add enforcement action in enforcement tab',
+  {
+    tags: [
+      '@JIRA-STORY:PO-1780',
+      '@JIRA-STORY:PO-1824',
+      '@JIRA-EPIC:PO-1674',
+      '@JIRA-LABEL:Add_and_Remove_Defendant_Enforcement_Actions',
+    ],
+  },
+  () => {
+    it(
+      'AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details',
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+        enforcementMock.next_enforcement_action_data = null;
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-    cy.intercept('GET', '/opal-fines-service/results', EMPTY_RESULTS_RESPONSE).as('getNextPermittedEnfActions');
-    setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        cy.intercept('GET', '/opal-fines-service/results', EMPTY_RESULTS_RESPONSE).as('getNextPermittedEnfActions');
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-    cy.get(ENF.addEnforcementActionLink).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
-    cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
-    cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
+        cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
 
-    cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Robert THOMSON');
-  });
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Robert THOMSON');
+      },
+    );
 
-  it('AC3,a,b,d, Individual: Account meets conditions to cause info banner update', () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'Defendant';
-    headerMock.is_youth = true;
-    headerMock.account_status_reference.account_status_code = 'L';
-    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
-    enforcementMock.next_enforcement_action_data = 'WOC, WOA';
-    enforcementMock.enforcement_overview.collection_order!.collection_order_flag = false;
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    it(
+      'AC3,a,b,d, Individual: Account meets conditions to cause info banner update',
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.is_youth = true;
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.next_enforcement_action_data = 'WOC, WOA';
+        enforcementMock.enforcement_overview.collection_order!.collection_order_flag = false;
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-    cy.intercept(
-      'GET',
-      '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
-      FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
-    ).as('getNextPermittedEnfActions');
-    setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        cy.intercept(
+          'GET',
+          '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
+          FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
+        ).as('getNextPermittedEnfActions');
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-    cy.get(ENF.addEnforcementActionLink).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
-    cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
-    cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
-    cy.get(ENF_ACTION_SELECT.continueButton).should('exist');
-    cy.get(ENF_ACTION_SELECT.cancelLink).should('exist');
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
+        cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
+        cy.get(ENF_ACTION_SELECT.continueButton).should('exist');
+        cy.get(ENF_ACTION_SELECT.cancelLink).should('exist');
 
-    cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Robert THOMSON');
-    cy.get(ENF_ACTION_SELECT.informationBannerListItems).should('have.length', 2);
-    cy.get(ENF_ACTION_SELECT.informationBannerListItems)
-      .eq(0)
-      .should('contain.text', 'There is no collection order on this account');
-    cy.get(ENF_ACTION_SELECT.informationBannerListItems).eq(1).should('contain.text', 'This is a youth account');
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Robert THOMSON');
+        cy.get(ENF_ACTION_SELECT.informationBannerListItems).should('have.length', 2);
+        cy.get(ENF_ACTION_SELECT.informationBannerListItems)
+          .eq(0)
+          .should('contain.text', 'There is no collection order on this account');
+        cy.get(ENF_ACTION_SELECT.informationBannerListItems).eq(1).should('contain.text', 'This is a youth account');
 
-    // AC3e which is not yet implemented. When PO-1782 completes could use this to confirm navigation upon continue.
-    // cy.get(ENF_ACTION_SELECT.actionDropdown).click();
-    // cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
-    // cy.get(ENF_ACTION_SELECT.continueButton).click();
+        // AC3e which is not yet implemented. When PO-1782 completes could use this to confirm navigation upon continue.
+        // cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+        // cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
+        // cy.get(ENF_ACTION_SELECT.continueButton).click();
 
-    // cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
-    // cy.get(ENF.tabName).should('contain.text', 'Enforcement');
-  });
+        // cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+        // cy.get(ENF.tabName).should('contain.text', 'Enforcement');
+      },
+    );
 
-  it('AC4,a,ai,aii, AC5,a, Individual: Enforcement actions dropdown confirmation', () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'Defendant';
-    headerMock.account_status_reference.account_status_code = 'L';
-    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
-    enforcementMock.next_enforcement_action_data = 'WOC, WOA';
-    enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    it(
+      'AC4,a,ai,aii, AC5,a, Individual: Enforcement actions dropdown confirmation',
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      () => {
+        let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+        enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+        enforcementMock.next_enforcement_action_data = 'WOC, WOA';
+        enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-    cy.intercept(
-      'GET',
-      '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
-      FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
-    ).as('getNextPermittedEnfActions');
-    setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        cy.intercept(
+          'GET',
+          '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
+          FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
+        ).as('getNextPermittedEnfActions');
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-    cy.get(ENF.addEnforcementActionLink).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
-    cy.get(ENF_ACTION_SELECT.actionDropdownLabel).should('contain.text', 'Select an enforcement action');
-    cy.get(ENF_ACTION_SELECT.actionDropdown).should('have.value', '');
-    cy.get(ENF_ACTION_SELECT.actionDropdown).click();
-    cy.get(ENF_ACTION_SELECT.actionDropdownOptions)
-      .should('contain.text', 'Warrant of Control (WOC)')
-      .and('contain.text', 'Warrant of Arrest (WOA)');
-    cy.get(ENF_ACTION_SELECT.actionDropdown).type('{esc}');
+        cy.get(ENF_ACTION_SELECT.actionDropdownLabel).should('contain.text', 'Select an enforcement action');
+        cy.get(ENF_ACTION_SELECT.actionDropdown).should('have.value', '');
+        cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+        cy.get(ENF_ACTION_SELECT.actionDropdownOptions)
+          .should('contain.text', 'Warrant of Control (WOC)')
+          .and('contain.text', 'Warrant of Arrest (WOA)');
+        cy.get(ENF_ACTION_SELECT.actionDropdown).type('{esc}');
 
-    cy.get(ENF_ACTION_SELECT.continueButton).click();
-    cy.get(ENF_ACTION_SELECT.errorSummaryList).should('contain.text', 'Select an enforcement action');
-    cy.get(ENF_ACTION_SELECT.actionDropdownError).should('contain.text', 'Select an enforcement action');
+        cy.get(ENF_ACTION_SELECT.continueButton).click();
+        cy.get(ENF_ACTION_SELECT.errorSummaryList).should('contain.text', 'Select an enforcement action');
+        cy.get(ENF_ACTION_SELECT.actionDropdownError).should('contain.text', 'Select an enforcement action');
 
-    // AC5c which is not yet implemented. When PO-1782 completes could use this to confirm navigation upon continue.
-    // cy.get(ENF_ACTION_SELECT.actionDropdown).click();
-    // cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
-    // cy.get(ENF_ACTION_SELECT.continueButton).click();
+        // AC5c which is not yet implemented. When PO-1782 completes could use this to confirm navigation upon continue.
+        // cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+        // cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
+        // cy.get(ENF_ACTION_SELECT.continueButton).click();
 
-    // cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
-    // cy.get(ENF.tabName).should('contain.text', 'Enforcement');
-  });
+        // cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+        // cy.get(ENF.tabName).should('contain.text', 'Enforcement');
+      },
+    );
 
-  // Once route is established in PO 1781 then could uncomment and cover navigation coverage here.
-  // it('AC5b, Individual: Enforcement actions continue no employment history', () => {
-  //   let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-  //   headerMock.debtor_type = 'individual';
-  //   headerMock.account_status_reference.account_status_code = 'L';
-  //   let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-  //   enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-  //   enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
-  //   enforcementMock.next_enforcement_action_data = 'WOC, WOA';
-  //   enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
-  //   enforcementMock.employer_flag = false;
+    // Once route is established in PO 1781 then could uncomment and cover navigation coverage here.
+    // it('AC5b, Individual: Enforcement actions continue no employment history', () => {
+    //   let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+    //   headerMock.debtor_type = 'individual';
+    //   headerMock.account_status_reference.account_status_code = 'L';
+    //   let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    //   enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+    //   enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+    //   enforcementMock.next_enforcement_action_data = 'WOC, WOA';
+    //   enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+    //   enforcementMock.employer_flag = false;
 
-  //   const accountId = headerMock.defendant_account_party_id;
-  //   interceptAuthenticatedUser();
-  //   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-  //   interceptDefendantHeader(accountId, headerMock, '123');
-  //   interceptEnforcementStatus(accountId, enforcementMock, '123');
+    //   const accountId = headerMock.defendant_account_party_id;
+    //   interceptAuthenticatedUser();
+    //   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    //   interceptDefendantHeader(accountId, headerMock, '123');
+    //   interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-  //   cy.intercept(
-  //     'GET',
-  //     '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
-  //     FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
-  //   ).as('getNextPermittedEnfActions');
-  //   setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+    //   cy.intercept(
+    //     'GET',
+    //     '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
+    //     FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
+    //   ).as('getNextPermittedEnfActions');
+    //   setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-  //   cy.get(ENF.addEnforcementActionLink).should('exist').click();
-  //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+    //   cy.get(ENF.addEnforcementActionLink).should('exist').click();
+    //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
-  //   cy.get(ENF_ACTION_SELECT.actionDropdown).click();
-  //   cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
-  //   cy.get(ENF_ACTION_SELECT.continueButton).click();
+    //   cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+    //   cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
+    //   cy.get(ENF_ACTION_SELECT.continueButton).click();
 
-  //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/cannot-add']);
+    //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/cannot-add']);
 
-  //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/<real-route-here>']);
-  // });
+    //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/<real-route-here>']);
+    // });
 
-  it('AC6,a Individual: Cancel path no warning', () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'Defendant';
-    headerMock.account_status_reference.account_status_code = 'L';
-    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
-    enforcementMock.next_enforcement_action_data = 'WOC, WOA';
-    enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    it('AC6,a Individual: Cancel path no warning', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] }, () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'Defendant';
+      headerMock.account_status_reference.account_status_code = 'L';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+      enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+      enforcementMock.next_enforcement_action_data = 'WOC, WOA';
+      enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-    cy.intercept(
-      'GET',
-      '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
-      FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
-    ).as('getNextPermittedEnfActions');
-    setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+      cy.intercept(
+        'GET',
+        '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
+        FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
+      ).as('getNextPermittedEnfActions');
+      setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-    cy.get(ENF.addEnforcementActionLink).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+      cy.get(ENF.addEnforcementActionLink).should('exist').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
-    cy.get(ENF_ACTION_SELECT.cancelLink).click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
-    cy.get(ENF.tabName).should('contain.text', 'Enforcement');
-  });
-
-  it('AC6,b Individual: Cancel path/warning', () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'Defendant';
-    headerMock.account_status_reference.account_status_code = 'L';
-    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
-    enforcementMock.next_enforcement_action_data = 'WOC, WOA';
-    enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptEnforcementStatus(accountId, enforcementMock, '123');
-
-    cy.intercept(
-      'GET',
-      '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
-      FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
-    ).as('getNextPermittedEnfActions');
-    setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
-
-    cy.get(ENF.addEnforcementActionLink).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
-
-    cy.get(ENF_ACTION_SELECT.actionDropdown).click();
-    cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
-
-    cy.window().then((win) => {
-      cy.stub(win, 'confirm')
-        .callsFake((message: string) => {
-          expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
-          return false;
-        })
-        .as('confirmDismiss');
+      cy.get(ENF_ACTION_SELECT.cancelLink).click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+      cy.get(ENF.tabName).should('contain.text', 'Enforcement');
     });
 
-    cy.get(ENF_ACTION_SELECT.cancelLink).click();
-    cy.get('@confirmDismiss').should('have.been.calledOnce');
+    it('AC6,b Individual: Cancel path/warning', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] }, () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'Defendant';
+      headerMock.account_status_reference.account_status_code = 'L';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+      enforcementMock.last_enforcement_action!.enforcement_action.result_title = 'No enforcement';
+      enforcementMock.next_enforcement_action_data = 'WOC, WOA';
+      enforcementMock.enforcement_overview.collection_order!.collection_order_flag = true;
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
 
-    cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
-  });
+      cy.intercept(
+        'GET',
+        '/opal-fines-service/results?result_ids=WOC&result_ids=WOA',
+        FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK,
+      ).as('getNextPermittedEnfActions');
+      setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-  it('AC2b, 3c. Company: navigates to the select enforcement action screen and displays the form incl details', () => {
-    let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-    headerMock.debtor_type = 'Defendant';
-    headerMock.account_status_reference.account_status_code = 'L';
-    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
-    enforcementMock.next_enforcement_action_data = null;
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptEnforcementStatus(accountId, enforcementMock, '123');
+      cy.get(ENF.addEnforcementActionLink).should('exist').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
 
-    cy.intercept('GET', '/opal-fines-service/results', EMPTY_RESULTS_RESPONSE).as('getNextPermittedEnfActions');
-    setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+      cy.get(ENF_ACTION_SELECT.actionDropdown).click();
+      cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains('Warrant of Control').click();
 
-    cy.get(ENF.addEnforcementActionLink).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+      cy.window().then((win) => {
+        cy.stub(win, 'confirm')
+          .callsFake((message: string) => {
+            expect(message.replace(/\s+/g, ' ')).to.match(/unsaved changes/i);
+            return false;
+          })
+          .as('confirmDismiss');
+      });
 
-    cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
-    cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
-    cy.get(ENF_ACTION_SELECT.informationBanner).should('contain.text', 'This is a company account');
-    cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Sainsco');
-  });
-});
+      cy.get(ENF_ACTION_SELECT.cancelLink).click();
+      cy.get('@confirmDismiss').should('have.been.calledOnce');
+
+      cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
+    });
+
+    it(
+      'AC2b, 3c. Company: navigates to the select enforcement action screen and displays the form incl details',
+      { tags: ['@JIRA-STORY:PO-1834'] },
+      () => {
+        let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+        headerMock.debtor_type = 'Defendant';
+        headerMock.account_status_reference.account_status_code = 'L';
+        let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+        enforcementMock.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+        enforcementMock.next_enforcement_action_data = null;
+        const accountId = headerMock.defendant_account_party_id;
+        interceptAuthenticatedUser();
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptDefendantHeader(accountId, headerMock, '123');
+        interceptEnforcementStatus(accountId, enforcementMock, '123');
+
+        cy.intercept('GET', '/opal-fines-service/results', EMPTY_RESULTS_RESPONSE).as('getNextPermittedEnfActions');
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+
+        cy.get(ENF.addEnforcementActionLink).should('exist').click();
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/select']);
+
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
+        cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
+        cy.get(ENF_ACTION_SELECT.informationBanner).should('contain.text', 'This is a company account');
+        cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Sainsco');
+      },
+    );
+  },
+);

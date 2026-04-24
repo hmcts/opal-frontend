@@ -109,3 +109,43 @@ Feature: Account Enquiries - Enforcement Accessibility
     Then I check the page for accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
+
+  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1824 @JIRA-EPIC:PO-1674
+  Scenario: Add enforcement action page accessibility
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                                  | Submitted                           |
+      | account.defendant.forenames                     | Evan                                |
+      | account.defendant.surname                       | EnfActionAccess{uniq}               |
+      | account.defendant.email_address_1               | Evan.EnfActionAccess{uniq}@test.com |
+      | account.defendant.telephone_number_home         | 02078259315                         |
+      | account.account_type                            | Fine                                |
+      | account.prosecutor_case_reference               | PCR-AUTO-016                        |
+      | account.collection_order_made                   | false                               |
+      | account.collection_order_made_today             | false                               |
+      | account.payment_card_request                    | false                               |
+      | account.defendant.dob                           | 2002-05-15                          |
+      | account.payment_terms.enforcements[0].result_id | PRIS                                |
+
+    When I search for the account by last name "EnfActionAccess{uniq}" and open the latest result
+    And I go to the Enforcement tab
+    And I open the add enforcement action form
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1834 @JIRA-EPIC:PO-1674
+  Scenario: Company add enforcement action page accessibility
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                                  | Submitted                       |
+      | account.defendant.company_name                  | Enf Action Company{uniq}        |
+      | account.defendant.email_address_1               | EnfActionCompany{uniq}@test.com |
+      | account.defendant.post_code                     | AB23 4RN                        |
+      | account.account_type                            | Fine                            |
+      | account.prosecutor_case_reference               | PCR-AUTO-018                    |
+      | account.collection_order_made                   | false                           |
+      | account.collection_order_made_today             | false                           |
+      | account.payment_card_request                    | false                           |
+      | account.payment_terms.enforcements[0].result_id | PRIS                            |
+
+    When I open the company account details for "Enf Action Company{uniq}"
+    And I go to the Enforcement tab
+    And I open the add enforcement action form
+    Then I check the page for accessibility
