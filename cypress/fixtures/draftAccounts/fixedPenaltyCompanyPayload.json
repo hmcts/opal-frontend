@@ -49,8 +49,8 @@
       "debtor_detail": {
         "vehicle_make": "Ford Transit",
         "vehicle_registration_mark": "CO12 MPY",
-        "document_language": "English",
-        "hearing_language": "English",
+        "document_language": "EN",
+        "hearing_language": "EN",
         "employee_reference": null,
         "employer_company_name": null,
         "employer_address_line_1": null,
