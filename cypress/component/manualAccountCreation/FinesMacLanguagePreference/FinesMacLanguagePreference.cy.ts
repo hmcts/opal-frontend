@@ -11,9 +11,14 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacLanguagePreferenceComponent', () => {
-  let mockFinesService = {
-    finesMacState: { ...FINES_MAC_STATE_MOCK },
-  };
+  const createMockFinesService = () => ({
+    finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+  });
+  let mockFinesService = createMockFinesService();
+
+  beforeEach(() => {
+    mockFinesService = createMockFinesService();
+  });
 
   const setupComponent = (formSubmit?: any) => {
     return mount(FinesMacLanguagePreferencesComponent, {
@@ -43,15 +48,6 @@ describe('FinesMacLanguagePreferenceComponent', () => {
       fixture.detectChanges();
     });
   };
-
-  afterEach(() => {
-    cy.then(() => {
-      mockFinesService.finesMacState.languagePreferences.formData = {
-        fm_language_preferences_document_language: '',
-        fm_language_preferences_hearing_language: '',
-      };
-    });
-  });
 
   it(
     'should render the component (FinesMacLanguagePreferenceComponent)',

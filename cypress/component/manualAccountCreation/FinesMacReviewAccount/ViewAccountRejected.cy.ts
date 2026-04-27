@@ -39,6 +39,8 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   };
 
   const setupComponent = (FetchMap = reviewAccountFetchMap) => {
+    const reviewAccountState = structuredClone(FetchMap);
+
     mount(FinesMacReviewAccountComponent, {
       providers: [
         provideHttpClient(),
@@ -67,7 +69,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
           useValue: {
             snapshot: {
               data: {
-                reviewAccountFetchMap: FetchMap,
+                reviewAccountFetchMap: reviewAccountState,
               },
               paramMap: {
                 get: (key: string) => {
@@ -147,7 +149,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
       setupComponent(fetchMap);
 
-      cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
+      cy.get(DOM_ELEMENTS.sectionHeading).should('contain.text', 'Review history');
       cy.get(DOM_ELEMENTS.timeLine).should('exist');
       cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
       cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');

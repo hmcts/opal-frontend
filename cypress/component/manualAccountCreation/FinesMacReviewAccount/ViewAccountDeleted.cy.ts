@@ -43,6 +43,8 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   };
 
   const setupComponent = (FetchMap = reviewAccountFetchMap) => {
+    const reviewAccountState = structuredClone(FetchMap);
+
     mount(FinesMacReviewAccountComponent, {
       providers: [
         provideHttpClient(),
@@ -71,7 +73,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
           useValue: {
             snapshot: {
               data: {
-                reviewAccountFetchMap: FetchMap,
+                reviewAccountFetchMap: reviewAccountState,
               },
               paramMap: {
                 get: (key: string) => {
@@ -101,7 +103,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
       cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'Deleted');
-      cy.get(DOM_ELEMENTS.reviewHistory).should('exist').and('contain', 'Review history');
+      cy.get(DOM_ELEMENTS.sectionHeading).should('exist').and('contain', 'Review history');
       cy.get(DOM_ELEMENTS.originatorTypeData).should('exist');
     },
   );
@@ -137,7 +139,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       setupComponent(fetchMap);
 
-      cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
+      cy.get(DOM_ELEMENTS.sectionHeading).should('contain.text', 'Review history');
       cy.get(DOM_ELEMENTS.timeLine).should('exist');
       cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
       cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');

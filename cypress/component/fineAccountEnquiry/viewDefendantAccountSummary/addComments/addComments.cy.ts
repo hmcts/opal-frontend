@@ -28,6 +28,7 @@ const CommentActions = AccountCommentsAddLocators.actions;
 describe('FinesAccCommentsAddComponent', () => {
   const setupComponent = (prefilledData = ADD_COMMENTS_FORM_STATE_MOCK, formSubmit: any = null) => {
     const patchDefendantAccountStub = cy.stub().as('patchDefendantAccount').returns(of(undefined));
+    const accountState = structuredClone(MOCK_ACCOUNT_STATE);
 
     mount(FinesAccCommentsAddComponent, {
       providers: [
@@ -47,7 +48,7 @@ describe('FinesAccCommentsAddComponent', () => {
           provide: FinesAccountStore,
           useFactory: () => {
             const store = new FinesAccountStore();
-            store.setAccountState(MOCK_ACCOUNT_STATE);
+            store.setAccountState(accountState);
             return store;
           },
         },

@@ -80,9 +80,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     });
   };
 
-  afterEach(() => {
-    cy.then(() => {});
-  });
+  const addAliasAndAssert = (aliasNumber: number) => {
+    cy.get(DOM_ELEMENTS.addAliasButton).click();
+    cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
+    const index = aliasNumber - 1;
+    cy.get(getAliasForenamesInput(index)).should('exist');
+    cy.get(getAliasSurnameInput(index)).should('exist');
+  };
 
   it(
     'AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
@@ -327,15 +331,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // AC2c: Grey 'Add another alias' button displayed
       cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
 
-      // Helper to add alias and assert its presence
-      const addAliasAndAssert = (aliasNumber: number) => {
-        cy.get(DOM_ELEMENTS.addAliasButton).click();
-        cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
-        const index = aliasNumber - 1;
-        cy.get(getAliasForenamesInput(index)).should('exist');
-        cy.get(getAliasSurnameInput(index)).should('exist');
-      };
-
       // AC2d / AC2di: Add aliases 2 through 5 incrementally
       addAliasAndAssert(2);
       cy.get('a.govuk-link').contains('Remove').should('exist'); // remove link appears when >1 alias
@@ -363,7 +358,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       addAliasAndAssert(5);
       cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-      // AC2f: Untick Add aliases checkbox hides & wipes alias data
+      //AC2f: Untick Add aliases checkbox hides & wipes alias data
       cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
@@ -928,8 +923,8 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 
       // Verify company aliases checkbox is unchecked and alias section not visible
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.exist');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
       // Verify optional address fields are blank
       cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '');
@@ -960,28 +955,28 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       setupComponent('COMPANY', testMock);
 
       // AC2 - Initially, alias checkbox should be unchecked and alias section hidden
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
 
       // AC2a - Check the "Add aliases" checkbox to reveal alias section
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check();
+      cy.get(DOM_ELEMENTS.aliasSection).should('be.visible');
 
       // AC2a - Verify "Alias 1" subheading is displayed in bold
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 1');
 
       // AC2b - Verify "Company name" field is displayed below subheading
       cy.get(DOM_ELEMENTS.organisationAliasInput0).should('exist');
       cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
 
       // AC2c - Verify "Add another alias" button is displayed
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('contain', 'Add another alias');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('contain', 'Add another alias');
 
       // AC2d - Click "Add another alias" for the first time
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click();
+      cy.get(DOM_ELEMENTS.addAliasButton).click();
 
       // AC2di - Verify "Alias 2" subheading is displayed
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 2');
       cy.get(DOM_ELEMENTS.organisationAliasInput1).should('exist');
       cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
 
@@ -989,20 +984,20 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('have.length', 1);
 
       // Add more aliases to test incremental numbering
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 3
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
+      cy.get(DOM_ELEMENTS.addAliasButton).click(); // Add Alias 3
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 3');
       cy.get(DOM_ELEMENTS.organisationAliasInput2).should('exist');
 
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 4
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
+      cy.get(DOM_ELEMENTS.addAliasButton).click(); // Add Alias 4
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 4');
       cy.get(DOM_ELEMENTS.organisationAliasInput3).should('exist');
 
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 5
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 5');
+      cy.get(DOM_ELEMENTS.addAliasButton).click(); // Add Alias 5
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 5');
       cy.get(DOM_ELEMENTS.organisationAliasInput4).should('exist');
 
       // AC2dii - Verify "Add another alias" button is no longer displayed after 5 aliases
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
       // Fill in some test data for alias removal test
       cy.get(DOM_ELEMENTS.organisationAliasInput0).type('Company One', { delay: 0 });
@@ -1014,11 +1009,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // AC2eii - Test removing and verify renumbering
       cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).click();
 
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 5');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 2');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 3');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 4');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.contain', 'Alias 5');
 
       // Verify data has been adjusted accordingly
       cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'COMPANY ONE');
@@ -1027,18 +1022,18 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'COMPANY FOUR');
 
       // Verify "Add another alias" button reappears since we're now under 5 aliases
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
 
       // AC2f - Test unchecking "Add aliases" checkbox clears all data and hides section
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).uncheck();
+      cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck();
 
       // Re-check to verify all alias data has been wiped
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check();
+      cy.get(DOM_ELEMENTS.aliasSection).should('be.visible');
 
       // Should only show Alias 1 with empty data
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 2');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.contain', 'Alias 2');
       cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', '');
       cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('not.exist');
     },
@@ -1058,7 +1053,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       setupComponent('COMPANY', testMock);
 
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 

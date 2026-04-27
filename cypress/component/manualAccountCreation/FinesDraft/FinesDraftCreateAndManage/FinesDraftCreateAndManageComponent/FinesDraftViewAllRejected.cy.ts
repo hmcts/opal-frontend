@@ -2,7 +2,7 @@ import { mount } from 'cypress/angular';
 import { FinesDraftCreateAndManageViewAllRejectedComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-view-all-rejected/fines-draft-create-and-manage-view-all-rejected.component';
 import { ActivatedRoute } from '@angular/router';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
-import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
+import { CreateManageDraftsLocators as DOM_ELEMENTS } from 'cypress/shared/selectors/create-manage-drafts.locators';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';

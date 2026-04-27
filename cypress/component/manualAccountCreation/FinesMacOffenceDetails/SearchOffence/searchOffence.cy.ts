@@ -12,9 +12,17 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
-  let offenceSearchFormData = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
+  let offenceSearchFormDataTemplate = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
+  let offenceSearchFormData = offenceSearchFormDataTemplate;
+
+  beforeEach(() => {
+    offenceSearchFormDataTemplate = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
+    offenceSearchFormData = offenceSearchFormDataTemplate;
+  });
 
   const setupComponent = (formSubmit?: any) => {
+    offenceSearchFormData = structuredClone(offenceSearchFormDataTemplate);
+
     return mount(FinesMacOffenceDetailsSearchOffencesSearchComponent, {
       providers: [
         {
@@ -49,10 +57,6 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
       fixture.detectChanges();
     });
   };
-
-  afterEach(() => {
-    offenceSearchFormData = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
-  });
 
   it(
     'AC.1a, AC.1b should render all elements on the page',

@@ -19,13 +19,15 @@ const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_
 
 describe('FinesMacAccountCommentsAndNotesComponent', () => {
   const setupComponent = (formSubmit: any, defendantTypeMock: string = '', finesMacStateMock: IFinesMacState) => {
+    const finesMacState = structuredClone(finesMacStateMock);
+
     mount(FinesMacAccountCommentsNotesComponent, {
       providers: [
         {
           provide: FinesMacStore,
           useFactory: () => {
             const store = new FinesMacStore();
-            store.setFinesMacStore(finesMacStateMock);
+            store.setFinesMacStore(finesMacState);
             return store;
           },
         },

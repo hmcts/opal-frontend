@@ -13,7 +13,17 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
+  const createSearchResultState = () => ({
+    searchOffences: structuredClone(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM),
+    unsavedChanges: false,
+    stateChanges: false,
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
+
   beforeEach(() => {
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
     cy.window().then((win) => {
       const originalClipboard = win.navigator.clipboard;
 
@@ -29,21 +39,9 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     });
   });
 
-  let searchResultState = {
-    searchOffences: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM,
-    unsavedChanges: false,
-    stateChanges: false,
-  };
-
-  afterEach(() => {
-    searchResultState = {
-      searchOffences: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
-  });
-
   const setupComponent = (mockSearchResults = TEST_CASES_MOCK) => {
+    searchResultState = structuredClone(searchResultStateTemplate);
+
     mount(FinesMacOffenceDetailsSearchOffencesResultsComponent, {
       providers: [
         provideHttpClient(),

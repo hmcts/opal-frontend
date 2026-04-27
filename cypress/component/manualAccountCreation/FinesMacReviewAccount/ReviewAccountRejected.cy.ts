@@ -29,6 +29,9 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   let finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE);
 
   const setupComponent = (isReadOnly?: boolean) => {
+    finesMacState = structuredClone(finesMacState);
+    finesDraftState = structuredClone(finesDraftState);
+
     mount(FinesMacReviewAccountComponent, {
       providers: [
         provideHttpClient(),
@@ -100,6 +103,8 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
   beforeEach(() => {
     interceptOffences();
+    finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
+    finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE);
   });
 
   it(
