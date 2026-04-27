@@ -46,10 +46,7 @@ describe(
     tags: ['@JIRA-EPIC:PO-1674', '@JIRA-LABEL:Add_and_Remove_Defendant_Enforcement_Actions'],
   },
   () => {
-    it(
-      'AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
-      () => {
+    it('AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-KEY:POT-7684'] }, () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
@@ -72,8 +69,7 @@ describe(
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
 
         cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Robert THOMSON');
-      },
-    );
+      });
 
     // it(
     //   'AC1,1a. Individual: Negative testing, account status code is Consolidated so hits error page.',
