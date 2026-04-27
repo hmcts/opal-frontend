@@ -11,7 +11,6 @@ export const AccountSearchLocators = {
 
   // Consolidation tabs
   tabsNav: 'opal-lib-moj-sub-navigation#consolidate-acc-tabs, nav.moj-sub-navigation#consolidate-acc-tabs',
-  searchTab: 'li[subnavitemid="search-tab"] > .moj-sub-navigation__link',
   searchTabLink: 'li[subnavitemid="search-tab"] > .moj-sub-navigation__link',
   resultsTab: 'li[subnavitemid="results-tab"] > .moj-sub-navigation__link',
   forConsolidationTab: 'li[subnavitemid="for-consolidation-tab"] > .moj-sub-navigation__link',

@@ -2,7 +2,6 @@ import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../shared/selector
 import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
 
 import {
-  USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from '../../CommonIntercepts/CommonUserState.mocks';
@@ -11,16 +10,34 @@ import {
   OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
   OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK,
 } from './mocks/defendant_details_at_glance_mock';
+import { mount } from 'cypress/angular';
 import { interceptAtAGlance, interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+import { FinesAccDefendantDetailsAtAGlanceTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+type AtAGlanceMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Defendant Account Summary - At a Glance Tab', () => {
+  const mountAtAGlanceTab = ({
+    tabData,
+    hasAccountMaintenencePermission = false,
+  }: {
+    tabData: AtAGlanceMock;
+    hasAccountMaintenencePermission?: boolean;
+  }) => {
+    mount(FinesAccDefendantDetailsAtAGlanceTabComponent, {
+      componentProperties: {
+        tabData,
+        hasAccountMaintenencePermission,
+      },
+    });
+  };
+
   beforeEach(() => {
     interceptAuthenticatedUser();
   });
@@ -552,12 +569,8 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       tags: [...buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814'), '@JIRA-KEY:POT-6627'],
     },
     () => {
-      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+      mountAtAGlanceTab({ tabData: structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK) });
 
-      setupAccountEnquiryComponent(componentProperties);
-      // Verify the Change or Add Comment link not present
       cy.get(DOM.linkText).should('not.exist');
     },
   );
@@ -580,11 +593,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         instalment_amount: null,
       };
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, mockDataPayByDate, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
+      mountAtAGlanceTab({ tabData: mockDataPayByDate });
       cy.get('h2').contains('Payment terms').should('exist');
       cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay in full');
       cy.get('h3').contains('Pay by date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
@@ -602,11 +611,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       tags: [...buildTags('@JIRA-STORY:PO-984', '@JIRA-STORY:PO-814'), '@JIRA-KEY:POT-6629'],
     },
     () => {
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
+      mountAtAGlanceTab({ tabData: structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK) });
 
       cy.get('h3')
         .contains('Payment terms')
@@ -643,11 +648,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         instalment_amount: 100,
       };
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, mockDataPayByDate, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
+      mountAtAGlanceTab({ tabData: mockDataPayByDate });
       cy.get('h2').contains('Payment terms').should('exist');
       cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
       cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
@@ -685,11 +686,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         },
         last_movement_date: '01/05/2024',
       };
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, mockDataNoEnforcementAction, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
+      mountAtAGlanceTab({ tabData: mockDataNoEnforcementAction });
       cy.get('h3').contains('Days in default').and('be.visible').next('p').should('have.text', ' 45 days ');
       cy.get('h3')
         .contains('Enforcement override')
@@ -710,11 +707,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       mockDataAdultWithCO.enforcement_status.collection_order_made = true;
       mockDataAdultWithCO.enforcement_status.default_days_in_jail = 30;
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, mockDataAdultWithCO, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
+      mountAtAGlanceTab({ tabData: mockDataAdultWithCO });
 
       cy.get(DOM.badgeBlue).contains('Collection Order').should('be.visible').and('have.class', 'moj-badge--blue');
     },
@@ -730,11 +723,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       mockDataAdultNoCO.enforcement_status.collection_order_made = false;
       mockDataAdultNoCO.enforcement_status.default_days_in_jail = 30;
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, mockDataAdultNoCO, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
+      mountAtAGlanceTab({ tabData: mockDataAdultNoCO });
 
       cy.get(DOM.badgeRed).contains('No collection Order').should('be.visible').and('have.class', 'moj-badge--red');
     },
@@ -750,11 +739,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       mockDataYouthWithCO.is_youth = true;
       mockDataYouthWithCO.enforcement_status.collection_order_made = true;
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, mockDataYouthWithCO, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
+      mountAtAGlanceTab({ tabData: mockDataYouthWithCO });
 
       cy.get(DOM.badgeRed).contains('No collection Order').should('be.visible').and('have.class', 'moj-badge--red');
     },
@@ -770,11 +755,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       mockDataYouthNoCO.is_youth = true;
       mockDataYouthNoCO.enforcement_status.collection_order_made = false;
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, mockDataYouthNoCO, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
+      mountAtAGlanceTab({ tabData: mockDataYouthNoCO });
 
       cy.get('opal-lib-govuk-tag')
         .contains(/collection order/i)

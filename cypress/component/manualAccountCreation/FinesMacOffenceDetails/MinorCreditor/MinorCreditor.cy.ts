@@ -21,8 +21,12 @@ describe('FinesMacMinorCreditor', () => {
   let formData: any;
   let currentoffenceDetails = 0;
   let finesMacState = structuredClone(FINES_MINOR_CREDITOR_MOCK);
-  let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+  let finesMacOffenceDetailsDraftState = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK);
   beforeEach(() => {
+    currentoffenceDetails = 0;
+    finesMacState = structuredClone(FINES_MINOR_CREDITOR_MOCK);
+    finesMacOffenceDetailsDraftState = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK);
+
     const childForms = [
       {
         ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
@@ -52,6 +56,9 @@ describe('FinesMacMinorCreditor', () => {
   });
 
   const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+    finesMacState = structuredClone(finesMacState);
+    finesMacOffenceDetailsDraftState = structuredClone(finesMacOffenceDetailsDraftState);
+    formData = finesMacOffenceDetailsDraftState.offenceDetailsDraft[currentoffenceDetails].childFormData;
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
     return mount(FinesMacOffenceDetailsMinorCreditorComponent, {
       providers: [

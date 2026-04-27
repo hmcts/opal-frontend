@@ -34,6 +34,9 @@ describe('FinesMacAddOffenceComponent', () => {
   const date = new Date();
 
   beforeEach(() => {
+    finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    offenceDetailsDraftState = structuredClone(ADD_OFFENCE_OFFENCE_MOCK);
+    currentoffenceDetails = 0;
     cy.intercept(
       {
         method: 'GET',
@@ -54,19 +57,9 @@ describe('FinesMacAddOffenceComponent', () => {
 
   let currentoffenceDetails = 0;
 
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.offenceDetails[currentoffenceDetails].formData = {
-        fm_offence_details_id: 0,
-        fm_offence_details_date_of_sentence: '',
-        fm_offence_details_offence_cjs_code: null,
-        fm_offence_details_offence_id: 0,
-        fm_offence_details_impositions: [],
-      };
-    });
-  });
-
   const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+    finesMacState = structuredClone(finesMacState);
+    offenceDetailsDraftState = structuredClone(offenceDetailsDraftState);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
     return mount(FinesMacOffenceDetailsAddAnOffenceComponent, {
       providers: [

@@ -10,7 +10,6 @@ const date = new Date();
 const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
 export const MacPaymentTermsLocators = {
-  pageHeader: 'h1.govuk-heading-l',
   pageTitle: 'h1.govuk-heading-l',
   legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
   finesMacPaymentTermsForm: 'app-fines-mac-payment-terms-form',
@@ -31,7 +30,7 @@ export const MacPaymentTermsLocators = {
   hasDaysInDefaultLabel: 'label[for="fm_payment_terms_has_days_in_default"]',
   suspendedCommittalDateLabel: 'label[for="fm_payment_terms_suspended_committal_date"]',
   defaultDaysInJailLabel: 'label[for="fm_payment_terms_default_days_in_jail"]',
-  daysInDefaultCalculator: 'span.govuk-details__summary-text',
+  calculateLink: 'span.govuk-details__summary-text',
   addEnforcementActionLabel: 'label[for="fm_payment_terms_add_enforcement_action"]',
   prisLabel: 'label[for="fm_payment_terms_enforcement_action-PRIS"]',
   earliestReleaseDateLabel: 'label[for="fm_payment_terms_earliest_release_date"]',
@@ -41,9 +40,8 @@ export const MacPaymentTermsLocators = {
   paymentCardLabel: 'label[for="fm_payment_terms_payment_card_request"]',
 
   prisHint: 'div[id = "fm_payment_terms_prison_and_prison_number-hint"]',
-  prisCharHint: 'div.govuk-character-count__message.govuk-character-count__status',
-  noenfCharHint: 'div.govuk-character-count__message.govuk-character-count__status',
-  dateHint: 'div.govuk-hint',
+  characterCountHint: 'div.govuk-character-count__message.govuk-character-count__status',
+  hint: 'div.govuk-hint',
 
   collectionOrder: {
     yes: 'input[name="fm_payment_terms_collection_order_made"][value="true"]',
@@ -51,11 +49,8 @@ export const MacPaymentTermsLocators = {
     date: 'input[id="fm_payment_terms_collection_order_date"]',
     today: '#fm_payment_terms_collection_order_made_today',
   },
-  collectionOrderMadeTrue: 'input[name="fm_payment_terms_collection_order_made"][value="true"]',
   collectionOrderDate: 'input[id="fm_payment_terms_collection_order_date"]',
   collectionOrderDateLabel: 'label[for="fm_payment_terms_collection_order_date"]',
-  collectionOrderHint: 'div.govuk-hint',
-  collectionYes: 'input[name="fm_payment_terms_collection_order_made"][value="true"]',
   collectionNo: 'input[name="fm_payment_terms_collection_order_made"][value="false"]',
   collectionYesLabel: 'label[for="fm_payment_terms_collection_order_made-fm_payment_terms_collection_order_made_true"]',
   collectionNoLabel: 'label[for="fm_payment_terms_collection_order_made-fm_payment_terms_collection_order_made_false"]',
@@ -140,7 +135,6 @@ export const MacPaymentTermsLocators = {
   days: 'input[id="days"]',
   weeks: 'input[id="weeks"]',
   calculatedDays: 'div.govuk-grid-column-one-half',
-  calculateLink: 'span.govuk-details__summary-text',
   calculateHeading: 'h1.govuk-fieldset__heading',
   yearsLabel: 'label[for="years"]',
   monthsLabel: 'label[for="months"]',
