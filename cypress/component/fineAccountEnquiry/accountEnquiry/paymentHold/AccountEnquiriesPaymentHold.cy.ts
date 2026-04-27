@@ -24,7 +24,13 @@ const componentProperties: IComponentProperties = {
   accountId: MINOR_CREDITOR_ACCOUNT_ID.toString(),
   routeRoot: 'minor-creditor',
   fragments: 'at-a-glance',
-  interceptedRoutes: ['/access-denied', '../note/add', '../payment-hold/add', '../payment-hold/remove', '../payment-hold/denied'],
+  interceptedRoutes: [
+    '/access-denied',
+    '../note/add',
+    '../payment-hold/add',
+    '../payment-hold/remove',
+    '../payment-hold/denied',
+  ],
 };
 
 const buildMinorCreditorPartyName = (header = createMinorCreditorHeaderMock()): string => {
@@ -32,12 +38,18 @@ const buildMinorCreditorPartyName = (header = createMinorCreditorHeaderMock()): 
     return header.party.organisation_details?.organisation_name ?? '';
   }
 
-  return [header.party.individual_details?.title, header.party.individual_details?.forenames, header.party.individual_details?.surname]
+  return [
+    header.party.individual_details?.title,
+    header.party.individual_details?.forenames,
+    header.party.individual_details?.surname,
+  ]
     .filter(Boolean)
     .join(' ');
 };
 
-const interceptMinorCreditorAtAGlanceSequence = (responses: ReturnType<typeof createMinorCreditorAtAGlanceWithoutDefendantMock>[]) => {
+const interceptMinorCreditorAtAGlanceSequence = (
+  responses: ReturnType<typeof createMinorCreditorAtAGlanceWithoutDefendantMock>[],
+) => {
   let callCount = 0;
 
   return cy
@@ -116,11 +128,7 @@ const setupRemovePaymentHoldPage = (
   atAGlanceResponses: ReturnType<typeof createMinorCreditorAtAGlanceWithoutDefendantMock>[],
 ) => setupPaymentHoldPage('remove', userState, atAGlanceResponses);
 
-const assertPaymentHoldConfirmationScreen = (
-  headingLabel: string,
-  buttonSelector: string,
-  buttonLabel: string,
-) => {
+const assertPaymentHoldConfirmationScreen = (headingLabel: string, buttonSelector: string, buttonLabel: string) => {
   cy.get(DOM.headingWithCaption).should('exist');
   cy.get(DOM.headingName).should('contain.text', headingLabel);
   cy.get(buttonSelector).should('be.visible').and('contain.text', buttonLabel);
@@ -355,7 +363,11 @@ describe('Minor Creditor Payment Hold', () => {
         cy.get(VERSION_CONTROL.successBanner).should('exist');
         cy.get(VERSION_CONTROL.successBannerText).should('contain.text', VERSION_CONTROL.labelPaymentHoldRemoved);
 
-        setupMinorCreditorAtAGlance(createUserStateWithPaymentHoldPermission(), createMinorCreditorHeaderMock(), updatedAtAGlance);
+        setupMinorCreditorAtAGlance(
+          createUserStateWithPaymentHoldPermission(),
+          createMinorCreditorHeaderMock(),
+          updatedAtAGlance,
+        );
 
         cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('exist');
         cy.get(VERSION_CONTROL.successBanner).should('not.exist');
