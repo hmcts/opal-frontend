@@ -29,6 +29,9 @@ import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fe
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import { FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-collo-change/constants/fines-acc-enf-collo-change-routing-titles.constant';
 import { minorCreditorAccountAtAGlanceResolver } from './resolvers/defendant-minor-creditor-at-a-glance.resolver';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_TITLES } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-titles.constant';
+import { nextPermittedEnfActionsResolver } from './resolvers/defendant-account-next-permitted-enf-actions.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -253,6 +256,25 @@ export const routing: Routes = [
             resolve: {
               titleResolver: TitleResolver,
               enforcementStatus: defendantAccountEnforcementStatusResolver,
+            },
+          },
+          {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
+            loadComponent: () =>
+              import('../fines-acc-enf-action-select/fines-acc-enf-action-select.component').then(
+                (c) => c.FinesAccEnfActionSelectComponent,
+              ),
+            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.select,
+              routePermissionId: [accRootPermissionIds['enter-enforcement']],
+            },
+            resolve: {
+              title: TitleResolver,
+              defendantAccountHeadingData: defendantAccountHeadingResolver,
+              enforcementStatus: defendantAccountEnforcementStatusResolver,
+              nextPermittedEnfActions: nextPermittedEnfActionsResolver,
             },
           },
           {

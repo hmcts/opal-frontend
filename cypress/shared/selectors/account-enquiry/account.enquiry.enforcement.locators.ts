@@ -24,6 +24,7 @@ export const ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS = {
   tabName: '[subnavitemid="enforcement-tab"] > .moj-sub-navigation__link',
 
   enforcementStatusLink: '.govuk-link',
+  addEnforcementActionLink: '.govuk-link:contains("Add enforcement action")',
   addEnforcementOverrideLink: '.govuk-link:contains("Add enforcement override")',
   detailsLink: '.govuk-details__summary-text',
 

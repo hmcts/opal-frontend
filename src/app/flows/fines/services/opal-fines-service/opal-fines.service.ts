@@ -329,15 +329,20 @@ export class OpalFines {
     result_ids: string[],
     params: IOpalFinesResultsParams | null = null,
   ): Observable<IOpalFinesResultsRefData> {
-    if (!this.cache.resultsCache$) {
-      this.cache.resultsCache$ = this.http
+    const cacheKey = JSON.stringify({
+      result_ids,
+      params,
+    });
+
+    if (!this.cache.resultsCache$[cacheKey]) {
+      this.cache.resultsCache$[cacheKey] = this.http
         .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, {
           params: { result_ids, ...params },
         })
         .pipe(shareReplay(1));
     }
 
-    return this.cache.resultsCache$;
+    return this.cache.resultsCache$[cacheKey];
   }
 
   /**
