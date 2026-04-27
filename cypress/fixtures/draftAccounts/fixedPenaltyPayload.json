@@ -54,8 +54,8 @@
       "debtor_detail": {
         "vehicle_make": "Ford Focus",
         "vehicle_registration_mark": "AB12 CDE",
-        "document_language": "English",
-        "hearing_language": "English",
+        "document_language": "EN",
+        "hearing_language": "EN",
         "employee_reference": null,
         "employer_company_name": null,
         "employer_address_line_1": null,
