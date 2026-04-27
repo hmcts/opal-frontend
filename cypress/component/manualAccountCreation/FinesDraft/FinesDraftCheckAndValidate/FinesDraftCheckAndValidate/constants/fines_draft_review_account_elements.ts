@@ -117,6 +117,7 @@ export const DOM_ELEMENTS = {
   reasonLabel: 'label[for="fm_delete_account_confirmation_reason"]',
   commentInput: 'textarea[id="fm_delete_account_confirmation_reason"]',
   commentCharHint: 'div.govuk-character-count__message.govuk-character-count__status',
+  errorMessage: '.govuk-error-message',
   deleteConfirmation: 'button[id="confirmDeletion"]',
   cancelLink: 'a.govuk-link.button-link',
 };

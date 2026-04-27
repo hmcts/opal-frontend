@@ -196,48 +196,34 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   );
 
   it(
-    'Valid character checks for account notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
+    'Valid character checks for delete account notes',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation'] },
     () => {
-      const formSubmitSpy = Cypress.sinon.spy();
+      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', {
+        statusCode: 200,
+      }).as('patchDraftAccount');
 
-      setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+      setupComponent(finesAccountPayload, finesAccountPayload, true);
 
-      cy.get(L.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
-      cy.get(L.noteInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+      cy.get(DOM_ELEMENTS.deleteConfirmation).click();
 
-      cy.get(L.returnToAccountDetailsButton).first().click();
-
-      cy.get('.errorSummary').should('not.exist');
-      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+      cy.wait('@patchDraftAccount').its('request.method').should('eq', 'PATCH');
     },
   );
   it(
-    'Invalid character - confirm updated errors',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
+    'Invalid character - confirm updated error for delete account note',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+      setupComponent(finesAccountPayload, finesAccountPayload, true);
 
-      cy.get(L.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
-      cy.get(L.noteInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
 
-      cy.get(L.returnToAccountDetailsButton).first().click();
-
-      // Error TBC (may need to define elsewhere in some way for cleaner look)
-      cy.get(L.errorSummary)
+      cy.get(DOM_ELEMENTS.errorMessage)
         .should('exist')
         .contains(
-          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-      cy.get(L.commentsErrorMessage)
-        .should('exist')
-        .contains(
-          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-      cy.get(L.notesErrorMessage)
-        .should('exist')
-        .contains(
-          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+          'Reason must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces and apostrophes)',
         );
     },
   );
