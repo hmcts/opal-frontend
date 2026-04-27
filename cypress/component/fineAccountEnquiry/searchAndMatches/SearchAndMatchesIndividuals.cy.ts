@@ -1,79 +1,46 @@
-import { mount } from 'cypress/angular';
-import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
-import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
-import { provideHttpClient } from '@angular/common/http';
 import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
 import { AccountSearchIndividualsLocators as IndividualsLocators } from '../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { finesSaDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
+import { finesSaIndividualDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
 import { getCurrentMonth, getFirstDayOfPreviousMonth, getPreviousMonth } from '../../../support/utils/dateUtils';
+import { mountSearchAccount } from './support/mountSearchAccount';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const getDobDateGridButtonSelector = (dmy: string): string => {
+  const [day, month, year] = dmy.split('/');
+  const unpaddedDate = `${Number(day)}/${Number(month)}/${year}`;
+
+  return `table.moj-js-datepicker-grid button[data-testid="${dmy}"], table.moj-js-datepicker-grid button[data-testid="${unpaddedDate}"]`;
+};
 
 describe('Search Account Component - Individuals', () => {
-  let individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
+  type IndividualSearchState = typeof INDIVIDUAL_SEARCH_STATE_MOCK;
 
-  const setupComponent = (formSubmit: any = null) => {
-    mount(FinesSaSearchAccountComponent, {
-      providers: [
-        provideHttpClient(),
-        provideRouter([
-          {
-            path: 'fines/search-accounts/results',
-            component: FinesSaSearchAccountComponent,
-            resolve: {
-              individualAccounts: finesSaDefendantAccountsResolver,
-            },
-            runGuardsAndResolvers: 'always',
-          },
-          {
-            path: 'fines/search-accounts',
-            component: FinesSaSearchAccountComponent,
-          },
-        ]),
-        OpalFines,
-        {
-          provide: FinesSaStore,
-          useFactory: () => {
-            const store = new FinesSaStore();
-            store.setSearchAccount(individualSearchMock);
-            store.setActiveTab('individuals');
+  const buildIndividualSearchState = (
+    configure?: (searchState: IndividualSearchState) => void,
+  ): IndividualSearchState => {
+    const searchState = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
+    configure?.(searchState);
+    return searchState;
+  };
 
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            fragment: of('individuals'),
-            parent: {
-              snapshot: {
-                url: [{ path: 'search' }],
-              },
-            },
-          },
-        },
-      ],
-      componentProperties: {
-        //handleSearchAccountSubmit: formSubmit,
+  const setupComponent = (configure?: (searchState: IndividualSearchState) => void) =>
+    mountSearchAccount({
+      activeTab: 'individuals',
+      initialState: buildIndividualSearchState(configure),
+      resultsResolvers: {
+        individualAccounts: finesSaIndividualDefendantAccountsResolver,
       },
     });
-  };
-  beforeEach(() => {
-    individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
-  });
 
   it(
     'AC1a-d. should render the search for an account screen',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6980'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(IndividualsLocators.root).should('exist');
       cy.get(CommonLocators.pageHeader).should('contain', 'Search for an account');
@@ -115,8 +82,9 @@ describe('Search Account Component - Individuals', () => {
     'AC3a. should validate input fields and show errors',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6981'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_number = '123$%^78';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_number = '123$%^78';
+      });
 
       cy.get(CommonLocators.accountNumberInput).should('have.value', '123$%^78');
       cy.get(CommonLocators.searchButton).click();
@@ -138,8 +106,9 @@ describe('Search Account Component - Individuals', () => {
     'AC3b. should show error for incorrectly formatted account number',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6982'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_number = '1234567';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_number = '1234567';
+      });
 
       cy.get(CommonLocators.accountNumberInput).should('have.value', '1234567');
       cy.get(CommonLocators.searchButton).click();
@@ -158,8 +127,9 @@ describe('Search Account Component - Individuals', () => {
     'AC3c. should show error for non-alphabetical reference or case number',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6983'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_reference_case_number = 'REF@#$456';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_reference_case_number = 'REF@#$456';
+      });
 
       cy.get(CommonLocators.referenceOrCaseNumberInput).should('have.value', 'REF@#$456');
       cy.get(CommonLocators.searchButton).click();
@@ -178,9 +148,10 @@ describe('Search Account Component - Individuals', () => {
     'AC3d. should show error for non-alphabetical last name',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6984'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
-        'Smith123';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
+          'Smith123';
+      });
 
       cy.get(IndividualsLocators.lastNameInput).should('have.value', 'Smith123');
       cy.get(CommonLocators.searchButton).click();
@@ -195,9 +166,10 @@ describe('Search Account Component - Individuals', () => {
     'AC3e. should show error for non-alphabetical first names',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6985'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
-        'John123';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
+          'John123';
+      });
 
       cy.get(IndividualsLocators.firstNameInput).should('have.value', 'John123');
       cy.get(CommonLocators.searchButton).click();
@@ -214,9 +186,10 @@ describe('Search Account Component - Individuals', () => {
     'AC3f. should show error for invalid date of birth format',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6986'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
-        '15/AB/2020';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
+          '15/AB/2020';
+      });
 
       cy.get(IndividualsLocators.dobInput).should('have.value', '15/AB/2020');
       cy.get(CommonLocators.searchButton).click();
@@ -231,9 +204,10 @@ describe('Search Account Component - Individuals', () => {
     'AC3g. should show error for future date of birth',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6987'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
-        '15/05/2030';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
+          '15/05/2030';
+      });
 
       cy.get(IndividualsLocators.dobInput).should('have.value', '15/05/2030');
       cy.get(CommonLocators.searchButton).click();
@@ -248,9 +222,10 @@ describe('Search Account Component - Individuals', () => {
     'AC3h. should show error for incorrectly formatted date of birth',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6988'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
-        '5/1/1980';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
+          '5/1/1980';
+      });
 
       cy.get(IndividualsLocators.dobInput).should('have.value', '5/1/1980');
       cy.get(CommonLocators.searchButton).click();
@@ -266,22 +241,22 @@ describe('Search Account Component - Individuals', () => {
     'date picker should show the date in correct format DD/MM/YYYY',
     { tags: [...buildTags('@JIRA-STORY:PO-1998'), '@JIRA-KEY:POT-6989'] },
     () => {
-      setupComponent(null);
+      setupComponent();
+      const expectedDate = getFirstDayOfPreviousMonth();
 
       cy.get(IndividualsLocators.dobOpenButton).click();
       cy.get(IndividualsLocators.dobCalendarTitle)
         .invoke('text')
         .then((pickerMonth) => {
           if (pickerMonth.includes(getPreviousMonth())) {
-            cy.get(IndividualsLocators.dobCalendarDialog).contains(/^1$/).click();
+            cy.get(IndividualsLocators.dobCalendarDialog).find(getDobDateGridButtonSelector(expectedDate)).click();
             return;
           }
 
           cy.get(IndividualsLocators.dobCalendarTitle).should('contain', getCurrentMonth());
           cy.get(IndividualsLocators.dobPreviousMonthButton).click();
-          cy.get(IndividualsLocators.dobCalendarDialog).contains(/^1$/).click();
+          cy.get(IndividualsLocators.dobCalendarDialog).find(getDobDateGridButtonSelector(expectedDate)).click();
         });
-      const expectedDate = getFirstDayOfPreviousMonth();
       cy.get(IndividualsLocators.dobInput).should('have.value', expectedDate);
       cy.get(CommonLocators.searchButton).click();
     },
@@ -291,9 +266,10 @@ describe('Search Account Component - Individuals', () => {
     'AC3i. should show error for invalid NI number',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6990'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
-        'AB123$%^C';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+          'AB123$%^C';
+      });
 
       cy.get(IndividualsLocators.niNumberInput).should('have.value', 'AB123$%^C');
       cy.get(CommonLocators.searchButton).click();
@@ -312,9 +288,10 @@ describe('Search Account Component - Individuals', () => {
     'AC3j. should show error for invalid address line 1',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6991'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
-        '123 Test St. ®©™';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
+          '123 Test St. ®©™';
+      });
 
       cy.get(IndividualsLocators.addressLine1Input).should('have.value', '123 Test St. ®©™');
       cy.get(CommonLocators.searchButton).click();
@@ -333,9 +310,10 @@ describe('Search Account Component - Individuals', () => {
     'AC3k. should show error for invalid postcode',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6992'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
-        'SW1A @#!';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
+          'SW1A @#!';
+      });
 
       cy.get(IndividualsLocators.postcodeInput).should('have.value', 'SW1A @#!');
       cy.get(CommonLocators.searchButton).click();
@@ -355,8 +333,9 @@ describe('Search Account Component - Individuals', () => {
     'AC4a. should validate account number maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6993'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_number = '1234567890'; // 10 characters (exceeds 9)
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_number = '1234567890'; // 10 characters (exceeds 9)
+      });
 
       cy.get(CommonLocators.accountNumberInput).should('have.value', '1234567890');
       cy.get(CommonLocators.searchButton).click();
@@ -372,9 +351,10 @@ describe('Search Account Component - Individuals', () => {
     'AC4b. should validate reference or case number maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6994'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_reference_case_number =
-        'This reference number is way too long and exceeds thirty characters';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_reference_case_number =
+          'This reference number is way too long and exceeds thirty characters';
+      });
 
       cy.get(CommonLocators.referenceOrCaseNumberInput).should(
         'have.value',
@@ -393,9 +373,10 @@ describe('Search Account Component - Individuals', () => {
     'AC4c. should validate last name maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6995'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
-        'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
+          'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
+      });
 
       cy.get(IndividualsLocators.lastNameInput).should('have.value', 'ThisLastNameIsTooLongAndExceedsThirtyCharacters');
       cy.get(CommonLocators.searchButton).click();
@@ -411,9 +392,10 @@ describe('Search Account Component - Individuals', () => {
     'AC4d. should validate first names maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6996'] },
     () => {
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
-        'ThisFirstNameIsTooLongAndExceedsTwentyChars';
-      setupComponent(null);
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
+          'ThisFirstNameIsTooLongAndExceedsTwentyChars';
+      });
 
       cy.get(IndividualsLocators.firstNameInput).should('have.value', 'ThisFirstNameIsTooLongAndExceedsTwentyChars');
       cy.get(CommonLocators.searchButton).click();
@@ -429,9 +411,10 @@ describe('Search Account Component - Individuals', () => {
     'AC4e. should validate National Insurance number maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6997'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
-        'AB123456CD';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+          'AB123456CD';
+      });
 
       cy.get(IndividualsLocators.niNumberInput).should('have.value', 'AB123456CD');
       cy.get(CommonLocators.searchButton).click();
@@ -447,9 +430,10 @@ describe('Search Account Component - Individuals', () => {
     'AC4f. should validate Address Line 1 maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6998'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
-        'This address line is too long and exceeds thirty characters';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
+          'This address line is too long and exceeds thirty characters';
+      });
 
       cy.get(IndividualsLocators.addressLine1Input).should(
         'have.value',
@@ -468,9 +452,10 @@ describe('Search Account Component - Individuals', () => {
     'AC4g. should validate Postcode maximum field length',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6999'] },
     () => {
-      setupComponent(null);
-      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
-        'AB12 3CDEF'; // 9 characters (exceeds 8)
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
+          'AB12 3CDEF'; // 9 characters (exceeds 8)
+      });
 
       cy.get(IndividualsLocators.postcodeInput).should('have.value', 'AB12 3CDEF');
       cy.get(CommonLocators.searchButton).click();
@@ -486,7 +471,7 @@ describe('Search Account Component - Individuals', () => {
     'AC5a should validate first name field dependency',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-7000'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(IndividualsLocators.firstNameInput).type('John', { delay: 0 });
       cy.get(IndividualsLocators.lastNameInput).should('have.value', '');
@@ -501,7 +486,7 @@ describe('Search Account Component - Individuals', () => {
     'AC5b. should validate dob field dependency',
     { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-7001'] },
     () => {
-      setupComponent(null);
+      setupComponent();
       cy.window().then((win) => {
         cy.stub(win.console, 'info').as('consoleLog');
       });
@@ -521,7 +506,7 @@ describe('Search Account Component - Individuals', () => {
     'AC1a. Should validate last name field when alias checkbox selected',
     { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7002'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(IndividualsLocators.includeAliasesCheckbox).check().should('be.checked');
       cy.get(CommonLocators.searchButton).click();
@@ -534,7 +519,7 @@ describe('Search Account Component - Individuals', () => {
     'AC1b. Should validate last name field when "Search exact match" for last name is selected',
     { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7003'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(IndividualsLocators.lastNameExactMatchCheckbox).check().should('be.checked');
       cy.get(CommonLocators.searchButton).click();
@@ -546,7 +531,7 @@ describe('Search Account Component - Individuals', () => {
     'AC1c. Should validate first name field when "Search exact match" for first name is selected',
     { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7004'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(IndividualsLocators.firstNamesExactMatchCheckbox).check().should('be.checked');
       cy.get(CommonLocators.searchButton).click();

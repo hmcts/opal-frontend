@@ -15,11 +15,14 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacMinorCreditorInformation', () => {
-  let finesMacState = structuredClone(FINES_MINOR_CREDITOR_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_MINOR_CREDITOR_MOCK);
+  let finesMacState = finesMacStateTemplate;
 
   const minorCreditorValue = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
 
   const setupComponent = (formSubmit: any) => {
+    finesMacState = structuredClone(finesMacStateTemplate);
+
     mount(FinesMacOffenceDetailsMinorCreditorInformationComponent, {
       providers: [
         provideHttpClient(),

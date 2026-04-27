@@ -98,7 +98,7 @@ export class AccountDetailsPaymentTermsActions {
     log('assert', 'Asserting instalment summary values', expected);
     cy.get(L.fields.instalmentAmount, this.common.getTimeoutOptions()).should('contain.text', expected.amount);
     cy.get(L.fields.instalmentFrequency, this.common.getTimeoutOptions()).should('contain.text', expected.frequency);
-    cy.get(L.fields.startDate, this.common.getTimeoutOptions()).should('contain.text', expected.startDate);
+    cy.get(L.fields.effectiveDate, this.common.getTimeoutOptions()).should('contain.text', expected.startDate);
   }
 
   /**
@@ -107,7 +107,7 @@ export class AccountDetailsPaymentTermsActions {
    */
   public assertPayByDate(expected: string): void {
     log('assert', 'Asserting pay by date value', { expected });
-    cy.get(L.fields.payByDate, this.common.getTimeoutOptions()).should('contain.text', expected);
+    cy.get(L.fields.effectiveDate, this.common.getTimeoutOptions()).should('contain.text', expected);
   }
 
   /**

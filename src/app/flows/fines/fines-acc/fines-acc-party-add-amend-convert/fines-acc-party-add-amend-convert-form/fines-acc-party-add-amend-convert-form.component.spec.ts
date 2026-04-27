@@ -127,7 +127,11 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     link.dispatchEvent(event);
 
-    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'facc_party_add_amend_convert_individual_aliases');
+    expect(removeAliasSpy).toHaveBeenCalledWith(
+      expectedIndex,
+      'facc_party_add_amend_convert_individual_aliases',
+      event,
+    );
   });
 
   it('should render company remove alias link with href and call removeAlias', () => {
@@ -159,7 +163,11 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     link.dispatchEvent(event);
 
-    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'facc_party_add_amend_convert_organisation_aliases');
+    expect(removeAliasSpy).toHaveBeenCalledWith(
+      expectedIndex,
+      'facc_party_add_amend_convert_organisation_aliases',
+      event,
+    );
   });
 
   it('should initialize form with empty values when no initial data provided', () => {

@@ -18,12 +18,16 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('RemoveOffenceAndImpositionsComponent', () => {
-  let finesMacState = FINES_MAC_STATE_MOCK;
+  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
   finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
 
-  let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+  let finesMacOffenceDetailsDraftState = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK);
 
   beforeEach(() => {
+    finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
+    finesMacOffenceDetailsDraftState = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK);
+
     cy.intercept(
       {
         method: 'GET',
@@ -43,6 +47,9 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
   });
 
   const setupComponent = () => {
+    finesMacState = structuredClone(finesMacState);
+    finesMacOffenceDetailsDraftState = structuredClone(finesMacOffenceDetailsDraftState);
+
     mount(FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent, {
       providers: [
         provideHttpClient(),

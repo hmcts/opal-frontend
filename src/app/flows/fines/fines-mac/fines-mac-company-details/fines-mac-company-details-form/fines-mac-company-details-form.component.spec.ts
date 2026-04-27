@@ -107,7 +107,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     link.dispatchEvent(event);
 
-    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_company_details_aliases');
+    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_company_details_aliases', event);
   });
 
   it('should emit form submit event with form value - nestedFlow true', () => {

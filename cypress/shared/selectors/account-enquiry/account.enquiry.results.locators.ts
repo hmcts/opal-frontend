@@ -46,23 +46,14 @@ export const AccountEnquiryResultsLocators = {
 
   /** No-results banner / message area (e.g. "There are no matching results"). */
   messages: {
-    /** Heading that appears when there are no matching results. */
-    noResultsHeading: 'h2.govuk-heading-m',
+    /** Heading shown in message states like no-results or too-many-results. */
+    heading: 'h2.govuk-heading-m',
 
-    /** Paragraph text shown in the no-results state. */
-    noResultsText: 'p.govuk-body-m',
+    /** Paragraph text shown in message states. */
+    text: 'p.govuk-body-m',
 
-    /** "Check your search" link in the no-results paragraph. */
-    checkYourSearchLink: 'p.govuk-body-m a.govuk-link',
-
-    /** Heading that appears when the results exceed the supported threshold. */
-    tooManyResultsHeading: 'h2.govuk-heading-m',
-
-    /** Paragraph text shown in the too-many-results state. */
-    tooManyResultsText: 'p.govuk-body-m',
-
-    /** "Try adding more information" link in the too-many-results paragraph. */
-    addMoreInfoLink: 'p.govuk-body-m a.govuk-link',
+    /** Link shown in message states. */
+    link: 'p.govuk-body-m a.govuk-link',
   },
 
   // ──────────────────────────────
@@ -110,9 +101,6 @@ export const AccountEnquiryResultsLocators = {
 
     /** Header cells rendered by the sortable table component. */
     head: 'opal-lib-moj-sortable-table th[opal-lib-moj-sortable-table-header]',
-
-    /** Row container elements rendered by the sortable table component. */
-    body: 'opal-lib-moj-sortable-table tr[opal-lib-moj-sortable-table-row]',
 
     /** All visible result rows within the rendered results wrapper. */
     rows: 'opal-lib-moj-sortable-table tr[opal-lib-moj-sortable-table-row]',

@@ -252,7 +252,7 @@ export class ManualReviewAccountActions {
       (req) => req,
     ).as('manualAccountSubmit');
 
-    cy.get(L.submitForReviewButton, this.common.getTimeoutOptions()).should('be.visible').click();
+    cy.get(L.submitButton, this.common.getTimeoutOptions()).should('be.visible').click();
 
     return (cy.wait('@manualAccountSubmit') as unknown as Cypress.Chainable<void>).then(() => {
       cy.get<Interception>('@manualAccountSubmit').then(({ response }) => {

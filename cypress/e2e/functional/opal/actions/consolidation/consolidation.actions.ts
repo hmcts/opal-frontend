@@ -337,7 +337,7 @@ export class ConsolidationActions {
     log('assert', 'Verifying consolidation no matching results state');
 
     cy.get(AccountResultsLocators.resultsTable).should('not.exist');
-    cy.get(AccountResultsLocators.invalidResultsHeading, { timeout: 10_000 }).should(
+    cy.get(AccountResultsLocators.messageHeading, { timeout: 10_000 }).should(
       'contain',
       'There are no matching results.',
     );
@@ -507,7 +507,7 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.accountNumberInput).should('not.exist');
 
     log('navigate', 'Returning to Search tab');
-    cy.get(AccountSearchLocators.searchTab).click();
+    cy.get(AccountSearchLocators.searchTabLink).click();
     cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
   }
 
@@ -522,7 +522,7 @@ export class ConsolidationActions {
     cy.get(AccountSearchLocators.accountNumberInput).should('not.exist');
 
     log('navigate', 'Returning to Search tab');
-    cy.get(AccountSearchLocators.searchTab).click();
+    cy.get(AccountSearchLocators.searchTabLink).click();
     cy.get(AccountSearchLocators.accountNumberInput).should('be.visible');
   }
 
