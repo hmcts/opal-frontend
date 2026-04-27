@@ -16,7 +16,6 @@ export const MacLanguagePreferencesLocators = {
   enDocumentRadioOption: 'input[name="fm_language_preferences_document_language"][value="EN"]',
   cyCourtHearingRadioOption: 'input[name="fm_language_preferences_hearing_language"][value="CY"]',
   enCourtHearingRadioOption: 'input[name="fm_language_preferences_hearing_language"][value="EN"]',
-  pageHeader: 'h1.govuk-heading-l',
   documentFieldset: '#fm_language_preferences_document_language',
   hearingFieldset: '#fm_language_preferences_hearing_language',
   document: {

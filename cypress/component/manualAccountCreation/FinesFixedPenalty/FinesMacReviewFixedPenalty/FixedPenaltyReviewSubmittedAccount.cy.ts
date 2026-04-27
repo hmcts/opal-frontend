@@ -71,7 +71,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
       // Section 3 - Company Details
       cy.get(DOM_ELEMENTS.companyName).should('contain', 'OPAL E TO E S SCENARIO eleven');
-      cy.get(DOM_ELEMENTS.companyAddress)
+      cy.get(DOM_ELEMENTS.address)
         .should('contain', 'addr1 10')
         .and('contain', 'addr2 10')
         .and('contain', 'addr3 10')
@@ -316,7 +316,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
       // Section 3 - Company Details
       cy.get(DOM_ELEMENTS.companyName).should('contain', 'OPAL E TO E S SCENARIO eleven');
-      cy.get(DOM_ELEMENTS.companyAddress)
+      cy.get(DOM_ELEMENTS.address)
         .should('contain', 'addr1 10')
         .and('contain', 'addr2 10')
         .and('contain', 'addr3 10')

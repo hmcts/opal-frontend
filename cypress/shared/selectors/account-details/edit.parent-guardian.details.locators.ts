@@ -40,8 +40,6 @@ export const parentGuardianDetailsLocators = {
   // ──────────────────────────────
   // Page header
   // ──────────────────────────────
-  /** Page heading (contains caption + section title). */
-  headerH1: 'app-fines-acc-debtor-add-amend-form h1.govuk-heading-l',
   /** Caption within the header showing account ref and current name. */
   headerCaption: 'app-fines-acc-debtor-add-amend-form h1.govuk-heading-l .govuk-caption-l',
   /** Section title text node that should read "Parent or guardian details". */

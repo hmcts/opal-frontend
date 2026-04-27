@@ -18,9 +18,16 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacCompanyDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_COMPANY_DETAILS_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_COMPANY_DETAILS_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
+  beforeEach(() => {
+    finesMacStateTemplate = structuredClone(FINES_COMPANY_DETAILS_MOCK);
+    finesMacState = finesMacStateTemplate;
+  });
 
   const setupComponent = (formSubmit?: any, defendantTypeMock: string = '') => {
+    finesMacState = structuredClone(finesMacStateTemplate);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypeMock;
     return mount(FinesMacCompanyDetailsComponent, {
       providers: [
@@ -68,20 +75,6 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.componentRoot).should('exist');
     },
   );
-
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.companyDetails.formData = {
-        fm_company_details_company_name: '',
-        fm_company_details_add_alias: null,
-        fm_company_details_aliases: [],
-        fm_company_details_address_line_1: '',
-        fm_company_details_address_line_2: '',
-        fm_company_details_address_line_3: '',
-        fm_company_details_postcode: '',
-      };
-    });
-  });
 
   it(
     '(AC.8) should error when submitted without mandatory fields but has included optional input - Return to account details + Add contact details',
