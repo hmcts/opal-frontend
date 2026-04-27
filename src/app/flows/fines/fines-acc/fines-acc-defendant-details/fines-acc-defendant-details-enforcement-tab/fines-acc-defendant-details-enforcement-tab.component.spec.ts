@@ -82,6 +82,16 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
+  it('should emit addEnforcementAction when handleAddEnforcementAction is called', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+
+    component.handleAddEnforcementAction(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
   it('should emit changeEnforcementOverride when user has permission and an override result exists', () => {
     const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
 

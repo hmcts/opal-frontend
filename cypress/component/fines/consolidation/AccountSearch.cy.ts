@@ -16,6 +16,8 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   };
 
   const setupConsolidationComponent = (componentProperties: IComponentProperties = {}) => {
+    finesConSearchAccountFormData = structuredClone(finesConSearchAccountFormData);
+
     return mountConsolidationComponent({
       ...defaultComponentProperties,
       ...componentProperties,
@@ -105,7 +107,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
       //AC1c. Search screen mirrors expected field types, headings and actions
       cy.get(AccountSearchLocators.tabsNav).should('be.visible');
-      cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
+      cy.get(AccountSearchLocators.searchTabLink).should('contain', 'Search');
       cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
       cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For consolidation');
 
@@ -514,7 +516,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
 
       //AC1c. Search screen mirrors expected field types, headings and actions
       cy.get(AccountSearchLocators.tabsNav).should('be.visible');
-      cy.get(AccountSearchLocators.searchTab).should('contain', 'Search');
+      cy.get(AccountSearchLocators.searchTabLink).should('contain', 'Search');
       cy.get(AccountSearchLocators.resultsTab).should('contain', 'Results');
       cy.get(AccountSearchLocators.forConsolidationTab).should('contain', 'For consolidation');
 
@@ -682,7 +684,7 @@ describe('FinesConConsolidateAccComponent - Account & Company Search', () => {
   );
 
   it(
-    'AC5. Field dependencies checked & display the expected errors when ommited - no search update occurs',
+    'AC5. Field dependencies checked & display the expected errors when omitted - no search update occurs',
     { tags: ['@JIRA-STORY:PO-2413', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5913'] },
     () => {
       const updateSearchSpy = Cypress.sinon.spy();

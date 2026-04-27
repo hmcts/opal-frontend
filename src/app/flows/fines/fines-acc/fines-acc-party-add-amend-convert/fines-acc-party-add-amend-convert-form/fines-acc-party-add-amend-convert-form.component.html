@@ -86,7 +86,9 @@
               <a
                 class="govuk-link govuk-link--no-visited-state"
                 href=""
-                (click)="removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_individual_aliases')"
+                (click)="
+                  removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_individual_aliases', $event)
+                "
               >
                 Remove
               </a>
@@ -144,7 +146,9 @@
               <a
                 class="govuk-link govuk-link--no-visited-state"
                 href=""
-                (click)="removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_organisation_aliases')"
+                (click)="
+                  removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_organisation_aliases', $event)
+                "
               >
                 Remove
               </a>

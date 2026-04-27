@@ -18,17 +18,18 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('ReviewSummaryComponent', () => {
+  let finesMacStateTemplate = structuredClone(FINES_REVIEW_SUMMARY_OFFENCE_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
   beforeEach(() => {
     interceptOffences();
-  });
-
-  let finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };
-
-  afterEach(() => {
-    finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };
+    finesMacStateTemplate = structuredClone(FINES_REVIEW_SUMMARY_OFFENCE_MOCK);
+    finesMacState = finesMacStateTemplate;
   });
 
   const setupComponent = () => {
+    finesMacState = structuredClone(finesMacStateTemplate);
+
     mount(FinesMacOffenceDetailsReviewComponent, {
       providers: [
         provideHttpClient(),

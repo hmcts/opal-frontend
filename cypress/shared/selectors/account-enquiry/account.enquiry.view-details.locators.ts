@@ -32,8 +32,6 @@ export const DOM_ELEMENTS = {
   organisationNameLabel: 'label[for="facc_party_add_amend_convert_organisation_name"]',
 
   // Organisation aliases
-  organisationAliasCheckbox: 'input[id="facc_party_add_amend_convert_add_alias"]',
-  organisationAliasSection: '[opal-lib-govuk-checkboxes-conditional]',
   organisationAliasInput0: 'input[id="facc_party_add_amend_convert_alias_organisation_name_0"]',
   organisationAliasInput1: 'input[id="facc_party_add_amend_convert_alias_organisation_name_1"]',
   organisationAliasInput2: 'input[id="facc_party_add_amend_convert_alias_organisation_name_2"]',
@@ -44,7 +42,6 @@ export const DOM_ELEMENTS = {
   organisationAliasLabel2: 'label[for="facc_party_add_amend_convert_alias_organisation_name_2"]',
   organisationAliasLabel3: 'label[for="facc_party_add_amend_convert_alias_organisation_name_3"]',
   organisationAliasLabel4: 'label[for="facc_party_add_amend_convert_alias_organisation_name_4"]',
-  addOrganisationAliasButton: '#addAlias',
   removeOrganisationAliasButton: '.govuk-\\!-margin-bottom-3 > .govuk-link',
 
   // Form elements - Individual fields

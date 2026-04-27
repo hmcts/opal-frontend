@@ -1,4 +1,5 @@
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { FINES_ACC_ENF_ACTION_SELECT_NEXT_PERMITTED_ENF_ACTIONS_MOCK } from '@app/flows/fines/fines-acc/fines-acc-enf-action-select/mocks/fines-acc-enf-action-select-next-permitted-enf-actions.mock';
 import {
   OPAL_FINES_COURT_REF_DATA_MOCK,
   OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
@@ -10,6 +11,7 @@ import {
   OPAL_FINES_RESULT_REF_DATA_MOCK,
   OPAL_FINES_ENFORCER_REF_DATA_MOCK,
   OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK,
+  OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK,
 } from './CommonIntercept.mocks';
 
 /**
@@ -262,4 +264,32 @@ export function interceptEnforcers() {
       body: enforcers,
     })
     .as('getEnforcersByBU');
+}
+
+export function interceptNextPermittedEnforcementActionsEmpty() {
+  return cy
+    .intercept('GET', '/opal-fines-service/results', {
+      statusCode: 200,
+      body: {
+        count: 0,
+        refData: [],
+      },
+    })
+    .as('getNextPermittedEnfActions');
+}
+
+export function interceptNextPermittedEnforcementActions(resultIds: string[]) {
+  const results = OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK;
+  const queryParam = resultIds.map((id) => `result_ids=${id}`).join('&');
+  const filteredResults = results.refData.filter((result) => resultIds.includes(result.result_id));
+
+  return cy
+    .intercept('GET', `/opal-fines-service/results?${queryParam}`, {
+      statusCode: 200,
+      body: {
+        count: filteredResults.length,
+        refData: filteredResults,
+      },
+    })
+    .as('getNextPermittedEnfActions');
 }

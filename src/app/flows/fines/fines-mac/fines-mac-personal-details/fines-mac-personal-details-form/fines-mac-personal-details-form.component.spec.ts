@@ -133,7 +133,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     link.dispatchEvent(event);
 
-    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_personal_details_aliases');
+    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_personal_details_aliases', event);
   });
 
   it('should emit form submit event with form value', () => {
