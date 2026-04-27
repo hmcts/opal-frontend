@@ -1,9 +1,7 @@
-import {
-  OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK,
-  OPAL_FINES_RESULT_REF_DATA_MOCK,
-  OPAL_FINES_RESULTS_REF_DATA_MOCK,
-} from './ResultsIntercept.mocks';
+import { OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK } from './EnforcementOverrideResultsIntercept.mocks';
 import { OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK } from './NextPermittedEnforcementActionsIntercept.mocks';
+import { OPAL_FINES_RESULT_REF_DATA_MOCK } from './ResultByCodeIntercept.mocks';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from './ResultsSearchIntercept.mocks';
 
 /**
  * Intercepts the results reference-data request for a set of result IDs and returns matching results.

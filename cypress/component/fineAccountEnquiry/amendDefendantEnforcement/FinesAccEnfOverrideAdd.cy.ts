@@ -13,7 +13,7 @@ import {
   interceptEnforcers,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
-import { OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK } from '../../CommonIntercepts/referenceData/results/ResultsIntercept.mocks';
+import { OPAL_FINES_ENF_OVERRIDE_RESULT_REF_DATA_MOCK } from '../../CommonIntercepts/referenceData/results/EnforcementOverrideResultsIntercept.mocks';
 import { OPAL_FINES_ENFORCER_REF_DATA_MOCK } from '../../CommonIntercepts/referenceData/enforcers/EnforcersIntercept.mocks';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../CommonIntercepts/referenceData/localJusticeAreas/LocalJusticeAreasIntercept.mocks';
 import {
