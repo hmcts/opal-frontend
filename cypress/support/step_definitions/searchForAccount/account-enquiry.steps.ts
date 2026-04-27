@@ -344,6 +344,14 @@ When('I open the add enforcement override form', () => {
 });
 
 /**
+ * @step Opens the add enforcement action form from the Enforcement tab.
+ */
+When('I open the add enforcement action form', () => {
+  log('step', 'Open add enforcement action form');
+  flow().openAddEnforcementActionForm();
+});
+
+/**
  * @step Opens the Change Collection Order status form from the Enforcement tab.
  */
 When('I open the Change Collection Order status form', () => {

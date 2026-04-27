@@ -1,3 +1,4 @@
 export interface IOpalFinesResultsParams {
-  enforcement_override: boolean;
+  enforcement?: boolean;
+  enforcement_override?: boolean;
 }
