@@ -18,6 +18,7 @@ export const DOM_ELEMENTS = {
   // Success Banner Elements
   successBanner: 'opal-lib-moj-alert[type="success"]',
   successBannerIcon: 'opal-lib-moj-alert-icon[type="success"]',
+  successBannerText: 'opal-lib-moj-alert-content-text',
   successBannerDismiss: '.moj-alert__dismiss',
   labelPaymentHoldRemoved: 'Payment hold removed',
 

@@ -2,7 +2,12 @@ import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from '../../../../shared/selec
 import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { USER_STATE_MOCK_NO_PERMISSION } from '../../../CommonIntercepts/CommonUserState.mocks';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { interceptMinorCreditorAtAGlance, interceptMinorCreditorHeader } from '../intercept/defendantAccountIntercepts';
+import {
+  interceptMinorCreditorAtAGlance,
+  interceptMinorCreditorAtAGlanceSequence,
+  interceptMinorCreditorHeader,
+  interceptPatchMinorCreditorAccount,
+} from '../intercept/defendantAccountIntercepts';
 import { IComponentProperties } from '../setup/setupComponent.interface';
 import { buildSeededAccountStore } from '../setup/SeededStores';
 import { setupAccountEnquiryComponent } from '../setup/SetupComponent';
@@ -47,39 +52,6 @@ const buildMinorCreditorPartyName = (header = createMinorCreditorHeaderMock()): 
     .join(' ');
 };
 
-const interceptMinorCreditorAtAGlanceSequence = (
-  responses: ReturnType<typeof createMinorCreditorAtAGlanceWithoutDefendantMock>[],
-) => {
-  let callCount = 0;
-
-  return cy
-    .intercept(
-      {
-        method: 'GET',
-        url: `**/minor-creditor-accounts/${MINOR_CREDITOR_ACCOUNT_ID}/at-a-glance`,
-        middleware: true,
-      },
-      (req) => {
-        const response = responses[Math.min(callCount, responses.length - 1)];
-        callCount += 1;
-        req.reply({
-          statusCode: 200,
-          headers: { ETag: '1' },
-          body: response,
-        });
-      },
-    )
-    .as('getMinorCreditorAtAGlance');
-};
-
-const interceptPatchMinorCreditorAccount = () =>
-  cy
-    .intercept('PATCH', `/opal-fines-service/minor-creditor-accounts/${MINOR_CREDITOR_ACCOUNT_ID}`, {
-      statusCode: 200,
-      body: {},
-    })
-    .as('patchMinorCreditorAccount');
-
 const setupMinorCreditorAtAGlance = (
   userState: typeof USER_STATE_MOCK_NO_PERMISSION,
   header = createMinorCreditorHeaderMock(),
@@ -100,8 +72,8 @@ const setupPaymentHoldPage = (
 
   interceptUserState(userState);
   interceptMinorCreditorHeader(MINOR_CREDITOR_ACCOUNT_ID, header, '1');
-  interceptMinorCreditorAtAGlanceSequence(atAGlanceResponses);
-  interceptPatchMinorCreditorAccount();
+  interceptMinorCreditorAtAGlanceSequence(MINOR_CREDITOR_ACCOUNT_ID, atAGlanceResponses, '1');
+  interceptPatchMinorCreditorAccount(MINOR_CREDITOR_ACCOUNT_ID);
 
   setupAccountEnquiryComponent({
     ...componentProperties,
@@ -360,8 +332,10 @@ describe('Minor Creditor Payment Hold', () => {
 
         cy.wait('@patchMinorCreditorAccount').its('request.body.payment.hold_payment').should('equal', false);
         cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('exist');
-        cy.get(VERSION_CONTROL.successBanner).should('exist');
-        cy.get(VERSION_CONTROL.successBannerText).should('contain.text', VERSION_CONTROL.labelPaymentHoldRemoved);
+        cy.get(VERSION_CONTROL.successBanner)
+          .should('exist')
+          .find(VERSION_CONTROL.successBannerText)
+          .should('contain.text', VERSION_CONTROL.labelPaymentHoldRemoved);
 
         setupMinorCreditorAtAGlance(
           createUserStateWithPaymentHoldPermission(),
