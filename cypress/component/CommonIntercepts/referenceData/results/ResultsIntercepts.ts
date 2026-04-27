@@ -5,6 +5,12 @@ import {
 } from './ResultsIntercept.mocks';
 import { OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK } from './NextPermittedEnforcementActionsIntercept.mocks';
 
+/**
+ * Intercepts the results reference-data request for a set of result IDs and returns matching results.
+ *
+ * @param resultIds - Result IDs used to build the query string and filter the mock dataset.
+ * @returns Cypress chainable aliased as `getResultsByIds`.
+ */
 export function interceptResultsByIds(resultIds: string[]) {
   const queryParam = resultIds.map((id) => `result_ids=${id}`).join('&');
   const filteredResults = OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.filter((result) =>
@@ -19,6 +25,12 @@ export function interceptResultsByIds(resultIds: string[]) {
     .as('getResultsByIds');
 }
 
+/**
+ * Intercepts a result lookup by code and returns the matching result definition.
+ *
+ * @param resultCode - Result code used in the request path.
+ * @returns Cypress chainable aliased as `getResultByCode`.
+ */
 export function interceptResultByCode(resultCode: string) {
   const matchedResult = OPAL_FINES_RESULT_REF_DATA_MOCK.find((result) => result.result_id === resultCode);
 
@@ -36,6 +48,11 @@ export function interceptResultByCode(resultCode: string) {
     .as('getResultByCode');
 }
 
+/**
+ * Intercepts the enforcement-override results request and returns the override-specific result list.
+ *
+ * @returns Cypress chainable aliased as `getEnforcementOverrideResults`.
+ */
 export function interceptEnforcementOverrideResults() {
   return cy
     .intercept('GET', '/opal-fines-service/results?enforcement_override=true', {
@@ -48,6 +65,11 @@ export function interceptEnforcementOverrideResults() {
     .as('getEnforcementOverrideResults');
 }
 
+/**
+ * Intercepts the next-permitted-enforcement-actions request and returns an empty result set.
+ *
+ * @returns Cypress chainable aliased as `getNextPermittedEnfActions`.
+ */
 export function interceptNextPermittedEnforcementActionsEmpty() {
   return cy
     .intercept('GET', '/opal-fines-service/results', {
@@ -60,6 +82,12 @@ export function interceptNextPermittedEnforcementActionsEmpty() {
     .as('getNextPermittedEnfActions');
 }
 
+/**
+ * Intercepts the next-permitted-enforcement-actions request for a set of result IDs.
+ *
+ * @param resultIds - Result IDs used to build the query string and filter the mock dataset.
+ * @returns Cypress chainable aliased as `getNextPermittedEnfActions`.
+ */
 export function interceptNextPermittedEnforcementActions(resultIds: string[]) {
   const queryParam = resultIds.map((id) => `result_ids=${id}`).join('&');
   const filteredResults = OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK.refData.filter((result) =>
