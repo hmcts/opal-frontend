@@ -123,7 +123,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
 
     link.dispatchEvent(event);
 
-    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_parent_guardian_details_aliases');
+    expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_parent_guardian_details_aliases', event);
   });
 
   it('should emit form submit event with form value', () => {
