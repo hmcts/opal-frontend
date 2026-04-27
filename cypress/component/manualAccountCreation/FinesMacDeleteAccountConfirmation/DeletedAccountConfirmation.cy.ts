@@ -212,7 +212,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
       cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
-      cy.get(DOM_ELEMENTS.deleteConfirmation).click();
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).click();
 
       cy.wait('@patchDraftAccount').its('request.method').should('eq', 'PATCH');
     },
@@ -224,9 +224,9 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
       cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
 
-      cy.get(DOM_ELEMENTS.errorMessage)
+      cy.get(DOM_ELEMENTS.fieldError)
         .should('exist')
         .contains(
           'Reason must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces and apostrophes)',
