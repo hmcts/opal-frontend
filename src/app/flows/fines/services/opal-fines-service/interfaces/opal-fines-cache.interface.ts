@@ -15,6 +15,7 @@ import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './op
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from './opal-fines-account-defendant-details-payment-terms-latest.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { IOpalFinesResultRefData } from './opal-fines-result-ref-data.interface';
+import { IOpalFinesAccountMinorCreditorAtAGlance } from './opal-fines-account-minor-creditor-at-a-glance.interface';
 import { IOpalFinesEnforcersRefData } from './opal-fines-enforcers-ref-data.interface';
 
 export interface IOpalFinesCache {
@@ -37,5 +38,6 @@ export interface IOpalFinesCache {
   defendantAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> | null;
   defendantAccountPaymentTermsLatestCache$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> | null;
   defendantAccountFixedPenaltyCache$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> | null;
+  minorCreditorAccountAtAGlanceCache$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> | null;
   enforcersCache$: Observable<IOpalFinesEnforcersRefData> | null;
 }

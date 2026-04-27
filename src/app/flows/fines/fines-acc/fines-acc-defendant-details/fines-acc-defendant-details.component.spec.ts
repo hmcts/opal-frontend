@@ -55,10 +55,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
     };
 
     mockPayloadService = {
-      transformAccountHeaderForStore: vi.fn().mockName('FinesAccPayloadService.transformAccountHeaderForStore'),
+      transformDefendantAccountHeaderForStore: vi
+        .fn()
+        .mockName('FinesAccPayloadService.transformDefendantAccountHeaderForStore'),
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
     };
-    mockPayloadService.transformAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockPayloadService.transformPayload.mockImplementation((...args: any[]) => {
       return args[0]; // returns the first argument = payload

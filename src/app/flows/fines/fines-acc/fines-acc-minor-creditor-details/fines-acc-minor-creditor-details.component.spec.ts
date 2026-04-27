@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccMinorCreditorDetailsComponent } from './fines-acc-minor-creditor-details.component';
-import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { Router, ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
@@ -12,18 +12,31 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
+import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 
 describe('FinesAccMinorCreditorDetailsComponent', () => {
   let component: FinesAccMinorCreditorDetailsComponent;
   let fixture: ComponentFixture<FinesAccMinorCreditorDetailsComponent>;
-  let routerSpy: Pick<Router, 'navigate'>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let routerSpy: any;
   let activatedRouteStub: Partial<ActivatedRoute>;
-  let mockOpalFinesService: Pick<OpalFines, 'getMinorCreditorAccountHeadingData' | 'clearCache' | 'getResult'>;
-  let mockPayloadService: Pick<FinesAccPayloadService, 'transformAccountHeaderForStore' | 'transformPayload'>;
+  let mockOpalFinesService: Pick<
+    OpalFines,
+    'getMinorCreditorAccountHeadingData' | 'getMinorCreditorAccountAtAGlance' | 'clearCache' | 'getResult'
+  >;
+  let mockPayloadService: Pick<
+    FinesAccPayloadService,
+    'transformMinorCreditorAccountHeaderForStore' | 'transformPayload'
+  >;
 
   beforeEach(async () => {
     routerSpy = {
-      navigate: vi.fn(),
+      navigate: vi.fn().mockName('Router.navigate'),
+      createUrlTree: vi.fn().mockName('Router.createUrlTree'),
+      serializeUrl: vi.fn().mockName('Router.serializeUrl'),
     };
     activatedRouteStub = {
       fragment: of('at-a-glance'),
@@ -32,12 +45,13 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
           minorCreditorAccountHeadingData: structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK),
         },
         fragment: 'at-a-glance',
+        paramMap: convertToParamMap({ accountId: '123' }),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any as ActivatedRouteSnapshot, // Using 'as any' to avoid type issues
     };
 
     mockPayloadService = {
-      transformAccountHeaderForStore: vi.fn().mockReturnValue(MOCK_FINES_ACCOUNT_STATE),
+      transformMinorCreditorAccountHeaderForStore: vi.fn().mockReturnValue(MOCK_FINES_ACCOUNT_STATE),
       transformPayload: vi.fn().mockImplementation((...args) => {
         return args[0]; // returns the first argument = payload
       }),
@@ -49,6 +63,9 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
         .mockReturnValue(of(structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK))),
       clearCache: vi.fn(),
       getResult: vi.fn(),
+      getMinorCreditorAccountAtAGlance: vi
+        .fn()
+        .mockReturnValue(of(structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK))),
     };
 
     await TestBed.configureTestingModule({
@@ -63,6 +80,10 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
 
     fixture = TestBed.createComponent(FinesAccMinorCreditorDetailsComponent);
     component = fixture.componentInstance;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    routerSpy = TestBed.inject(Router) as any;
+
     fixture.detectChanges();
   });
 
@@ -112,5 +133,41 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });
+  });
+
+  it('should call router.navigate when navigateToAddPaymentHoldPage is called', () => {
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+    component.navigateToAddPaymentHoldPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToRemovePaymentHoldPage is called', () => {
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
+    component.navigateToRemovePaymentHoldPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should open the defendant account page in a new tab when navigateToDefendantAccountPage is called', () => {
+    const accountId = 123;
+    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.children.defendant}/${accountId}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
+
+    routerSpy.createUrlTree.mockReturnValue({});
+    routerSpy.serializeUrl.mockReturnValue(expectedUrl);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(globalThis, 'open');
+    component.navigateToDefendantAccountPage(accountId);
+
+    expect(routerSpy.serializeUrl).toHaveBeenCalled();
+    expect(window.open).toHaveBeenCalledWith(expectedUrl, '_blank');
   });
 });
