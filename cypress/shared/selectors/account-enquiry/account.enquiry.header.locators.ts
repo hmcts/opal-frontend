@@ -21,6 +21,10 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   summaryMetricBar: 'opal-lib-custom-summary-metric-bar',
   summaryMetricBarItem: 'opal-lib-custom-summary-metric-bar-item',
   accountInfo: 'opal-lib-custom-account-information',
+  sectionHeading: 'h2',
+  fieldHeading: 'h3',
+  fieldValue: 'p',
+  readOnlyFields: 'input, textarea, select, [contenteditable="true"]',
 
   // Visible labels used in assertions
   labelAccountType: 'Account type:',
@@ -35,10 +39,22 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   labelDefendant: 'Defendant',
   labelPaymentTerms: 'Payment terms',
   labelEnforcementStatus: 'Enforcement status',
+  labelMinorCreditor: 'Minor creditor',
+  labelDefendantAccount: 'Defendant account',
+  labelPayoutStatus: 'Payout status',
+  labelName: 'Name',
+  labelAddress: 'Address',
+  labelDefendantName: 'Defendant name',
+  labelBacsDetails: 'BACS details',
+  labelAddPaymentHold: 'Add payment hold',
+  labelRemovePaymentHold: 'Remove payment hold',
+  labelProvided: 'Provided',
+  labelNotProvided: 'Not provided',
 
   // Subnav / tabs
   subnav: 'opal-lib-moj-sub-navigation',
   atAGlanceTabComponent: 'app-fines-acc-defendant-details-at-a-glance-tab',
+  minorCreditorAtAGlanceTabComponent: 'app-fines-acc-minor-creditor-details-at-a-glance-tab',
 
   // Conditional tag
   statusTag: '#status',

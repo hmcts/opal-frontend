@@ -1,5 +1,6 @@
-export interface IOpalFinesAccountMinorCreditorDetailsHeader {
-  version: string | null;
+import { IOpalFinesVersion } from '../../../services/opal-fines-service/interfaces/opal-fines-version.interface';
+
+export interface IOpalFinesAccountMinorCreditorDetailsHeader extends IOpalFinesVersion {
   creditor: {
     account_id: number;
     account_number: string;
@@ -8,6 +9,11 @@ export interface IOpalFinesAccountMinorCreditorDetailsHeader {
       display_name: string;
     };
     has_associated_defendant: boolean;
+  };
+  business_unit: {
+    business_unit_id: string;
+    business_unit_name: string;
+    welsh_speaking: string;
   };
   party: {
     party_id: string;
@@ -21,11 +27,6 @@ export interface IOpalFinesAccountMinorCreditorDetailsHeader {
       forenames: string;
       surname: string;
     };
-  };
-  business_unit: {
-    business_unit_id: string;
-    business_unit_name: string;
-    welsh_speaking: string;
   };
   financials: {
     awarded: number;
