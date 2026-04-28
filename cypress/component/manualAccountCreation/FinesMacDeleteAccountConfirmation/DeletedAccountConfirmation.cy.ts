@@ -203,7 +203,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
   it(
     'Valid character checks for delete account notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation'] },
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-7712'] },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', {
         statusCode: 200,
@@ -219,7 +219,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   );
   it(
     'Invalid character - confirm updated error for delete account note',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation'] },
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-7713'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 

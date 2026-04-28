@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-@ManualAccountCreation @CourtDetails @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-389 @JIRA-STORY:PO-527 @JIRA-STORY:PO-529
+@ManualAccountCreation @CourtDetails @JIRA-EPIC:PO-272 @JIRA-STORY:PO-389 @JIRA-STORY:PO-527 @JIRA-STORY:PO-529
 Feature: Manual account creation - Court Details
   #This feature file contains tests for the Court Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the CourtDetailsComponent.cy.ts component tests
