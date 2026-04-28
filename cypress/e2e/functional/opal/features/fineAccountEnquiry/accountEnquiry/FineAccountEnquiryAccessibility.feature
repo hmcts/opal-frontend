@@ -110,7 +110,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1824 @JIRA-EPIC:PO-1674
+  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1824 @JIRA-EPIC:PO-1674 @JIRA-KEY:POT-7693
   Scenario: Add enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
@@ -131,7 +131,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement action form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1834 @JIRA-EPIC:PO-1674
+  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1834 @JIRA-EPIC:PO-1674 @JIRA-KEY:POT-7694
   Scenario: Company add enforcement action page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
