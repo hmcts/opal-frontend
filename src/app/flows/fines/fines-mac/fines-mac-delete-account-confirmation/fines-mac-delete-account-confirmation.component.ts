@@ -6,16 +6,14 @@ import { IFinesMacDeleteAccountConfirmationForm } from './interfaces/fines-mac-d
 import { FinesMacDeleteAccountConfirmationFormComponent } from './fines-mac-delete-account-confirmation-form/fines-mac-delete-account-confirmation-form.component';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
-import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { ActivatedRoute } from '@angular/router';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { catchError, of, Subject, takeUntil, tap } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 
 @Component({
@@ -27,10 +25,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
 export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormParentBaseComponent implements OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly route = inject(ActivatedRoute);
-  private readonly globalStore = inject(GlobalStore);
-  private readonly userState = this.globalStore.userState();
   private readonly utilsService = inject(UtilsService);
-  private readonly dateService = inject(DateService);
   private readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   private readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
   private readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
@@ -50,14 +45,12 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    * Creates the payload for the PATCH request to delete an account.
    *
    * @param form - The form data for the account comments and notes.
-   * @returns {IOpalFinesDraftAccountPatchPayload} The payload containing the account information to be patched.
+   * @returns {IOpalFinesDraftAccountPatchRequestPayload} The payload containing the account information to be patched.
    */
-  private createPatchPayload(form: IFinesMacDeleteAccountConfirmationForm): IOpalFinesDraftAccountPatchPayload {
+  private createPatchPayload(form: IFinesMacDeleteAccountConfirmationForm): IOpalFinesDraftAccountPatchRequestPayload {
     const reason_text = form.formData.fm_delete_account_confirmation_reason;
-    const { version, timeline_data } = this.finesDraftStore.getFinesDraftState();
-    const status_date = this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd');
+    const { version } = this.finesDraftStore.getFinesDraftState();
     const status = 'Deleted';
-    const username = this.userState.name;
     const business_unit_id = this.finesMacStore.getBusinessUnitId();
 
     return {
@@ -66,7 +59,6 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
       validated_by_name: null,
       business_unit_id,
       version: version ?? '0',
-      timeline_data: [...timeline_data, { username, status, status_date, reason_text }],
       reason_text,
     };
   }
@@ -80,7 +72,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    * It processes the response using `processPatchResponse` method and handles any errors by scrolling to the top of the page.
    * The request is automatically unsubscribed when the component is destroyed using `takeUntil` with `ngUnsubscribe`.
    */
-  private handlePatchRequest(payload: IOpalFinesDraftAccountPatchPayload): void {
+  private handlePatchRequest(payload: IOpalFinesDraftAccountPatchRequestPayload): void {
     if (!this.accountId) {
       console.error('Account ID is not defined');
       return;

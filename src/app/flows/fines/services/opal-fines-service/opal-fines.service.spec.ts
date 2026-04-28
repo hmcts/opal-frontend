@@ -744,6 +744,7 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual(body);
+    expect(req.request.body).not.toHaveProperty('timeline_data');
 
     req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
@@ -815,6 +816,7 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual(body);
+    expect(req.request.body).not.toHaveProperty('timeline_data');
 
     req.flush(expectedResponse);
   });
