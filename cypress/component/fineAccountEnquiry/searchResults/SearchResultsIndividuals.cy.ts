@@ -77,7 +77,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     'Search results component is created correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7055'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7055', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -88,7 +88,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC2) Displays error message when no search matches are found (FinesSaResultsComponent - Individuals)',
-    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7056'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7056', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
@@ -106,7 +106,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC3) Handles more than 100 search matches correctly (FinesSaResultsComponent - Individuals)',
-    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7057'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7057', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
@@ -131,7 +131,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results',
-    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7058'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7058', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
@@ -194,7 +194,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC4d) Displays pagination with 25 results per page and 4 pages for 100 results',
-    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7059'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7059', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
@@ -265,7 +265,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
   it(
     '(AC4f) Should sort by each column - ascending then descending',
-    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7060'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7060', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(SORTING_SEARCH_RESULTS_MOCK);
 

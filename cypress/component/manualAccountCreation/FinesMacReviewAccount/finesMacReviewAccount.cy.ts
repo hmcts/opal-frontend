@@ -157,7 +157,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it(
     'should render component (FinesMacReviewAccountComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7636'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7636', '@JIRA-EPIC:PO-2750'] },
     () => {
       setupComponent();
 
@@ -167,7 +167,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it(
     '(AC.1c) should show Police and court details card for Conditional Caution',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7637'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7637', '@JIRA-EPIC:PO-2750'] },
     () => {
       finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
 
@@ -1308,7 +1308,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
   it(
     'AC.2 The Review Account screen will be created as per the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7660'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7660', '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
@@ -1321,7 +1321,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it(
     'AC.8, Decision table will be shown as per the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7661'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7661', '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
@@ -1333,7 +1333,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
   it(
     'AC.8a user does not select any radio button and selects the Continue button',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7662'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7662', '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.continue).should('exist').click();
@@ -1343,7 +1343,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
   it(
     'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7663'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7663', '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
@@ -1627,7 +1627,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it(
     'should send originator_type as NEW in draft account payload for new journey',
-    { tags: [...buildTags('@JIRA-STORY:PO-2793'), '@JIRA-KEY:POT-7671'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2793'), '@JIRA-KEY:POT-7671', '@JIRA-EPIC:PO-2750'] },
     () => {
       finesMacState.originatorType = {
         nestedFlow: false,
@@ -1647,7 +1647,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it(
     'should send originator_type as TFO in draft account payload for transfer in journey',
-    { tags: [...buildTags('@JIRA-STORY:PO-2793'), '@JIRA-KEY:POT-7672'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2793'), '@JIRA-KEY:POT-7672', '@JIRA-EPIC:PO-2750'] },
     () => {
       finesMacState.originatorType = {
         nestedFlow: false,

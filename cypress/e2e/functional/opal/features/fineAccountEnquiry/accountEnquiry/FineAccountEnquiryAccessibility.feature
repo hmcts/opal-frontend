@@ -1,5 +1,5 @@
 @JIRA-LABEL:account-enquiry @JIRA-LABEL:accessibility
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Account Enquiries - Enforcement Accessibility
 
   Background:

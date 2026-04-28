@@ -5,15 +5,18 @@ Feature: Filter by Business Unit
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     When I navigate to the Filter by business unit page
 
+
   @JIRA-STORY:PO-711 @JIRA-STORY:PO-2610 @AC1a @JIRA-KEY:POT-5200
   Scenario: AC1a — Page and defaults on first load (Fines)
     Then the Filter by business unit page for Fines is shown with defaults
 
+  @JIRA-EPIC:PO-704
   @JIRA-STORY:PO-711 @AC1b @JIRA-KEY:POT-5201
   Scenario: AC1b — Switching to Confiscation shows Confiscation header
     When the user switches to the Confiscation tab
     Then the Confiscation Filter by business unit page is shown with defaults
 
+  @JIRA-EPIC:PO-704
   @JIRA-STORY:PO-711 @AC7 @JIRA-KEY:POT-5202
   Scenario: AC7 — Saving sends the combined selection across tabs
     And I clear all selected business units on the "Fines" tab
@@ -27,6 +30,7 @@ Feature: Filter by Business Unit
     And I save the selected business units and the filter summary is "Bedfordshire, Berwick, Bolton"
 
 
+  @JIRA-EPIC:PO-704
   @JIRA-STORY:PO-711 @AC8 @JIRA-KEY:POT-5203
   Scenario: AC8 — Cancel does not save and returns to previous page
     And I clear all selected business units on the "Fines" tab
@@ -35,6 +39,7 @@ Feature: Filter by Business Unit
     Then the business unit filter summary is "All business units"
 
 
+  @JIRA-EPIC:PO-704
   @JIRA-STORY:PO-711 @AC9 @JIRA-KEY:POT-5204
   Scenario: AC9 — Switching tabs preserves selections and total count
     And I clear all selected business units on the "Fines" tab
@@ -59,6 +64,7 @@ Feature: Filter by Business Unit
     And the "Save selection" button displays a total of 2
 
 
+  @JIRA-EPIC:PO-704
   @JIRA-STORY:PO-711 @AC10 @JIRA-KEY:POT-5205
   Scenario: AC10 — Previously entered search criteria remain populated after saving amended business unit filter
     # Background ends on "Filter by business unit" → go back first
@@ -93,3 +99,4 @@ Feature: Filter by Business Unit
       | last name exact match     | Yes             |
       | first names exact match   | Yes             |
       | include aliases           | Yes             |
+

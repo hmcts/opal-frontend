@@ -118,7 +118,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.1) should render the component (FinesMacPaymentTermsComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-566'), '@JIRA-KEY:POT-7515'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-566'), '@JIRA-KEY:POT-7515', '@JIRA-EPIC:PO-545'] },
     () => {
       setupComponent('adultOrYouthOnly');
       cy.get(DOM_ELEMENTS['finesMacPaymentTermsForm']).should('exist');
@@ -242,7 +242,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     'has legend text for enforcement action fieldset',
-    { tags: [...buildTags('@JIRA-STORY:PO-2783'), '@JIRA-KEY:POT-7517'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2783'), '@JIRA-KEY:POT-7517', '@JIRA-EPIC:PO-50'] },
     () => {
       setupComponent('adultOrYouthOnly');
       cy.get(DOM_ELEMENTS.addEnforcementAction).click();
@@ -1663,7 +1663,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC1b, 1e) Update system note - Previously made → Criteria not met',
-    { tags: [...buildTags('@JIRA-STORY:PO-1592'), '@JIRA-KEY:POT-7573'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1592'), '@JIRA-KEY:POT-7573', '@JIRA-EPIC:PO-50'] },
     () => {
       const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
 
@@ -1708,7 +1708,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC1b, 1e) Update system note - Made today → Criteria not met',
-    { tags: [...buildTags('@JIRA-STORY:PO-1592'), '@JIRA-KEY:POT-7574'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1592'), '@JIRA-KEY:POT-7574', '@JIRA-EPIC:PO-50'] },
     () => {
       const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
 
