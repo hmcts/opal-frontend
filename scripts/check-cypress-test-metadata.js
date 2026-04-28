@@ -694,6 +694,8 @@ function extractComponentTests(file) {
       const maybeConfig = node.arguments.length >= 3 ? unwrap(node.arguments[1]) : undefined;
       const config = maybeConfig && ts.isObjectLiteralExpression(maybeConfig) ? maybeConfig : undefined;
       const ownTags = extractTags(config, env);
+      const tagsProp = findTagsProperty(config);
+      const tagArrayNode = tagsProp && ts.isPropertyAssignment(tagsProp) ? unwrap(tagsProp.initializer) : undefined;
       const line = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile)).line + 1;
 
       tests.push({
@@ -704,6 +706,14 @@ function extractComponentTests(file) {
         qualifiedTitle: [...ctx.suites, title].join(' > '),
         tags: uniq([...ctx.tags, ...ownTags]),
         autoPotWritable: isAutoPotWritableTest(node),
+        tagEdit:
+          tagArrayNode && ts.isArrayLiteralExpression(tagArrayNode)
+            ? {
+                kind: 'component_inline_array',
+                start: tagArrayNode.getStart(sourceFile),
+                end: tagArrayNode.getEnd(),
+              }
+            : undefined,
       });
       return;
     }
@@ -880,39 +890,70 @@ function printSummary(outputPath, component, functional, rowCount) {
   console.log(`[check-cypress-test-metadata] csv_rows=${rowCount}`);
 }
 
-const outputPath = resolveOutputPath();
-const componentTests = walk(COMPONENT_ROOT, '.cy.ts')
-  .flatMap(extractComponentTests)
-  .filter((test) => !shouldIgnoreTest(test));
-const functionalTests = walk(FUNCTIONAL_ROOT, '.feature')
-  .flatMap(extractFunctionalTests)
-  .filter((test) => !shouldIgnoreTest(test));
-const componentResult = analyse(componentTests);
-const functionalResult = analyse(functionalTests);
-const rows = [...buildRows(componentResult), ...buildRows(functionalResult)];
+function collectExecutableTests() {
+  const componentTests = walk(COMPONENT_ROOT, '.cy.ts')
+    .flatMap(extractComponentTests)
+    .filter((test) => !shouldIgnoreTest(test));
+  const functionalTests = walk(FUNCTIONAL_ROOT, '.feature')
+    .flatMap(extractFunctionalTests)
+    .filter((test) => !shouldIgnoreTest(test));
 
-fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  return {
+    componentTests,
+    functionalTests,
+    allTests: [...componentTests, ...functionalTests],
+  };
+}
 
-const headers = [
-  'scope',
-  'issue_type',
-  'file',
-  'line',
-  'title',
-  'qualified_title',
-  'story_tags',
-  'pot_tags',
-  'auto_pot_writable',
-  'group_key',
-  'related_count',
-  'related_locations',
-  'related_tests',
-];
+function main() {
+  const outputPath = resolveOutputPath();
+  const { componentTests, functionalTests } = collectExecutableTests();
+  const componentResult = analyse(componentTests);
+  const functionalResult = analyse(functionalTests);
+  const rows = [...buildRows(componentResult), ...buildRows(functionalResult)];
 
-fs.writeFileSync(outputPath, toCsv(rows, headers), 'utf8');
-printSummary(outputPath, componentResult, functionalResult, rows.length);
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
-process.exit(rows.length === 0 ? 0 : 1);
+  const headers = [
+    'scope',
+    'issue_type',
+    'file',
+    'line',
+    'title',
+    'qualified_title',
+    'story_tags',
+    'pot_tags',
+    'auto_pot_writable',
+    'group_key',
+    'related_count',
+    'related_locations',
+    'related_tests',
+  ];
+
+  fs.writeFileSync(outputPath, toCsv(rows, headers), 'utf8');
+  printSummary(outputPath, componentResult, functionalResult, rows.length);
+
+  process.exit(rows.length === 0 ? 0 : 1);
+}
+
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  ROOT,
+  COMPONENT_ROOT,
+  FUNCTIONAL_ROOT,
+  walk,
+  rel,
+  shouldIgnoreTest,
+  extractComponentTests,
+  extractFunctionalTests,
+  analyse,
+  buildRows,
+  toCsv,
+  collectExecutableTests,
+};
 
 /**
  * @typedef {{

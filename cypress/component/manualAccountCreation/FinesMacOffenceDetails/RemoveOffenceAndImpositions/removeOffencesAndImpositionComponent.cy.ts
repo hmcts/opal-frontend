@@ -89,7 +89,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     '(AC.1) should render component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7453',
       ],
     },
@@ -102,7 +102,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     '(AC.1) should load all elements on the page',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7454',
       ],
     },
@@ -131,7 +131,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     '(AC.2, AC.3) should have appropriate text for each element',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7455',
       ],
     },
