@@ -150,6 +150,57 @@ function mapAstLocations(value, map = new Map()) {
 }
 
 /**
+ * Build an AST metadata index for Gherkin node ids.
+ * The metadata tracks the node kind plus the line where a tag should be attached.
+ * @param {unknown} value
+ * @param {Map<string, { kind: string, line: number, tagAnchorLine: number }>} map
+ * @returns {Map<string, { kind: string, line: number, tagAnchorLine: number }>}
+ */
+function mapAstMetadata(value, map = new Map()) {
+  if (!value || typeof value !== 'object') return map;
+
+  if (value.id && value.location && typeof value.location.line === 'number') {
+    const tags = Array.isArray(value.tags) ? value.tags : [];
+    const firstTagLine =
+      tags.length > 0 && tags[0]?.location && typeof tags[0].location.line === 'number' ? tags[0].location.line : null;
+
+    const meta = {
+      kind: typeof value.keyword === 'string' ? value.keyword.trim() : typeof value.name === 'string' ? value.name : '',
+      line: value.location.line,
+      tagAnchorLine: firstTagLine || value.location.line,
+    };
+
+    const existingMeta = map.get(value.id);
+    if (!existingMeta || meta.kind) {
+      map.set(value.id, meta);
+    }
+
+    if (meta.kind === 'Examples') {
+      if (value.tableHeader?.id) {
+        map.set(value.tableHeader.id, meta);
+      }
+
+      if (Array.isArray(value.tableBody)) {
+        for (const row of value.tableBody) {
+          if (row?.id) map.set(row.id, meta);
+        }
+      }
+    }
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) mapAstMetadata(item, map);
+    return map;
+  }
+
+  for (const nested of Object.values(value)) {
+    mapAstMetadata(nested, map);
+  }
+
+  return map;
+}
+
+/**
  * Extract executable functional tests by compiling pickles, including Scenario Outline example expansions.
  * @param {string} file
  * @returns {ExecutableTest[]}
@@ -161,6 +212,7 @@ function extractFunctionalTests(file) {
   const document = parser.parse(source);
   const pickles = compile(document, rel(file), uuidFn);
   const lineByNodeId = mapAstLocations(document);
+  const metaByNodeId = mapAstMetadata(document);
   const featureTitle = document.feature?.name?.trim() || path.basename(file);
 
   return pickles.map((pickle) => {
@@ -172,6 +224,14 @@ function extractFunctionalTests(file) {
       }
     }
 
+    const examplesMeta = (pickle.astNodeIds || [])
+      .map((id) => metaByNodeId.get(id))
+      .find((meta) => meta && meta.kind === 'Examples');
+    const scenarioMeta = (pickle.astNodeIds || [])
+      .map((id) => metaByNodeId.get(id))
+      .find((meta) => meta && (meta.kind === 'Scenario' || meta.kind === 'Scenario Outline'));
+    const tagTargetMeta = examplesMeta || scenarioMeta;
+
     return {
       scope: 'functional',
       file: rel(file),
@@ -179,6 +239,12 @@ function extractFunctionalTests(file) {
       title: pickle.name,
       qualifiedTitle: `${featureTitle} > ${pickle.name}`,
       tags: uniq((pickle.tags || []).map((tag) => tag.name)),
+      tagEdit: tagTargetMeta
+        ? {
+            kind: 'functional_gherkin_block',
+            anchorLine: tagTargetMeta.tagAnchorLine,
+          }
+        : undefined,
     };
   });
 }
@@ -856,7 +922,15 @@ process.exit(rows.length === 0 ? 0 : 1);
  *   title: string,
  *   qualifiedTitle: string,
  *   tags: string[],
- *   autoPotWritable?: boolean
+ *   autoPotWritable?: boolean,
+ *   tagEdit?: {
+ *     kind: "component_inline_array",
+ *     start: number,
+ *     end: number
+ *   } | {
+ *     kind: "functional_gherkin_block",
+ *     anchorLine: number
+ *   }
  * }} ExecutableTest
  */
 
