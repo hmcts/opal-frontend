@@ -39,7 +39,7 @@ export class FinesAccConvertComponent implements OnInit {
       FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
     );
     this.accountStore.setAccountState(
-      this.payloadService.transformAccountHeaderForStore(this.accountId, this.accountData, 'defendant'),
+      this.payloadService.transformDefendantAccountHeaderForStore(this.accountId, this.accountData),
     );
   }
 

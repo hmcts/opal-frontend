@@ -1,5 +1,6 @@
-export interface IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData {
-  version: string | null;
+import { IOpalFinesVersion } from './opal-fines-version.interface';
+
+export interface IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData extends IOpalFinesVersion {
   vehicle_fixed_penalty_flag: boolean;
   fixed_penalty_ticket_details: {
     issuing_authority: string;
