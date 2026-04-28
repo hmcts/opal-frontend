@@ -200,4 +200,37 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
       });
     },
   );
+
+  it(
+    'Valid character checks for delete account notes',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation'] },
+    () => {
+      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', {
+        statusCode: 200,
+      }).as('patchDraftAccount');
+
+      setupComponent(finesAccountPayload, finesAccountPayload, true);
+
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).click();
+
+      cy.wait('@patchDraftAccount').its('request.method').should('eq', 'PATCH');
+    },
+  );
+  it(
+    'Invalid character - confirm updated error for delete account note',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, true);
+
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
+
+      cy.get(DOM_ELEMENTS.fieldError)
+        .should('exist')
+        .contains(
+          'Reason must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces and apostrophes)',
+        );
+    },
+  );
 });
