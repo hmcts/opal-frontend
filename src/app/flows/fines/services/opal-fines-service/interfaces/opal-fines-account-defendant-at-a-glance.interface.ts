@@ -4,9 +4,9 @@ import { IOpalFinesDefendantAccountLanguagePreferences } from './opal-fines-defe
 import { IOpalFinesDefendantAccountNotes } from './opal-fines-defendant-account-notes.interface';
 import { IOpalFinesDefendantAccountPartyDetails } from './opal-fines-defendant-account-party-details.interface';
 import { IOpalFinesDefendantAccountPaymentTermsSummary } from './opal-fines-defendant-account-payment-terms-summary.interface';
+import { IOpalFinesVersion } from './opal-fines-version.interface';
 
-export interface IOpalFinesAccountDefendantAtAGlance {
-  version: string | null;
+export interface IOpalFinesAccountDefendantAtAGlance extends IOpalFinesVersion {
   defendant_account_id: string;
   account_number: string;
   debtor_type: string;

@@ -29,7 +29,7 @@ describe('FinesAccConvertComponent', () => {
   let mockActivatedRoute: ActivatedRoute;
   let mockPayloadService: {
     transformPayload: ReturnType<typeof vi.fn>;
-    transformAccountHeaderForStore: ReturnType<typeof vi.fn>;
+    transformDefendantAccountHeaderForStore: ReturnType<typeof vi.fn>;
   };
   let mockAccountStore: {
     setAccountState: ReturnType<typeof vi.fn>;
@@ -103,10 +103,12 @@ describe('FinesAccConvertComponent', () => {
 
     mockPayloadService = {
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
-      transformAccountHeaderForStore: vi.fn().mockName('FinesAccPayloadService.transformAccountHeaderForStore'),
+      transformDefendantAccountHeaderForStore: vi
+        .fn()
+        .mockName('FinesAccPayloadService.transformDefendantAccountHeaderForStore'),
     };
     mockPayloadService.transformPayload.mockImplementation((payload) => payload);
-    mockPayloadService.transformAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
 
     mockAccountStore = {
       setAccountState: vi.fn().mockName('FinesAccountStore.setAccountState'),
@@ -179,11 +181,7 @@ describe('FinesAccConvertComponent', () => {
       defaultHeadingData,
       FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
     );
-    expect(mockPayloadService.transformAccountHeaderForStore).toHaveBeenCalledWith(
-      123,
-      defaultHeadingData,
-      'defendant',
-    );
+    expect(mockPayloadService.transformDefendantAccountHeaderForStore).toHaveBeenCalledWith(123, defaultHeadingData);
     expect(mockAccountStore.setAccountState).toHaveBeenCalledWith(MOCK_FINES_ACCOUNT_STATE);
   });
 
