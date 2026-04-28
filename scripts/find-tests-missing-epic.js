@@ -34,10 +34,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {
-  ROOT,
-  collectExecutableTests,
-} = require('./check-cypress-test-metadata.js');
+const { ROOT, collectExecutableTests } = require('./check-cypress-test-metadata.js');
 
 const EPIC_TAG_RE = /^@JIRA-EPIC:/;
 const DEFAULT_PLACEHOLDER = '@JIRA-EPIC:PO-0000';
@@ -47,8 +44,10 @@ function parseArgs() {
   return {
     write: args.includes('--write'),
     placeholder:
-      args.find((arg) => arg.startsWith('--placeholder='))?.slice('--placeholder='.length).trim() ||
-      DEFAULT_PLACEHOLDER,
+      args
+        .find((arg) => arg.startsWith('--placeholder='))
+        ?.slice('--placeholder='.length)
+        .trim() || DEFAULT_PLACEHOLDER,
   };
 }
 

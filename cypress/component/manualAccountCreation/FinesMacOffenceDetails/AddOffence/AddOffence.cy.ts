@@ -1039,9 +1039,12 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it('Should show error message for invalid amount imposed being a zero value', {
+  it(
+    'Should show error message for invalid amount imposed being a zero value',
+    {
       tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-3550', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-7691'],
-    }, () => {
+    },
+    () => {
       setupComponent(null);
 
       const SELECTOR = impositionSelectors(0);
@@ -1058,11 +1061,15 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidZeroValue);
-    });
+    },
+  );
 
-  it('Should show error message for invalid amount imposed being a minus value', {
+  it(
+    'Should show error message for invalid amount imposed being a minus value',
+    {
       tags: ['@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-3550', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-7692'],
-    }, () => {
+    },
+    () => {
       setupComponent(null);
 
       const SELECTOR = impositionSelectors(0);
@@ -1079,5 +1086,6 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidNegativeValue);
-    });
+    },
+  );
 });

@@ -629,8 +629,7 @@ function extractComponentTests(file) {
       const config = maybeConfig && ts.isObjectLiteralExpression(maybeConfig) ? maybeConfig : undefined;
       const ownTags = extractTags(config, env);
       const tagsProp = findTagsProperty(config);
-      const tagArrayNode =
-        tagsProp && ts.isPropertyAssignment(tagsProp) ? unwrap(tagsProp.initializer) : undefined;
+      const tagArrayNode = tagsProp && ts.isPropertyAssignment(tagsProp) ? unwrap(tagsProp.initializer) : undefined;
       const line = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile)).line + 1;
 
       tests.push({

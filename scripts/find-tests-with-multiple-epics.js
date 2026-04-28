@@ -20,11 +20,7 @@ function main() {
     }))
     .filter((test) => test.epicTags.length > 1)
     .sort((a, b) => {
-      return (
-        a.file.localeCompare(b.file) ||
-        a.line - b.line ||
-        a.qualifiedTitle.localeCompare(b.qualifiedTitle)
-      );
+      return a.file.localeCompare(b.file) || a.line - b.line || a.qualifiedTitle.localeCompare(b.qualifiedTitle);
     });
 
   if (offenders.length === 0) {

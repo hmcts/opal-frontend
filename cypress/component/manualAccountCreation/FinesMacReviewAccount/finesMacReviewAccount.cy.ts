@@ -184,12 +184,7 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.1a)should render court details and offence details for all defendant types',
     {
       tags: [
-        ...buildTags(
-          '@JIRA-STORY:PO-560',
-          '@JIRA-STORY:PO-662',
-          '@JIRA-STORY:PO-663',
-          '@JIRA-STORY:PO-657',
-        ),
+        ...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-662', '@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'),
         '@JIRA-KEY:POT-7638',
       ],
     },
