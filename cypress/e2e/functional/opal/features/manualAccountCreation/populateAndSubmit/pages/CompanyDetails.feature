@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-@ManualAccountCreation @CompanyDetails @JIRA-STORY:PO-345 @JIRA-STORY:PO-265
+@ManualAccountCreation @CompanyDetails @JIRA-EPIC:PO-345 @JIRA-STORY:PO-265
 Feature: Manual account creation - Company Details
   #This feature file contains tests for the Company Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the CompanyDetailsComponent.cy.ts component tests

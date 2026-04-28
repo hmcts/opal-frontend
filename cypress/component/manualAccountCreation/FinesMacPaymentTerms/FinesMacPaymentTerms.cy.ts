@@ -130,7 +130,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.3,AC.4,)should load all elements on the screen correctly for adult or youth defendant types',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-471', '@JIRA-STORY:PO-272'),
+        ...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-471', '@JIRA-EPIC:PO-272'),
         '@JIRA-KEY:POT-7516',
       ],
     },
@@ -267,7 +267,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.3,AC.4)Should load all elements on the screen correctly for AYPG defendant types',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-587', '@JIRA-STORY:PO-649', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-587', '@JIRA-STORY:PO-649', '@JIRA-EPIC:PO-344'),
         '@JIRA-KEY:POT-7518',
       ],
     },
@@ -357,7 +357,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.1,AC.3,AC.4)Should load all elements for company defendant type',
-    { tags: [...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-345'), '@JIRA-KEY:POT-7519'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-345'), '@JIRA-KEY:POT-7519'] },
     () => {
       setupComponent('company');
 
@@ -432,7 +432,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   //Collection order tests
   it(
     '(AC.1) should only load collection order for adult over 18 years old',
-    { tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7520'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-EPIC:PO-272'), '@JIRA-KEY:POT-7520'] },
     () => {
       setupComponent('adultOrYouthOnly', null, (state) => {
         setDateOfBirth(state, '01/01/2000');
@@ -450,7 +450,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.3) Should load make a new collection order for correct permission for AYPG and AY',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649', '@JIRA-EPIC:PO-272', '@JIRA-EPIC:PO-344'),
         '@JIRA-KEY:POT-7521',
       ],
     },
@@ -470,7 +470,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.1) should not load collection order for adult or youth under 18 years old',
-    { tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7522'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-EPIC:PO-272'), '@JIRA-KEY:POT-7522'] },
     () => {
       setupComponent('adultOrYouthOnly', null, (state) => {
         setDateOfBirth(state, '01/01/2020');
@@ -483,7 +483,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   //collection order validation check
   it(
     '(AC.1, AC.2)should prefill date of sentence in date of collection order field',
-    { tags: [...buildTags('@JIRA-STORY:PO-853', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'), '@JIRA-KEY:POT-7523'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-853', '@JIRA-EPIC:PO-545'), '@JIRA-KEY:POT-7523'] },
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
@@ -499,7 +499,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.1)should have error handling with date of sentence and collection order date to ensure date cannot be before date of sentence',
-    { tags: [...buildTags('@JIRA-STORY:PO-796', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'), '@JIRA-KEY:POT-7524'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-796', '@JIRA-EPIC:PO-545'), '@JIRA-KEY:POT-7524'] },
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
@@ -517,10 +517,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.4)should throw error if no collection order field is selected and user presses submit or return',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
-        '@JIRA-KEY:POT-7525',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649', '@JIRA-EPIC:PO-545'), '@JIRA-KEY:POT-7525'],
     },
     () => {
       for (let i = 0; i < 2; i++) {
@@ -537,10 +534,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.5)If a user selects yes to collection order and does not enter a date, an error should be thrown',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
-        '@JIRA-KEY:POT-7526',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649', '@JIRA-EPIC:PO-545'), '@JIRA-KEY:POT-7526'],
     },
     () => {
       for (let i = 0; i < 2; i++) {
@@ -559,10 +553,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.6)Should throw error for collection date validation',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
-        '@JIRA-KEY:POT-7527',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-471', '@JIRA-STORY:PO-649', '@JIRA-EPIC:PO-545'), '@JIRA-KEY:POT-7527'],
     },
     () => {
       for (let i = 0; i < 2; i++) {
@@ -599,7 +590,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.2a) should allow payByDate to be entered via date picker for all defendant types',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7528',
       ],
     },
@@ -628,7 +619,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.3c) should allow startDate to be entered via date picker for all defendant types',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7529',
       ],
     },
@@ -655,7 +646,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.16a) should load button for next page for adultOrYouthOnly Defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-429', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7530'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-429', '@JIRA-EPIC:PO-272'), '@JIRA-KEY:POT-7530'] },
     () => {
       setupComponent('adultOrYouthOnly');
 
@@ -665,7 +656,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.16a) should load button for next page for AYPG Defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-429', '@JIRA-STORY:PO-344'), '@JIRA-KEY:POT-7531'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-429', '@JIRA-EPIC:PO-344'), '@JIRA-KEY:POT-7531'] },
     () => {
       setupComponent('pgToPay');
 
@@ -675,7 +666,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.17a) should load button for next page for Company Defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-592', '@JIRA-STORY:PO-345'), '@JIRA-KEY:POT-7532'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-345'), '@JIRA-KEY:POT-7532'] },
     () => {
       setupComponent('company');
 
@@ -687,7 +678,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.3ci))should handle "Pay in full" with past dates',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7533',
       ],
     },
@@ -712,7 +703,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           '@JIRA-STORY:PO-587',
           '@JIRA-STORY:PO-429',
           '@JIRA-STORY:PO-592',
-          '@JIRA-STORY:PO-545',
+          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-2983',
         ),
         '@JIRA-KEY:POT-7534',
@@ -737,7 +728,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.4ci) should handle "Instalments only" with past dates',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7535',
       ],
     },
@@ -759,7 +750,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.4cii) should handle "Instalments only" with future dates',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7536',
       ],
     },
@@ -781,7 +772,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.3Ci) should handle "Lump sum plus instalments" with past dates',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7537',
       ],
     },
@@ -803,7 +794,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.3Cii) should handle "Lump sum plus instalments" with future dates',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7538',
       ],
     },
@@ -825,7 +816,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.7,AC.8)should handle empty data for Pay by date',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7539',
       ],
     },
@@ -850,7 +841,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.5)should round lumpsum amount and instalment amount to .2 decimal place values',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7540',
       ],
     },
@@ -875,7 +866,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.11)should handle date Format error for pay in full',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7541',
       ],
     },
@@ -897,7 +888,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.11)should handle valid date Error for Pay in full',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7542',
       ],
     },
@@ -919,7 +910,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.9)should handle errors for Instalment',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7543',
       ],
     },
@@ -944,7 +935,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.13)should handle valid instalmentAmount error for instalment',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7544',
       ],
     },
@@ -966,7 +957,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.12) should handle valid InstalmentDateFormat error for instalment',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7545',
       ],
     },
@@ -988,7 +979,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.12) should handle valid date error for instalment',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7546',
       ],
     },
@@ -1010,7 +1001,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.10)should handle errors for Lump sum plus Instalment',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7547',
       ],
     },
@@ -1034,7 +1025,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.14) should have validations in place for validLumpSumAmount',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7548',
       ],
     },
@@ -1056,7 +1047,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.14) should have validations in place for validLumpSumInstalmentAmount',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7549',
       ],
     },
@@ -1078,7 +1069,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.12) should have validations in place for validLumpSumStartDateFormat',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7550',
       ],
     },
@@ -1100,7 +1091,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.12) should have validations in place for validLumpSumStartDate',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7551',
       ],
     },
@@ -1121,7 +1112,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   //Days in default tests
   it(
     '(AC.1,AC.2,AC.3) should load days in default for adult or youth over 18 only',
-    { tags: [...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7552'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-432', '@JIRA-EPIC:PO-272'), '@JIRA-KEY:POT-7552'] },
     () => {
       setupComponent('adultOrYouthOnly', null, (state) => {
         setDateOfBirth(state, '01/01/2000');
@@ -1145,7 +1136,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.1) should not load days in default for adult or youth under 18 years old',
-    { tags: [...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7553'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-EPIC:PO-272'), '@JIRA-KEY:POT-7553'] },
     () => {
       setupComponent('adultOrYouthOnly', null, (state) => {
         setDateOfBirth(state, '01/01/2010');
@@ -1157,10 +1148,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.4) Validation check to ensure only 5 integers can be inputted to the days in default field Adult or youth, AYPG',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
-        '@JIRA-KEY:POT-7554',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-EPIC:PO-545'), '@JIRA-KEY:POT-7554'],
     },
     () => {
       for (let i = 0; i < 2; i++) {
@@ -1181,7 +1169,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.10a,AC.10c) should have validations in place for days in default enter valid data Adult or youth ,AYPG',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7555',
       ],
     },
@@ -1205,7 +1193,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.10b) should have validations in place for days in default future date Adult or youth ,AYPG',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7556',
       ],
     },
@@ -1226,7 +1214,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.5,AC.6)should have all elements in the calculate days in default panel for AYPG, Adult or Youth Only and calculate days accurately',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7557',
       ],
     },
@@ -1265,7 +1253,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.7) should not allow the user to calculate days until date has been filled out for days in default, AYPG, Adult or Youth Only',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7558',
       ],
     },
@@ -1291,7 +1279,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.10d) should have validations in place for days in default invalid date date Adult or youth ,AYPG',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-432', '@JIRA-STORY:PO-588', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7559',
       ],
     },
@@ -1312,7 +1300,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.2,AC.3)should load enforcement action PRIS and NOENF for Adult or youth and APYG',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7560',
       ],
     },
@@ -1347,7 +1335,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.4)should provide error for selection enforcement action panel but not selecting any enforcement action',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7561',
       ],
     },
@@ -1368,7 +1356,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.5,AC.6)should have validations in place for enforcement action (pris)',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7562',
       ],
     },
@@ -1403,7 +1391,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.7) Should provide error if (NOENF) field is left empty',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7563',
       ],
     },
@@ -1425,7 +1413,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.8) should have validations in place for enforcement action (NOENF)',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-STORY:PO-272', '@JIRA-STORY:PO-344'),
+        ...buildTags('@JIRA-STORY:PO-548', '@JIRA-STORY:PO-590', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7564',
       ],
     },
@@ -1446,7 +1434,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.1,4,5a) correct system note - A collection order was previously made - AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7565'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7565'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1470,7 +1458,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
   it(
     '(AC.1,4,5b) correct system note - A collection order was previously made - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7566'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7566'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1494,7 +1482,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
   it(
     '(AC.2,4,5a) correct system note - Make collection order today - AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7567'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7567'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1517,7 +1505,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC.2,4,5b) correct system note - Make collection order today - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7568'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7568'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
       setupComponent('pgToPay', setAccountCommentsNotesSpy, (state) => {
@@ -1538,7 +1526,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC3a,c,4,5a) update system note - Made today - Previously made - AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7569'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7569'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1578,7 +1566,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC3a,c,4,5b) update system note - Made today - Previously made - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7570'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7570'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1619,7 +1607,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC3b,d,4,5a) update system note - Previously made - Made today - AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7571'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7571'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
@@ -1664,7 +1652,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it(
     '(AC3b,d,4,5b) update system note - Previously made - Made today - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7572'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-651'), '@JIRA-KEY:POT-7572'] },
     () => {
       const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 

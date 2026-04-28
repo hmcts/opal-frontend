@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-@ManualAccountCreation @OffenceDetails @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-545 @JIRA-STORY:PO-412 @JIRA-STORY:PO-668 @JIRA-STORY:PO-669 @JIRA-STORY:PO-413 @JIRA-STORY:PO-817 @JIRA-STORY:PO-818 @JIRA-STORY:PO-414 @JIRA-STORY:PO-670 @JIRA-STORY:PO-671 @JIRA-STORY:PO-686 @JIRA-STORY:PO-696 @JIRA-STORY:PO-411 @JIRA-STORY:PO-681 @JIRA-STORY:PO-684 @JIRA-STORY:PO-815 @JIRA-STORY:PO-417 @JIRA-STORY:PO-676 @JIRA-STORY:PO-679 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-STORY:PO-1395 @JIRA-STORY:PO-987
+@ManualAccountCreation @OffenceDetails @JIRA-EPIC:PO-272 @JIRA-STORY:PO-412 @JIRA-STORY:PO-668 @JIRA-STORY:PO-669 @JIRA-STORY:PO-413 @JIRA-STORY:PO-817 @JIRA-STORY:PO-818 @JIRA-STORY:PO-414 @JIRA-STORY:PO-670 @JIRA-STORY:PO-671 @JIRA-STORY:PO-686 @JIRA-STORY:PO-696 @JIRA-STORY:PO-411 @JIRA-STORY:PO-681 @JIRA-STORY:PO-684 @JIRA-STORY:PO-815 @JIRA-STORY:PO-417 @JIRA-STORY:PO-676 @JIRA-STORY:PO-679 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-STORY:PO-1395 @JIRA-STORY:PO-987
 Feature: Manual account creation - Offence Details
   #This feature file contains tests for the Offence details pages of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the Offence screens component tests
@@ -556,7 +556,7 @@ Feature: Manual account creation - Offence Details
       | Amount paid    | £500.00  |
       | Balance        | £500.00  |
 
-  @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-KEY:POT-5168
+  @JIRA-EPIC:PO-272 @JIRA-EPIC:PO-344 @JIRA-EPIC:PO-345 @JIRA-STORY:PO-416 @JIRA-STORY:PO-682 @JIRA-STORY:PO-680 @JIRA-KEY:POT-5168
   Scenario: User can add multiple offences and remove all offences
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
     And I record imposition financial details:
@@ -763,7 +763,7 @@ Feature: Manual account creation - Offence Details
 
 
 
-  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-5173
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545 @JIRA-KEY:POT-5173
   Scenario: AC1a Guarding against empty offence search submissions
     When I follow the offence search link in the same tab
     Then I should see the header containing text "Search offences"
@@ -773,7 +773,7 @@ Feature: Manual account creation - Offence Details
     Then I should see the header containing text "Search offences"
 
 
-  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-5174
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545 @JIRA-KEY:POT-5174
   Scenario: AC1b-d Single-field offence searches
     When I follow the offence search link in the same tab
 
@@ -792,7 +792,7 @@ Feature: Manual account creation - Offence Details
       | Act and section | e |
 
 
-  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-5175
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545 @JIRA-KEY:POT-5175
   Scenario: AC1e Combination offence search across fields
     When I follow the offence search link in the same tab
     And I search offences with:
@@ -806,7 +806,7 @@ Feature: Manual account creation - Offence Details
       | Act and section | London    |
 
 
-  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-5176
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545 @JIRA-KEY:POT-5176
   Scenario: AC1f Case-insensitive offence searches
     When I follow the offence search link in the same tab
 
@@ -830,7 +830,7 @@ Feature: Manual account creation - Offence Details
       | Column          | Value  |
       | Act and section | London |
 
-  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-5177
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545 @JIRA-KEY:POT-5177
   Scenario: AC1g-h Starts-with, contains and max-results offence searches
     When I follow the offence search link in the same tab
 
@@ -864,7 +864,7 @@ Feature: Manual account creation - Offence Details
       | Act and section |   |
     Then I see the offence search max results message "100 total results"
 
-  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-STORY:PO-545 @JIRA-KEY:POT-5178
+  @JIRA-STORY:PO-667 @JIRA-STORY:PO-987 @JIRA-EPIC:PO-545 @JIRA-KEY:POT-5178
   Scenario: AC2a-b Active and inactive offence filter behaviour
     When I follow the offence search link in the same tab
 
