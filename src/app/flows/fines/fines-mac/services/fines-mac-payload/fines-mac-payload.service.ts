@@ -5,8 +5,10 @@ import { finesMacPayloadBuildAccountAccountNotes } from './utils/fines-mac-paylo
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
 import { FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-transform-items-config.constant';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-map-transform-items-config.constant';
-import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
-import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
+import {
+  IFinesMacAddAccountPayload,
+  IFinesMacAddAccountRequestPayload,
+} from './interfaces/fines-mac-payload-add-account.interfaces';
 import { finesMacPayloadBuildAccountOffences } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-offences.utils';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { finesMacPayloadMapAccountDefendant } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-defendant.utils';
@@ -15,16 +17,14 @@ import { finesMacPayloadMapAccountAccountNotesPayload } from './utils/fines-mac-
 import { finesMacPayloadMapAccountOffences } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-offences.utils';
 import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-defendant.utils';
 import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
-import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
 import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
 import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-non-snake-case.interface';
 import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
-import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
@@ -37,7 +37,6 @@ import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.cons
 })
 export class FinesMacPayloadService {
   private readonly transformationService = inject(TransformationService);
-  private readonly dateService = inject(DateService);
 
   /**
    * Transforms the given finesMacPayload object by applying the transformations
@@ -46,10 +45,10 @@ export class FinesMacPayloadService {
    * @param finesMacPayload - The payload object to be transformed.
    * @returns The transformed payload object.
    */
-  private transformPayload(
-    finesMacPayload: IFinesMacAddAccountPayload,
+  private transformPayload<T extends IFinesMacAddAccountPayload | IFinesMacAddAccountRequestPayload>(
+    finesMacPayload: T,
     transformItemsConfig: ITransformItem[],
-  ): IFinesMacAddAccountPayload {
+  ): T {
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
@@ -127,24 +126,13 @@ export class FinesMacPayloadService {
     draftAccountPayload: IFinesMacAddAccountPayload | null,
     userState: IOpalUserState,
     addAccount: boolean,
-  ): IFinesMacAddAccountPayload {
+  ): IFinesMacAddAccountRequestPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
-    const storedTimeLineData: IFinesMacAccountTimelineData[] = draftAccountPayload
-      ? draftAccountPayload.timeline_data
-      : [];
     const accountStatus = addAccount ? FINES_MAC_PAYLOAD_STATUSES.submitted : FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
-    const timeLineData = finesMacPayloadBuildAccountTimelineData(
-      userState['name'],
-      accountStatus,
-      this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
-      null,
-      storedTimeLineData,
-    );
-
     // Build the add account payload
-    const addAccountPayload: IFinesMacAddAccountPayload = {
+    const addAccountPayload: IFinesMacAddAccountRequestPayload = {
       draft_account_id: draftAccountPayload ? draftAccountPayload.draft_account_id : null,
       created_at: null,
       account_snapshot: null,
@@ -159,7 +147,6 @@ export class FinesMacPayloadService {
       account_type: accountDetailsState['fm_create_account_account_type'],
       account_status: accountStatus,
       account_status_message: null,
-      timeline_data: timeLineData,
       version: draftAccountPayload ? draftAccountPayload.version : '0',
     };
 
@@ -193,7 +180,10 @@ export class FinesMacPayloadService {
    * @param sessionUserState - The current state of the session user.
    * @returns The payload required to add an account in the fines MAC system.
    */
-  public buildAddAccountPayload(finesMacState: IFinesMacState, userState: IOpalUserState): IFinesMacAddAccountPayload {
+  public buildAddAccountPayload(
+    finesMacState: IFinesMacState,
+    userState: IOpalUserState,
+  ): IFinesMacAddAccountRequestPayload {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, userState, true);
   }
 
@@ -208,7 +198,7 @@ export class FinesMacPayloadService {
     finesMacState: IFinesMacState,
     draftAccountPayload: IFinesMacAddAccountPayload,
     userState: IOpalUserState,
-  ): IFinesMacAddAccountPayload {
+  ): IFinesMacAddAccountRequestPayload {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), draftAccountPayload, userState, false);
   }
 
@@ -216,7 +206,6 @@ export class FinesMacPayloadService {
    * Builds a patch payload for updating a fines account draft.
    *
    * @param draftAccountPayload - The original account payload to be patched.
-   * @param newTimelineDataObject - The new timeline data object to append to the timeline.
    * @param sessionUserState - The current session user's state, used for validation information.
    * @returns The constructed patch payload for the fines account draft.
    */
@@ -225,18 +214,11 @@ export class FinesMacPayloadService {
     status: string,
     reasonText: string | null,
     userState: IOpalUserState,
-  ): IOpalFinesDraftAccountPatchPayload {
+  ): IOpalFinesDraftAccountPatchRequestPayload {
     return {
       account_status: status,
       business_unit_id: draftAccountPayload.business_unit_id!,
       reason_text: reasonText,
-      timeline_data: finesMacPayloadBuildAccountTimelineData(
-        userState['name'],
-        status,
-        this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
-        reasonText,
-        draftAccountPayload.timeline_data,
-      ),
       validated_by:
         status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
           ? null
