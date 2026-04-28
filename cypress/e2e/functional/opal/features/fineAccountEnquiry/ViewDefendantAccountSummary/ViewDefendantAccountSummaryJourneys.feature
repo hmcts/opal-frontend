@@ -51,7 +51,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
       | Document language      | Welsh and English |
       | Court hearing language | Welsh and English |
 
-  @R1B @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234
+  @R1B @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234 @JIRA-KEY:POT-7698
   Scenario: Search for a minor creditor account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published account exists with an individual minor creditor:

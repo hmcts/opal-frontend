@@ -1,0 +1,21 @@
+export const BUSINESS_UNIT_77_MOCK = {
+  businessUnitId: 77,
+  businessUnitName: 'Camberwell Green',
+  businessUnitCode: '0046',
+  businessUnitType: 'Accounting Division',
+  accountNumberPrefix: null,
+  opalDomain: 'Fines',
+  welshLanguage: false,
+  parentBusinessUnit: {
+    businessUnitId: 1001,
+    businessUnitName: 'Greater London',
+    businessUnitCode: '01',
+    businessUnitType: 'Area',
+    accountNumberPrefix: null,
+    opalDomain: null,
+    welshLanguage: false,
+    parentBusinessUnit: null,
+    configurationItems: [],
+  },
+  configurationItems: [],
+};
