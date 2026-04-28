@@ -217,11 +217,15 @@ describe('Filter by Business Unit (CT)', () => {
 
   // ---------------- AC2a ----------------
 
-  it('AC2a: shows two tabs – Fines and Confiscation', { tags: [...buildTags(), '@JIRA-KEY:POT-7029', '@JIRA-EPIC:PO-704'] }, () => {
-    setupComponent();
-    cy.get(NavLocators.finesTabLink).should('contain.text', TAB_LABELS.fines);
-    cy.get(NavLocators.confiscationTabLink).should('contain.text', TAB_LABELS.confiscation);
-  });
+  it(
+    'AC2a: shows two tabs – Fines and Confiscation',
+    { tags: [...buildTags(), '@JIRA-KEY:POT-7029', '@JIRA-EPIC:PO-704'] },
+    () => {
+      setupComponent();
+      cy.get(NavLocators.finesTabLink).should('contain.text', TAB_LABELS.fines);
+      cy.get(NavLocators.confiscationTabLink).should('contain.text', TAB_LABELS.confiscation);
+    },
+  );
 
   // ---------------- AC2 (Fines) ----------------
 
