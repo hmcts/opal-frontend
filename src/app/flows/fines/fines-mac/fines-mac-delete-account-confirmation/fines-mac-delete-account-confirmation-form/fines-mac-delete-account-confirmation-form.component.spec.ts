@@ -52,6 +52,18 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     expect(component.form.valid).toBe(true);
   });
 
+  it('should be valid if reason includes allowed punctuation', () => {
+    component.form.controls['fm_delete_account_confirmation_reason'].setValue("Reason-1, it's valid.");
+    expect(component.form.valid).toBe(true);
+  });
+
+  it('should be invalid if reason includes unsupported special characters', () => {
+    component.form.controls['fm_delete_account_confirmation_reason'].setValue('Reason @ invalid');
+    expect(component.form.controls['fm_delete_account_confirmation_reason'].hasError('alphanumericTextPattern')).toBe(
+      true,
+    );
+  });
+
   it('should emit form submit event when form is valid and submitted', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
