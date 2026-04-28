@@ -54,7 +54,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   };
   it(
     'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-814'), '@JIRA-KEY:POT-6607'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-814'), '@JIRA-KEY:POT-6607', '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -89,7 +89,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-984'), '@JIRA-KEY:POT-6608'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-984'), '@JIRA-KEY:POT-6608', '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
@@ -122,7 +122,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC2a: Displays Language Preferences section below National Insurance Number',
-    { tags: [...buildTags('@JIRA-STORY:PO-984'), '@JIRA-KEY:POT-6609'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-984'), '@JIRA-KEY:POT-6609', '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
@@ -246,7 +246,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC3: displays Aliases section when defendant has one or more aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-984'), '@JIRA-KEY:POT-6615'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-984'), '@JIRA-KEY:POT-6615', '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
@@ -270,7 +270,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   );
   it(
     'AC3b: does not display Aliases section when defendant has no aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-984'), '@JIRA-KEY:POT-6616'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-984'), '@JIRA-KEY:POT-6616', '@JIRA-EPIC:PO-812'] },
     () => {
       const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       headerNoAliases.party_details.individual_details!.individual_aliases = [];
@@ -286,7 +286,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC3: displays Aliases section when company has one or more aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-814'), '@JIRA-KEY:POT-6617'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-814'), '@JIRA-KEY:POT-6617', '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -321,7 +321,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC3b: does not display Aliases section when company has no aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-814'), '@JIRA-KEY:POT-6618'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-814'), '@JIRA-KEY:POT-6618', '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;

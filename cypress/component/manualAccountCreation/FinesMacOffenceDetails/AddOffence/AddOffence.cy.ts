@@ -120,7 +120,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'should block submitting the offence while offence-code validation is still in progress',
     {
-      tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6314'],
+      tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6314', '@JIRA-EPIC:PO-2219'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -166,7 +166,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'should keep blocking submission when offence validation completes with an invalid offence code',
     {
-      tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6315'],
+      tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6315', '@JIRA-EPIC:PO-2219'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -213,7 +213,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'should submit the exact offence match when multiple offences are returned for the searched code',
     {
-      tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6316'],
+      tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6316', '@JIRA-EPIC:PO-2219'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -270,7 +270,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'should keep the offence invalid when multiple offences are returned but none exactly match the searched code',
     {
-      tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6317'],
+      tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6317', '@JIRA-EPIC:PO-2219'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -928,7 +928,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y only',
-    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6338'] },
+    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6338', '@JIRA-EPIC:PO-2219'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       const SELECTOR = impositionSelectors(0);
@@ -953,7 +953,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay',
-    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6339'] },
+    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6339', '@JIRA-EPIC:PO-2219'] },
     () => {
       setupComponent(null, 'pgToPay');
       const SELECTOR = impositionSelectors(0);
@@ -978,7 +978,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, company',
-    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6340'] },
+    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6340', '@JIRA-EPIC:PO-2219'] },
     () => {
       setupComponent(null, 'company');
       const SELECTOR = impositionSelectors(0);
@@ -1003,7 +1003,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     'Each imposition is wrapped in its own fieldset',
-    { tags: ['@JIRA-STORY:PO-2716', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6341'] },
+    { tags: ['@JIRA-STORY:PO-2716', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6341', '@JIRA-EPIC:PO-2807'] },
     () => {
       setupComponent(null);
 

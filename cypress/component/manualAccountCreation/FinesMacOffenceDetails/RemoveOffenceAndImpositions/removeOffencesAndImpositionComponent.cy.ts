@@ -166,7 +166,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     },
   );
 
-  it('should have only one h1 element', { tags: [...buildTags('@JIRA-STORY:PO-2717'), '@JIRA-KEY:POT-7456'] }, () => {
+  it('should have only one h1 element', { tags: [...buildTags('@JIRA-STORY:PO-2717'), '@JIRA-KEY:POT-7456', '@JIRA-EPIC:PO-2807'] }, () => {
     setupComponent();
     cy.get('h1').should('have.length', 1);
   });
