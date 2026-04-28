@@ -65,7 +65,7 @@ describe('ReviewOffenceComponent', () => {
     'should render component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7457',
       ],
     },
@@ -80,7 +80,7 @@ describe('ReviewOffenceComponent', () => {
     'should load all elements on the screen correctly',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7458',
       ],
     },
@@ -105,7 +105,7 @@ describe('ReviewOffenceComponent', () => {
     'should have correct values in the elements',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7459',
       ],
     },
@@ -135,7 +135,7 @@ describe('ReviewOffenceComponent', () => {
     'should update value according to imposition type',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7460',
       ],
     },

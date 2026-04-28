@@ -75,7 +75,7 @@ describe('FinesRemoveImpositionComponent', () => {
     '(AC.1)should render the component correctly',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7444',
       ],
     },
@@ -90,7 +90,7 @@ describe('FinesRemoveImpositionComponent', () => {
     '(AC.1)(AC.2)should render all elements correctly',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7445',
       ],
     },
@@ -115,7 +115,7 @@ describe('FinesRemoveImpositionComponent', () => {
     '(AC.2)should have correct field labels and names in the elements when loading data',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7446',
       ],
     },
@@ -141,7 +141,7 @@ describe('FinesRemoveImpositionComponent', () => {
     '(AC.4)should set values to defaults or null after pressing the remove imposition button',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7447',
       ],
     },
