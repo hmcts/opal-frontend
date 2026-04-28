@@ -880,6 +880,7 @@ Feature: Manual account creation - Offence Details
     When I reset the offence search to exclude inactive offence codes
     Then I am viewing offence results with active offences only
 
+
   @JIRA-STORY:PO-2432 @JIRA-KEY:POT-5179
   Scenario: Minor creditor details persist after repeated offence review and change [PO-2432]
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
@@ -931,3 +932,4 @@ Feature: Manual account creation - Offence Details
       | Sort code         | 12-34-56                |
       | Account number    | 12345678                |
       | Payment reference | REF                     |
+

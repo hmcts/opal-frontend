@@ -9,6 +9,7 @@ Feature: Manual account creation - Local justice area filtering
     And I monitor local justice areas requests
 
   # AC2, AC3, AC4, AC6
+@JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2761 @JIRA-KEY:POT-5015
   Scenario: Fine + New requests only LJA (PSA) and CRWCRT local justice areas
     When I create a "New" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
@@ -22,6 +23,7 @@ Feature: Manual account creation - Local justice area filtering
       | NICRT  |
 
   # AC2, AC3, AC4, AC6
+@JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2761 @JIRA-KEY:POT-5016
   Scenario: Fine + Transfer in requests only LJA (PSA) and CRWCRT local justice areas
     When I create a "Transfer in" manual "Fine" account for business unit "West London" with defendant type "Adult or youth only"
@@ -35,6 +37,7 @@ Feature: Manual account creation - Local justice area filtering
       | NICRT  |
 
   # AC2, AC3, AC5, AC6
+@JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2761 @JIRA-KEY:POT-5017
   Scenario: Conditional Caution + New requests all local justice area types
     When I create a "New" manual "Conditional Caution" account for business unit "West London" with defendant type "Adult or youth only"
@@ -47,6 +50,7 @@ Feature: Manual account creation - Local justice area filtering
       | NICRT  |
 
   # AC2, AC3, AC5, AC6
+@JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2761 @JIRA-KEY:POT-5018
   Scenario: Fixed Penalty + New requests all local justice area types (Prosecutors all remain visible)
     When I create a "New" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
@@ -59,6 +63,7 @@ Feature: Manual account creation - Local justice area filtering
       | NICRT  |
 
   # AC2, AC3, AC5, AC6
+@JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2761 @JIRA-KEY:POT-5019
   Scenario: Fixed Penalty + Transfer in requests all local justice area types (Prosecutors all remain visible)
     When I create a "Transfer in" manual "Fixed Penalty" account for business unit "West London" with defendant type "Adult or youth only"
@@ -69,3 +74,4 @@ Feature: Manual account creation - Local justice area filtering
       | SJCRT  |
       | SCSCRT |
       | NICRT  |
+

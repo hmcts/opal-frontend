@@ -1,11 +1,12 @@
 @JIRA-LABEL:account-enquiry
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Account Enquiries - Request Payment Card Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
+  @JIRA-EPIC:PO-2472
   @JIRA-KEY:POT-5219
   Scenario: Check Request Payment Card confirmation accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -25,3 +26,4 @@ Feature: Account Enquiries - Request Payment Card Accessibility
     And I start a payment card request
     Then I should see the request payment card confirmation screen
     And I check the page for accessibility
+
