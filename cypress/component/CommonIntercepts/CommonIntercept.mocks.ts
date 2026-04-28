@@ -100,7 +100,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_id: 314683,
       get_cjs_code: 'CA03010D',
       business_unit_id: 22,
-      offence_title: 'No Televison Licence',
+      offence_title: 'No Television Licence',
       offence_title_cy: 'WWWWWWWWWWWWWWWWWWWWWW',
       date_used_from: '2001-01-01T00:00:00',
       date_used_to: null,
@@ -199,7 +199,7 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_id: 314723,
       get_cjs_code: 'NW01001',
       business_unit_id: 45,
-      offence_title: "Fail to be long enough to fit as many words as necessary so that the tiltle isn't truncated ",
+      offence_title: "Fail to be long enough to fit as many words as necessary so that the title isn't truncated ",
       offence_title_cy: null,
       date_used_from: '2014-01-01T00:00:00',
       date_used_to: null,
@@ -1685,6 +1685,29 @@ export const OPAL_FINES_ENFORCER_REF_DATA_MOCK: IOpalFinesEnforcersRefData = {
       enforcer_code: 101,
       name: 'Warrant enforcer',
       name_cy: null,
+    },
+  ],
+};
+export const OPAL_FINES_NEXT_PERMITTED_ENFORCEMENT_ACTIONS_MOCK: IOpalFinesResultsRefData = {
+  count: 2,
+  refData: [
+    {
+      result_id: 'WOC',
+      result_title: 'Warrant of Control',
+      result_title_cy: null,
+      active: true,
+      result_type: 'Result',
+      imposition_creditor: '',
+      imposition_allocation_order: null,
+    },
+    {
+      result_id: 'WOA',
+      result_title: 'Warrant of Arrest',
+      result_title_cy: null,
+      active: true,
+      result_type: 'Result',
+      imposition_creditor: '',
+      imposition_allocation_order: null,
     },
   ],
 };

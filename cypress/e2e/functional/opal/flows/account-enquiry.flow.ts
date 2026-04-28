@@ -525,6 +525,15 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the add enforcement action form from the Enforcement tab.
+   */
+  public openAddEnforcementActionForm(): void {
+    logAE('method', 'openAddEnforcementActionForm()');
+    this.enforcement.openAddEnforcementActionForm();
+    this.enforcement.assertAddEnforcementActionFormVisible();
+  }
+
+  /**
    * Opens the Change Collection Order status form from the Enforcement tab.
    */
   public openChangeCollectionOrderForm(): void {
@@ -1345,7 +1354,7 @@ export class AccountEnquiryFlow {
       const alreadyOnAddAccountNotePage = pathname.includes('/note/add');
 
       if (alreadyOnAddAccountNotePage) {
-        logAE('state', 'Already on "Add account note" screen');
+        logAE('navigate', 'Already on "Add account note" screen');
         return;
       }
 

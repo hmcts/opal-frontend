@@ -143,12 +143,12 @@ describe('FinesAccPayloadService', () => {
     });
   });
 
-  it('should transform account header for store for an individual', () => {
+  it('should transform defendant account header for store for an individual', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     header.party_details.organisation_flag = false;
     const account_id = 77;
 
-    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'defendant');
+    const result: IFinesAccountState = service.transformDefendantAccountHeaderForStore(account_id, header);
 
     expect(result).toEqual({
       account_number: header.account_number,
@@ -175,12 +175,12 @@ describe('FinesAccPayloadService', () => {
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
 
-  it('should transform account header for store for a company', () => {
+  it('should transform defendant account header for store for a company', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     header.party_details.organisation_flag = true;
     const account_id = 77;
 
-    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'defendant');
+    const result: IFinesAccountState = service.transformDefendantAccountHeaderForStore(account_id, header);
 
     expect(result).toEqual({
       account_number: header.account_number,
@@ -207,12 +207,12 @@ describe('FinesAccPayloadService', () => {
     header.party_details.organisation_flag = true;
     header.party_details.organisation_details = null;
 
-    const result = service.transformAccountHeaderForStore(77, header, 'defendant');
+    const result = service.transformDefendantAccountHeaderForStore(77, header);
 
     expect(result.party_name).toBe('');
   });
 
-  it('should handle missing surname gracefully', () => {
+  it('should handle missing surname gracefully in defendant account header', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     header.party_details.organisation_flag = false;
     if (header.party_details.individual_details) {
@@ -220,7 +220,7 @@ describe('FinesAccPayloadService', () => {
     }
     const account_id = 77;
 
-    const result = service.transformAccountHeaderForStore(account_id, header, 'defendant');
+    const result = service.transformDefendantAccountHeaderForStore(account_id, header);
 
     expect(result.party_name).toBe(
       [header.party_details.individual_details?.title, header.party_details.individual_details?.forenames]
@@ -231,7 +231,7 @@ describe('FinesAccPayloadService', () => {
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
   });
 
-  it('should transform account header for store for a minor creditor (organisation)', () => {
+  it('should transform minor creditor account header for store for a minor creditor (organisation)', () => {
     mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
     );
@@ -240,7 +240,7 @@ describe('FinesAccPayloadService', () => {
     );
     const account_id = 77;
 
-    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'minorCreditor');
+    const result: IFinesAccountState = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
 
     expect(result).toEqual({
       account_number: header.creditor.account_number,
@@ -278,7 +278,7 @@ describe('FinesAccPayloadService', () => {
     };
     delete header.party.organisation_details;
 
-    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header, 'minorCreditor');
+    const result: IFinesAccountState = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
 
     expect(result).toEqual({
       account_number: header.creditor.account_number,
@@ -303,6 +303,48 @@ describe('FinesAccPayloadService', () => {
       OPAL_USER_STATE_MOCK,
     );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
+  });
+
+  it('should return empty party_name when organisation details are missing for minor creditor organisation', () => {
+    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
+    );
+    const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
+    );
+    const account_id = 77;
+    header.party.organisation_flag = true;
+    delete header.party.organisation_details;
+
+    const result = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
+
+    expect(result.party_name).toBe('');
+    expect(result.account_number).toBe(header.creditor.account_number);
+    expect(result.account_id).toBe(account_id);
+    expect(result.base_version).toBe(header.version);
+  });
+
+  it('should build minor creditor individual party_name without surname when surname is empty', () => {
+    mockMacPayloadService.getBusinessUnitBusinessUserId.mockReturnValue(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id,
+    );
+    const header: IOpalFinesAccountMinorCreditorDetailsHeader = structuredClone(
+      FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
+    );
+    const account_id = 77;
+    header.party.organisation_flag = false;
+    header.party.individual_details = {
+      title: 'Ms',
+      forenames: 'Jane',
+      surname: '',
+    };
+    delete header.party.organisation_details;
+
+    const result = service.transformMinorCreditorAccountHeaderForStore(account_id, header);
+
+    expect(result.party_name).toBe('Ms Jane');
+    expect(result.party_type).toBe('Minor Creditor');
+    expect(result.party_id).toBe(header.party.party_id);
   });
 
   describe('transformDefendantDataToDebtorForm', () => {

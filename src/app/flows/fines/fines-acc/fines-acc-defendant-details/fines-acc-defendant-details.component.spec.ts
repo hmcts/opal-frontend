@@ -25,6 +25,7 @@ import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-serv
 import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-court-change/constants/fines-acc-enf-court-change-routing-paths.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS } from '../fines-acc-enf-override-add-change/constants/fines-acc-enf-override-add-change-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -54,10 +55,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
     };
 
     mockPayloadService = {
-      transformAccountHeaderForStore: vi.fn().mockName('FinesAccPayloadService.transformAccountHeaderForStore'),
+      transformDefendantAccountHeaderForStore: vi
+        .fn()
+        .mockName('FinesAccPayloadService.transformDefendantAccountHeaderForStore'),
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
     };
-    mockPayloadService.transformAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockPayloadService.transformPayload.mockImplementation((...args: any[]) => {
       return args[0]; // returns the first argument = payload
@@ -209,6 +212,18 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [
         `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should call router.navigate when navigateToAddEnforcementActionPage is called', () => {
+    component.navigateToAddEnforcementActionPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
       ],
       {
         relativeTo: component['activatedRoute'],

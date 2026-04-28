@@ -1,7 +1,7 @@
 import { IOpalFinesDefendantAccountAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-alias.interface';
+import { IOpalFinesVersion } from '../../../services/opal-fines-service/interfaces/opal-fines-version.interface';
 
-export interface IOpalFinesAccountDefendantDetailsHeader {
-  version: string | null;
+export interface IOpalFinesAccountDefendantDetailsHeader extends IOpalFinesVersion {
   defendant_account_id: string;
   debtor_type: string;
   is_youth: boolean;

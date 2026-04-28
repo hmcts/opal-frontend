@@ -344,6 +344,14 @@ When('I open the add enforcement override form', () => {
 });
 
 /**
+ * @step Opens the add enforcement action form from the Enforcement tab.
+ */
+When('I open the add enforcement action form', () => {
+  log('step', 'Open add enforcement action form');
+  flow().openAddEnforcementActionForm();
+});
+
+/**
  * @step Opens the Change Collection Order status form from the Enforcement tab.
  */
 When('I open the Change Collection Order status form', () => {
@@ -600,6 +608,16 @@ Then('I should see the following language preferences on the At a glance tab:', 
 
   log('assert', 'Asserting language preferences on the At a glance tab', { expectedValues });
   atAGlanceDetails().assertLanguagePreferences(expectedValues);
+});
+
+/**
+ * @step Asserts selected values shown on the minor creditor At a glance tab.
+ */
+Then('I should see the following minor creditor values on the At a glance tab:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting selected values on the minor creditor At a glance tab', { expectedValues });
+  atAGlanceDetails().assertMinorCreditorAtAGlanceValues(expectedValues);
 });
 
 /**

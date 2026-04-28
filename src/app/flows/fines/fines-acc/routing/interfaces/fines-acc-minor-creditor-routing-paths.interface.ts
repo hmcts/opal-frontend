@@ -5,5 +5,6 @@ export interface IFinesAccMinorCreditorRoutingPaths extends IChildRoutingPaths {
   children: {
     details: string;
     note: string;
+    'payment-hold': string;
   };
 }

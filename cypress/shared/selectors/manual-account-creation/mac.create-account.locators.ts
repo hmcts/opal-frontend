@@ -12,7 +12,6 @@ export const MacCreateAccountLocators = {
   heading: 'h1.govuk-heading-l',
   app: 'div.govuk-grid-column-two-thirds',
   errorSummary: '.govuk-error-summary',
-  pageHeader: 'h1.govuk-heading-l',
   businessUnitHint: 'div[id="fm_create_account_business_unit_id-hint"]',
   businessUnitInput: 'input[id="fm_create_account_business_unit_id-autocomplete"]',
   businessUnitLabel:
@@ -26,7 +25,7 @@ export const MacCreateAccountLocators = {
       'input[id="fm_create_account_business_unit_id-autocomplete"], input[name="fm_create_account_business_unit_id"], input[id="fm_create_account_business_unit_id"]',
     listbox: 'ul[id="fm_create_account_business_unit_id-autocomplete__listbox"], ul[role="listbox"]',
   },
-  accountTypeHeading: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
+  sectionLegend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   fineInput: 'input[name="fm_create_account_account_type"][value="Fine"]',
   fineLabel: 'label[for="fm_create_account_account_type-Fine"]',
   fixedPenaltyInput: 'input[name="fm_create_account_account_type"][value="Fixed Penalty"]',
@@ -40,7 +39,6 @@ export const MacCreateAccountLocators = {
     conditionalCaution:
       'input[name="fm_create_account_account_type"][value="Conditional Caution"], input[id="fm_create_account_account_type-ConditionalCaution"]',
   },
-  defendantTypeTitle: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   defendantTypeHint: 'div[id="fm_create_account_fine_defendant_type-hint"]',
   adultOrYouthInput: 'input[name="fm_create_account_fine_defendant_type"][value="adultOrYouthOnly"]',
   adultOrYouthLabel: 'label[for="fm_create_account_fine_defendant_type-adultOrYouthOnly"]',

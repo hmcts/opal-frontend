@@ -17,12 +17,17 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesRemoveImpositionComponent', () => {
-  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-  let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+  let finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacState = finesMacStateTemplate;
+  let finesMacOffenceDetailsDraftStateTemplate = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK);
+  let finesMacOffenceDetailsDraftState = finesMacOffenceDetailsDraftStateTemplate;
   let setDraftSpy: sinon.SinonSpy;
 
   // Updated setupComponent for AC.4 test: allows spying on setOffenceDetailsDraft
   const setupComponent = () => {
+    finesMacState = structuredClone(finesMacStateTemplate);
+    finesMacOffenceDetailsDraftState = structuredClone(finesMacOffenceDetailsDraftStateTemplate);
+
     let offenceDetailsStoreSpy;
     return mount(FinesMacOffenceDetailsRemoveImpositionComponent, {
       providers: [
