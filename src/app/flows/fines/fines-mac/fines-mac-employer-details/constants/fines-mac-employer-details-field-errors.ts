@@ -10,9 +10,9 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Employer name must be 35 characters or fewer',
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+    alphanumericWithSpecialCharacters: {
       message:
-        'Employer name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Employer name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 3,
     },
   },

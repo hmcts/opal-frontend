@@ -30,10 +30,11 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   NUMERIC_PATTERN,
-  ALPHANUMERIC_WITH_SPACES_PATTERN,
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
@@ -44,6 +45,10 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
+);
+const SINGLE_ASCII_CHARACTERS_BANK_ACCOUNT_NAME_PATTERN_VALIDATOR = patternValidator(
+  SINGLE_ASCII_CHARACTERS,
+  'alphanumericWithSpecialCharacters',
 );
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
 
@@ -188,7 +193,11 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 
-    nameOnAccount.setValidators([Validators.required, Validators.maxLength(18), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
+    nameOnAccount.setValidators([
+      Validators.required,
+      Validators.maxLength(18),
+      SINGLE_ASCII_CHARACTERS_BANK_ACCOUNT_NAME_PATTERN_VALIDATOR,
+    ]);
     sortCode.setValidators([Validators.required, Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR]);
     accountNumber.setValidators([Validators.required, Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR]);
     paymentReference.setValidators([

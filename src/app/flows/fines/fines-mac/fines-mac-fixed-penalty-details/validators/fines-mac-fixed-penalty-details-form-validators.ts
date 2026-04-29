@@ -6,11 +6,12 @@ import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/futu
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  LETTERS_WITH_SPACES_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   DRIVING_LICENCE_NUMBER_PATTERN,
+  SINGLE_ASCII_CHARACTERS,
+  SINGLE_ASCII_CHARACTERS_WITH_POUND,
   TIME_FORMAT_PATTERN,
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
 
@@ -19,15 +20,26 @@ type IFinesMacFixedPenaltyDetailsFormValidators = {
 };
 
 // regex pattern validators for the form controls
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
+  SINGLE_ASCII_CHARACTERS,
+  'alphanumericWithSpecialCharacters',
+);
+const SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR = patternValidator(
+  SINGLE_ASCII_CHARACTERS_WITH_POUND,
+  'alphanumericWithSpecialCharacters',
+);
+const SINGLE_ASCII_CHARACTERS_PERSON_NAME_PATTERN_VALIDATOR = patternValidator(
+  SINGLE_ASCII_CHARACTERS,
+  'alphanumericWithSpecialCharacters',
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
 const TIME_FORMAT_PATTERN_VALIDATOR = patternValidator(TIME_FORMAT_PATTERN, 'invalidTimeFormat');
 const DRIVING_LICENCE_NUMBER_PATTERN_VALIDATOR = patternValidator(
   DRIVING_LICENCE_NUMBER_PATTERN,
@@ -39,12 +51,12 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_personal_details_forenames: [
     Validators.required,
     Validators.maxLength(20),
-    LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+    SINGLE_ASCII_CHARACTERS_PERSON_NAME_PATTERN_VALIDATOR,
   ],
   fm_fp_personal_details_surname: [
     Validators.required,
     Validators.maxLength(30),
-    LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+    SINGLE_ASCII_CHARACTERS_PERSON_NAME_PATTERN_VALIDATOR,
   ],
   fm_fp_personal_details_dob: [optionalValidDateValidator(), dateOfBirthValidator()],
   fm_fp_personal_details_address_line_1: [
@@ -62,8 +74,8 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
     ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
   ],
   fm_fp_court_details_originator_name: null,
-  fm_fp_account_comments_notes_comments: [ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR],
-  fm_fp_account_comments_notes_notes: [ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR],
+  fm_fp_account_comments_notes_comments: [SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR],
+  fm_fp_account_comments_notes_notes: [SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR],
   fm_fp_account_comments_notes_system_notes: null,
   fm_fp_language_preferences_document_language: null,
   fm_fp_language_preferences_hearing_language: null,
@@ -104,7 +116,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_company_details_company_name: [
     Validators.required,
     Validators.maxLength(30),
-    ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+    SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
   ],
   fm_fp_company_details_address_line_1: [
     Validators.required,

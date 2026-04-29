@@ -42,11 +42,14 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN, LETTERS_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 // regex pattern validators for the form controls
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
+  SINGLE_ASCII_CHARACTERS,
+  'alphanumericWithSpecialCharacters',
+);
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -99,12 +102,12 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_aliases: new FormArray([]),
       fm_personal_details_add_alias: new FormControl(null),

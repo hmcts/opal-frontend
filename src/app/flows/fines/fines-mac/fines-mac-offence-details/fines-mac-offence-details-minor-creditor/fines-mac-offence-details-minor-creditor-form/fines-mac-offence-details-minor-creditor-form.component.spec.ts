@@ -162,10 +162,10 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     nameOnAccountControl.setValue('1234567890123456789'); // Exceeds 18 characters
     expect(nameOnAccountControl.errors?.['maxlength']).toBeTruthy();
 
-    nameOnAccountControl.setValue('Invalid@Name'); // Invalid characters
-    expect(nameOnAccountControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
+    nameOnAccountControl.setValue('InvalidéName'); // Invalid characters
+    expect(nameOnAccountControl.errors?.['alphanumericWithSpecialCharacters']).toBeTruthy();
 
-    nameOnAccountControl.setValue('Valid Name'); // Valid input
+    nameOnAccountControl.setValue('Valid@Name'); // Valid input
     expect(nameOnAccountControl.valid).toBeTruthy();
 
     // Test validators for sort code

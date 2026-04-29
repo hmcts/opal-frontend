@@ -20,14 +20,14 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-m
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { SINGLE_ASCII_CHARACTERS_WITH_POUND } from '@hmcts/opal-frontend-common/constants';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { IFinesMacAccountCommentsNotesFieldErrors } from '../interfaces/fines-mac-account-comments-notes-field-errors.interface';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../constants/fines-mac-account-comments-notes-field-errors.constant';
 
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+const SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR = patternValidator(
+  SINGLE_ASCII_CHARACTERS_WITH_POUND,
+  'alphanumericWithSpecialCharacters',
 );
 
 @Component({
@@ -61,10 +61,10 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
   private setupAccountCommentsNotesForm(): void {
     this.form = new FormGroup({
       fm_account_comments_notes_comments: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR,
       ]),
       fm_account_comments_notes_notes: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR,
       ]),
       fm_account_comments_notes_system_notes: new FormControl<string | null>(null),
     });
