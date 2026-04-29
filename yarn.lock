@@ -5565,15 +5565,15 @@ __metadata:
   linkType: hard
 
 "@openapitools/openapi-generator-cli@npm:^2.25.0":
-  version: 2.31.1
-  resolution: "@openapitools/openapi-generator-cli@npm:2.31.1"
+  version: 2.32.0
+  resolution: "@openapitools/openapi-generator-cli@npm:2.32.0"
   dependencies:
     "@inquirer/select": "npm:1.3.3"
     "@nestjs/axios": "npm:4.0.1"
     "@nestjs/common": "npm:11.1.17"
     "@nestjs/core": "npm:11.1.18"
     "@nuxtjs/opencollective": "npm:0.3.2"
-    axios: "npm:^1.14.0"
+    axios: "npm:^1.15.0"
     chalk: "npm:4.1.2"
     commander: "npm:8.3.0"
     compare-versions: "npm:6.1.1"
@@ -5587,7 +5587,7 @@ __metadata:
     tslib: "npm:2.8.1"
   bin:
     openapi-generator-cli: main.js
-  checksum: 10/4876d7792bec23aa7ebdf9be0ba639a153098b5d93ef97a0aa7aadef13dfe93eecf80757be669253d6d4ebfb47b772fc7c9d3b2b2f788cf064d9bc3f77f65030
+  checksum: 10/5f39d3c72ce7f13b28ed7261df92cd6f40e223cf853f02b5847a154b574ebaf9acbf2c994a565a62f524cf45e0472d3b20a2174621d6bde1068be6d59eee4de5
   languageName: node
   linkType: hard
 
@@ -9091,7 +9091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.14.0, axios@npm:^1.6.2":
+"axios@npm:^1.15.0, axios@npm:^1.6.2":
   version: 1.15.2
   resolution: "axios@npm:1.15.2"
   dependencies:
