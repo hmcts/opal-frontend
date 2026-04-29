@@ -11,6 +11,7 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fin
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 import { FINES_ACC_PAYMENT_HOLD_ADD_REMOVE_CONTENT } from './constants/fines-acc-payment-hold-add-remove-content.constant';
 import { FinesAccPaymentHoldAddRemoveAction } from './types/fines-acc-payment-hold-add-remove-actions.type';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_TABS_KEYS } from '../fines-acc-minor-creditor-details/constants/fines-acc-minor-creditor-details-tabs-keys.constant';
 
 @Component({
   selector: 'app-acc-payment-hold-add-remove',
@@ -52,7 +53,7 @@ export class FinesAccPaymentHoldAddRemoveComponent implements OnInit, OnDestroy 
   public navigateToMinorCreditorDetailsPage(): void {
     this.router.navigate([`../../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details}`], {
       relativeTo: this.route,
-      fragment: 'at-a-glance',
+      fragment: FINES_ACC_MINOR_CREDITOR_DETAILS_TABS_KEYS['at-a-glance'],
     });
   }
 
