@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FinesAccPaymentHoldRemoveComponent } from './fines-acc-payment-hold-remove.component';
+import { FinesAccPaymentHoldAddRemoveComponent } from './fines-acc-payment-hold-add-remove.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
@@ -8,12 +8,21 @@ import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../routing/constants/fin
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-minor-creditor-update-payload.mock';
+import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
+import { FinesAccPaymentHoldAddRemoveAction } from './types/fines-acc-payment-hold-add-remove-actions.type';
 
-describe('FinesAccPaymentHoldRemoveComponent', () => {
-  let component: FinesAccPaymentHoldRemoveComponent;
-  let fixture: ComponentFixture<FinesAccPaymentHoldRemoveComponent>;
+describe('FinesAccPaymentHoldAddRemoveComponent', () => {
+  let component: FinesAccPaymentHoldAddRemoveComponent;
+  let fixture: ComponentFixture<FinesAccPaymentHoldAddRemoveComponent>;
   let routerMock: { navigate: ReturnType<typeof vi.fn> };
-  let routeMock: { snapshot: { data: { minorCreditorAccountAtAGlance: object } } };
+  let routeMock: {
+    snapshot: {
+      data: {
+        minorCreditorAccountAtAGlance: object;
+        paymentHoldAction?: FinesAccPaymentHoldAddRemoveAction;
+      };
+    };
+  };
   let finesAccStoreMock: {
     getAccountNumber: ReturnType<typeof vi.fn>;
     party_name: ReturnType<typeof vi.fn>;
@@ -27,6 +36,12 @@ describe('FinesAccPaymentHoldRemoveComponent', () => {
   };
   let opalFinesServiceMock: {
     updateMinorCreditorAccount: ReturnType<typeof vi.fn>;
+  };
+
+  const createComponent = (paymentHoldAction: FinesAccPaymentHoldAddRemoveAction = 'add'): void => {
+    routeMock.snapshot.data.paymentHoldAction = paymentHoldAction;
+    fixture = TestBed.createComponent(FinesAccPaymentHoldAddRemoveComponent);
+    component = fixture.componentInstance;
   };
 
   beforeEach(async () => {
@@ -54,7 +69,9 @@ describe('FinesAccPaymentHoldRemoveComponent', () => {
     };
 
     finesAccPayloadServiceMock = {
-      buildMinorCreditorAccountUpdatePayload: vi.fn().mockReturnValue(OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK),
+      buildMinorCreditorAccountUpdatePayload: vi
+        .fn()
+        .mockImplementation(() => structuredClone(OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK)),
     };
 
     opalFinesServiceMock = {
@@ -62,7 +79,7 @@ describe('FinesAccPaymentHoldRemoveComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [FinesAccPaymentHoldRemoveComponent],
+      imports: [FinesAccPaymentHoldAddRemoveComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -86,17 +103,18 @@ describe('FinesAccPaymentHoldRemoveComponent', () => {
         },
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(FinesAccPaymentHoldRemoveComponent);
-    component = fixture.componentInstance;
   });
 
   it('should create', () => {
+    createComponent();
     fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
 
   it('should initialise accountNumber and partyName from store values when present', () => {
+    createComponent();
+
     expect(component.accountNumber).toBe('123456');
     expect(component.partyName).toBe('Test Creditor');
   });
@@ -105,14 +123,35 @@ describe('FinesAccPaymentHoldRemoveComponent', () => {
     finesAccStoreMock.getAccountNumber.mockReturnValue(null);
     finesAccStoreMock.party_name.mockReturnValue(null);
 
-    const nullishFixture = TestBed.createComponent(FinesAccPaymentHoldRemoveComponent);
-    const nullishComponent = nullishFixture.componentInstance;
+    createComponent();
 
-    expect(nullishComponent.accountNumber).toBe('');
-    expect(nullishComponent.partyName).toBe('');
+    expect(component.accountNumber).toBe('');
+    expect(component.partyName).toBe('');
+  });
+
+  it('should render add payment hold content for the add route', () => {
+    createComponent('add');
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.textContent).toContain('Do you want to add a payment hold?');
+    expect(element.querySelector('#addPaymentHold')?.textContent?.trim()).toBe('Yes - add hold');
+  });
+
+  it('should render remove payment hold content for the remove route', () => {
+    createComponent('remove');
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.textContent).toContain('Do you want to remove the payment hold?');
+    expect(element.querySelector('#removePaymentHold')?.textContent?.trim()).toBe('Yes - remove hold');
   });
 
   it('should navigate to minor creditor details page with at-a-glance fragment', () => {
+    createComponent();
+
     component.navigateToMinorCreditorDetailsPage();
 
     expect(routerMock.navigate).toHaveBeenCalledWith(
@@ -125,9 +164,33 @@ describe('FinesAccPaymentHoldRemoveComponent', () => {
   });
 
   it('should add payment hold and navigate on successful update', () => {
+    createComponent('add');
     fixture.detectChanges();
 
-    component.handleRemovePaymentHold();
+    component.handlePaymentHold();
+
+    expect(finesAccPayloadServiceMock.buildMinorCreditorAccountUpdatePayload).toHaveBeenCalledWith(
+      routeMock.snapshot.data.minorCreditorAccountAtAGlance,
+    );
+    expect(opalFinesServiceMock.updateMinorCreditorAccount).toHaveBeenCalledWith(1, expect.any(Object), 'v1', 'LONDON');
+
+    const updatePayload = opalFinesServiceMock.updateMinorCreditorAccount.mock.calls[0][1];
+    expect(updatePayload.payment.hold_payment).toBe(true);
+    expect(finesAccStoreMock.setSuccessMessage).not.toHaveBeenCalled();
+    expect(routerMock.navigate).toHaveBeenCalledWith(
+      [`../../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details}`],
+      {
+        relativeTo: routeMock,
+        fragment: 'at-a-glance',
+      },
+    );
+  });
+
+  it('should remove payment hold, set a success message, and navigate on successful update', () => {
+    createComponent('remove');
+    fixture.detectChanges();
+
+    component.handlePaymentHold();
 
     expect(finesAccPayloadServiceMock.buildMinorCreditorAccountUpdatePayload).toHaveBeenCalledWith(
       routeMock.snapshot.data.minorCreditorAccountAtAGlance,
@@ -136,6 +199,7 @@ describe('FinesAccPaymentHoldRemoveComponent', () => {
 
     const updatePayload = opalFinesServiceMock.updateMinorCreditorAccount.mock.calls[0][1];
     expect(updatePayload.payment.hold_payment).toBe(false);
+    expect(finesAccStoreMock.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_BANNER_MESSAGES.paymentHoldRemoved);
     expect(routerMock.navigate).toHaveBeenCalledWith(
       [`../../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details}`],
       {
@@ -147,17 +211,20 @@ describe('FinesAccPaymentHoldRemoveComponent', () => {
 
   it('should not set success message or navigate when update request fails', () => {
     opalFinesServiceMock.updateMinorCreditorAccount.mockReturnValue(throwError(() => new Error('request failed')));
+    createComponent('remove');
     fixture.detectChanges();
 
-    component.handleRemovePaymentHold();
+    component.handlePaymentHold();
 
     expect(finesAccPayloadServiceMock.buildMinorCreditorAccountUpdatePayload).toHaveBeenCalledWith(
       routeMock.snapshot.data.minorCreditorAccountAtAGlance,
     );
+    expect(finesAccStoreMock.setSuccessMessage).not.toHaveBeenCalled();
     expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 
   it('should complete and clean up subscriptions on destroy', () => {
+    createComponent();
     const unsubscribeSubject = (component as never as { ngUnsubscribe: { next: () => void; complete: () => void } })
       .ngUnsubscribe;
     const nextSpy = vi.spyOn(unsubscribeSubject, 'next');

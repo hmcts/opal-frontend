@@ -9,31 +9,40 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
-import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-banner-messages.constant';
+import { FINES_ACC_PAYMENT_HOLD_ADD_REMOVE_CONTENT } from './constants/fines-acc-payment-hold-add-remove-content.constant';
+import { FinesAccPaymentHoldAddRemoveAction } from './types/fines-acc-payment-hold-add-remove-actions.type';
 
 @Component({
-  selector: 'app-acc-payment-hold-remove',
-  templateUrl: './fines-acc-payment-hold-remove.component.html',
+  selector: 'app-acc-payment-hold-add-remove',
+  templateUrl: './fines-acc-payment-hold-add-remove.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [GovukCancelLinkComponent, GovukHeadingWithCaptionComponent],
 })
-export class FinesAccPaymentHoldRemoveComponent implements OnInit, OnDestroy {
+export class FinesAccPaymentHoldAddRemoveComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly finesAccStore = inject(FinesAccountStore);
-  private minorCreditorAccountAtAGlance!: IOpalFinesAccountMinorCreditorAtAGlance;
   private readonly finesAccPayloadService = inject(FinesAccPayloadService);
   private readonly opalFinesService = inject(OpalFines);
+  private minorCreditorAccountAtAGlance!: IOpalFinesAccountMinorCreditorAtAGlance;
+
+  public readonly content = FINES_ACC_PAYMENT_HOLD_ADD_REMOVE_CONTENT[this.getPaymentHoldAction()];
   public accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public partyName = this.finesAccStore.party_name() ?? '';
 
   /**
-   * Retrieves the minor creditor account at-a-glance data from the route resolver and assigns it to a local variable for use in the component.
-   * This data is necessary for building the payload to add a payment hold on the minor creditor account.
-   * If the data is not available, an error will be thrown.
+   * Gets the payment hold action (add or remove) from the route data and returns it. If the action is not specified or is invalid, it defaults to 'add'.
+   * @returns {FinesAccPaymentHoldAddRemoveAction} The payment hold action.
    */
-  private getHeaderDataFromRoute(): void {
+  private getPaymentHoldAction(): FinesAccPaymentHoldAddRemoveAction {
+    return this.route.snapshot.data['paymentHoldAction'] === 'remove' ? 'remove' : 'add';
+  }
+
+  /**
+   * Retrieves the minor creditor account at-a-glance data from the route resolver and assigns it to a local variable for use in the component.
+   */
+  private getAccountHeaderDataFromRoute(): void {
     this.minorCreditorAccountAtAGlance = this.route.snapshot.data['minorCreditorAccountAtAGlance'];
   }
 
@@ -48,13 +57,16 @@ export class FinesAccPaymentHoldRemoveComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handles the removal of a payment hold.
+   * Handles the addition or removal of a payment hold based on the current action.
+   * It builds the appropriate payload using the minor creditor account data and calls the service to update the account.
+   * After a successful update, it sets a success message if applicable and navigates back to the minor creditor details page.
+   * If an error occurs during the update, it catches the error and prevents further actions.
    */
-  public handleRemovePaymentHold(): void {
+  public handlePaymentHold(): void {
     const payload: IOpalFinesUpdateMinorCreditorAccountPayload =
       this.finesAccPayloadService.buildMinorCreditorAccountUpdatePayload(this.minorCreditorAccountAtAGlance);
 
-    payload.payment.hold_payment = false; // Set hold_payment to false to remove the payment hold
+    payload.payment.hold_payment = this.content.holdPayment;
 
     this.opalFinesService
       .updateMinorCreditorAccount(
@@ -70,7 +82,10 @@ export class FinesAccPaymentHoldRemoveComponent implements OnInit, OnDestroy {
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe(() => {
-        this.finesAccStore.setSuccessMessage(FINES_ACC_BANNER_MESSAGES.paymentHoldRemoved);
+        if (this.content.successMessage) {
+          this.finesAccStore.setSuccessMessage(this.content.successMessage);
+        }
+
         this.navigateToMinorCreditorDetailsPage();
       });
   }
@@ -81,6 +96,6 @@ export class FinesAccPaymentHoldRemoveComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.getHeaderDataFromRoute();
+    this.getAccountHeaderDataFromRoute();
   }
 }

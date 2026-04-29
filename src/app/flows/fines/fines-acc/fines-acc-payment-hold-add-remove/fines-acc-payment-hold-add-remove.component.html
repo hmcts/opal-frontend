@@ -1,22 +1,22 @@
 <div class="govuk-grid-column-two-thirds">
   <opal-lib-govuk-heading-with-caption
     [captionText]="`${accountNumber} - ${partyName}`"
-    headingText="Do you want to add a payment hold?"
+    [headingText]="content.headingText"
     headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
   >
   </opal-lib-govuk-heading-with-caption>
 
   <div class="govuk-button-group govuk-!-padding-top-2">
     <button
-      id="addPaymentHold"
+      [id]="content.buttonId"
       type="button"
       class="govuk-button govuk-button--primary govuk-!-margin-right-4"
-      (click)="handleAddPaymentHold()"
+      (click)="handlePaymentHold()"
     >
-      Yes - add hold
+      {{ content.buttonText }}
     </button>
     <opal-lib-govuk-cancel-link
-      (linkClickEvent)="navigateBackToMinorCreditorDetailsPage()"
+      (linkClickEvent)="navigateToMinorCreditorDetailsPage()"
       cancelLinkText="No - cancel"
     ></opal-lib-govuk-cancel-link>
   </div>
