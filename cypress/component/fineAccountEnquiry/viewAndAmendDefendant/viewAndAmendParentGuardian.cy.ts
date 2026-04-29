@@ -72,7 +72,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC1a. The "Parent Guardian Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7116'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7116', '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('parentGuardian', fullMock);
 
@@ -225,7 +225,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC1a. Parent/Guardian - Should show alias checkbox unticked when no aliases exist in data',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7117'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7117', '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('parentGuardian', minimalMock);
 
@@ -237,7 +237,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC1a. Parent/Guardian - Language preferences should appear for Welsh speaking business units',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7118'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7118', '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('parentGuardian', fullMock, 'Y');
 
@@ -252,7 +252,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC2. Parent/Guardian - Alias add/remove and clear behaviour',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7119'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7119', '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('parentGuardian', minimalMock);
 
@@ -330,7 +330,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC5. Parent/Guardian - Required field validation (core)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7120'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7120', '@JIRA-EPIC:PO-976'] },
     () => {
       const emptyCoreMock = structuredClone(minimalMock);
       emptyCoreMock.defendant_account_party.party_details.individual_details!.title = '';
@@ -365,7 +365,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC5. Parent/Guardian - Required field validation (employer name)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7121'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7121', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_name = 'Quality Corp';
@@ -385,7 +385,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC5. Parent/Guardian - Required field validation (employer address)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7122'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7122', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = '123 Office Park';
@@ -402,7 +402,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC5. Parent/Guardian - Required field validation (employer reference number)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7123'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7123', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_reference = 'Empref123';
@@ -422,7 +422,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC5h, AC5i, AC5j. Parent/Guardian - Required field validation for all alias rows (N=1 to 5)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7124'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7124', '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('parentGuardian', minimalMock);
       cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
@@ -481,7 +481,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC6a. Parent/Guardian - DOB with non-numerical characters shows format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7125'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7125', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '!5/02/1980';
@@ -497,7 +497,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC6b. Parent/Guardian - DOB in the future shows past-date error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7126'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7126', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
@@ -511,7 +511,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC6c. Parent/Guardian - NI number invalid format shows NI format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7127'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7127', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12AB3';
@@ -527,7 +527,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC7a. Parent/Guardian - Primary email invalid format shows primary email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7128'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7128', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.primary_email_address = 'invalid_email';
@@ -543,7 +543,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC7b. Parent/Guardian - Secondary email invalid format shows secondary email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7129'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7129', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.secondary_email_address = 'wrong.secondemail';
@@ -559,7 +559,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC7c. Parent/Guardian - Employer email invalid format shows employer email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7130'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7130', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_email_address = 'employer#email@gmail.com';
@@ -575,7 +575,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC8a. Parent/Guardian - Home telephone invalid format shows home telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7131'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7131', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.home_telephone_number = '0207A214875';
@@ -589,7 +589,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC8b. Parent/Guardian - Work telephone invalid format shows work telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7132'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7132', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001A';
@@ -603,7 +603,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC8c. Parent/Guardian - Mobile telephone invalid length/format shows mobile telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7133'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7133', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.mobile_telephone_number = '0207821734';
@@ -617,7 +617,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC8d. Parent/Guardian - Employer telephone invalid format shows employer telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7134'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7134', '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_telephone_number = '0207A214875';
@@ -634,7 +634,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC9. Parent/Guardian - Max length validation retains user on form and shows per-field errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7135'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7135', '@JIRA-EPIC:PO-976'] },
     () => {
       const maxLengthMock = structuredClone(minimalMock);
       const primaryEmail = `${'a'.repeat(65)}@example.com`;
@@ -686,7 +686,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it(
     'AC10. Parent/Guardian - Data type validation for alphabetical and alphanumeric fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7136'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-KEY:POT-7136', '@JIRA-EPIC:PO-976'] },
     () => {
       const dataTypeValidationMock = structuredClone(minimalMock);
 

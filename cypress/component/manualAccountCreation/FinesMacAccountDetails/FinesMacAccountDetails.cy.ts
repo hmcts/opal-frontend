@@ -91,7 +91,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'should render the component (FinesMacAccountDetailsComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7302'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7302', '@JIRA-EPIC:PO-2750'] },
     () => {
       setupComponent(null);
       // Verify the component is rendered
@@ -101,7 +101,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1a) should show Police and court details for Conditional Caution and pass accessibility checks',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7303'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7303', '@JIRA-EPIC:PO-2750'] },
     () => {
       const conditionalCautionState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
       conditionalCautionState.accountDetails.formData.fm_create_account_account_type =
@@ -119,7 +119,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.2) should keep Court details label for Fine accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7304'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7304', '@JIRA-EPIC:PO-2750'] },
     () => {
       const fineState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
       fineState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
@@ -135,7 +135,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.2) should keep Court details label for Fixed Penalty accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7305'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7305', '@JIRA-EPIC:PO-2750'] },
     () => {
       const fineState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
       fineState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fixed Penalty'];

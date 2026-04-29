@@ -139,7 +139,7 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1a, AC2a: displays Add payment hold and navigates to the Payment Hold Confirmation screen when the user has permission in the associated BU',
-    { tags: [...buildTags(ADD_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7706'] },
+    { tags: [...buildTags(ADD_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7706', '@JIRA-EPIC:PO-2234'] },
     () => {
       const userState = createUserStateWithPaymentHoldPermission();
       const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -160,7 +160,7 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1b: displays Add payment hold and navigates to access denied when the user only has permission in a different BU',
-    { tags: [...buildTags(ADD_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7707'] },
+    { tags: [...buildTags(ADD_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7707', '@JIRA-EPIC:PO-2234'] },
     () => {
       const userState = createUserStateWithPaymentHoldPermissionInDifferentBusinessUnit();
       const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -175,7 +175,7 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1c: does not display Add payment hold when the user has no payment hold permission in any BU',
-    { tags: [...buildTags(ADD_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7708'] },
+    { tags: [...buildTags(ADD_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7708', '@JIRA-EPIC:PO-2234'] },
     () => {
       const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
 
@@ -189,7 +189,7 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1a, AC2a: displays Remove payment hold and navigates to the Payment Hold Confirmation screen when the user has permission in the associated BU',
-    { tags: [...buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7709'] },
+    { tags: [...buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7709', '@JIRA-EPIC:PO-2234'] },
     () => {
       const userState = createUserStateWithPaymentHoldPermission();
       const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -211,7 +211,7 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1b: displays Remove payment hold and navigates to access denied when the user only has permission in a different BU',
-    { tags: [...buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7710'] },
+    { tags: [...buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7710', '@JIRA-EPIC:PO-2234'] },
     () => {
       const userState = createUserStateWithPaymentHoldPermissionInDifferentBusinessUnit();
       const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
@@ -227,7 +227,7 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'AC1c: does not display Remove payment hold when the user has no payment hold permission in any BU',
-    { tags: [...buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7711'] },
+    { tags: [...buildTags(REMOVE_PAYMENT_HOLD_STORY_TAG), '@JIRA-KEY:POT-7711', '@JIRA-EPIC:PO-2234'] },
     () => {
       const atAGlance = createMinorCreditorAtAGlanceWithoutDefendantMock();
 
