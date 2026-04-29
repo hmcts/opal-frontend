@@ -18,6 +18,14 @@ import {
 } from './mocks/add_comments_mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ACCOUNT_COMMENT_ALLOWED_CHARACTERS_ERROR =
+  'Account comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const FREE_TEXT_1_ALLOWED_CHARACTERS_ERROR =
+  'Free text 1 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const FREE_TEXT_2_ALLOWED_CHARACTERS_ERROR =
+  'Free text 2 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const FREE_TEXT_3_ALLOWED_CHARACTERS_ERROR =
+  'Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 const CommentFields = AccountCommentsAddLocators.fields;
@@ -188,34 +196,19 @@ describe('FinesAccCommentsAddComponent', () => {
       cy.get(CommentErrors.comment)
         .should('exist')
         .and('be.visible')
-        .and(
-          'contain',
-          'Account comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-
+        .and('contain', ACCOUNT_COMMENT_ALLOWED_CHARACTERS_ERROR);
       cy.get(CommentErrors.line1)
         .should('exist')
         .and('be.visible')
-        .and(
-          'contain',
-          'Free text 1 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-
+        .and('contain', FREE_TEXT_1_ALLOWED_CHARACTERS_ERROR);
       cy.get(CommentErrors.line2)
         .should('exist')
         .and('be.visible')
-        .and(
-          'contain',
-          'Free text 2 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-
+        .and('contain', FREE_TEXT_2_ALLOWED_CHARACTERS_ERROR);
       cy.get(CommentErrors.line3)
         .should('exist')
         .and('be.visible')
-        .and(
-          'contain',
-          'Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
+        .and('contain', FREE_TEXT_3_ALLOWED_CHARACTERS_ERROR);
     },
   );
 

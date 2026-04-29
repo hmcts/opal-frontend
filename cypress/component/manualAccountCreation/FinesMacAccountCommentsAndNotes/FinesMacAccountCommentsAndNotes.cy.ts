@@ -14,6 +14,14 @@ import { FINES_COMMENT_AND_NOTES_PG_MANDATORY_MISSING_MOCK } from './mocks/fines
 import { of } from 'rxjs';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
+  'Add comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
+  'Add account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const VALID_COMMENTS_AND_NOTES_CHARACTERS = "AaBbCc123..--''  ,,";
+const INVALID_COMMENTS_AND_NOTES_CHARACTERS = `${VALID_COMMENTS_AND_NOTES_CHARACTERS}@@%%`;
+const VALID_COMMENT_WITH_COMMAS_AND_FULL_STOPS = "O'Neil, comment-1.";
+const VALID_NOTE_WITH_COMMAS_AND_FULL_STOPS = "Account, note-1. O'Neil ok";
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
@@ -267,15 +275,15 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     },
   );
   it(
-    'Valid character checks for account notes',
+    'should accept valid characters for account comments and notes',
     { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
-      cy.get(L.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
-      cy.get(L.noteInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+      cy.get(L.commentInput).clear().type(VALID_COMMENTS_AND_NOTES_CHARACTERS, { delay: 0 });
+      cy.get(L.noteInput).clear().type(VALID_COMMENTS_AND_NOTES_CHARACTERS, { delay: 0 });
 
       cy.get(L.returnToAccountDetailsButton).first().click();
 
@@ -284,32 +292,92 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     },
   );
   it(
-    'Invalid character - confirm updated errors',
+    'should accept commas and full stops in account comments when account notes are blank',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+
+      cy.get(L.commentInput).clear().type(VALID_COMMENT_WITH_COMMAS_AND_FULL_STOPS, { delay: 0 });
+      cy.get(L.returnToAccountDetailsButton).first().click();
+
+      cy.get('.errorSummary').should('not.exist');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+    },
+  );
+
+  it(
+    'should accept commas and full stops in account notes when account comments are blank',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+
+      cy.get(L.noteInput).clear().type(VALID_NOTE_WITH_COMMAS_AND_FULL_STOPS, { delay: 0 });
+      cy.get(L.returnToAccountDetailsButton).first().click();
+
+      cy.get('.errorSummary').should('not.exist');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
+    },
+  );
+
+  it(
+    'should show updated errors for invalid characters in account comments and notes',
     { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
-      cy.get(L.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
-      cy.get(L.noteInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+      cy.get(L.commentInput).clear().type(INVALID_COMMENTS_AND_NOTES_CHARACTERS, { delay: 0 });
+      cy.get(L.noteInput).clear().type(INVALID_COMMENTS_AND_NOTES_CHARACTERS, { delay: 0 });
 
       cy.get(L.returnToAccountDetailsButton).first().click();
 
-      // Error TBC (may need to define elsewhere in some way for cleaner look)
-      cy.get(L.errorSummary)
-        .should('exist')
-        .contains(
-          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-      cy.get(L.commentsErrorMessage)
-        .should('exist')
-        .contains(
-          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-      cy.get(L.notesErrorMessage)
-        .should('exist')
-        .contains(
-          'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
+      cy.get(L.errorSummary).should('exist').contains(ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.errorSummary).contains(ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.commentsErrorMessage).should('exist').contains(ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.notesErrorMessage).should('exist').contains(ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+    },
+  );
+
+  it(
+    'should show the updated error only for an invalid account comment',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+
+      cy.get(L.commentInput).clear().type(INVALID_COMMENTS_AND_NOTES_CHARACTERS, { delay: 0 });
+      cy.get(L.noteInput).clear().type(VALID_NOTE_WITH_COMMAS_AND_FULL_STOPS, { delay: 0 });
+      cy.get(L.returnToAccountDetailsButton).first().click();
+
+      cy.get(L.errorSummary).should('exist').contains(ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.errorSummary).should('not.contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.commentsErrorMessage).should('exist').contains(ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.notesErrorMessage).should('not.exist');
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
+    },
+  );
+
+  it(
+    'should show the updated error only for invalid account notes',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+
+      cy.get(L.commentInput).clear().type(VALID_COMMENT_WITH_COMMAS_AND_FULL_STOPS, { delay: 0 });
+      cy.get(L.noteInput).clear().type(INVALID_COMMENTS_AND_NOTES_CHARACTERS, { delay: 0 });
+      cy.get(L.returnToAccountDetailsButton).first().click();
+
+      cy.get(L.errorSummary).should('exist').contains(ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.errorSummary).should('not.contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.commentsErrorMessage).should('not.exist');
+      cy.get(L.notesErrorMessage).should('exist').contains(ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
     },
   );
 });
