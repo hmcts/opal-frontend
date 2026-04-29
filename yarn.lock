@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@actions/core@npm:^1.10.0":
@@ -3920,9 +3920,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.72":
-  version: 0.0.72
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.72"
+"@hmcts/opal-frontend-common@npm:^0.0.73":
+  version: 0.0.73
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.73"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^9.0.0"
@@ -3944,7 +3944,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/4d3d2b7f0299d2471d6783ca729fd159fbf86dcb9273e22aadfe906ff853b73a129861ad57545154c46dc56b961937664bc46b861405a08af6b39057f7f483fa
+  checksum: 10/091ae5ff73f415f974d7fd1bc423bb180359c57ccc0add4fc5c120b3a2217d1ba104eea22f8056da4b5974aaa596838ffe3626d671c9a0959f5f790266b3b30d
   languageName: node
   linkType: hard
 
@@ -16470,7 +16470,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.72"
+    "@hmcts/opal-frontend-common": "npm:^0.0.73"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.29"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"
