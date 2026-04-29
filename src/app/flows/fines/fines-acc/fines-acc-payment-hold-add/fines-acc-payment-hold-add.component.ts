@@ -18,12 +18,12 @@ import { OpalFines } from '../../services/opal-fines-service/opal-fines.service'
 })
 export class FinesAccPaymentHoldAddComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private finesAccStore = inject(FinesAccountStore);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly finesAccStore = inject(FinesAccountStore);
   private minorCreditorAccountAtAGlance!: IOpalFinesAccountMinorCreditorAtAGlance;
-  private finesAccPayloadService = inject(FinesAccPayloadService);
-  private opalFinesService = inject(OpalFines);
+  private readonly finesAccPayloadService = inject(FinesAccPayloadService);
+  private readonly opalFinesService = inject(OpalFines);
   public accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public partyName = this.finesAccStore.party_name() ?? '';
 
@@ -32,14 +32,14 @@ export class FinesAccPaymentHoldAddComponent implements OnInit, OnDestroy {
    * This data is necessary for building the payload to add a payment hold on the minor creditor account.
    * If the data is not available, an error will be thrown.
    */
-  private getHeaderDataFromRoute(): void {
+  private getAccountHeaderDataFromRoute(): void {
     this.minorCreditorAccountAtAGlance = this.route.snapshot.data['minorCreditorAccountAtAGlance'];
   }
 
   /**
    * Navigates to the minor creditor details page with the 'at-a-glance' fragment to display the overview tab.
    */
-  public navigateToMinorCreditorDetailsPage(): void {
+  public navigateBackToMinorCreditorDetailsPage(): void {
     this.router.navigate([`../../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details}`], {
       relativeTo: this.route,
       fragment: 'at-a-glance',
@@ -69,7 +69,7 @@ export class FinesAccPaymentHoldAddComponent implements OnInit, OnDestroy {
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe(() => {
-        this.navigateToMinorCreditorDetailsPage();
+        this.navigateBackToMinorCreditorDetailsPage();
       });
   }
 
@@ -79,6 +79,6 @@ export class FinesAccPaymentHoldAddComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.getHeaderDataFromRoute();
+    this.getAccountHeaderDataFromRoute();
   }
 }

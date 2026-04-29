@@ -19,12 +19,12 @@ import { FINES_ACC_BANNER_MESSAGES } from '../stores/constants/fines-acc-store-b
 })
 export class FinesAccPaymentHoldRemoveComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private finesAccStore = inject(FinesAccountStore);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly finesAccStore = inject(FinesAccountStore);
   private minorCreditorAccountAtAGlance!: IOpalFinesAccountMinorCreditorAtAGlance;
-  private finesAccPayloadService = inject(FinesAccPayloadService);
-  private opalFinesService = inject(OpalFines);
+  private readonly finesAccPayloadService = inject(FinesAccPayloadService);
+  private readonly opalFinesService = inject(OpalFines);
   public accountNumber = this.finesAccStore.getAccountNumber() ?? '';
   public partyName = this.finesAccStore.party_name() ?? '';
 
