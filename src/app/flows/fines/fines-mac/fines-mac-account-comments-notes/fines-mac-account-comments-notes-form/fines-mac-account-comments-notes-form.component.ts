@@ -27,7 +27,7 @@ import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../constants/fine
 
 const SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS_WITH_POUND,
-  'alphanumericWithSpecialCharacters',
+  'singleAsciiChatacters',
 );
 
 @Component({

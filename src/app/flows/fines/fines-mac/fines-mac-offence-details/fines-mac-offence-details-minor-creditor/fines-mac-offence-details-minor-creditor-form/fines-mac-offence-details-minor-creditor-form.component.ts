@@ -48,7 +48,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 );
 const SINGLE_ASCII_CHARACTERS_BANK_ACCOUNT_NAME_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS,
-  'alphanumericWithSpecialCharacters',
+  'singleAsciiChatacters',
 );
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
 

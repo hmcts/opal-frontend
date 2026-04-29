@@ -16,7 +16,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Defendant's first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Defendant's first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 2,
     },
@@ -30,7 +30,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Defendant's last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Defendant's last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 2,
     },
@@ -44,7 +44,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 1 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 1 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -58,7 +58,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 1 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 1 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -72,7 +72,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 2 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 2 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -86,7 +86,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 2 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 2 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -100,7 +100,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 3 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 3 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -114,7 +114,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 3 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 3 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -128,7 +128,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 4 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 4 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -142,7 +142,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 4 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 4 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -156,7 +156,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 5 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 5 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -170,7 +170,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Alias 5 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 5 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },

@@ -5,7 +5,7 @@ import { SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS,
-  'alphanumericWithSpecialCharacters',
+  'singleAsciiChatacters',
 );
 
 export const FINES_MAC_PERSONAL_DETAILS_ALIAS: IAbstractFormArrayControlValidation[] = [

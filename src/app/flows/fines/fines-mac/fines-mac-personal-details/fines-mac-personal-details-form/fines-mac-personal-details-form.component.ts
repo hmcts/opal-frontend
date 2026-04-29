@@ -48,7 +48,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 // regex pattern validators for the form controls
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS,
-  'alphanumericWithSpecialCharacters',
+  'singleAsciiChatacters',
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,

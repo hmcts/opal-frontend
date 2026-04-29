@@ -163,7 +163,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(nameOnAccountControl.errors?.['maxlength']).toBeTruthy();
 
     nameOnAccountControl.setValue('InvalidéName'); // Invalid characters
-    expect(nameOnAccountControl.errors?.['alphanumericWithSpecialCharacters']).toBeTruthy();
+    expect(nameOnAccountControl.errors?.['singleAsciiChatacters']).toBeTruthy();
 
     nameOnAccountControl.setValue('Valid@Name'); // Valid input
     expect(nameOnAccountControl.valid).toBeTruthy();

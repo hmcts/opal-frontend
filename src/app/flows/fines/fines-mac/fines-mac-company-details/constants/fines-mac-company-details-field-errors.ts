@@ -10,7 +10,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -24,7 +24,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 1 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -38,7 +38,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 2 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -52,7 +52,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 3 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -66,7 +66,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 4 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
@@ -80,7 +80,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 5 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithSpecialCharacters: {
+    singleAsciiChatacters: {
       message: `Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },

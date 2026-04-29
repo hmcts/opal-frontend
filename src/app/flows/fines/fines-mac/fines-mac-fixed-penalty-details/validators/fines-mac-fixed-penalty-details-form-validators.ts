@@ -22,15 +22,15 @@ type IFinesMacFixedPenaltyDetailsFormValidators = {
 // regex pattern validators for the form controls
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS,
-  'alphanumericWithSpecialCharacters',
+  'singleAsciiChatacters',
 );
 const SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS_WITH_POUND,
-  'alphanumericWithSpecialCharacters',
+  'singleAsciiChatacters',
 );
 const SINGLE_ASCII_CHARACTERS_PERSON_NAME_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS,
-  'alphanumericWithSpecialCharacters',
+  'singleAsciiChatacters',
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,

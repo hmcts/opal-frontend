@@ -30,7 +30,7 @@ import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmct
 // regex pattern validators for the form controls
 const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS,
-  'alphanumericWithSpecialCharacters',
+  'singleAsciiChatacters',
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
