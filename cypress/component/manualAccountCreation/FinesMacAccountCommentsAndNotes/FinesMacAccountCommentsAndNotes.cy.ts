@@ -15,6 +15,9 @@ import { of } from 'rxjs';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
+const ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
+  'Account note must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
+
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacAccountCommentsAndNotesComponent', () => {
