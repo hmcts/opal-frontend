@@ -5,6 +5,7 @@
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-court-change.locators';
 import { DOM_ELEMENTS as ENF_OVR } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
+import { DOM_ELEMENTS as ENF_ACT } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
@@ -62,6 +63,16 @@ export class AccountDetailsEnforcementActions {
   public openAddEnforcementOverrideForm(): void {
     log('navigate', 'Opening add enforcement override form');
     cy.get(ENF.addEnforcementOverrideLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .click();
+  }
+
+  /**
+   * Opens the add enforcement action form from the Enforcement tab.
+   */
+  public openAddEnforcementActionForm(): void {
+    log('navigate', 'Opening add enforcement action form');
+    cy.get(ENF.addEnforcementActionLink, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .click();
   }
@@ -182,6 +193,17 @@ export class AccountDetailsEnforcementActions {
     cy.get(ENF_OVR.enfOverrideDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
       'be.visible',
     );
+  }
+
+  /**
+   * Asserts the add enforcement action form is visible.
+   */
+  public assertAddEnforcementActionFormVisible(): void {
+    log('assert', 'Add enforcement action form is visible');
+    cy.get(ENF_ACT.pageTitle, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', 'Add enforcement action');
+    cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
   }
 
   /**

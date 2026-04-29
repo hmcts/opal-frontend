@@ -13,7 +13,7 @@ import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonInterce
 import { interceptGetDraftAccountById } from 'cypress/component/manualAccountCreation/setup/FineAccount.intercepts';
 import { FIXED_PENALTY_AY_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fixedPenalty.api.mock';
 import { FIXED_PENALTY_DEFENDANT_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fixedPenaltyDefendant.api.mock';
-import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/CommonIntercept.mocks';
+import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/referenceData/businessUnits/BusinessUnit.mocks';
 import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
@@ -30,7 +30,7 @@ describe('Fixed Penalty - Review Account Details', () => {
   });
   it(
     '(AC.1)should display submitted account details correctly for company in Review',
-    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7284'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7284', '@JIRA-EPIC:PO-855'] },
     () => {
       const draftAccountId = '1002';
       const props: IFinesComponentProperties = {
@@ -71,7 +71,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
       // Section 3 - Company Details
       cy.get(DOM_ELEMENTS.companyName).should('contain', 'OPAL E TO E S SCENARIO eleven');
-      cy.get(DOM_ELEMENTS.companyAddress)
+      cy.get(DOM_ELEMENTS.address)
         .should('contain', 'addr1 10')
         .and('contain', 'addr2 10')
         .and('contain', 'addr3 10')
@@ -96,7 +96,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display submitted defendant account details correctly for individual defendant in Review',
-    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7285'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7285', '@JIRA-EPIC:PO-855'] },
     () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
@@ -161,7 +161,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display "To review" defendant account details correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7286'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7286', '@JIRA-EPIC:PO-855'] },
     () => {
       const draftAccountId = '1004';
       const props: IFinesComponentProperties = {
@@ -248,7 +248,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
   it(
     '(AC.1) should display "To review" company account details correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7287'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-KEY:POT-7287', '@JIRA-EPIC:PO-855'] },
     () => {
       const draftAccountId = '1005';
       const props: IFinesComponentProperties = {
@@ -316,7 +316,7 @@ describe('Fixed Penalty - Review Account Details', () => {
 
       // Section 3 - Company Details
       cy.get(DOM_ELEMENTS.companyName).should('contain', 'OPAL E TO E S SCENARIO eleven');
-      cy.get(DOM_ELEMENTS.companyAddress)
+      cy.get(DOM_ELEMENTS.address)
         .should('contain', 'addr1 10')
         .and('contain', 'addr2 10')
         .and('contain', 'addr3 10')

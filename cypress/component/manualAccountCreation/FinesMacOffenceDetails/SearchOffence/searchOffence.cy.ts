@@ -12,9 +12,17 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
-  let offenceSearchFormData = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
+  let offenceSearchFormDataTemplate = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
+  let offenceSearchFormData = offenceSearchFormDataTemplate;
+
+  beforeEach(() => {
+    offenceSearchFormDataTemplate = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
+    offenceSearchFormData = offenceSearchFormDataTemplate;
+  });
 
   const setupComponent = (formSubmit?: any) => {
+    offenceSearchFormData = structuredClone(offenceSearchFormDataTemplate);
+
     return mount(FinesMacOffenceDetailsSearchOffencesSearchComponent, {
       providers: [
         {
@@ -50,13 +58,9 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     });
   };
 
-  afterEach(() => {
-    offenceSearchFormData = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
-  });
-
   it(
     'AC.1a, AC.1b should render all elements on the page',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-667'), '@JIRA-KEY:POT-7467'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-667'), '@JIRA-KEY:POT-7467'] },
     () => {
       setupComponent(null);
 
@@ -79,7 +83,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   // This test verifying the maximum length of the fields
   it(
     'AC.2a, AC.2b, AC.2c Checking the validation failures when exceeding the maximum characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-667'), '@JIRA-KEY:POT-7468'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-667'), '@JIRA-KEY:POT-7468'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -100,7 +104,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   //The below code will check each string in the invalidInputs array and check if the error message is displayed
   it(
     'AC.2d, AC.2e, AC.2f Checking the validation failures when a special character into the fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-545', '@JIRA-STORY:PO-667'), '@JIRA-KEY:POT-7469'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-667'), '@JIRA-KEY:POT-7469'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 

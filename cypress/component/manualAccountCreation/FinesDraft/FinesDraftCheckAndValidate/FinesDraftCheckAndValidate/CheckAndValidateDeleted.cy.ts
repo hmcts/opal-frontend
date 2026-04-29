@@ -8,7 +8,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/check-and-validate-session-mock';
-import { DOM_ELEMENTS } from './constants/fines_draft_cav_elements';
+import { CheckAndValidateDraftsLocators as DOM_ELEMENTS } from 'cypress/shared/selectors/manual-account-creation/check-and-validate/check-and-validate.drafts.locators';
 import { TABLE_HEADINGS_DELETED } from './constants/fines_draft_cav_tableConstants';
 import {
   interceptCAVGetDeletedAccounts,
@@ -51,7 +51,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
 
   it(
     '(AC.3) should display Deleted tab correctly when there are draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-602'), '@JIRA-KEY:POT-7148'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-602'), '@JIRA-KEY:POT-7148', '@JIRA-EPIC:PO-2220'] },
     () => {
       const deletedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -85,7 +85,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending',
-    { tags: [...buildTags('@JIRA-STORY:PO-602'), '@JIRA-KEY:POT-7149'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-602'), '@JIRA-KEY:POT-7149', '@JIRA-EPIC:PO-2220'] },
     () => {
       const deletedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -106,7 +106,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
         .within(() => {
           cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
           cy.get(DOM_ELEMENTS.dob).contains('—');
-          cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
+          cy.get(DOM_ELEMENTS.changedDate).contains('3 days ago');
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
         });
@@ -117,7 +117,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
         .within(() => {
           cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
           cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-          cy.get(DOM_ELEMENTS.deleted).contains('Today');
+          cy.get(DOM_ELEMENTS.changedDate).contains('Today');
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
         });
@@ -130,7 +130,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
         .within(() => {
           cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
           cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-          cy.get(DOM_ELEMENTS.deleted).contains('Today');
+          cy.get(DOM_ELEMENTS.changedDate).contains('Today');
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
         });
@@ -139,7 +139,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
         .within(() => {
           cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
           cy.get(DOM_ELEMENTS.dob).contains('—');
-          cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
+          cy.get(DOM_ELEMENTS.changedDate).contains('3 days ago');
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
         });
@@ -148,7 +148,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
 
   it(
     '(AC.4b) should have pagination for over 25 accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-602'), '@JIRA-KEY:POT-7150'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-602'), '@JIRA-KEY:POT-7150', '@JIRA-EPIC:PO-2220'] },
     () => {
       const deletedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });

@@ -1,78 +1,37 @@
-import { mount } from 'cypress/angular';
-import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
-import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
-import { provideHttpClient } from '@angular/common/http';
 import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
 import { AccountSearchCompaniesLocators as CompanyLocators } from '../../../shared/selectors/account-search/account.search.companies.locators';
 import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
 import { COMPANY_SEARCH_STATE_MOCK } from './mocks/search_and_matches_company_mock';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { finesSaDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
+import { finesSaCompanyDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
+import { mountSearchAccount } from './support/mountSearchAccount';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Search Account Component - Company', () => {
-  let companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
+  type CompanySearchState = typeof COMPANY_SEARCH_STATE_MOCK;
 
-  const setupComponent = (formSubmit: any = null) => {
-    mount(FinesSaSearchAccountComponent, {
-      providers: [
-        provideHttpClient(),
-        provideRouter([
-          {
-            path: 'fines/search-accounts/results',
-            component: FinesSaSearchAccountComponent,
-            resolve: {
-              companyAccounts: finesSaDefendantAccountsResolver,
-            },
-            runGuardsAndResolvers: 'always',
-          },
-          {
-            path: 'fines/search-accounts',
-            component: FinesSaSearchAccountComponent,
-          },
-        ]),
-        OpalFines,
-        {
-          provide: FinesSaStore,
-          useFactory: () => {
-            const store = new FinesSaStore();
-            store.setSearchAccount(companySearchMock);
-            store.setActiveTab('companies');
+  const buildCompanySearchState = (configure?: (searchState: CompanySearchState) => void): CompanySearchState => {
+    const searchState = structuredClone(COMPANY_SEARCH_STATE_MOCK);
+    configure?.(searchState);
+    return searchState;
+  };
 
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            fragment: of('companies'),
-            parent: {
-              snapshot: {
-                url: [{ path: 'search' }],
-              },
-            },
-          },
-        },
-      ],
-      componentProperties: {
-        //handleSearchAccountSubmit: formSubmit,
+  const setupComponent = (configure?: (searchState: CompanySearchState) => void) =>
+    mountSearchAccount({
+      activeTab: 'companies',
+      initialState: buildCompanySearchState(configure),
+      resultsResolvers: {
+        companyAccounts: finesSaCompanyDefendantAccountsResolver,
       },
     });
-  };
-  beforeEach(() => {
-    companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
-  });
 
   it(
     'AC1a-b. should render the search for an account screen and companies tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6970'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6970', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(NavLocators.companiesTab).click();
       cy.get(CompanyLocators.root).should('exist');
@@ -103,11 +62,12 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3a. should show error for non-alphabetical company name',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6971'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6971', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
-        'Company123!';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
+          'Company123!';
+      });
 
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should(
@@ -124,11 +84,12 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3b. should show error for non-alphabetical address line 1',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6972'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6972', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
-        'Address123?';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
+          'Address123?';
+      });
 
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should('contain', 'Address line 1 must only contain letters or numbers');
@@ -142,11 +103,11 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3c. should show error for non-alphabetical post code',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6973'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6973', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code =
-        'POSTCODE?';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODE?';
+      });
 
       cy.get(CommonLocators.searchButton).click();
 
@@ -159,11 +120,12 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4a. should validate company name maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6974'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6974', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
-        'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
+          'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
+      });
 
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should('contain', 'Company name must be 50 characters or fewer');
@@ -174,11 +136,12 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4b. should validate address line 1 maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6975'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6975', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
-        'Address1234Address1234Address12345';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
+          'Address1234Address1234Address12345';
+      });
 
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should('contain', 'Address line 1 must be 30 characters or fewer');
@@ -189,11 +152,11 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4c. should validate post code maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6976', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code =
-        'POSTCODES';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODES';
+      });
 
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
@@ -204,11 +167,11 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC5a. should validate post code maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6977', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code =
-        'POSTCODES';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODES';
+      });
 
       cy.get(CommonLocators.searchButton).click();
       cy.get(CommonLocators.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
@@ -219,9 +182,9 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC2a. Should validate company name field when "Alias" checkbox is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-6978'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-6978', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(NavLocators.companiesTab).click();
       cy.get(CompanyLocators.includeAliasesCheckbox).check().should('be.checked');
@@ -233,9 +196,9 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC2b. Should validate company name field when "Search exact match" for company name is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-6979'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-6979', '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent(null);
+      setupComponent();
 
       cy.get(NavLocators.companiesTab).click();
       cy.get(CompanyLocators.companyNameExactMatchCheckbox).check().should('be.checked');

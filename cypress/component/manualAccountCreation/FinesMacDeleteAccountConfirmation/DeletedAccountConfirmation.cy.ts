@@ -15,7 +15,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/fines_mac_review_account_mocks';
-import { DOM_ELEMENTS } from 'cypress/component/manualAccountCreation/FinesDraft/FinesDraftCheckAndValidate/FinesDraftCheckAndValidate/constants/fines_draft_review_account_elements';
+import { CheckAndValidateReviewLocators as DOM_ELEMENTS } from '../../../shared/selectors/manual-account-creation/check-and-validate/check-and-validate.review.locators';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { FinesMacDeleteAccountConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component';
@@ -37,6 +37,12 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     amend: boolean = true,
     checker: boolean = true,
   ) => {
+    finesMacState = structuredClone(finesMacState);
+    finesDraftState = structuredClone(finesDraftState);
+    finesAccountPayload = structuredClone(finesAccountPayload);
+    finesDraftStateMock = structuredClone(finesDraftStateMock);
+    activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
+
     mount(FinesMacDeleteAccountConfirmationComponent, {
       providers: [
         provideHttpClient(),
@@ -133,7 +139,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
   it(
     'AC.1, AC.2 Reason for deletion screen created as per the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7396'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7396', '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
@@ -147,15 +153,15 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   );
   it(
     'AC.3ai,AC.3aii Yes - Delete button under the character count once a reason is entered',
-    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7397'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7397', '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
       cy.get('p').should('contain', 'Enter reason for deletion');
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
 
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').type('a23;b:');
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get(DOM_ELEMENTS.commentInput).should('exist').type('a23;b:');
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
 
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');
@@ -164,7 +170,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
 
   it(
     'AC.3bii a request to update draft account with patch method with status of deleted',
-    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7398'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-KEY:POT-7398', '@JIRA-EPIC:PO-2220'] },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
@@ -172,7 +178,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
       setupComponent(finesAccountPayload, payload, false, true);
 
       cy.get(DOM_ELEMENTS.commentInput).should('exist').type('test reason');
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
 
       cy.wait('@patchDraftAccount').then(({ request }) => {
         expect(request.body).to.exist;
@@ -192,6 +198,39 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
         expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
         expect(request.body.timeline_data[1]).to.have.property('reason_text', 'test reason');
       });
+    },
+  );
+
+  it(
+    'Valid character checks for delete account notes',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-7712'] },
+    () => {
+      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', {
+        statusCode: 200,
+      }).as('patchDraftAccount');
+
+      setupComponent(finesAccountPayload, finesAccountPayload, true);
+
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,", { delay: 0 });
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).click();
+
+      cy.wait('@patchDraftAccount').its('request.method').should('eq', 'PATCH');
+    },
+  );
+  it(
+    'Invalid character - confirm updated error for delete account note',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-7713'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, true);
+
+      cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
+      cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
+
+      cy.get(DOM_ELEMENTS.fieldError)
+        .should('exist')
+        .contains(
+          'Reason must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces and apostrophes)',
+        );
     },
   );
 });

@@ -15,11 +15,14 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacMinorCreditorInformation', () => {
-  let finesMacState = structuredClone(FINES_MINOR_CREDITOR_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_MINOR_CREDITOR_MOCK);
+  let finesMacState = finesMacStateTemplate;
 
   const minorCreditorValue = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
 
   const setupComponent = (formSubmit: any) => {
+    finesMacState = structuredClone(finesMacStateTemplate);
+
     mount(FinesMacOffenceDetailsMinorCreditorInformationComponent, {
       providers: [
         provideHttpClient(),
@@ -50,7 +53,7 @@ describe('FinesMacMinorCreditorInformation', () => {
     '(AC.1) should load the component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7440',
       ],
     },
@@ -87,7 +90,7 @@ describe('FinesMacMinorCreditorInformation', () => {
     '(AC.2) should load all keys and elements with correct text',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7442',
       ],
     },
@@ -106,7 +109,7 @@ describe('FinesMacMinorCreditorInformation', () => {
     '(AC.2)should load all fields with the correct values',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7443',
       ],
     },

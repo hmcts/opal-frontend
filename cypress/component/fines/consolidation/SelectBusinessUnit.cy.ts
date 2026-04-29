@@ -19,6 +19,10 @@ describe('FinesConSelectBuFormComponent', () => {
   let defendantTypes = structuredClone(FINES_CON_DEFENDANT_TYPES);
 
   const setupComponent = (formSubmit?: any) => {
+    finesConFormData = structuredClone(finesConFormData);
+    autoCompleteItems = structuredClone(autoCompleteItems);
+    defendantTypes = structuredClone(defendantTypes);
+
     return mount(FinesConSelectBuFormComponent, {
       providers: [
         OpalFines,
@@ -65,11 +69,12 @@ describe('FinesConSelectBuFormComponent', () => {
   beforeEach(() => {
     finesConFormData = structuredClone(FINES_CON_SELECT_BU_FORM_DATA_MOCK);
     autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
+    defendantTypes = structuredClone(FINES_CON_DEFENDANT_TYPES);
   });
 
   it(
     '(AC1, AC2, AC3) should show business unit and defendant type fields',
-    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5920'] },
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5920', '@JIRA-EPIC:PO-2294'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = 1;
@@ -102,7 +107,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC2) should list available business units in the autocomplete',
-    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5921'] },
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5921', '@JIRA-EPIC:PO-2294'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = null;
@@ -122,7 +127,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC2a) should auto select a single business unit',
-    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5922'] },
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5922', '@JIRA-EPIC:PO-2294'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK.slice(0, 1));
@@ -139,7 +144,7 @@ describe('FinesConSelectBuFormComponent', () => {
 
   it(
     '(AC4) should show an error when continuing without selecting a business unit',
-    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5923'] },
+    { tags: ['@JIRA-STORY:PO-2412', '@JIRA-LABEL:consolidation', '@JIRA-KEY:POT-5923', '@JIRA-EPIC:PO-2294'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       finesConFormData.fcon_select_bu_business_unit_id = null;

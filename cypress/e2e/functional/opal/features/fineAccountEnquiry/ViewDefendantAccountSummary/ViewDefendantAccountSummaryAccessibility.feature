@@ -1,11 +1,12 @@
 @JIRA-LABEL:account-enquiry
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 @JIRA-STORY:PO-777
 Feature: View Defendant Account Summary - Add Comments Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
+
 
   @JIRA-STORY:PO-777 @JIRA-KEY:POT-4974
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
@@ -37,6 +38,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
       | Line 3  | Line3 Test   |
     Then I check the page for accessibility
 
+
   @JIRA-KEY:POT-4975
   Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a company account then check accessibility
@@ -64,6 +66,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
       | Line 2  | Company Line2   |
       | Line 3  | Company Line3   |
     Then I check the page for accessibility
+
 
   @JIRA-KEY:POT-4976
   Scenario: Check View Defendant Parent Guardian Account Summary and Comments Accessibility with Axe-Core
@@ -97,3 +100,30 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
 
     # Check accessibility with populated comments
     Then I check the page for accessibility
+
+  @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234 @JIRA-KEY:POT-7703
+  Scenario: Check View Minor Creditor Account Summary Accessibility with Axe-Core
+    Given a published account exists with an individual minor creditor:
+      | prosecutor case reference | PCRMINA11Y{uniqUpper} |
+      | title                     | Mrs                   |
+      | first name                | Mina                  |
+      | last name                 | AllyMinor{uniq}       |
+      | address line 1            | 1 High Street         |
+      | postcode                  | MC1 1AA               |
+    And I am on the Account Search page - Individuals form displayed by default
+    When I view the Minor creditors search form
+    And I search using the following inputs:
+      | minor creditor type  | Individual      |
+      | individual last name | AllyMinor{uniq} |
+      | first names          | Mina            |
+      | address line 1       | 1 High Street   |
+      | postcode             | MC1 1AA         |
+    Then I see the Search results page
+    And I see the Minor creditors search results:
+      | Name           | AllyMinor{uniq}, Mina |
+      | Address line 1 | 1 High Street         |
+    When I open the latest matching result from the search results
+    Then I should see the account header contains "Mrs Mina ALLYMINOR{uniqUpper}"
+    And the At a glance tab should be selected by default
+    And I check the page for accessibility
+

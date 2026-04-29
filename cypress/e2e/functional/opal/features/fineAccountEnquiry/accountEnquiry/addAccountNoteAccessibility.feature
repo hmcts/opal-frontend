@@ -1,11 +1,12 @@
 @JIRA-LABEL:account-enquiry
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Add Account Note - View Defendant Account Details Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
+  @JIRA-EPIC:PO-2472
   @JIRA-KEY:POT-4954
   Scenario: Check Add Account Note Accessibility with Axe-Core for Individual Account
 
@@ -32,6 +33,7 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
     Then I should see the header "Mr James GRAHAMADDNOTESURNAME{uniqUpper}" and the URL should contain "details"
     Then I check the page for accessibility
 
+  @JIRA-EPIC:PO-2472
   @JIRA-KEY:POT-4955
   Scenario: Check Add Account Note Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -54,3 +56,4 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
     And I enter "Valid test account note for company accessibility testing" into the notes field and save the note
     Then I should see the header containing text "AccNote comp{uniqUpper}"
     And I check the page for accessibility
+

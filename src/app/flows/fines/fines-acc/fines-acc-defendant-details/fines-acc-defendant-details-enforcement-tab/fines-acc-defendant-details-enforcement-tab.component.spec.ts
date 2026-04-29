@@ -82,6 +82,16 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
+  it('should emit addEnforcementAction when handleAddEnforcementAction is called', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+
+    component.handleAddEnforcementAction(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
   it('should emit changeEnforcementOverride when user has permission and an override result exists', () => {
     const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
 
@@ -109,6 +119,22 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
+  it('should not render actions when permissions are missing', () => {
+    const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    tabData.enforcement_override = null;
+
+    fixture.componentRef.setInput('tabData', tabData);
+    fixture.componentRef.setInput('hasAccountMaintenancePermission', false);
+    fixture.componentRef.setInput('hasEnterEnforcementPermission', false);
+    fixture.detectChanges();
+
+    const actionLinks = Array.from(
+      fixture.nativeElement.querySelectorAll('div.govuk-grid-column-one-third p > a.govuk-link'),
+    ) as HTMLAnchorElement[];
+
+    expect(actionLinks).toHaveLength(0);
+  });
+
   it('should emit changeCollectionOrder when handleChangeCollectionOrder is called', () => {
     const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
     component.hasAccountMaintenancePermission = true;
@@ -118,5 +144,20 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(eventEmitterSpy).toHaveBeenCalledWith(
       component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
     );
+  });
+
+  it('should emit false when collection order is missing', () => {
+    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+    component.tabData = {
+      ...component.tabData,
+      enforcement_overview: {
+        ...component.tabData.enforcement_overview,
+        collection_order: null,
+      },
+    };
+
+    component.handleChangeCollectionOrder();
+
+    expect(eventEmitterSpy).toHaveBeenCalledWith(false);
   });
 });

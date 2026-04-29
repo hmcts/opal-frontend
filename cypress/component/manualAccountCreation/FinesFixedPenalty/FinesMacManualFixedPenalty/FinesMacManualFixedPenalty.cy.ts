@@ -24,6 +24,8 @@ describe('FinesMacManualFixedPenalty', () => {
     formSubmit?: any,
     localJusticeAreas: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
   ) => {
+    fixedPenaltyMock = structuredClone(fixedPenaltyMock);
+
     return mount(FinesMacFixedPenaltyDetailsComponent, {
       providers: [
         provideHttpClient(),
@@ -79,7 +81,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC1a-eii) The Fixed Penalty Details screen will be created as per the Design Artefacts',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7196'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7196', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
       fixedPenaltyMock.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
@@ -230,7 +232,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC2) Validation will exist for the Issuing Authority field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7197'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7197', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(null);
 
@@ -254,7 +256,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC3) Validation will exist for the Enforcement Court field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7198'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7198', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -278,7 +280,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC4) Validation will exist for the Title field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7199'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7199', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -298,7 +300,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC5) Validation will exist for the First names field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7200'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7200', '@JIRA-EPIC:PO-855'] },
     () => {
       // User does not provide a value
       setupComponent();
@@ -310,7 +312,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC5) Validation will exist for the First names field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7201'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7201', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters more than 20 characters
       const longName = 'A'.repeat(21); // Exceeds 20 characters
@@ -326,7 +328,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC5) Validation will exist for the First names field - alphanumeric check',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7202'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7202', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters non-alphabetical characters
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = 'John123@#$';
@@ -338,7 +340,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC6) Validation will exist for the Last name field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7203'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7203', '@JIRA-EPIC:PO-855'] },
     () => {
       // User does not provide a value
       setupComponent();
@@ -350,7 +352,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC6) Validation will exist for the Last name field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7204'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7204', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters more than 30 characters
       const longName = 'A'.repeat(31); // Exceeds 30 characters
@@ -363,7 +365,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC6) Validation will exist for the Last name field - alphanumeric check',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7205'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7205', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters non-alphabetical characters
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = 'Smith123@#$';
@@ -375,7 +377,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC7) Validation will exist for the Date of birth field - future date',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7206'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7206', '@JIRA-EPIC:PO-855'] },
     () => {
       const futureDateStr = calculateWeeksInFuture(1);
 
@@ -389,7 +391,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC7) Validation will exist for the Date of birth field - incorrect format',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7207'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7207', '@JIRA-EPIC:PO-855'] },
     () => {
       // Letters, incorrect days or months validation
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = 'abc/de/fghi';
@@ -401,7 +403,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC7) Validation will exist for the Date of birth field - invalid date',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7208'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7208', '@JIRA-EPIC:PO-855'] },
     () => {
       // Invalid date validation
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '32/13/2000';
@@ -413,7 +415,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC7) Validation will exist for the Date of birth field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7209'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7209', '@JIRA-EPIC:PO-855'] },
     () => {
       // Special characters validation
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '01@01#2000';
@@ -425,7 +427,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC7e) Validation will exist for the Date of birth field - no separators',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7210'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7210', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '01012000';
       setupComponent();
@@ -436,7 +438,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC8) Validation will exist for the Address Line 1 field - empty value',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7211'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7211', '@JIRA-EPIC:PO-855'] },
     () => {
       // User does not provide a value
       setupComponent();
@@ -451,7 +453,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC8) Validation will exist for the Address Line 1 field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7212'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7212', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters more than 30 characters
       const longAddress = 'A'.repeat(31); // Exceeds 30 characters
@@ -464,7 +466,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC8) Validation will exist for the Address Line 1 field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7213'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7213', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = '123 High Street $%^&*';
       setupComponent();
@@ -475,7 +477,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC9) Validation will exist for the Address Line 2 field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7214'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7214', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters more than 30 characters
       const longAddress = 'A'.repeat(31); // Exceeds 30 characters
@@ -488,7 +490,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC9) Validation will exist for the Address Line 2 field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7215'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7215', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters non-alphanumeric characters
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = 'Apartment 123 $%^&*';
@@ -500,7 +502,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC10) Validation will exist for the Address Line 3 field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7216'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7216', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters more than 16 characters
       const longAddress = 'A'.repeat(17); // Exceeds 16 characters
@@ -513,7 +515,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC10) Validation will exist for the Address Line 3 field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7217'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7217', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters non-alphanumeric characters
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = 'West $%^&*';
@@ -525,7 +527,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC11) Validation will exist for the Postcode field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7218'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7218', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters more than 8 characters
       const longPostcode = 'A'.repeat(9); // Exceeds 8 characters
@@ -538,7 +540,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC11) Validation will exist for the Postcode field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7219'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7219', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters non-alphanumeric characters
       fixedPenaltyMock.personalDetails.formData.fm_personal_details_post_code = 'SW1A$%^&';
@@ -550,7 +552,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC12) Validation will exist for the Notice number field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7220', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -563,7 +565,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC12) Validation will exist for the Notice number field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7221'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7221', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_notice_number = 'A'.repeat(17); // Exceeds 16 characters
       setupComponent();
@@ -575,7 +577,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC12) Validation will exist for the Notice number field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7222'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7222', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_notice_number = 'FPN12 $%^&*';
       setupComponent();
@@ -587,7 +589,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC13) Validation will exist for the Registration number field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7223'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7223', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -603,7 +605,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC13) Validation will exist for the Registration number field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7224'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7224', '@JIRA-EPIC:PO-855'] },
     () => {
       const longRegNumber = 'A'.repeat(8); // Exceeds 7 characters
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_vehicle_registration_number = longRegNumber;
@@ -617,7 +619,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC13) Validation will exist for the Registration number field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7225'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7225', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_vehicle_registration_number = 'ABC1%^&';
       setupComponent();
@@ -633,7 +635,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC14) Validation will exist for the Driving licence number field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7226'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7226', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -649,7 +651,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC14) Validation will exist for the Driving licence number field - invalid format',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7227'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7227', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = 'INVALID';
       setupComponent();
@@ -666,7 +668,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC14) Validation will exist for the Driving licence number field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7228'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7228', '@JIRA-EPIC:PO-855'] },
     () => {
       const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = longDrivingLicense;
@@ -681,7 +683,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC14) Validation will exist for the Driving licence number field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7229'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7229', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = 'SMITH123$%^&*';
       setupComponent();
@@ -698,7 +700,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC15) Validation for NTO/NTH field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7230'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7230', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'A'.repeat(11); // Exceeds 10 characters
       setupComponent();
@@ -713,7 +715,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC15) Validation for NTO/NTH field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7231'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7231', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'NTO$%^&*';
       setupComponent();
@@ -728,7 +730,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC16) Validation will exist for the Date notice to owner was issued field - future date',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7232'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7232', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = calculateWeeksInFuture(1);
       setupComponent();
@@ -740,7 +742,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC16) Validation will exist for the Date notice to owner was issued field - invalid date',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7233'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7233', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = '40/30/2023';
       setupComponent();
@@ -752,7 +754,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC16) Validation will exist for the Date notice to owner was issued field - incorrect format',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7234'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7234', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = 'abc/de/fghi';
       setupComponent();
@@ -764,7 +766,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC16) Validation will exist for the Date notice to owner was issued field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7235'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7235', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = '01@01#2023';
       setupComponent();
@@ -776,7 +778,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC17) Validation will exist for the Date of offence field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7236'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7236', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -789,7 +791,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC17) Validation will exist for the Date of offence field - future date',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7237'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7237', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = calculateWeeksInFuture(1);
       setupComponent();
@@ -800,7 +802,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC17) Validation will exist for the Date of offence field - format',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7238'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7238', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = 'ab/cd/efgh';
       setupComponent();
@@ -811,7 +813,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC17) Validation will exist for the Date of offence field - invalid date',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7239'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7239', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '32/13/2023';
       setupComponent();
@@ -822,7 +824,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC17) Validation will exist for the Date of offence field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7240'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7240', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '01@01#2023';
       setupComponent();
@@ -833,7 +835,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC17) Validation will exist for the Date of offence field - no separators',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7241'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7241', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '01012023';
       setupComponent();
@@ -844,7 +846,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC18) Validation will exist for the Offence code field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7242'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7242', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -857,7 +859,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC18) Validation will exist for the Offence code field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7243'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7243', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -871,7 +873,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC18) Validation will exist for the Offence code field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7244'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7244', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -884,7 +886,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC19) Validation will exist for the Time of offence field - invalid hours',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7245'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7245', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '25:30';
       setupComponent();
@@ -898,7 +900,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC19) Validation will exist for the Time of offence field - invalid minutes',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7246'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7246', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '14:70';
       setupComponent();
@@ -912,7 +914,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC19) Validation will exist for the Time of offence field - incorrect format',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7247'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7247', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '14-30';
       setupComponent();
@@ -926,7 +928,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC19) Validation will exist for the Time of offence field - AM/PM format',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7248'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7248', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '2:30pm';
       setupComponent();
@@ -940,7 +942,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC19) Validation will exist for the Time of offence field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7249'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7249', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '@!:$%';
       setupComponent();
@@ -954,7 +956,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC20) Validation will exist for the Place of offence field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7250'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7250', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -967,7 +969,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC20) Validation will exist for the Place of offence field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7251'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7251', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_place_of_offence = 'A'.repeat(31); // Exceeds 30 characters
       setupComponent();
@@ -978,7 +980,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC20) Validation will exist for the Place of offence field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7252'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7252', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_place_of_offence = 'High Street $%^&*';
       setupComponent();
@@ -992,7 +994,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC21) Validation will exist for the Amount imposed field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7253'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7253', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -1005,7 +1007,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC21) Validation will exist for the Amount imposed field - non-numeric characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7254'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7254', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -1018,7 +1020,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC21) Validation will exist for the Amount imposed field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7255'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7255', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -1031,7 +1033,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC21) Validation will exist for the Amount imposed field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7256'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7256', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -1048,7 +1050,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC21) Validation will exist for the Amount imposed field - decimal places',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7257'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7257', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
 
@@ -1064,18 +1066,18 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC22) Validation will exist for the Add comment field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7258'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7258', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'A'.repeat(30);
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.commentsInputHint).should('contain', 'You have 0 characters remaining');
+      cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 0 characters remaining');
     },
   );
 
   it(
     '(AC22) Validation will exist for the Add comment field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7259'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7259', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment $%^&*';
       setupComponent();
@@ -1089,19 +1091,19 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC23) Validation will exist for the Add account note field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7260'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7260', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters more than 1000 characters
       fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'A'.repeat(1000);
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.accountNoteInputHint).should('contain', 'You have 0 characters remaining');
+      cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 0 characters remaining');
     },
   );
 
   it(
     '(AC23) Validation will exist for the Add account note field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7261'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-KEY:POT-7261', '@JIRA-EPIC:PO-855'] },
     () => {
       // User enters non-alphanumeric characters
       fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note $%^&*';
@@ -1116,13 +1118,13 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC1a) The Fixed Penalty Details screen for company will be created as per the Design Artefacts',
-    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-KEY:POT-7262'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-KEY:POT-7262', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
       setupComponent(null);
 
       // Check company details section
-      cy.get(DOM_ELEMENTS.companyName).should('exist');
+      cy.get(DOM_ELEMENTS.companyNameInput).should('exist');
       cy.get(DOM_ELEMENTS.companyAddressLine1Input).should('exist');
       cy.get(DOM_ELEMENTS.companyAddressLine2Input).should('exist');
       cy.get(DOM_ELEMENTS.companyAddressLine3Input).should('exist');
@@ -1161,7 +1163,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC1b, AC1c) Validation will exist for the Company Name field - no value provided',
-    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-KEY:POT-7263'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-KEY:POT-7263', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
       setupComponent(null);
@@ -1175,7 +1177,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC1b, AC1c) Validation will exist for the Company Name field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-KEY:POT-7264'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-KEY:POT-7264', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
       setupComponent(null);
@@ -1190,7 +1192,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC1b, AC1c) Validation will exist for the Company Name field - non-alphanumeric character check',
-    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-KEY:POT-7265'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-KEY:POT-7265', '@JIRA-EPIC:PO-855'] },
     () => {
       fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
       setupComponent(null);
@@ -1207,7 +1209,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC1a) If a user selects the "Search the offence list" link from the Fixed Penalty Details screen - a new tab will open within the relevant browser, displaying the "Search Offences" screen',
-    { tags: [...buildTags('@JIRA-STORY:PO-1104'), '@JIRA-KEY:POT-7266'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1104'), '@JIRA-KEY:POT-7266', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(null);
 
@@ -1223,7 +1225,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC2) AC1 will hold true whether the defendant is an Adult or Youth defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-1104'), '@JIRA-KEY:POT-7267'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1104'), '@JIRA-KEY:POT-7267', '@JIRA-EPIC:PO-855'] },
     () => {
       // Test with Adult/Youth defendant (default defendant type)
       setupComponent(null);
@@ -1236,7 +1238,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC2) AC1 will hold true whether the defendant is a Company defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-1104'), '@JIRA-KEY:POT-7268'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1104'), '@JIRA-KEY:POT-7268', '@JIRA-EPIC:PO-855'] },
     () => {
       // Test with Company defendant
       fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -1251,7 +1253,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
   it(
     '(AC5) should keep Prosecutors (All) visible and selectable as originators for non-filtered journeys',
-    { tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-KEY:POT-7269'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-KEY:POT-7269', '@JIRA-EPIC:PO-2750'] },
     () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
         count: 1,

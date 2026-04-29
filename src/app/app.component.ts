@@ -1,7 +1,15 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, computed, inject, DOCUMENT } from '@angular/core';
 import { Observable, Subject, filter, from, map, of, startWith, takeUntil, takeWhile, tap, timer } from 'rxjs';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { CommonModule, Location, isPlatformBrowser } from '@angular/common';
+import {
+  ActivatedRouteSnapshot,
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  Router,
+  RouterOutlet,
+  RoutesRecognized,
+} from '@angular/router';
 import {
   MojHeaderComponent,
   MojHeaderNavigationItemComponent,
@@ -33,6 +41,10 @@ import { DashboardPageType } from './pages/dashboard/types/dashboard.type';
 import { isDashboardPageType } from './pages/dashboard/constants/dashboard-config.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { getAccessiblePrimaryNavigationItems } from './flows/fines/utils/fines-section-permissions.utils';
+import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant';
+import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 
 @Component({
   selector: 'app-root',
@@ -55,12 +67,25 @@ import { getAccessiblePrimaryNavigationItems } from './flows/fines/utils/fines-s
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly document = inject(DOCUMENT);
+  private readonly location = inject(Location);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly ngZone = inject(NgZone);
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly appInsightsService = inject(AppInsightsService);
   private readonly launchDarklyService = inject(LaunchDarklyService);
   private readonly router = inject(Router);
+  private readonly navigationEnd$ = this.router.events.pipe(
+    filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+  );
+  private readonly primaryNavigationRouteEvents$ = this.router.events.pipe(
+    filter(
+      (event): event is RoutesRecognized | NavigationEnd | NavigationCancel | NavigationError =>
+        event instanceof RoutesRecognized ||
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError,
+    ),
+  );
   private readonly POLL_INTERVAL = 60;
   private readonly dashboardRouteByType: Record<DashboardPageType, string[]> = {
     search: [
@@ -107,10 +132,21 @@ export class AppComponent implements OnInit, OnDestroy {
   public readonly navigationItems = computed(() =>
     getAccessiblePrimaryNavigationItems(NAVIGATION_BAR_CONFIGURATION, this.globalStore.userState()),
   );
+  public readonly primaryNavigationHidden = toSignal(
+    this.primaryNavigationRouteEvents$.pipe(map((event) => this.getPrimaryNavigationHiddenFromRouterEvent(event))),
+    {
+      initialValue: this.getInitialPrimaryNavigationHidden(),
+    },
+  );
+  public readonly showPrimaryNavigation = computed(
+    () =>
+      this.globalStore.authenticated() &&
+      this.globalStore.userState().status === 'active' &&
+      !this.primaryNavigationHidden(),
+  );
 
   public readonly activeNavigationItem = toSignal(
-    this.router.events.pipe(
-      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+    this.navigationEnd$.pipe(
       map((event) => this.getDashboardTypeFromUrl(event.urlAfterRedirects)),
       startWith(this.getDashboardTypeFromUrl(this.router.url)),
     ),
@@ -200,16 +236,11 @@ export class AppComponent implements OnInit, OnDestroy {
   private trackPageViews(): void {
     if (!isPlatformBrowser(this.platformId)) return; // Prevent SSR execution
 
-    this.router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe((event: NavigationEnd) => {
-        const currentUrl = event.url.split('#')[0];
-        const pageName = event.urlAfterRedirects.split('/').pop() ?? 'unknown';
-        this.appInsightsService.logPageView(pageName, currentUrl);
-      });
+    this.navigationEnd$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((event: NavigationEnd) => {
+      const currentUrl = event.url.split('#')[0];
+      const pageName = event.urlAfterRedirects.split('/').pop() ?? 'unknown';
+      this.appInsightsService.logPageView(pageName, currentUrl);
+    });
   }
 
   /**
@@ -239,6 +270,98 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     return '';
+  }
+
+  /**
+   * Returns true when any active route in the current tree marks the primary navigation as hidden.
+   */
+  private isPrimaryNavigationHidden(snapshot: ActivatedRouteSnapshot): boolean {
+    if (snapshot.data[HIDE_PRIMARY_NAV_ROUTE_DATA_KEY] === true) {
+      return true;
+    }
+
+    return snapshot.children.some((child) => this.isPrimaryNavigationHidden(child));
+  }
+
+  /**
+   * Uses route data as soon as Angular has a recognized or activated route tree during navigation.
+   */
+  private getPrimaryNavigationHiddenFromRouterEvent(
+    event: RoutesRecognized | NavigationEnd | NavigationCancel | NavigationError,
+  ): boolean {
+    if (event instanceof RoutesRecognized) {
+      return this.isPrimaryNavigationHidden(event.state.root);
+    }
+
+    return this.isPrimaryNavigationHidden(this.router.routerState.snapshot.root);
+  }
+
+  /**
+   * Falls back to the current URL before the first route tree exists in non-blocking initial navigation.
+   */
+  private getInitialPrimaryNavigationHidden(): boolean {
+    if (this.router.navigated) {
+      return this.isPrimaryNavigationHidden(this.router.routerState.snapshot.root);
+    }
+
+    return this.isPrimaryNavigationHiddenForInitialUrl(this.getCurrentUrlBeforeInitialNavigation());
+  }
+
+  /**
+   * Reads the current browser URL before the router has produced an activated route tree.
+   */
+  private getCurrentUrlBeforeInitialNavigation(): string {
+    const locationPath = this.location.path(true);
+
+    if (locationPath) {
+      return locationPath;
+    }
+
+    const documentLocation = this.document.location;
+
+    if (!documentLocation) {
+      return this.router.url;
+    }
+
+    return `${documentLocation.pathname}${documentLocation.search}${documentLocation.hash}`;
+  }
+
+  /**
+   * Uses a narrow, constant-based URL fallback so journey deep links start with the correct shell state
+   * before route data is available from the activated router tree.
+   */
+  private isPrimaryNavigationHiddenForInitialUrl(url: string): boolean {
+    const segments = url.split('#')[0].split('?')[0].split('/').filter(Boolean);
+
+    if (segments[0] !== FINES_ROUTING_PATHS.root) {
+      return false;
+    }
+
+    const featureRoot = segments[1];
+
+    if (
+      featureRoot === FINES_ROUTING_PATHS.children.mac.root ||
+      featureRoot === FINES_ROUTING_PATHS.children.con.root
+    ) {
+      return true;
+    }
+
+    if (featureRoot !== FINES_ACC_ROUTING_PATHS.root) {
+      return false;
+    }
+
+    const accountType = segments[2];
+    const accountChildRoute = segments[4];
+
+    if (accountType === FINES_ACC_DEFENDANT_ROUTING_PATHS.root) {
+      return !!accountChildRoute && accountChildRoute !== FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details;
+    }
+
+    if (accountType === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root) {
+      return accountChildRoute === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note;
+    }
+
+    return false;
   }
 
   /**

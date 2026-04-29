@@ -1,5 +1,6 @@
 import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
 import { createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
+import { mount } from 'cypress/angular';
 
 import {
   USER_STATE_MOCK_NO_PERMISSION,
@@ -17,8 +18,10 @@ import { OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK } from './mocks/parentGua
 import { DOM_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.parent-guardian-details.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
+import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+type ParentGuardianDetailsMock = typeof OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK;
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
@@ -35,36 +38,30 @@ const componentProperties: IComponentProperties = {
   ],
 };
 describe('Account Enquiry Parent or Guardian Component', () => {
+  const mountParentGuardianTab = ({
+    pgDetailsMock,
+    hasAccountMaintenencePermission = false,
+  }: {
+    pgDetailsMock: ParentGuardianDetailsMock;
+    hasAccountMaintenencePermission?: boolean;
+  }) => {
+    mount(FinesAccDefendantDetailsParentOrGuardianTabComponent, {
+      componentProperties: {
+        tabData: pgDetailsMock,
+        hasAccountMaintenencePermission,
+      },
+    });
+  };
+
   it(
     'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6812'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6812', '@JIRA-EPIC:PO-976'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.parent_guardian_party_id = '1770000001';
-      headerMock.debtor_type = 'Parent/Guardian';
-
-      const pgPartyId = headerMock.parent_guardian_party_id;
-
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
-
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
-      pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
       // AC1b: Set debtor flag to true to test that all sub-sections are displayed
       pgDetailsMock.defendant_account_party.is_debtor = true;
 
-      const accountId = headerMock.defendant_account_party_id;
-
-      interceptAddNotes();
-
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '1');
-      interceptPGDetails(accountId, pgPartyId, pgDetailsMock, '1');
-
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      mountParentGuardianTab({ pgDetailsMock });
 
       // AC1a: Verify that 'Parent or Guardian details' title is displayed
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
@@ -98,37 +95,16 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1bi: should not display Language preferences sub-section when account is not associated with Welsh speaking BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6813'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6813', '@JIRA-EPIC:PO-976'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.parent_guardian_party_id = '1770000001';
-      headerMock.debtor_type = 'Parent/Guardian';
-
-      const pgPartyId = headerMock.parent_guardian_party_id;
-
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
-
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
-      pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
       // Set debtor flag to true to test that all sub-sections are displayed (except language preferences for non-Welsh BU)
       pgDetailsMock.defendant_account_party.is_debtor = true;
 
       // Set language preferences to null to simulate non-Welsh speaking BU
       pgDetailsMock.defendant_account_party.language_preferences = null;
 
-      const accountId = headerMock.defendant_account_party_id;
-
-      interceptAddNotes();
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '1');
-      interceptPGDetails(accountId, pgPartyId, pgDetailsMock, '1');
-
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-
-      cy.get('router-outlet').should('exist');
+      mountParentGuardianTab({ pgDetailsMock });
 
       // AC1a: Verify that 'Parent or Guardian details' title is displayed
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
@@ -167,35 +143,12 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1c: should display only Parent or Guardian details sub-section when debtor flag is false',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6814'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6814', '@JIRA-EPIC:PO-976'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.parent_guardian_party_id = '1770000001';
-      headerMock.debtor_type = 'Parent/Guardian';
-
-      const pgPartyId = headerMock.parent_guardian_party_id;
-
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.is_debtor = false;
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
-
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
-      pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
       pgDetailsMock.defendant_account_party.is_debtor = false;
 
-      const accountId = headerMock.defendant_account_party_id;
-
-      interceptAddNotes();
-
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '1');
-
-      interceptPGDetails(accountId, pgPartyId, pgDetailsMock, '1');
-
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-
-      cy.get('router-outlet').should('exist');
+      mountParentGuardianTab({ pgDetailsMock });
 
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
@@ -225,35 +178,13 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1d, AC1ci, AC1cii, AC1ciii: should display data fields with correct format and all fields read-only',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6815'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6815', '@JIRA-EPIC:PO-976'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.parent_guardian_party_id = '1770000001';
-      headerMock.debtor_type = 'Parent/Guardian';
-
-      const pgPartyId = headerMock.parent_guardian_party_id;
-
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
-
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
-      pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
       // AC1b: Set debtor flag to true to test that all sub-sections are displayed
       pgDetailsMock.defendant_account_party.is_debtor = true;
 
-      const accountId = headerMock.defendant_account_party_id;
-
-      interceptAddNotes();
-
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '1');
-      interceptPGDetails(accountId, pgPartyId, pgDetailsMock, '1');
-
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-
-      cy.get('router-outlet').should('exist');
+      mountParentGuardianTab({ pgDetailsMock });
 
       // AC1d: Verify data fields are displayed with correct values
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
@@ -332,15 +263,15 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get('input[type="tel"]').should('not.exist');
       cy.get('textarea').should('not.exist');
       cy.get('select').should('not.exist');
-      cy.get('button').should('not.contain.text', 'Edit');
-      cy.get('button').should('not.contain.text', 'Save');
-      cy.get('button').should('not.contain.text', 'Update');
+      cy.contains('button', /^Edit$/i).should('not.exist');
+      cy.contains('button', /^Save$/i).should('not.exist');
+      cy.contains('button', /^Update$/i).should('not.exist');
     },
   );
 
   it(
     'AC1civ: should display em-dash (—) for fields that have not been provided',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6816'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6816', '@JIRA-EPIC:PO-976'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -423,7 +354,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2: should display Change button and navigate to change screen when user has Account Maintenance permission in current BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6817'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6817', '@JIRA-EPIC:PO-976'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -467,7 +398,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2a: should display Change button but navigate to access denied when user lacks permission in current BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6818'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6818', '@JIRA-EPIC:PO-976'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -510,7 +441,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2b: should not display Change button when user has no Account Maintenance permission in any BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6819'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6819', '@JIRA-EPIC:PO-976'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';

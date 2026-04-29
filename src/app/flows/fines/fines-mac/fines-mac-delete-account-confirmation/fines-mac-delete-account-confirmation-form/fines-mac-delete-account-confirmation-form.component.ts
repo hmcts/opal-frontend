@@ -22,11 +22,11 @@ import { IFinesMacDeleteAccountConfirmationFieldErrors } from '../interfaces/fin
 import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FIELD_ERRORS } from '../constants/fines-mac-delete-account-confirmation-field-errors.constant';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
-const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_SPACES_PATTERN,
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
   'alphanumericTextPattern',
 );
 
@@ -58,7 +58,7 @@ export class FinesMacDeleteAccountConfirmationFormComponent
       fm_delete_account_confirmation_reason: new FormControl<string | null>(null, [
         Validators.required,
         optionalMaxLengthValidator(250),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR,
       ]),
     });
   }

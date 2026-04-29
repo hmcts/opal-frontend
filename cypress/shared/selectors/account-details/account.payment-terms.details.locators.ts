@@ -16,8 +16,7 @@ export const AccountPaymentTermsDetailsLocators = {
 
   /** Summary list value fields for payment terms data. */
   fields: {
-    payByDate: '#payment-termsEffective-dateValue',
-    startDate: '#payment-termsEffective-dateValue',
+    effectiveDate: '#payment-termsEffective-dateValue',
     instalmentAmount: '#payment-termsInstalment-amountValue',
     instalmentFrequency: '#payment-termsInstalment-periodValue',
     lumpSumAmount: '#payment-termsLump-sum-amountValue',

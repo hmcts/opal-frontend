@@ -72,4 +72,17 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
 
     expect(component.offenceTitle).toEqual('Duplicate offence title A');
   });
+
+  it('should fall back to an empty title when there is no exact match and no reference data', () => {
+    component.offenceCode = 'UNKNOWN';
+    component.offenceId = null;
+    component.offenceRefData = {
+      count: 0,
+      refData: [],
+    };
+
+    component.getOffenceTitle();
+
+    expect(component.offenceTitle).toEqual('');
+  });
 });

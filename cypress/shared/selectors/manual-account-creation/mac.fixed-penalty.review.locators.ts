@@ -4,7 +4,6 @@
  */
 export const MacFixedPenaltyReviewLocators = {
   app: 'app-fines-mac-review-account',
-  header: 'h1.govuk-heading-l',
   pageHeading: 'h1.govuk-heading-l',
   backLink: 'opal-lib-govuk-back-link a.govuk-back-link',
   submitButton: '#submitAccountButton',
@@ -31,12 +30,10 @@ export const MacFixedPenaltyReviewLocators = {
   forenames: '[summaryListRowId="forenames"] dd',
   surname: '[summaryListRowId="surname"] dd',
   dateOfBirth: '#personalDetailsDobValue, [summaryListRowId="dob"] dd',
-  addressLine1: '[summaryListRowId="address"] dd',
   address: '[summaryListRowId="address"] dd',
 
   companyDetailsCard: '[summaryCardListId="company-details"]',
   companyName: '[summaryListRowId="companyName"] dd',
-  companyAddress: '[summaryListRowId="address"] dd',
   companyPostcode: '[summaryListRowId="companyPostcode"] dd',
 
   languagePreferencesCard: '[summaryCardListId="language-preferences"]',
@@ -48,8 +45,6 @@ export const MacFixedPenaltyReviewLocators = {
   offenceType: '[summaryListRowId="offenceType"] dd',
   registrationNumber: '[summaryListRowId="registrationNumber"] dd',
   drivingLicenceNumber: '[summaryListRowId="drivingLicenceNumber"] dd',
-  ntoNth: '[summaryListRowId="noticeNumber"] dd',
-  dateNtoIssued: '[summaryListRowId="noticeDate"] dd',
   noticeDate: '[summaryListRowId="noticeDate"] dd',
   dateOfOffence: '[summaryListRowId="dateOfOffence"] dd',
   offenceCode: '[summaryListRowId="offenceCode"] dd',

@@ -1,69 +1,43 @@
-import { mount } from 'cypress/angular';
 import { FinesMacContactDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-contact-details/fines-mac-contact-details.component';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
-import { ActivatedRoute } from '@angular/router';
-import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { INVALID_DETAILS } from './constants/fines_mac_contact_details_errors';
 import { MacContactDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/mac.contact-details.locators';
-import { of } from 'rxjs';
+import { mountMacStoreComponent } from '../support/mountMacStoreComponent';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacContactDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+  type FinesMacContactDetailsState = typeof FINES_MAC_STATE_MOCK;
 
-  const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+  const buildFinesMacContactDetailsState = (
+    defendantType: string = '',
+    configure?: (finesMacState: FinesMacContactDetailsState) => void,
+  ): FinesMacContactDetailsState => {
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
-    return mount(FinesMacContactDetailsComponent, {
-      providers: [
-        OpalFines,
-        {
-          provide: FinesMacStore,
-          useFactory: () => {
-            const store = new FinesMacStore();
-            store.setFinesMacStore(finesMacState);
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: of('manual-account-creation'),
-          },
-        },
-      ],
-      componentProperties: {
-        defendantType: defendantType,
-      },
-    }).then(({ fixture }) => {
-      if (!formSubmit) return;
-      const comp: any = fixture.componentInstance as any;
-      if (comp?.handleContactDetailsSubmit?.subscribe) {
-        comp.handleContactDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
-      } else if (typeof comp?.handleContactDetailsSubmit === 'function') {
-        comp.handleContactDetailsSubmit = formSubmit;
-      }
-      fixture.detectChanges();
-    });
+    configure?.(finesMacState);
+    return finesMacState;
   };
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.contactDetails.formData = {
-        fm_contact_details_email_address_1: '',
-        fm_contact_details_email_address_2: '',
-        fm_contact_details_telephone_number_mobile: '',
-        fm_contact_details_telephone_number_home: '',
-        fm_contact_details_telephone_number_business: '',
-      };
-    });
-  });
 
+  const setupComponent = (
+    formSubmit?: any,
+    defendantType: string = '',
+    configure?: (finesMacState: FinesMacContactDetailsState) => void,
+  ) =>
+    mountMacStoreComponent({
+      component: FinesMacContactDetailsComponent,
+      componentProperties: {
+        defendantType,
+      },
+      formSubmit,
+      initialState: buildFinesMacContactDetailsState(defendantType, configure),
+      submitHandlerName: 'handleContactDetailsSubmit',
+    });
   it(
     'should render the component (FinesMacContactDetailsComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7341'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272'), '@JIRA-KEY:POT-7341'] },
     () => {
       setupComponent(null);
 
@@ -74,7 +48,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.1) should load all elements on the screen correctly (FinesMacContactDetailsComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7342'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7342'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -100,7 +74,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.1) should load button for next page for adultOrYouthOnly Defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7343'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7343'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -110,7 +84,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.2) should not have any mandatory inputs - Return to account details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7344'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7344'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -124,7 +98,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.2) should not have any mandatory inputs - Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7345'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7345'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -138,7 +112,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.3) should load button for next page for AYPG Defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-370'), '@JIRA-KEY:POT-7346'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-370'), '@JIRA-KEY:POT-7346'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -148,7 +122,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.3) should load button for next page for Company Defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-345', '@JIRA-STORY:PO-371'), '@JIRA-KEY:POT-7347'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-345', '@JIRA-STORY:PO-371'), '@JIRA-KEY:POT-7347'] },
     () => {
       setupComponent(null, 'company');
 
@@ -158,19 +132,19 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.4) should accept valid email addresses - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7348'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7348'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
-
-      finesMacState.contactDetails.formData = {
-        fm_contact_details_email_address_1: 'name@example.com',
-        fm_contact_details_email_address_2: 'secondary@example.com',
-        fm_contact_details_telephone_number_mobile: '',
-        fm_contact_details_telephone_number_home: '',
-        fm_contact_details_telephone_number_business: '',
-      };
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
+        finesMacState.contactDetails.formData = {
+          fm_contact_details_email_address_1: 'name@example.com',
+          fm_contact_details_email_address_2: 'secondary@example.com',
+          fm_contact_details_telephone_number_mobile: '',
+          fm_contact_details_telephone_number_home: '',
+          fm_contact_details_telephone_number_business: '',
+        };
+      });
 
       cy.get(L.returnToAccountDetailsButton).click();
 
@@ -184,19 +158,19 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.5) should accept valid telephone numbers - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7349'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7349'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
-
-      finesMacState.contactDetails.formData = {
-        fm_contact_details_email_address_1: '',
-        fm_contact_details_email_address_2: '',
-        fm_contact_details_telephone_number_mobile: '07123456789',
-        fm_contact_details_telephone_number_home: '01234 567890',
-        fm_contact_details_telephone_number_business: '01234 567890',
-      };
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
+        finesMacState.contactDetails.formData = {
+          fm_contact_details_email_address_1: '',
+          fm_contact_details_email_address_2: '',
+          fm_contact_details_telephone_number_mobile: '07123456789',
+          fm_contact_details_telephone_number_home: '01234 567890',
+          fm_contact_details_telephone_number_business: '01234 567890',
+        };
+      });
 
       cy.get(L.returnToAccountDetailsButton).click();
 
@@ -210,19 +184,19 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.6) should accept valid contact details - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7350'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7350'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
-
-      finesMacState.contactDetails.formData = {
-        fm_contact_details_email_address_1: 'primary@email.com',
-        fm_contact_details_email_address_2: 'secondary@email.com',
-        fm_contact_details_telephone_number_mobile: '07123456789',
-        fm_contact_details_telephone_number_home: '01234 567890',
-        fm_contact_details_telephone_number_business: '01234 567890',
-      };
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
+        finesMacState.contactDetails.formData = {
+          fm_contact_details_email_address_1: 'primary@email.com',
+          fm_contact_details_email_address_2: 'secondary@email.com',
+          fm_contact_details_telephone_number_mobile: '07123456789',
+          fm_contact_details_telephone_number_home: '01234 567890',
+          fm_contact_details_telephone_number_business: '01234 567890',
+        };
+      });
 
       cy.get(L.returnToAccountDetailsButton).click();
 
@@ -236,13 +210,14 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.7) should error when primary email address validation is not met - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7351'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7351'] },
     () => {
       const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(invalidEmails).each((email: string) => {
         cy.then(() => {
-          finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = email;
-          setupComponent(null, 'adultOrYouthOnly');
+          setupComponent(null, 'adultOrYouthOnly', (finesMacState) => {
+            finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = email;
+          });
           cy.get(L.returnToAccountDetailsButton).click();
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
           cy.get(L.addEmployerDetailsButton).click();
@@ -254,13 +229,14 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.7) should error when secondary email address validation is not met - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7352'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7352'] },
     () => {
       const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(invalidEmails).each((email: string) => {
         cy.then(() => {
-          finesMacState.contactDetails.formData.fm_contact_details_email_address_2 = email;
-          setupComponent(null, 'adultOrYouthOnly');
+          setupComponent(null, 'adultOrYouthOnly', (finesMacState) => {
+            finesMacState.contactDetails.formData.fm_contact_details_email_address_2 = email;
+          });
           cy.get(L.returnToAccountDetailsButton).click();
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
           cy.get(L.addEmployerDetailsButton).click();
@@ -272,13 +248,14 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when home telephone number validation is not met - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7353'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7353'] },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
         cy.then(() => {
-          finesMacState.contactDetails.formData.fm_contact_details_telephone_number_home = number;
-          setupComponent(null, 'adultOrYouthOnly');
+          setupComponent(null, 'adultOrYouthOnly', (finesMacState) => {
+            finesMacState.contactDetails.formData.fm_contact_details_telephone_number_home = number;
+          });
           cy.get(L.returnToAccountDetailsButton).click();
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
           cy.get(L.addEmployerDetailsButton).click();
@@ -290,13 +267,14 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when business telephone number validation is not met - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7354'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7354'] },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
         cy.then(() => {
-          finesMacState.contactDetails.formData.fm_contact_details_telephone_number_business = number;
-          setupComponent(null, 'adultOrYouthOnly');
+          setupComponent(null, 'adultOrYouthOnly', (finesMacState) => {
+            finesMacState.contactDetails.formData.fm_contact_details_telephone_number_business = number;
+          });
           cy.get(L.returnToAccountDetailsButton).click();
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
           cy.get(L.addEmployerDetailsButton).click();
@@ -308,13 +286,14 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.8) should error when mobile telephone number validation is not met - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7355'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7355'] },
     () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
         cy.then(() => {
-          finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile = number;
-          setupComponent(null, 'adultOrYouthOnly');
+          setupComponent(null, 'adultOrYouthOnly', (finesMacState) => {
+            finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile = number;
+          });
           cy.get(L.returnToAccountDetailsButton).click();
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
           cy.get(L.addEmployerDetailsButton).click();
@@ -326,32 +305,34 @@ describe('FinesMacContactDetailsComponent', () => {
 
   it(
     '(AC.9) should allow submission when validation errors are corrected - Return to account details + Add employer details',
-    { tags: [...buildTags('@JIRA-STORY:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7356'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-419'), '@JIRA-KEY:POT-7356'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
-      finesMacState.contactDetails.formData = {
-        fm_contact_details_email_address_1: 'bad-data',
-        fm_contact_details_email_address_2: 'bad-data',
-        fm_contact_details_telephone_number_mobile: 'bad-data',
-        fm_contact_details_telephone_number_home: 'bad-data',
-        fm_contact_details_telephone_number_business: 'bad-data',
-      };
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
+        finesMacState.contactDetails.formData = {
+          fm_contact_details_email_address_1: 'bad-data',
+          fm_contact_details_email_address_2: 'bad-data',
+          fm_contact_details_telephone_number_mobile: 'bad-data',
+          fm_contact_details_telephone_number_home: 'bad-data',
+          fm_contact_details_telephone_number_business: 'bad-data',
+        };
+      });
       cy.get(L.returnToAccountDetailsButton).click();
       cy.get(L.errorSummary).should('exist');
       cy.get(L.addEmployerDetailsButton).click();
       cy.get(L.errorSummary).should('exist');
 
       cy.then(() => {
-        setupComponent(formSubmitSpy, 'adultOrYouthOnly');
-        finesMacState.contactDetails.formData = {
-          fm_contact_details_email_address_1: 'p@email.com',
-          fm_contact_details_email_address_2: 's@email.com',
-          fm_contact_details_telephone_number_mobile: '07123456789',
-          fm_contact_details_telephone_number_home: '01234 567890',
-          fm_contact_details_telephone_number_business: '01234 567890',
-        };
+        setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
+          finesMacState.contactDetails.formData = {
+            fm_contact_details_email_address_1: 'p@email.com',
+            fm_contact_details_email_address_2: 's@email.com',
+            fm_contact_details_telephone_number_mobile: '07123456789',
+            fm_contact_details_telephone_number_home: '01234 567890',
+            fm_contact_details_telephone_number_business: '01234 567890',
+          };
+        });
         cy.get(L.returnToAccountDetailsButton).click();
         cy.wrap(formSubmitSpy).should('have.been.called');
         cy.get(L.addEmployerDetailsButton).click();

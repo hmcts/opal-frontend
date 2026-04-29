@@ -18,18 +18,6 @@ export default defineConfig({
     environment: 'jsdom',
     disableConsoleIntercept: true,
     setupFiles: ['src/test-setup.ts'],
-    exclude: [
-      'node_modules/**',
-      'cypress/**',
-      '**/*.cy.ts',
-      'src/**/*.component.html',
-      'src/**/*.mock.ts',
-      'src/**/*.interface.ts',
-      'src/**/*.type.ts',
-      'src/**/*.constant.ts',
-      'src/**/*.routes.ts',
-      'src/**/*.routing.ts',
-    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov', 'json'],

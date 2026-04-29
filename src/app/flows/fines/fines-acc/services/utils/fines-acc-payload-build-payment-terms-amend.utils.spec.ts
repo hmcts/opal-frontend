@@ -1,5 +1,7 @@
 import { buildPaymentTermsAmendPayloadUtil } from './fines-acc-payload-build-payment-terms-amend.utils';
 import { IFinesAccPaymentTermsAmendState } from '../../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
+import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
+import { FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS } from '../../../constants/fines-payment-terms-type-display-options.constant';
 import { describe, it, expect } from 'vitest';
 
 describe('buildPaymentTermsAmendPayload', () => {
@@ -147,5 +149,97 @@ describe('buildPaymentTermsAmendPayload', () => {
 
     expect(result.payment_terms.payment_terms_type).toBeNull();
     expect(result.payment_terms.effective_date).toBeNull();
+  });
+
+  it('should default instalment and lump sum amounts to 0 when instalment-based amounts are blank', () => {
+    const formData: IFinesAccPaymentTermsAmendState = {
+      facc_payment_terms_payment_terms: 'lumpSumPlusInstalments',
+      facc_payment_terms_pay_by_date: null,
+      facc_payment_terms_lump_sum_amount: '' as unknown as number,
+      facc_payment_terms_instalment_amount: '' as unknown as number,
+      facc_payment_terms_instalment_period: 'M',
+      facc_payment_terms_start_date: '2025-03-01',
+      facc_payment_terms_payment_card_request: null,
+      facc_payment_terms_prevent_payment_card: null,
+      facc_payment_terms_has_days_in_default: null,
+      facc_payment_terms_suspended_committal_date: null,
+      facc_payment_terms_default_days_in_jail: null,
+      facc_payment_terms_reason_for_change: null,
+      facc_payment_terms_change_letter: null,
+    };
+
+    const result = buildPaymentTermsAmendPayloadUtil(formData);
+
+    expect(result.payment_terms.lump_sum_amount).toBe(0);
+    expect(result.payment_terms.instalment_amount).toBe(0);
+  });
+
+  it('should return null display name when the payment terms display mapping is unavailable', () => {
+    const paymentTermsTypeDisplayOptions = FINES_PAYMENT_TERMS_TYPE_DISPLAY_OPTIONS as unknown as Record<
+      string,
+      string | undefined
+    >;
+    const originalDisplayName = paymentTermsTypeDisplayOptions['B'];
+    paymentTermsTypeDisplayOptions['B'] = undefined;
+
+    try {
+      const formData: IFinesAccPaymentTermsAmendState = {
+        facc_payment_terms_payment_terms: 'payInFull',
+        facc_payment_terms_pay_by_date: '2025-01-15',
+        facc_payment_terms_lump_sum_amount: null,
+        facc_payment_terms_instalment_amount: null,
+        facc_payment_terms_instalment_period: null,
+        facc_payment_terms_start_date: null,
+        facc_payment_terms_payment_card_request: null,
+        facc_payment_terms_prevent_payment_card: null,
+        facc_payment_terms_has_days_in_default: null,
+        facc_payment_terms_suspended_committal_date: null,
+        facc_payment_terms_default_days_in_jail: null,
+        facc_payment_terms_reason_for_change: null,
+        facc_payment_terms_change_letter: null,
+      };
+
+      const result = buildPaymentTermsAmendPayloadUtil(formData);
+
+      expect(result.payment_terms.payment_terms_type).toEqual({
+        payment_terms_type_code: 'B',
+        payment_terms_type_display_name: null,
+      });
+    } finally {
+      paymentTermsTypeDisplayOptions['B'] = originalDisplayName;
+    }
+  });
+
+  it('should return null instalment display name when the frequency mapping is unavailable', () => {
+    const frequencyOptions = FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS as unknown as Record<string, string | undefined>;
+    const originalDisplayName = frequencyOptions['M'];
+    frequencyOptions['M'] = undefined;
+
+    try {
+      const formData: IFinesAccPaymentTermsAmendState = {
+        facc_payment_terms_payment_terms: 'instalmentsOnly',
+        facc_payment_terms_pay_by_date: null,
+        facc_payment_terms_lump_sum_amount: null,
+        facc_payment_terms_instalment_amount: 50,
+        facc_payment_terms_instalment_period: 'M',
+        facc_payment_terms_start_date: '2025-02-01',
+        facc_payment_terms_payment_card_request: null,
+        facc_payment_terms_prevent_payment_card: null,
+        facc_payment_terms_has_days_in_default: null,
+        facc_payment_terms_suspended_committal_date: null,
+        facc_payment_terms_default_days_in_jail: null,
+        facc_payment_terms_reason_for_change: null,
+        facc_payment_terms_change_letter: null,
+      };
+
+      const result = buildPaymentTermsAmendPayloadUtil(formData);
+
+      expect(result.payment_terms.instalment_period).toEqual({
+        instalment_period_code: 'M',
+        instalment_period_display_name: null,
+      });
+    } finally {
+      frequencyOptions['M'] = originalDisplayName;
+    }
   });
 });

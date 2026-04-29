@@ -10,18 +10,13 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacSubmitConfirmation', () => {
-  let mockFinesService = {
-    finesMacState: { ...FINES_MAC_STATE_MOCK },
-  };
+  const createMockFinesService = () => ({
+    finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+  });
+  let mockFinesService = createMockFinesService();
 
-  afterEach(() => {
-    cy.then(() => {
-      mockFinesService.finesMacState.accountCommentsNotes.formData = {
-        fm_account_comments_notes_comments: '',
-        fm_account_comments_notes_notes: '',
-        fm_account_comments_notes_system_notes: '',
-      };
-    });
+  beforeEach(() => {
+    mockFinesService = createMockFinesService();
   });
 
   const setupComponent = () => {
@@ -41,7 +36,7 @@ describe('FinesMacSubmitConfirmation', () => {
 
   it(
     '(AC.1,AC.2)should render the component and have all elements',
-    { tags: [...buildTags('@JIRA-STORY:PO-973', '@JIRA-STORY:PO-660'), '@JIRA-KEY:POT-7673'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-973', '@JIRA-STORY:PO-660'), '@JIRA-KEY:POT-7673'] },
     () => {
       setupComponent();
 

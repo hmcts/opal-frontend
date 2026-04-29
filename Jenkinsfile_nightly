@@ -632,13 +632,13 @@ void setupTestSpecifications() {
 
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(nightlySecrets())
-  env.TEST_URL = 'https://opal-frontend.staging.platform.hmcts.net/'
+  env.TEST_URL = 'https://opal-frontend.staging.apps.hmcts.net/'
   configureStagingLegacyGatewayUrl()
 
   before('akschartsinstall') {
     onPR {
       env.DEV_ENABLE_OPAL_FINES_SERVICE = true
-      env.DEV_OPAL_FINES_SERVICE_URL = 'https://opal-frontend.staging.platform.hmcts.net'
+      env.DEV_OPAL_FINES_SERVICE_URL = 'https://opal-frontend.staging.apps.hmcts.net'
       env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
     }
   }

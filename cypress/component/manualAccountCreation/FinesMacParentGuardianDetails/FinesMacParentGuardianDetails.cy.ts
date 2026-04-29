@@ -26,9 +26,16 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
+  beforeEach(() => {
+    finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState = finesMacStateTemplate;
+  });
 
   const setupComponent = (formSubmit?: any, mockDefendantType: string = '') => {
+    finesMacState = structuredClone(finesMacStateTemplate);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = mockDefendantType;
 
     return mount(FinesMacParentGuardianDetailsComponent, {
@@ -69,30 +76,11 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     });
   };
 
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.parentGuardianDetails.formData = {
-        fm_parent_guardian_details_forenames: '',
-        fm_parent_guardian_details_surname: '',
-        fm_parent_guardian_details_add_alias: false,
-        fm_parent_guardian_details_aliases: [],
-        fm_parent_guardian_details_dob: '',
-        fm_parent_guardian_details_national_insurance_number: '',
-        fm_parent_guardian_details_address_line_1: '',
-        fm_parent_guardian_details_address_line_2: '',
-        fm_parent_guardian_details_address_line_3: '',
-        fm_parent_guardian_details_post_code: '',
-        fm_parent_guardian_details_vehicle_make: '',
-        fm_parent_guardian_details_vehicle_registration_mark: '',
-      };
-    });
-  });
-
   it(
     'should render the ParentGuardianDetails component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-STORY:PO-436', '@JIRA-STORY:PO-569'),
+        ...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364', '@JIRA-STORY:PO-436', '@JIRA-STORY:PO-569'),
         '@JIRA-KEY:POT-7482',
       ],
     },
@@ -106,7 +94,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.1) should load all elements on the screen correctly (FinesMacParentGuardianDetailsComponent)',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364', '@JIRA-STORY:PO-436', '@JIRA-STORY:PO-569'),
+        ...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364', '@JIRA-STORY:PO-436', '@JIRA-STORY:PO-569'),
         '@JIRA-KEY:POT-7483',
       ],
     },
@@ -150,7 +138,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.1) should have length validation on first name field',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7484'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7484'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'a'.repeat(31);
@@ -161,7 +149,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
   it(
     '(AC.1) should not permit special characters on first name field',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7485'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7485'] },
     () => {
       cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
@@ -175,7 +163,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
   it(
     '(AC.1) should have length validation on last name field',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7486'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7486'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'a'.repeat(31);
@@ -187,7 +175,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.1) should not permit special characters on last name field',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7487'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7487'] },
     () => {
       cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
@@ -202,7 +190,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.2) should require first name field input',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7488'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7488'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -213,7 +201,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.2) should require last name field input',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7489'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7489'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -224,7 +212,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.3) should validate the functionality of the Add Aliases tick box',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7490'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7490'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -241,7 +229,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.4, AC.5, AC.6) should have working alias workflow and remove button',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7491'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7491'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -298,7 +286,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.7) should validate unticking add aliases removes all aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7492'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7492'] },
     () => {
       setupComponent(null, 'pgToPay');
       cy.get(DOM_ELEMENTS.aliasAdd).check();
@@ -328,7 +316,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.8) should show error for missing alias',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7493'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7493'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -340,7 +328,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.8) should show error for missing alias last name',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7494'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7494'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -356,7 +344,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.8) should show error for missing alias first name',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7495'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7495'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -372,7 +360,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.8) should show error for missing additional alias first name',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7496'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7496'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -408,7 +396,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.8) should show error for missing additional alias last name',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7497'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7497'] },
     () => {
       (setupComponent(null), 'pgToPay');
 
@@ -436,7 +424,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     'Should show error for too many characters for alias first and last name',
-    { tags: [...buildTags('@JIRA-STORY:PO-1679'), '@JIRA-KEY:POT-7498'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1679', '@JIRA-EPIC:PO-344'), '@JIRA-KEY:POT-7498'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -487,7 +475,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     'Should show error for non-alphabetical characters for alias first and last name',
-    { tags: [...buildTags('@JIRA-STORY:PO-1679'), '@JIRA-KEY:POT-7499'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1679', '@JIRA-EPIC:PO-344'), '@JIRA-KEY:POT-7499'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -538,7 +526,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.3) should display validation error when date of birth is in the future',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7500'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7500'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -550,7 +538,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.3) should display validation error when date of birth is invalid',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7501'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7501'] },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -562,7 +550,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.4) should not accept national insurance number in the incorrect format',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-436'), '@JIRA-KEY:POT-7502'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-436'), '@JIRA-KEY:POT-7502'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_national_insurance_number = 'AB1234565C';
@@ -574,7 +562,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.1) should have max length validation for address line 1',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7503'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7503'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'a'.repeat(31);
@@ -586,7 +574,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.1) should not permit asterisks in address line 1',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7504'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7504'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'addr1*';
@@ -597,7 +585,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
   it(
     '(AC.1) should have max length validation for address line 2',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7505'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7505'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'a'.repeat(31);
@@ -609,7 +597,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.1) should not permit asterisks in address line 2',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7506'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7506'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'addr2*';
@@ -620,7 +608,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
   it(
     '(AC.9) should have max length validation for address line 3',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7507'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7507'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'a'.repeat(14);
@@ -632,7 +620,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.1) should not permit asterisks in address line 3',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-436'), '@JIRA-KEY:POT-7508'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-436'), '@JIRA-KEY:POT-7508'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'addr3*';
@@ -643,7 +631,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
   it(
     '(AC.1) should have max length validation for postcode',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7509'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7509'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_post_code = 'a'.repeat(9);
@@ -655,7 +643,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.10) should have max length validation for make and model field',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7510'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7510'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = 'a'.repeat(31);
@@ -666,7 +654,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
   it(
     '(AC.10) should have max length validation for registration number field',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7511'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-569'), '@JIRA-KEY:POT-7511'] },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_registration_mark = 'a'.repeat(
@@ -680,7 +668,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.5) should show errors for invalid mandatory fields and allow corrections and submit form',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7512'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7512'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -711,7 +699,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.6) should show errors for invalid mandatory fields and allow corrections and submit form',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7513'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-364'), '@JIRA-KEY:POT-7513'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -730,7 +718,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.1) Parent or guardian details should capitalise - AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-344', '@JIRA-STORY:PO-1449'), '@JIRA-KEY:POT-7514'] },
+    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-1449'), '@JIRA-KEY:POT-7514'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');

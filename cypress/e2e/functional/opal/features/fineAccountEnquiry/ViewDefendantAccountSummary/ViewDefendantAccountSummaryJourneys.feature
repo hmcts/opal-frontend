@@ -9,6 +9,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
   Background:
     Given I clear all approved accounts
 
+
   @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-KEY:POT-5107
   Scenario: Search for an adult or youth defendant account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
@@ -50,3 +51,34 @@ Feature: View Defendant Account Summary - End-to-end journeys
     And I should see the following language preferences on the At a glance tab:
       | Document language      | Welsh and English |
       | Court hearing language | Welsh and English |
+
+  @R1B @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234 @JIRA-KEY:POT-7698
+  Scenario: Search for a minor creditor account and view the default account summary
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+    And a published account exists with an individual minor creditor:
+      | prosecutor case reference | PCRMINSUM{uniqUpper} |
+      | title                     | Mrs                  |
+      | first name                | Mina                 |
+      | last name                 | SummaryMinor{uniq}   |
+      | address line 1            | 1 High Street        |
+      | postcode                  | MC1 1AA              |
+    And I am on the Account Search page - Individuals form displayed by default
+    When I view the Minor creditors search form
+    And I search using the following inputs:
+      | minor creditor type  | Individual         |
+      | individual last name | SummaryMinor{uniq} |
+      | first names          | Mina               |
+      | address line 1       | 1 High Street      |
+      | postcode             | MC1 1AA            |
+    Then I see the Search results page
+    And I see the Minor creditors search results:
+      | Name           | SummaryMinor{uniq}, Mina |
+      | Address line 1 | 1 High Street            |
+    When I open the latest matching result from the search results
+    Then I should see the account header contains "Mrs Mina SUMMARYMINOR{uniqUpper}"
+    And the At a glance tab should be selected by default
+    And I should see the following minor creditor values on the At a glance tab:
+      | Name         | Mrs Mina SUMMARYMINOR{uniqUpper} |
+      | Address      | 1 High Street                    |
+      | BACS details | Provided                         |
+

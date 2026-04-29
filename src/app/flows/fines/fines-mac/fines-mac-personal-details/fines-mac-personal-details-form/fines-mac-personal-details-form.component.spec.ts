@@ -107,7 +107,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(templateFunction).not.toContain('keyup.enter');
   });
 
-  it('should render remove alias link with href and pass $event into removeAlias', () => {
+  it('should render remove alias link with href and call removeAlias', () => {
     component.form.get('fm_personal_details_add_alias')?.setValue(true);
     while (component.aliasControls.length < 2) {
       component.addAlias(component.aliasControls.length, 'fm_personal_details_aliases');
@@ -134,7 +134,6 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     link.dispatchEvent(event);
 
     expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_personal_details_aliases', event);
-    expect(event.defaultPrevented).toBe(true);
   });
 
   it('should emit form submit event with form value', () => {

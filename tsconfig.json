@@ -44,5 +44,5 @@
     "strictTemplates": true
   },
   "include": ["src", "src/app/interfaces/**/*.ts"],
-  "exclude": ["node_modules", "**/helpers/*.ts", "src/test-setup.ts"]
+  "exclude": ["node_modules", "**/helpers/*.ts", "src/test-setup.ts", "**/interfaces/generated/**", "**/types/generated/**"]
 }

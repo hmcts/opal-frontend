@@ -27,6 +27,8 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { NavigationEnd } from '@angular/router';
+import { Subject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
@@ -93,6 +95,15 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should leave timelineData unchanged when timeline data is undefined', () => {
+    component.timelineData = [];
+    finesDraftStore.setFinesDraftState({ ...structuredClone(FINES_DRAFT_STATE), timeline_data: undefined as never });
+
+    component['fetchTimelineData']();
+
+    expect(component.timelineData).toEqual([]);
   });
 
   it('should enforce template link attributes and classes for action links', () => {
@@ -375,6 +386,26 @@ describe('FinesMacAccountDetailsComponent', () => {
     component.navigateBack();
 
     expect(routerSpy).toHaveBeenCalled();
+  });
+
+  it('should ignore non-NavigationStart router events', () => {
+    const events$ = new Subject<NavigationEnd>();
+    Object.defineProperty(component['router'], 'events', {
+      configurable: true,
+      value: events$.asObservable(),
+    });
+    component.pageNavigation = false;
+
+    component['routerListener']();
+    events$.next(
+      new NavigationEnd(
+        1,
+        '/fines/manual-account-creation/create-account',
+        '/fines/manual-account-creation/create-account',
+      ),
+    );
+
+    expect(component.pageNavigation).toBe(false);
   });
 
   it('should call canDeactivate ', () => {

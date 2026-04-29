@@ -15,6 +15,8 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 - [Running End-to-End Tests](#running-end-to-end-tests)
 - [Accessibility Tests](#running-accessibility-tests)
 - [Switching Between Local and Published Common Libraries](#switching-between-local-and-published-common-libraries)
+- [OpenAPI reference models](#openapi-reference-models)
+- [OpenAPI docs](#openapi-docs)
 
 ## Getting Started
 
@@ -446,6 +448,17 @@ This is useful when you're no longer working on the libraries directly or want t
 
 **Note:** Version upgrades should come via Renovate PRs. These commands do **not** upgrade to the latest; they reinstall the exact versions specified in `package.json`. For extra safety in CI, consider using `yarn install --immutable` to prevent lockfile drift.
 
+## OpenAPI reference models
+
+- Run `yarn generate:openapi` to download and merge the fines-service specs, then emit reference-only models to `src/app/generated/api-client` and `src/app/flows/fines/services/opal-fines-service/{interfaces/generated,types/generated}`.
+- The generated files are gitignored and excluded from TypeScript/Jasmine; they are **not** used by application code or tests.
+- When schema changes are needed, copy shapes from the generated output into the hand-written interfaces under `src/app/flows/fines/services/opal-fines-service/interfaces` and adjust as required.
+
+## OpenAPI docs
+
+- Backend fines OpenAPI specs live in the fines service repo under `src/main/resources/openapi/` (DefendantAccount, MajorCreditor, MinorCreditor, common, types) and are merged via `openapi/openapi-merge-config.json`.
+- The merged spec is written locally to `openapi/opal-merged.yaml` when you run `yarn generate:openapi`; open that file for endpoint/schema details or to copy shapes into the hand-cranked interfaces.
+
 **Platform note:** `import:*` scripts use Unix shell commands (`rm`, `ls`, `grep`) and are intended for macOS/Linux environments.
 
 ## Angular code scaffolding
@@ -575,7 +588,6 @@ Updates component metadata with `standalone: true`, refactors imports, and remov
 **What Copilot does:**  
 Triggers `ng add @angular/material` to install the package and configure animations + theming.
 
-
 # Zephyr Automation
 
 Zephyr Automation is a tool for integrating test results and ticket management between Zephyr, Jira, and test frameworks (Cucumber, Cypress). It automates the creation and updating of Jira tickets and Zephyr executions based on test reports.
@@ -586,7 +598,7 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - Create Zephyr executions
 - Supports Cucumber and Cypress JSON reports
 
-## Project Scripts (zephyr:*)
+## Project Scripts (zephyr:\*)
 
 - Zephyr scripts still use the JSON report paths listed below as their inputs. Their console output is also mirrored to `tmp/zephyr/*.log`, with each script overwriting its own log file on the next run. `/tmp` is gitignored.
 - `zephyr:cypress:jira-create`: Create Jira tickets from the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
@@ -602,21 +614,25 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
 
+## Test Metadata Maintenance
+
+- `node scripts/find-tests-missing-epic.js`: Report executable Cypress tests that have no `@JIRA-EPIC:*` tag. Add `--write` to insert the placeholder `@JIRA-EPIC:PO-0000` where the script can do so safely.
+- `yarn resolve:placeholder:epics`: Report executable Cypress tests that still use the placeholder `@JIRA-EPIC:PO-0000`. Add `--write` with `JIRA_AUTH_TOKEN` set to replace only placeholder epic tags whose test has exactly one `@JIRA-STORY:*` tag and whose Jira story resolves to an epic. Tests with multiple story tags are skipped.
 
 ### Supported Tags
 
 The following tags can be used in your test scenarios to control ticket creation, linking, and metadata:
 
-| Tag Prefix         | Example Value           | Description                                                                 |
-|--------------------|-------------------------|-----------------------------------------------------------------------------|
-| `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.                        |
-| `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                            |
-| `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                                |
-| `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                                |
-| `@JIRA-NFR:`       | `@JIRA-NFR:PROJ-789`    | Links the ticket to a Non-Functional Requirement (NFR) Jira issue.          |
-| `@JIRA-LINK:`      | `@JIRA-LINK:PROJ-321`   | Creates a generic link to another Jira issue.                               |
-| `@JIRA-STORY:`     | `@JIRA-STORY:PROJ-654`  | Links the ticket to a Jira Story.                                           |
-| `@JIRA-DEFECT:`    | `@JIRA-DEFECT:PROJ-987` | Links the ticket to a Jira Defect.                                          |
-| `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                           |
+| Tag Prefix         | Example Value           | Description                                                        |
+| ------------------ | ----------------------- | ------------------------------------------------------------------ |
+| `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.               |
+| `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
+| `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
+| `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |
+| `@JIRA-NFR:`       | `@JIRA-NFR:PROJ-789`    | Links the ticket to a Non-Functional Requirement (NFR) Jira issue. |
+| `@JIRA-LINK:`      | `@JIRA-LINK:PROJ-321`   | Creates a generic link to another Jira issue.                      |
+| `@JIRA-STORY:`     | `@JIRA-STORY:PROJ-654`  | Links the ticket to a Jira Story.                                  |
+| `@JIRA-DEFECT:`    | `@JIRA-DEFECT:PROJ-987` | Links the ticket to a Jira Defect.                                 |
+| `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                  |
 
 - Tags are case-sensitive and must be used exactly as shown.

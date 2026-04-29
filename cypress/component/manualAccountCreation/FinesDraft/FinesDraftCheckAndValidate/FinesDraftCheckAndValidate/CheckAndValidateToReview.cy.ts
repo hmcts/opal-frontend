@@ -8,7 +8,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/check-and-validate-session-mock';
-import { DOM_ELEMENTS } from './constants/fines_draft_cav_elements';
+import { CheckAndValidateDraftsLocators as DOM_ELEMENTS } from 'cypress/shared/selectors/manual-account-creation/check-and-validate/check-and-validate.drafts.locators';
 import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cav_tableConstants';
 import {
   interceptCAVGetDeletedAccounts,
@@ -107,7 +107,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.2) should display To review tab correctly when there are zero draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-KEY:POT-7163'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-KEY:POT-7163', '@JIRA-EPIC:PO-2220'] },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
 
@@ -128,7 +128,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.3) should display To review tab correctly when there are draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-KEY:POT-7164'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-KEY:POT-7164', '@JIRA-EPIC:PO-2220'] },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -161,7 +161,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateToReviewComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-KEY:POT-7165'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-KEY:POT-7165', '@JIRA-EPIC:PO-2220'] },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -223,7 +223,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
   it(
     '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateToReviewComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-KEY:POT-7166'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-KEY:POT-7166', '@JIRA-EPIC:PO-2220'] },
     () => {
       const toReviewMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });

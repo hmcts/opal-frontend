@@ -28,6 +28,8 @@ Feature: Account Enquiries – View Account Details
       Then I should see the page header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
       # AC3 – Navigate to Defendant details
       When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the convert to company account action
+
 
     @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-4959
     Scenario: Defendant edit warning retains changes when I stay on the form
@@ -37,6 +39,7 @@ Feature: Account Enquiries – View Account Details
       Then I should remain on the defendant edit page
       And I should see the First name field still contains "Test"
 
+
     @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-4960
     Scenario: Defendant edit warning discards changes when I leave the form
       # AC4 – Route Guard (Cancel and leave)
@@ -44,6 +47,7 @@ Feature: Account Enquiries – View Account Details
       And I attempt to cancel editing and choose OK on the confirmation dialog
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Mr John ACCDETAILSURNAME{uniqUpper}"
+
 
     @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-4961
     Scenario: Saving defendant details updates the name and audit trail
@@ -55,6 +59,7 @@ Feature: Account Enquiries – View Account Details
       # AC3/4 – Verify via API and store amendment count baseline
       And I verify defendant amendments via API for first name "Updated"
 
+
     @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-STORY:PO-1110 @JIRA-STORY:PO-1127 @JIRA-KEY:POT-4962
     Scenario: Saving unchanged defendant details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
@@ -65,6 +70,32 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Mr Updated ACCDETAILSURNAME{uniqUpper}"
       And I verify no amendments were created via API
+
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1942 @JIRA-STORY:PO-1943 @JIRA-STORY:PO-1953 @JIRA-KEY:POT-7699
+    Scenario: Convert to company saves and shows the converted company account details
+      When I start converting the account to a company account
+      Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
+      When I continue converting the account to a company account
+      Then I should be on the Company details convert route
+      Then the Company details form should be pre-populated with:
+        | Primary email address | John.AccDetailSurname{uniq}@test.com |
+        | Home telephone number | 02078259314                          |
+      When I complete converting the account to a company with company name "Accdetail converted comp{uniq}"
+      Then I should return to the account details page Defendant tab
+      And I should see the account conversion success message "Converted to a company account."
+      When I go to the Defendant details section and the header is "Company details"
+      Then I should see the company summary card
+      And I should not see the defendant summary card
+      And I should see the company name contains "Accdetail converted comp{uniq}"
+      And I should see the primary email address contains "John.AccDetailSurname{uniq}@test.com"
+
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1943 @JIRA-KEY:POT-7700
+    Scenario: Convert to company confirmation cancel returns to Defendant details with no changes made
+      When I start converting the account to a company account
+      Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
+      When I cancel converting the account to a company account
+      Then I should return to the account details page Defendant tab
+      And I should see the convert to company account action
 
   Rule: Company account baseline
     Background:
@@ -80,6 +111,9 @@ Feature: Account Enquiries – View Account Details
       Then I should see the account header contains "Accdetail comp{uniq}"
       # AC3 – Navigate to Company details
       When I go to the Defendant details section and the header is "Company details"
+      Then I should see the convert to individual account action
+      And I should not see the convert to company account text
+
 
     @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-4963
     Scenario: Company edit warning retains changes when I stay on the form
@@ -89,6 +123,7 @@ Feature: Account Enquiries – View Account Details
       Then I should remain on the company edit page
       And I should see the company name field contains "Test"
 
+
     @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-4964
     Scenario: Company edit warning discards changes when I leave the form
       # AC4 - Route Guard (discard changes)
@@ -96,6 +131,7 @@ Feature: Account Enquiries – View Account Details
       And I discard the company edit changes and expect the header "Accdetail comp{uniq}"
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Accdetail comp{uniq}"
+
 
     @R1B @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-4965
     Scenario: Saving company details updates the organisation name and audit trail
@@ -107,6 +143,7 @@ Feature: Account Enquiries – View Account Details
       # AC3/4 - Verify via API
       And I verify Company amendments via API for company name "Accdetail comp updated{uniq}"
 
+
     @JIRA-STORY:PO-967 @JIRA-STORY:PO-1111 @JIRA-STORY:PO-1128 @JIRA-KEY:POT-4966
     Scenario: Saving unchanged company details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
@@ -117,6 +154,33 @@ Feature: Account Enquiries – View Account Details
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Accdetail comp updated{uniq}"
       And I verify no amendments were created via API for company details
+
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957 @JIRA-KEY:POT-7701
+    Scenario: Convert to individual saves and shows the converted defendant account details
+      When I start converting the account to an individual account
+      Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
+      When I continue converting the account to an individual account
+      Then I should be on the Defendant details convert route
+      And the Defendant details form should be pre-populated with:
+        | Postcode              | AB23 4RN       |
+        | Primary email address | Test@email.com |
+      When I complete converting the account to an individual with title "Miss", first name "Jamie", and last name "Converted{uniq}"
+      Then I should return to the account details page Defendant tab
+      And I should see the account conversion success message "Converted to an individual account."
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the defendant summary card
+      And I should not see the company summary card
+      And I should see the defendant name contains "Jamie"
+      And I should see the primary email address contains "Test@email.com"
+
+    @JIRA-EPIC:PO-1970 @JIRA-STORY:PO-1955 @JIRA-STORY:PO-1956 @JIRA-STORY:PO-1957 @JIRA-KEY:POT-7702
+    Scenario: Convert to individual confirmation cancel returns to Defendant details with no changes made
+      When I start converting the account to an individual account
+      Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
+      When I cancel converting the account to an individual account
+      Then I should return to the account details page Defendant tab
+      And I should see the convert to individual account action
+      And I should not see the convert to company account text
 
   Rule: Non-paying defendant account baseline
     Background:
@@ -132,6 +196,8 @@ Feature: Account Enquiries – View Account Details
       Then I should see the page header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
       # AC3 – Navigate to Defendant details
       When I go to the Defendant details section and the header is "Defendant details"
+      Then I should not see the convert to company account action
+
 
     @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-4967
     Scenario: Defendant edit warning retains changes for a non-paying account when I stay
@@ -141,6 +207,7 @@ Feature: Account Enquiries – View Account Details
       Then I should remain on the defendant edit page
       And I should see the First name field still contains "Test"
 
+
     @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-4968
     Scenario: Defendant edit warning discards changes for a non-paying account when I leave
       # AC4 – Route Guard (Cancel and leave)
@@ -148,6 +215,7 @@ Feature: Account Enquiries – View Account Details
       And I attempt to cancel editing and choose OK on the confirmation dialog
       Then I should return to the account details page Defendant tab
       And I should see the account header contains "Miss Jane TESTNONPAYEE{uniqUpper}"
+
 
     @R1B @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-4969
     Scenario: Saving defendant details updates the name and audit trail for a non-paying account
@@ -158,6 +226,7 @@ Feature: Account Enquiries – View Account Details
       And I should see the defendant name contains "Updated"
       # AC3/4 – Verify via API and store amendment count baseline
       And I verify defendant amendments via API for first name "Updated"
+
 
     @JIRA-STORY:PO-2315 @JIRA-STORY:PO-1663 @JIRA-KEY:POT-4970
     Scenario: Saving unchanged defendant details does not create amendments for a non-paying account
@@ -192,6 +261,7 @@ Feature: Account Enquiries – View Account Details
       # AC3 – Navigate to Parent or guardian details
       When I go to the Parent or guardian details section and the header is "Parent or guardian details"
 
+    @JIRA-EPIC:PO-976
     @R1B @JIRA-STORY:PO-1129 @JIRA-KEY:POT-4971
     Scenario: Saving parent or guardian details updates the name and audit trail
       # AC1 – Edit and save changes
@@ -202,6 +272,7 @@ Feature: Account Enquiries – View Account Details
       # AC3/4 - Verify via API
       And I verify parent or guardian amendments via API for guardian name "Updated"
 
+    @JIRA-EPIC:PO-976
     @JIRA-STORY:PO-1129 @JIRA-KEY:POT-4972
     Scenario: Saving unchanged parent or guardian details does not create amendments
       # AC3/4 – Verify via API and store amendment count baseline
@@ -213,3 +284,4 @@ Feature: Account Enquiries – View Account Details
       # LNAME is set in the original pgToPay account creation
       And I should see the parent or guardian name contains "Updated LNAME"
       And I verify no amendments were created via API for parent or guardian details
+

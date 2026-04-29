@@ -41,9 +41,42 @@ describe('Account Enquiry Payment Terms', () => {
     ],
   };
 
+  const setupPaymentTermsScreen = (
+    headerMock: typeof DEFENDANT_HEADER_MOCK,
+    paymentTermsMock: typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK,
+  ) => {
+    const accountId = headerMock.defendant_account_party_id;
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, headerMock, '123');
+    interceptPaymentTerms(accountId, paymentTermsMock, '123');
+    interceptResultByCode('REM');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId });
+    cy.get('router-outlet').should('exist');
+  };
+
+  const buildParentGuardianHeaderMock = () => {
+    const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+    headerMock.debtor_type = 'Parent/Guardian';
+    headerMock.parent_guardian_party_id = '1770000001';
+
+    return headerMock;
+  };
+
+  const buildCompanyHeaderMock = () => {
+    const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+    headerMock.party_details.organisation_flag = true;
+    headerMock.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+
+    return headerMock;
+  };
+
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6724'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6724', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -69,7 +102,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Pay in full');
-      cy.get(PAYMENT_TERMS_TAB.payByDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -78,7 +111,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for instalments only - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6725'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6725', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -86,14 +119,7 @@ describe('Account Enquiry Payment Terms', () => {
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -101,7 +127,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Instalments only');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -110,7 +136,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for lump sum plus instalments - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6726'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6726', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -121,14 +147,7 @@ describe('Account Enquiry Payment Terms', () => {
       paymentTermsMock.payment_terms.days_in_default = 9;
       paymentTermsMock.payment_terms.date_days_in_default_imposed = '2025-10-21';
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -137,7 +156,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.lumpSumAmount).should('exist').and('contain.text', '£10.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '9');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -146,7 +165,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, change link - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6727'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6727', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -169,7 +188,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms in different BU, no change link - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6728'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6728', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -192,7 +211,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User without permission to amend payment terms, no change link - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6729'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6729', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -214,7 +233,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - extend_ttp_disallow true',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6730'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6730', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -238,7 +257,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status CS',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6731'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6731', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -262,7 +281,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status WO',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6732'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6732', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -286,7 +305,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status TO',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6733'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6733', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -310,7 +329,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status TS',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6734'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6734', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -334,7 +353,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - account status TA',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6735'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6735', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -358,7 +377,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, but cannot make amendments - extend_ttp_disallow true and account status CS',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6736'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6736', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -383,23 +402,15 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Payment terms with amendments panel - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6737'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1146'), '@JIRA-KEY:POT-6737', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
       paymentTermsMock.payment_terms.extension = true;
       paymentTermsMock.payment_terms.reason_for_extension = 'Payment delay reason';
+
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Payment terms amendments');
@@ -411,7 +422,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6738'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6738', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -439,7 +450,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Pay in full');
-      cy.get(PAYMENT_TERMS_TAB.payByDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -448,23 +459,14 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for instalments only - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6739'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6739', '@JIRA-EPIC:PO-977'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Parent/Guardian';
-      headerMock.parent_guardian_party_id = '1770000001';
+      let headerMock = buildParentGuardianHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -473,7 +475,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Instalments only');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -482,11 +484,9 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for lump sum plus instalments - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6740'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6740', '@JIRA-EPIC:PO-977'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Parent/Guardian';
-      headerMock.parent_guardian_party_id = '1770000001';
+      let headerMock = buildParentGuardianHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
@@ -494,14 +494,7 @@ describe('Account Enquiry Payment Terms', () => {
       paymentTermsMock.payment_terms.days_in_default = 9;
       paymentTermsMock.payment_terms.date_days_in_default_imposed = '2025-10-21';
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -511,7 +504,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.lumpSumAmount).should('exist').and('contain.text', '£10.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '9');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -520,7 +513,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, change link - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6741'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6741', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -545,7 +538,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms in different BU, no change link - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6742'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6742', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -569,7 +562,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User without permission to amend payment terms, no change link - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6743'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6743', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -593,24 +586,14 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Payment terms with amendments panel - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6744'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1636'), '@JIRA-KEY:POT-6744', '@JIRA-EPIC:PO-977'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Parent/Guardian';
-      headerMock.parent_guardian_party_id = '1770000001';
+      let headerMock = buildParentGuardianHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
       paymentTermsMock.payment_terms.extension = true;
       paymentTermsMock.payment_terms.reason_for_extension = 'Payment delay reason';
+
+      setupPaymentTermsScreen(headerMock, paymentTermsMock);
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
@@ -623,7 +606,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for pay in full - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6745'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6745', '@JIRA-EPIC:PO-977'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -656,7 +639,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Pay in full');
-      cy.get(PAYMENT_TERMS_TAB.payByDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -665,27 +648,14 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for instalments only - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6746'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6746', '@JIRA-EPIC:PO-977'] },
     () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-
+      const header = buildCompanyHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(header, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -694,7 +664,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.tableTitle).should('exist').and('contain.text', 'Instalments only');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '—');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -703,15 +673,9 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: The Payment Terms tab is built as per the design artefact for lump sum plus instalments - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6747'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6747', '@JIRA-EPIC:PO-977'] },
     () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-
+      const header = buildCompanyHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
       paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_display_name = 'Instalments';
@@ -719,14 +683,7 @@ describe('Account Enquiry Payment Terms', () => {
       paymentTermsMock.payment_terms.days_in_default = 9;
       paymentTermsMock.payment_terms.date_days_in_default_imposed = '2025-10-21';
 
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      setupPaymentTermsScreen(header, paymentTermsMock);
 
       cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).should('exist').and('contain.text', 'Request payment card');
@@ -736,7 +693,7 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.lumpSumAmount).should('exist').and('contain.text', '£10.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentAmount).should('exist').and('contain.text', '£20.00');
       cy.get(PAYMENT_TERMS_TAB.instalmentFrequency).should('exist').and('contain.text', 'Monthly');
-      cy.get(PAYMENT_TERMS_TAB.startDate).should('exist').and('contain.text', '23 October 2025');
+      cy.get(PAYMENT_TERMS_TAB.effectiveDate).should('exist').and('contain.text', '23 October 2025');
       cy.get(PAYMENT_TERMS_TAB.daysInDefault).should('exist').and('contain.text', '9');
       cy.get(PAYMENT_TERMS_TAB.dateDaysInDefaultImposed).should('exist').and('contain.text', '21 October 2025');
       cy.get(PAYMENT_TERMS_TAB.paymentCardRequested).should('exist').and('contain.text', '11 October 2025');
@@ -745,7 +702,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms, change link - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6748'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6748', '@JIRA-EPIC:PO-977'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -774,7 +731,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User with permission to amend payment terms in different BU, no change link - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6749'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6749', '@JIRA-EPIC:PO-977'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -802,7 +759,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC2: User without permission to amend payment terms, no change link - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6750'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6750', '@JIRA-EPIC:PO-977'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -830,28 +787,14 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC3: Payment terms with amendments panel - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6751'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1637'), '@JIRA-KEY:POT-6751', '@JIRA-EPIC:PO-977'] },
     () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
-
+      const header = buildCompanyHeaderMock();
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptPaymentTerms(accountId, paymentTermsMock, '123');
-      interceptResultByCode('REM');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
       paymentTermsMock.payment_terms.extension = true;
       paymentTermsMock.payment_terms.reason_for_extension = 'Payment delay reason';
+
+      setupPaymentTermsScreen(header, paymentTermsMock);
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
@@ -864,7 +807,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Individual with permission to amend payment terms can request a payment card',
-    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-KEY:POT-6752'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-KEY:POT-6752', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -887,7 +830,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1b: Individual with permission to amend payment terms cannot request a payment card when enforcement prevents it',
-    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-KEY:POT-6753'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-KEY:POT-6753', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -910,7 +853,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1a: Individual without amend payment terms permission does not see Request payment card',
-    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-KEY:POT-6754'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1700'), '@JIRA-KEY:POT-6754', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -932,7 +875,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Parent or guardian can request a payment card when enforcement allows',
-    { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-KEY:POT-6755'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-KEY:POT-6755', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -956,7 +899,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1b: Parent or guardian cannot request a payment card when enforcement prevents it',
-    { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-KEY:POT-6756'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-KEY:POT-6756', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -979,7 +922,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1a:  Parent or guardian without amend payment terms permission does not see Request payment card',
-    { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-KEY:POT-6757'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1701'), '@JIRA-KEY:POT-6757', '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -1002,7 +945,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Company can request a payment card when enforcement allows',
-    { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-KEY:POT-6758'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-KEY:POT-6758', '@JIRA-EPIC:PO-977'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1030,7 +973,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1b: Company cannot request a payment card when enforcement prevents it',
-    { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-KEY:POT-6759'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-KEY:POT-6759', '@JIRA-EPIC:PO-977'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1055,7 +998,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1a:  Company without amend payment terms permission does not see Request payment card',
-    { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-KEY:POT-6760'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1702'), '@JIRA-KEY:POT-6760', '@JIRA-EPIC:PO-977'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;

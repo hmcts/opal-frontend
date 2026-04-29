@@ -18,17 +18,18 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('ReviewSummaryComponent', () => {
+  let finesMacStateTemplate = structuredClone(FINES_REVIEW_SUMMARY_OFFENCE_MOCK);
+  let finesMacState = finesMacStateTemplate;
+
   beforeEach(() => {
     interceptOffences();
-  });
-
-  let finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };
-
-  afterEach(() => {
-    finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };
+    finesMacStateTemplate = structuredClone(FINES_REVIEW_SUMMARY_OFFENCE_MOCK);
+    finesMacState = finesMacStateTemplate;
   });
 
   const setupComponent = () => {
+    finesMacState = structuredClone(finesMacStateTemplate);
+
     mount(FinesMacOffenceDetailsReviewComponent, {
       providers: [
         provideHttpClient(),
@@ -64,7 +65,7 @@ describe('ReviewSummaryComponent', () => {
     '(AC.1)should render component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7461',
       ],
     },
@@ -81,12 +82,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-STORY:PO-545',
+          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        ,
         '@JIRA-KEY:POT-7462',
       ],
     },
@@ -124,12 +124,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-STORY:PO-545',
+          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        ,
         '@JIRA-KEY:POT-7463',
       ],
     },
@@ -186,12 +185,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-STORY:PO-545',
+          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        ,
         '@JIRA-KEY:POT-7464',
       ],
     },
@@ -263,12 +261,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-STORY:PO-545',
+          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        ,
         '@JIRA-KEY:POT-7465',
       ],
     },
@@ -372,12 +369,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-STORY:PO-545',
+          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        ,
         '@JIRA-KEY:POT-7466',
       ],
     },

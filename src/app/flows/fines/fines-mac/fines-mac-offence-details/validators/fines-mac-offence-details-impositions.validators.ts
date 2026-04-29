@@ -1,6 +1,7 @@
 import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { Validators } from '@angular/forms';
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
+import { finesMacOffenceDetailsPositiveAmountValidator } from './fines-mac-offence-details-positive-amount.validator';
 
 export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlValidation[] = [
   {
@@ -9,7 +10,7 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlVal
   },
   {
     controlName: 'fm_offence_details_amount_imposed',
-    validators: [Validators.required, amountValidator(18, 2)],
+    validators: [Validators.required, amountValidator(18, 2), finesMacOffenceDetailsPositiveAmountValidator()],
   },
   {
     controlName: 'fm_offence_details_amount_paid',
