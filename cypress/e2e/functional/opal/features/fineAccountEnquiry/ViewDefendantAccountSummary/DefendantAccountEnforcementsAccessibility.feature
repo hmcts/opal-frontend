@@ -1,11 +1,12 @@
 @JIRA-LABEL:account-enquiry
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Defendant account enforcement - Collection order Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
+  @JIRA-EPIC:PO-2472
   @JIRA-KEY:POT-5225
   Scenario: Check Change Collection Order status accessibility for an adult or youth account
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -27,6 +28,7 @@ Feature: Defendant account enforcement - Collection order Accessibility
     Then I should see the Change Collection Order status page
     And I check the page for accessibility
 
+  @JIRA-EPIC:PO-2472
   @JIRA-KEY:POT-5226
   Scenario: Check Change Collection Order status accessibility for an account with parent or guardian details
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -47,6 +49,7 @@ Feature: Defendant account enforcement - Collection order Accessibility
     Then I should see the Change Collection Order status page
     And I check the page for accessibility
 
+  @JIRA-EPIC:PO-2472
   @JIRA-KEY:POT-5227
   Scenario: Check Change Collection Order status accessibility for a company account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -65,3 +68,4 @@ Feature: Defendant account enforcement - Collection order Accessibility
     And I open the Change Collection Order status form
     Then I should see the Change Collection Order status page
     And I check the page for accessibility
+

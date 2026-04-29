@@ -51,14 +51,6 @@ function parseArgs() {
   };
 }
 
-function keyFor(test) {
-  return `${test.scope}:${test.file}:${test.line}:${test.qualifiedTitle}`;
-}
-
-function rel(file) {
-  return path.relative(ROOT, file).split(path.sep).join('/');
-}
-
 function formatTest(test) {
   return `${test.scope} ${test.file}:${test.line} ${test.qualifiedTitle}`;
 }
@@ -73,7 +65,10 @@ function uniqueWritableTargets(tests) {
   const unique = [];
 
   for (const test of tests) {
-    const dedupeKey = `${test.scope}:${test.file}:${test.line}`;
+    const dedupeKey =
+      test.scope === 'functional' && test.tagEdit?.kind === 'functional_gherkin_block'
+        ? `${test.scope}:${test.file}:anchor:${test.tagEdit.anchorLine}`
+        : `${test.scope}:${test.file}:${test.line}`;
     if (seen.has(dedupeKey)) continue;
     seen.add(dedupeKey);
     unique.push(test);
@@ -117,20 +112,30 @@ function applyComponentPlaceholder(filePath, tests, placeholder) {
 function applyFunctionalPlaceholder(filePath, tests, placeholder) {
   const lines = fs.readFileSync(filePath, 'utf8').split(/\r?\n/);
   let written = 0;
+  const skipped = [];
 
-  for (const test of [...tests].sort((a, b) => b.line - a.line)) {
-    const scenarioIndex = test.line - 1;
-    let tagLineIndex = scenarioIndex - 1;
+  for (const test of [...tests].sort((a, b) => {
+    const aAnchor = a.tagEdit?.kind === 'functional_gherkin_block' ? a.tagEdit.anchorLine : a.line;
+    const bAnchor = b.tagEdit?.kind === 'functional_gherkin_block' ? b.tagEdit.anchorLine : b.line;
+    return bAnchor - aAnchor;
+  })) {
+    if (!test.tagEdit || test.tagEdit.kind !== 'functional_gherkin_block') {
+      skipped.push({ test, reason: 'functional test is missing a Gherkin anchor line' });
+      continue;
+    }
+
+    const anchorIndex = test.tagEdit.anchorLine - 1;
+    let tagLineIndex = anchorIndex - 1;
 
     while (tagLineIndex >= 0 && lines[tagLineIndex].trim().startsWith('@')) {
       tagLineIndex--;
     }
 
     const firstTagIndex = tagLineIndex + 1;
-    const hasTagBlock = firstTagIndex < scenarioIndex && lines[firstTagIndex].trim().startsWith('@');
+    const hasTagBlock = firstTagIndex < anchorIndex && lines[firstTagIndex].trim().startsWith('@');
 
     if (hasTagBlock) {
-      const lastTagIndex = scenarioIndex - 1;
+      const lastTagIndex = anchorIndex - 1;
       if (!lines[lastTagIndex].includes(placeholder)) {
         lines[lastTagIndex] = `${lines[lastTagIndex]} ${placeholder}`.trimEnd();
         written++;
@@ -138,13 +143,13 @@ function applyFunctionalPlaceholder(filePath, tests, placeholder) {
       continue;
     }
 
-    lines.splice(scenarioIndex, 0, placeholder);
+    lines.splice(anchorIndex, 0, placeholder);
     written++;
   }
 
   if (written > 0) fs.writeFileSync(filePath, `${lines.join('\n')}\n`, 'utf8');
 
-  return { written, skipped: [] };
+  return { written, skipped };
 }
 
 function writePlaceholders(tests, placeholder) {

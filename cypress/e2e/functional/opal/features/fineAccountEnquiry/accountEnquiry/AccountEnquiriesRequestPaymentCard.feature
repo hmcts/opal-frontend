@@ -26,6 +26,7 @@ Feature: Account Enquiries – Request Payment Card
       Then I should see the page header contains "Mr Jamie PAYCARDREQUEST{uniqUpper}"
       When I go to the Payment terms section
 
+@JIRA-EPIC:PO-977
     @JIRA-STORY:PO-1803 @JIRA-KEY:POT-5220
     Scenario: Confirming a payment card request shows success and updates the last requested date
       #AC1bii/AC1biii - Successfully requesting a payment card shows a success message and updates the last requested date
@@ -38,3 +39,4 @@ Feature: Account Enquiries – Request Payment Card
       When I start a payment card request
       And I confirm the payment card request
       Then I should see the payment card request already exists error
+
