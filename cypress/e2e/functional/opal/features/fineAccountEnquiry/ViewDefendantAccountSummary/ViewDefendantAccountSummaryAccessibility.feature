@@ -1,11 +1,12 @@
 @JIRA-LABEL:account-enquiry
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 @JIRA-STORY:PO-777
 Feature: View Defendant Account Summary - Add Comments Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
+
 
   @JIRA-STORY:PO-777 @JIRA-KEY:POT-4974
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
@@ -37,6 +38,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
       | Line 3  | Line3 Test   |
     Then I check the page for accessibility
 
+
   @JIRA-KEY:POT-4975
   Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a company account then check accessibility
@@ -64,6 +66,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
       | Line 2  | Company Line2   |
       | Line 3  | Company Line3   |
     Then I check the page for accessibility
+
 
   @JIRA-KEY:POT-4976
   Scenario: Check View Defendant Parent Guardian Account Summary and Comments Accessibility with Axe-Core
@@ -123,3 +126,4 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     Then I should see the account header contains "Mrs Mina ALLYMINOR{uniqUpper}"
     And the At a glance tab should be selected by default
     And I check the page for accessibility
+

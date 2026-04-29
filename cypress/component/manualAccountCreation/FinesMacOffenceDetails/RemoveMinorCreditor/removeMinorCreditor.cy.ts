@@ -66,7 +66,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     '(AC.1) should render the component',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7448',
       ],
     },
@@ -78,7 +78,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     'AC.1) should render all elements on the page',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7449',
       ],
     },
@@ -110,7 +110,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     'AC.2) should load all keys and elements with correct text',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7450',
       ],
     },
@@ -134,7 +134,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     'AC.2) should load all fields with the correct values',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7451',
       ],
     },
@@ -159,7 +159,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     'AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-STORY:PO-545'),
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414', '@JIRA-EPIC:PO-545'),
         '@JIRA-KEY:POT-7452',
       ],
     },

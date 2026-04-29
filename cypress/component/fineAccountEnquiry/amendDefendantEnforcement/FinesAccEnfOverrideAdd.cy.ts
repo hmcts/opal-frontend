@@ -481,7 +481,7 @@ describe(
   () => {
     it(
       'AC1a, AC1b. Should render the form with title (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5667'] },
+      { tags: ['@JIRA-KEY:POT-5667', '@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -492,7 +492,7 @@ describe(
 
     it(
       'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5668'] },
+      { tags: ['@JIRA-KEY:POT-5668', '@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -519,7 +519,7 @@ describe(
 
     it(
       'Should support forward keyboard navigation across the add enforcement override form (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5669'] },
+      { tags: ['@JIRA-KEY:POT-5669', '@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -537,7 +537,7 @@ describe(
 
     it(
       'AC2. Enforcer dropdown for valid override (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5670'] },
+      { tags: ['@JIRA-KEY:POT-5670', '@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -568,7 +568,7 @@ describe(
 
     it(
       'AC3. LJA dropdown for valid override (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5671'] },
+      { tags: ['@JIRA-KEY:POT-5671', '@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -586,7 +586,7 @@ describe(
 
     it(
       'AC4a. Error when no enforcement override is selected (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5672'] },
+      { tags: ['@JIRA-KEY:POT-5672', '@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -602,7 +602,7 @@ describe(
 
     it(
       'AC4b. Error when no enforcer is selected (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5673'] },
+      { tags: ['@JIRA-KEY:POT-5673', '@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -625,7 +625,7 @@ describe(
 
     it(
       'AC4c. Error when no LJA is selected (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5674'] },
+      { tags: ['@JIRA-KEY:POT-5674', '@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -647,7 +647,7 @@ describe(
 
     it(
       'AC5. Valid submission returns to Enforcement tab with success banner and new override panel (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5675'] },
+      { tags: ['@JIRA-KEY:POT-5675', '@JIRA-EPIC:PO-1675'] },
       () => {
         const { accountId } = parentGuardianSetup();
         const updatedEnforcementMock = structuredClone(
@@ -711,7 +711,7 @@ describe(
 
     it(
       'AC6a. Cancel without changes returns away from the add override page without confirmation (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5676'] },
+      { tags: ['@JIRA-KEY:POT-5676', '@JIRA-EPIC:PO-1675'] },
       () => {
         parentGuardianSetup();
 
@@ -733,7 +733,7 @@ describe(
 
     it(
       'AC6b. Cancel after selecting a value shows confirmation before navigating away (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5677'] },
+      { tags: ['@JIRA-KEY:POT-5677', '@JIRA-EPIC:PO-1675'] },
       () => {
         parentGuardianSetup();
 
@@ -762,7 +762,7 @@ describe(
 
     it(
       'AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5678'] },
+      { tags: ['@JIRA-KEY:POT-5678', '@JIRA-EPIC:PO-1675'] },
       () => {
         parentGuardianSetup();
 

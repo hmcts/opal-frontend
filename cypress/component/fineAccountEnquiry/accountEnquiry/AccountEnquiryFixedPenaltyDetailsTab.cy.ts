@@ -78,7 +78,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC1b: Adult/Youth only - Fixed Penalty details tab, non-vehicle fixed penalty, partial view',
-    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6784'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6784', '@JIRA-EPIC:PO-1676'] },
     () => {
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
 
@@ -98,7 +98,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC1c: Adult/Youth only - Fixed Penalty details tab, show em-dash for missing fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6785'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6785', '@JIRA-EPIC:PO-1676'] },
     () => {
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
       fixedPenaltyDetailsMock.vehicle_fixed_penalty_flag = true;
@@ -161,7 +161,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC2: Company - Fixed Penalty details tab, non-vehicle fixed penalty, partial view',
-    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6787'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6787', '@JIRA-EPIC:PO-1676'] },
     () => {
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
 
@@ -181,7 +181,7 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it(
     'AC2: Company - Fixed Penalty details tab, show em-dash for missing fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6788'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-KEY:POT-6788', '@JIRA-EPIC:PO-1676'] },
     () => {
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
       fixedPenaltyDetailsMock.vehicle_fixed_penalty_flag = true;

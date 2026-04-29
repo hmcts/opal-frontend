@@ -29,7 +29,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC1a-b. should render the search for an account screen and companies tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6970'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6970', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -62,7 +62,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3a. should show error for non-alphabetical company name',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6971'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6971', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
@@ -84,7 +84,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3b. should show error for non-alphabetical address line 1',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6972'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6972', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
@@ -103,7 +103,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC3c. should show error for non-alphabetical post code',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6973'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6973', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODE?';
@@ -120,7 +120,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4a. should validate company name maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6974'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6974', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
@@ -136,7 +136,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4b. should validate address line 1 maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6975'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6975', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
@@ -152,7 +152,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC4c. should validate post code maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6976', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODES';
@@ -167,7 +167,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC5a. should validate post code maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-KEY:POT-6977', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODES';
@@ -182,7 +182,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC2a. Should validate company name field when "Alias" checkbox is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-6978'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-6978', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -196,7 +196,7 @@ describe('Search Account Component - Company', () => {
 
   it(
     'AC2b. Should validate company name field when "Search exact match" for company name is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-6979'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-6979', '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
