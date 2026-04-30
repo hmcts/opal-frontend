@@ -1,6 +1,8 @@
 export const FORMAT_CHECK = {
-  invalidFirstNames: "Parent or guardian's first name(s) must only contain letters",
-  invalidLastNames: "Parent or guardian's last name must only contain letters",
+  invalidFirstNames:
+    "Parent or guardian's first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)",
+  invalidLastNames:
+    "Parent or guardian's last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)",
   dateOfBirthInFuture: 'Enter a valid date of birth in the past',
   dateOfBirthInvalid: 'Enter date of birth in the format DD/MM/YYYY',
   addressLine1ContainsSpecialCharacters: 'Address line 1 must only contain letters or numbers',
@@ -42,16 +44,26 @@ export const ALIAS_LENGTH_VALIDATION = {
 };
 
 export const ALIAS_ALPHABETIC_VALIDATION = {
-  nonAlphaAliasOne: 'Alias 1 first name(s) must only contain letters',
-  nonAlphaAliasTwo: 'Alias 2 first name(s) must only contain letters',
-  nonAlphaAliasThree: 'Alias 3 first name(s) must only contain letters',
-  nonAlphaAliasFour: 'Alias 4 first name(s) must only contain letters',
-  nonAlphaAliasFive: 'Alias 5 first name(s) must only contain letters',
-  nonAlphaAliasLastNameOne: 'Alias 1 last name must only contain letters',
-  nonAlphaAliasLastNameTwo: 'Alias 2 last name must only contain letters',
-  nonAlphaAliasLastNameThree: 'Alias 3 last name must only contain letters',
-  nonAlphaAliasLastNameFour: 'Alias 4 last name must only contain letters',
-  nonAlphaAliasLastNameFive: 'Alias 5 last name must only contain letters',
+  nonAlphaAliasOne:
+    'Alias 1 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasTwo:
+    'Alias 2 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasThree:
+    'Alias 3 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasFour:
+    'Alias 4 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasFive:
+    'Alias 5 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasLastNameOne:
+    'Alias 1 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasLastNameTwo:
+    'Alias 2 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasLastNameThree:
+    'Alias 3 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasLastNameFour:
+    'Alias 4 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  nonAlphaAliasLastNameFive:
+    'Alias 5 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 };
 
 export const LENGTH_VALIDATION = {
