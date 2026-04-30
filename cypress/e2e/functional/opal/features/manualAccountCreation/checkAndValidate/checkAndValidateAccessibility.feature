@@ -8,12 +8,10 @@ Feature: Accessibility Tests for Check and Validate Screens
     And I open Create and Manage Draft Accounts
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-5002
   Scenario: Create and Manage landing page passes accessibility checks
     Then I check the page for accessibility
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-5003
   Scenario: Rejected tab is accessible for rejected draft account
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
@@ -25,19 +23,16 @@ Feature: Accessibility Tests for Check and Validate Screens
     And I check the page for accessibility
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-5004
   Scenario: Approved tab is accessible
     When I view the "Approved" tab on the Create and Manage Draft Accounts page
     Then I check the page for accessibility
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-5005
   Scenario: Deleted tab is accessible
     When I view the "Deleted" tab on the Create and Manage Draft Accounts page
     Then I check the page for accessibility
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-5006
   Scenario: Check and submit task list is accessible for rejected draft
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
@@ -50,7 +45,6 @@ Feature: Accessibility Tests for Check and Validate Screens
     And I check the page for accessibility
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-5007
   Scenario: Check account details page is accessible for rejected draft
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
@@ -63,7 +57,6 @@ Feature: Accessibility Tests for Check and Validate Screens
     And I check the page for accessibility
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-5008
   Scenario: Submitting a rejected draft for review shows confirmation
     Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |

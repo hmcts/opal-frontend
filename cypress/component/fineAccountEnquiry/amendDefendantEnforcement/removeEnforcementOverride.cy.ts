@@ -200,7 +200,7 @@ describe(
   () => {
     it(
       'AC1. Selecting Remove from the Enforcement tab navigates to the remove screen',
-      { tags: ['@JIRA-KEY:POT-6964'] },
+      { tags: [] },
       () => {
         const { accountId } = registerRemoveEnforcementOverrideIntercepts(buildIndividualHeaderMock());
 
@@ -216,7 +216,7 @@ describe(
 
     it(
       'AC1a, AC1b, AC1c. Should render the remove screen with the individual account identifier and override value',
-      { tags: ['@JIRA-KEY:POT-6965'] },
+      { tags: [] },
       () => {
         individualSetup();
 
@@ -227,7 +227,7 @@ describe(
 
     it(
       'AC2, AC2a, AC2b, AC2c. Yes - remove should clear the override, return to Enforcement and show a success banner',
-      { tags: ['@JIRA-KEY:POT-6966'] },
+      { tags: [] },
       () => {
         const { accountId } = individualSetup();
         const updatedEnforcementMock = buildRemovedEnforcementOverrideMock();
@@ -253,7 +253,7 @@ describe(
 
     it(
       'AC3, AC3a. No - cancel should return to the Enforcement tab without removing the override',
-      { tags: ['@JIRA-KEY:POT-6967'] },
+      { tags: [] },
       () => {
         const { navigateSpy } = mountRemoveEnforcementOverride('177A - Mr Robert THOMSON');
 
@@ -273,7 +273,7 @@ describe(
   () => {
     it(
       'AC1b. Should render the remove screen with the company account identifier',
-      { tags: ['@JIRA-KEY:POT-6968'] },
+      { tags: [] },
       () => {
         companySetup();
 
@@ -290,7 +290,7 @@ describe(
   () => {
     it(
       'AC1b. Should render the remove screen with the parent or guardian account identifier',
-      { tags: ['@JIRA-KEY:POT-6969'] },
+      { tags: [] },
       () => {
         parentGuardianSetup();
 

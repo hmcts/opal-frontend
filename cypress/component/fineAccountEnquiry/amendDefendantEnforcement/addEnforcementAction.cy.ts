@@ -48,7 +48,7 @@ describe(
   () => {
     it(
       'AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-KEY:POT-7684'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -105,7 +105,7 @@ describe(
 
     it(
       'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-KEY:POT-7685'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -158,7 +158,7 @@ describe(
 
     it(
       'AC3,a,b,d, Individual: Account meets conditions to cause info banner update',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-KEY:POT-7686'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -205,7 +205,7 @@ describe(
 
     it(
       'AC4,a,ai,aii, AC5,a, Individual: Enforcement actions dropdown confirmation',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-KEY:POT-7687'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -284,7 +284,7 @@ describe(
 
     it(
       'AC6,a Individual: Cancel path no warning',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-KEY:POT-7688'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -314,7 +314,7 @@ describe(
 
     it(
       'AC6,b Individual: Cancel path/warning',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-KEY:POT-7689'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -357,7 +357,7 @@ describe(
 
     it(
       'AC2b, 3c. Company: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1834', '@JIRA-KEY:POT-7690'] },
+      { tags: ['@JIRA-STORY:PO-1834'] },
       () => {
         let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
         headerMock.debtor_type = 'Defendant';

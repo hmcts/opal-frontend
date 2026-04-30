@@ -44,7 +44,7 @@ describe('FinesMacDeleteAccountConfirmation', () => {
 
   it(
     '(AC.2)should render the component and have all elements',
-    { tags: [...buildTags('@JIRA-STORY:PO-518'), '@JIRA-KEY:POT-7399', '@JIRA-EPIC:PO-545'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-518'), '@JIRA-EPIC:PO-545'] },
     () => {
       setupComponent();
 
