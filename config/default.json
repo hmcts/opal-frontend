@@ -74,7 +74,7 @@
     "url": "https://login.microsoftonline.com/"
   },
   "opal-user-service-urls": {
-    "userStateUrl": "/users/0/state",
+    "userStateUrl": "/v2/users/0/state",
     "addUserUrl": "/users",
     "updateUserUrl": "/users"
   }

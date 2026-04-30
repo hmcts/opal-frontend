@@ -24,6 +24,7 @@ import bootstrap from './src/main.server';
 import {
   getRoutesConfig,
   configureApiProxyRoutes,
+  configureUserStateRoute,
   configureSession,
   configureCsrf,
   configureSecurityHeaders,
@@ -87,6 +88,7 @@ function app(): Express {
   const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration, proxyConfiguration } =
     getRoutesConfig();
 
+  configureUserStateRoute(server);
   configureApiProxyRoutes(server, proxyConfiguration);
 
   server.get('/health', (_req: Request, res: Response) => {
