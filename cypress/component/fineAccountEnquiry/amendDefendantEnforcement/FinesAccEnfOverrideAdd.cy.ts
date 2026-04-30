@@ -153,7 +153,7 @@ describe(
   'Add Enforcement Override - Adult/Youth',
   { tags: ['@JIRA-STORY:PO-1850', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with title', { tags: ['@JIRA-KEY:POT-5653'] }, () => {
+    it('AC1a, AC1b. Should render the form with title', { tags: [] }, () => {
       mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.title).should('contain.text', '177A - Mr Robert THOMSON');
@@ -162,7 +162,7 @@ describe(
 
     it(
       'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link',
-      { tags: ['@JIRA-KEY:POT-5654'] },
+      { tags: [] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -189,7 +189,7 @@ describe(
 
     it(
       'Should support forward keyboard navigation across the add enforcement override form',
-      { tags: ['@JIRA-KEY:POT-5655'] },
+      { tags: [] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -205,7 +205,7 @@ describe(
       },
     );
 
-    it('AC2. Enforcer dropdown for valid override', { tags: ['@JIRA-KEY:POT-5656'] }, () => {
+    it('AC2. Enforcer dropdown for valid override', { tags: [] }, () => {
       mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -232,7 +232,7 @@ describe(
       cy.get(ENF_OVR.dropdownOptions).contains('The DWP (3)').should('exist');
     });
 
-    it('AC3. LJA dropdown for valid override', { tags: ['@JIRA-KEY:POT-5657'] }, () => {
+    it('AC3. LJA dropdown for valid override', { tags: [] }, () => {
       mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -248,7 +248,7 @@ describe(
 
     it(
       'AC4a. Error when no enforcement override is selected (Add Enforcement Override - Adult/Youth)',
-      { tags: ['@JIRA-KEY:POT-5658'] },
+      { tags: [] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
@@ -262,7 +262,7 @@ describe(
       },
     );
 
-    it('AC4b. Error when no enforcer is selected', { tags: ['@JIRA-KEY:POT-5659'] }, () => {
+    it('AC4b. Error when no enforcer is selected', { tags: [] }, () => {
       mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -281,7 +281,7 @@ describe(
         .should('contain.text', 'Select an enforcer');
     });
 
-    it('AC4c. Error when no LJA is selected', { tags: ['@JIRA-KEY:POT-5660'] }, () => {
+    it('AC4c. Error when no LJA is selected', { tags: [] }, () => {
       mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
       cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
@@ -301,7 +301,7 @@ describe(
 
     it(
       'AC5. Valid submission returns to Enforcement tab with success banner and new override panel',
-      { tags: ['@JIRA-KEY:POT-5661'] },
+      { tags: [] },
       () => {
         const { accountId } = commonSetup();
         const updatedEnforcementMock = structuredClone(
@@ -365,7 +365,7 @@ describe(
 
     it(
       'AC6a. Cancel without changes returns away from the add override page without confirmation',
-      { tags: ['@JIRA-KEY:POT-5662'] },
+      { tags: [] },
       () => {
         commonSetup();
 
@@ -387,7 +387,7 @@ describe(
 
     it(
       'AC6b. Cancel after selecting a value shows confirmation before navigating away (Add Enforcement Override - Adult/Youth)',
-      { tags: ['@JIRA-KEY:POT-5663'] },
+      { tags: [] },
       () => {
         commonSetup();
 
@@ -416,7 +416,7 @@ describe(
 
     it(
       'AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page',
-      { tags: ['@JIRA-KEY:POT-5664'] },
+      { tags: [] },
       () => {
         commonSetup();
 
@@ -448,7 +448,7 @@ describe(
   'Add Enforcement Override - Company',
   { tags: ['@JIRA-STORY:PO-1867', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1a, AC1b. Should render the form with company title', { tags: ['@JIRA-KEY:POT-5665'] }, () => {
+    it('AC1a, AC1b. Should render the form with company title', { tags: [] }, () => {
       mountAddEnforcementOverrideForm('177A - Test Org Ltd');
 
       cy.get(ENF_OVR.title).should('contain.text', '177A - Test Org Ltd');
@@ -457,7 +457,7 @@ describe(
 
     it(
       'Should support forward keyboard navigation across the company add enforcement override form',
-      { tags: ['@JIRA-LABEL:accessibility', '@JIRA-KEY:POT-5666'] },
+      { tags: ['@JIRA-LABEL:accessibility'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Test Org Ltd');
 
@@ -481,7 +481,7 @@ describe(
   () => {
     it(
       'AC1a, AC1b. Should render the form with title (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5667', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -492,7 +492,7 @@ describe(
 
     it(
       'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5668', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -519,7 +519,7 @@ describe(
 
     it(
       'Should support forward keyboard navigation across the add enforcement override form (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5669', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -537,7 +537,7 @@ describe(
 
     it(
       'AC2. Enforcer dropdown for valid override (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5670', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -568,7 +568,7 @@ describe(
 
     it(
       'AC3. LJA dropdown for valid override (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5671', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -586,7 +586,7 @@ describe(
 
     it(
       'AC4a. Error when no enforcement override is selected (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5672', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -602,7 +602,7 @@ describe(
 
     it(
       'AC4b. Error when no enforcer is selected (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5673', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -625,7 +625,7 @@ describe(
 
     it(
       'AC4c. Error when no LJA is selected (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5674', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         mountAddEnforcementOverrideForm('177A - Mr Roberto THOMSON');
 
@@ -647,7 +647,7 @@ describe(
 
     it(
       'AC5. Valid submission returns to Enforcement tab with success banner and new override panel (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5675', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         const { accountId } = parentGuardianSetup();
         const updatedEnforcementMock = structuredClone(
@@ -711,7 +711,7 @@ describe(
 
     it(
       'AC6a. Cancel without changes returns away from the add override page without confirmation (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5676', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         parentGuardianSetup();
 
@@ -733,7 +733,7 @@ describe(
 
     it(
       'AC6b. Cancel after selecting a value shows confirmation before navigating away (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5677', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         parentGuardianSetup();
 
@@ -762,7 +762,7 @@ describe(
 
     it(
       'AC6c. Cancel after selecting a value and dismissing the confirmation keeps the user on the page (Add Enforcement Override - Parent/Guardian)',
-      { tags: ['@JIRA-KEY:POT-5678', '@JIRA-EPIC:PO-1675'] },
+      { tags: ['@JIRA-EPIC:PO-1675'] },
       () => {
         parentGuardianSetup();
 

@@ -13,13 +13,11 @@ Feature: Accessibility Tests for Fixed Penalty Screens
     When I start a fixed penalty account for business unit "West London", defendant type "<defendant_type>" and originator type "New"
     Then I check the page for accessibility
     @JIRA-EPIC:PO-2472
-    @JIRA-KEY:POT-5108
     Examples: Adult or youth only
       | defendant_type      |
       | Adult or youth only |
 
     @JIRA-EPIC:PO-2472
-    @JIRA-KEY:POT-5109
     Examples: Company
       | defendant_type |
       | Company        |

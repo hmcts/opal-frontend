@@ -23,7 +23,6 @@ Feature: Account Enquiries - Amend Payment Terms Accessibility
       | account.payment_terms.effective_date            | 2025-05-30                |
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-4973
   Scenario: Amend payment terms page accessibility
     When I search for the account by last name "AmendPayTerms{uniq}" and open the latest result
     And I go to the Payment terms tab
