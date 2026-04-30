@@ -150,13 +150,24 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should display error messages for incorrect format and special characters',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7404'] },
+    '(AC.1, 6, 8) should display error messages for incorrect format and special characters',
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-272',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-280',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7404',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       const incorrectData = {
-        fm_employer_details_employer_company_name: 'John Maddy & co., Limited company',
+        fm_employer_details_employer_company_name: '©µ±ö€•',
         fm_employer_details_employer_reference: 'XNJ#5567',
         fm_employer_details_employer_email_address: 'test-test-com',
         fm_employer_details_employer_telephone_number: '0123 456 789#',
@@ -323,14 +334,25 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
 
   it(
-    '(AC.7) should allow for form submission with valid data',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7412'] },
+    '(AC.7, 6) should allow for form submission with valid data',
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-272',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-280',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7412',
+      ],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       finesMacState.employerDetails.formData = {
-        fm_employer_details_employer_company_name: 'Test Employer',
+        fm_employer_details_employer_company_name: " Aa0'!#$%&()*+,-./<>",
         fm_employer_details_employer_reference: '1234567890',
         fm_employer_details_employer_email_address: 'test@test.com',
         fm_employer_details_employer_telephone_number: '07700900982',

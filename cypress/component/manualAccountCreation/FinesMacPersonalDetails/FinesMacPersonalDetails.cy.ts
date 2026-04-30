@@ -3,6 +3,7 @@ import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/
 import {
   FORMAT_CHECK,
   MAIN_PERSONAL_DETAILS,
+  ALIAS_ALLOWED_CHARACTER_VALIDATION,
   ALIAS_PERSONAL_DETAILS,
   LENGTH_VALIDATION,
   CORRECTION_TEST_MESSAGES,
@@ -556,6 +557,68 @@ describe('FinesMacPersonalDetailsComponent', () => {
           .type(`alias${i + 1}`, { delay: 0 })
           .should('have.value', `ALIAS${i + 1}`);
       }
+    },
+  );
+
+  it(
+    '(AC.1, 2, 3, 8) Defendant first & last name allows single-byte ASCII characters',
+    { tags: [...buildTags('@JIRA-EPIC:PO-2219', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit')] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+      cy.get(DOM_ELEMENTS.lastNameInput).clear().type(" Aa0'!#$%&()*+,-./<>");
+      cy.get(DOM_ELEMENTS.firstNamesInput).clear().type(" Aa0'!#$%&()*+,-./<>");
+
+      cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'not.contain',
+        "Defendant's first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas",
+      );
+      cy.get(DOM_ELEMENTS.firstNameError).should('not.exist');
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'not.contain',
+        "Defendant's last name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas",
+      );
+      cy.get(DOM_ELEMENTS.lastNameError).should('not.exist');
+    },
+  );
+
+  it(
+    '(AC.1, 2, 3, 8) should validate type check to ensure name fields does not allow non-single-byte ASCII characters',
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-345',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-365',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7337',
+      ],
+    },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly', (finesMacState) => {
+        finesMacState.personalDetails.formData.fm_personal_details_forenames = '©µ±ö€•';
+        finesMacState.personalDetails.formData.fm_personal_details_surname = '©µ±ö€•';
+        finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
+
+        cy.get(DOM_ELEMENTS.aliasAdd).should('be.checked');
+
+        for (let i = 0; i < 5; i++) {
+          finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
+            [`fm_personal_details_alias_forenames_${i}`]: '©µ±ö€•',
+            [`fm_personal_details_alias_surname_${i}`]: '©µ±ö€•',
+          });
+        }
+
+        cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+        for (const [, value] of Object.entries(ALIAS_ALLOWED_CHARACTER_VALIDATION)) {
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+        }
+      });
     },
   );
 });
