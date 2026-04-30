@@ -79,9 +79,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it(
     'should render the ParentGuardianDetails component',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-364', '@JIRA-STORY:PO-436', '@JIRA-STORY:PO-569'), '@JIRA-EPIC:PO-344',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-364', '@JIRA-STORY:PO-436', '@JIRA-STORY:PO-569'), '@JIRA-EPIC:PO-344'],
     },
     () => {
       setupComponent(null, 'pgToPay');
@@ -92,9 +90,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it(
     '(AC.1) should load all elements on the screen correctly (FinesMacParentGuardianDetailsComponent)',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-364', '@JIRA-STORY:PO-436', '@JIRA-STORY:PO-569'), '@JIRA-EPIC:PO-344',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-364', '@JIRA-STORY:PO-436', '@JIRA-STORY:PO-569'), '@JIRA-EPIC:PO-344'],
     },
     () => {
       setupComponent(null, 'pgToPay');

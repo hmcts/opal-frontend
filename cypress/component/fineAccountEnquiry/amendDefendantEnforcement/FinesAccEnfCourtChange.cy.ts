@@ -262,16 +262,12 @@ describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS },
     },
   );
 
-  it(
-    'AC3a. Individual: shows validation errors when no enforcement court is selected',
-    { tags: [] },
-    () => {
-      mountChangeEnforcementCourtForm(buildIndividualHeaderMock());
-      submitForm();
+  it('AC3a. Individual: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
+    mountChangeEnforcementCourtForm(buildIndividualHeaderMock());
+    submitForm();
 
-      assertErrors();
-    },
-  );
+    assertErrors();
+  });
 });
 
 describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_TAGS }, () => {
@@ -289,16 +285,12 @@ describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_T
     },
   );
 
-  it(
-    'AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected',
-    { tags: [] },
-    () => {
-      mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
-      submitForm();
+  it('AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
+    mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
+    submitForm();
 
-      assertErrors();
-    },
-  );
+    assertErrors();
+  });
 });
 
 describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
@@ -316,14 +308,10 @@ describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
     },
   );
 
-  it(
-    'AC3a. Company: shows validation errors when no enforcement court is selected',
-    { tags: [] },
-    () => {
-      mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
-      submitForm();
+  it('AC3a. Company: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
+    mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
+    submitForm();
 
-      assertErrors();
-    },
-  );
+    assertErrors();
+  });
 });

@@ -66,16 +66,12 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
   };
 
-  it(
-    'should render the component for AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
+  it('should render the component for AY', { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
 
-      // Verify the component is rendered
-      cy.get(L.app).should('exist');
-    },
-  );
+    // Verify the component is rendered
+    cy.get(L.app).should('exist');
+  });
 
   it(
     'should not show the error summary on initial load for AY',
