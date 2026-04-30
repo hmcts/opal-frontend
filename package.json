@@ -87,7 +87,7 @@
     "@hmcts/info-provider": "^1.1.0",
     "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
-    "@hmcts/opal-frontend-common": "^0.0.72",
+    "@hmcts/opal-frontend-common": "^0.0.73",
     "@hmcts/opal-frontend-common-node": "^0.0.29",
     "@hmcts/properties-volume": "^1.1.0",
     "@hmcts/zephyr-automation-nodejs": "0.0.7",
@@ -145,8 +145,8 @@
     "@types/luxon": "^3.4.2",
     "@types/node": "^24.0.0",
     "@types/session-file-store": "^1.2.5",
-    "@typescript-eslint/eslint-plugin": "8.58.2",
-    "@typescript-eslint/parser": "8.58.2",
+    "@typescript-eslint/eslint-plugin": "8.59.1",
+    "@typescript-eslint/parser": "8.59.1",
     "@vitest/coverage-v8": "^4.0.8",
     "axe-core": "^4.8.4",
     "browser-sync": "^3.0.2",
@@ -173,7 +173,7 @@
     "typescript": "~6.0.0",
     "vitest": "^4.0.8"
   },
-  "packageManager": "yarn@4.13.0",
+  "packageManager": "yarn@4.14.1",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },

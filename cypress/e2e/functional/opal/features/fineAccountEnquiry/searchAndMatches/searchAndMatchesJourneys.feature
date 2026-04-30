@@ -8,6 +8,7 @@ Feature: Account Search and Matches - End-to-end journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
+
   @R1B @JIRA-STORY:PO-705 @JIRA-STORY:PO-706 @JIRA-STORY:PO-717 @JIRA-DEFECT:PO-3541 @JIRA-KEY:POT-4948
   Scenario: Search for an individual defendant account and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -39,6 +40,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "JOURNEYIND{uniqUpper}"
 
+
   @R1B @JIRA-STORY:PO-712 @JIRA-STORY:PO-706 @JIRA-STORY:PO-707 @JIRA-KEY:POT-4949
   Scenario: Search for a company defendant account and open the matching record
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -64,6 +66,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the search results
     Then I should see the account header contains "Journey Co {uniq}"
 
+
   @R1B @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-KEY:POT-4950
   Scenario: Search for a minor creditor account and review the matching results
     Given a published account exists with an individual minor creditor:
@@ -85,6 +88,7 @@ Feature: Account Search and Matches - End-to-end journeys
       | Name           | JourneyMinor{uniq}, Mina |
       | Address line 1 | 1 High Street            |
 
+
   @R1B @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-KEY:POT-4951
   Scenario: Search for a company minor creditor account and review the matching results
     Given a published account exists with a company minor creditor:
@@ -103,6 +107,7 @@ Feature: Account Search and Matches - End-to-end journeys
     And I see the Minor creditors search results:
       | Name           | Journey Minor Co {uniq} |
       | Address line 1 | 2 High Street           |
+
 
   @R1B @JIRA-STORY:PO-709 @JIRA-STORY:PO-706 @JIRA-KEY:POT-4952
   Scenario: Search by prosecutor case reference and review results across defendant tabs
@@ -139,6 +144,7 @@ Feature: Account Search and Matches - End-to-end journeys
     When I open the latest matching result from the Companies search results
     Then I should see the account header contains "Journey Ref Co {uniq}"
 
+  @JIRA-EPIC:PO-704
   @R1B @JIRA-STORY:PO-706 @JIRA-KEY:POT-4953
   Scenario: Search by account number and open the matching record
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -227,3 +233,4 @@ Feature: Account Search and Matches - End-to-end journeys
       | Account | LEGACY_ACCOUNT_NUMBER |
     When I open the latest matching result from the search results
     Then I should see the account summary header contains "LEGACY_ACCOUNT_SUMMARY_HEADER"
+

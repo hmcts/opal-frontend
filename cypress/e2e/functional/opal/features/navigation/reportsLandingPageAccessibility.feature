@@ -1,5 +1,5 @@
 @JIRA-LABEL:navigation
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Reports landing page navigation
   Background:
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"

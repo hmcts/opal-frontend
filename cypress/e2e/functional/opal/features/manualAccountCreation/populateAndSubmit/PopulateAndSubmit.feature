@@ -4,6 +4,7 @@ Feature: Manual account creation - Create Draft Account
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
 
+  @JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2763
   #AC-6 click cancel
   @JIRA-KEY:POT-5228
@@ -12,6 +13,7 @@ Feature: Manual account creation - Create Draft Account
     And I begin entering details on the Originator Type page
     And I cancel without entering data
 
+  @JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2763
   #AC-5 click cancel without entering details
   @JIRA-KEY:POT-5229
@@ -19,6 +21,7 @@ Feature: Manual account creation - Create Draft Account
     When I open Manual Account Creation
     Then I cancel without entering data
     Then I should see the header containing text "Search for an account"
+
 
   @JIRA-STORY:PO-1448 @JIRA-STORY:PO-1638 @JIRA-STORY:PO-1872 @JIRA-KEY:POT-5230
   Scenario: Mixed creditors offence review shows correct totals and summary
@@ -66,6 +69,7 @@ Feature: Manual account creation - Create Draft Account
     When I return to account details from offence details
     Then the "Offence details" task status is "Provided"
 
+
   @JIRA-STORY:PO-1448 @JIRA-STORY:PO-1638 @JIRA-STORY:PO-1872 @JIRA-KEY:POT-5231
   Scenario: Minor creditor summary displays captured address and BACS details
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and I view the "Offence details" task
@@ -98,6 +102,7 @@ Feature: Manual account creation - Create Draft Account
       | Account number    | 12345678                   |
       | Payment reference | REF                        |
 
+
   @JIRA-STORY:PO-1448 @JIRA-STORY:PO-1638 @JIRA-STORY:PO-1872 @JIRA-KEY:POT-5232
   Scenario: Impositions with amounts recorded show remove links for each row
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and I view the "Offence details" task
@@ -112,6 +117,7 @@ Feature: Manual account creation - Create Draft Account
       | 1          |
       | 2          |
       | 3          |
+
 
 
   @JIRA-STORY:PO-1450 @JIRA-STORY:PO-1638 @JIRA-KEY:POT-5233
@@ -154,6 +160,7 @@ Feature: Manual account creation - Create Draft Account
     Then I see the following values in the Payment details fields:
       | Field             | Value |
       | Payment reference | REF   |
+
 
   @JIRA-STORY:PO-1450 @JIRA-STORY:PO-1638 @JIRA-KEY:POT-5234
   Scenario: Submitting a company manual account with a minor creditor shows the correct review summaries
@@ -210,6 +217,7 @@ Feature: Manual account creation - Create Draft Account
 
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
+
 
   @JIRA-STORY:PO-1449 @JIRA-STORY:PO-1638 @JIRA-KEY:POT-5235
   Scenario: Capitalisation is applied for parent or guardian, defendant and employer details
@@ -297,6 +305,7 @@ Feature: Manual account creation - Create Draft Account
       | national insurance number | AB122398B        |
     And returning to account details the "Personal details" task the status is "Provided"
 
+  @JIRA-EPIC:PO-2219
   @JIRA-STORY:PO-1449 @JIRA-KEY:POT-5236
   Scenario: Capitalisation is applied for defendant and employer details without parent or guardian
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
@@ -344,6 +353,7 @@ Feature: Manual account creation - Create Draft Account
       | make and model            | FORD FOCUS       |
       | registration number       | AB12 CDE         |
     And returning to account details the "Personal details" task the status is "Provided"
+
 
 
   @JIRA-STORY:PO-1449 @JIRA-STORY:PO-1638 @JIRA-KEY:POT-5237
@@ -434,6 +444,7 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see the following text on the page "You've submitted this account for review"
 
+  @JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2793 @JIRA-KEY:POT-5238
   Scenario: A checker approves a New account and defendant_accounts.originator_type is NEW
     When I open Manual Account Creation
@@ -445,6 +456,7 @@ Feature: Manual account creation - Create Draft Account
     Then the latest draft account create request should include originator type "NEW"
     And I see the following text on the page "You've submitted this account for review"
 
+  @JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2793 @JIRA-KEY:POT-5239
   Scenario: A checker approves a Transfer in from England or Wales account and defendant_accounts.originator_type is TFO
     When I open Manual Account Creation
@@ -463,11 +475,13 @@ Feature: Manual account creation - Create Draft Account
     Then I should see the header containing text '<Create account header>'
     When I click the back link on create account page I return to Create or Transfer In page - No data retained
 
+    @JIRA-EPIC:PO-2750
     @JIRA-KEY:POT-5240
     Examples: Transfer in
       | Originator type | Create account header |
       | Transfer in     | Transfer in           |
 
+    @JIRA-EPIC:PO-2750
     @JIRA-KEY:POT-5241
     Examples: New
       | Originator type | Create account header |
@@ -481,16 +495,19 @@ Feature: Manual account creation - Create Draft Account
     Then I cancel create account choosing 'Ok'
     Then I should be on the dashboard
 
+    @JIRA-EPIC:PO-2750
     @JIRA-KEY:POT-5242
     Examples: without changes
       | Cancel journey state |
       | without changes      |
 
+    @JIRA-EPIC:PO-2750
     @JIRA-KEY:POT-5243
     Examples: with changes
       | Cancel journey state |
       | with changes         |
 
+  @JIRA-EPIC:PO-2750
   @JIRA-STORY:PO-2790 @JIRA-KEY:POT-5244
   Scenario: Conditional Caution shows Police and court details across task list, court details and check account details
     When I open Manual Account Creation from the dashboard
@@ -569,12 +586,15 @@ Feature: Manual account creation - Create Draft Account
     And I check the manual account details
     And I should see the entry type '<Entry type>' on the review account screen
 
+    @JIRA-EPIC:PO-2750
     @JIRA-KEY:POT-5245
     Examples: Transfer in
       | Originator type | Entry type                        |
       | Transfer in     | Transfer in from England or Wales |
 
+    @JIRA-EPIC:PO-2750
     @JIRA-KEY:POT-5246
     Examples: New
       | Originator type | Entry type  |
       | New             | New account |
+

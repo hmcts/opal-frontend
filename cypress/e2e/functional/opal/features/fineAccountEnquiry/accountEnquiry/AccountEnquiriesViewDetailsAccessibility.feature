@@ -1,10 +1,11 @@
 @JIRA-LABEL:account-enquiry
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Account Enquiries - View Account Details Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
+
 
   @JIRA-KEY:POT-5099
   @JIRA-STORY:PO-1943
@@ -33,6 +34,7 @@ Feature: Account Enquiries - View Account Details Accessibility
     Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
     And I check the page for accessibility
 
+
   @JIRA-KEY:POT-5100
   @JIRA-STORY:PO-1956
   Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
@@ -58,3 +60,4 @@ Feature: Account Enquiries - View Account Details Accessibility
     When I start converting the account to an individual account
     Then I should see the convert to individual confirmation screen for company "Accdetail comp{uniq}"
     And I check the page for accessibility
+

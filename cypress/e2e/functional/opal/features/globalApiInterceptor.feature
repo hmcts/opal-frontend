@@ -15,51 +15,61 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       Then the global error banner is displayed
       And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5032
       Examples: 400 response
         | errorCode |
         | 400       |
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5033
       Examples: 401 response
         | errorCode |
         | 401       |
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5034
       Examples: 403 response
         | errorCode |
         | 403       |
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5035
       Examples: 404 response
         | errorCode |
         | 404       |
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5036
       Examples: 406 response
         | errorCode |
         | 406       |
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5037
       Examples: 408 response
         | errorCode |
         | 408       |
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5038
       Examples: 415 response
         | errorCode |
         | 415       |
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5039
       Examples: 503 response
         | errorCode |
         | 503       |
 
+@JIRA-EPIC:PO-2219
       @JIRA-KEY:POT-5040
       Examples: 500 response
         | errorCode |
         | 500       |
 
+@JIRA-EPIC:PO-2141
     @JIRA-STORY:PO-2109 @JIRA-KEY:POT-5041
     Scenario: Global warning banner appears for retriable business units errors
       When I attempt to open Manual Account Creation and the business units request fails with a retriable 500 error
@@ -70,6 +80,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | operation id | OP12345                                          |
       And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
+@JIRA-EPIC:PO-2141
     @JIRA-STORY:PO-2109 @JIRA-KEY:POT-5042
     Scenario: Global warning banner appears for business units network failures
       When I attempt to open Manual Account Creation and the business units request fails due to a network error
@@ -78,6 +89,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message | You can try again. If the problem persists, contact the service desk. |
       And the global banner clears after refresh on the "Do you want to create a new account or transfer in?" page
 
+@JIRA-EPIC:PO-2141
     @JIRA-STORY:PO-2108 @JIRA-KEY:POT-5043
     Scenario: Internal Server Error page is displayed for non-retriable business units errors
       When I attempt to open Manual Account Creation and the business units request fails with a non-retriable 500 error
@@ -86,6 +98,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | header  | Sorry, there is a problem with the service |
         | message | Error code: OP67890.                       |
 
+@JIRA-EPIC:PO-2141
     @JIRA-STORY:PO-2110 @JIRA-KEY:POT-5044
     Scenario: Concurrency Failure page is displayed for business units concurrency errors
       When I attempt to open Manual Account Creation and the business units request fails with a non-retriable 409 error
@@ -95,6 +108,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message | Something else was changed while you were doing this.           |
         | message | Your changes have not been saved. You will need to start again. |
 
+@JIRA-EPIC:PO-2141
     @JIRA-STORY:PO-2111 @JIRA-KEY:POT-5045
     Scenario: Permission Denied page is displayed for business units permission errors
       When I attempt to open Manual Account Creation and the business units request fails with a non-retriable 403 error
@@ -111,6 +125,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     Background:
       Given I am on the Account Search page - Individuals form displayed by default
 
+@JIRA-EPIC:PO-2239
     @JIRA-STORY:PO-2224 @JIRA-KEY:POT-5046
     Scenario: Internal Server Error page is displayed for non-retriable account search errors
       When I attempt a Companies account search for reference "NOMATCH999" with a non-retriable 500 error
@@ -119,6 +134,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | header  | Sorry, there is a problem with the service |
         | message | Error code: OP67890.                       |
 
+@JIRA-EPIC:PO-2239
     @JIRA-STORY:PO-2223 @JIRA-KEY:POT-5047
     Scenario: Global warning banner is displayed for retriable account search errors
       When I attempt a Companies account search for reference "NOMATCH999" with a retriable 500 error
@@ -128,4 +144,5 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message      | Please try again later or contact the help desk. |
         | operation id | OP12345                                          |
       And the global banner clears after refresh on the "Search for an account" page
+
 

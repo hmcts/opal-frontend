@@ -143,7 +143,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
   it(
     '(AC2, AC2a, AC5a) should display tables in correct order and correct content for adult/youth',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7270'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7270', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
       cy.wait('@getOffenceByCjsCode');
@@ -208,7 +208,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
   it(
     '(AC2bi, AC5a) should display an em-dash for unpopulated fields (adult/youth only)',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7271'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7271', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
@@ -254,7 +254,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
   it(
     '(AC2, AC2a, AC5a) should display Welsh language preferences Business Unit supports Welsh (AdultOrYouthOnly)',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7272'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7272', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
@@ -271,7 +271,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
   it(
     '(AC2, AC2a, AC5b) should display Welsh language preferences when Business Unit supports Welsh (Company)',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7273'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7273', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
@@ -288,7 +288,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
   it(
     '(AC2, AC2a, AC5b) should display tables in correct order and correct content for company defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7274'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7274', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
@@ -331,7 +331,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
   it(
     '(AC2bi, AC5b) should display an em-dash for unpopulated fields in company defendant view',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7275'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-KEY:POT-7275', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
@@ -373,7 +373,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
   it(
     '(AC.1) Submit for Review button should be present at bottom of form - adultOrYouthOnly',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7276'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7276', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
@@ -384,7 +384,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   );
   it(
     '(AC.1a) should navigate to submit confirmation page on submit - adultOrYouthOnly',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7277'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7277', '@JIRA-EPIC:PO-855'] },
     () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
@@ -399,7 +399,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   );
   it(
     '(AC.1b) should have the correct payload based on the defendant type - adultOrYouthOnly',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7278'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7278', '@JIRA-EPIC:PO-855'] },
     () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
@@ -443,7 +443,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   );
   it(
     '(AC.1) Submit for Review button should be present at bottom of form - company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7279'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7279', '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
@@ -454,7 +454,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   );
   it(
     '(AC.1a) should navigate to submit confirmation page on submit - company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7280'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7280', '@JIRA-EPIC:PO-855'] },
     () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
@@ -469,7 +469,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   );
   it(
     '(AC.1b) should have the correct payload based on the defendant type - company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7281'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-KEY:POT-7281', '@JIRA-EPIC:PO-855'] },
     () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
