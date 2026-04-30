@@ -153,8 +153,9 @@ describe('FinesMacAccountDetailsComponent', () => {
     '(AC.1,AC.2,AC.2a,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-366', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524', '@JIRA-STORY:PO-2767'), '@JIRA-EPIC:PO-272',
-        ],
+        ...buildTags('@JIRA-STORY:PO-366', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524', '@JIRA-STORY:PO-2767'),
+        '@JIRA-EPIC:PO-272',
+      ],
     },
     () => {
       setupComponent(null);
@@ -189,9 +190,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5,AC.6)should load all elements on the screen correctly for AYPG',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-367', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524'), '@JIRA-EPIC:PO-344',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-367', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524'), '@JIRA-EPIC:PO-344'],
     },
     () => {
       setupComponent(null);
@@ -227,8 +226,9 @@ describe('FinesMacAccountDetailsComponent', () => {
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-362', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524', '@JIRA-STORY:PO-640'), '@JIRA-EPIC:PO-345',
-        ],
+        ...buildTags('@JIRA-STORY:PO-362', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524', '@JIRA-STORY:PO-640'),
+        '@JIRA-EPIC:PO-345',
+      ],
     },
     () => {
       setupComponent(null);

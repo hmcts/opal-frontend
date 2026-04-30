@@ -345,22 +345,18 @@ describe('Change Enforcement Override - Parent/Guardian', { tags: ['@JIRA-STORY:
     },
   );
 
-  it(
-    'AC4a. Parent/Guardian: error when no enforcement override is selected',
-    { tags: ['@JIRA-EPIC:PO-1675'] },
-    () => {
-      mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
+  it('AC4a. Parent/Guardian: error when no enforcement override is selected', { tags: ['@JIRA-EPIC:PO-1675'] }, () => {
+    mountChangeEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
-      clearEnforcementOverrideSelection();
-      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-      cy.get(ENF_OVR.addOverrideButton).click();
-      cy.get(ENF_OVR.errorSummary)
-        .should('exist')
-        .contains('There is a problem')
-        .next()
-        .should('contain.text', 'Select an enforcement override');
-    },
-  );
+    clearEnforcementOverrideSelection();
+    cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+    cy.get(ENF_OVR.addOverrideButton).click();
+    cy.get(ENF_OVR.errorSummary)
+      .should('exist')
+      .contains('There is a problem')
+      .next()
+      .should('contain.text', 'Select an enforcement override');
+  });
 
   it(
     'AC4b. Parent/Guardian: error when no enforcer is selected for an override that requires one',

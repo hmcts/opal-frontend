@@ -129,9 +129,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.1,AC.3,AC.4,)should load all elements on the screen correctly for adult or youth defendant types',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-471'), '@JIRA-EPIC:PO-272',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-471'), '@JIRA-EPIC:PO-272'],
     },
     () => {
       setupComponent('adultOrYouthOnly');
@@ -265,9 +263,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.1,AC.3,AC.4)Should load all elements on the screen correctly for AYPG defendant types',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-587', '@JIRA-STORY:PO-649'), '@JIRA-EPIC:PO-344',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-566', '@JIRA-STORY:PO-587', '@JIRA-STORY:PO-649'), '@JIRA-EPIC:PO-344'],
     },
     () => {
       setupComponent('pgToPay');
@@ -584,9 +580,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.2a) should allow payByDate to be entered via date picker for all defendant types',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -612,9 +606,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.3c) should allow startDate to be entered via date picker for all defendant types',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -670,9 +662,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.3ci))should handle "Pay in full" with past dates',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -691,8 +681,9 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.3cii)should handle "Pay in full" with future dates',
     {
       tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-2983'), '@JIRA-EPIC:PO-545',
-        ],
+        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-2983'),
+        '@JIRA-EPIC:PO-545',
+      ],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -712,9 +703,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.4ci) should handle "Instalments only" with past dates',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -733,9 +722,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.4cii) should handle "Instalments only" with future dates',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -754,9 +741,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.3Ci) should handle "Lump sum plus instalments" with past dates',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -775,9 +760,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.3Cii) should handle "Lump sum plus instalments" with future dates',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -796,9 +779,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.7,AC.8)should handle empty data for Pay by date',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -820,9 +801,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.5)should round lumpsum amount and instalment amount to .2 decimal place values',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -844,9 +823,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.11)should handle date Format error for pay in full',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -865,9 +842,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.11)should handle valid date Error for Pay in full',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -886,9 +861,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.9)should handle errors for Instalment',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -910,9 +883,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.13)should handle valid instalmentAmount error for instalment',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -931,9 +902,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.12) should handle valid InstalmentDateFormat error for instalment',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -952,9 +921,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.12) should handle valid date error for instalment',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -973,9 +940,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.10)should handle errors for Lump sum plus Instalment',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -996,9 +961,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.14) should have validations in place for validLumpSumAmount',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -1017,9 +980,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.14) should have validations in place for validLumpSumInstalmentAmount',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -1038,9 +999,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.12) should have validations in place for validLumpSumStartDateFormat',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {
@@ -1059,9 +1018,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it(
     '(AC.12) should have validations in place for validLumpSumStartDate',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545',
-        ],
+      tags: [...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       defendantTypes.forEach((defendantType) => {

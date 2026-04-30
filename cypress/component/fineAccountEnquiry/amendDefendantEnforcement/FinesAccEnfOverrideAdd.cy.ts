@@ -160,50 +160,42 @@ describe(
       cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
     });
 
-    it(
-      'AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link',
-      { tags: [] },
-      () => {
-        mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
+    it('AC1c, AC1d. Select an enforcement override dropdown, add override button and cancel link', { tags: [] }, () => {
+      mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
-        cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
-        cy.get(ENF_OVR.enfOverrideDropdown).click();
-        cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('DW').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('exist');
-        cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('exist');
+      cy.get(ENF_OVR.enfOverrideDropdown).click();
+      cy.get(ENF_OVR.dropdownOptions).contains('ABDC').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('AEOC').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTD').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('BWTU').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('CLAMPO').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('CWN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('DW').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('FSN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('MAN').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('NBWT').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('REGF').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('SUMA').should('exist');
+      cy.get(ENF_OVR.dropdownOptions).contains('TFOOUT').should('exist');
 
-        cy.get(ENF_OVR.addOverrideButton).should('exist');
-        cy.get(ENF_OVR.cancelLink).should('exist');
-      },
-    );
+      cy.get(ENF_OVR.addOverrideButton).should('exist');
+      cy.get(ENF_OVR.cancelLink).should('exist');
+    });
 
-    it(
-      'Should support forward keyboard navigation across the add enforcement override form',
-      { tags: [] },
-      () => {
-        mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
+    it('Should support forward keyboard navigation across the add enforcement override form', { tags: [] }, () => {
+      mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
 
-        cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
-        cy.get(ENF_OVR.enfOverrideDropdown).should('be.visible').focus();
-        cy.get(ENF_OVR.enfOverrideDropdown).should('have.focus');
+      cy.get(ENF_OVR.title).should('contain.text', 'Add enforcement override');
+      cy.get(ENF_OVR.enfOverrideDropdown).should('be.visible').focus();
+      cy.get(ENF_OVR.enfOverrideDropdown).should('have.focus');
 
-        cy.press(Cypress.Keyboard.Keys.TAB);
-        cy.get(ENF_OVR.addOverrideButton).should('have.focus');
+      cy.press(Cypress.Keyboard.Keys.TAB);
+      cy.get(ENF_OVR.addOverrideButton).should('have.focus');
 
-        cy.press(Cypress.Keyboard.Keys.TAB);
-        cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
-      },
-    );
+      cy.press(Cypress.Keyboard.Keys.TAB);
+      cy.contains('a.govuk-link', /^Cancel$/i).should('have.focus');
+    });
 
     it('AC2. Enforcer dropdown for valid override', { tags: [] }, () => {
       mountAddEnforcementOverrideForm('177A - Mr Robert THOMSON');
