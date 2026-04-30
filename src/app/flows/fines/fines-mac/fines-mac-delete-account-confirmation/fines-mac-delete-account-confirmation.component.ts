@@ -6,7 +6,6 @@ import { IFinesMacDeleteAccountConfirmationForm } from './interfaces/fines-mac-d
 import { FinesMacDeleteAccountConfirmationFormComponent } from './fines-mac-delete-account-confirmation-form/fines-mac-delete-account-confirmation-form.component';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { ActivatedRoute } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { catchError, of, Subject, takeUntil, tap } from 'rxjs';
@@ -15,6 +14,7 @@ import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/f
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',

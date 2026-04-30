@@ -24,13 +24,13 @@ import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-servi
 import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 
 @Injectable({
   providedIn: 'root',

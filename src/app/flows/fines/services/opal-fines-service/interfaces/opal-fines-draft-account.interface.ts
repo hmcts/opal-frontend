@@ -9,5 +9,3 @@ export interface IOpalFinesDraftAccountPatchPayload extends IOpalFinesVersion {
   validated_by: string | null;
   validated_by_name: string | null;
 }
-
-export type IOpalFinesDraftAccountPatchRequestPayload = Omit<IOpalFinesDraftAccountPatchPayload, 'timeline_data'>;

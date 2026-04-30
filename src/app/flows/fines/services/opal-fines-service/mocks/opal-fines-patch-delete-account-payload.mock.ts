@@ -1,4 +1,4 @@
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '../types/opal-fines-draft-account-patch-request-payload.type';
 
 export const OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK: IOpalFinesDraftAccountPatchRequestPayload = {
   validated_by: null,

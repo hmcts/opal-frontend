@@ -1,4 +1,4 @@
-import { IOpalFinesDraftAccountPatchRequestPayload } from '../interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '../types/opal-fines-draft-account-patch-request-payload.type';
 
 export const OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD: IOpalFinesDraftAccountPatchRequestPayload = {
   account_status: 'Rejected',

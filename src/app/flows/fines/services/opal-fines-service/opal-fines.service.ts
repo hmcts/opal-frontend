@@ -27,7 +27,6 @@ import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-a
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
-import { IOpalFinesDraftAccountPatchRequestPayload } from './interfaces/opal-fines-draft-account.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from './interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
@@ -57,6 +56,7 @@ import { IOpalFinesAccountMinorCreditorAtAGlance } from './interfaces/opal-fines
 import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.interface';
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
 
 @Injectable({
   providedIn: 'root',
