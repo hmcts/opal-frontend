@@ -22,6 +22,7 @@ import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/m
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 
@@ -159,6 +160,66 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required)).toBe(
       true,
     );
+  });
+
+  it('should accept commas and full stops in the add comment field', () => {
+    const commentsControl = component.form.controls['fm_fp_account_comments_notes_comments'];
+
+    commentsControl.setValue("O'Neil, comment-1.");
+
+    expect(commentsControl.errors).toBeNull();
+    expect(commentsControl.valid).toBe(true);
+  });
+
+  it('should accept commas and full stops in the add account notes field', () => {
+    const notesControl = component.form.controls['fm_fp_account_comments_notes_notes'];
+
+    notesControl.setValue("Account, note-1. O'Neil ok");
+
+    expect(notesControl.errors).toBeNull();
+    expect(notesControl.valid).toBe(true);
+  });
+
+  it('should prevent submission and show an error message for invalid special characters in the fixed penalty comment field', () => {
+    const event = {} as SubmitEvent;
+    const commentsControl = component.form.controls['fm_fp_account_comments_notes_comments'];
+    const expectedErrorMessage =
+      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments[
+        'alphanumericWithHyphensSpacesApostrophesCommasDotPattern'
+      ].message;
+
+    commentsControl.setValue('Invalid?');
+
+    expect(commentsControl.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBe(true);
+
+    component.handleFormSubmit(event);
+
+    expect(component.formControlErrorMessages['fm_fp_account_comments_notes_comments']).toBe(expectedErrorMessage);
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_fp_account_comments_notes_comments',
+      message: expectedErrorMessage,
+    });
+  });
+
+  it('should prevent submission and show an error message for invalid special characters in the fixed penalty notes field', () => {
+    const event = {} as SubmitEvent;
+    const notesControl = component.form.controls['fm_fp_account_comments_notes_notes'];
+    const expectedErrorMessage =
+      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes[
+        'alphanumericWithHyphensSpacesApostrophesCommasDotPattern'
+      ].message;
+
+    notesControl.setValue('Invalid?');
+
+    expect(notesControl.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBe(true);
+
+    component.handleFormSubmit(event);
+
+    expect(component.formControlErrorMessages['fm_fp_account_comments_notes_notes']).toBe(expectedErrorMessage);
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_fp_account_comments_notes_notes',
+      message: expectedErrorMessage,
+    });
   });
 
   it('should ignore missing vehicle controls when updating offence validators', () => {
