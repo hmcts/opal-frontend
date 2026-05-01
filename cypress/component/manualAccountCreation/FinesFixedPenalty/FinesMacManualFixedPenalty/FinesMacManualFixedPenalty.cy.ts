@@ -635,13 +635,8 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-<<<<<<< PO-3414
     '(AC14, AC5, AC6) Validation for the Driving licence number field is only triggered when an adult or youth defendant enters a value',
-    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-KEY:POT-7226', '@JIRA-EPIC:PO-855'] },
-=======
-    '(AC14) Validation will exist for the Driving licence number field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
->>>>>>> master
+    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
@@ -652,13 +647,8 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-<<<<<<< PO-3414
     '(AC14, AC2, AC3) Validation for the Driving licence number field accepts 1 to 5 surname characters using the correct 9 padding when a value is entered',
-    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-KEY:POT-7227', '@JIRA-EPIC:PO-855'] },
-=======
-    '(AC14) Validation will exist for the Driving licence number field - invalid format',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
->>>>>>> master
+    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-EPIC:PO-855'] },
     () => {
       const validDrivingLicences = [
         'SMITH010203ABXYZ',
@@ -680,13 +670,8 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-<<<<<<< PO-3414
     '(AC14, AC1) Validation for the Driving licence number field rejects values longer than 16 characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-KEY:POT-7228', '@JIRA-EPIC:PO-855'] },
-=======
-    '(AC14) Validation will exist for the Driving licence number field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
->>>>>>> master
+    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-EPIC:PO-855'] },
     () => {
       const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = longDrivingLicense;
