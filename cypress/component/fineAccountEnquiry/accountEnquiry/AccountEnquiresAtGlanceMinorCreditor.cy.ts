@@ -140,7 +140,6 @@ describe('Minor Creditor Account Summary - At a Glance Tab', () => {
       cy.get(DOM.minorCreditorAtAGlanceTabComponent).should('not.contain.text', DOM.labelRemovePaymentHold);
     },
   );
-
   it(
     'AC1a, AC2a: displays Add payment hold and navigates to the Payment Hold Confirmation screen when the user has permission in the associated BU',
     { tags: [...buildTags(ADD_PAYMENT_HOLD_STORY_TAG), '@JIRA-EPIC:PO-2234'] },

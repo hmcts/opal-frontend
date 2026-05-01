@@ -1,6 +1,5 @@
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
-import { FinesAccountStoreType } from 'src/app/flows/fines/fines-acc/types/fines-account-store.type';
 import {
   USER_STATE_MOCK_PERMISSION_BU77,
   USER_STATE_MOCK_NO_PERMISSION,
@@ -8,7 +7,7 @@ import {
 
 export const buildSeededAccountStore = (
   accountId: number | string,
-  overrides: Partial<ReturnType<FinesAccountStoreType['getAccountState']>> = {},
+  overrides: Partial<ReturnType<InstanceType<typeof FinesAccountStore>['getAccountState']>> = {},
 ) => {
   const store = new FinesAccountStore();
   store.setAccountState({

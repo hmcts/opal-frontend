@@ -1,7 +1,7 @@
 import { Provider } from '@angular/core';
 import { Routes } from '@angular/router';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { FinesAccountStoreType } from 'src/app/flows/fines/fines-acc/types/fines-account-store.type';
+import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 
 export interface IComponentProperties {
   accountId: string | `${number}`;
@@ -11,7 +11,7 @@ export interface IComponentProperties {
   routerConfig?: Routes;
   additionalProviders?: Provider[];
   globalStoreFactory?: () => InstanceType<typeof GlobalStore>;
-  finesAccountStoreFactory?: () => FinesAccountStoreType;
+  finesAccountStoreFactory?: () => InstanceType<typeof FinesAccountStore>;
   fragments:
     | 'at-a-glance'
     | 'defendant'
