@@ -51,7 +51,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
   it(
     'should render the component (FinesMacLanguagePreferenceComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-KEY:POT-7417', '@JIRA-EPIC:PO-2219'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219'] },
     () => {
       setupComponent(null);
 
@@ -62,7 +62,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
   it(
     '(AC.1,AC.2)should load all elements on the screen correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-KEY:POT-7418', '@JIRA-EPIC:PO-2219'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219'] },
     () => {
       setupComponent(null);
 
@@ -90,7 +90,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
   it(
     '(AC.3)should allow form to be submitted with no input',
-    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-KEY:POT-7419', '@JIRA-EPIC:PO-2219'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -104,7 +104,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
   it(
     '(AC.3)should allow selections on language preferences',
-    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-KEY:POT-7420', '@JIRA-EPIC:PO-2219'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -121,7 +121,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
   it(
     '(AC.3)should allow selections on language preferences Opposite options',
-    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-KEY:POT-7421', '@JIRA-EPIC:PO-2219'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 

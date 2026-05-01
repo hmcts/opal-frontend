@@ -64,10 +64,7 @@ describe('ReviewSummaryComponent', () => {
   it(
     '(AC.1)should render component',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679', '@JIRA-EPIC:PO-545'),
-        '@JIRA-KEY:POT-7461',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent();
@@ -82,12 +79,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-KEY:POT-7462',
+        '@JIRA-EPIC:PO-545',
       ],
     },
     () => {
@@ -124,12 +120,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-KEY:POT-7463',
+        '@JIRA-EPIC:PO-545',
       ],
     },
     () => {
@@ -185,12 +180,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-KEY:POT-7464',
+        '@JIRA-EPIC:PO-545',
       ],
     },
     () => {
@@ -261,12 +255,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-KEY:POT-7465',
+        '@JIRA-EPIC:PO-545',
       ],
     },
     () => {
@@ -369,12 +362,11 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
-          '@JIRA-EPIC:PO-545',
           '@JIRA-STORY:PO-662',
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-KEY:POT-7466',
+        '@JIRA-EPIC:PO-545',
       ],
     },
     () => {
