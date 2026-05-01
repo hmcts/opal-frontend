@@ -15,7 +15,6 @@ import {
   OpalUserServiceConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
 import { DEFAULT_PROXY_CONFIG } from '@hmcts/opal-frontend-common-node/constants';
-export { configureUserStateRoute } from './src/server/user-state-route';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
