@@ -7,7 +7,7 @@ Feature: View Defendant Account Summary - Add Comments
     And I clear all approved accounts
 
   @JIRA-EPIC:PO-812
-  @JIRA-STORY:PO-777 @JIRA-KEY:POT-5221
+  @JIRA-STORY:PO-777
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality
     # AC1 - Create → set Publishing Pending → search → open → verify header
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -55,7 +55,7 @@ Feature: View Defendant Account Summary - Add Comments
       | Line 3  | Line3 Test   |
 
   @JIRA-EPIC:PO-812
-  @R1B @JIRA-STORY:PO-777 @JIRA-KEY:POT-5222
+  @R1B @JIRA-STORY:PO-777
   Scenario: Complete View Defendant Company Account Summary and Comments functionality
     # AC4 - Create & publish a company account then view header summary
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -97,7 +97,7 @@ Feature: View Defendant Account Summary - Add Comments
       | Line 3  | Company Line3   |
 
   @JIRA-EPIC:PO-812
-  @JIRA-STORY:PO-777 @JIRA-KEY:POT-5223
+  @JIRA-STORY:PO-777
   Scenario: Complete View Defendant Adult or Youth with Parent Guardian to Pay Account Summary and Comments functionality
     # Create & publish a pgToPay account then view header summary
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -140,7 +140,7 @@ Feature: View Defendant Account Summary - Add Comments
       | Line 3  | Parent Guardian Line3   |
 
 
-  @JIRA-STORY:PO-1112 @JIRA-KEY:POT-5224
+  @JIRA-STORY:PO-1112 @JIRA-EPIC:PO-812
   Scenario: As a user I can view account details of a Parent/Guardian account
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                      |
@@ -169,4 +169,3 @@ Feature: View Defendant Account Summary - Add Comments
 
     # When I discard Parent or guardian changes
     Then I should see the account summary header contains "Miss Catherine GREEN{uniqUpper}"
-
