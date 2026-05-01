@@ -18,6 +18,7 @@ describe('FinesAccSummaryHeaderComponent', () => {
 
     component.accountStore = {
       hasVersionMismatch: vi.fn().mockReturnValue(false),
+      hasPaymentHold: vi.fn().mockReturnValue(false),
       successMessage: vi.fn().mockReturnValue(null),
       clearSuccessMessage: vi.fn(),
       account_number: vi.fn().mockReturnValue('123456'),

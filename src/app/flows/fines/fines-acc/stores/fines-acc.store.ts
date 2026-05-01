@@ -17,6 +17,7 @@ export const FinesAccountStore = signalStore(
     business_unit_user_id: null as string | null,
     welsh_speaking: null as string | null,
     hasVersionMismatch: false as boolean,
+    hasPaymentHold: false as boolean,
     successMessage: null as string | null,
   })),
   withHooks((store) => {
@@ -42,6 +43,9 @@ export const FinesAccountStore = signalStore(
       setSuccessMessage: (message: string | null) => {
         patchState(store, { successMessage: message });
       },
+      setHasPaymentHold: (hasPaymentHold: boolean) => {
+        patchState(store, { hasPaymentHold });
+      },
       getAccountState: () => {
         return {
           account_number: store.account_number(),
@@ -60,6 +64,7 @@ export const FinesAccountStore = signalStore(
         patchState(store, {
           ...FINES_ACCOUNT_STATE,
           hasVersionMismatch: false,
+          hasPaymentHold: false,
           successMessage: null,
         });
       },
@@ -75,6 +80,7 @@ export const FinesAccountStore = signalStore(
         patchState(store, {
           ...FINES_ACCOUNT_STATE,
           hasVersionMismatch: false,
+          hasPaymentHold: false,
           successMessage: null,
         });
       },

@@ -28,3 +28,13 @@
     </opal-lib-moj-alert>
   </div>
 }
+@if (hasPaymentHold) {
+  <div class="govuk-grid-column-full" id="{{ id }}-payment-hold">
+    <opal-lib-moj-alert type="warning" ariaLabel="Payments to this creditor are on hold.">
+      <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>Payments to this creditor are on hold. </opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  </div>
+}
