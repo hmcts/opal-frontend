@@ -10,13 +10,17 @@ export const DOM_ELEMENTS = {
   // Warning Banner Elements
   warningBanner: '.moj-alert',
   warningBannerIcon: 'opal-lib-moj-alert-icon[type="warning"]',
+  warningBannerText: 'opal-lib-moj-alert-content-text',
+  labelPaymentsOnHold: 'Payments to this creditor are on hold.',
   bannerText: 'opal-lib-moj-alert-content-text',
   refreshLink: 'opal-lib-moj-alert-content-text > a',
 
   // Success Banner Elements
   successBanner: 'opal-lib-moj-alert[type="success"]',
   successBannerIcon: 'opal-lib-moj-alert-icon[type="success"]',
+  successBannerText: 'opal-lib-moj-alert-content-text',
   successBannerDismiss: '.moj-alert__dismiss',
+  labelPaymentHoldRemoved: 'Payment hold removed',
 
   // Tab Elements
   atAGlanceTab: '[subnavitemid="at-a-glance-tab"] > .moj-sub-navigation__link',

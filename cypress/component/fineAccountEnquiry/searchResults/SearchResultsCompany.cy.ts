@@ -77,7 +77,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     'Search company results component is created correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7049', '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -88,7 +88,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     '(AC2) Displays error message when no search matches are found',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7050', '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
@@ -104,7 +104,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     '(AC3) Handles more than 100 search matches correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7051', '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
@@ -122,7 +122,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     '(AC4a-c) Displays results correctly for 100 or fewer matches',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7052', '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
@@ -145,7 +145,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     '(AC4d) Displays pagination correctly for companies',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7053', '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
@@ -160,7 +160,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     '(AC4e) Default sorting of results is correct',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7054', '@JIRA-EPIC:PO-704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(SORTING_SEARCH_RESULTS_MOCK_COMPANIES);
 
