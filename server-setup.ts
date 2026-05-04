@@ -13,6 +13,7 @@ import {
   SessionStorageConfiguration,
   TransferServerState,
   OpalUserServiceConfiguration,
+  UserStateConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
 import { DEFAULT_PROXY_CONFIG } from '@hmcts/opal-frontend-common-node/constants';
 
@@ -23,6 +24,7 @@ export function getRoutesConfig(): {
   sessionExpiryConfiguration: ExpiryConfiguration;
   routesConfiguration: RoutesConfiguration;
   opalUserServiceConfiguration: OpalUserServiceConfiguration;
+  userStateConfiguration: UserStateConfiguration;
   proxyConfiguration: ProxyConfiguration;
 } {
   const testMode = config.get<boolean>('expiry.testMode');
@@ -57,7 +59,20 @@ export function getRoutesConfig(): {
     updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
   };
 
-  return { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration, proxyConfiguration };
+  const userStateConfiguration: UserStateConfiguration = {
+    cacheKeyPrefix: config.get('user-state.cacheKeyPrefix'),
+    redisClientKey: config.get('user-state.redisClientKey'),
+    routePath: config.get('user-state.routePath'),
+    tokenClaim: config.get('user-state.tokenClaim'),
+  };
+
+  return {
+    sessionExpiryConfiguration,
+    routesConfiguration,
+    opalUserServiceConfiguration,
+    userStateConfiguration,
+    proxyConfiguration,
+  };
 }
 
 export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyConfiguration): void {

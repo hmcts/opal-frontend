@@ -85,8 +85,13 @@ function app(): Express {
   configureSecurityHeaders(server);
   new HealthCheck().enableFor(server, 'opal-frontend');
 
-  const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration, proxyConfiguration } =
-    getRoutesConfig();
+  const {
+    sessionExpiryConfiguration,
+    routesConfiguration,
+    opalUserServiceConfiguration,
+    userStateConfiguration,
+    proxyConfiguration,
+  } = getRoutesConfig();
 
   if (!proxyConfiguration.opalUserServiceUrl) {
     throw new Error('Missing opalUserServiceUrl for user state route setup');
@@ -95,6 +100,7 @@ function app(): Express {
   configureUserStateRoute(server, {
     userServiceBaseUrl: proxyConfiguration.opalUserServiceUrl,
     userStateUrl: opalUserServiceConfiguration.userStateUrl,
+    userStateConfiguration,
   });
   configureApiProxyRoutes(server, proxyConfiguration);
 
