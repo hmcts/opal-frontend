@@ -152,7 +152,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
   describe('Adult or youth defendant', () => {
     it(
       'AC1: Navigation opens the amend payment terms screen',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6823', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         setupAmendPaymentTermsViaNavigation('adultOrYouth');
 
@@ -163,7 +163,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC2a: Display payment terms radio buttons',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6824', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth');
 
@@ -179,7 +179,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3a: Pay in full shows pay by date and is required',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6825', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth');
 
@@ -195,7 +195,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3b: Pay in full past date warning message displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6826', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -210,7 +210,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3c: Pay in full future date warning message displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6827', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -225,7 +225,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3dii.b: Invalid pay by date shows valid date error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6828', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -240,7 +240,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3dii.c: Invalid pay by date format shows format error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6829', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -255,7 +255,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4a: Instalments only shows mandatory fields',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6830', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -274,7 +274,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4b: Start date in past warning displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6831', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -288,7 +288,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4c: Start date in future warning displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6832', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -302,7 +302,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4d: Instalments only missing values shows required errors',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6833', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth');
 
@@ -317,7 +317,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4e: Instalment amount with too many decimals shows error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6834', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -337,7 +337,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4f: Start date with invalid value shows valid date error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6835', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -354,7 +354,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4g: Start date with invalid format shows format error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6836', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -371,7 +371,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5a: Lump sum plus instalments shows mandatory fields',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6837', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth');
 
@@ -397,7 +397,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5b: Lump sum plus instalments start date in past warning displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6838', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'lumpSumPlusInstalments',
@@ -411,7 +411,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5b: Lump sum plus instalments start date in future warning displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6839', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'lumpSumPlusInstalments',
@@ -425,7 +425,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5c: Pay in full invalid date shows calendar date error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6840', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -440,7 +440,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5c: Pay in full invalid format shows format error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6841', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -455,7 +455,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6a: Days in default checkbox displays for adult defendant',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6842', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth');
 
@@ -466,7 +466,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6b: Youth defendant does not show days in default checkbox',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6843', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         const youthHeader = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
         youthHeader.is_youth = true;
@@ -488,7 +488,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6c/AC6d: Days in default fields and help link display when selected',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6844', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_has_days_in_default: true,
@@ -504,7 +504,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6ei: Missing days in default date shows required error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6845', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -522,7 +522,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eii: Future days in default date shows future date error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6846', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -541,7 +541,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eiii: Invalid days in default date shows valid calendar date error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6847', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -560,7 +560,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eiv: Days in default date invalid format shows format error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6848', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -579,7 +579,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6ev: Missing days in default count shows required error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6849', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -598,7 +598,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6evi: Non-numeric days in default count shows numeric error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6850', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -620,7 +620,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC7a: Change without reason shows reason required error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6851', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -636,7 +636,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC7b: Reason for change character count updates',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6852', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_reason_for_change: '1234567890',
@@ -652,7 +652,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8a: Request payment card checkbox displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6853', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth');
 
@@ -663,7 +663,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8bi: Pay in full with payment card request shows restriction error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6854', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -683,7 +683,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8ci: Payment card already processing shows blocked banner',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6855', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_payment_card_request: true,
@@ -697,7 +697,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8cii: Enforcement action blocks request shows blocked banner',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6856', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_prevent_payment_card: true,
@@ -711,7 +711,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8ciii: Business unit blocks request text appears on blocked banner',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6857', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_prevent_payment_card: true,
@@ -724,7 +724,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC9a: Generate payment terms change letter checkbox displays',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6858', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth');
 
@@ -735,7 +735,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC9b: No changes with change letter checked shows error',
-      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-KEY:POT-6859', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1149'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('adultOrYouth', {
           facc_payment_terms_change_letter: true,
@@ -755,7 +755,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
   describe('Parent or Guardian defendant', () => {
     it(
       'AC1: Navigation opens the amend payment terms screen (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6860', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         setupAmendPaymentTermsViaNavigation('parentGuardian');
 
@@ -766,7 +766,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC2a: Display payment terms radio buttons (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6861', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian');
 
@@ -782,7 +782,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3a: Pay in full shows pay by date and is required (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6862', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian');
 
@@ -798,7 +798,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3b: Pay in full past date warning message displays (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6863', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -813,7 +813,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3c: Pay in full future date warning message displays (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6864', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -828,7 +828,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3dii.b: Invalid pay by date shows valid date error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6865', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -843,7 +843,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3dii.c: Invalid pay by date format shows format error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6866', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -858,7 +858,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4a: Instalments only shows mandatory fields (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6867', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -877,7 +877,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4b: Start date in past warning displays (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6868', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -891,7 +891,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4c: Start date in future warning displays (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6869', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -905,7 +905,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4d: Instalments only missing values shows required errors (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6870', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian');
 
@@ -920,7 +920,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4e: Instalment amount with too many decimals shows error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6871', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -940,7 +940,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4f: Start date with invalid value shows valid date error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6872', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -957,7 +957,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4g: Start date with invalid format shows format error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6873', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -974,7 +974,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5a: Lump sum plus instalments shows mandatory fields (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6874', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian');
 
@@ -1000,7 +1000,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5b: Lump sum plus instalments start date in past warning displays (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6875', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'lumpSumPlusInstalments',
@@ -1014,7 +1014,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5b: Lump sum plus instalments start date in future warning displays (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6876', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'lumpSumPlusInstalments',
@@ -1028,7 +1028,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5c: Pay in full invalid date shows calendar date error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6877', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1043,7 +1043,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5c: Pay in full invalid format shows format error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6878', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1058,7 +1058,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6a: Days in default checkbox displays for adult defendant (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6879', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian');
 
@@ -1069,7 +1069,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6b: Youth defendant does not show days in default checkbox (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6880', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         const youthHeader = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
         youthHeader.is_youth = true;
@@ -1091,7 +1091,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6c/AC6d: Days in default fields and help link display when selected (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6881', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_has_days_in_default: true,
@@ -1107,7 +1107,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6ei: Missing days in default date shows required error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6882', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1125,7 +1125,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eii: Future days in default date shows future date error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6883', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1144,7 +1144,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eiii: Invalid days in default date shows valid calendar date error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6884', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1163,7 +1163,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eiv: Days in default date invalid format shows format error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6885', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1182,7 +1182,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6ev: Missing days in default count shows required error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6886', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1201,7 +1201,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6evi: Non-numeric days in default count shows numeric error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6887', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1223,7 +1223,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC7a: Change without reason shows reason required error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6888', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1239,7 +1239,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC7b: Reason for change character count updates (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6889', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_reason_for_change: '1234567890',
@@ -1255,7 +1255,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8a: Request payment card checkbox displays (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6890', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian');
 
@@ -1266,7 +1266,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8bi: Pay in full with payment card request shows restriction error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6891', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1286,7 +1286,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8ci: Payment card already processing shows blocked banner (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6892', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_payment_card_request: true,
@@ -1300,7 +1300,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8cii: Enforcement action blocks request shows blocked banner (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6893', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_prevent_payment_card: true,
@@ -1314,7 +1314,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8ciii: Business unit blocks request text appears on blocked banner (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6894', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_prevent_payment_card: true,
@@ -1327,7 +1327,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC9a: Generate payment terms change letter checkbox displays (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6895', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian');
 
@@ -1338,7 +1338,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC9b: No changes with change letter checked shows error (Parent or Guardian defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-KEY:POT-6896', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1639'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('parentGuardian', {
           facc_payment_terms_change_letter: true,
@@ -1358,7 +1358,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
   describe('Company defendant', () => {
     it(
       'AC1: Navigation opens the amend payment terms screen (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6897', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         setupAmendPaymentTermsViaNavigation('company');
 
@@ -1369,7 +1369,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC2a: Display payment terms radio buttons (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6898', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company');
 
@@ -1385,7 +1385,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3a: Pay in full shows pay by date and is required (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6899', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company');
 
@@ -1401,7 +1401,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3b: Pay in full past date warning message displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6900', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1416,7 +1416,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3c: Pay in full future date warning message displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6901', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1431,7 +1431,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3dii.b: Invalid pay by date shows valid date error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6902', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1446,7 +1446,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC3dii.c: Invalid pay by date format shows format error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6903', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1461,7 +1461,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4a: Instalments only shows mandatory fields (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6904', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -1480,7 +1480,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4b: Start date in past warning displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6905', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -1494,7 +1494,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4c: Start date in future warning displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6906', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -1508,7 +1508,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4d: Instalments only missing values shows required errors (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6907', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company');
 
@@ -1523,7 +1523,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4e: Instalment amount with too many decimals shows error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6908', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -1543,7 +1543,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4f: Start date with invalid value shows valid date error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6909', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -1560,7 +1560,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC4g: Start date with invalid format shows format error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6910', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'instalmentsOnly',
@@ -1577,7 +1577,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5a: Lump sum plus instalments shows mandatory fields (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6911', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company');
 
@@ -1603,7 +1603,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5b: Lump sum plus instalments start date in past warning displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6912', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'lumpSumPlusInstalments',
@@ -1617,7 +1617,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5b: Lump sum plus instalments start date in future warning displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6913', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'lumpSumPlusInstalments',
@@ -1631,7 +1631,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5c: Pay in full invalid date shows calendar date error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6914', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1646,7 +1646,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC5c: Pay in full invalid format shows format error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6915', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1661,7 +1661,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6a: Days in default checkbox displays for adult defendant (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6916', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company');
 
@@ -1672,7 +1672,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6b: Youth defendant does not show days in default checkbox (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6917', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         const youthHeader = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
         youthHeader.is_youth = true;
@@ -1694,7 +1694,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6c/AC6d: Days in default fields and help link display when selected (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6918', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_has_days_in_default: true,
@@ -1710,7 +1710,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6ei: Missing days in default date shows required error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6919', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1728,7 +1728,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eii: Future days in default date shows future date error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6920', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1747,7 +1747,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eiii: Invalid days in default date shows valid calendar date error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6921', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1766,7 +1766,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6eiv: Days in default date invalid format shows format error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6922', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1785,7 +1785,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6ev: Missing days in default count shows required error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6923', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1804,7 +1804,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC6evi: Non-numeric days in default count shows numeric error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6924', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1826,7 +1826,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC7a: Change without reason shows reason required error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6925', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1842,7 +1842,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC7b: Reason for change character count updates (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6926', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_reason_for_change: '1234567890',
@@ -1858,7 +1858,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8a: Request payment card checkbox displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6927', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company');
 
@@ -1869,7 +1869,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8bi: Pay in full with payment card request shows restriction error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6928', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_terms: 'payInFull',
@@ -1889,7 +1889,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8ci: Payment card already processing shows blocked banner (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6929', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_payment_card_request: true,
@@ -1903,7 +1903,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8cii: Enforcement action blocks request shows blocked banner (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6930', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_prevent_payment_card: true,
@@ -1917,7 +1917,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC8ciii: Business unit blocks request text appears on blocked banner (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6931', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_prevent_payment_card: true,
@@ -1930,7 +1930,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC9a: Generate payment terms change letter checkbox displays (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6932', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company');
 
@@ -1941,7 +1941,7 @@ describe('Account Enquiry Amend Payment Terms', () => {
 
     it(
       'AC9b: No changes with change letter checked shows error (Company defendant)',
-      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-KEY:POT-6933', '@JIRA-EPIC:PO-977'] },
+      { tags: [...buildTags('@JIRA-STORY:PO-1640'), '@JIRA-EPIC:PO-977'] },
       () => {
         mountAmendPaymentTermsForm('company', {
           facc_payment_terms_change_letter: true,

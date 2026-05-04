@@ -7,7 +7,7 @@ import {
 
 export const buildSeededAccountStore = (
   accountId: number | string,
-  overrides: Partial<ReturnType<FinesAccountStore['getAccountState']>> = {},
+  overrides: Partial<ReturnType<InstanceType<typeof FinesAccountStore>['getAccountState']>> = {},
 ) => {
   const store = new FinesAccountStore();
   store.setAccountState({

@@ -66,7 +66,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     'should render the component (FinesMacAccountCommentsAndNotesComponent)',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7288'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
@@ -76,7 +76,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     '(AC.1) should load all elements on the screen correctly',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7289'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
@@ -95,7 +95,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     '(AC.2) should have character limits for account comments',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7290'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
@@ -116,7 +116,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     '(AC.3) should have character limits for account notes',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7291'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
@@ -137,7 +137,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     '(AC.1) should allow users to fill in data and submit with no errors',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7292'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -152,7 +152,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     '(AC.1) should allow users to submit without entering data',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7293'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -167,7 +167,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Adult or youth only',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7294'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK);
 
@@ -181,7 +181,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   );
   it(
     '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Parent or guardian',
-    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-499'), '@JIRA-KEY:POT-7295'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-499'), '@JIRA-EPIC:PO-344'] },
     () => {
       setupComponent(null, 'pgToPay', FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK);
 
@@ -195,7 +195,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   );
   it(
     '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Company',
-    { tags: [...buildTags('@JIRA-EPIC:PO-345', '@JIRA-STORY:PO-500'), '@JIRA-KEY:POT-7296'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-500'), '@JIRA-EPIC:PO-345'] },
     () => {
       setupComponent(null, 'company', FINES_COMMENT_AND_NOTES_COMP_MANDATORY_COMPLETED_MOCK);
 
@@ -209,7 +209,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   );
   it(
     '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Adult or youth only',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7297'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_AY_MANDATORY_MISSING_MOCK);
 
@@ -223,7 +223,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   );
   it(
     '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Parent or guardian',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7298'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_PG_MANDATORY_MISSING_MOCK);
 
@@ -237,7 +237,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   );
   it(
     '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Company',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-469'), '@JIRA-KEY:POT-7299'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_COMP_MANDATORY_MISSING_MOCK);
 
@@ -252,7 +252,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     '(AC.1) should update character count hint for account comments',
-    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-773'), '@JIRA-KEY:POT-7300'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-773'), '@JIRA-EPIC:PO-545'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
       cy.get(L.commentInput).clear().type('a'.repeat(1), { delay: 0 });
@@ -264,7 +264,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   );
   it(
     '(AC.1) should update character count hint for account notes',
-    { tags: [...buildTags('@JIRA-EPIC:PO-545', '@JIRA-STORY:PO-773'), '@JIRA-KEY:POT-7301'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-773'), '@JIRA-EPIC:PO-545'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
       cy.get(L.noteInput).clear().type('a'.repeat(1), { delay: 0 });

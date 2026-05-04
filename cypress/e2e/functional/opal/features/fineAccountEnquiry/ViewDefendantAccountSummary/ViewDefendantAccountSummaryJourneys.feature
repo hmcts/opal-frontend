@@ -10,7 +10,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
     Given I clear all approved accounts
 
 
-  @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-KEY:POT-5107
+  @R1B @JIRA-STORY:PO-1593 @JIRA-STORY:PO-866 @JIRA-EPIC:PO-812
   Scenario: Search for an adult or youth defendant account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:
@@ -52,7 +52,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
       | Document language      | Welsh and English |
       | Court hearing language | Welsh and English |
 
-  @R1B @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234 @JIRA-KEY:POT-7698
+  @R1B @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234
   Scenario: Search for a minor creditor account and view the default account summary
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published account exists with an individual minor creditor:
@@ -81,4 +81,3 @@ Feature: View Defendant Account Summary - End-to-end journeys
       | Name         | Mrs Mina SUMMARYMINOR{uniqUpper} |
       | Address      | 1 High Street                    |
       | BACS details | Provided                         |
-

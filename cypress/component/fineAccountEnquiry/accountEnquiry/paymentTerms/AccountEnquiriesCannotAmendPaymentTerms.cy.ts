@@ -42,7 +42,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6934', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -69,7 +69,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (CS)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6935', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -92,7 +92,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (WO)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6936', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -115,7 +115,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TO)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6937', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -138,7 +138,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TA)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6938', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -161,7 +161,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TS)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6939', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -184,7 +184,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2aii: If the account has a zero balance,',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6940', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.payment_state_summary.account_balance = 0.0;
@@ -209,7 +209,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6941', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'individual';
@@ -236,7 +236,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE for company defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6942', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
@@ -267,7 +267,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (CS) for company defendants',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6943', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
@@ -293,7 +293,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (WO) for company defendants',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6944', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
@@ -319,7 +319,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TO) for company defendants',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6945', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
@@ -345,7 +345,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TA) for company defendants',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6946', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
@@ -371,7 +371,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TS) for company defendants',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6947', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
@@ -397,7 +397,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2aii: If the account has a zero balance for company defendants',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6948', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
@@ -425,7 +425,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU for company defendants',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6949', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.party_details.organisation_details = {
@@ -455,7 +455,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1: Display Change link for users with Amend Payment Terms permission and show error screen if extend_ttp_disallow is TRUE for Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6950', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -478,7 +478,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (CS) for Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6951', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -501,7 +501,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (WO) for Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6952', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -524,7 +524,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TO) for Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6953', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -547,7 +547,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TA) for Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6954', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -570,7 +570,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2ai: Display appropriate message based on defendant account status (TS) for Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6955', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -593,7 +593,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2aii: If the account has a zero balance for Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6956', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.payment_state_summary.account_balance = 0.0;
@@ -618,7 +618,7 @@ describe('Account Enquiry Payment Terms', () => {
 
   it(
     'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU for Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-KEY:POT-6957', '@JIRA-EPIC:PO-977'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1801'), '@JIRA-EPIC:PO-977'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('John', 'Smith'));
       headerMock.debtor_type = 'Parent/Guardian';
