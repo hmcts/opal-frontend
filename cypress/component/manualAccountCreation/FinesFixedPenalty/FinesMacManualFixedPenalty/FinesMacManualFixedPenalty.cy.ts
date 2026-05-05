@@ -15,9 +15,9 @@ import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonInte
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
-  'Add comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+  'Add comment must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
 const ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
-  'Add account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+  'Add account note must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
 const DRIVING_LICENCE_NUMBER_FORMAT_ERROR = 'Enter Driving licence number in the correct format';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
