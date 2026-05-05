@@ -1134,6 +1134,21 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
+    'Validation will exist for Add comment and Add account note fields - special characters',
+    { tags: [...buildTags('@JIRA-STORY:PO-3713'), '@JIRA-EPIC:PO-855'] },
+    () => {
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment $%^&*';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note $%^&*';
+      setupComponent();
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.commentsErrorMessage).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.accountNoteErrorMessage).should('contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+    },
+  );
+
+  it(
     '(AC1a) The Fixed Penalty Details screen for company will be created as per the Design Artefacts',
     { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-EPIC:PO-855'] },
     () => {
