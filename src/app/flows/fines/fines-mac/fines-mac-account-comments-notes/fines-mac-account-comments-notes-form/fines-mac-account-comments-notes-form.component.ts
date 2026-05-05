@@ -16,7 +16,6 @@ import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/g
 import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
-
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
