@@ -1,5 +1,9 @@
-$govuk-assets-path: '~govuk-frontend/dist/govuk/assets/';
-$moj-assets-path: '~@ministryofjustice/frontend/moj/assets/';
+@use 'govuk-frontend/dist/govuk/index' as * with (
+  $govuk-assets-path: '~govuk-frontend/dist/govuk/assets/'
+);
+@use '@ministryofjustice/frontend/moj/all' as moj with (
+  $moj-assets-path: '~@ministryofjustice/frontend/moj/assets/'
+);
 
 // Import the shared stylesheet directly so Cypress keeps these asset overrides
 // in scope when GOV.UK and MOJ Sass partials resolve image URLs.
