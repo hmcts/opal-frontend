@@ -149,7 +149,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     });
   });
 
-  it('should add validators to the form controls', () => {
+  it('should require vehicle registration but keep driving licence optional for vehicle offences', () => {
     component['setupFixedPenaltyDetailsForm']();
     component['offenceTypeListener']();
     component.form.get('fm_fp_offence_details_offence_type')?.setValue('vehicle');
@@ -158,7 +158,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
       component.form.get('fm_fp_offence_details_vehicle_registration_number')?.hasValidator(Validators.required),
     ).toBe(true);
     expect(component.form.get('fm_fp_offence_details_driving_licence_number')?.hasValidator(Validators.required)).toBe(
-      true,
+      false,
     );
   });
 

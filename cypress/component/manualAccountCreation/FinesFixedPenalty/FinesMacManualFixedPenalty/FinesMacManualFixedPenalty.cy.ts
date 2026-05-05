@@ -18,6 +18,7 @@ const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
   'Add comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
 const ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
   'Add account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const DRIVING_LICENCE_NUMBER_FORMAT_ERROR = 'Enter Driving licence number in the correct format';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
@@ -148,12 +149,12 @@ describe('FinesMacManualFixedPenalty', () => {
         'Enter where the offence took place',
         'Enter amount imposed',
         'Enter Registration number',
-        'Enter Driving licence number',
       ];
 
       requiredErrorMessages.forEach((errorMsg) => {
         cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', errorMsg);
       });
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Driving licence number');
 
       // AC1b - The following fields are type ahead fields and will adhere to the type ahead functionality
 
@@ -638,50 +639,68 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-    '(AC14) Validation will exist for the Driving licence number field - required field',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
+    '(AC14, AC5, AC6) Validation for the Driving licence number field is only triggered when an adult or youth defendant enters a value',
+    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-EPIC:PO-855'] },
     () => {
       setupComponent();
-
-      // Select Vehicle radio button to make the field required
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-
-      // User does not provide a value when Vehicle is selected
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter Driving licence number');
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Driving licence number');
     },
   );
 
   it(
-    '(AC14) Validation will exist for the Driving licence number field - invalid format',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
+    '(AC14, AC2, AC3) Validation for the Driving licence number field accepts 1 to 5 surname characters using the correct 9 padding when a value is entered',
+    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-EPIC:PO-855'] },
     () => {
-      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = 'INVALID';
+      const validDrivingLicences = [
+        'SMITH010203ABXYZ',
+        'SMIT9010203ABXYZ',
+        'SMI99010203ABXYZ',
+        'SM999010203ABXYZ',
+        'S9999010203ABXYZ',
+      ];
+
       setupComponent();
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
-      // User does not enter a valid driving license
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Enter Driving licence number in the correct format, like ABCDE123456AA1B1',
-      );
+      validDrivingLicences.forEach((drivingLicence) => {
+        cy.get(DOM_ELEMENTS.drivingLicenceInput).clear().type(drivingLicence, { delay: 0 });
+        cy.get(DOM_ELEMENTS.submitButton).click();
+        cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', DRIVING_LICENCE_NUMBER_FORMAT_ERROR);
+      });
     },
   );
 
   it(
-    '(AC14) Validation will exist for the Driving licence number field - max length',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
+    '(AC14, AC1) Validation for the Driving licence number field rejects values longer than 16 characters',
+    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-EPIC:PO-855'] },
     () => {
       const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = longDrivingLicense;
       setupComponent();
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
-      // User enters more than 16 characters
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Driving licence number must be 16 characters or fewer');
+    },
+  );
+
+  it(
+    '(AC14, AC2, AC3, AC4) Validation for the Driving licence number field rejects invalid surname block values',
+    { tags: [...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3414'), '@JIRA-EPIC:PO-855'] },
+    () => {
+      const invalidDrivingLicences = ['99999010203ABXYZ', 'SMIT8010203ABXYZ'];
+
+      setupComponent();
+      cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+
+      invalidDrivingLicences.forEach((drivingLicence) => {
+        cy.get(DOM_ELEMENTS.drivingLicenceInput).clear().type(drivingLicence, { delay: 0 });
+        cy.get(DOM_ELEMENTS.submitButton).click();
+        cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', DRIVING_LICENCE_NUMBER_FORMAT_ERROR);
+      });
     },
   );
 
@@ -1156,6 +1175,20 @@ describe('FinesMacManualFixedPenalty', () => {
 
       // Check form buttons
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
+    },
+  );
+
+  it(
+    '(AC5, AC6) Validation for the Driving licence number field is only triggered when a company defendant enters a value',
+    { tags: [...buildTags('@JIRA-STORY:PO-860', '@JIRA-STORY:PO-3414'), '@JIRA-EPIC:PO-855'] },
+    () => {
+      fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Driving licence number');
     },
   );
 
