@@ -10,7 +10,7 @@ import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/component
 import { IFinesAccAddNoteForm } from '../interfaces/fines-acc-note-add-form.interface';
 import { IFinesAccAddNoteFieldErrors } from '../interfaces/fines-acc-note-add-form-field-errors.interface';
 import { FINES_ACC_ADD_NOTE_FIELD_ERRORS } from '../constants/fines-acc-note-add-form-field-errors.constant';
-import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 
@@ -45,8 +45,8 @@ export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent impl
         Validators.required,
         Validators.maxLength(1000),
         patternValidator(
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-          'alphanumericWithHyphensSpacesApostrophesDotPattern',
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
+          'alphanumericWithHyphensSpacesApostrophesCommasDotPattern',
         ),
       ]),
     });

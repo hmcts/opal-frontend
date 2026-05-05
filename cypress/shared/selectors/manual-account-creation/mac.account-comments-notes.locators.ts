@@ -22,4 +22,7 @@ export const MacAccountCommentsNotesLocators = {
   cancelLink: 'a.govuk-link.button-link',
   returnToAccountDetailsButton: 'button[type="submit"]:contains("Return to account details")',
   reviewAndSubmitButton: 'button[type="submit"]:contains("Review and submit account details")',
+  errorSummary: '.govuk-error-summary',
+  commentsErrorMessage: '#fm_account_comments_notes_comments-error-message',
+  notesErrorMessage: '#fm_account_comments_notes_notes-error-message',
 } as const;
