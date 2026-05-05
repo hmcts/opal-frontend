@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Accessibility Tests for Fixed Penalty Screens
   # This feature file ensures that all screens related to fixed penalty account creation meet accessibility standards using Axe-Core.
 
@@ -12,12 +12,13 @@ Feature: Accessibility Tests for Fixed Penalty Screens
   Scenario Outline: Fixed Penalty details page is accessible for <defendant_type>
     When I start a fixed penalty account for business unit "West London", defendant type "<defendant_type>" and originator type "New"
     Then I check the page for accessibility
-    @JIRA-KEY:POT-5108
+    @JIRA-EPIC:PO-2472
     Examples: Adult or youth only
       | defendant_type      |
       | Adult or youth only |
 
-    @JIRA-KEY:POT-5109
+    @JIRA-EPIC:PO-2472
     Examples: Company
       | defendant_type |
       | Company        |
+

@@ -38,7 +38,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC1a-d. should render the search for an account screen',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6980'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -80,7 +80,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC3a. should validate input fields and show errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6981'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_number = '123$%^78';
@@ -104,7 +104,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC3b. should show error for incorrectly formatted account number',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6982'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_number = '1234567';
@@ -125,7 +125,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC3c. should show error for non-alphabetical reference or case number',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6983'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_reference_case_number = 'REF@#$456';
@@ -146,7 +146,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC3d. should show error for non-alphabetical last name',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6984'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
@@ -164,7 +164,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC3e. should show error for non-alphabetical first names',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6985'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
@@ -184,7 +184,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC3f. should show error for invalid date of birth format',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6986'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
@@ -202,7 +202,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC3g. should show error for future date of birth',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6987'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
@@ -220,7 +220,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC3h. should show error for incorrectly formatted date of birth',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6988'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
@@ -239,7 +239,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'date picker should show the date in correct format DD/MM/YYYY',
-    { tags: [...buildTags('@JIRA-STORY:PO-1998'), '@JIRA-KEY:POT-6989'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1998'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
       const expectedDate = getFirstDayOfPreviousMonth();
@@ -264,7 +264,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC3i. should show error for invalid NI number',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6990'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
@@ -286,7 +286,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC3j. should show error for invalid address line 1',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6991'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
@@ -308,7 +308,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC3k. should show error for invalid postcode',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6992'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
@@ -331,7 +331,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC4a. should validate account number maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6993'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_number = '1234567890'; // 10 characters (exceeds 9)
@@ -349,7 +349,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC4b. should validate reference or case number maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6994'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_reference_case_number =
@@ -371,7 +371,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC4c. should validate last name maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6995'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
@@ -390,7 +390,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC4d. should validate first names maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6996'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
@@ -409,7 +409,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC4e. should validate National Insurance number maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6997'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
@@ -428,7 +428,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC4f. should validate Address Line 1 maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6998'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
@@ -450,7 +450,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC4g. should validate Postcode maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-6999'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
@@ -469,7 +469,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC5a should validate first name field dependency',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-7000'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -484,7 +484,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC5b. should validate dob field dependency',
-    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-KEY:POT-7001'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
       cy.window().then((win) => {
@@ -504,7 +504,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC1a. Should validate last name field when alias checkbox selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7002'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -517,7 +517,7 @@ describe('Search Account Component - Individuals', () => {
 
   it(
     'AC1b. Should validate last name field when "Search exact match" for last name is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7003'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -529,7 +529,7 @@ describe('Search Account Component - Individuals', () => {
   );
   it(
     'AC1c. Should validate first name field when "Search exact match" for first name is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-KEY:POT-7004'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 

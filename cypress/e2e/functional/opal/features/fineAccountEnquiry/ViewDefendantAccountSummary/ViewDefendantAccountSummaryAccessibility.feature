@@ -1,5 +1,5 @@
 @JIRA-LABEL:account-enquiry
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 @JIRA-STORY:PO-777
 Feature: View Defendant Account Summary - Add Comments Accessibility
 
@@ -7,7 +7,8 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @JIRA-STORY:PO-777 @JIRA-KEY:POT-4974
+
+  @JIRA-STORY:PO-777 @JIRA-EPIC:PO-2472
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality Accessibility
     # Create & publish an individual (adultOrYouthOnly) account then check accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -37,7 +38,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
       | Line 3  | Line3 Test   |
     Then I check the page for accessibility
 
-  @JIRA-KEY:POT-4975
+  @JIRA-EPIC:PO-2472
   Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a company account then check accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -65,7 +66,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
       | Line 3  | Company Line3   |
     Then I check the page for accessibility
 
-  @JIRA-KEY:POT-4976
+  @JIRA-EPIC:PO-2472
   Scenario: Check View Defendant Parent Guardian Account Summary and Comments Accessibility with Axe-Core
     # Create & publish a pgToPay account then check accessibility
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -98,7 +99,7 @@ Feature: View Defendant Account Summary - Add Comments Accessibility
     # Check accessibility with populated comments
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234 @JIRA-KEY:POT-7703
+  @JIRA-STORY:PO-1917 @JIRA-EPIC:PO-2234
   Scenario: Check View Minor Creditor Account Summary Accessibility with Axe-Core
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRMINA11Y{uniqUpper} |

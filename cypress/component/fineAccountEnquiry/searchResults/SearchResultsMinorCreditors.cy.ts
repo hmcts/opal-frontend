@@ -76,7 +76,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     'Search results component is created correctly for minor creditors',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7061'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -87,7 +87,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC2) Displays error message when no minor creditor search matches are found',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7062'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
@@ -106,7 +106,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC3) Handles more than 100 minor creditor search matches correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7063'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
@@ -131,7 +131,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7064'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(INDIVIDUAL_SEARCH_RESULTS_MOCK);
 
@@ -180,7 +180,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7065'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(COMPANY_SEARCH_RESULTS_MOCK);
 
@@ -227,7 +227,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4d) Displays pagination with 25 results per page for maximum of 100 results',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7066'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       // Using LARGE_SEARCH_RESULTS_MOCK but limiting to 100 results for pagination testing
       const paginationMock = {
@@ -276,7 +276,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4f) Should sort by each column - ascending then descending (FinesSaResultsComponent - Minor Creditors)',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7067'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(SORTING_MINOR_CREDITORS_MOCK);
 

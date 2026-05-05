@@ -11,6 +11,7 @@ import {
   DRIVING_LICENCE_NUMBER_PATTERN,
   TIME_FORMAT_PATTERN,
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
 
@@ -22,6 +23,10 @@ type IFinesMacFixedPenaltyDetailsFormValidators = {
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesCommasDotPattern',
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -62,8 +67,8 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
     ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
   ],
   fm_fp_court_details_originator_name: null,
-  fm_fp_account_comments_notes_comments: [ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR],
-  fm_fp_account_comments_notes_notes: [ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR],
+  fm_fp_account_comments_notes_comments: [ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR],
+  fm_fp_account_comments_notes_notes: [ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR],
   fm_fp_account_comments_notes_system_notes: null,
   fm_fp_language_preferences_document_language: null,
   fm_fp_language_preferences_hearing_language: null,
@@ -94,7 +99,6 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
     ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
   ],
   fm_fp_offence_details_driving_licence_number: [
-    Validators.required,
     Validators.maxLength(16),
     ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
     DRIVING_LICENCE_NUMBER_PATTERN_VALIDATOR,

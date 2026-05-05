@@ -65,6 +65,60 @@ export function interceptMinorCreditorAtAGlance(
     })
     .as('getMinorCreditorAtAGlance');
 }
+
+/**
+ * Intercepts repeated GET requests to the minor creditor "at-a-glance" endpoint and
+ * returns the next mocked response in sequence on each call.
+ *
+ * When the number of requests exceeds the number of supplied responses, the final
+ * response is reused for subsequent calls.
+ *
+ * @param accountId - The unique identifier for the minor creditor account.
+ * @param responses - Ordered mocked responses to return across calls.
+ * @param respHeaderEtag - The value to set for the ETag response header.
+ * @returns Cypress chainable object with the alias 'getMinorCreditorAtAGlance'.
+ */
+export function interceptMinorCreditorAtAGlanceSequence(
+  accountId: number,
+  responses: IOpalFinesAccountMinorCreditorAtAGlance[],
+  respHeaderEtag: string,
+) {
+  let callCount = 0;
+
+  return cy
+    .intercept(
+      {
+        method: 'GET',
+        url: `**/minor-creditor-accounts/${accountId}/at-a-glance`,
+        middleware: true,
+      },
+      (req) => {
+        const response = responses[Math.min(callCount, responses.length - 1)];
+        callCount += 1;
+        req.reply({
+          statusCode: 200,
+          headers: { ETag: respHeaderEtag },
+          body: response,
+        });
+      },
+    )
+    .as('getMinorCreditorAtAGlance');
+}
+
+/**
+ * Intercepts the PATCH request that updates a minor creditor account.
+ *
+ * @param accountId - The unique identifier for the minor creditor account.
+ * @returns Cypress chainable object with the alias 'patchMinorCreditorAccount'.
+ */
+export function interceptPatchMinorCreditorAccount(accountId: number) {
+  return cy
+    .intercept('PATCH', `/opal-fines-service/minor-creditor-accounts/${accountId}`, {
+      statusCode: 200,
+      body: {},
+    })
+    .as('patchMinorCreditorAccount');
+}
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 
 /**

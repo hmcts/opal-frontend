@@ -45,7 +45,7 @@ describe('FinesConSearchErrorComponent', () => {
 
   it(
     'AC2a. displays the individual search error heading and message text',
-    { tags: [...buildTags(...ERROR_PAGE_TAGS), '@JIRA-KEY:POT-7146'] },
+    { tags: [...buildTags(...ERROR_PAGE_TAGS), '@JIRA-EPIC:PO-2294'] },
     () => {
       setupComponent('individual');
 
@@ -59,7 +59,7 @@ describe('FinesConSearchErrorComponent', () => {
 
   it(
     'AC2b. displays the company search error heading and message text',
-    { tags: [...buildTags(...ERROR_PAGE_TAGS), '@JIRA-KEY:POT-7147'] },
+    { tags: [...buildTags(...ERROR_PAGE_TAGS), '@JIRA-EPIC:PO-2294'] },
     () => {
       setupComponent('company');
 

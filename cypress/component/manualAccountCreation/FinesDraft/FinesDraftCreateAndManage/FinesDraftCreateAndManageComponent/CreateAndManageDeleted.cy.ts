@@ -48,7 +48,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
 
   it(
     '(AC.1) should not have table when user does not have accounts submitted',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-KEY:POT-7170'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
     () => {
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
@@ -64,7 +64,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
 
   it(
     '(AC.2)Deleted accounts should not appear if deleted 8 or more days ago',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-KEY:POT-7171'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
@@ -110,7 +110,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
   );
   it(
     '(AC.3)should show summary table with correct data for deleted accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-KEY:POT-7172'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
@@ -163,7 +163,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
   );
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for deleted accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-KEY:POT-7173'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
@@ -194,7 +194,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
 
   it(
     '(AC.4a) should have default sort order for created accounts set to ascending for Deleted',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-KEY:POT-7174'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 

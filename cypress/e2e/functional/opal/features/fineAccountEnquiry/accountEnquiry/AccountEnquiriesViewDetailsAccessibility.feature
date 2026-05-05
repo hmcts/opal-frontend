@@ -1,13 +1,13 @@
 @JIRA-LABEL:account-enquiry
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Account Enquiries - View Account Details Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @JIRA-KEY:POT-5099
-  @JIRA-STORY:PO-1943
+
+  @JIRA-STORY:PO-1943 @JIRA-EPIC:PO-2472
   Scenario: Check Account Details View Accessibility with Axe-Core for Individual Account
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |
@@ -33,8 +33,8 @@ Feature: Account Enquiries - View Account Details Accessibility
     Then I should see the convert to company confirmation screen for defendant "Mr John ACCDETAILSURNAME{uniqUpper}"
     And I check the page for accessibility
 
-  @JIRA-KEY:POT-5100
-  @JIRA-STORY:PO-1956
+
+  @JIRA-STORY:PO-1956 @JIRA-EPIC:PO-2472
   Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                    |
