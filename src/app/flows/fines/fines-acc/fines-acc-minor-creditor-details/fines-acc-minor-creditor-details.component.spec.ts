@@ -146,11 +146,33 @@ describe('FinesAccMinorCreditorDetailsComponent', () => {
     );
   });
 
+  it('should navigate to payment hold denied page when user lacks permission for add payment hold', () => {
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
+    component.navigateToAddPaymentHoldPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
   it('should call router.navigate when navigateToRemovePaymentHoldPage is called', () => {
     vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(true);
     component.navigateToRemovePaymentHoldPage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should navigate to payment hold denied page when user lacks permission for remove payment hold', () => {
+    vi.spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').mockReturnValue(false);
+    component.navigateToRemovePaymentHoldPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`],
       {
         relativeTo: component['activatedRoute'],
       },

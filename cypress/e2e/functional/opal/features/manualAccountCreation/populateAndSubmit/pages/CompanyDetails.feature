@@ -9,7 +9,6 @@ Feature: Manual account creation - Company Details
     When I start a fine manual account for business unit "West London" with defendant type "Company" and originator type "New"
     And I view the "Company details" task
 
-  @JIRA-KEY:POT-5187
   Scenario: (AC.12) Entered data persists in the session [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -46,7 +45,6 @@ Feature: Manual account creation - Company Details
       | postcode       |  |
     And the manual company aliases checkbox is "not checked"
 
-  @JIRA-KEY:POT-5188
   Scenario: (AC.12) Grey navigation links routes correctly [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -55,7 +53,6 @@ Feature: Manual account creation - Company Details
     Then I should see the header containing text "Defendant contact details"
 
 
-  @JIRA-KEY:POT-5189
   Scenario: (AC.13) Unsaved data is cleared when user confirms cancel [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -79,7 +76,6 @@ Feature: Manual account creation - Company Details
     And the manual company aliases checkbox is "not checked"
 
 
-  @JIRA-KEY:POT-5190
   Scenario: (AC.13) Unsaved data is retained when user cancels the cancel [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -89,7 +85,6 @@ Feature: Manual account creation - Company Details
       | company name   | COMPANY NAME |
       | address line 1 | Addr1        |
 
-  @JIRA-KEY:POT-5191
   Scenario: (AC.14) Confirming cancel restores last saved company details [@PO-345, @PO-365]
     When I complete manual company details:
       | company name   | COMPANY NAME |
@@ -107,7 +102,6 @@ Feature: Manual account creation - Company Details
       | address line 1 | Addr1        |
       | address line 2 |              |
 
-  @JIRA-KEY:POT-5192
   Scenario: (AC.14) Inline error persists when cancelling and revisiting company details [@PO-345, @PO-365]
     When I complete manual company details:
       | address line 1 | Addr1 |
@@ -119,6 +113,5 @@ Feature: Manual account creation - Company Details
       | address line 1 | Addr1 |
     Then I see a manual company inline error "Enter company name" for "Company name"
 
-  @JIRA-KEY:POT-5193
   Scenario: Company Details - Axe Core
     Then I check the page for accessibility

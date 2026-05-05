@@ -31,6 +31,8 @@ import { IOpalFinesUpdateDefendantAccountCollectionOrder } from '@services/fines
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/interfaces/fines-acc-enf-collo-change-form-state.interface';
 import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
+import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
 
 @Injectable({
@@ -336,5 +338,24 @@ export class FinesAccPayloadService {
       buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     );
+  }
+
+  /**
+   * Builds the base payload for updating a minor creditor account.
+   * @param data - The minor creditor account at a glance data
+   * @returns The payload object conforming to the IOpalFinesUpdateMinorCreditorAccountPayload interface
+   */
+  public buildMinorCreditorAccountUpdatePayload(
+    data: IOpalFinesAccountMinorCreditorAtAGlance,
+  ): IOpalFinesUpdateMinorCreditorAccountPayload {
+    return {
+      creditor_account_id: data.creditor_account_id,
+      party_details: data.party,
+      address: data.address,
+      payment: {
+        pay_by_bacs: data.payment.is_bacs,
+        hold_payment: data.payment.hold_payment,
+      },
+    };
   }
 }

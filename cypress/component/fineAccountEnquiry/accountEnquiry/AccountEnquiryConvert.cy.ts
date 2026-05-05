@@ -86,41 +86,33 @@ const setupConvertRoute = ({
 
 describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@JIRA-LABEL:account-enquiry'] }, () => {
   describe('Convert To Company', { tags: [''] }, () => {
-    it(
-      'Convert link should not be visible for parent or guardian accounts',
-      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-KEY:POT-7675'] },
-      () => {
-        let partyMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
-        partyMock.defendant_account_party.is_debtor = false; // Set to non-debtor to simulate parent/guardian scenario
-        setupConvertRoute({
-          targetPath: '/fines/account/defendant/77/details#defendant',
-          headerMock: structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK),
-          partyMock: partyMock,
-        });
+    it('Convert link should not be visible for parent or guardian accounts', { tags: ['@JIRA-STORY:PO-1942'] }, () => {
+      let partyMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
+      partyMock.defendant_account_party.is_debtor = false; // Set to non-debtor to simulate parent/guardian scenario
+      setupConvertRoute({
+        targetPath: '/fines/account/defendant/77/details#defendant',
+        headerMock: structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK),
+        partyMock: partyMock,
+      });
 
-        cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-        cy.get(AccountDefendantDetailsLocators.actions.convertActionLink).should('not.exist');
-      },
-    );
-    it(
-      'Convert link should be visible for adult or youth accounts',
-      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-KEY:POT-7676'] },
-      () => {
-        setupConvertRoute({
-          targetPath: '/fines/account/defendant/77/details#defendant',
-          headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
-          partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
-        });
+      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+      cy.get(AccountDefendantDetailsLocators.actions.convertActionLink).should('not.exist');
+    });
+    it('Convert link should be visible for adult or youth accounts', { tags: ['@JIRA-STORY:PO-1942'] }, () => {
+      setupConvertRoute({
+        targetPath: '/fines/account/defendant/77/details#defendant',
+        headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
+        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
+      });
 
-        cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-        cy.get(AccountDefendantDetailsLocators.actions.convertActionLink)
-          .should('exist')
-          .and('contain.text', 'Convert to a company account');
-      },
-    );
+      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+      cy.get(AccountDefendantDetailsLocators.actions.convertActionLink)
+        .should('exist')
+        .and('contain.text', 'Convert to a company account');
+    });
     it(
       'redirects back to defendant details when a parent or guardian account tries to convert to company',
-      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-KEY:POT-7677'] },
+      { tags: ['@JIRA-STORY:PO-1942'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/company',
@@ -133,7 +125,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
     );
     it(
       'renders the confirmation screen for an individual defendant and continues to the convert form',
-      { tags: ['@JIRA-STORY:PO-1943', '@JIRA-KEY:POT-7678'] },
+      { tags: ['@JIRA-STORY:PO-1943'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/company',
@@ -163,7 +155,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
     it(
       'submits the company convert form with the expected API payload structure',
-      { tags: ['@JIRA-STORY:PO-1953', '@JIRA-KEY:POT-7679'] },
+      { tags: ['@JIRA-STORY:PO-1953'] },
       () => {
         interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
 
@@ -219,24 +211,20 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
   });
 
   describe('Convert To Individual', { tags: [''] }, () => {
-    it(
-      'convert link should be visible for company accounts',
-      { tags: ['@JIRA-STORY:PO-1955', '@JIRA-KEY:POT-7680'] },
-      () => {
-        setupConvertRoute({
-          targetPath: '/fines/account/defendant/77/details#defendant',
-          headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
-          partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK),
-        });
-        cy.get(AccountDefendantDetailsLocators.actions.convertActionLink)
-          .should('exist')
-          .and('contain.text', 'Convert to an individual account');
-      },
-    );
+    it('convert link should be visible for company accounts', { tags: ['@JIRA-STORY:PO-1955'] }, () => {
+      setupConvertRoute({
+        targetPath: '/fines/account/defendant/77/details#defendant',
+        headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
+        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK),
+      });
+      cy.get(AccountDefendantDetailsLocators.actions.convertActionLink)
+        .should('exist')
+        .and('contain.text', 'Convert to an individual account');
+    });
 
     it(
       'renders the confirmation screen for a company account and supports cancel',
-      { tags: ['@JIRA-STORY:PO-1956', '@JIRA-KEY:POT-7681'] },
+      { tags: ['@JIRA-STORY:PO-1956'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/individual',
@@ -264,7 +252,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
     it(
       'renders the convert form with company data mapped into shared fields',
-      { tags: ['@JIRA-STORY:PO-1956', '@JIRA-KEY:POT-7682'] },
+      { tags: ['@JIRA-STORY:PO-1956'] },
       () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/individual',
@@ -288,7 +276,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
     it(
       'submits the individual convert form with the expected API payload structure',
-      { tags: ['@JIRA-STORY:PO-1957', '@JIRA-KEY:POT-7683'] },
+      { tags: ['@JIRA-STORY:PO-1957'] },
       () => {
         interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
 
@@ -369,17 +357,13 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
     );
   });
 
-  it(
-    'redirects back to defendant details when the target conversion is unsupported',
-    { tags: ['', '@JIRA-KEY:POT-7674'] },
-    () => {
-      setupConvertRoute({
-        targetPath: '/fines/account/defendant/77/convert/unsupported-target',
-        headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
-        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
-      });
+  it('redirects back to defendant details when the target conversion is unsupported', { tags: [''] }, () => {
+    setupConvertRoute({
+      targetPath: '/fines/account/defendant/77/convert/unsupported-target',
+      headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
+      partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
+    });
 
-      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-    },
-  );
+    cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+  });
 });

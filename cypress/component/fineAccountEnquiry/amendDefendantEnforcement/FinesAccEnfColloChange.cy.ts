@@ -304,7 +304,7 @@ describe(
   () => {
     it(
       'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Adult or youth: navigates to and displays the change collection order screen',
-      { tags: ['@JIRA-KEY:POT-5629'] },
+      { tags: [] },
       () => {
         assertCollectionOrderChangeScreen(commonSetup, '177A - Mr Robert THOMSON');
       },
@@ -312,7 +312,7 @@ describe(
 
     it(
       'AC3, AC3a. Adult or youth: displays an error when Change is selected without choosing a collection order option',
-      { tags: ['@JIRA-KEY:POT-5630'] },
+      { tags: [] },
       () => {
         mountCollectionOrderChangeForm('177A - Mr Robert THOMSON');
         assertCollectionOrderChangeRequiredError();
@@ -321,7 +321,7 @@ describe(
 
     it(
       'AC4a. Adult or youth: selecting a different value returns the user to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-5631'] },
+      { tags: [] },
       () => {
         assertCollectionOrderChangedNavigatesToEnforcementTab(commonSetup);
       },
@@ -329,7 +329,7 @@ describe(
 
     it(
       'AC5a. Adult or youth: cancel without changes returns to the Enforcement tab without confirmation',
-      { tags: ['@JIRA-KEY:POT-5632'] },
+      { tags: [] },
       () => {
         assertCancelWithoutChanges(commonSetup);
       },
@@ -337,19 +337,15 @@ describe(
 
     it(
       'AC5b. Adult or youth: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-5633'] },
+      { tags: [] },
       () => {
         assertCancelAfterSelectionShowsConfirmation(commonSetup);
       },
     );
 
-    it(
-      'AC5c. Adult or youth: dismissing the cancel confirmation keeps the user on the page',
-      { tags: ['@JIRA-KEY:POT-5634'] },
-      () => {
-        assertDismissingCancelConfirmationKeepsUserOnPage(commonSetup);
-      },
-    );
+    it('AC5c. Adult or youth: dismissing the cancel confirmation keeps the user on the page', { tags: [] }, () => {
+      assertDismissingCancelConfirmationKeepsUserOnPage(commonSetup);
+    });
   },
 );
 
@@ -359,7 +355,7 @@ describe(
   () => {
     it(
       'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Parent or guardian to pay: navigates to and displays the change collection order screen',
-      { tags: ['@JIRA-KEY:POT-5635'] },
+      { tags: [] },
       () => {
         assertCollectionOrderChangeScreen(parentGuardianSetup, '177A - Mr Robert THOMSON');
       },
@@ -367,7 +363,7 @@ describe(
 
     it(
       'AC3, AC3a. Parent or guardian to pay: displays an error when Change is selected without choosing a collection order option',
-      { tags: ['@JIRA-KEY:POT-5636'] },
+      { tags: [] },
       () => {
         mountCollectionOrderChangeForm('177A - Mr Robert THOMSON');
         assertCollectionOrderChangeRequiredError();
@@ -376,7 +372,7 @@ describe(
 
     it(
       'AC4a. Parent or guardian to pay: selecting a different value returns the user to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-5637'] },
+      { tags: [] },
       () => {
         assertCollectionOrderChangedNavigatesToEnforcementTab(parentGuardianSetup);
       },
@@ -384,7 +380,7 @@ describe(
 
     it(
       'AC5a. Parent or guardian to pay: cancel without changes returns to the Enforcement tab without confirmation',
-      { tags: ['@JIRA-KEY:POT-5638'] },
+      { tags: [] },
       () => {
         assertCancelWithoutChanges(parentGuardianSetup);
       },
@@ -392,7 +388,7 @@ describe(
 
     it(
       'AC5b. Parent or guardian to pay: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-5639'] },
+      { tags: [] },
       () => {
         assertCancelAfterSelectionShowsConfirmation(parentGuardianSetup);
       },
@@ -400,7 +396,7 @@ describe(
 
     it(
       'AC5c. Parent or guardian to pay: dismissing the cancel confirmation keeps the user on the page',
-      { tags: ['@JIRA-KEY:POT-5640'] },
+      { tags: [] },
       () => {
         assertDismissingCancelConfirmationKeepsUserOnPage(parentGuardianSetup);
       },
@@ -411,7 +407,7 @@ describe(
 describe('Account Enquiry Enforcement - Change Collection Order status - Company', { tags: COMPANY_TAGS }, () => {
   it(
     'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Company: navigates to and displays the change collection order screen',
-    { tags: ['@JIRA-KEY:POT-5641'] },
+    { tags: [] },
     () => {
       assertCollectionOrderChangeScreen(companySetup, '177A - Test Org Ltd');
     },
@@ -419,44 +415,32 @@ describe('Account Enquiry Enforcement - Change Collection Order status - Company
 
   it(
     'AC3, AC3a. Company: displays an error when Change is selected without choosing a collection order option',
-    { tags: ['@JIRA-KEY:POT-5642'] },
+    { tags: [] },
     () => {
       mountCollectionOrderChangeForm('177A - Test Org Ltd');
       assertCollectionOrderChangeRequiredError();
     },
   );
 
-  it(
-    'AC4a. Company: selecting a different value returns the user to the Enforcement tab',
-    { tags: ['@JIRA-KEY:POT-5643'] },
-    () => {
-      assertCollectionOrderChangedNavigatesToEnforcementTab(companySetup);
-    },
-  );
+  it('AC4a. Company: selecting a different value returns the user to the Enforcement tab', { tags: [] }, () => {
+    assertCollectionOrderChangedNavigatesToEnforcementTab(companySetup);
+  });
 
-  it(
-    'AC5a. Company: cancel without changes returns to the Enforcement tab without confirmation',
-    { tags: ['@JIRA-KEY:POT-5644'] },
-    () => {
-      assertCancelWithoutChanges(companySetup);
-    },
-  );
+  it('AC5a. Company: cancel without changes returns to the Enforcement tab without confirmation', { tags: [] }, () => {
+    assertCancelWithoutChanges(companySetup);
+  });
 
   it(
     'AC5b. Company: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
-    { tags: ['@JIRA-KEY:POT-5645'] },
+    { tags: [] },
     () => {
       assertCancelAfterSelectionShowsConfirmation(companySetup);
     },
   );
 
-  it(
-    'AC5c. Company: dismissing the cancel confirmation keeps the user on the page',
-    { tags: ['@JIRA-KEY:POT-5646'] },
-    () => {
-      assertDismissingCancelConfirmationKeepsUserOnPage(companySetup);
-    },
-  );
+  it('AC5c. Company: dismissing the cancel confirmation keeps the user on the page', { tags: [] }, () => {
+    assertDismissingCancelConfirmationKeepsUserOnPage(companySetup);
+  });
 });
 
 function assertChangeSelectionReturnsToEnforcementTab(updatedCollectionOrderFlag: boolean) {

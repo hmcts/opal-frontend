@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { EMPTY, merge, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 // Services
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 // Stores
@@ -133,7 +133,11 @@ export class FinesAccMinorCreditorDetailsComponent
       switch (tab) {
         case 'at-a-glance':
           this.tabAtAGlance$ = this.fetchTabDataTyped(
-            this.opalFinesService.getMinorCreditorAccountAtAGlance(account_id),
+            this.opalFinesService.getMinorCreditorAccountAtAGlance(account_id).pipe(
+              tap((data) => {
+                this.accountStore.setHasPaymentHold(data.payment.hold_payment);
+              }),
+            ),
           );
           break;
       }
@@ -213,18 +217,30 @@ export class FinesAccMinorCreditorDetailsComponent
    * Navigates to the add payment hold page.
    */
   public navigateToAddPaymentHoldPage(): void {
-    this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`], {
-      relativeTo: this.activatedRoute,
-    });
+    if (this.hasBusinessUnitPermissionKey('add-remove-payment-hold')) {
+      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/add`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`], {
+        relativeTo: this.activatedRoute,
+      });
+    }
   }
 
   /**
    * Navigates to the remove payment hold page.
    */
   public navigateToRemovePaymentHoldPage(): void {
-    this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`], {
-      relativeTo: this.activatedRoute,
-    });
+    if (this.hasBusinessUnitPermissionKey('add-remove-payment-hold')) {
+      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/remove`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate([`../${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/denied`], {
+        relativeTo: this.activatedRoute,
+      });
+    }
   }
 
   /**

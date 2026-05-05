@@ -10,8 +10,8 @@ export interface IComponentProperties {
   targetPath?: string;
   routerConfig?: Routes;
   additionalProviders?: Provider[];
-  globalStoreFactory?: () => GlobalStore;
-  finesAccountStoreFactory?: () => FinesAccountStore;
+  globalStoreFactory?: () => InstanceType<typeof GlobalStore>;
+  finesAccountStoreFactory?: () => InstanceType<typeof FinesAccountStore>;
   fragments:
     | 'at-a-glance'
     | 'defendant'
