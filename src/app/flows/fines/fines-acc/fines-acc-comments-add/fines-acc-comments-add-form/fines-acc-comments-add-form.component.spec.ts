@@ -7,6 +7,7 @@ import { FinesAccCommentsAddFormComponent } from './fines-acc-comments-add-form.
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IFinesAccAddCommentsFormState } from '../interfaces/fines-acc-comments-add-form-state.interface';
 import { FINES_ACC_ADD_COMMENTS_STATE } from '../constants/fines-acc-comments-add-form-state.constant';
+import { FINES_ACC_ADD_COMMENTS_FIELD_ERRORS } from '../constants/fines-acc-comments-add-form-field-errors.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccCommentsAddFormComponent', () => {
@@ -96,16 +97,40 @@ describe('FinesAccCommentsAddFormComponent', () => {
     expect(freeText1Control.errors?.['maxlength']).toBeFalsy();
   });
 
-  it('should validate pattern for alphanumeric with hyphens, spaces, apostrophes, and dots', () => {
+  it('should validate pattern for alphanumeric with hyphens, spaces, apostrophes, commas, and dots', () => {
     const commentControl = component.form.get('facc_add_comment') as FormControl;
 
     // Valid patterns
-    commentControl.setValue("Valid text-123 with's dots.");
-    expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeFalsy();
+    commentControl.setValue("Valid text-123, with's dots.");
+    expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']).toBeFalsy();
 
     // Invalid patterns
     commentControl.setValue('Invalid@symbol');
-    expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeTruthy();
+    expect(commentControl.errors?.['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']).toBeTruthy();
+  });
+
+  it('should accept commas in the comment field', () => {
+    const commentControl = component.form.get('facc_add_comment') as FormControl;
+
+    commentControl.setValue('Warning, ref 123.');
+
+    expect(commentControl.errors).toBeNull();
+    expect(commentControl.valid).toBe(true);
+  });
+
+  it('should accept commas in the free text fields', () => {
+    const freeTextControls = [
+      component.form.get('facc_add_free_text_1') as FormControl,
+      component.form.get('facc_add_free_text_2') as FormControl,
+      component.form.get('facc_add_free_text_3') as FormControl,
+    ];
+
+    freeTextControls.forEach((control, index) => {
+      control.setValue(`Free text, line ${index + 1}.`);
+
+      expect(control.errors).toBeNull();
+      expect(control.valid).toBe(true);
+    });
   });
 
   it('should emit formSubmit event when form is submitted', () => {
@@ -164,5 +189,28 @@ describe('FinesAccCommentsAddFormComponent', () => {
     // Set valid value
     commentControl.setValue('Valid comment');
     expect(component.form.valid).toBeTruthy();
+  });
+
+  it('should prevent submission and show an error message for unexpected special characters in the comment field', () => {
+    const commentControl = component.form.get('facc_add_comment') as FormControl;
+    const mockEvent = { submitter: null } as SubmitEvent;
+    const expectedErrorMessage =
+      FINES_ACC_ADD_COMMENTS_FIELD_ERRORS.facc_add_comment['alphanumericWithHyphensSpacesApostrophesCommasDotPattern']
+        .message;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+    commentControl.setValue('Invalid?');
+
+    expect(commentControl.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBeTruthy();
+
+    component.handleFormSubmit(mockEvent);
+
+    expect(component['formSubmit'].emit).not.toHaveBeenCalled();
+    expect(component.formControlErrorMessages['facc_add_comment']).toBe(expectedErrorMessage);
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'facc_add_comment',
+      message: expectedErrorMessage,
+    });
   });
 });

@@ -1,6 +1,7 @@
 <app-fines-acc-banner-messages
   id="{{ id }}-banners"
   [hasVersionMismatch]="accountStore.hasVersionMismatch()"
+  [hasPaymentHold]="accountStore.hasPaymentHold()"
   [successMessage]="accountStore.successMessage()"
   (clearSuccessMessage)="accountStore.clearSuccessMessage()"
   (refreshPage)="handleRefreshPage()"
