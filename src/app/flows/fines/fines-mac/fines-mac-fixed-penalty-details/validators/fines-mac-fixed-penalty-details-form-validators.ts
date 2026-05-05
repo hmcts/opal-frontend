@@ -94,7 +94,6 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
     ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
   ],
   fm_fp_offence_details_driving_licence_number: [
-    Validators.required,
     Validators.maxLength(16),
     ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
     DRIVING_LICENCE_NUMBER_PATTERN_VALIDATOR,
