@@ -9,6 +9,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 ## Contents
 
 - [Getting Started](#getting-started)
+- [Shared Codex Skills](#shared-codex-skills)
 - [Local Development Strategy](#local-development-strategy)
 - [Production Server](#5-production-server)
 - [Running Unit Tests](#running-unit-tests)
@@ -39,6 +40,17 @@ Install dependencies by executing the following command:
 yarn
 
 ```
+
+### Shared Codex Skills
+
+Shared Codex skills for Opal frontend work live in the sibling `opal-dev-agent-skills` repository. After cloning or updating this repository, run:
+
+```bash
+cd ../opal-dev-agent-skills
+./scripts/frontend/sync-codex-skills.sh
+```
+
+This pulls the latest shared skills and installs Codex-only symlinks for the shared `frontend` and `general` skill folders into `.codex/skills/` for both `opal-frontend` and `opal-rm-frontend`, including `opal-frontend-vitest-guard` for Angular/Vitest unit-test work. The `.codex/skills/` directory is gitignored so developers can also keep local-only skills without pushing them to GitHub.
 
 ### Local Development Strategy
 
