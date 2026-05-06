@@ -3970,9 +3970,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.74":
-  version: 0.0.74
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.74"
+"@hmcts/opal-frontend-common@npm:^0.0.75":
+  version: 0.0.75
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.75"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^9.0.0"
@@ -3994,7 +3994,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/2749aedc07990f8d62cf0c37a6eaf1e4af1e56a6e3f9aa9b0c2fffc9efe6537eee5339db7221b8d6d4b9b32e9329870ed75f3d551de96f0eee5124c53c6ffd1e
+  checksum: 10/13bf7399020f00f6b3d4b892fce5a9fea02e1b425b4115306f83cc5fc9061102807be00bada4a6b9c0435e44dc0302f97f2c4263851c4a3e30883f337e15a65e
   languageName: node
   linkType: hard
 
@@ -13345,6 +13345,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"http-proxy-middleware@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "http-proxy-middleware@npm:4.0.0"
+  dependencies:
+    debug: "npm:^4.4.3"
+    httpxy: "npm:^0.5.1"
+    is-glob: "npm:^4.0.3"
+    is-plain-obj: "npm:^4.1.0"
+    micromatch: "npm:^4.0.8"
+  checksum: 10/38dc1a67189432ac814ebb5c8862bd42f5c628d4c5f3a84b347a6c91ce1920081d0423280f4bb00654489bf93508f3542e26678ad707b419c4fe4741029ff632
+  languageName: node
+  linkType: hard
+
 "http-proxy@npm:^1.18.1":
   version: 1.18.1
   resolution: "http-proxy@npm:1.18.1"
@@ -13384,6 +13397,13 @@ __metadata:
     agent-base: "npm:^7.0.2"
     debug: "npm:4"
   checksum: 10/6679d46159ab3f9a5509ee80c3a3fc83fba3a920a5e18d32176c3327852c3c00ad640c0c4210a8fd70ea3c4a6d3a1b375bf01942516e7df80e2646bdc77658ab
+  languageName: node
+  linkType: hard
+
+"httpxy@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "httpxy@npm:0.5.1"
+  checksum: 10/c6c14e5dec2346c1725523b42e67dfc7dce7a38fb3e4f0adaa60acc511e4750b508f2e38af3f6ced1790107193a3e8f7ad2be2cd8987dc332142b533d66c4b7e
   languageName: node
   linkType: hard
 
@@ -13872,6 +13892,13 @@ __metadata:
   version: 3.0.0
   resolution: "is-plain-obj@npm:3.0.0"
   checksum: 10/a6ebdf8e12ab73f33530641972a72a4b8aed6df04f762070d823808303e4f76d87d5ea5bd76f96a7bbe83d93f04ac7764429c29413bd9049853a69cb630fb21c
+  languageName: node
+  linkType: hard
+
+"is-plain-obj@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "is-plain-obj@npm:4.1.0"
+  checksum: 10/6dc45da70d04a81f35c9310971e78a6a3c7a63547ef782e3a07ee3674695081b6ca4e977fbb8efc48dae3375e0b34558d2bcd722aec9bddfa2d7db5b041be8ce
   languageName: node
   linkType: hard
 
@@ -16448,7 +16475,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.74"
+    "@hmcts/opal-frontend-common": "npm:^0.0.75"
     "@hmcts/opal-frontend-common-cypress": "npm:^0.0.2"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.29"
     "@hmcts/properties-volume": "npm:^1.1.0"
@@ -16493,7 +16520,7 @@ __metadata:
     govuk-frontend: "npm:^6.0.0"
     helmet: "npm:^8.0.0"
     home-office-kit: "npm:^1.2.0"
-    http-proxy-middleware: "npm:^3.0.0"
+    http-proxy-middleware: "npm:^4.0.0"
     js-yaml: "npm:^4.1.0"
     jsdom: "npm:^29.0.0"
     junit-report-merger: "npm:^9.0.0"
