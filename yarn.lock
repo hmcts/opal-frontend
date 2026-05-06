@@ -3892,6 +3892,56 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/opal-frontend-common-cypress@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "@hmcts/opal-frontend-common-cypress@npm:0.0.2"
+  peerDependencies:
+    "@badeball/cypress-cucumber-preprocessor": ">=18 <25"
+    cypress: ">=12 <16"
+    cypress-mochawesome-reporter: ">=3 <5"
+    cypress-multi-reporters: ">=1 <3"
+    cypress-parallel: ">=0.14 <1"
+    junit-report-merger: ">=7 <10"
+    mocha-junit-reporter: ">=2 <3"
+    mochawesome: ">=7 <8"
+    mochawesome-merge: ">=4 <6"
+    mochawesome-report-generator: ">=6 <7"
+    typescript: ">=5 <7"
+  peerDependenciesMeta:
+    "@badeball/cypress-cucumber-preprocessor":
+      optional: true
+    cypress:
+      optional: true
+    cypress-mochawesome-reporter:
+      optional: true
+    cypress-multi-reporters:
+      optional: true
+    cypress-parallel:
+      optional: true
+    junit-report-merger:
+      optional: true
+    mocha-junit-reporter:
+      optional: true
+    mochawesome:
+      optional: true
+    mochawesome-merge:
+      optional: true
+    mochawesome-report-generator:
+      optional: true
+    typescript:
+      optional: true
+  bin:
+    opal-cypress-build-component-report: dist/bin/build-component-report.js
+    opal-cypress-build-cucumber-report: dist/bin/build-cucumber-report.js
+    opal-cypress-check-test-metadata: dist/bin/check-cypress-test-metadata.js
+    opal-cypress-find-tests-missing-epic: dist/bin/find-tests-missing-epic.js
+    opal-cypress-find-tests-with-multiple-epics: dist/bin/find-tests-with-multiple-epics.js
+    opal-cypress-resolve-placeholder-jira-epics: dist/bin/resolve-placeholder-jira-epics.js
+    opal-cypress-runner: dist/bin/run-test-suite.js
+  checksum: 10/6626964bc8d667e253941a1ded1821a11fc8eedea509a13fab4b5cd2c2eba0f02e467e3d36ae670df226982351e38793311a73591d26fa835b884a0a45df1665
+  languageName: node
+  linkType: hard
+
 "@hmcts/opal-frontend-common-node@npm:^0.0.29":
   version: 0.0.29
   resolution: "@hmcts/opal-frontend-common-node@npm:0.0.29"
@@ -16399,6 +16449,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.74"
+    "@hmcts/opal-frontend-common-cypress": "npm:^0.0.2"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.29"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"

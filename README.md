@@ -412,20 +412,21 @@ Notes:
 We are using [axe-core](https://github.com/dequelabs/axe-core) and [cypress-axe](https://github.com/component-driven/cypress-axe) to check the accessibility.
 Run the production server and once running you can run the smoke or functional test commands.
 
-> See [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-common-ui-lib) and [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend-common-node-lib) for usage and build instructions.
+> See [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-common-ui-lib), [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend-common-node-lib), and [opal-frontend-common-cypress-lib](https://github.com/hmcts/opal-frontend-common-cypress-lib) for usage and build instructions.
 
 ## Switching Between Local and Published Common Libraries
 
-This project supports switching between local and published versions of the `opal-frontend-common` and `opal-frontend-common-node` libraries using the following scripts:
+This project supports switching between local and published versions of the `opal-frontend-common`, `opal-frontend-common-node`, and `opal-frontend-common-cypress` libraries using the following scripts:
 
 ### Switching to Local Versions
 
-First, ensure you've run `yarn pack:local` in both library repos and exported the repository root paths (where the `.tgz` files are created):
+First, ensure you've run `yarn pack:local` in the library repos you want to use locally and exported the repository root paths (where the `.tgz` files are created):
 
 ```bash
 # In your shell config file (.zshrc, .bash_profile, etc.)
 export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB FOLDER]"
 export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB FOLDER]"
+export COMMON_CYPRESS_LIB_PATH="[INSERT PATH TO COMMON CYPRESS LIB FOLDER]"
 ```
 
 Then, run the following scripts:
@@ -433,6 +434,7 @@ Then, run the following scripts:
 ```bash
 yarn import:local:common-ui-lib
 yarn import:local:common-node-lib
+yarn import:local:common-cypress-lib
 ```
 
 These commands will remove the published versions and install local `.tgz` packages from each configured path.
@@ -443,6 +445,7 @@ If you have installed local `.tgz` packages and want to return to npm-published 
 
 ```bash
 yarn add @hmcts/opal-frontend-common@<VERSION> @hmcts/opal-frontend-common-node@<VERSION>
+yarn add --dev @hmcts/opal-frontend-common-cypress@<VERSION>
 yarn install
 ```
 
@@ -451,6 +454,7 @@ You can also use:
 ```bash
 yarn import:published:common-ui-lib
 yarn import:published:common-node-lib
+yarn import:published:common-cypress-lib
 ```
 
 These scripts read the target version from package.json.
@@ -628,8 +632,9 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 
 ## Test Metadata Maintenance
 
-- `node scripts/find-tests-missing-epic.js`: Report executable Cypress tests that have no `@JIRA-EPIC:*` tag. Add `--write` to insert the placeholder `@JIRA-EPIC:PO-0000` where the script can do so safely.
-- `yarn resolve:placeholder:epics`: Report executable Cypress tests that still use the placeholder `@JIRA-EPIC:PO-0000`. Add `--write` with `JIRA_AUTH_TOKEN` set to replace only placeholder epic tags whose test has exactly one `@JIRA-STORY:*` tag and whose Jira story resolves to an epic. Tests with multiple story tags are skipped.
+- `opal-cypress-find-tests-missing-epic`: Report executable Cypress tests that have no Jira epic metadata.
+- `opal-cypress-resolve-placeholder-jira-epics`: Resolve placeholder epic values from `cypress/jira-epic-placeholders.json`. Add `--write` to update matching placeholders in test files.
+- `opal-cypress-find-tests-with-multiple-epics`: Report executable Cypress tests that have more than one Jira epic reference.
 
 ### Supported Tags
 
@@ -638,6 +643,7 @@ The following tags can be used in your test scenarios to control ticket creation
 | Tag Prefix         | Example Value           | Description                                                        |
 | ------------------ | ----------------------- | ------------------------------------------------------------------ |
 | `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.               |
+| `@JIRA-KEY:POT-*`  | `@JIRA-KEY:POT-1234`    | Associates one executable test with one Zephyr POT test case key.  |
 | `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
 | `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
 | `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |
@@ -648,3 +654,4 @@ The following tags can be used in your test scenarios to control ticket creation
 | `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                  |
 
 - Tags are case-sensitive and must be used exactly as shown.
+- `yarn check:cypress:test-metadata` uses `@hmcts/opal-frontend-common-cypress` to report executable Cypress tests with missing epic metadata, multiple epic references, or unresolved placeholder epic values.

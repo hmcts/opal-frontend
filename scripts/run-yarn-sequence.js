@@ -7,7 +7,7 @@
  */
 
 const { spawnSync } = require('node:child_process');
-const { requireInstalledBrowser } = require('./browser-support');
+const { requireInstalledBrowser } = require('@hmcts/opal-frontend-common-cypress');
 
 const rawArgs = process.argv.slice(2);
 const scriptsToRun = [];
