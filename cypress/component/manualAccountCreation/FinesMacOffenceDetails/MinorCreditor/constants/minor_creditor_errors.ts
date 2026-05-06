@@ -17,7 +17,8 @@ export const FORMAT_CHECK = {
   bankAccountNumberNumericalTextPattern: 'Account number must only contain numbers',
   bankSortCodeNumericalTextPattern: 'Sort code must only contain numbers',
   surnameRequired: `Enter last name`,
-  bankAccountNameAlphabeticalTextPattern: 'Name on account must only contain letters',
+  bankAccountNameAlphabeticalTextPattern:
+    'Name on account must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   addressLine1SpecialCharactersPattern: 'Address line 1 must only contain letters or numbers',
   addressLine2SpecialCharactersPattern: 'Address line 2 must only contain letters or numbers',
   addressLine3SpecialCharactersPattern: 'Address line 3 must only contain letters or numbers',
