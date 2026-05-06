@@ -1,0 +1,121 @@
+<div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 [class]="style.heading">Creditor Details</h2>
+    </div>
+    @if (hasAccountMaintenancePermission) {
+      <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
+        <a href="" [class]="style.changeLink" (click)="handleChangeCreditorDetails($event)">Change</a>
+      </div>
+    }
+  </div>
+  <hr [class]="style.hr" />
+  <opal-lib-govuk-summary-card-list cardTitle="Minor creditor details" summaryCardListId="creditor-details">
+    <ng-container content>
+      <opal-lib-govuk-summary-list summaryListId="creditorDetailsNameAddress">
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="creditorDetailsNameAddress"
+          summaryListRowId="creditor-name"
+        >
+          <ng-container name>Name</ng-container>
+          <ng-container value>First Last</ng-container>
+        </div>
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list--no-border govuk-summary-list__row--no-actions"
+          summaryListId="creditorDetailsNameAddress"
+          summaryListRowId="creditor-address"
+        >
+          <ng-container name>Address</ng-container>
+          <ng-container value>
+            {{ tabData.address.address_line_1 }}
+            @if (tabData.address.address_line_2) {
+              <br />
+              {{ tabData.address.address_line_2 }}
+            }
+            @if (tabData.address.address_line_3) {
+              <br />
+              {{ tabData.address.address_line_3 }}
+            }
+            @if (tabData.address.address_line_4) {
+              <br />
+              {{ tabData.address.address_line_4 }}
+            }
+            @if (tabData.address.address_line_5) {
+              <br />
+              {{ tabData.address.address_line_5 }}
+            }
+            <br />
+            {{ tabData.address.postcode | uppercase }}
+          </ng-container>
+        </div>
+      </opal-lib-govuk-summary-list>
+
+      <opal-lib-govuk-summary-list summaryListId="creditorDetailsPayment">
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="creditorDetailsPayment"
+          summaryListRowId="creditor-payment-method"
+        >
+          <ng-container name>Payment method</ng-container>
+          <ng-container value>
+            @if (tabData.payment.is_bacs) {
+              BACS
+            } @else {
+              Cheque
+            }
+          </ng-container>
+        </div>
+
+        @if (hasViewCreditorBacsPermission) {
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="creditorDetailsPayment"
+            summaryListRowId="creditor-payment-name-on-account"
+          >
+            <ng-container name>Name on account</ng-container>
+            <ng-container value>First Last</ng-container>
+          </div>
+
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="creditorDetailsPayment"
+            summaryListRowId="creditor-payment-sort-code"
+          >
+            <ng-container name>Sort code</ng-container>
+            <ng-container value>12-34-56</ng-container>
+          </div>
+
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="creditorDetailsPayment"
+            summaryListRowId="creditor-payment-account-number"
+          >
+            <ng-container name>Account number</ng-container>
+            <ng-container value>12345678</ng-container>
+          </div>
+
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="creditorDetailsPayment"
+            summaryListRowId="creditor-payment-reference"
+          >
+            <ng-container name>Reference</ng-container>
+            <ng-container value>12345678</ng-container>
+          </div>
+        }
+      </opal-lib-govuk-summary-list>
+      @if (!hasViewCreditorBacsPermission) {
+        <hr [class]="style.hr" />
+        <p class="govuk-!-font-size-19">You do not have permission to view payment details on this account</p>
+      }
+    </ng-container>
+  </opal-lib-govuk-summary-card-list>
+</div>

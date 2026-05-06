@@ -59,6 +59,7 @@ import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -1713,6 +1714,31 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`);
       expect(req.request.method).toBe('GET');
       req.flush(expectedResponse);
+    });
+  });
+
+  describe('getMinorCreditorAccount', () => {
+    it('should return cached data if available', () => {
+      const account_id: number = 77;
+      const expectedResponse = OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK;
+      service['cache']['minorCreditorAccountCreditorCache$'] = of(expectedResponse);
+
+      service.getMinorCreditorAccount(account_id).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      httpMock.expectNone(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`);
+    });
+
+    it('should set and return creditor tab data if cache is not available', () => {
+      const account_id: number = 77;
+
+      service.getMinorCreditorAccount(account_id).subscribe((response) => {
+        expect(response).toEqual(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+      });
+
+      expect(service['cache']['minorCreditorAccountCreditorCache$']).toBeTruthy();
+      httpMock.expectNone(`${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`);
     });
   });
 

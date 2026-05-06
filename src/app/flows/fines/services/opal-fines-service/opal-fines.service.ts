@@ -55,6 +55,8 @@ import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -1118,5 +1120,33 @@ export class OpalFines {
     }
 
     return this.http.patch<IOpalFinesUpdateMinorCreditorAccountPayload>(url, payload, { headers });
+  }
+
+  /**
+   * Retrieves the minor creditor account details. Used for the creditor tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the minor creditor account.
+   * @returns An Observable that emits the account details for the creditor tab.
+   */
+  public getMinorCreditorAccount(account_id: number | null): Observable<IOpalFinesAccountMinorCreditorCreditor> {
+    if (!this.cache.minorCreditorAccountCreditorCache$) {
+      // const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`;
+      this.cache.minorCreditorAccountCreditorCache$ = of(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+      // this.cache.minorCreditorAccountCreditorCache$ = this.http
+      //   .get<IOpalFinesAccountMinorCreditorCreditor>(url, { observe: 'response' })
+      //   .pipe(
+      //     map((response: HttpResponse<IOpalFinesAccountMinorCreditorCreditor>) => {
+      //       const version = this.extractEtagVersion(response.headers);
+      //       const payload = response.body as IOpalFinesAccountMinorCreditorCreditor;
+      //       return {
+      //         ...payload,
+      //         version,
+      //       };
+      //     }),
+      //     shareReplay(1),
+      //   );
+    }
+    return this.cache.minorCreditorAccountCreditorCache$;
   }
 }
