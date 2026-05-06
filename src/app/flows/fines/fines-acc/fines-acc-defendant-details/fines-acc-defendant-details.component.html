@@ -55,19 +55,19 @@
     <opal-lib-custom-summary-metric-bar-item>
       <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
       <p opal-lib-custom-summary-metric-bar-item-value>
-        {{ accountData.payment_state_summary.imposed_amount | monetary }}
+        {{ accountData.payment_state_summary.imposed_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.payment_state_summary.arrears_amount | monetary }}
+        {{ accountData.payment_state_summary.arrears_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.payment_state_summary.paid_amount | monetary }}
+        {{ accountData.payment_state_summary.paid_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
