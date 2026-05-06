@@ -10,6 +10,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { IFinesAccountState } from 'src/app/flows/fines/fines-acc/interfaces/fines-acc-state-interface';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
+  'Account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
 const ACCOUNT_ENQUIRY_JIRA_EPIC = '@JIRA-EPIC:PO-812';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL];
@@ -124,16 +126,8 @@ describe('FinesAccNoteAddFormComponent', () => {
       cy.get(L.fields.noteTextArea).clear().type('Test @#$%^&*()');
       cy.get(L.actions.saveNoteButton).click();
       // page header error summary
-      cy.get(L.fields.noteErrorMessage).should(
-        'contain',
-        'Account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
-      cy.get(L.errorSummaryBody)
-        .find('a')
-        .should(
-          'contain',
-          'Account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
+      cy.get(L.fields.noteErrorMessage).should('contain', ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.errorSummaryBody).find('a').should('contain', ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
     },
   );
 

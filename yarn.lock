@@ -3892,6 +3892,56 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/opal-frontend-common-cypress@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "@hmcts/opal-frontend-common-cypress@npm:0.0.2"
+  peerDependencies:
+    "@badeball/cypress-cucumber-preprocessor": ">=18 <25"
+    cypress: ">=12 <16"
+    cypress-mochawesome-reporter: ">=3 <5"
+    cypress-multi-reporters: ">=1 <3"
+    cypress-parallel: ">=0.14 <1"
+    junit-report-merger: ">=7 <10"
+    mocha-junit-reporter: ">=2 <3"
+    mochawesome: ">=7 <8"
+    mochawesome-merge: ">=4 <6"
+    mochawesome-report-generator: ">=6 <7"
+    typescript: ">=5 <7"
+  peerDependenciesMeta:
+    "@badeball/cypress-cucumber-preprocessor":
+      optional: true
+    cypress:
+      optional: true
+    cypress-mochawesome-reporter:
+      optional: true
+    cypress-multi-reporters:
+      optional: true
+    cypress-parallel:
+      optional: true
+    junit-report-merger:
+      optional: true
+    mocha-junit-reporter:
+      optional: true
+    mochawesome:
+      optional: true
+    mochawesome-merge:
+      optional: true
+    mochawesome-report-generator:
+      optional: true
+    typescript:
+      optional: true
+  bin:
+    opal-cypress-build-component-report: dist/bin/build-component-report.js
+    opal-cypress-build-cucumber-report: dist/bin/build-cucumber-report.js
+    opal-cypress-check-test-metadata: dist/bin/check-cypress-test-metadata.js
+    opal-cypress-find-tests-missing-epic: dist/bin/find-tests-missing-epic.js
+    opal-cypress-find-tests-with-multiple-epics: dist/bin/find-tests-with-multiple-epics.js
+    opal-cypress-resolve-placeholder-jira-epics: dist/bin/resolve-placeholder-jira-epics.js
+    opal-cypress-runner: dist/bin/run-test-suite.js
+  checksum: 10/6626964bc8d667e253941a1ded1821a11fc8eedea509a13fab4b5cd2c2eba0f02e467e3d36ae670df226982351e38793311a73591d26fa835b884a0a45df1665
+  languageName: node
+  linkType: hard
+
 "@hmcts/opal-frontend-common-node@npm:^0.0.29":
   version: 0.0.29
   resolution: "@hmcts/opal-frontend-common-node@npm:0.0.29"
@@ -3920,9 +3970,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.74":
-  version: 0.0.74
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.74"
+"@hmcts/opal-frontend-common@npm:^0.0.75":
+  version: 0.0.75
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.75"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^9.0.0"
@@ -3944,7 +3994,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/2749aedc07990f8d62cf0c37a6eaf1e4af1e56a6e3f9aa9b0c2fffc9efe6537eee5339db7221b8d6d4b9b32e9329870ed75f3d551de96f0eee5124c53c6ffd1e
+  checksum: 10/13bf7399020f00f6b3d4b892fce5a9fea02e1b425b4115306f83cc5fc9061102807be00bada4a6b9c0435e44dc0302f97f2c4263851c4a3e30883f337e15a65e
   languageName: node
   linkType: hard
 
@@ -11794,8 +11844,8 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^10.0.0":
-  version: 10.2.1
-  resolution: "eslint@npm:10.2.1"
+  version: 10.3.0
+  resolution: "eslint@npm:10.3.0"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.8.0"
     "@eslint-community/regexpp": "npm:^4.12.2"
@@ -11834,7 +11884,7 @@ __metadata:
       optional: true
   bin:
     eslint: bin/eslint.js
-  checksum: 10/954658c846696dc501a2b8e5fb268713e231dd81375dc25d76cd2fb4a1c73094ea73c64197634ece6fca8a54536e89eb44548a11be672544522e7a50eb8aae95
+  checksum: 10/7d8131e5ef65754f61afd807d875377403f1c89b5f5529f23506776c2df504ba0d53d378b8aeec1996c66c6d428ea3e2ea5c04b226474ce89b6e28443fd3b7b6
   languageName: node
   linkType: hard
 
@@ -16398,7 +16448,8 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.74"
+    "@hmcts/opal-frontend-common": "npm:^0.0.75"
+    "@hmcts/opal-frontend-common-cypress": "npm:^0.0.2"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.29"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@hmcts/zephyr-automation-nodejs": "npm:0.0.7"

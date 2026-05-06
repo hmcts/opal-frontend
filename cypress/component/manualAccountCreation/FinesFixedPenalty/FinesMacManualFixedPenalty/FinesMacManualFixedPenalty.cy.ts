@@ -14,6 +14,10 @@ import { calculateWeeksInFuture } from '../../../../support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
+  'Add comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
+  'Add account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
 const DRIVING_LICENCE_NUMBER_FORMAT_ERROR = 'Enter Driving licence number in the correct format';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
@@ -1101,10 +1105,7 @@ describe('FinesMacManualFixedPenalty', () => {
       fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment $%^&*';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
     },
   );
 
@@ -1128,10 +1129,22 @@ describe('FinesMacManualFixedPenalty', () => {
       fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note $%^&*';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Add account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+    },
+  );
+
+  it(
+    'Validation will exist for Add comment and Add account note fields - special characters',
+    { tags: [...buildTags('@JIRA-STORY:PO-3713'), '@JIRA-EPIC:PO-855'] },
+    () => {
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment $%^&*';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note $%^&*';
+      setupComponent();
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.commentsErrorMessage).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.accountNoteErrorMessage).should('contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
     },
   );
 
