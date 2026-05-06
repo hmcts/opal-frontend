@@ -153,3 +153,34 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | title   | There was a problem                                                   |
         | message | You can try again. If the problem persists, contact the service desk. |
       And I should see the account summary header contains "ROBERT FIXEDPENALTYPO{uniqUpper}"
+
+
+  Rule: Defendant account party replacement entrypoint
+
+    Background:
+      Given I clear all approved accounts
+      And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                          | Submitted                           |
+        | account.defendant.forenames             | Casey                               |
+        | account.defendant.surname               | ConcurrencyFae{uniq}                |
+        | account.defendant.email_address_1       | casey.concurrencyfae{uniq}@test.com |
+        | account.defendant.telephone_number_home | 02078250042                         |
+        | account.account_type                    | Fine                                |
+        | account.prosecutor_case_reference       | PCR-PO-2226-{uniqUpper}             |
+        | account.collection_order_made           | false                               |
+        | account.collection_order_made_today     | false                               |
+        | account.payment_card_request            | false                               |
+        | account.defendant.dob                   | 2001-07-16                          |
+      When I search for the account by last name "ConcurrencyFae{uniq}" and open the latest result
+      And I go to the Defendant details section and the header is "Defendant details"
+
+    @JIRA-EPIC:PO-2239
+    @JIRA-STORY:PO-2226
+    Scenario: Concurrency Failure page is displayed when replacing a defendant account party returns a non-retriable conflict
+      When I edit the Defendant details and change the First name to "Concurrency"
+      And I save the defendant details and the Replace Defendant Account Party request fails with a non-retriable 409 error
+      Then the error page shows:
+        | field   | value                                                           |
+        | header  | Sorry, there is a problem                                       |
+        | message | Something else was changed while you were doing this.           |
+        | message | Your changes have not been saved. You will need to start again. |

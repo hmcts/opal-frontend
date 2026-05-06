@@ -282,6 +282,44 @@ export class GlobalApiInterceptorActions {
   }
 
   /**
+   * Stubs the Replace Defendant Account Party request with a non-retriable concurrency response.
+   * @param statusCode - HTTP status to return for the party update request.
+   * @remarks The PO-2226 journey uses the FAE defendant details save CTA to trigger this PUT endpoint.
+   * @example
+   * actions.stubDefendantAccountPartyConcurrencyError(409);
+   */
+  public stubDefendantAccountPartyConcurrencyError(statusCode: number): void {
+    log('intercept', 'Stubbing defendant account party concurrency error', { statusCode });
+    cy.intercept('PUT', '**/opal-fines-service/defendant-accounts/*/defendant-account-parties/*', {
+      statusCode,
+      body: {
+        retriable: false,
+        title: NON_RETRIABLE_ERROR_TITLE,
+        detail: NON_RETRIABLE_ERROR_DETAIL,
+        operation_id: NON_RETRIABLE_OPERATION_ID,
+      },
+    }).as('defendantAccountPartyConcurrencyError');
+  }
+
+  /**
+   * Waits for the Replace Defendant Account Party concurrency response and validates it.
+   * @param statusCode - Expected HTTP status returned by the stub.
+   * @remarks Confirms the error is non-retriable so the common interceptor routes to the concurrency page.
+   * @example
+   * actions.waitForDefendantAccountPartyConcurrencyError(409);
+   */
+  public waitForDefendantAccountPartyConcurrencyError(statusCode: number): void {
+    log('wait', 'Waiting for defendant account party concurrency error', { statusCode });
+    cy.wait('@defendantAccountPartyConcurrencyError').then((interception) => {
+      const response = interception.response;
+      expect(interception.request.method).to.equal('PUT');
+      expect(response, 'Defendant account party concurrency response').to.exist;
+      expect(response?.statusCode).to.equal(statusCode);
+      expect(response?.body?.retriable).to.be.false;
+    });
+  }
+
+  /**
    * Asserts the global error banner is visible with the standard message.
    * @remarks Uses the shared global alert selector and standard error message.
    * @example
