@@ -184,9 +184,8 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     const event = {} as SubmitEvent;
     const commentsControl = component.form.controls['fm_fp_account_comments_notes_comments'];
     const expectedErrorMessage =
-      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments[
-        'singleAsciiChatacters'
-      ].message;
+      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments['singleAsciiChatacters']
+        .message;
 
     commentsControl.setValue('Invalidé');
 
@@ -205,9 +204,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     const event = {} as SubmitEvent;
     const notesControl = component.form.controls['fm_fp_account_comments_notes_notes'];
     const expectedErrorMessage =
-      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes[
-        'singleAsciiChatacters'
-      ].message;
+      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes['singleAsciiChatacters'].message;
 
     notesControl.setValue('Invalidé');
 

@@ -143,9 +143,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     const event = {} as SubmitEvent;
     const commentsControl = component.form.controls['fm_account_comments_notes_comments'];
     const expectedErrorMessage =
-      FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_comments[
-        'singleAsciiChatacters'
-      ].message;
+      FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_comments['singleAsciiChatacters'].message;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
