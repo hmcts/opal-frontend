@@ -331,7 +331,7 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC5) Validation will exist for the First names field - does not allow non-single-byte ASCII characters',
     {
       tags: [
@@ -378,7 +378,7 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC6) Validation will exist for the Last name field - does not allow non-single-byte ASCII characters',
     {
       tags: [
@@ -1118,7 +1118,7 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC22) Validation will exist for the Add comment field - non-single-byte ASCII characters',
     {
       tags: [
@@ -1148,7 +1148,7 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC23) Validation will exist for the Add account note field - non-single-byte ASCII characters',
     {
       tags: [
@@ -1171,8 +1171,8 @@ describe('FinesMacManualFixedPenalty', () => {
     'Validation will exist for Add comment and Add account note fields - special characters',
     { tags: [...buildTags('@JIRA-STORY:PO-3713'), '@JIRA-EPIC:PO-855'] },
     () => {
-      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment $%^&*';
-      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note $%^&*';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment ©µ±ö€•';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note ©µ±ö€•';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
@@ -1270,7 +1270,7 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC1b, AC1c) Validation will exist for the Company Name field - non-single-byte ASCII characters',
     {
       tags: [

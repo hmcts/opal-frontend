@@ -141,7 +141,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.firstNameTooLong);
     },
   );
-  it.only(
+  it(
     '(AC.1) should not permit special characters on first name field',
     { tags: [...buildTags('@JIRA-STORY:PO-569'), '@JIRA-EPIC:PO-344'] },
     () => {
@@ -178,7 +178,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC.1) should not permit special characters on last name field',
     {
       tags: [
@@ -500,7 +500,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it.only(
+  it(
     'Should show error for non-single-byte ASCII characters for alias first and last name',
     { tags: [...buildTags('@JIRA-STORY:PO-1679', '@JIRA-EPIC:PO-344'), '@JIRA-KEY:POT-7499'] },
     () => {
