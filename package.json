@@ -111,7 +111,7 @@
     "govuk-frontend": "^6.0.0",
     "helmet": "^8.0.0",
     "home-office-kit": "^1.2.0",
-    "http-proxy-middleware": "^3.0.0",
+    "http-proxy-middleware": "^4.0.0",
     "launchdarkly-js-client-sdk": "^3.1.4",
     "luxon": "^3.4.3",
     "ng": "^0.0.0",
