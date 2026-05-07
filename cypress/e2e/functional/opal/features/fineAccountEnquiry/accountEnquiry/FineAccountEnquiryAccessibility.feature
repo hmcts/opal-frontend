@@ -1,11 +1,11 @@
 @JIRA-LABEL:account-enquiry @JIRA-LABEL:accessibility
-@JIRA-STORY:PO-2322
+@JIRA-NFR:PO-2322
 Feature: Account Enquiries - Enforcement Accessibility
 
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-5214
+  @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675
   Scenario: Enforcement tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                     |
@@ -27,7 +27,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-5215
+  @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-1675
   Scenario: Add enforcement override page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                             |
@@ -48,7 +48,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement override form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-5216
+  @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675
   Scenario: Company enforcement tab accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                 |
@@ -68,7 +68,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-1867 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-5217
+  @JIRA-STORY:PO-1867 @JIRA-EPIC:PO-1675
   Scenario: Company add enforcement override page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                         |
@@ -87,7 +87,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement override form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1849 @JIRA-STORY:PO-1862 @JIRA-EPIC:PO-1675 @JIRA-KEY:POT-5218
+  @JIRA-STORY:PO-1849 @JIRA-STORY:PO-1862 @JIRA-EPIC:PO-1675
   Scenario: Parent or guardian enforcement tab accessibility
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
@@ -109,3 +109,43 @@ Feature: Account Enquiries - Enforcement Accessibility
     Then I check the page for accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
+
+  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1824 @JIRA-EPIC:PO-1674
+  Scenario: Add enforcement action page accessibility
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                                  | Submitted                           |
+      | account.defendant.forenames                     | Evan                                |
+      | account.defendant.surname                       | EnfActionAccess{uniq}               |
+      | account.defendant.email_address_1               | Evan.EnfActionAccess{uniq}@test.com |
+      | account.defendant.telephone_number_home         | 02078259315                         |
+      | account.account_type                            | Fine                                |
+      | account.prosecutor_case_reference               | PCR-AUTO-016                        |
+      | account.collection_order_made                   | false                               |
+      | account.collection_order_made_today             | false                               |
+      | account.payment_card_request                    | false                               |
+      | account.defendant.dob                           | 2002-05-15                          |
+      | account.payment_terms.enforcements[0].result_id | PRIS                                |
+
+    When I search for the account by last name "EnfActionAccess{uniq}" and open the latest result
+    And I go to the Enforcement tab
+    And I open the add enforcement action form
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1834 @JIRA-EPIC:PO-1674
+  Scenario: Company add enforcement action page accessibility
+    Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | Account_status                                  | Submitted                       |
+      | account.defendant.company_name                  | Enf Action Company{uniq}        |
+      | account.defendant.email_address_1               | EnfActionCompany{uniq}@test.com |
+      | account.defendant.post_code                     | AB23 4RN                        |
+      | account.account_type                            | Fine                            |
+      | account.prosecutor_case_reference               | PCR-AUTO-018                    |
+      | account.collection_order_made                   | false                           |
+      | account.collection_order_made_today             | false                           |
+      | account.payment_card_request                    | false                           |
+      | account.payment_terms.enforcements[0].result_id | PRIS                            |
+
+    When I open the company account details for "Enf Action Company{uniq}"
+    And I go to the Enforcement tab
+    And I open the add enforcement action form
+    Then I check the page for accessibility

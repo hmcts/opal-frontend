@@ -1,7 +1,7 @@
 <app-fines-acc-summary-header
   [accountStore]="accountStore"
   id="defendant"
-  [hasAddAccountActivityNotePermission]="hasPermission('add-account-activity-notes')"
+  [hasAddAccountActivityNotePermission]="hasPermission(finesPermissions['add-account-activity-notes'])"
   (refreshPage)="refreshPage()"
   (navigateToAddAccountNotePage)="navigateToAddAccountNotePage()"
 ></app-fines-acc-summary-header>
@@ -55,19 +55,19 @@
     <opal-lib-custom-summary-metric-bar-item>
       <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
       <p opal-lib-custom-summary-metric-bar-item-value>
-        {{ accountData.payment_state_summary.imposed_amount | monetary }}
+        {{ accountData.payment_state_summary.imposed_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.payment_state_summary.arrears_amount | monetary }}
+        {{ accountData.payment_state_summary.arrears_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.payment_state_summary.paid_amount | monetary }}
+        {{ accountData.payment_state_summary.paid_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
@@ -149,7 +149,7 @@
     @if (tabAtAGlance$ | async; as tabData) {
       <app-fines-acc-defendant-details-at-a-glance-tab
         [tabData]="tabData"
-        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
       ></app-fines-acc-defendant-details-at-a-glance-tab>
@@ -159,12 +159,11 @@
     @if (tabDefendant$ | async; as tabData) {
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
-        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-        [canAddParentOrGuardianDetails]="canAddParentOrGuardianDetails"
+        [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
-        (convertAccount)="navigateToAmendPartyDetailsPage($event)"
+        (convertAccount)="navigateToConvertAccountPage($event)"
         (addParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
       ></app-fines-acc-defendant-details-defendant-tab>
     }
@@ -173,7 +172,7 @@
     @if (tabParentOrGuardian$ | async; as tabData) {
       <app-fines-acc-defendant-details-parent-or-guardian-tab
         [tabData]="tabData"
-        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
@@ -193,7 +192,7 @@
     @if (tabPaymentTerms$ | async; as tabData) {
       <app-fines-acc-defendant-details-payment-terms-tab
         [tabData]="tabData"
-        [hasAmendPaymentTermsPermission]="hasPermission('amend-payment-terms')"
+        [hasAmendPaymentTermsPermission]="hasPermission(finesPermissions['amend-payment-terms'])"
         [style]="tabContentStyles"
         (changePaymentTerms)="navigateToAmendPaymentTermsPage()"
         (requestPaymentCard)="navigateToRequestPaymentCardPage()"
@@ -205,8 +204,9 @@
       <app-fines-acc-defendant-details-enforcement-tab
         [tabData]="tabData"
         [isCompanyAccount]="accountData.party_details.organisation_flag"
-        [hasAccountMaintenancePermission]="hasPermission('account-maintenance')"
-        [hasEnterEnforcementPermission]="hasPermission('enter-enforcement')"
+        [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
+        [hasEnterEnforcementPermission]="hasPermission(finesPermissions['enter-enforcement'])"
+        (addEnforcementAction)="navigateToAddEnforcementActionPage()"
         (addEnforcementOverride)="navigateToAddEnforcementOverridePage()"
         (changeEnforcementOverride)="navigateToChangeEnforcementOverridePage()"
         (removeEnforcementOverride)="navigateToRemoveEnforcementOverridePage()"

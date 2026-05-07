@@ -38,10 +38,12 @@ describe('defendantAccountHeadingResolver', () => {
     };
 
     mockAccPayloadService = {
-      transformAccountHeaderForStore: vi.fn().mockName('FinesAccPayloadService.transformAccountHeaderForStore'),
+      transformDefendantAccountHeaderForStore: vi
+        .fn()
+        .mockName('FinesAccPayloadService.transformDefendantAccountHeaderForStore'),
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
     };
-    mockAccPayloadService.transformAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockAccPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
     mockAccPayloadService.transformPayload.mockReturnValue(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
 
     TestBed.configureTestingModule({

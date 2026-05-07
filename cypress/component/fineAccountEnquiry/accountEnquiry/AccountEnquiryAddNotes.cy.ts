@@ -10,11 +10,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { IFinesAccountState } from 'src/app/flows/fines/fines-acc/interfaces/fines-acc-state-interface';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
+  'Account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const ACCOUNT_ENQUIRY_JIRA_EPIC = '@JIRA-EPIC:PO-812';
 
-const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_EPIC, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('FinesAccNoteAddFormComponent', () => {
-  let mockFinesAccountStore: IFinesAccountState = {
+  const mockFinesAccountStore: IFinesAccountState = {
     party_type: 'PERSON',
     party_id: '67890',
     pg_party_id: '12345',
@@ -26,8 +29,11 @@ describe('FinesAccNoteAddFormComponent', () => {
     business_unit_user_id: 'test.user',
     welsh_speaking: null,
   };
+  let finesAccountState = structuredClone(mockFinesAccountStore);
 
   const setupComponent = () => {
+    finesAccountState = structuredClone(mockFinesAccountStore);
+
     mount(FinesAccNoteAddComponent, {
       providers: [
         provideHttpClient(),
@@ -47,7 +53,7 @@ describe('FinesAccNoteAddFormComponent', () => {
           provide: FinesAccountStore,
           useFactory: () => {
             const store = new FinesAccountStore();
-            store.setAccountState(mockFinesAccountStore);
+            store.setAccountState(finesAccountState);
             return store;
           },
         },
@@ -57,7 +63,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     'should render the component',
-    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6761'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809')] },
     () => {
       setupComponent();
 
@@ -67,7 +73,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.2) should load all elements on the screen correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6762'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809')] },
     () => {
       setupComponent();
 
@@ -83,7 +89,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC2a,2b) should have character limits for account notes',
-    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6763'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809')] },
     () => {
       setupComponent();
 
@@ -102,7 +108,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit',
-    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6764'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809')] },
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('a'.repeat(1001), { delay: 0 });
@@ -114,28 +120,20 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.3b, 3bi, 3bii) click submit button after entering non-alphanumeric characters shows an error',
-    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6765'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809')] },
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('Test @#$%^&*()');
       cy.get(L.actions.saveNoteButton).click();
       // page header error summary
-      cy.get(L.fields.noteErrorMessage).should(
-        'contain',
-        'Account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
-      cy.get(L.errorSummaryBody)
-        .find('a')
-        .should(
-          'contain',
-          'Account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
+      cy.get(L.fields.noteErrorMessage).should('contain', ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.get(L.errorSummaryBody).find('a').should('contain', ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
     },
   );
 
   it(
     '(AC.3c, 3ci, 3cii)click submit without entering data shows an error',
-    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6766'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809')] },
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear();
@@ -147,7 +145,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   it(
     '(AC.4c, 4ci, 4cii)click submit button after entering valid data',
-    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-KEY:POT-6767'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809')] },
     () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('a'.repeat(10), { delay: 0 });
@@ -158,7 +156,7 @@ describe('FinesAccNoteAddFormComponent', () => {
         expect(interception.request.body).to.have.nested.property('activity_note.note_type', 'AA');
         expect(interception.request.body).to.have.nested.property(
           'activity_note.record_id',
-          mockFinesAccountStore.account_id,
+          finesAccountState.account_id,
         );
         expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'defendant_accounts');
       });

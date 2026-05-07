@@ -31,6 +31,9 @@ import { IOpalFinesUpdateDefendantAccountCollectionOrder } from '@services/fines
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/interfaces/fines-acc-enf-collo-change-form-state.interface';
 import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
+import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -63,36 +66,15 @@ export class FinesAccPayloadService {
   }
 
   /**
-   *
-   * @param account_id
-   * @param headingData
-   * @param partyType
+   * Transforms the given IOpalFinesAccountDefendantDetailsHeader into IFinesAccountState for the store
+   * @param account_id The account ID for which the header data was fetched. This is needed to set the account_id in the store state, as the header data does not contain the account_id field.
+   * @param headingData The heading data as either IOpalFinesAccountDefendantDetailsHeader
+   * @returns The transformed account state to be set in the store.
    */
-  public transformAccountHeaderForStore(
+  public transformDefendantAccountHeaderForStore(
     account_id: number,
     headingData: IOpalFinesAccountDefendantDetailsHeader,
-    partyType: 'defendant',
-  ): IFinesAccountState;
-
-  public transformAccountHeaderForStore(
-    account_id: number,
-    headingData: IOpalFinesAccountMinorCreditorDetailsHeader,
-    partyType: 'minorCreditor',
-  ): IFinesAccountState;
-
-  /**
-   *
-   * @param account_id The account ID for which the header data was fetched. This is needed to set the account_id in the store state, as the header data does not contain the account_id field.
-   * @param headingData The heading data as either IOpalFinesAccountDefendantDetailsHeader or IOpalFinesAccountMinorCreditorDetailsHeader
-   * @param partyType The party type, either 'defendant' or 'minorCreditor', needed to determine how to extract party_id and party_type for the store state.
-   * @returns The transformed account state to be set in the store, containing the common fields as well as correctly mapped party_id and party_type based on the partyType parameter.
-   */
-  public transformAccountHeaderForStore(
-    account_id: number,
-    headingData: IOpalFinesAccountDefendantDetailsHeader | IOpalFinesAccountMinorCreditorDetailsHeader,
-    partyType: 'defendant' | 'minorCreditor',
   ): IFinesAccountState {
-    // Build party_name safely
     const party_name = headingData.party_details.organisation_flag
       ? (headingData.party_details.organisation_details?.organisation_name ?? '')
       : [
@@ -110,32 +92,58 @@ export class FinesAccPayloadService {
       this.globalStore.userState(),
     );
 
-    let pg_party_id: string | null = null;
-    let party_type: string;
-    let party_id: string;
-
-    if (partyType === 'defendant') {
-      const h = headingData as IOpalFinesAccountDefendantDetailsHeader;
-      pg_party_id = h.parent_guardian_party_id;
-      party_type = h.debtor_type;
-      party_id = h.defendant_account_party_id;
-    } else {
-      const h = headingData as IOpalFinesAccountMinorCreditorDetailsHeader;
-      party_type = 'Minor Creditor';
-      party_id = h.party_details.party_id;
-    }
-
     return {
       account_number: headingData.account_number,
       account_id: Number(account_id),
-      pg_party_id,
-      party_id,
-      party_type,
+      pg_party_id: headingData.parent_guardian_party_id,
+      party_id: headingData.defendant_account_party_id,
+      party_type: headingData.debtor_type,
       party_name,
       base_version: headingData.version,
       business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id,
       welsh_speaking: headingData.business_unit_summary.welsh_speaking,
+    };
+  }
+
+  /**
+   * Transforms the given IOpalFinesAccountMinorCreditorDetailsHeader into IFinesAccountState for the store
+   * @param account_id The account ID for which the header data was fetched. This is needed to set the account_id in the store state, as the header data does not contain the account_id field.
+   * @param headingData The heading data as either IOpalFinesAccountMinorCreditorDetailsHeader
+   * @returns The transformed account state to be set in the store.
+   */
+  public transformMinorCreditorAccountHeaderForStore(
+    account_id: number,
+    headingData: IOpalFinesAccountMinorCreditorDetailsHeader,
+  ): IFinesAccountState {
+    const party_name = headingData.party.organisation_flag
+      ? (headingData.party.organisation_details?.organisation_name ?? '')
+      : [
+          headingData.party.individual_details?.title,
+          headingData.party.individual_details?.forenames,
+          headingData.party.individual_details?.surname
+            ? headingData.party.individual_details.surname.toUpperCase()
+            : undefined,
+        ]
+          .filter(Boolean)
+          .join(' ');
+
+    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+      Number(headingData.business_unit.business_unit_id),
+      this.globalStore.userState(),
+    );
+
+    return {
+      account_number: headingData.creditor.account_number,
+      account_id: Number(account_id),
+      pg_party_id: null,
+      party_id: headingData.party.party_id,
+      party_type: FINES_ACC_PARTY_TYPES.minorCreditor,
+      party_name,
+      base_version: headingData.version,
+      business_unit_id: headingData.business_unit.business_unit_id,
+      business_unit_user_id,
+      welsh_speaking: headingData.business_unit.welsh_speaking,
     };
   }
 
@@ -330,5 +338,24 @@ export class FinesAccPayloadService {
       buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     );
+  }
+
+  /**
+   * Builds the base payload for updating a minor creditor account.
+   * @param data - The minor creditor account at a glance data
+   * @returns The payload object conforming to the IOpalFinesUpdateMinorCreditorAccountPayload interface
+   */
+  public buildMinorCreditorAccountUpdatePayload(
+    data: IOpalFinesAccountMinorCreditorAtAGlance,
+  ): IOpalFinesUpdateMinorCreditorAccountPayload {
+    return {
+      creditor_account_id: data.creditor_account_id,
+      party_details: data.party,
+      address: data.address,
+      payment: {
+        pay_by_bacs: data.payment.is_bacs,
+        hold_payment: data.payment.hold_payment,
+      },
+    };
   }
 }

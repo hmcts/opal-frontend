@@ -9,7 +9,6 @@
 export const MacReviewAccountLocators = {
   // Layout
   app: 'div.govuk-grid-column-full',
-  header: 'h1.govuk-heading-l',
   heading: 'h1.govuk-heading-l',
   backLink: 'a.govuk-back-link',
 
@@ -21,7 +20,6 @@ export const MacReviewAccountLocators = {
 
   // Primary actions
   checkAccountButton: '#checkAccountButton',
-  submitForReviewButton: '#submitAccountButton',
   submitButton: '#submitAccountButton',
 
   // Summary list helpers
@@ -70,8 +68,7 @@ export const MacReviewAccountLocators = {
   employerAddress: 'div[id = "employerDetailsEmployerAddress"]',
 
   // Offences and impositions (review summary)
-  headingLarge: 'h1.govuk-heading-l',
-  headingMedium: 'h2.govuk-heading-m',
+  sectionHeading: 'h2.govuk-heading-m',
   dateOfSentence: 'div[id = "dateOfSentenceDateOfSentence"]',
   offencecode: 'app-fines-mac-offence-details-review-offence-heading-title',
   tableHeadings: 'th.govuk-table__header',
@@ -138,14 +135,12 @@ export const MacReviewAccountLocators = {
   // Review history
   reviewComponent: 'app-fines-mac-review-account-history',
   status: 'strong[id = "status"]',
-  reviewHistory: 'h2.govuk-heading-m',
   timeLine: 'div.moj-timeline__item',
   timeLineTitle: 'h2.moj-timeline__title',
   timelineAuthor: 'p.moj-timeline__byline',
   timelineDate: 'p.moj-timeline__date',
   timelineDescription: '.moj-timeline__description',
   accountStatus: 'strong[id="status"]',
-  timeLineStatus: 'h2.moj-timeline__title',
 
   // Decision section
   approveRadioButton: 'input[name="fm_review_account_decision"][value="approve"]',

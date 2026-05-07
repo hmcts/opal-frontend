@@ -2,7 +2,7 @@ import { mount } from 'cypress/angular';
 import { FinesDraftCreateAndManageViewAllRejectedComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-view-all-rejected/fines-draft-create-and-manage-view-all-rejected.component';
 import { ActivatedRoute } from '@angular/router';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
-import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
+import { CreateManageDraftsLocators as DOM_ELEMENTS } from 'cypress/shared/selectors/create-manage-drafts.locators';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
@@ -36,7 +36,7 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
 
   it(
     'AC.2 Should show all the headings as per the design artifact',
-    { tags: [...buildTags('@JIRA-STORY:PO-618'), '@JIRA-KEY:POT-7192'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-618'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
@@ -47,7 +47,7 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
 
   it(
     'AC.3 verify the table of headers in review tab (FinesDraftCreateAndManageViewAllRejectedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-618'), '@JIRA-KEY:POT-7193'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-618'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
@@ -84,7 +84,7 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
   );
   it(
     '(AC.4a) The table should have the correct default ordering (FinesDraftCreateAndManageViewAllRejectedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-618'), '@JIRA-KEY:POT-7194'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-618'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
@@ -125,7 +125,7 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
 
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts (FinesDraftCreateAndManageViewAllRejectedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-618'), '@JIRA-KEY:POT-7195'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-618'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const allRejectedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 

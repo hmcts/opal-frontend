@@ -9,12 +9,59 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } fr
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { interceptDefendantHeader, interceptEnforcementStatus } from './intercept/defendantAccountIntercepts';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { mount } from 'cypress/angular';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+import { FinesAccDefendantDetailsEnforcementTab } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const NO_EDITABLE_FIELDS_SELECTOR = 'input, textarea, select, [contenteditable="true"]';
+const COMPANY_NAME = 'Test Org Ltd';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
+
+type HeaderMock = typeof DEFENDANT_HEADER_MOCK;
+type EnforcementMock = typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
+
+interface ShellRenderOptions {
+  header: HeaderMock;
+  enforcement?: EnforcementMock;
+  userState?: typeof USER_STATE_MOCK_PERMISSION_BU77;
+}
+
+interface EnforcementTabMountOptions {
+  enforcement?: EnforcementMock;
+  hasAccountMaintenancePermission?: boolean;
+  hasEnterEnforcementPermission?: boolean;
+  isCompanyAccount?: boolean;
+}
+
+const buildIndividualHeader = (): HeaderMock => {
+  const header = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+  header.debtor_type = 'individual';
+  return header;
+};
+
+const buildParentGuardianHeader = (): HeaderMock => {
+  const header = buildIndividualHeader();
+  header.debtor_type = 'Parent/Guardian';
+  header.parent_guardian_party_id = '1770000001';
+  return header;
+};
+
+const buildCompanyHeader = (): HeaderMock => {
+  const header = structuredClone(DEFENDANT_HEADER_MOCK);
+  header.party_details.organisation_flag = true;
+  header.party_details.organisation_details = {
+    organisation_name: COMPANY_NAME,
+    organisation_aliases: [],
+  };
+  return header;
+};
+
+const buildEnforcementMock = (): EnforcementMock => {
+  return structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+};
 
 const clearEnforcementOverrideResult = (
   enforcementMock: typeof OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK,
@@ -45,292 +92,173 @@ describe('Account Enquiry Enforcement Status', () => {
     ],
   };
 
+  const renderEnforcementShell = ({
+    header,
+    enforcement = buildEnforcementMock(),
+    userState = USER_STATE_MOCK_PERMISSION_BU77,
+  }: ShellRenderOptions) => {
+    const accountId = header.defendant_account_party_id;
+
+    interceptUserState(userState);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptEnforcementStatus(accountId, enforcement, '123');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId });
+
+    cy.get('router-outlet').should('exist');
+  };
+
+  const mountEnforcementTab = ({
+    enforcement = buildEnforcementMock(),
+    hasAccountMaintenancePermission = false,
+    hasEnterEnforcementPermission = false,
+    isCompanyAccount = false,
+  }: EnforcementTabMountOptions = {}) => {
+    mount(FinesAccDefendantDetailsEnforcementTab, {
+      componentProperties: {
+        tabData: enforcement,
+        hasAccountMaintenancePermission,
+        hasEnterEnforcementPermission,
+        isCompanyAccount,
+      },
+    });
+  };
+
+  const assertShellChrome = () => {
+    cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
+    cy.get(NO_EDITABLE_FIELDS_SELECTOR).should('not.exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+  };
+
+  const assertOverviewCardVisible = () => {
+    cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+  };
+
+  // Routed shell coverage: page chrome, account context, and tab selection.
   it(
     'AC1: The Enforcement Status tab is built as per the design artefact - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6659'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      renderEnforcementShell({ header: buildIndividualHeader() });
 
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-      cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementStatusLink).should('exist').and('contain.text', 'Request an HMRC check');
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+      assertShellChrome();
       cy.get(ENFORCEMENT_STATUS_TAB.tableTitle)
         .should('contain.text', 'Enforcement overview')
         .and('contain.text', 'Last enforcement action');
-      cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
-        .should('exist')
-        .and('contain.text', 'Collection Order status');
-      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault).should('exist').and('contain.text', 'Days in default');
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt).should('exist').and('contain.text', 'Enforcement court');
     },
   );
 
   it(
     'AC1: The Enforcement Status tab is built as per the design artefact - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6660'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'Parent/Guardian';
-      headerMock.parent_guardian_party_id = '1770000001';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      renderEnforcementShell({ header: buildParentGuardianHeader() });
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-      cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
+      assertShellChrome();
       cy.get(ENFORCEMENT_STATUS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementStatusLink).should('exist').and('contain.text', 'Request an HMRC check');
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
-      cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
-        .should('exist')
-        .and('contain.text', 'Collection Order status');
-      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault).should('exist').and('contain.text', 'Days in default');
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt).should('exist').and('contain.text', 'Enforcement court');
+      assertOverviewCardVisible();
     },
   );
 
   it(
     'AC1: The Enforcement Status tab is built as per the design artefact - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6661'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      const header = structuredClone(DEFENDANT_HEADER_MOCK);
-      header.party_details.organisation_flag = true;
-      header.party_details.organisation_details = {
-        organisation_name: 'Test Org Ltd',
-        organisation_aliases: [],
-      };
+      renderEnforcementShell({ header: buildCompanyHeader() });
 
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-
-      const accountId = header.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, header, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-      cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementStatusLink).should('exist').and('contain.text', 'Request an HMRC check');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
-      cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
-        .should('exist')
-        .and('contain.text', 'Collection Order status');
-      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault).should('exist').and('contain.text', 'Days in default');
-      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt).should('exist').and('contain.text', 'Enforcement court');
+      assertShellChrome();
+      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('contain.text', COMPANY_NAME);
+      assertOverviewCardVisible();
     },
   );
 
+  // Direct component-boundary coverage: action links and overview rows on the tab itself.
   it(
     'AC2: Action column displayed and add enforcement action link visible when user has Enter Enforcement permission',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6662'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
-      newUserState.business_unit_users[0].permissions.push({
-        permission_id: 10,
-        permission_name: 'Enter Enforcement',
-      });
+      mountEnforcementTab({ hasEnterEnforcementPermission: true });
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(newUserState);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('exist');
+      cy.contains('h2', 'Actions').parent().contains('a', 'Request an HMRC check').should('exist');
     },
   );
 
   it(
     'AC2: Action column displayed when user has Account Maintenance permission and add enforcement action link not visible',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6663'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
-      newUserState.business_unit_users[0].permissions.push({
-        permission_id: 7,
-        permission_name: 'Account Maintenance',
-      });
+      mountEnforcementTab({ hasAccountMaintenancePermission: true });
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(newUserState);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
     },
   );
 
   it(
     'AC2: Action column displayed and add enforcement action link visible when user has both Account Maintenance and Enter Enforcement permissions',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6664'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      mountEnforcementTab({
+        hasAccountMaintenancePermission: true,
+        hasEnterEnforcementPermission: true,
+      });
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('exist');
     },
   );
 
   it(
     'AC2: Add enforcement override link displayed when user has Account Maintenance permission and no enf_override_result_id',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6665'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let enforcementMock = buildEnforcementMock();
       clearEnforcementOverrideResult(enforcementMock);
-      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
-      newUserState.business_unit_users[0].permissions.push({
-        permission_id: 7,
-        permission_name: 'Account Maintenance',
+
+      mountEnforcementTab({
+        enforcement: enforcementMock,
+        hasAccountMaintenancePermission: true,
       });
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(newUserState);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement override').should('exist');
     },
   );
 
   it(
     'AC2: Add enforcement override link not displayed when user has Account Maintenance permission and enf_override_result_id is not null',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6666'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
-      newUserState.business_unit_users[0].permissions.push({
-        permission_id: 7,
-        permission_name: 'Account Maintenance',
-      });
+      mountEnforcementTab({ hasAccountMaintenancePermission: true });
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(newUserState);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement override').should('not.exist');
     },
   );
 
   it(
     'AC2: Action column not displayed when user has no relevant permissions',
-    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-KEY:POT-6667'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1647'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      mountEnforcementTab();
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.actionsColumnHeader).should('not.exist');
     },
   );
 
   it(
     'AC1, AC2a: Enforcement overview panel and collection order flag true - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6668'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      mountEnforcementTab();
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
         .should('exist')
         .and('contain.text', 'Collection Order status')
@@ -351,29 +279,14 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1, AC2b: Enforcement overview panel and collection order flag false - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6669'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let enforcementMock = buildEnforcementMock();
       enforcementMock.enforcement_overview.collection_order!.collection_order_flag = false;
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      mountEnforcementTab({ enforcement: enforcementMock });
 
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
         .should('exist')
         .and('contain.text', 'Collection Order status')
@@ -384,57 +297,25 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1, AC2c: Enforcement overview panel and collection order row not displayed - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6670'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let enforcementMock = buildEnforcementMock();
       enforcementMock.enforcement_overview.collection_order = null;
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      mountEnforcementTab({ enforcement: enforcementMock });
 
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus).should('not.exist');
     },
   );
 
   it(
     'AC3a: Enforcement overview panel and collection order change link displayed with permission - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6671'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      mountEnforcementTab({ hasAccountMaintenancePermission: true });
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
         .should('exist')
         .and('contain.text', 'Collection Order status')
@@ -448,28 +329,11 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3b: Enforcement overview panel and collection order change link not displayed without permission - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6672'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      mountEnforcementTab();
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
         .should('exist')
         .and('contain.text', 'Collection Order status')
@@ -481,28 +345,11 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4a: Enforcement overview panel and days in default true - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6673'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      mountEnforcementTab();
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault)
         .should('exist')
         .and('contain.text', 'Days in default')
@@ -513,57 +360,25 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4b: Enforcement overview panel and days in default false - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6674'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let enforcementMock = buildEnforcementMock();
       enforcementMock.enforcement_overview.days_in_default = 0;
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
+      mountEnforcementTab({ enforcement: enforcementMock });
 
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault).should('not.exist');
     },
   );
 
   it(
     'AC5, AC6a: Enforcement overview panel and enforcement court with permission - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6675'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      mountEnforcementTab({ hasAccountMaintenancePermission: true });
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt)
         .should('exist')
         .and('contain.text', 'Enforcement court')
@@ -577,28 +392,11 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC5, AC6b: Enforcement overview panel and enforcement court without permission - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-KEY:POT-6676'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1648'), '@JIRA-EPIC:PO-978'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      headerMock.debtor_type = 'individual';
-      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      mountEnforcementTab();
 
-      const accountId = headerMock.defendant_account_party_id;
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
-      interceptDefendantHeader(accountId, headerMock, '123');
-      interceptEnforcementStatus(accountId, enforcementMock, '123');
-      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-      cy.get('router-outlet').should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
-      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
-
-      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
-      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('contain.text', 'Enforcement overview');
+      assertOverviewCardVisible();
       cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt)
         .should('exist')
         .and('contain.text', 'Enforcement court')
@@ -610,7 +408,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1, AC2a: Enforcement overview panel and collection order flag true - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6677'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -654,7 +452,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1, AC2b: Enforcement overview panel and collection order flag false - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6678'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -688,7 +486,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1, AC2c: Enforcement overview panel and collection order row not displayed - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6679'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -718,7 +516,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3a: Enforcement overview panel and collection order change link displayed with permission - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6680'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -754,7 +552,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3b: Enforcement overview panel and collection order change link not displayed without permission - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6681'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -788,7 +586,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4a: Enforcement overview panel and days in default true - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6682'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -821,7 +619,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4b: Enforcement overview panel and days in default false - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6683'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -851,7 +649,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC5, AC6a: Enforcement overview panel and enforcement court with permission - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6684'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -887,7 +685,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC5, AC6b: Enforcement overview panel and enforcement court without permission - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-KEY:POT-6685'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1652'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -921,7 +719,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1, AC3a: Enforcement overview panel and collection order flag true - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-KEY:POT-6686'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -968,7 +766,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1, AC3b: Enforcement overview panel and collection order flag false - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-KEY:POT-6687'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1006,7 +804,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1, AC3c: Enforcement overview panel and collection order row not displayed - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-KEY:POT-6688'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1040,7 +838,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC2, AC4a: Enforcement overview panel and enforcement court with permission - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-KEY:POT-6689'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1080,7 +878,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC2, AC4b: Enforcement overview panel and enforcement court without permission - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-KEY:POT-6690'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1655'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1118,7 +916,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2, AC3: Last enforcement action panel displays data with all fields true - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-KEY:POT-6691'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1190,7 +988,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Last enforcement action panel, details link not shown - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-KEY:POT-6692'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1240,7 +1038,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1b: Last enforcement action panel does not display data when null - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-KEY:POT-6693'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1278,7 +1076,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Last enforcement action panel, remove action link true - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-KEY:POT-6694'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1314,7 +1112,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Last enforcement action panel, remove action link false - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-KEY:POT-6695'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1649'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1348,7 +1146,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2, AC3: Last enforcement action panel displays data with all fields true - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-KEY:POT-6696'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -1422,7 +1220,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Last enforcement action panel, details link not shown - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-KEY:POT-6697'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -1474,7 +1272,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1b: Last enforcement action panel does not display data when null - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-KEY:POT-6698'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -1514,7 +1312,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Last enforcement action panel, remove action link true - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-KEY:POT-6699'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -1552,7 +1350,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Last enforcement action panel, remove action link false - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-KEY:POT-6700'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1653'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -1588,7 +1386,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2, AC3: Last enforcement action panel displays data with all fields true - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-KEY:POT-6701'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1665,7 +1463,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Last enforcement action panel, details link not shown - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-KEY:POT-6702'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1720,7 +1518,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1b: Last enforcement action panel does not display data when null - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-KEY:POT-6703'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1763,7 +1561,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Last enforcement action panel, remove action link true - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-KEY:POT-6704'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1804,7 +1602,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Last enforcement action panel, remove action link false - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-KEY:POT-6705'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1656'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -1843,7 +1641,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2: Enforcement override panel displays data with all fields true - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-KEY:POT-6706'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1886,7 +1684,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2: Enforcement override panel displays data with all fields false - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-KEY:POT-6707'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1923,7 +1721,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Enforcement override panel remove link true - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-KEY:POT-6708'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1954,7 +1752,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Enforcement override panel remove link false - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-KEY:POT-6709'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -1982,7 +1780,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Enforcement override panel change link true - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-KEY:POT-6710'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -2018,7 +1816,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Enforcement override panel change link false - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-KEY:POT-6711'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1650'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
@@ -2052,7 +1850,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2: Enforcement override panel displays data with all fields true - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-KEY:POT-6712'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -2097,7 +1895,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2: Enforcement override panel displays data with all fields false - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-KEY:POT-6713'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -2136,7 +1934,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Enforcement override panel remove link true - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-KEY:POT-6714'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -2169,7 +1967,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Enforcement override panel remove link false - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-KEY:POT-6715'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -2199,7 +1997,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Enforcement override panel change link true - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-KEY:POT-6716'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -2236,7 +2034,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Enforcement override panel change link false - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-KEY:POT-6717'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1654'), '@JIRA-EPIC:PO-978'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Parent/Guardian';
@@ -2271,7 +2069,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2: Enforcement override panel displays data with all fields true - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-KEY:POT-6718'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -2318,7 +2116,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC1a, AC2: Enforcement override panel displays data with all fields false - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-KEY:POT-6719'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -2359,7 +2157,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Enforcement override panel remove link true - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-KEY:POT-6720'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -2394,7 +2192,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC3: Enforcement override panel remove link false - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-KEY:POT-6721'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -2426,7 +2224,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Enforcement override panel change link true - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-KEY:POT-6722'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;
@@ -2466,7 +2264,7 @@ describe('Account Enquiry Enforcement Status', () => {
 
   it(
     'AC4: Enforcement override panel change link false - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-KEY:POT-6723'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1657'), '@JIRA-EPIC:PO-978'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.party_details.organisation_flag = true;

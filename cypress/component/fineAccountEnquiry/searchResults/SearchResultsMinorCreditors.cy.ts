@@ -25,21 +25,22 @@ const ResultsPaginationLocators = ResultsLocators.pagination;
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('FinesSaResultsComponent - Minor Creditors', () => {
-  let searchResultState = {
-    searchAccount: MINOR_CREDITORS_SEARCH_STATE_MOCK,
+  const createSearchResultState = () => ({
+    searchAccount: structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK),
     unsavedChanges: false,
     stateChanges: false,
-  };
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
 
-  afterEach(() => {
-    searchResultState = {
-      searchAccount: MINOR_CREDITORS_SEARCH_STATE_MOCK,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+  beforeEach(() => {
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
   });
 
   const setupComponent = (mockSearchResults = EMPTY_SEARCH_RESULTS_MOCK) => {
+    searchResultState = structuredClone(searchResultStateTemplate);
+
     mount(FinesSaResultsComponent, {
       providers: [
         provideHttpClient(),
@@ -75,7 +76,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     'Search results component is created correctly for minor creditors',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7061'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -86,26 +87,26 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC2) Displays error message when no minor creditor search matches are found',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7062'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
-      cy.get(ResultsMessageLocators.noResultsHeading).should('be.visible');
-      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.heading).should('be.visible');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are no matching results');
 
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible');
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
+      cy.get(ResultsMessageLocators.link).should('be.visible');
+      cy.get(ResultsMessageLocators.link).should('contain', 'Check your search');
 
       //(AC2b) Check your search link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.checkYourSearchLink).click();
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
   it(
     '(AC3) Handles more than 100 minor creditor search matches correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7063'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
@@ -113,24 +114,24 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(ResultsPageLocators.backLinkHost).should('exist');
 
       // Should show too many results message when more than 100 results
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('be.visible');
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsMessageLocators.heading).should('be.visible');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are more than 100 results');
 
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('be.visible');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('contain', 'Try adding more information');
+      cy.get(ResultsMessageLocators.link).should('be.visible');
+      cy.get(ResultsMessageLocators.link).should('contain', 'Try adding more information');
 
       cy.get(ResultsLocators.table.root).should('not.exist');
 
       //(AC3b) Try adding more information link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
   it(
     '(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7064'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(INDIVIDUAL_SEARCH_RESULTS_MOCK);
 
@@ -179,7 +180,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7065'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(COMPANY_SEARCH_RESULTS_MOCK);
 
@@ -226,7 +227,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4d) Displays pagination with 25 results per page for maximum of 100 results',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7066'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       // Using LARGE_SEARCH_RESULTS_MOCK but limiting to 100 results for pagination testing
       const paginationMock = {
@@ -275,7 +276,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
 
   it(
     '(AC4f) Should sort by each column - ascending then descending (FinesSaResultsComponent - Minor Creditors)',
-    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-KEY:POT-7067'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(SORTING_MINOR_CREDITORS_MOCK);
 

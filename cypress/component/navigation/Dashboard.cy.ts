@@ -70,7 +70,7 @@ describe(
 
     it(
       'AC4e hides Reports from the primary navigation when the user has no report permissions in any business unit',
-      { tags: ['@JIRA-KEY:POT-6593'] },
+      { tags: [] },
       () => {
         setupComponent(USER_STATE_MOCK_NO_PERMISSION);
 
@@ -88,7 +88,7 @@ describe(
 
     it(
       'shows Reports in the primary navigation when the user has a report permission in any business unit',
-      { tags: ['@JIRA-KEY:POT-6594'] },
+      { tags: [] },
       () => {
         setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION));
 

@@ -8,25 +8,18 @@
  */
 export const MacPersonalDetailsLocators = {
   app: 'app-fines-mac-personal-details-form',
-  pageHeader: 'h1.govuk-heading-l',
   pageTitle: 'h1.govuk-heading-l',
   titleSelect: 'select[id="fm_personal_details_title"]',
-  titleInput: 'select[id="fm_personal_details_title"]',
   firstNamesInput: 'input[id="fm_personal_details_forenames"]',
-  firstNameInput: 'input[id="fm_personal_details_forenames"]',
   lastNameInput: 'input[id="fm_personal_details_surname"]',
   dateOfBirthInput: 'input[id="fm_personal_details_dob"]',
-  dobInput: 'input[id="fm_personal_details_dob"]',
-  nationalInsuranceInput: 'input[id="fm_personal_details_national_insurance_number"]',
   niNumberInput: 'input[id="fm_personal_details_national_insurance_number"]',
   addressLine1Input: 'input[id="fm_personal_details_address_line_1"]',
   addressLine2Input: 'input[id="fm_personal_details_address_line_2"]',
   addressLine3Input: 'input[id="fm_personal_details_address_line_3"]',
   postcodeInput: 'input[id="fm_personal_details_post_code"]',
   vehicleMakeInput: 'input[id="fm_personal_details_vehicle_make"]',
-  vehicle_makeInput: 'input[id="fm_personal_details_vehicle_make"]',
   vehicleRegistrationInput: 'input[id="fm_personal_details_vehicle_registration_mark"]',
-  vehicle_registration_markInput: 'input[id="fm_personal_details_vehicle_registration_mark"]',
   titleLabel: 'label[for="fm_personal_details_title"]',
   firstNameLabel: 'label[for="fm_personal_details_forenames"]',
   lastNameLabel: 'label[for="fm_personal_details_surname"]',
@@ -52,6 +45,8 @@ export const MacPersonalDetailsLocators = {
   errorSummary: '.govuk-error-summary',
   errorSummaryTitle: '.govuk-error-summary__title',
   inlineError: '.govuk-error-message, .govuk-form-group--error .govuk-error-message',
+  firstNameError: '#fm_personal_details_forenames-error-message',
+  lastNameError: '#fm_personal_details_surname-error-message',
 } as const;
 
 export const getAliasFirstName = (index: number): string => `input[id="fm_personal_details_alias_forenames_${index}"]`;

@@ -3,9 +3,15 @@
  * @description Stable selectors for Check and Validate draft account review, decision, and deletion pages.
  */
 export const CheckAndValidateReviewLocators = {
-  header: 'h1.govuk-heading-l',
+  heading: 'h1.govuk-heading-l',
   backLink: 'a.govuk-back-link',
   statusTag: '#status',
+  reasonLabel: 'label[for="fm_delete_account_confirmation_reason"]',
+  commentInput: '#fm_delete_account_confirmation_reason',
+  commentCharHint: 'div.govuk-character-count__message.govuk-character-count__status',
+  confirmDeleteButton: '#confirmDeletion',
+  cancelLink: 'a.govuk-link.button-link',
+  fieldError: '.govuk-error-message',
   decision: {
     group: 'fieldset#fm_review_account_decision',
     approveRadio: 'input#approve, input[name="fm_review_account_decision"][value="approve"]',

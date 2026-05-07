@@ -2,6 +2,7 @@ import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../shared/selectors/acco
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
+import { mount } from 'cypress/angular';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import {
@@ -17,6 +18,9 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } fr
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FinesAccEnfCourtChangeFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-enf-court-change/fines-acc-enf-court-change-form/fines-acc-enf-court-change-form.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const JIRA_EPIC = '@JIRA-EPIC:PO-1675';
@@ -51,6 +55,29 @@ interface ISetupResult {
   expectedCaption: string;
 }
 
+function buildCourtChangeContext(headerMock: IOpalFinesAccountDefendantDetailsHeader): {
+  accountId: string;
+  businessUnitId: number;
+  courtsMock: IOpalFinesCourtRefData;
+  expectedCaption: string;
+} {
+  const courtsMock = structuredClone(OPAL_FINES_COURT_REF_DATA_MOCK);
+  const businessUnitId = Number(headerMock.business_unit_summary.business_unit_id);
+  const accountId = String(headerMock.defendant_account_party_id);
+
+  courtsMock.refData = courtsMock.refData.map((court) => ({
+    ...court,
+    business_unit_id: businessUnitId,
+  }));
+
+  return {
+    accountId,
+    businessUnitId,
+    courtsMock,
+    expectedCaption: getExpectedCaption(headerMock),
+  };
+}
+
 function interceptCourtsByBusinessUnit(businessUnitId: number, courtsMock: IOpalFinesCourtRefData) {
   return cy
     .intercept('GET', `/opal-fines-service/courts?business_unit=${businessUnitId}`, {
@@ -74,14 +101,7 @@ function getExpectedCaption(headerMock: IOpalFinesAccountDefendantDetailsHeader)
 
 function setupChangeEnforcementCourt(headerMock: IOpalFinesAccountDefendantDetailsHeader): ISetupResult {
   const enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-  const courtsMock = structuredClone(OPAL_FINES_COURT_REF_DATA_MOCK);
-  const businessUnitId = Number(headerMock.business_unit_summary.business_unit_id);
-  const accountId = headerMock.defendant_account_party_id;
-
-  courtsMock.refData = courtsMock.refData.map((court) => ({
-    ...court,
-    business_unit_id: businessUnitId,
-  }));
+  const { accountId, businessUnitId, courtsMock, expectedCaption } = buildCourtChangeContext(headerMock);
 
   interceptAuthenticatedUser();
   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -93,18 +113,52 @@ function setupChangeEnforcementCourt(headerMock: IOpalFinesAccountDefendantDetai
 
   return {
     courtsMock,
-    expectedCaption: getExpectedCaption(headerMock),
+    expectedCaption,
   };
 }
 
-function commonSetup(): ISetupResult {
+function mountChangeEnforcementCourtForm(headerMock: IOpalFinesAccountDefendantDetailsHeader): ISetupResult {
+  const { courtsMock, expectedCaption } = buildCourtChangeContext(headerMock);
+  const [accountNumber, partyName] = expectedCaption.split(' - ');
+
+  mount(FinesAccEnfCourtChangeFormComponent, {
+    providers: [
+      provideRouter([]),
+      UtilsService,
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: {
+            params: {},
+            data: {},
+          },
+        },
+      },
+    ],
+    componentProperties: {
+      accountNumber,
+      partyName,
+      courtOptions: courtsMock.refData.map((court) => ({
+        value: court.court_id,
+        name: `${court.name} (${court.court_code})`,
+      })),
+    },
+  });
+
+  return {
+    courtsMock,
+    expectedCaption,
+  };
+}
+
+function buildIndividualHeaderMock(): IOpalFinesAccountDefendantDetailsHeader {
   const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
   headerMock.debtor_type = 'individual';
 
-  return setupChangeEnforcementCourt(headerMock);
+  return headerMock;
 }
 
-function parentGuardianSetup(): ISetupResult {
+function buildParentGuardianHeaderMock(): IOpalFinesAccountDefendantDetailsHeader {
   const headerMock = structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK);
   headerMock.party_details.individual_details = structuredClone(
     DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK.party_details.individual_details,
@@ -112,10 +166,10 @@ function parentGuardianSetup(): ISetupResult {
   headerMock.party_details.individual_details!.forenames = 'Robert';
   headerMock.party_details.individual_details!.surname = 'Thomson';
 
-  return setupChangeEnforcementCourt(headerMock);
+  return headerMock;
 }
 
-function companySetup(): ISetupResult {
+function buildCompanyHeaderMock(): IOpalFinesAccountDefendantDetailsHeader {
   const headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
   headerMock.party_details.organisation_flag = true;
   headerMock.party_details.organisation_details = {
@@ -125,7 +179,11 @@ function companySetup(): ISetupResult {
   headerMock.party_details.individual_details = null;
   headerMock.debtor_type = 'company';
 
-  return setupChangeEnforcementCourt(headerMock);
+  return headerMock;
+}
+
+function commonSetup(): ISetupResult {
+  return setupChangeEnforcementCourt(buildIndividualHeaderMock());
 }
 
 function navigateToChangeEnforcementCourt() {
@@ -188,7 +246,7 @@ function assertErrors() {
 describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Individual: navigates to the change enforcement court screen and displays the form',
-    { tags: ['@JIRA-KEY:POT-5647'] },
+    { tags: [] },
     () => {
       // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
       const { courtsMock, expectedCaption } = commonSetup();
@@ -204,85 +262,56 @@ describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS },
     },
   );
 
-  it(
-    'AC3a. Individual: shows validation errors when no enforcement court is selected',
-    { tags: ['@JIRA-KEY:POT-5648'] },
-    () => {
-      // AC3a
-      commonSetup();
+  it('AC3a. Individual: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
+    mountChangeEnforcementCourtForm(buildIndividualHeaderMock());
+    submitForm();
 
-      navigateToChangeEnforcementCourt();
-      submitForm();
-
-      assertErrors();
-    },
-  );
+    assertErrors();
+  });
 });
 
 describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Parent/Guardian: navigates to the change enforcement court screen and displays the form',
-    { tags: ['@JIRA-KEY:POT-5649'] },
+    { tags: [] },
     () => {
-      // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
-      const { courtsMock, expectedCaption } = parentGuardianSetup();
-
-      navigateToChangeEnforcementCourt();
-
-      assertNavigation(CHANGE_ENFORCEMENT_COURT_ROUTE);
+      const { courtsMock, expectedCaption } = mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
       assertTitle();
       assertCaption(expectedCaption);
-      assertContent();
+      cy.get(ENF_COURT_CHANGE.headingWithCaption).should('exist');
+      cy.get(ENF_COURT_CHANGE.form).should('exist');
       assertForm(courtsMock);
       assertLayout();
     },
   );
 
-  it(
-    'AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected',
-    { tags: ['@JIRA-KEY:POT-5650'] },
-    () => {
-      // AC3a
-      parentGuardianSetup();
+  it('AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
+    mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
+    submitForm();
 
-      navigateToChangeEnforcementCourt();
-      submitForm();
-
-      assertErrors();
-    },
-  );
+    assertErrors();
+  });
 });
 
 describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
   it(
     'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Company: navigates to the change enforcement court screen and displays the form',
-    { tags: ['@JIRA-KEY:POT-5651'] },
+    { tags: [] },
     () => {
-      // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
-      const { courtsMock, expectedCaption } = companySetup();
-
-      navigateToChangeEnforcementCourt();
-
-      assertNavigation(CHANGE_ENFORCEMENT_COURT_ROUTE);
+      const { courtsMock, expectedCaption } = mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
       assertTitle();
       assertCaption(expectedCaption);
-      assertContent();
+      cy.get(ENF_COURT_CHANGE.headingWithCaption).should('exist');
+      cy.get(ENF_COURT_CHANGE.form).should('exist');
       assertForm(courtsMock);
       assertLayout();
     },
   );
 
-  it(
-    'AC3a. Company: shows validation errors when no enforcement court is selected',
-    { tags: ['@JIRA-KEY:POT-5652'] },
-    () => {
-      // AC3a
-      companySetup();
+  it('AC3a. Company: shows validation errors when no enforcement court is selected', { tags: [] }, () => {
+    mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
+    submitForm();
 
-      navigateToChangeEnforcementCourt();
-      submitForm();
-
-      assertErrors();
-    },
-  );
+    assertErrors();
+  });
 });

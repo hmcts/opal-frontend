@@ -10,8 +10,8 @@ export const FINES_ACC_ADD_NOTE_FIELD_ERRORS: IFinesAccAddNoteFieldErrors = {
       message: `Account note must be 1000 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
+      message: `Account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },

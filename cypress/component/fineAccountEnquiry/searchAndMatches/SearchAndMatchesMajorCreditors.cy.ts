@@ -1,16 +1,11 @@
-import { mount } from 'cypress/angular';
-import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
-import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
 import { AccountSearchCommonLocators as CommonLocators } from '../../../shared/selectors/account-search/account.search.common.locators';
 import { AccountSearchMajorCreditorsLocators as MajorCreditorsLocators } from '../../../shared/selectors/account-search/account.search.major-creditors.locators';
 import { AccountSearchNavLocators as NavLocators } from '../../../shared/selectors/account-search/account.search.nav.locators';
 import { MAJOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_major_creditors_mock';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { BehaviorSubject } from 'rxjs';
+import { mountSearchAccount } from './support/mountSearchAccount';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const MajorAutocompleteLocators = MajorCreditorsLocators.autocomplete;
@@ -19,58 +14,31 @@ const MajorRequirementLocators = MajorCreditorsLocators.businessUnitRequirement;
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('Search Account Component - Major Creditors', () => {
-  let majorCreditorsSearchMock = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
+  type MajorCreditorsSearchState = typeof MAJOR_CREDITORS_SEARCH_STATE_MOCK;
   const fragment$ = new BehaviorSubject<string | null>('majorCreditors');
 
-  const setupComponent = () => {
-    mount(FinesSaSearchAccountComponent, {
-      providers: [
-        provideHttpClient(),
-        {
-          provide: Router,
-          useValue: {
-            navigate: cy
-              .spy((commands: unknown[], extras?: NavigationExtras) => {
-                if (extras?.fragment !== undefined) {
-                  fragment$.next(extras.fragment);
-                }
-                return Promise.resolve(true);
-              })
-              .as('routerNavigate'),
-            createUrlTree: cy.spy().as('urlTree'),
-            serializeUrl: cy.spy().as('serializeUrl'),
-            navigateByUrl: cy.spy().as('navigateByUrl'),
-          } as unknown as Router,
-        },
-        OpalFines,
-        {
-          provide: FinesSaStore,
-          useFactory: () => {
-            const store = new FinesSaStore();
-            store.setSearchAccount(majorCreditorsSearchMock);
-            store.setActiveTab('majorCreditors');
-
-            return store;
-          },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            fragment: fragment$.asObservable(),
-            snapshot: {
-              data: {
-                businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
-                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
-              },
-              parent: { snapshot: { url: [{ path: 'search' }] } },
-            },
-          },
-        },
-      ],
-    });
+  const buildMajorCreditorsSearchState = (
+    configure?: (searchState: MajorCreditorsSearchState) => void,
+  ): MajorCreditorsSearchState => {
+    const searchState = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
+    configure?.(searchState);
+    return searchState;
   };
+
+  const setupComponent = (configure?: (searchState: MajorCreditorsSearchState) => void) =>
+    mountSearchAccount({
+      activeTab: 'majorCreditors',
+      fragment$,
+      initialState: buildMajorCreditorsSearchState(configure),
+      routeSnapshotData: {
+        businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+        majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+      },
+      useSpyRouter: true,
+    });
+
   beforeEach(() => {
-    majorCreditorsSearchMock = structuredClone(MAJOR_CREDITORS_SEARCH_STATE_MOCK);
+    fragment$.next('majorCreditors');
 
     cy.window().then((win) => {
       cy.stub(win, 'open').as('windowOpen');
@@ -79,7 +47,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC1. should render the search for an account screen and major creditors tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-KEY:POT-7005'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -108,7 +76,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC2a, AC2b, AC2c. Single BU filtered and dropdown contents',
-    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-KEY:POT-7006'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -125,7 +93,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC2d. Type ahead and non-case sensitive search',
-    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-KEY:POT-7007'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -137,7 +105,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC2f. Navigated to account enquiry when major creditor is selected and searched for',
-    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-KEY:POT-7008'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -157,31 +125,29 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC2h. Data cleared when another tab is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-KEY:POT-7009'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent();
-
-      majorCreditorsSearchMock.fsa_search_account_number = '12345678';
-      majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_number = '12345678';
+        searchState.fsa_search_account_reference_case_number = 'REF123';
+      });
 
       cy.get(MajorAutocompleteLocators.input).click();
       cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
       cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');
       cy.get(NavLocators.minorCreditorsTab).click();
-      cy.then(() => fragment$.next('minorCreditors'));
       cy.get(NavLocators.majorCreditorsTab).click();
-      cy.then(() => fragment$.next('majorCreditors'));
       cy.get(MajorAutocompleteLocators.input).should('have.value', '');
     },
   );
 
   it(
     'AC3. Multiple BUs filtered unhappy path',
-    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-KEY:POT-7010'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent();
-
-      majorCreditorsSearchMock.fsa_search_account_business_unit_ids = [61, 67, 68, 69, 70, 71, 73];
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_business_unit_ids = [61, 67, 68, 69, 70, 71, 73];
+      });
       cy.get(MajorCreditorsLocators.panel.heading).should('exist').contains('Major creditors');
       cy.get(MajorRequirementLocators.message)
         .should('exist')
@@ -192,7 +158,7 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC4, AC5. Major creditor tab error validation',
-    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-KEY:POT-7011'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -204,11 +170,12 @@ describe('Search Account Component - Major Creditors', () => {
 
   it(
     'AC6. Validation passes navigated to problem screen',
-    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-KEY:POT-7012'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-716'), '@JIRA-EPIC:PO-704'] },
     () => {
-      setupComponent();
-      majorCreditorsSearchMock.fsa_search_account_number = '12345678';
-      majorCreditorsSearchMock.fsa_search_account_reference_case_number = 'REF123';
+      setupComponent((searchState) => {
+        searchState.fsa_search_account_number = '12345678';
+        searchState.fsa_search_account_reference_case_number = 'REF123';
+      });
       cy.get(MajorAutocompleteLocators.input).click();
       cy.get(MajorAutocompleteLocators.listbox).find('li').contains('Abellio Greater Anglia').click();
       cy.get(MajorAutocompleteLocators.input).should('have.value', 'Abellio Greater Anglia (AGAL)');

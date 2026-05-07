@@ -17,12 +17,17 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesRemoveImpositionComponent', () => {
-  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-  let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+  let finesMacStateTemplate = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacState = finesMacStateTemplate;
+  let finesMacOffenceDetailsDraftStateTemplate = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK);
+  let finesMacOffenceDetailsDraftState = finesMacOffenceDetailsDraftStateTemplate;
   let setDraftSpy: sinon.SinonSpy;
 
   // Updated setupComponent for AC.4 test: allows spying on setOffenceDetailsDraft
   const setupComponent = () => {
+    finesMacState = structuredClone(finesMacStateTemplate);
+    finesMacOffenceDetailsDraftState = structuredClone(finesMacOffenceDetailsDraftStateTemplate);
+
     let offenceDetailsStoreSpy;
     return mount(FinesMacOffenceDetailsRemoveImpositionComponent, {
       providers: [
@@ -69,10 +74,7 @@ describe('FinesRemoveImpositionComponent', () => {
   it(
     '(AC.1)should render the component correctly',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
-        '@JIRA-KEY:POT-7444',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent();
@@ -84,10 +86,7 @@ describe('FinesRemoveImpositionComponent', () => {
   it(
     '(AC.1)(AC.2)should render all elements correctly',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
-        '@JIRA-KEY:POT-7445',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent();
@@ -109,10 +108,7 @@ describe('FinesRemoveImpositionComponent', () => {
   it(
     '(AC.2)should have correct field labels and names in the elements when loading data',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
-        '@JIRA-KEY:POT-7446',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent();
@@ -135,10 +131,7 @@ describe('FinesRemoveImpositionComponent', () => {
   it(
     '(AC.4)should set values to defaults or null after pressing the remove imposition button',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673', '@JIRA-STORY:PO-545'),
-        '@JIRA-KEY:POT-7447',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-418', '@JIRA-STORY:PO-672', '@JIRA-STORY:PO-673'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent();

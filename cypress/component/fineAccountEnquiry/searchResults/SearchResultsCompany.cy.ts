@@ -26,21 +26,22 @@ const ResultsPaginationLocators = ResultsLocators.pagination;
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 
 describe('FinesSaResultsComponent - Companies', () => {
-  let searchResultState = {
-    searchAccount: COMPANY_SEARCH_STATE_MOCK,
+  const createSearchResultState = () => ({
+    searchAccount: structuredClone(COMPANY_SEARCH_STATE_MOCK),
     unsavedChanges: false,
     stateChanges: false,
-  };
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
 
-  afterEach(() => {
-    searchResultState = {
-      searchAccount: COMPANY_SEARCH_STATE_MOCK,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+  beforeEach(() => {
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
   });
 
   const setupComponent = (mockSearchResults = EMPTY_SEARCH_RESULTS_MOCK) => {
+    searchResultState = structuredClone(searchResultStateTemplate);
+
     mount(FinesSaResultsComponent, {
       providers: [
         provideHttpClient(),
@@ -76,7 +77,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     'Search company results component is created correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7049'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent();
 
@@ -87,41 +88,41 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     '(AC2) Displays error message when no search matches are found',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7050'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
-      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are no matching results');
 
       //(AC2b) Check your search link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible').click();
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).should('be.visible').click();
+      cy.get(ResultsMessageLocators.link).should('contain', 'Check your search');
     },
   );
 
   it(
     '(AC3) Handles more than 100 search matches correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-KEY:POT-7051'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are more than 100 results');
       cy.get(ResultsLocators.table.root).should('not.exist');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('contain', 'Try adding more information');
+      cy.get(ResultsMessageLocators.link).should('contain', 'Try adding more information');
       cy.get(ResultsLocators.table.root).should('not.exist');
 
       //(AC3b) Try adding more information link is clickable and functional
       // Test that the link is clickable (Full Test to be implemented when API complete)
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
   it(
     '(AC4a-c) Displays results correctly for 100 or fewer matches',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7052'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
@@ -144,7 +145,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     '(AC4d) Displays pagination correctly for companies',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7053'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
@@ -159,7 +160,7 @@ describe('FinesSaResultsComponent - Companies', () => {
 
   it(
     '(AC4e) Default sorting of results is correct',
-    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-KEY:POT-7054'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent(SORTING_SEARCH_RESULTS_MOCK_COMPANIES);
 

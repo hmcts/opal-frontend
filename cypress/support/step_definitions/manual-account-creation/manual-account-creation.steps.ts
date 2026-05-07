@@ -426,6 +426,26 @@ Then('the manual account note field shows {string}', (expected: string) => {
   comments().assertNoteValue(normalized);
 });
 /**
+ * @step Asserts the Account comments field validation error.
+ * @description Verifies the expected message appears in the error summary and inline comment error.
+ * @param expected - Expected error text.
+ * @example Then the manual account comment validation error is "Add comment must only include..."
+ */
+Then('the manual account comment validation error is {string}', (expected: string) => {
+  log('assert', 'Verifying account comment validation error', { expected });
+  comments().assertCommentValidationError(expected);
+});
+/**
+ * @step Asserts the Account notes field validation error.
+ * @description Verifies the expected message appears in the error summary and inline note error.
+ * @param expected - Expected error text.
+ * @example Then the manual account note validation error is "Add account note must only include..."
+ */
+Then('the manual account note validation error is {string}', (expected: string) => {
+  log('assert', 'Verifying account note validation error', { expected });
+  comments().assertNoteValidationError(expected);
+});
+/**
  * @step Cancels out of account comments with a specific choice (stay/leave).
  * @description Triggers the unsaved changes dialog and selects the given option.
  * @param choice - One of Cancel/Ok/Stay/Leave to drive the confirm.

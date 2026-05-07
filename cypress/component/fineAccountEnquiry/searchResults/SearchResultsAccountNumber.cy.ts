@@ -20,20 +20,18 @@ const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIR
 
 describe('FinesSaResultsComponent - All Account Types', () => {
   let fragmentSubject: BehaviorSubject<string>;
-
-  let searchResultState = {
-    searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
+  const createSearchResultState = () => ({
+    searchAccount: structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK),
     unsavedChanges: false,
     stateChanges: false,
-  };
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
 
-  afterEach(() => {
+  beforeEach(() => {
     fragmentSubject?.complete();
-    searchResultState = {
-      searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
   });
 
   const setupComponent = (
@@ -44,6 +42,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
     // Create BehaviorSubject for reactive fragment changes (signals-compatible)
     fragmentSubject = new BehaviorSubject(initialFragment);
+    searchResultState = structuredClone(searchResultStateTemplate);
 
     mount(FinesSaResultsComponent, {
       providers: [
@@ -96,7 +95,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC1d) Search results component is created correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7039'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('WITH_DATA');
 
@@ -107,18 +106,18 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC3a) Displays error message when no search matches are found',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7040'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('EMPTY_RESULTS');
 
       // AC3a: Verify the error screen is displayed when no search matches are found
-      cy.get(ResultsMessageLocators.noResultsHeading).should('be.visible');
-      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.heading).should('be.visible');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are no matching results');
 
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible');
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
+      cy.get(ResultsMessageLocators.link).should('be.visible');
+      cy.get(ResultsMessageLocators.link).should('contain', 'Check your search');
       // AC3b: Verify 'Check your search' link is clickable and functional
-      cy.get(ResultsMessageLocators.checkYourSearchLink).click();
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
@@ -126,27 +125,25 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC4a) Displays "There are more than 100 results" message when more than 100 matches found',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7041'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('LARGE_RESULTS');
 
       // AC4a: Verify the "too many results" error screen is displayed
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('be.visible');
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsMessageLocators.heading).should('be.visible');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are more than 100 results');
 
       // Note: AC4b The 'Try adding more information' link will navigate a user back to the Search for an Account screen - Full Test to be implemented when API complete
       // AC4b: Verify 'Try adding more information' link is present
-      cy.get(ResultsMessageLocators.addMoreInfoLink)
-        .should('be.visible')
-        .should('contain', 'Try adding more information');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
+      cy.get(ResultsMessageLocators.link).should('be.visible').should('contain', 'Try adding more information');
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
   it(
     '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor/creditor types and Individual tab is in focus by default',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7042'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('WITH_DATA', 'individuals');
 
@@ -193,7 +190,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5c) Companies tab displays company defendant account summary data',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7043'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('WITH_DATA', 'companies');
 
@@ -218,7 +215,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
   );
   it(
     '(AC5d) Minor Creditors tab displays creditor account summary data',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7044'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('WITH_DATA', 'individuals');
       // Switch to minor creditors tab using helper function
@@ -257,7 +254,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5e) Tabs only displayed when results exist for corresponding type',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7045'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       // Test scenario with only individuals and companies (no minor creditors)
       setupComponent('PARTIAL_RESULTS');
@@ -271,7 +268,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5fi) Companies tab in focus when no individuals found',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7046'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('COMPANY_RESULTS_ONLY', 'companies');
 
@@ -284,7 +281,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5fii) No tabs displayed for single creditor type results',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7047'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('INDIVIDUALS_ONLY_RESULTS', 'individuals');
 
@@ -296,7 +293,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5fii) No tabs displayed for single debtor type results',
-    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-KEY:POT-7048'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('MINOR_CREDITOR_ONLY_RESULTS', 'minorCreditors');
 

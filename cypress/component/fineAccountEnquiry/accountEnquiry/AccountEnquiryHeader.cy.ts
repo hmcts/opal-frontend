@@ -48,7 +48,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC1a: renders the Defendant Account Header Summary',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-KEY:POT-6789'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
@@ -68,7 +68,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC1a: renders the Company Account Header Summary',
-    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6790'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
@@ -88,7 +88,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-KEY:POT-6791'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.prosecutor_case_reference = 'ref123'; // UI should uppercase
@@ -120,7 +120,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels) - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-KEY:POT-6792'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       header.prosecutor_case_reference = 'ref123'; // UI should uppercase
@@ -154,7 +154,7 @@ describe('Account Enquiry - Defendant Header', () => {
   // ONLY Youth tag when youth is the debtor and no P/G associated
   it(
     'AC2: shows ONLY "Youth Account" when youth=true, debtor=Defendant, and no Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593'), '@JIRA-KEY:POT-6793'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593'), '@JIRA-EPIC:PO-812'] },
     () => {
       const dateOfBirth = new Date();
       dateOfBirth.setFullYear(dateOfBirth.getFullYear() - 15); // 15 years old
@@ -183,7 +183,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC2: shows ONLY "Parent or Guardian" when youth=true, debtor=Parent/Guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-866'), '@JIRA-KEY:POT-6794'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       header.debtor_type = 'Parent/Guardian';
@@ -206,7 +206,7 @@ describe('Account Enquiry - Defendant Header', () => {
   //  ONLY "Parent or Guardian to pay" (even if youth)
   it(
     'AC2i: Youth defendant who is not the debtor hides "Youth" label',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-KEY:POT-6795'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
       header.debtor_type = 'Parent/Guardian';
@@ -226,7 +226,7 @@ describe('Account Enquiry - Defendant Header', () => {
   //  Adult defendant → no tag at all
   it(
     'AC2a: renders no tag for adult defendants',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593'), '@JIRA-KEY:POT-6796'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593'), '@JIRA-EPIC:PO-812'] },
     () => {
       const adult = structuredClone(DEFENDANT_HEADER_MOCK);
       adult.is_youth = false;
@@ -246,7 +246,7 @@ describe('Account Enquiry - Defendant Header', () => {
   // Negative balance prefixed with minus (e.g. -£4.50)
   it(
     'AC3: negative balance is prefixed with a minus',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-KEY:POT-6797'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.payment_state_summary.account_balance = -4.5;
@@ -265,7 +265,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC3: negative balance is prefixed with a minus - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6798'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       header.payment_state_summary.account_balance = -4.5;
@@ -284,7 +284,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC4: shows "Add account note" when user has permission',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866', '@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6799'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866', '@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
@@ -298,7 +298,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC4: Calls add note path when user has permission in this BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866', '@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6800'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866', '@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
@@ -318,7 +318,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC4a: Calls error path when user has no permission in this BU only in other BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866', '@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6801'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866', '@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
@@ -338,7 +338,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC4b: hides "Add account note" when user has no permission in any BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-KEY:POT-6802'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1593', '@JIRA-STORY:PO-866'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
@@ -352,7 +352,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC3: shows "Add account note" when user has permission - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6803'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
@@ -365,7 +365,7 @@ describe('Account Enquiry - Defendant Header', () => {
   );
   it(
     'AC3: Calls add note path when user has permission in this BU - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6804'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
@@ -384,7 +384,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC3a: Calls error path when user has no permission in this BU only in other BU - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6805'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
@@ -403,7 +403,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
   it(
     'AC3b: hides "Add account note" when user has no permission in any BU - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-KEY:POT-6806'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-867'), '@JIRA-EPIC:PO-812'] },
     () => {
       interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
       interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
@@ -420,9 +420,9 @@ describe('Account Enquiry - Minor Creditor Header', () => {
     interceptAuthenticatedUser();
   });
 
-  const minorCreditorAccountId = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.account_number;
+  const minorCreditorAccountId = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.creditor.account_id;
   const minorCreditorComponentProperties: IComponentProperties = {
-    accountId: minorCreditorAccountId,
+    accountId: minorCreditorAccountId.toString(),
     routeRoot: 'minor-creditor',
     fragments: undefined,
     interceptedRoutes: [
@@ -436,14 +436,14 @@ describe('Account Enquiry - Minor Creditor Header', () => {
 
   it(
     'AC1, AC2a: renders the Minor Creditor Account Header Summary',
-    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-KEY:POT-6807'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-EPIC:PO-2234'] },
     () => {
       const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
-      header.has_associated_defendant = true;
-      header.awaiting_payout_amount = 100;
-      header.awarded_amount = 200;
-      header.paid_out_amount = 50;
-      header.outstanding_amount = 150;
+      header.creditor.has_associated_defendant = true;
+      header.financials.awaiting_payout = 100;
+      header.financials.awarded = 200;
+      header.financials.paid_out = 50;
+      header.financials.outstanding = 150;
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
@@ -476,11 +476,11 @@ describe('Account Enquiry - Minor Creditor Header', () => {
 
   it(
     'AC2b: hides Awarded and Outstanding when no defendant is associated',
-    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-KEY:POT-6808'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-EPIC:PO-2234'] },
     () => {
       const header = structuredClone(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
-      header.awaiting_payout_amount = 100;
-      header.paid_out_amount = 50;
+      header.financials.awaiting_payout = 100;
+      header.financials.paid_out = 50;
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptMinorCreditorHeader(minorCreditorAccountId, header, '1');
@@ -504,7 +504,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
 
   it(
     'AC3a: shows add account note button and navigates to add note page',
-    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-KEY:POT-6809'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-EPIC:PO-2234'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
@@ -523,7 +523,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
 
   it(
     'AC3b: access denied when user has no permission and minor creditor does have permission',
-    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-KEY:POT-6810'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-EPIC:PO-2234'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');
@@ -541,7 +541,7 @@ describe('Account Enquiry - Minor Creditor Header', () => {
 
   it(
     'AC3c: hides Add account note when user has no permission in any BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-KEY:POT-6811'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1924'), '@JIRA-EPIC:PO-2234'] },
     () => {
       interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
       interceptMinorCreditorHeader(minorCreditorAccountId, FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK, '1');

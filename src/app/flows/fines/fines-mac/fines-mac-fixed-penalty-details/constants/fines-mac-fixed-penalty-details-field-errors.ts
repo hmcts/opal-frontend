@@ -119,21 +119,17 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_offence_details_driving_licence_number: {
-    required: {
-      message: `Enter Driving licence number`,
-      priority: 1,
-    },
     maxlength: {
       message: `Driving licence number must be 16 characters or fewer`,
-      priority: 2,
+      priority: 1,
     },
     alphanumericTextPattern: {
       message: `Driving licence number must only contain letters or numbers`,
-      priority: 3,
+      priority: 2,
     },
     drivingLicenceNumberPattern: {
-      message: `Enter Driving licence number in the correct format, like ABCDE123456AA1B1`,
-      priority: 4,
+      message: 'Enter Driving licence number in the correct format',
+      priority: 3,
     },
   },
   fm_fp_offence_details_nto_nth: {

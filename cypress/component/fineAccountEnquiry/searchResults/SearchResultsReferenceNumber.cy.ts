@@ -19,20 +19,18 @@ const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIR
 
 describe('FinesSaResultsComponent - All Account Types', () => {
   let fragmentSubject: BehaviorSubject<string>;
-
-  let searchResultState = {
-    searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
+  const createSearchResultState = () => ({
+    searchAccount: structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK),
     unsavedChanges: false,
     stateChanges: false,
-  };
+  });
+  let searchResultStateTemplate = createSearchResultState();
+  let searchResultState = searchResultStateTemplate;
 
-  afterEach(() => {
+  beforeEach(() => {
     fragmentSubject?.complete();
-    searchResultState = {
-      searchAccount: INDIVIDUAL_SEARCH_STATE_MOCK,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    searchResultStateTemplate = createSearchResultState();
+    searchResultState = searchResultStateTemplate;
   });
 
   const setupComponent = (
@@ -43,6 +41,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
     // Create BehaviorSubject for reactive fragment changes (signals-compatible)
     fragmentSubject = new BehaviorSubject(initialFragment);
+    searchResultState = structuredClone(searchResultStateTemplate);
 
     mount(FinesSaResultsComponent, {
       providers: [
@@ -94,43 +93,41 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC3a) Displays error message when no search matches are found (Search Results Reference Number)',
-    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-KEY:POT-7068'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('EMPTY_RESULTS');
 
       // AC3a: Verify the error screen is displayed when no search matches are found
-      cy.get(ResultsMessageLocators.noResultsHeading).should('be.visible');
-      cy.get(ResultsMessageLocators.noResultsHeading).should('contain', 'There are no matching results');
+      cy.get(ResultsMessageLocators.heading).should('be.visible');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are no matching results');
 
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('be.visible');
-      cy.get(ResultsMessageLocators.checkYourSearchLink).should('contain', 'Check your search');
+      cy.get(ResultsMessageLocators.link).should('be.visible');
+      cy.get(ResultsMessageLocators.link).should('contain', 'Check your search');
       // AC3b: Verify 'Check your search' link is clickable and functional
-      cy.get(ResultsMessageLocators.checkYourSearchLink).click();
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
   it(
     '(AC4) Displays "There are more than 100 results" message when more than 100 matches found',
-    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-KEY:POT-7069'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('LARGE_RESULTS_REF_NUM');
 
       // AC4a: Verify the "too many results" error screen is displayed
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('be.visible');
-      cy.get(ResultsMessageLocators.tooManyResultsHeading).should('contain', 'There are more than 100 results');
+      cy.get(ResultsMessageLocators.heading).should('be.visible');
+      cy.get(ResultsMessageLocators.heading).should('contain', 'There are more than 100 results');
 
       // AC4b: Verify 'Try adding more information' link is present
-      cy.get(ResultsMessageLocators.addMoreInfoLink)
-        .should('be.visible')
-        .should('contain', 'Try adding more information');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).should('have.class', 'govuk-link');
-      cy.get(ResultsMessageLocators.addMoreInfoLink).click();
+      cy.get(ResultsMessageLocators.link).should('be.visible').should('contain', 'Try adding more information');
+      cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
+      cy.get(ResultsMessageLocators.link).click();
     },
   );
 
   it(
     '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor types and Individual tab is in focus by default',
-    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-KEY:POT-7070'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('WITH_DATA', 'individuals');
 
@@ -177,7 +174,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5c) Companies tab displays company defendant account summary data (Search Results Reference Number)',
-    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-KEY:POT-7071'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('WITH_DATA', 'companies');
 
@@ -203,7 +200,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5e, 5d) Only individual tab when only results exist for individual',
-    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-KEY:POT-7072'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('INDIVIDUALS_ONLY_RESULTS');
 
@@ -216,7 +213,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
 
   it(
     '(AC5e, 5d) Only company tab when only results exist for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-KEY:POT-7073'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-709'), '@JIRA-EPIC:PO-704'] },
     () => {
       setupComponent('COMPANY_RESULTS_ONLY');
 

@@ -9,12 +9,15 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 ## Contents
 
 - [Getting Started](#getting-started)
+- [Shared Codex Skills](#shared-codex-skills)
 - [Local Development Strategy](#local-development-strategy)
 - [Production Server](#5-production-server)
 - [Running Unit Tests](#running-unit-tests)
 - [Running End-to-End Tests](#running-end-to-end-tests)
 - [Accessibility Tests](#running-accessibility-tests)
 - [Switching Between Local and Published Common Libraries](#switching-between-local-and-published-common-libraries)
+- [OpenAPI reference models](#openapi-reference-models)
+- [OpenAPI docs](#openapi-docs)
 
 ## Getting Started
 
@@ -37,6 +40,17 @@ Install dependencies by executing the following command:
 yarn
 
 ```
+
+### Shared Codex Skills
+
+Shared Codex skills for Opal frontend work live in the sibling `opal-dev-agent-skills` repository. After cloning or updating this repository, run:
+
+```bash
+cd ../opal-dev-agent-skills
+./scripts/frontend/sync-codex-skills.sh
+```
+
+This pulls the latest shared skills and installs Codex-only symlinks for the shared `frontend` and `general` skill folders into `.codex/skills/` for both `opal-frontend` and `opal-rm-frontend`, including `opal-frontend-vitest-guard` for Angular/Vitest unit-test work. The `.codex/skills/` directory is gitignored so developers can also keep local-only skills without pushing them to GitHub.
 
 ### Local Development Strategy
 
@@ -398,20 +412,21 @@ Notes:
 We are using [axe-core](https://github.com/dequelabs/axe-core) and [cypress-axe](https://github.com/component-driven/cypress-axe) to check the accessibility.
 Run the production server and once running you can run the smoke or functional test commands.
 
-> See [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-common-ui-lib) and [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend-common-node-lib) for usage and build instructions.
+> See [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-common-ui-lib), [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend-common-node-lib), and [opal-frontend-common-cypress-lib](https://github.com/hmcts/opal-frontend-common-cypress-lib) for usage and build instructions.
 
 ## Switching Between Local and Published Common Libraries
 
-This project supports switching between local and published versions of the `opal-frontend-common` and `opal-frontend-common-node` libraries using the following scripts:
+This project supports switching between local and published versions of the `opal-frontend-common`, `opal-frontend-common-node`, and `opal-frontend-common-cypress` libraries using the following scripts:
 
 ### Switching to Local Versions
 
-First, ensure you've run `yarn pack:local` in both library repos and exported the repository root paths (where the `.tgz` files are created):
+First, ensure you've run `yarn pack:local` in the library repos you want to use locally and exported the repository root paths (where the `.tgz` files are created):
 
 ```bash
 # In your shell config file (.zshrc, .bash_profile, etc.)
 export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB FOLDER]"
 export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB FOLDER]"
+export COMMON_CYPRESS_LIB_PATH="[INSERT PATH TO COMMON CYPRESS LIB FOLDER]"
 ```
 
 Then, run the following scripts:
@@ -419,6 +434,7 @@ Then, run the following scripts:
 ```bash
 yarn import:local:common-ui-lib
 yarn import:local:common-node-lib
+yarn import:local:common-cypress-lib
 ```
 
 These commands will remove the published versions and install local `.tgz` packages from each configured path.
@@ -429,6 +445,7 @@ If you have installed local `.tgz` packages and want to return to npm-published 
 
 ```bash
 yarn add @hmcts/opal-frontend-common@<VERSION> @hmcts/opal-frontend-common-node@<VERSION>
+yarn add --dev @hmcts/opal-frontend-common-cypress@<VERSION>
 yarn install
 ```
 
@@ -437,6 +454,7 @@ You can also use:
 ```bash
 yarn import:published:common-ui-lib
 yarn import:published:common-node-lib
+yarn import:published:common-cypress-lib
 ```
 
 These scripts read the target version from package.json.
@@ -445,6 +463,17 @@ If package.json still contains `file:...tgz` values, they will reinstall local t
 This is useful when you're no longer working on the libraries directly or want to verify against the published versions that your project is pinned to.
 
 **Note:** Version upgrades should come via Renovate PRs. These commands do **not** upgrade to the latest; they reinstall the exact versions specified in `package.json`. For extra safety in CI, consider using `yarn install --immutable` to prevent lockfile drift.
+
+## OpenAPI reference models
+
+- Run `yarn generate:openapi` to download and merge the fines-service specs, then emit reference-only models to `src/app/generated/api-client` and `src/app/flows/fines/services/opal-fines-service/{interfaces/generated,types/generated}`.
+- The generated files are gitignored and excluded from TypeScript/Jasmine; they are **not** used by application code or tests.
+- When schema changes are needed, copy shapes from the generated output into the hand-written interfaces under `src/app/flows/fines/services/opal-fines-service/interfaces` and adjust as required.
+
+## OpenAPI docs
+
+- Backend fines OpenAPI specs live in the fines service repo under `src/main/resources/openapi/` (DefendantAccount, MajorCreditor, MinorCreditor, common, types) and are merged via `openapi/openapi-merge-config.json`.
+- The merged spec is written locally to `openapi/opal-merged.yaml` when you run `yarn generate:openapi`; open that file for endpoint/schema details or to copy shapes into the hand-cranked interfaces.
 
 **Platform note:** `import:*` scripts use Unix shell commands (`rm`, `ls`, `grep`) and are intended for macOS/Linux environments.
 
@@ -575,7 +604,6 @@ Updates component metadata with `standalone: true`, refactors imports, and remov
 **What Copilot does:**  
 Triggers `ng add @angular/material` to install the package and configure animations + theming.
 
-
 # Zephyr Automation
 
 Zephyr Automation is a tool for integrating test results and ticket management between Zephyr, Jira, and test frameworks (Cucumber, Cypress). It automates the creation and updating of Jira tickets and Zephyr executions based on test reports.
@@ -586,7 +614,7 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - Create Zephyr executions
 - Supports Cucumber and Cypress JSON reports
 
-## Project Scripts (zephyr:*)
+## Project Scripts (zephyr:\*)
 
 - Zephyr scripts still use the JSON report paths listed below as their inputs. Their console output is also mirrored to `tmp/zephyr/*.log`, with each script overwriting its own log file on the next run. `/tmp` is gitignored.
 - `zephyr:cypress:jira-create`: Create Jira tickets from the Cypress JSON report at `functional-output/zephyr/cypress-report-1.json`.
@@ -602,21 +630,28 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `zephyr:test:functional`: Reset outputs, run functional tests, then create a Zephyr execution from the functional Cucumber JSON report.
 - `zephyr:test:smoke`: Reset outputs, run smoke tests, then create a Zephyr execution from the smoke Cucumber JSON report.
 
+## Test Metadata Maintenance
+
+- `opal-cypress-find-tests-missing-epic`: Report executable Cypress tests that have no Jira epic metadata.
+- `opal-cypress-resolve-placeholder-jira-epics`: Resolve placeholder epic values from `cypress/jira-epic-placeholders.json`. Add `--write` to update matching placeholders in test files.
+- `opal-cypress-find-tests-with-multiple-epics`: Report executable Cypress tests that have more than one Jira epic reference.
 
 ### Supported Tags
 
 The following tags can be used in your test scenarios to control ticket creation, linking, and metadata:
 
-| Tag Prefix         | Example Value           | Description                                                                 |
-|--------------------|-------------------------|-----------------------------------------------------------------------------|
-| `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.                        |
-| `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                            |
-| `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                                |
-| `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                                |
-| `@JIRA-NFR:`       | `@JIRA-NFR:PROJ-789`    | Links the ticket to a Non-Functional Requirement (NFR) Jira issue.          |
-| `@JIRA-LINK:`      | `@JIRA-LINK:PROJ-321`   | Creates a generic link to another Jira issue.                               |
-| `@JIRA-STORY:`     | `@JIRA-STORY:PROJ-654`  | Links the ticket to a Jira Story.                                           |
-| `@JIRA-DEFECT:`    | `@JIRA-DEFECT:PROJ-987` | Links the ticket to a Jira Defect.                                          |
-| `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                           |
+| Tag Prefix         | Example Value           | Description                                                        |
+| ------------------ | ----------------------- | ------------------------------------------------------------------ |
+| `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.               |
+| `@JIRA-KEY:POT-*`  | `@JIRA-KEY:POT-1234`    | Associates one executable test with one Zephyr POT test case key.  |
+| `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
+| `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
+| `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |
+| `@JIRA-NFR:`       | `@JIRA-NFR:PROJ-789`    | Links the ticket to a Non-Functional Requirement (NFR) Jira issue. |
+| `@JIRA-LINK:`      | `@JIRA-LINK:PROJ-321`   | Creates a generic link to another Jira issue.                      |
+| `@JIRA-STORY:`     | `@JIRA-STORY:PROJ-654`  | Links the ticket to a Jira Story.                                  |
+| `@JIRA-DEFECT:`    | `@JIRA-DEFECT:PROJ-987` | Links the ticket to a Jira Defect.                                 |
+| `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                  |
 
 - Tags are case-sensitive and must be used exactly as shown.
+- `yarn check:cypress:test-metadata` uses `@hmcts/opal-frontend-common-cypress` to report executable Cypress tests with missing epic metadata, multiple epic references, or unresolved placeholder epic values.

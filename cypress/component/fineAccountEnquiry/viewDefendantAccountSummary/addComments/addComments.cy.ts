@@ -18,6 +18,14 @@ import {
 } from './mocks/add_comments_mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
+const ACCOUNT_COMMENT_ALLOWED_CHARACTERS_ERROR =
+  'Account comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const FREE_TEXT_1_ALLOWED_CHARACTERS_ERROR =
+  'Free text 1 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const FREE_TEXT_2_ALLOWED_CHARACTERS_ERROR =
+  'Free text 2 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+const FREE_TEXT_3_ALLOWED_CHARACTERS_ERROR =
+  'Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL];
 const CommentFields = AccountCommentsAddLocators.fields;
@@ -28,6 +36,7 @@ const CommentActions = AccountCommentsAddLocators.actions;
 describe('FinesAccCommentsAddComponent', () => {
   const setupComponent = (prefilledData = ADD_COMMENTS_FORM_STATE_MOCK, formSubmit: any = null) => {
     const patchDefendantAccountStub = cy.stub().as('patchDefendantAccount').returns(of(undefined));
+    const accountState = structuredClone(MOCK_ACCOUNT_STATE);
 
     mount(FinesAccCommentsAddComponent, {
       providers: [
@@ -47,7 +56,7 @@ describe('FinesAccCommentsAddComponent', () => {
           provide: FinesAccountStore,
           useFactory: () => {
             const store = new FinesAccountStore();
-            store.setAccountState(MOCK_ACCOUNT_STATE);
+            store.setAccountState(accountState);
             return store;
           },
         },
@@ -77,7 +86,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should display the comments form with all required fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7137'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       setupComponent();
 
@@ -99,7 +108,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should enforce field length limits according to specifications (AC2a)',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7138'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_MAX_LENGTH_MOCK);
 
@@ -113,7 +122,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should accept alphanumeric characters in all fields (AC2a)',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7139'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK);
 
@@ -126,7 +135,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should handle character count and allow clearing fields without errors (AC3, AC3a, AC2a)',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7140'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
@@ -171,7 +180,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should display error messages for non-alphanumeric characters (AC4a)',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7141'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_NON_ALPHANUMERIC_MOCK);
 
@@ -187,40 +196,25 @@ describe('FinesAccCommentsAddComponent', () => {
       cy.get(CommentErrors.comment)
         .should('exist')
         .and('be.visible')
-        .and(
-          'contain',
-          'Account comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-
+        .and('contain', ACCOUNT_COMMENT_ALLOWED_CHARACTERS_ERROR);
       cy.get(CommentErrors.line1)
         .should('exist')
         .and('be.visible')
-        .and(
-          'contain',
-          'Free text 1 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-
+        .and('contain', FREE_TEXT_1_ALLOWED_CHARACTERS_ERROR);
       cy.get(CommentErrors.line2)
         .should('exist')
         .and('be.visible')
-        .and(
-          'contain',
-          'Free text 2 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
-
+        .and('contain', FREE_TEXT_2_ALLOWED_CHARACTERS_ERROR);
       cy.get(CommentErrors.line3)
         .should('exist')
         .and('be.visible')
-        .and(
-          'contain',
-          'Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-        );
+        .and('contain', FREE_TEXT_3_ALLOWED_CHARACTERS_ERROR);
     },
   );
 
   it(
     'should display error messages for exceeding character limits (AC4b)',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7142'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_EXCEEDS_LIMITS_MOCK);
 
@@ -257,7 +251,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should clear error messages when Save comment button is clicked with valid data (AC5bi)',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7143'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       // Start with mixed error state to demonstrate error clearing workflow
@@ -294,7 +288,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should handle various form submission scenarios with valid data (AC5, AC2a, AC5d)',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7144'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       setupComponent(ADD_COMMENTS_FORM_STATE_MOCK, mockFormSubmit);
@@ -333,7 +327,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
   it(
     'should allow saving when user has not made amendments (AC8)',
-    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-KEY:POT-7145'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       // Start with pre-filled data to simulate existing comments

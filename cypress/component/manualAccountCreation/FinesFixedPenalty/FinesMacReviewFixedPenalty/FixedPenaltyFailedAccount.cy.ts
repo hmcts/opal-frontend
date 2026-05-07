@@ -12,7 +12,7 @@ import {
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import { interceptGetDraftAccountById } from 'cypress/component/manualAccountCreation/setup/FineAccount.intercepts';
 import { FIXED_PENALTY_FAILED_DEFENDANT_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fines_mac_failed_account_mock';
-import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/CommonIntercept.mocks';
+import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/referenceData/businessUnits/BusinessUnit.mocks';
 import { MacFixedPenaltyReviewLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.fixed-penalty.review.locators';
 import { interceptCourtsByBU } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FIXED_PENALTY_FAILED_DRAFT_COMPANY_MOCK } from '../../FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fines_mac_failed_company_mock';
@@ -33,7 +33,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
   });
   it(
     '(AC.1) should display failed defendant account details correctly for individual defendant in Review',
-    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-KEY:POT-7282'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-EPIC:PO-855'] },
     () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
@@ -116,7 +116,7 @@ describe('Fixed Penalty failed- Review Account Details', () => {
   );
   it(
     '(AC.1) should display failed defendant account details correctly for company defendant in Review',
-    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-KEY:POT-7283'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1816'), '@JIRA-EPIC:PO-855'] },
     () => {
       const draftAccountId = '1004';
       const props: IFinesComponentProperties = {

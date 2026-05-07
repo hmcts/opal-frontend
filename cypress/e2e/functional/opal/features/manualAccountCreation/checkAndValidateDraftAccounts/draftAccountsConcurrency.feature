@@ -6,7 +6,8 @@ Feature: Draft Accounts — ETag/If-Match Concurrency
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
-  @JIRA-STORY:PO-2117 @JIRA-KEY:POT-5247
+
+  @JIRA-STORY:PO-2117 @JIRA-EPIC:PO-2220
   Scenario: Successful update returns a new strong ETag
     Given a "adultOrYouthOnly" draft account exists with:
       | account_status              | Submitted |
@@ -16,7 +17,8 @@ Feature: Draft Accounts — ETag/If-Match Concurrency
     When I set the last created draft account status to "Publishing Pending"
     Then the last draft update should return a new strong ETag
 
-  @JIRA-STORY:PO-2117 @JIRA-KEY:POT-5248
+
+  @JIRA-STORY:PO-2117 @JIRA-EPIC:PO-2220
   Scenario: Stale If-Match results in 409 Conflict
     Given a "adultOrYouthOnly" draft account exists with:
       | account_status              | Submitted      |

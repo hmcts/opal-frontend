@@ -18,12 +18,16 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('RemoveOffenceAndImpositionsComponent', () => {
-  let finesMacState = FINES_MAC_STATE_MOCK;
+  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
   finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
 
-  let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+  let finesMacOffenceDetailsDraftState = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK);
 
   beforeEach(() => {
+    finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
+    finesMacOffenceDetailsDraftState = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK);
+
     cy.intercept(
       {
         method: 'GET',
@@ -43,6 +47,9 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
   });
 
   const setupComponent = () => {
+    finesMacState = structuredClone(finesMacState);
+    finesMacOffenceDetailsDraftState = structuredClone(finesMacOffenceDetailsDraftState);
+
     mount(FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent, {
       providers: [
         provideHttpClient(),
@@ -81,10 +88,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
   it(
     '(AC.1) should render component',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
-        '@JIRA-KEY:POT-7453',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent();
@@ -94,10 +98,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
   it(
     '(AC.1) should load all elements on the page',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
-        '@JIRA-KEY:POT-7454',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent();
@@ -123,10 +124,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
   it(
     '(AC.2, AC.3) should have appropriate text for each element',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680', '@JIRA-STORY:PO-545'),
-        '@JIRA-KEY:POT-7455',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545'],
     },
     () => {
       setupComponent();
@@ -159,7 +157,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     },
   );
 
-  it('should have only one h1 element', { tags: [...buildTags('@JIRA-STORY:PO-2717'), '@JIRA-KEY:POT-7456'] }, () => {
+  it('should have only one h1 element', { tags: [...buildTags('@JIRA-STORY:PO-2717'), '@JIRA-EPIC:PO-2807'] }, () => {
     setupComponent();
     cy.get('h1').should('have.length', 1);
   });

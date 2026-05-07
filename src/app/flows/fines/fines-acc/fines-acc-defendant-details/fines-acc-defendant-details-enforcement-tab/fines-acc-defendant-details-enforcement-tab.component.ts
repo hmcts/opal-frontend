@@ -38,11 +38,20 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
+  @Output() addEnforcementAction = new EventEmitter<void>();
   @Output() addEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementOverride = new EventEmitter<void>();
   @Output() removeEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementCourt = new EventEmitter<void>();
   @Output() changeCollectionOrder = new EventEmitter<boolean>();
+
+  /**
+   * Emits an event to add an enforcement action.
+   */
+  public handleAddEnforcementAction(event: Event): void {
+    event.preventDefault();
+    this.addEnforcementAction.emit();
+  }
 
   /**
    * Emits an event to add an enforcement override if the user has the necessary permissions and there is no existing enforcement override result.

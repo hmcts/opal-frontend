@@ -1,5 +1,5 @@
 @JIRA-LABEL:manual-account-creation
-@manualAccountCreation @languagePreferences @JIRA-STORY:PO-272 @JIRA-STORY:PO-344 @JIRA-STORY:PO-345 @JIRA-STORY:PO-545 @JIRA-STORY:PO-464 @JIRA-STORY:PO-465 @JIRA-STORY:PO-542 @JIRA-STORY:PO-544 @JIRA-STORY:PO-1396
+@manualAccountCreation @languagePreferences @JIRA-EPIC:PO-272 @JIRA-STORY:PO-464 @JIRA-STORY:PO-465 @JIRA-STORY:PO-542 @JIRA-STORY:PO-544 @JIRA-STORY:PO-1396
 Feature: Manual account creation - Language preferences
   # This feature file contains tests for the Language preferences page of the
   # Manual Account Creation journey that cannot be exercised in the component tests #
@@ -9,7 +9,6 @@ Feature: Manual account creation - Language preferences
     And I start a fine manual account using the default business unit with defendant type "Adult or youth only"
 
 
-  @JIRA-KEY:POT-5265
   Scenario: Language preferences persist within a session and reset after restart
     Then the manual language preferences in account details are:
       | Documents      | English only |
@@ -52,7 +51,6 @@ Feature: Manual account creation - Language preferences
       | Court hearings | English only      | selected     |
       | Court hearings | Welsh and English | not selected |
 
-  @JIRA-KEY:POT-5266
   Scenario: Unsaved language preference changes are cleared when cancel is confirmed
     When I view manual language preferences from account details for "Documents"
     And I set manual language preferences:
@@ -78,6 +76,5 @@ Feature: Manual account creation - Language preferences
       | Court hearings | Welsh and English | not selected |
 
 
-  @JIRA-KEY:POT-5267
   Scenario: Language preferences - Axe Core
     When I view manual language preferences from account details for "Documents" and check accessibility

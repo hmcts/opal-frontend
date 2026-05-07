@@ -43,7 +43,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
 
   it(
     'AC1: Warning banner will not be displayed when version control mechanism confirms account-level-data has not changed',
-    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-KEY:POT-6820'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-EPIC:PO-2239'] },
     () => {
       // Use same ETag for both header and at-a-glance to simulate no version change
       const etag = 'W/"version-1"';
@@ -87,7 +87,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
 
   it(
     '(AC2a, AC2b, AC2bi) When navigating to a new tab with version changes, tab displays with orange warning banner matching design',
-    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-KEY:POT-6821'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-EPIC:PO-2239'] },
     () => {
       // Use different ETags to simulate version changes
       const headerEtag = 'W/"version-1"';
@@ -113,7 +113,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       cy.get(DOM_ELEMENTS.warningBanner).should('exist');
       cy.get(DOM_ELEMENTS.warningBanner).should('have.attr', 'type', 'warning');
       cy.get(DOM_ELEMENTS.warningBannerIcon).should('have.attr', 'type', 'warning');
-      cy.get(DOM_ELEMENTS.warningBannerText).should('contain', 'Some information on this page may be out of date');
+      cy.get(DOM_ELEMENTS.bannerText).should('contain', 'Some information on this page may be out of date');
       cy.get(DOM_ELEMENTS.refreshLink).should('contain', 'Refresh').and('be.visible');
 
       // Navigate to other tabs - warning should persist
@@ -136,7 +136,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
 
   it(
     '(AC2c, AC2ci, AC2cii, AC2ciii, AC2ciiia) When refresh button is clicked, page refreshes and shows green success banner',
-    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-KEY:POT-6822'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2140'), '@JIRA-EPIC:PO-2239'] },
     () => {
       // Start with different ETags to show version mismatch
       const headerEtag = 'W/"version-1"';
@@ -180,7 +180,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       cy.get(DOM_ELEMENTS.successBanner).should('have.attr', 'type', 'success');
       cy.get(DOM_ELEMENTS.successBannerIcon).should('exist');
       cy.get(DOM_ELEMENTS.successBannerIcon).should('have.attr', 'type', 'success');
-      cy.get(DOM_ELEMENTS.successBannerText).should('contain', 'Information is up to date');
+      cy.get(DOM_ELEMENTS.bannerText).should('contain', 'Information is up to date');
 
       // Verify success banner can be dismissed
       cy.get(DOM_ELEMENTS.successBannerDismiss).should('exist').click();

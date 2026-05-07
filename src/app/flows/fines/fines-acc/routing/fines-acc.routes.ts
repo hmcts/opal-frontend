@@ -28,6 +28,11 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-cour
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import { FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES } from '../fines-acc-enf-collo-change/constants/fines-acc-enf-collo-change-routing-titles.constant';
+import { minorCreditorAccountAtAGlanceResolver } from './resolvers/defendant-minor-creditor-at-a-glance.resolver';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_TITLES } from '../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-titles.constant';
+import { nextPermittedEnfActionsResolver } from './resolvers/defendant-account-next-permitted-enf-actions.resolver';
+import { FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS } from '../fines-acc-payment-hold-add-remove/constants/fines-acc-payment-hold-routing-paths.constant';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -66,6 +71,18 @@ export const routing: Routes = [
           ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
         },
         children: [
+          {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/:partyType`,
+
+            loadComponent: () =>
+              import('../fines-acc-convert/fines-acc-convert.component').then((c) => c.FinesAccConvertComponent),
+            canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+            data: {
+              routePermissionId: [accRootPermissionIds['account-maintenance']],
+              title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.convert,
+            },
+            resolve: { title: TitleResolver, defendantAccountHeadingData: defendantAccountHeadingResolver },
+          },
           {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`,
 
@@ -136,7 +153,7 @@ export const routing: Routes = [
             },
           },
           {
-            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['party']}/:partyType/amend`,
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['party']}/:partyType/:mode`,
 
             loadComponent: () =>
               import('../fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component').then(
@@ -243,6 +260,25 @@ export const routing: Routes = [
             },
           },
           {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
+            loadComponent: () =>
+              import('../fines-acc-enf-action-select/fines-acc-enf-action-select.component').then(
+                (c) => c.FinesAccEnfActionSelectComponent,
+              ),
+            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.select,
+              routePermissionId: [accRootPermissionIds['enter-enforcement']],
+            },
+            resolve: {
+              title: TitleResolver,
+              defendantAccountHeadingData: defendantAccountHeadingResolver,
+              enforcementStatus: defendantAccountEnforcementStatusResolver,
+              nextPermittedEnfActions: nextPermittedEnfActionsResolver,
+            },
+          },
+          {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS.children.change}`,
             loadComponent: () =>
               import('../fines-acc-enf-court-change/fines-acc-enf-court-change.component').then(
@@ -318,6 +354,51 @@ export const routing: Routes = [
             resolve: { title: TitleResolver },
           },
         ],
+      },
+      {
+        path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/${FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS.children.add}`,
+
+        loadComponent: () =>
+          import('../fines-acc-payment-hold-add-remove/fines-acc-payment-hold-add-remove.component').then(
+            (c) => c.FinesAccPaymentHoldAddRemoveComponent,
+          ),
+        canActivate: [authGuard, finesAccStateGuard],
+        data: {
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
+          routePermissionId: [accRootPermissionIds['add-remove-payment-hold']],
+          accessDeniedPath: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/${FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS.children.denied}`,
+          paymentHoldAction: 'add',
+        },
+        resolve: { title: TitleResolver, minorCreditorAccountAtAGlance: minorCreditorAccountAtAGlanceResolver },
+      },
+      {
+        path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/${FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS.children.remove}`,
+
+        loadComponent: () =>
+          import('../fines-acc-payment-hold-add-remove/fines-acc-payment-hold-add-remove.component').then(
+            (c) => c.FinesAccPaymentHoldAddRemoveComponent,
+          ),
+        canActivate: [authGuard, finesAccStateGuard],
+        data: {
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
+          routePermissionId: [accRootPermissionIds['add-remove-payment-hold']],
+          accessDeniedPath: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/${FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS.children.denied}`,
+          paymentHoldAction: 'remove',
+        },
+        resolve: { title: TitleResolver, minorCreditorAccountAtAGlance: minorCreditorAccountAtAGlanceResolver },
+      },
+      {
+        path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/${FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS.children.denied}`,
+
+        loadComponent: () =>
+          import('../fines-acc-add-remove-payment-hold-access-denied/fines-acc-add-remove-payment-hold-access-denied.component').then(
+            (c) => c.FinesAccAddRemovePaymentHoldAccessDeniedComponent,
+          ),
+        canActivate: [authGuard, finesAccStateGuard],
+        data: {
+          title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
+        },
+        resolve: { title: TitleResolver },
       },
     ],
   },

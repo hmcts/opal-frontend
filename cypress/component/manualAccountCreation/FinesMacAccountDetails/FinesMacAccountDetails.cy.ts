@@ -20,15 +20,28 @@ const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation'
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
 describe('FinesMacAccountDetailsComponent', () => {
-  let finesMacState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
-  let finesRejectedAccountMock = structuredClone(FINES_REJECTED_ACCOUNT_MOCK);
+  let finesMacStateTemplate = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
+  let finesMacState = finesMacStateTemplate;
+  let finesRejectedAccountMockTemplate = structuredClone(FINES_REJECTED_ACCOUNT_MOCK);
+  let finesRejectedAccountMock = finesRejectedAccountMockTemplate;
+
+  beforeEach(() => {
+    finesMacStateTemplate = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
+    finesMacState = finesMacStateTemplate;
+    finesRejectedAccountMockTemplate = structuredClone(FINES_REJECTED_ACCOUNT_MOCK);
+    finesRejectedAccountMock = finesRejectedAccountMockTemplate;
+  });
 
   const setupComponent = (
     formSubmit: any,
     defendantTypeMock: string = '',
-    finesMacStateMock: IFinesMacState = finesMacState,
+    finesMacStateMock: IFinesMacState = finesMacStateTemplate,
     setAmend: boolean = false,
   ) => {
+    void formSubmit;
+    finesMacState = structuredClone(finesMacStateMock);
+    finesRejectedAccountMock = structuredClone(finesRejectedAccountMockTemplate);
+
     mount(FinesMacAccountDetailsComponent, {
       providers: [
         UtilsService,
@@ -39,7 +52,7 @@ describe('FinesMacAccountDetailsComponent', () => {
           provide: FinesMacStore,
           useFactory: () => {
             const store = new FinesMacStore();
-            store.setFinesMacStore(finesMacStateMock);
+            store.setFinesMacStore(finesMacState);
             return store;
           },
         },
@@ -76,15 +89,9 @@ describe('FinesMacAccountDetailsComponent', () => {
     });
   };
 
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
-    });
-  });
-
   it(
     'should render the component (FinesMacAccountDetailsComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7302'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750'] },
     () => {
       setupComponent(null);
       // Verify the component is rendered
@@ -94,7 +101,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1a) should show Police and court details for Conditional Caution and pass accessibility checks',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7303'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750'] },
     () => {
       const conditionalCautionState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
       conditionalCautionState.accountDetails.formData.fm_create_account_account_type =
@@ -112,7 +119,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.2) should keep Court details label for Fine accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7304'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750'] },
     () => {
       const fineState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
       fineState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES.Fine;
@@ -128,7 +135,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.2) should keep Court details label for Fixed Penalty accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-KEY:POT-7305'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750'] },
     () => {
       const fineState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
       fineState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fixed Penalty'];
@@ -146,14 +153,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     '(AC.1,AC.2,AC.2a,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
     {
       tags: [
-        ...buildTags(
-          '@JIRA-STORY:PO-366',
-          '@JIRA-STORY:PO-272',
-          '@JIRA-STORY:PO-468',
-          '@JIRA-STORY:PO-524',
-          '@JIRA-STORY:PO-2767',
-        ),
-        '@JIRA-KEY:POT-7306',
+        ...buildTags('@JIRA-STORY:PO-366', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524', '@JIRA-STORY:PO-2767'),
+        '@JIRA-EPIC:PO-272',
       ],
     },
     () => {
@@ -189,10 +190,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5,AC.6)should load all elements on the screen correctly for AYPG',
     {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-367', '@JIRA-STORY:PO-344', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524'),
-        '@JIRA-KEY:POT-7307',
-      ],
+      tags: [...buildTags('@JIRA-STORY:PO-367', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524'), '@JIRA-EPIC:PO-344'],
     },
     () => {
       setupComponent(null);
@@ -228,14 +226,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly',
     {
       tags: [
-        ...buildTags(
-          '@JIRA-STORY:PO-362',
-          '@JIRA-STORY:PO-345',
-          '@JIRA-STORY:PO-468',
-          '@JIRA-STORY:PO-524',
-          '@JIRA-STORY:PO-640',
-        ),
-        '@JIRA-KEY:POT-7308',
+        ...buildTags('@JIRA-STORY:PO-362', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524', '@JIRA-STORY:PO-640'),
+        '@JIRA-EPIC:PO-345',
       ],
     },
     () => {
@@ -267,27 +259,27 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1)should show option to continue if all required forms have been provided for Adult Or Youth Only',
-    { tags: [...buildTags('@JIRA-STORY:PO-549', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7309'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-549'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_AYG_CHECK_ACCOUNT_MOCK);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
       cy.get(L.checkAccountButton).should('exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
 
   it(
     '(AC.2)should not show option to continue if required forms have not been provided for Adult Or Youth Only and should show message',
-    { tags: [...buildTags('@JIRA-STORY:PO-549', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7310'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-549'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null);
 
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
       cy.get(L.checkAccountButton).should('not.exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should(
         'contain',
         'You cannot proceed until all required sections have been completed.',
@@ -297,54 +289,54 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'should show option to continue if all required forms have been provided for AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-653', '@JIRA-STORY:PO-344'), '@JIRA-KEY:POT-7311'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-653'), '@JIRA-EPIC:PO-344'] },
     () => {
       setupComponent(null, 'pgToPay', FINES_AYPG_CHECK_ACCOUNT_MOCK);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       cy.get(L.checkAccountButton).should('exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
 
   it(
     'should not show option to continue if required forms have not been provided for AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-653', '@JIRA-STORY:PO-344'), '@JIRA-KEY:POT-7312'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-653'), '@JIRA-EPIC:PO-344'] },
     () => {
       setupComponent(null);
 
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       cy.get(L.checkAccountButton).should('not.exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should('exist');
     },
   );
 
   it(
     'should show option to continue if all required forms have been provided for Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-654', '@JIRA-STORY:PO-345'), '@JIRA-KEY:POT-7313'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-654'), '@JIRA-EPIC:PO-345'] },
     () => {
       setupComponent(null, 'company', FINES_COMP_CHECK_ACCOUNT_MOCK);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
       cy.get(L.checkAccountButton).should('exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should('not.exist');
     },
   );
 
   it(
     'should not show option to continue if required forms have not been provided for Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-654', '@JIRA-STORY:PO-345'), '@JIRA-KEY:POT-7314'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-654'), '@JIRA-EPIC:PO-345'] },
     () => {
       setupComponent(null);
 
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
       cy.get(L.checkAccountButton).should('not.exist');
-      cy.get(L.CheckDetails).should('contain', 'Check and submit');
+      cy.get(L.sectionHeading).should('contain', 'Check and submit');
       cy.get(L.CheckDetailsText).should(
         'contain',
         'You cannot proceed until all required sections have been completed.',
@@ -353,12 +345,12 @@ describe('FinesMacAccountDetailsComponent', () => {
   );
   it(
     '(AC.1,AC.2) should show rejected account when account is rejected',
-    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-KEY:POT-7315'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
       cy.get(L.reviewComponent).should('exist');
       cy.get(L.status).contains('Rejected').should('exist');
-      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.sectionHeading).contains('Review history').should('exist');
       cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
       cy.get(L.timeLine).should('exist');
       cy.get(L.timeLineTitle).contains('Rejected').should('exist');
@@ -370,7 +362,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.3)should show history of timeline data',
-    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-KEY:POT-7316'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-EPIC:PO-2220'] },
     () => {
       finesRejectedAccountMock.timeline_data.push({
         username: 'Timmy Test',
@@ -404,7 +396,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'should not show rejected account when amend is set to false and should have account details title',
-    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-KEY:POT-7317'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, false);
       cy.get(L.pageTitle).contains('Account details').should('exist');
@@ -414,13 +406,13 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.4,AC.5) Should display summary table below the review history for adultOrYouthOnly',
-    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640', '@JIRA-STORY:PO-272'), '@JIRA-KEY:POT-7318'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
 
       cy.get(L.reviewComponent).should('exist');
       cy.get(L.status).contains('Rejected').should('exist');
-      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.sectionHeading).contains('Review history').should('exist');
       cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
       cy.get(L.timeLine).should('exist');
       cy.get(L.timeLineTitle).contains('Rejected').should('exist');
@@ -453,13 +445,13 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.4,AC.6) Should display summary table below the review history for AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640', '@JIRA-STORY:PO-344'), '@JIRA-KEY:POT-7319'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-EPIC:PO-344'] },
     () => {
       setupComponent(null, '', FINES_AYPG_CHECK_ACCOUNT_MOCK, true);
 
       cy.get(L.reviewComponent).should('exist');
       cy.get(L.status).contains('Rejected').should('exist');
-      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.sectionHeading).contains('Review history').should('exist');
       cy.get(L.pageTitle).contains('Mr John DOE').should('exist');
       cy.get(L.timeLine).should('exist');
       cy.get(L.timeLineTitle).contains('Rejected').should('exist');
@@ -495,13 +487,13 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.4,AC.7) Should display summary table below the review history for COMP',
-    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640', '@JIRA-STORY:PO-345'), '@JIRA-KEY:POT-7320'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-605', '@JIRA-STORY:PO-640'), '@JIRA-EPIC:PO-345'] },
     () => {
       setupComponent(null, '', FINES_COMP_CHECK_ACCOUNT_MOCK, true);
 
       cy.get(L.reviewComponent).should('exist');
       cy.get(L.status).contains('Rejected').should('exist');
-      cy.get(L.reviewHistory).contains('Review history').should('exist');
+      cy.get(L.sectionHeading).contains('Review history').should('exist');
       cy.get(L.pageTitle).contains('Company Name').should('exist');
       cy.get(L.timeLine).should('exist');
       cy.get(L.timeLineTitle).contains('Rejected').should('exist');
@@ -530,7 +522,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.4d) should show Document and Language Preferences if BU is Welsh speaking',
-    { tags: [...buildTags('@JIRA-STORY:PO-640'), '@JIRA-KEY:POT-7321'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-640'), '@JIRA-EPIC:PO-545'] },
     () => {
       FINES_COMP_CHECK_ACCOUNT_MOCK.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
       FINES_COMP_CHECK_ACCOUNT_MOCK.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
@@ -547,7 +539,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     'should give each "Change" action a unique accessible name (via visually hidden context)',
-    { tags: [...buildTags('@JIRA-STORY:PO-2787'), '@JIRA-KEY:POT-7322'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2787'), '@JIRA-EPIC:PO-545'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';

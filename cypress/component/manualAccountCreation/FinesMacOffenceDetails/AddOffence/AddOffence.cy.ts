@@ -34,6 +34,9 @@ describe('FinesMacAddOffenceComponent', () => {
   const date = new Date();
 
   beforeEach(() => {
+    finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    offenceDetailsDraftState = structuredClone(ADD_OFFENCE_OFFENCE_MOCK);
+    currentoffenceDetails = 0;
     cy.intercept(
       {
         method: 'GET',
@@ -54,19 +57,9 @@ describe('FinesMacAddOffenceComponent', () => {
 
   let currentoffenceDetails = 0;
 
-  afterEach(() => {
-    cy.then(() => {
-      finesMacState.offenceDetails[currentoffenceDetails].formData = {
-        fm_offence_details_id: 0,
-        fm_offence_details_date_of_sentence: '',
-        fm_offence_details_offence_cjs_code: null,
-        fm_offence_details_offence_id: 0,
-        fm_offence_details_impositions: [],
-      };
-    });
-  });
-
   const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+    finesMacState = structuredClone(finesMacState);
+    offenceDetailsDraftState = structuredClone(offenceDetailsDraftState);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
     return mount(FinesMacOffenceDetailsAddAnOffenceComponent, {
       providers: [
@@ -127,7 +120,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'should block submitting the offence while offence-code validation is still in progress',
     {
-      tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6314'],
+      tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-EPIC:PO-2219'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -173,7 +166,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'should keep blocking submission when offence validation completes with an invalid offence code',
     {
-      tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6315'],
+      tags: ['@JIRA-STORY:PO-2948', '@JIRA-LABEL:manual-account-creation', '@JIRA-EPIC:PO-2219'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -220,7 +213,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'should submit the exact offence match when multiple offences are returned for the searched code',
     {
-      tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6316'],
+      tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-EPIC:PO-2219'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -277,7 +270,7 @@ describe('FinesMacAddOffenceComponent', () => {
   it(
     'should keep the offence invalid when multiple offences are returned but none exactly match the searched code',
     {
-      tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6317'],
+      tags: ['@JIRA-STORY:PO-3412', '@JIRA-LABEL:manual-account-creation', '@JIRA-EPIC:PO-2219'],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -334,9 +327,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6318',
       ],
     },
     () => {
@@ -353,9 +345,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6319',
       ],
     },
     () => {
@@ -398,11 +389,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-272',
-        '@JIRA-STORY:PO-344',
-        '@JIRA-STORY:PO-345',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6320',
       ],
     },
     () => {
@@ -425,9 +413,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6321',
       ],
     },
     () => {
@@ -450,9 +437,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6322',
       ],
     },
     () => {
@@ -479,9 +465,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6323',
       ],
     },
     () => {
@@ -521,9 +506,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6324',
       ],
     },
     () => {
@@ -552,8 +536,7 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
-        '@JIRA-KEY:POT-7422',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
       ],
     },
@@ -571,9 +554,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6326',
       ],
     },
     () => {
@@ -607,9 +589,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6327',
       ],
     },
     () => {
@@ -640,9 +621,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6328',
       ],
     },
     () => {
@@ -673,9 +653,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6329',
       ],
     },
     () => {
@@ -695,9 +674,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6330',
       ],
     },
     () => {
@@ -718,9 +696,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6331',
       ],
     },
     () => {
@@ -746,9 +723,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6332',
       ],
     },
     () => {
@@ -780,9 +756,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6333',
       ],
     },
     () => {
@@ -814,9 +789,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6334',
       ],
     },
     () => {
@@ -839,9 +813,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6335',
       ],
     },
     () => {
@@ -864,9 +837,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6336',
       ],
     },
     () => {
@@ -891,9 +863,8 @@ describe('FinesMacAddOffenceComponent', () => {
         '@JIRA-STORY:PO-411',
         '@JIRA-STORY:PO-681',
         '@JIRA-STORY:PO-684',
-        '@JIRA-STORY:PO-545',
+        '@JIRA-EPIC:PO-545',
         '@JIRA-LABEL:manual-account-creation',
-        '@JIRA-KEY:POT-6337',
       ],
     },
     () => {
@@ -937,7 +908,9 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y only',
-    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6338'] },
+    {
+      tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-EPIC:PO-2219'],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       const SELECTOR = impositionSelectors(0);
@@ -962,7 +935,9 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay',
-    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6339'] },
+    {
+      tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-EPIC:PO-2219'],
+    },
     () => {
       setupComponent(null, 'pgToPay');
       const SELECTOR = impositionSelectors(0);
@@ -987,7 +962,9 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, company',
-    { tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6340'] },
+    {
+      tags: ['@JIRA-STORY:PO-1060', '@JIRA-LABEL:manual-account-creation', '@JIRA-EPIC:PO-2219'],
+    },
     () => {
       setupComponent(null, 'company');
       const SELECTOR = impositionSelectors(0);
@@ -1012,7 +989,9 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     'Each imposition is wrapped in its own fieldset',
-    { tags: ['@JIRA-STORY:PO-2716', '@JIRA-LABEL:manual-account-creation', '@JIRA-KEY:POT-6341'] },
+    {
+      tags: ['@JIRA-STORY:PO-2716', '@JIRA-LABEL:manual-account-creation', '@JIRA-EPIC:PO-2807'],
+    },
     () => {
       setupComponent(null);
 

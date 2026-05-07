@@ -9,7 +9,7 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/fines-draft-session-mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
-import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
+import { CreateManageDraftsLocators as DOM_ELEMENTS } from 'cypress/shared/selectors/create-manage-drafts.locators';
 import { NAVIGATION_LINKS } from './constants/fines_draft_cam_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 import { interceptGetApprovedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
@@ -48,7 +48,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
 
   it(
     '(AC.2,AC.3,AC.4)should show summary table with correct data for approved accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-KEY:POT-7167'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
@@ -94,7 +94,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
 
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for approved accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-KEY:POT-7168'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const approvedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
@@ -125,7 +125,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
 
   it(
     '(AC.1)should show empty value statement for Approved status when no accounts have been Approved',
-    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-KEY:POT-7169'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220'] },
     () => {
       const approvedMockData = { count: 0, summaries: [] };
 

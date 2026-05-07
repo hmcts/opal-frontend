@@ -49,10 +49,16 @@ package-lock.json
 .nx
 .codex-plans
 .codex-docs
+.codex/skills
 
 # System files
 .DS_Store
 Thumbs.db
+
+# Open API generated files
+src/app/generated
+src/app/flows/fines/services/opal-fines-service/interfaces/generated
+src/app/flows/fines/services/opal-fines-service/types/generated
 
 #  Testing
 cypress/videos
@@ -66,3 +72,5 @@ smoke-output
 runner-results
 cypress/parallel/weights
 multi-reporter-config.json
+/openapi/opal-merged.yaml
+

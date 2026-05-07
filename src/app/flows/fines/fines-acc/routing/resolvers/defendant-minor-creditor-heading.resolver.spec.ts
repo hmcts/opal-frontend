@@ -32,10 +32,12 @@ describe('minorCreditorAccountHeadingResolver', () => {
     };
 
     mockAccPayloadService = {
-      transformAccountHeaderForStore: vi.fn().mockName('FinesAccPayloadService.transformAccountHeaderForStore'),
+      transformMinorCreditorAccountHeaderForStore: vi
+        .fn()
+        .mockName('FinesAccPayloadService.transformMinorCreditorAccountHeaderForStore'),
       transformPayload: vi.fn().mockName('FinesAccPayloadService.transformPayload'),
     };
-    mockAccPayloadService.transformAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockAccPayloadService.transformMinorCreditorAccountHeaderForStore.mockReturnValue(MOCK_FINES_ACCOUNT_STATE);
     mockAccPayloadService.transformPayload.mockReturnValue(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK);
 
     TestBed.configureTestingModule({
@@ -62,10 +64,9 @@ describe('minorCreditorAccountHeadingResolver', () => {
     );
 
     expect(mockFinesService.getMinorCreditorAccountHeadingData).toHaveBeenCalledWith(accountId);
-    expect(mockAccPayloadService.transformAccountHeaderForStore).toHaveBeenCalledWith(
+    expect(mockAccPayloadService.transformMinorCreditorAccountHeaderForStore).toHaveBeenCalledWith(
       accountId,
       FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK,
-      'minorCreditor',
     );
     expect(mockAccountStore.setAccountState).toHaveBeenCalledWith(MOCK_FINES_ACCOUNT_STATE);
     expect(mockAccPayloadService.transformPayload).toHaveBeenCalledWith(

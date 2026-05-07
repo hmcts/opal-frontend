@@ -80,13 +80,17 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     });
   };
 
-  afterEach(() => {
-    cy.then(() => {});
-  });
+  const addAliasAndAssert = (aliasNumber: number) => {
+    cy.get(DOM_ELEMENTS.addAliasButton).click();
+    cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
+    const index = aliasNumber - 1;
+    cy.get(getAliasForenamesInput(index)).should('exist');
+    cy.get(getAliasSurnameInput(index)).should('exist');
+  };
 
   it(
     'AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7074'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('INDIVIDUAL', fullMock);
 
@@ -268,7 +272,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC1a. Should show alias checkbox unticked when no aliases exist in data',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7075'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('INDIVIDUAL', minimalMock);
 
@@ -283,7 +287,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC1a. Language preferences should appear for Welsh speaking business units',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7076'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('INDIVIDUAL', fullMock, 'Y');
 
@@ -299,7 +303,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC2. Alias add/remove and clear behaviour',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7077'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('INDIVIDUAL', minimalMock);
 
@@ -326,15 +330,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // AC2c: Grey 'Add another alias' button displayed
       cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
-
-      // Helper to add alias and assert its presence
-      const addAliasAndAssert = (aliasNumber: number) => {
-        cy.get(DOM_ELEMENTS.addAliasButton).click();
-        cy.contains('legend', `Alias ${aliasNumber}`).should('exist');
-        const index = aliasNumber - 1;
-        cy.get(getAliasForenamesInput(index)).should('exist');
-        cy.get(getAliasSurnameInput(index)).should('exist');
-      };
 
       // AC2d / AC2di: Add aliases 2 through 5 incrementally
       addAliasAndAssert(2);
@@ -363,7 +358,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       addAliasAndAssert(5);
       cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
-      // AC2f: Untick Add aliases checkbox hides & wipes alias data
+      //AC2f: Untick Add aliases checkbox hides & wipes alias data
       cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
@@ -377,7 +372,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5. Required field validation (core)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7078'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       const emptyCoreMock = structuredClone(minimalMock);
       // Clear required fields to trigger validation
@@ -412,7 +407,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5. Required field validation (employer name)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7079'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.employer_details!.employer_name = 'Test Company';
       setupComponent('INDIVIDUAL', minimalMock);
@@ -429,7 +424,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5. Required field validation (employer address)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7080'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = 'Address';
       setupComponent('INDIVIDUAL', minimalMock);
@@ -451,7 +446,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5. Required field validation (employer reference number)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7081'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.employer_details!.employer_reference = 'Ref123';
       setupComponent('INDIVIDUAL', minimalMock);
@@ -473,7 +468,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7082'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('INDIVIDUAL', minimalMock);
       cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
@@ -538,7 +533,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC6a. DOB with non-numerical characters shows format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7083'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = 'AA/BB/CCCC';
       setupComponent('INDIVIDUAL', minimalMock);
@@ -551,7 +546,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC6b. DOB in the future shows past-date error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7084'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
       setupComponent('INDIVIDUAL', minimalMock);
@@ -564,7 +559,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC6c. NI number invalid format shows NI format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7085'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12345';
       setupComponent('INDIVIDUAL', minimalMock);
@@ -578,7 +573,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
   // AC7: Email format validation
   it(
     'AC7a. Primary email invalid format shows primary email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7086'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.contact_details!.primary_email_address = 'invalid_email'; // missing @ and domain
       setupComponent('INDIVIDUAL', minimalMock);
@@ -591,7 +586,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC7b. Secondary email invalid format shows secondary email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7087'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.contact_details!.secondary_email_address = 'bad.second'; // missing @
       setupComponent('INDIVIDUAL', minimalMock);
@@ -604,7 +599,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC7c. Employer email invalid format shows employer email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7088'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.employer_details!.employer_email_address = 'employer#mail'; // invalid char & structure
       setupComponent('INDIVIDUAL', minimalMock);
@@ -617,7 +612,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC8a. Home telephone invalid format shows home telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7089'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.contact_details!.home_telephone_number = '01632A960001'; // alpha char
       setupComponent('INDIVIDUAL', minimalMock);
@@ -628,7 +623,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC8b. Work telephone invalid format shows work telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7090'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001X'; // invalid char X
       setupComponent('INDIVIDUAL', minimalMock);
@@ -639,7 +634,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC8c. Mobile telephone invalid length/format shows mobile telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7091'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.contact_details!.mobile_telephone_number = '0770090098'; // 10 digits (should be 11)
       setupComponent('INDIVIDUAL', minimalMock);
@@ -650,7 +645,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC8d. Employer telephone invalid format shows employer telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7092'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       minimalMock.defendant_account_party.employer_details!.employer_telephone_number = '01263 76612X'; // invalid char X
       setupComponent('INDIVIDUAL', minimalMock);
@@ -661,7 +656,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC9. Max length validation retains user on form and shows per-field errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7093'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       const maxLengthMock = structuredClone(minimalMock);
       const primaryEmail = `${'a'.repeat(65)}@example.com`;
@@ -713,7 +708,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC10. Data type validation for alphabetical and alphanumeric fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-KEY:POT-7094'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
     () => {
       const dataTypeValidationMock = structuredClone(minimalMock);
 
@@ -764,7 +759,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC1. Amend Company Details screen opens successfully',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7095'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('COMPANY', companyfullMock);
 
@@ -872,7 +867,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC1b. Company Details screen shows language preferences for Welsh speaking business units',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7096'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       setupComponent('COMPANY', companyfullMock, 'Y');
 
@@ -906,7 +901,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC1d. Optional fields display as blank when no data is entered for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7097'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       const companyMinimalMock = structuredClone(companyfullMock);
 
@@ -928,8 +923,8 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 
       // Verify company aliases checkbox is unchecked and alias section not visible
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.exist');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
 
       // Verify optional address fields are blank
       cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '');
@@ -951,7 +946,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC2. Company alias add/remove and clear behaviour',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7098'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       // Start with company mock without aliases
       const testMock = structuredClone(companyfullMock);
@@ -960,28 +955,28 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       setupComponent('COMPANY', testMock);
 
       // AC2 - Initially, alias checkbox should be unchecked and alias section hidden
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
 
       // AC2a - Check the "Add aliases" checkbox to reveal alias section
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check();
+      cy.get(DOM_ELEMENTS.aliasSection).should('be.visible');
 
       // AC2a - Verify "Alias 1" subheading is displayed in bold
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 1');
 
       // AC2b - Verify "Company name" field is displayed below subheading
       cy.get(DOM_ELEMENTS.organisationAliasInput0).should('exist');
       cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
 
       // AC2c - Verify "Add another alias" button is displayed
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('contain', 'Add another alias');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('contain', 'Add another alias');
 
       // AC2d - Click "Add another alias" for the first time
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click();
+      cy.get(DOM_ELEMENTS.addAliasButton).click();
 
       // AC2di - Verify "Alias 2" subheading is displayed
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 2');
       cy.get(DOM_ELEMENTS.organisationAliasInput1).should('exist');
       cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
 
@@ -989,20 +984,20 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('have.length', 1);
 
       // Add more aliases to test incremental numbering
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 3
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
+      cy.get(DOM_ELEMENTS.addAliasButton).click(); // Add Alias 3
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 3');
       cy.get(DOM_ELEMENTS.organisationAliasInput2).should('exist');
 
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 4
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
+      cy.get(DOM_ELEMENTS.addAliasButton).click(); // Add Alias 4
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 4');
       cy.get(DOM_ELEMENTS.organisationAliasInput3).should('exist');
 
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 5
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 5');
+      cy.get(DOM_ELEMENTS.addAliasButton).click(); // Add Alias 5
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 5');
       cy.get(DOM_ELEMENTS.organisationAliasInput4).should('exist');
 
       // AC2dii - Verify "Add another alias" button is no longer displayed after 5 aliases
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
       // Fill in some test data for alias removal test
       cy.get(DOM_ELEMENTS.organisationAliasInput0).type('Company One', { delay: 0 });
@@ -1014,11 +1009,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // AC2eii - Test removing and verify renumbering
       cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).click();
 
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 5');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 2');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 3');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 4');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.contain', 'Alias 5');
 
       // Verify data has been adjusted accordingly
       cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'COMPANY ONE');
@@ -1027,18 +1022,18 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'COMPANY FOUR');
 
       // Verify "Add another alias" button reappears since we're now under 5 aliases
-      cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
+      cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
 
       // AC2f - Test unchecking "Add aliases" checkbox clears all data and hides section
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).uncheck();
+      cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck();
 
       // Re-check to verify all alias data has been wiped
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check();
+      cy.get(DOM_ELEMENTS.aliasSection).should('be.visible');
 
       // Should only show Alias 1 with empty data
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
-      cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 2');
+      cy.get(DOM_ELEMENTS.aliasSection).should('contain', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.contain', 'Alias 2');
       cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', '');
       cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('not.exist');
     },
@@ -1046,7 +1041,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC3. Required field validation for company mandatory fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7099'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.party_details.organisation_details!.organisation_name = '';
@@ -1058,7 +1053,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       setupComponent('COMPANY', testMock);
 
-      cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+      cy.get(DOM_ELEMENTS.aliasCheckbox).check();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
 
@@ -1113,7 +1108,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC4. Email format validation for company forms',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7100'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.primary_email_address = 'invalid-email-no-at';
@@ -1142,7 +1137,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5a. Home telephone invalid format shows home telephone error for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7101'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.home_telephone_number = '01632A960001'; // alpha char
@@ -1154,7 +1149,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5b. Work telephone invalid format shows work telephone error for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7102'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001X'; // invalid char X
@@ -1166,7 +1161,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5c. Mobile telephone invalid length/format shows mobile telephone error for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7103'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.mobile_telephone_number = '0770090098'; // 10 digits (should be 11)
@@ -1178,7 +1173,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC6. Max length validation for company forms retains user on form and shows per-field errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7104'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       const maxLengthCompanyMock = structuredClone(companyfullMock);
 
@@ -1222,7 +1217,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC7. Data type validation for alphabetical and alphanumeric fields in company forms',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-KEY:POT-7105'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
     () => {
       const dataTypeCompanyMock = structuredClone(companyfullMock);
 
@@ -1265,7 +1260,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC1. The "Defendant Details (Change)" screen will be built for a non-paying adult or youth with all fields populated',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7106'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       // Create a non-paying adult/youth defendant mock
       const nonPayingAdultYouthMock = structuredClone(fullMock);
@@ -1374,7 +1369,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC1a. Should show alias checkbox unticked when no aliases exist in data for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7107'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1393,7 +1388,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC2. Alias add/remove and clear behaviour for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7108'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1475,7 +1470,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5. Required field validation (core) for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7109'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingEmptyCoreMock = structuredClone(minimalMock);
       nonPayingEmptyCoreMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1510,7 +1505,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5) for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7110'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1579,7 +1574,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC6a. DOB with non-numerical characters shows format error for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7111'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1596,7 +1591,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC6b. DOB in the future shows past-date error for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7112'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1613,7 +1608,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC6c. NI number invalid format shows NI format error for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7113'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1631,7 +1626,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC7. Max length validation retains user on form and shows per-field errors for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7114'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingMaxLengthMock = structuredClone(minimalMock);
       nonPayingMaxLengthMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1670,7 +1665,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
   it(
     'AC9. Data type validation for alphabetical and alphanumeric fields for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-KEY:POT-7115'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
     () => {
       const nonPayingDataTypeValidationMock = structuredClone(minimalMock);
       nonPayingDataTypeValidationMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';

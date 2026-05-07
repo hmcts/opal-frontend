@@ -2,6 +2,7 @@ import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLECTION_ORDER_CHANGE } from '../
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from '../../../shared/selectors/account-enquiry/account.enquiry.enforcement.locators';
 import { setupAccountEnquiryComponent } from '../accountEnquiry/setup/SetupComponent';
 import { IComponentProperties } from '../accountEnquiry/setup/setupComponent.interface';
+import { mount } from 'cypress/angular';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import { DOM_ELEMENTS as VERSION_CONTROL } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
@@ -16,6 +17,9 @@ import {
   DEFENDANT_HEADER_MOCK,
 } from '../accountEnquiry/mocks/defendant_details_mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FinesAccEnfColloChangeFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-enf-collo-change/fines-acc-enf-collo-change-form/fines-acc-enf-collo-change-form.component';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const JIRA_EPIC = '@JIRA-EPIC:PO-1675';
@@ -175,6 +179,30 @@ function assertCollectionOrderChangeRequiredError() {
   );
 }
 
+function mountCollectionOrderChangeForm(expectedCaption: string) {
+  const [accountNumber, partyName] = expectedCaption.split(' - ');
+
+  mount(FinesAccEnfColloChangeFormComponent, {
+    providers: [
+      provideRouter([]),
+      UtilsService,
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: {
+            params: {},
+            data: {},
+          },
+        },
+      },
+    ],
+    componentProperties: {
+      accountNumber,
+      partyName,
+    },
+  });
+}
+
 function assertGoBackLinkNavigatesToEnforcementTab() {
   cy.get(COLLECTION_ORDER_CHANGE.goBackLink).click();
 
@@ -184,7 +212,7 @@ function assertGoBackLinkNavigatesToEnforcementTab() {
 }
 function assertCollectionOrderStatusChanged() {
   cy.get(VERSION_CONTROL.successBanner).should('exist');
-  cy.get(VERSION_CONTROL.successBannerText).should('contain.text', 'Collection Order status changed');
+  cy.get(VERSION_CONTROL.bannerText).should('contain.text', 'Collection Order status changed');
 }
 
 function assertCollectionOrderChangeScreen(
@@ -205,14 +233,6 @@ function assertCollectionOrderChangeScreen(
 
   // AC2ci: the go back link returns the user to the Enforcement tab.
   assertGoBackLinkNavigatesToEnforcementTab();
-}
-
-function assertCollectionOrderChangeRequiredErrorScenario(
-  setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number },
-) {
-  setupFn();
-  navigateToCollectionOrderChange();
-  assertCollectionOrderChangeRequiredError();
 }
 
 function assertCancelWithoutChanges(setupFn: (collectionOrderFlag?: boolean) => { accountId: string | number }) {
@@ -284,7 +304,7 @@ describe(
   () => {
     it(
       'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Adult or youth: navigates to and displays the change collection order screen',
-      { tags: ['@JIRA-KEY:POT-5629'] },
+      { tags: [] },
       () => {
         assertCollectionOrderChangeScreen(commonSetup, '177A - Mr Robert THOMSON');
       },
@@ -292,15 +312,16 @@ describe(
 
     it(
       'AC3, AC3a. Adult or youth: displays an error when Change is selected without choosing a collection order option',
-      { tags: ['@JIRA-KEY:POT-5630'] },
+      { tags: [] },
       () => {
-        assertCollectionOrderChangeRequiredErrorScenario(commonSetup);
+        mountCollectionOrderChangeForm('177A - Mr Robert THOMSON');
+        assertCollectionOrderChangeRequiredError();
       },
     );
 
     it(
       'AC4a. Adult or youth: selecting a different value returns the user to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-5631'] },
+      { tags: [] },
       () => {
         assertCollectionOrderChangedNavigatesToEnforcementTab(commonSetup);
       },
@@ -308,7 +329,7 @@ describe(
 
     it(
       'AC5a. Adult or youth: cancel without changes returns to the Enforcement tab without confirmation',
-      { tags: ['@JIRA-KEY:POT-5632'] },
+      { tags: [] },
       () => {
         assertCancelWithoutChanges(commonSetup);
       },
@@ -316,19 +337,15 @@ describe(
 
     it(
       'AC5b. Adult or youth: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-5633'] },
+      { tags: [] },
       () => {
         assertCancelAfterSelectionShowsConfirmation(commonSetup);
       },
     );
 
-    it(
-      'AC5c. Adult or youth: dismissing the cancel confirmation keeps the user on the page',
-      { tags: ['@JIRA-KEY:POT-5634'] },
-      () => {
-        assertDismissingCancelConfirmationKeepsUserOnPage(commonSetup);
-      },
-    );
+    it('AC5c. Adult or youth: dismissing the cancel confirmation keeps the user on the page', { tags: [] }, () => {
+      assertDismissingCancelConfirmationKeepsUserOnPage(commonSetup);
+    });
   },
 );
 
@@ -338,7 +355,7 @@ describe(
   () => {
     it(
       'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Parent or guardian to pay: navigates to and displays the change collection order screen',
-      { tags: ['@JIRA-KEY:POT-5635'] },
+      { tags: [] },
       () => {
         assertCollectionOrderChangeScreen(parentGuardianSetup, '177A - Mr Robert THOMSON');
       },
@@ -346,15 +363,16 @@ describe(
 
     it(
       'AC3, AC3a. Parent or guardian to pay: displays an error when Change is selected without choosing a collection order option',
-      { tags: ['@JIRA-KEY:POT-5636'] },
+      { tags: [] },
       () => {
-        assertCollectionOrderChangeRequiredErrorScenario(parentGuardianSetup);
+        mountCollectionOrderChangeForm('177A - Mr Robert THOMSON');
+        assertCollectionOrderChangeRequiredError();
       },
     );
 
     it(
       'AC4a. Parent or guardian to pay: selecting a different value returns the user to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-5637'] },
+      { tags: [] },
       () => {
         assertCollectionOrderChangedNavigatesToEnforcementTab(parentGuardianSetup);
       },
@@ -362,7 +380,7 @@ describe(
 
     it(
       'AC5a. Parent or guardian to pay: cancel without changes returns to the Enforcement tab without confirmation',
-      { tags: ['@JIRA-KEY:POT-5638'] },
+      { tags: [] },
       () => {
         assertCancelWithoutChanges(parentGuardianSetup);
       },
@@ -370,7 +388,7 @@ describe(
 
     it(
       'AC5b. Parent or guardian to pay: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
-      { tags: ['@JIRA-KEY:POT-5639'] },
+      { tags: [] },
       () => {
         assertCancelAfterSelectionShowsConfirmation(parentGuardianSetup);
       },
@@ -378,7 +396,7 @@ describe(
 
     it(
       'AC5c. Parent or guardian to pay: dismissing the cancel confirmation keeps the user on the page',
-      { tags: ['@JIRA-KEY:POT-5640'] },
+      { tags: [] },
       () => {
         assertDismissingCancelConfirmationKeepsUserOnPage(parentGuardianSetup);
       },
@@ -389,7 +407,7 @@ describe(
 describe('Account Enquiry Enforcement - Change Collection Order status - Company', { tags: COMPANY_TAGS }, () => {
   it(
     'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Company: navigates to and displays the change collection order screen',
-    { tags: ['@JIRA-KEY:POT-5641'] },
+    { tags: [] },
     () => {
       assertCollectionOrderChangeScreen(companySetup, '177A - Test Org Ltd');
     },
@@ -397,43 +415,32 @@ describe('Account Enquiry Enforcement - Change Collection Order status - Company
 
   it(
     'AC3, AC3a. Company: displays an error when Change is selected without choosing a collection order option',
-    { tags: ['@JIRA-KEY:POT-5642'] },
+    { tags: [] },
     () => {
-      assertCollectionOrderChangeRequiredErrorScenario(companySetup);
+      mountCollectionOrderChangeForm('177A - Test Org Ltd');
+      assertCollectionOrderChangeRequiredError();
     },
   );
 
-  it(
-    'AC4a. Company: selecting a different value returns the user to the Enforcement tab',
-    { tags: ['@JIRA-KEY:POT-5643'] },
-    () => {
-      assertCollectionOrderChangedNavigatesToEnforcementTab(companySetup);
-    },
-  );
+  it('AC4a. Company: selecting a different value returns the user to the Enforcement tab', { tags: [] }, () => {
+    assertCollectionOrderChangedNavigatesToEnforcementTab(companySetup);
+  });
 
-  it(
-    'AC5a. Company: cancel without changes returns to the Enforcement tab without confirmation',
-    { tags: ['@JIRA-KEY:POT-5644'] },
-    () => {
-      assertCancelWithoutChanges(companySetup);
-    },
-  );
+  it('AC5a. Company: cancel without changes returns to the Enforcement tab without confirmation', { tags: [] }, () => {
+    assertCancelWithoutChanges(companySetup);
+  });
 
   it(
     'AC5b. Company: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
-    { tags: ['@JIRA-KEY:POT-5645'] },
+    { tags: [] },
     () => {
       assertCancelAfterSelectionShowsConfirmation(companySetup);
     },
   );
 
-  it(
-    'AC5c. Company: dismissing the cancel confirmation keeps the user on the page',
-    { tags: ['@JIRA-KEY:POT-5646'] },
-    () => {
-      assertDismissingCancelConfirmationKeepsUserOnPage(companySetup);
-    },
-  );
+  it('AC5c. Company: dismissing the cancel confirmation keeps the user on the page', { tags: [] }, () => {
+    assertDismissingCancelConfirmationKeepsUserOnPage(companySetup);
+  });
 });
 
 function assertChangeSelectionReturnsToEnforcementTab(updatedCollectionOrderFlag: boolean) {
@@ -449,7 +456,7 @@ function assertChangeSelectionReturnsToEnforcementTab(updatedCollectionOrderFlag
   cy.wait('@getEnforcementStatus');
   cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('contain.text', 'Enforcement');
   // cy.get(VERSION_CONTROL.successBanner).should('exist');
-  // cy.get(VERSION_CONTROL.successBannerText).should('contain.text', 'Collection Order status changed');
+  // cy.get(VERSION_CONTROL.bannerText).should('contain.text', 'Collection Order status changed');
 }
 
 function assertCollectionOrderChangedNavigatesToEnforcementTab(
