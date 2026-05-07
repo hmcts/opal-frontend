@@ -185,7 +185,7 @@ export class GlobalApiInterceptorFlow {
   /**
    * Saves Defendant details and triggers a non-retriable concurrency error from the party update endpoint.
    * @param statusCode - HTTP status to stub for the Replace Defendant Account Party request.
-   * @remarks Guards the FAE endpoint proposed for PO-2226.
+   * @remarks Guards the FAE Replace Defendant Account Party endpoint.
    * @example
    * flow.saveDefendantDetailsWithPartyConcurrencyError(409);
    */

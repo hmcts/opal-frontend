@@ -166,7 +166,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | account.defendant.email_address_1       | casey.concurrencyfae{uniq}@test.com |
         | account.defendant.telephone_number_home | 02078250042                         |
         | account.account_type                    | Fine                                |
-        | account.prosecutor_case_reference       | PCR-PO-2226-{uniqUpper}             |
+        | account.prosecutor_case_reference       | PCRCONC{uniqUpper}                  |
         | account.collection_order_made           | false                               |
         | account.collection_order_made_today     | false                               |
         | account.payment_card_request            | false                               |
@@ -176,11 +176,19 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
 
     @JIRA-EPIC:PO-2239
     @JIRA-STORY:PO-2226
-    Scenario: Concurrency Failure page is displayed when replacing a defendant account party returns a non-retriable conflict
+    Scenario: Concurrency failure discards defendant edit state
+      # AC1: CTA-triggered Replace Defendant Account Party request fails with a non-retriable HTTP 409 concurrency response.
       When I edit the Defendant details and change the First name to "Concurrency"
       And I save the defendant details and the Replace Defendant Account Party request fails with a non-retriable 409 error
+      # AC1a: Concurrency Failure page displays the expected design content.
       Then the error page shows:
         | field   | value                                                           |
         | header  | Sorry, there is a problem                                       |
         | message | Something else was changed while you were doing this.           |
         | message | Your changes have not been saved. You will need to start again. |
+      # AC1b: Unsaved journey state is discarded after the concurrency failure.
+      When I return to the dashboard using the HMCTS link
+      And I search for the account by last name "ConcurrencyFae{uniq}" and open the latest result
+      And I go to the Defendant details section and the header is "Defendant details"
+      And I edit the Defendant details without making changes
+      Then I should see the First name field still contains "Casey"

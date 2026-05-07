@@ -284,7 +284,7 @@ export class GlobalApiInterceptorActions {
   /**
    * Stubs the Replace Defendant Account Party request with a non-retriable concurrency response.
    * @param statusCode - HTTP status to return for the party update request.
-   * @remarks The PO-2226 journey uses the FAE defendant details save CTA to trigger this PUT endpoint.
+   * @remarks The FAE defendant details save CTA triggers this PUT endpoint.
    * @example
    * actions.stubDefendantAccountPartyConcurrencyError(409);
    */
