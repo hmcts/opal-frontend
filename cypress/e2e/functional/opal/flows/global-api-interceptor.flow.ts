@@ -18,6 +18,7 @@ import { ManualCreateOrTransferInActions } from '../actions/manual-account-creat
 import { ManualCreateAccountActions } from '../actions/manual-account-creation/create-account.actions';
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
+import { AccountDetailsNavActions } from '../actions/account-details/details.nav.actions';
 
 const log = createScopedLogger('GlobalApiInterceptorFlow');
 
@@ -36,6 +37,7 @@ export class GlobalApiInterceptorFlow {
   private readonly accountSearchFlow = new AccountSearchFlow();
   private readonly accountSearchCommon = new AccountSearchCommonActions();
   private readonly accountSearchCompanies = new AccountSearchCompanyActions();
+  private readonly detailsNav = new AccountDetailsNavActions();
 
   /**
    * Opens Manual Account Creation and triggers a CEP-style business units error.
@@ -158,6 +160,24 @@ export class GlobalApiInterceptorFlow {
     this.accountSearchCommon.clickSearchButton();
     this.actions.waitForDefendantAccountsSearchNonRetriableError(statusCode);
     this.common.assertHeaderContains(this.resolveAccountSearchHeader(statusCode));
+  }
+
+  /**
+   * Opens the FAE Fixed penalty tab and triggers the fixed-penalty details GET network failure.
+   * @remarks Guards that the user remains on the same Account Details route after the failure.
+   * @example
+   * flow.openFixedPenaltyDetailsWithNetworkFailure();
+   */
+  public openFixedPenaltyDetailsWithNetworkFailure(): void {
+    log('flow', 'Opening FAE fixed penalty tab with network failure');
+    this.actions.stubDefendantAccountFixedPenaltyNetworkFailure();
+    this.detailsNav.goToFixedPenaltyTab();
+    this.actions.waitForDefendantAccountFixedPenaltyNetworkFailure();
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/details$/,
+    );
+    this.detailsNav.assertFixedPenaltyTabIsActive();
   }
 
   /**

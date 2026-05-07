@@ -251,6 +251,37 @@ export class GlobalApiInterceptorActions {
   }
 
   /**
+   * Stubs the FAE fixed-penalty details request as a network failure (no response).
+   * @remarks Uses the endpoint proposed for PO-2225 so the common interceptor handles the failure path.
+   * @example
+   * actions.stubDefendantAccountFixedPenaltyNetworkFailure();
+   */
+  public stubDefendantAccountFixedPenaltyNetworkFailure(): void {
+    log('intercept', 'Stubbing defendant account fixed penalty network failure');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '**/opal-fines-service/defendant-accounts/*/fixed-penalty',
+      },
+      { forceNetworkError: true },
+    ).as('getDefendantAccountFixedPenaltyNetworkError');
+  }
+
+  /**
+   * Waits for the FAE fixed-penalty details network failure request.
+   * @remarks Confirms the request was made and that Cypress received no HTTP response.
+   * @example
+   * actions.waitForDefendantAccountFixedPenaltyNetworkFailure();
+   */
+  public waitForDefendantAccountFixedPenaltyNetworkFailure(): void {
+    log('wait', 'Waiting for defendant account fixed penalty network failure');
+    cy.wait('@getDefendantAccountFixedPenaltyNetworkError').then((interception) => {
+      expect(interception.request.method).to.equal('GET');
+      expect(interception.response, 'Fixed penalty network failure response').not.to.exist;
+    });
+  }
+
+  /**
    * Asserts the global error banner is visible with the standard message.
    * @remarks Uses the shared global alert selector and standard error message.
    * @example
