@@ -56,6 +56,7 @@ import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -1041,6 +1042,36 @@ export class OpalFines {
     }
 
     return this.http.post<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
+  }
+
+  /**
+   * Deletes defendant account party details.
+   *
+   * @param defendantAccountId - The unique identifier of the defendant account.
+   * @param defendantAccountPartyId - The unique identifier of the defendant account party.
+   * @param payload - The payload identifying the party being removed.
+   * @param version - The version for optimistic concurrency control (If-Match header).
+   * @param businessUnitId - The business unit identifier.
+   * @returns An Observable that completes when the party has been deleted.
+   */
+  public deleteDefendantAccountParty(
+    defendantAccountId: number,
+    defendantAccountPartyId: string,
+    payload: IOpalFinesDeleteDefendantAccountPartyPayload,
+    version?: string,
+    businessUnitId?: string,
+  ): Observable<void> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`;
+
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.delete<void>(url, { headers, body: payload });
   }
 
   /**

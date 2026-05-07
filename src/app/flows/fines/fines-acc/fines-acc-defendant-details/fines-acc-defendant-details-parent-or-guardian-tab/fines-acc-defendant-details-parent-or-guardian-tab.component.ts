@@ -18,7 +18,8 @@ export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
   @Output() changeParentOrGuardianDetails = new EventEmitter<string>();
   @Output() removeParentOrGuardianDetails = new EventEmitter<string>();
 
-  public handleRemoveParentOrGuardianDetails(): void {
+  public handleRemoveParentOrGuardianDetails(event: Event): void {
+    event.preventDefault();
     this.removeParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
   }
 

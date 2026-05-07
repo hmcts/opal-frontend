@@ -39,6 +39,7 @@ describe('fines acc routes', () => {
         `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`,
         `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/:type`,
         `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['party']}/:partyType/:mode`,
+        `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.remove}/non-paying/parent-guardian`,
         `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`,
         `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/:type`,
         `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,

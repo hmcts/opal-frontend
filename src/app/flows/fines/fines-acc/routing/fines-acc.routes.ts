@@ -171,6 +171,22 @@ export const routing: Routes = [
             },
           },
           {
+            path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.remove}/non-paying/parent-guardian`,
+
+            loadComponent: () =>
+              import('../fines-acc-remove-non-paying-pg/fines-acc-remove-non-paying-pg.component').then(
+                (c) => c.FinesAccRemoveNonPayingPgComponent,
+              ),
+            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            data: {
+              routePermissionId: [accRootPermissionIds['account-maintenance']],
+              title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.remove,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`,
 
             loadComponent: () =>

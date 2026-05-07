@@ -1677,6 +1677,56 @@ describe('OpalFines', () => {
     });
   });
 
+  describe('deleteDefendantAccountParty', () => {
+    it('should send a DELETE request with version and business unit headers', () => {
+      const defendantAccountId = 123456;
+      const defendantAccountPartyId = 'PARTY-123';
+      const version = '8';
+      const businessUnitId = '61';
+      const payload = {
+        party_details: {
+          party_id: defendantAccountPartyId,
+        },
+      };
+
+      service
+        .deleteDefendantAccountParty(defendantAccountId, defendantAccountPartyId, payload, version, businessUnitId)
+        .subscribe();
+
+      const expectedUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`;
+      const req = httpMock.expectOne(expectedUrl);
+
+      expect(req.request.method).toBe('DELETE');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+
+      req.flush(null);
+    });
+
+    it('should send a DELETE request without optional headers when not provided', () => {
+      const defendantAccountId = 123456;
+      const defendantAccountPartyId = 'PARTY-123';
+      const payload = {
+        party_details: {
+          party_id: defendantAccountPartyId,
+        },
+      };
+
+      service.deleteDefendantAccountParty(defendantAccountId, defendantAccountPartyId, payload).subscribe();
+
+      const expectedUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`;
+      const req = httpMock.expectOne(expectedUrl);
+
+      expect(req.request.method).toBe('DELETE');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+
+      req.flush(null);
+    });
+  });
+
   it('should getMinorCreditorAccountHeader', () => {
     const accountId = 456;
     const expectedResponse = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK;

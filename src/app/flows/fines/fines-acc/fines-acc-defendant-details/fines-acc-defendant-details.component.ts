@@ -408,6 +408,21 @@ export class FinesAccDefendantDetailsComponent
     }
   }
 
+  /**
+   * Navigates to the non-paying parent/guardian removal confirmation page.
+   */
+  public navigateToRemoveNonPayingParentGuardianPage(): void {
+    if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.remove}/non-paying/parent-guardian`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
+  }
+
   public navigateToConvertAccountPage(targetPartyType: string): void {
     if (this.hasAccountMaintenancePermissionInBusinessUnit() && targetPartyType) {
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/${targetPartyType}`], {

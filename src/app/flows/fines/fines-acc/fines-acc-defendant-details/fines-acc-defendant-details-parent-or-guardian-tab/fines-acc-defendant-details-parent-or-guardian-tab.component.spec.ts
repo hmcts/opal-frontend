@@ -26,7 +26,10 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   it('should handle remove parent or guardian details click', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component.removeParentOrGuardianDetails, 'emit');
-    component.handleRemoveParentOrGuardianDetails();
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    component.handleRemoveParentOrGuardianDetails(event);
+    expect(preventDefaultSpy).toHaveBeenCalled();
     expect(component.removeParentOrGuardianDetails.emit).toHaveBeenCalled();
   });
 
