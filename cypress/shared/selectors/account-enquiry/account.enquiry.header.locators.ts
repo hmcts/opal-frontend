@@ -22,6 +22,15 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   // Info sections
   summaryMetricBar: 'opal-lib-custom-summary-metric-bar',
   summaryMetricBarItem: 'opal-lib-custom-summary-metric-bar-item',
+  summaryMetricBarValue: 'p[opal-lib-custom-summary-metric-bar-item-value]',
+  imposedAmountValue:
+    'opal-lib-custom-summary-metric-bar-item:nth-child(1) p[opal-lib-custom-summary-metric-bar-item-value]',
+  arrearsAmountValue:
+    'opal-lib-custom-summary-metric-bar-item:nth-child(2) p[opal-lib-custom-summary-metric-bar-item-value]',
+  paidWrittenOffValue:
+    'opal-lib-custom-summary-metric-bar-item:nth-child(3) p[opal-lib-custom-summary-metric-bar-item-value]',
+  accountBalanceValue:
+    'opal-lib-custom-summary-metric-bar-item:nth-child(4) p[opal-lib-custom-summary-metric-bar-item-value]',
   accountInfo: 'opal-lib-custom-account-information',
   sectionHeading: 'h2',
   fieldHeading: 'h3',
