@@ -26,6 +26,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     account_id: Mock;
     party_id: Mock;
     pg_party_id: Mock;
+    base_version: Mock;
     business_unit_id: Mock;
     account_number: Mock;
     party_name: Mock;
@@ -55,15 +56,18 @@ describe('FinesAccPartyAddAmendConvert', () => {
     mockPayloadService = {
       mapDebtorAccountPartyPayload: vi.fn().mockName('FinesAccPayloadService.mapDebtorAccountPartyPayload'),
       buildAccountPartyPayload: vi.fn().mockName('FinesAccPayloadService.buildAccountPartyPayload'),
+      buildAddDefendantAccountPayload: vi.fn().mockName('FinesAccPayloadService.buildAddDefendantAccountPayload'),
     };
     mockOpalFinesService = {
       putDefendantAccountParty: vi.fn().mockName('OpalFines.putDefendantAccountParty'),
+      postDefendantAccountParty: vi.fn().mockName('OpalFines.postDefendantAccountParty'),
       clearCache: vi.fn().mockName('OpalFines.clearCache'),
     };
     mockFinesAccStore = {
       account_id: vi.fn().mockReturnValue(123),
       party_id: vi.fn().mockReturnValue('party-123'),
       pg_party_id: vi.fn().mockReturnValue('pg-party-123'),
+      base_version: vi.fn().mockReturnValue('1'),
       business_unit_id: vi.fn().mockReturnValue('bu-123'),
       account_number: vi.fn().mockReturnValue('12345ABC'),
       party_name: vi.fn().mockReturnValue('John Doe'),
@@ -97,7 +101,13 @@ describe('FinesAccPartyAddAmendConvert', () => {
       MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
     );
     mockPayloadService.buildAccountPartyPayload.mockReturnValue({} as IOpalFinesAccountPartyDetails);
+    mockPayloadService.buildAddDefendantAccountPayload.mockReturnValue({
+      defendant_account_party: {} as IOpalFinesAccountPartyDetails,
+    });
     mockOpalFinesService.putDefendantAccountParty.mockReturnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK),
+    );
+    mockOpalFinesService.postDefendantAccountParty.mockReturnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK),
     );
 
@@ -133,6 +143,19 @@ describe('FinesAccPartyAddAmendConvert', () => {
     fixture.detectChanges();
 
     expect(component['mode']).toBe(FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT);
+  });
+
+  it('should read add mode from the route', () => {
+    mockActivatedRoute.snapshot.params.mode = FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD;
+    mockActivatedRoute.snapshot.params.partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
+    mockPayloadService.mapDebtorAccountPartyPayload.mockClear();
+    fixture = TestBed.createComponent(FinesAccPartyAddAmendConvert);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component['mode']).toBe(FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD);
+    expect(component['isDebtor']).toBe(false);
+    expect(mockPayloadService.mapDebtorAccountPartyPayload).not.toHaveBeenCalled();
   });
 
   it('should handle form submission for individual party type', () => {
@@ -183,6 +206,69 @@ describe('FinesAccPartyAddAmendConvert', () => {
       'bu-123',
     );
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
+      fragment: 'parent-or-guardian',
+    });
+  });
+
+  it('should post a wrapped parentGuardian payload in add mode', () => {
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    Object.defineProperty(component, 'mode', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      writable: true,
+    });
+    Object.defineProperty(component, 'partyType', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      writable: true,
+    });
+    Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
+    Object.defineProperty(component, 'isDebtor', { value: false, writable: true });
+    mockFinesAccStore.pg_party_id.mockReturnValue(null);
+
+    component.handleFormSubmit(mockFormData);
+
+    expect(mockPayloadService.buildAddDefendantAccountPayload).toHaveBeenCalledWith(
+      mockFormData.formData,
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      false,
+      '',
+    );
+    expect(mockPayloadService.buildAccountPartyPayload).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.postDefendantAccountParty).toHaveBeenCalledWith(123, expect.any(Object), '1', 'bu-123');
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
+      fragment: 'parent-or-guardian',
+    });
+  });
+
+  it('should redirect add mode when base version is missing', () => {
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    Object.defineProperty(component, 'mode', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      writable: true,
+    });
+    Object.defineProperty(component, 'partyType', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      writable: true,
+    });
+    Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
+    mockFinesAccStore.pg_party_id.mockReturnValue(null);
+    mockFinesAccStore.base_version.mockReturnValue(null);
+
+    component.handleFormSubmit(mockFormData);
+
+    expect(mockPayloadService.buildAddDefendantAccountPayload).not.toHaveBeenCalled();
+    expect(mockOpalFinesService.postDefendantAccountParty).not.toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'parent-or-guardian',
@@ -413,6 +499,32 @@ describe('FinesAccPartyAddAmendConvert', () => {
       fragment: 'defendant',
     });
     expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
+  it('should not require pg_party_id when parentGuardian party type is in add mode', () => {
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    Object.defineProperty(component, 'mode', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      writable: true,
+    });
+    Object.defineProperty(component, 'partyType', {
+      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      writable: true,
+    });
+    mockFinesAccStore.pg_party_id.mockReturnValue(null);
+    mockRouter.navigate.mockClear();
+
+    component.handleFormSubmit(mockFormData);
+
+    expect(mockOpalFinesService.postDefendantAccountParty).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
+      fragment: 'defendant',
+    });
   });
 
   it('should proceed with API call when all store values are present and valid', () => {

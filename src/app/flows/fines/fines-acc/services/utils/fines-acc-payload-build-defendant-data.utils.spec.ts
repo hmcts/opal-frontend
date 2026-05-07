@@ -333,7 +333,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
       expect(result.party_details.individual_details?.surname).toBe('Doe');
       expect(result.party_details.individual_details?.date_of_birth).toBe('01/01/1990');
       expect(result.party_details.individual_details?.national_insurance_number).toBe('AB123456C');
-      expect(result.party_details.organisation_details).toBeNull();
+      expect(result.party_details).not.toHaveProperty('organisation_details');
       expect(result.address.address_line_1).toBe('123 Main St');
       expect(result.address.address_line_2).toBe('Apt 4');
       expect(result.address.postcode).toBe('AB12 3CD');
@@ -394,7 +394,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
       expect(result.is_debtor).toBe(false);
       expect(result.party_details.organisation_flag).toBe(true);
       expect(result.party_details.organisation_details?.organisation_name).toBe('Test Company Ltd');
-      expect(result.party_details.individual_details).toBeNull();
+      expect(result.party_details).not.toHaveProperty('individual_details');
       expect(result.address.address_line_1).toBe('789 Corporate Ave');
       expect(result.contact_details?.primary_email_address).toBe('info@testcompany.com');
       expect(result.contact_details?.work_telephone_number).toBe('01234567890');
@@ -448,6 +448,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
       expect(result.defendant_account_party_type).toBe('Parent/Guardian');
       expect(result.is_debtor).toBe(false);
       expect(result.party_details.organisation_flag).toBe(false);
+      expect(result.party_details).not.toHaveProperty('organisation_details');
       expect(result.party_details.individual_details?.title).toBe('Mrs');
       expect(result.party_details.individual_details?.forenames).toBe('Jane');
       expect(result.party_details.individual_details?.surname).toBe('Doe');
