@@ -180,17 +180,16 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(notesControl.valid).toBe(true);
   });
 
-  it('should prevent submission and show an error message for invalid special characters in the fixed penalty comment field', () => {
+  it('should prevent submission and show an error message for non-ASCII characters in the fixed penalty comment field', () => {
     const event = {} as SubmitEvent;
     const commentsControl = component.form.controls['fm_fp_account_comments_notes_comments'];
     const expectedErrorMessage =
-      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments[
-        'alphanumericWithHyphensSpacesApostrophesCommasDotPattern'
-      ].message;
+      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_comments['singleAsciiChatacters']
+        .message;
 
-    commentsControl.setValue('Invalid?');
+    commentsControl.setValue('Invalidé');
 
-    expect(commentsControl.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBe(true);
+    expect(commentsControl.hasError('singleAsciiChatacters')).toBe(true);
 
     component.handleFormSubmit(event);
 
@@ -201,17 +200,15 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     });
   });
 
-  it('should prevent submission and show an error message for invalid special characters in the fixed penalty notes field', () => {
+  it('should prevent submission and show an error message for non-ASCII characters in the fixed penalty notes field', () => {
     const event = {} as SubmitEvent;
     const notesControl = component.form.controls['fm_fp_account_comments_notes_notes'];
     const expectedErrorMessage =
-      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes[
-        'alphanumericWithHyphensSpacesApostrophesCommasDotPattern'
-      ].message;
+      FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes['singleAsciiChatacters'].message;
 
-    notesControl.setValue('Invalid?');
+    notesControl.setValue('Invalidé');
 
-    expect(notesControl.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBe(true);
+    expect(notesControl.hasError('singleAsciiChatacters')).toBe(true);
 
     component.handleFormSubmit(event);
 

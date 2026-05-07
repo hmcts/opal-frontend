@@ -15,11 +15,11 @@ import { of } from 'rxjs';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
-  'Add comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
+  'Add comment must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
 const ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
-  'Add account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)';
-const VALID_COMMENTS_AND_NOTES_CHARACTERS = "AaBbCc123..--''  ,,";
-const INVALID_COMMENTS_AND_NOTES_CHARACTERS = `${VALID_COMMENTS_AND_NOTES_CHARACTERS}@@%%`;
+  'Add account note must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
+const VALID_COMMENTS_AND_NOTES_CHARACTERS = "AaBbCc123..--''  ,,££@@%%";
+const INVALID_COMMENTS_AND_NOTES_CHARACTERS = `${VALID_COMMENTS_AND_NOTES_CHARACTERS}©µ±ö€`;
 const VALID_COMMENT_WITH_COMMAS_AND_FULL_STOPS = "O'Neil, comment-1.";
 const VALID_NOTE_WITH_COMMAS_AND_FULL_STOPS = "Account, note-1. O'Neil ok";
 
@@ -287,7 +287,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
       cy.get(L.returnToAccountDetailsButton).first().click();
 
-      cy.get('.errorSummary').should('not.exist');
+      cy.get(L.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
@@ -302,7 +302,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.commentInput).clear().type(VALID_COMMENT_WITH_COMMAS_AND_FULL_STOPS, { delay: 0 });
       cy.get(L.returnToAccountDetailsButton).first().click();
 
-      cy.get('.errorSummary').should('not.exist');
+      cy.get(L.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
@@ -318,7 +318,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.noteInput).clear().type(VALID_NOTE_WITH_COMMAS_AND_FULL_STOPS, { delay: 0 });
       cy.get(L.returnToAccountDetailsButton).first().click();
 
-      cy.get('.errorSummary').should('not.exist');
+      cy.get(L.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );

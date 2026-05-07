@@ -139,19 +139,17 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     expect(notesControl.valid).toBe(true);
   });
 
-  it('should prevent submission and show an error message for invalid special characters in the comment field', () => {
+  it('should prevent submission and show an error message for non-ASCII characters in the comment field', () => {
     const event = {} as SubmitEvent;
     const commentsControl = component.form.controls['fm_account_comments_notes_comments'];
     const expectedErrorMessage =
-      FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_comments[
-        'alphanumericWithHyphensSpacesApostrophesCommasDotPattern'
-      ].message;
+      FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_comments['singleAsciiChatacters'].message;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
-    commentsControl.setValue('Invalid?');
+    commentsControl.setValue('Invalidé');
 
-    expect(commentsControl.hasError('alphanumericWithHyphensSpacesApostrophesCommasDotPattern')).toBe(true);
+    expect(commentsControl.hasError('singleAsciiChatacters')).toBe(true);
 
     component.handleFormSubmit(event);
 
