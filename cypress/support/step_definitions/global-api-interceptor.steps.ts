@@ -80,6 +80,14 @@ When(
   },
 );
 
+When(
+  'I save account note {string} and the Add Note request fails with a non-retriable {int} error',
+  (noteText: string, statusCode: number) => {
+    log('step', 'Saving account note with non-retriable Add Note error', { statusCode });
+    flow().saveAccountNoteWithNonRetriablePermissionError(noteText, statusCode);
+  },
+);
+
 Then('the global error banner is displayed', () => {
   log('assert', 'Asserting global error banner is visible');
   actions().assertGlobalErrorBanner();
@@ -98,4 +106,9 @@ Then('the global banner clears after refresh on the {string} page', (expectedHea
 Then('the error page shows:', (table: DataTable) => {
   log('assert', 'Asserting error page content', { rows: table.raw() });
   actions().assertErrorPageContent(table);
+});
+
+Then('the permission denied Go back link returns me to the Add account note screen', () => {
+  log('assert', 'Returning from Permission Denied page to Add account note screen');
+  flow().returnToAddAccountNoteFromPermissionDenied();
 });

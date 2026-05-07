@@ -20,6 +20,7 @@ import { AccountSearchIndividualsActions } from '../actions/search/search.indivi
 import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 import { AccountDetailsNavActions } from '../actions/account-details/details.nav.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
+import { AccountDetailsNotesActions } from '../actions/account-details/details.notes.actions';
 
 const log = createScopedLogger('GlobalApiInterceptorFlow');
 
@@ -40,6 +41,7 @@ export class GlobalApiInterceptorFlow {
   private readonly accountSearchCompanies = new AccountSearchCompanyActions();
   private readonly detailsNav = new AccountDetailsNavActions();
   private readonly editDefendantDetails = new EditDefendantDetailsActions();
+  private readonly notes = new AccountDetailsNotesActions();
 
   /**
    * Opens Manual Account Creation and triggers a CEP-style business units error.
@@ -203,6 +205,37 @@ export class GlobalApiInterceptorFlow {
   }
 
   /**
+   * Saves an account note and triggers the Add Note POST non-retriable permission error.
+   * @param noteText - Text to enter into the Add account note form.
+   * @param statusCode - HTTP status to stub for the Add Note request.
+   * @remarks Guards the Permission Denied page header after the common interceptor handles the error.
+   * @example
+   * flow.saveAccountNoteWithNonRetriablePermissionError('Permission denied test note', 403);
+   */
+  public saveAccountNoteWithNonRetriablePermissionError(noteText: string, statusCode: number): void {
+    const expectedHeader = this.resolveAddNoteNonRetriableHeader(statusCode);
+    log('flow', 'Saving account note with non-retriable permission error', { statusCode });
+    this.notes.assertHeaderContains('Add account note');
+    this.actions.stubAddNoteNonRetriablePermissionError(statusCode);
+    this.notes.enterAccountNote(noteText);
+    this.notes.save();
+    this.actions.waitForAddNoteNonRetriablePermissionError(statusCode);
+    this.common.assertHeaderContains(expectedHeader);
+  }
+
+  /**
+   * Clicks Go back on the Permission Denied page and asserts the Add account note page is restored.
+   * @remarks Covers the FAE Add Note back-navigation acceptance criterion.
+   * @example
+   * flow.returnToAddAccountNoteFromPermissionDenied();
+   */
+  public returnToAddAccountNoteFromPermissionDenied(): void {
+    log('flow', 'Returning from Permission Denied page to Add account note');
+    this.actions.clickPermissionDeniedBackLink();
+    this.notes.assertHeaderContains('Add account note');
+  }
+
+  /**
    * Refreshes the current page and confirms the global banner is cleared.
    * @param expectedHeader - Expected header text after refresh.
    * @remarks Uses header assertions to guard the refresh destination.
@@ -265,5 +298,20 @@ export class GlobalApiInterceptorFlow {
       return 'Sorry, there is a problem';
     }
     throw new Error(`Unsupported defendant account party error status: ${statusCode}`);
+  }
+
+  /**
+   * Resolves the expected header for Add Note non-retriable errors.
+   * @param statusCode - HTTP status used to route to the correct error page.
+   * @returns Expected error page header for the given status.
+   * @remarks Throws for unsupported status codes to avoid false positives.
+   * @example
+   * const header = this.resolveAddNoteNonRetriableHeader(403);
+   */
+  private resolveAddNoteNonRetriableHeader(statusCode: number): string {
+    if (statusCode === 403) {
+      return 'You do not have permission for this';
+    }
+    throw new Error(`Unsupported add note error status: ${statusCode}`);
   }
 }

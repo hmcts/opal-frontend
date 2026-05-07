@@ -320,6 +320,59 @@ export class GlobalApiInterceptorActions {
   }
 
   /**
+   * Stubs the FAE Add Note request with a non-retriable permission error.
+   * @param statusCode - HTTP status to return for the Add Note request.
+   * @remarks Uses the Add Note endpoint so the common interceptor handles the permission path.
+   * @example
+   * actions.stubAddNoteNonRetriablePermissionError(403);
+   */
+  public stubAddNoteNonRetriablePermissionError(statusCode: number): void {
+    log('intercept', 'Stubbing add note non-retriable permission error', { statusCode });
+    cy.intercept('POST', '**/opal-fines-service/notes/add', {
+      statusCode,
+      body: {
+        retriable: false,
+        title: NON_RETRIABLE_ERROR_TITLE,
+        detail: NON_RETRIABLE_ERROR_DETAIL,
+        operation_id: NON_RETRIABLE_OPERATION_ID,
+      },
+    }).as('addNoteNonRetriablePermissionError');
+  }
+
+  /**
+   * Waits for the FAE Add Note permission error response and validates it.
+   * @param statusCode - Expected HTTP status returned by the stub.
+   * @remarks Confirms the POST request and non-retriable error metadata.
+   * @example
+   * actions.waitForAddNoteNonRetriablePermissionError(403);
+   */
+  public waitForAddNoteNonRetriablePermissionError(statusCode: number): void {
+    log('wait', 'Waiting for add note non-retriable permission error', { statusCode });
+    cy.wait('@addNoteNonRetriablePermissionError').then((interception) => {
+      const response = interception.response;
+      expect(interception.request.method).to.equal('POST');
+      expect(response, 'Add Note non-retriable permission response').to.exist;
+      expect(response?.statusCode).to.equal(statusCode);
+      expect(response?.body?.retriable).to.be.false;
+      expect(response?.body?.title).to.equal(NON_RETRIABLE_ERROR_TITLE);
+      expect(response?.body?.operation_id).to.equal(NON_RETRIABLE_OPERATION_ID);
+    });
+  }
+
+  /**
+   * Clicks the Permission Denied page Go back link.
+   * @remarks Uses the visible GOV.UK link text from the Permission Denied page.
+   * @example
+   * actions.clickPermissionDeniedBackLink();
+   */
+  public clickPermissionDeniedBackLink(): void {
+    log('action', 'Clicking Permission Denied Go back link');
+    cy.contains('a.govuk-link', /^Go back$/, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .click();
+  }
+
+  /**
    * Asserts the global error banner is visible with the standard message.
    * @remarks Uses the shared global alert selector and standard error message.
    * @example
