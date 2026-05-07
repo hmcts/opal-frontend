@@ -24,19 +24,20 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   });
 
   it('should handle remove parent or guardian details click', () => {
+    const event = { preventDefault: vi.fn() } as unknown as Event;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component.removeParentOrGuardianDetails, 'emit');
-    const event = new Event('click');
-    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
     component.handleRemoveParentOrGuardianDetails(event);
-    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(event.preventDefault).toHaveBeenCalled();
     expect(component.removeParentOrGuardianDetails.emit).toHaveBeenCalled();
   });
 
   it('should handle change parent or guardian details click', () => {
+    const event = { preventDefault: vi.fn() } as unknown as Event;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component.changeParentOrGuardianDetails, 'emit');
-    component.handleChangeParentOrGuardianDetails();
+    component.handleChangeParentOrGuardianDetails(event);
+    expect(event.preventDefault).toHaveBeenCalled();
     expect(component.changeParentOrGuardianDetails.emit).toHaveBeenCalled();
   });
 });
