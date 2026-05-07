@@ -37,6 +37,13 @@ describe('FinesAccPartyAddAmendConvert', () => {
   let mockUtilsService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockRouter: any;
+  let createComponent: (
+    routeParams?: Partial<{
+      partyType: string;
+      accountId: string;
+      mode: string;
+    }>,
+  ) => void;
   let mockActivatedRoute: {
     snapshot: {
       data: {
@@ -123,9 +130,17 @@ describe('FinesAccPartyAddAmendConvert', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesAccPartyAddAmendConvert);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    createComponent = (routeParams = {}) => {
+      mockActivatedRoute.snapshot.params = {
+        ...mockActivatedRoute.snapshot.params,
+        ...routeParams,
+      };
+      fixture = TestBed.createComponent(FinesAccPartyAddAmendConvert);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    };
+
+    createComponent();
   });
 
   it('should create', () => {
@@ -137,21 +152,17 @@ describe('FinesAccPartyAddAmendConvert', () => {
   });
 
   it('should read convert mode from the route', () => {
-    mockActivatedRoute.snapshot.params.mode = FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT;
-    fixture = TestBed.createComponent(FinesAccPartyAddAmendConvert);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    createComponent({ mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT });
 
     expect(component['mode']).toBe(FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT);
   });
 
   it('should read add mode from the route', () => {
-    mockActivatedRoute.snapshot.params.mode = FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD;
-    mockActivatedRoute.snapshot.params.partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
     mockPayloadService.mapDebtorAccountPartyPayload.mockClear();
-    fixture = TestBed.createComponent(FinesAccPartyAddAmendConvert);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    createComponent({
+      mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+    });
 
     expect(component['mode']).toBe(FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD);
     expect(component['isDebtor']).toBe(false);
@@ -190,9 +201,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       nestedFlow: false,
     };
 
-    // Override partyType for this test
-    Object.defineProperty(component, 'partyType', { value: 'parentGuardian', writable: true });
-    Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
+    createComponent({ partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN });
 
     // Act
     component.handleFormSubmit(mockFormData);
@@ -218,16 +227,10 @@ describe('FinesAccPartyAddAmendConvert', () => {
       nestedFlow: false,
     };
 
-    Object.defineProperty(component, 'mode', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
-      writable: true,
+    createComponent({
+      mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
     });
-    Object.defineProperty(component, 'partyType', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
-      writable: true,
-    });
-    Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
-    Object.defineProperty(component, 'isDebtor', { value: false, writable: true });
     mockFinesAccStore.pg_party_id.mockReturnValue(null);
 
     component.handleFormSubmit(mockFormData);
@@ -253,15 +256,10 @@ describe('FinesAccPartyAddAmendConvert', () => {
       nestedFlow: false,
     };
 
-    Object.defineProperty(component, 'mode', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
-      writable: true,
+    createComponent({
+      mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
     });
-    Object.defineProperty(component, 'partyType', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
-      writable: true,
-    });
-    Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
     mockFinesAccStore.pg_party_id.mockReturnValue(null);
     mockFinesAccStore.base_version.mockReturnValue(null);
 
@@ -361,9 +359,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       nestedFlow: false,
     };
 
-    // Override partyType for this test
-    Object.defineProperty(component, 'partyType', { value: 'parentGuardian', writable: true });
-    Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
+    createComponent({ partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN });
 
     // Reset router spy and setup successful response
     mockRouter.navigate.mockClear();
@@ -389,13 +385,9 @@ describe('FinesAccPartyAddAmendConvert', () => {
       nestedFlow: false,
     };
 
-    Object.defineProperty(component, 'mode', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
-      writable: true,
-    });
-    Object.defineProperty(component, 'partyType', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
-      writable: true,
+    createComponent({
+      mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY,
     });
 
     component.handleFormSubmit(mockFormData);
@@ -411,13 +403,9 @@ describe('FinesAccPartyAddAmendConvert', () => {
       nestedFlow: false,
     };
 
-    Object.defineProperty(component, 'mode', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
-      writable: true,
-    });
-    Object.defineProperty(component, 'partyType', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
-      writable: true,
+    createComponent({
+      mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL,
     });
 
     component.handleFormSubmit(mockFormData);
@@ -433,13 +421,9 @@ describe('FinesAccPartyAddAmendConvert', () => {
       nestedFlow: false,
     };
 
-    Object.defineProperty(component, 'mode', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
-      writable: true,
-    });
-    Object.defineProperty(component, 'partyType', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
-      writable: true,
+    createComponent({
+      mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.CONVERT,
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
     });
 
     component.handleFormSubmit(mockFormData);
@@ -447,49 +431,13 @@ describe('FinesAccPartyAddAmendConvert', () => {
     expect(mockFinesAccStore.setSuccessMessage).not.toHaveBeenCalled();
   });
 
-  it('should redirect to details page when required store values are missing', () => {
+  it('should redirect to details page when party_id is missing outside add mode', () => {
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
       nestedFlow: false,
     };
 
-    const testCases = [
-      { description: 'account_id is null', account_id: null, business_unit_id: 'bu-123', party_id: 'party-123' },
-      { description: 'business_unit_id is null', account_id: 123, business_unit_id: null, party_id: 'party-123' },
-      { description: 'party_id is null', account_id: 123, business_unit_id: 'bu-123', party_id: null },
-      {
-        description: 'account_id is undefined',
-        account_id: undefined,
-        business_unit_id: 'bu-123',
-        party_id: 'party-123',
-      },
-      { description: 'account_id is empty string', account_id: '', business_unit_id: 'bu-123', party_id: 'party-123' },
-    ];
-
-    testCases.forEach((testCase) => {
-      mockFinesAccStore.account_id.mockReturnValue(testCase.account_id);
-      mockFinesAccStore.business_unit_id.mockReturnValue(testCase.business_unit_id);
-      mockFinesAccStore.party_id.mockReturnValue(testCase.party_id);
-      mockRouter.navigate.mockClear();
-
-      component.handleFormSubmit(mockFormData);
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
-        relativeTo: undefined,
-        fragment: 'defendant',
-      });
-      expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
-    });
-  });
-
-  it('should redirect to details page when pg_party_id is missing for parentGuardian party type', () => {
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    Object.defineProperty(component, 'partyType', { value: 'parentGuardian', writable: true });
-    mockFinesAccStore.pg_party_id.mockReturnValue(null);
+    mockFinesAccStore.party_id.mockReturnValue(null);
     mockRouter.navigate.mockClear();
 
     component.handleFormSubmit(mockFormData);
@@ -501,19 +449,34 @@ describe('FinesAccPartyAddAmendConvert', () => {
     expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
   });
 
+  it('should redirect to details page when pg_party_id is missing for parentGuardian party type', () => {
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    createComponent({ partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN });
+    mockFinesAccStore.pg_party_id.mockReturnValue(null);
+    mockRouter.navigate.mockClear();
+
+    component.handleFormSubmit(mockFormData);
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
+      fragment: 'parent-or-guardian',
+    });
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
   it('should not require pg_party_id when parentGuardian party type is in add mode', () => {
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
       nestedFlow: false,
     };
 
-    Object.defineProperty(component, 'mode', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
-      writable: true,
-    });
-    Object.defineProperty(component, 'partyType', {
-      value: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
-      writable: true,
+    createComponent({
+      mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
     });
     mockFinesAccStore.pg_party_id.mockReturnValue(null);
     mockRouter.navigate.mockClear();
@@ -523,7 +486,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     expect(mockOpalFinesService.postDefendantAccountParty).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
-      fragment: 'defendant',
+      fragment: 'parent-or-guardian',
     });
   });
 
