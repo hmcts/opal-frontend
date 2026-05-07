@@ -30,5 +30,69 @@ export class FinesAccPartyDetails {
   @Input({ required: true }) cardTitle!: string;
   @Input({ required: true }) summaryCardListId!: string;
   @Input({ required: true }) summaryListId!: string;
+  @Input({ required: false }) isParentGuardianAccount: boolean = false;
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
+
+  /**
+   * Determines whether to use the reduced parent/guardian non-debtor display.
+   */
+  public get isParentGuardianNonDebtor(): boolean {
+    return this.isParentGuardianAccount && !this.party.is_debtor;
+  }
+
+  /**
+   * Determines whether aliases, date of birth and national insurance should be shown.
+   */
+  public get showIndividualAdditionalFields(): boolean {
+    return !this.isParentGuardianNonDebtor;
+  }
+
+  /**
+   * Determines whether vehicle details should be shown for an individual-style party.
+   */
+  public get showIndividualVehicleDetails(): boolean {
+    return this.party.is_debtor;
+  }
+
+  /**
+   * Determines whether contact details should be shown.
+   */
+  public get showContactDetails(): boolean {
+    return this.party.is_debtor || this.isParentGuardianNonDebtor;
+  }
+
+  /**
+   * Determines whether language preferences should be shown.
+   */
+  public get showLanguagePreferences(): boolean {
+    return this.party.is_debtor && this.hasWelshLanguagePreference();
+  }
+
+  /**
+   * Determines whether employer details should be shown.
+   */
+  public get showEmployerDetails(): boolean {
+    return !this.party.party_details.organisation_flag && this.party.is_debtor && !!this.party.employer_details;
+  }
+
+  /**
+   * Determines whether company details should be shown.
+   */
+  public get showCompanyDetails(): boolean {
+    return (
+      this.party.party_details.organisation_flag &&
+      this.party.is_debtor &&
+      !!this.party.party_details.organisation_details
+    );
+  }
+
+  /**
+   * Determines whether either language preference is Welsh.
+   */
+  private hasWelshLanguagePreference(): boolean {
+    const documentLanguage = this.party.language_preferences?.document_language_preference?.language_display_name;
+    const hearingLanguage = this.party.language_preferences?.hearing_language_preference?.language_display_name;
+
+    return documentLanguage === this.languages.CY || hearingLanguage === this.languages.CY;
+  }
 }
