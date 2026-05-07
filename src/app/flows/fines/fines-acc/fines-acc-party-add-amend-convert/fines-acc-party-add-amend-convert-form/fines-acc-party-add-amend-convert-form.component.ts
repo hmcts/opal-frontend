@@ -9,7 +9,15 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-acc-party-add-amend-convert-field-errors.interface';
 import { IFinesAccPartyAddAmendConvertForm } from '../interfaces/fines-acc-party-add-amend-convert-form.interface';
@@ -48,6 +56,7 @@ import {
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_REDUCED_PARENT_GUARDIAN_HIDDEN_CONTROLS } from '../constants/fines-acc-party-add-amend-convert-reduced-parent-guardian-hidden-controls.constant';
 import { employerFieldsValidator } from '../validators/fines-acc-party-add-amend-convert-validators';
 import { FinesAccPartyAddAmendConvertEd } from './components/fines-acc-party-add-amend-convert-ed/fines-acc-party-add-amend-convert-ed.component';
 import { FinesAccPartyAddAmendConvertPartyDetails } from './components/fines-acc-party-add-amend-convert-party-details/fines-acc-party-add-amend-convert-party-details.component';
@@ -311,6 +320,55 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
+   * Clears validators from a form control that is not displayed in the reduced parent/guardian journey.
+   */
+  private clearHiddenControlValidators(control: AbstractControl | null): void {
+    if (!control) {
+      return;
+    }
+
+    control.clearValidators();
+    control.updateValueAndValidity({ emitEvent: false });
+  }
+
+  /**
+   * Clears validators from hidden alias rows while keeping their current values on the form.
+   */
+  private clearHiddenAliasValidators(formArrayName: string): void {
+    const formArray = this.form.get(formArrayName);
+
+    if (!(formArray instanceof FormArray)) {
+      return;
+    }
+
+    formArray.controls.forEach((aliasGroup) => {
+      if (aliasGroup instanceof FormGroup) {
+        Object.values(aliasGroup.controls).forEach((control) => this.clearHiddenControlValidators(control));
+      } else {
+        this.clearHiddenControlValidators(aliasGroup);
+      }
+    });
+
+    this.clearHiddenControlValidators(formArray);
+  }
+
+  /**
+   * Removes validation from fields hidden by the reduced non-debtor parent/guardian screen.
+   */
+  private clearReducedParentGuardianHiddenFieldValidators(): void {
+    if (!this.isReducedParentGuardianMode) {
+      return;
+    }
+
+    FINES_ACC_PARTY_ADD_AMEND_CONVERT_REDUCED_PARENT_GUARDIAN_HIDDEN_CONTROLS.forEach((controlName) => {
+      this.clearHiddenControlValidators(this.form.get(controlName));
+    });
+
+    this.clearHiddenAliasValidators('facc_party_add_amend_convert_individual_aliases');
+    this.clearHiddenAliasValidators('facc_party_add_amend_convert_organisation_aliases');
+  }
+
+  /**
    * Listens for changes in the date of birth control and updates the age and label accordingly.
    * Only applicable for individual party types.
    */
@@ -362,6 +420,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
     }
 
     this.rePopulateForm(this.initialFormData?.formData || null);
+    this.clearReducedParentGuardianHiddenFieldValidators();
     this.setInitialErrorMessages();
     if (this.isIndividualPartyType) {
       this.setUpAliasCheckboxListener(
@@ -423,10 +482,17 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
+   * Returns true when the parent/guardian form should show only non-debtor information fields.
+   */
+  public get isReducedParentGuardianMode(): boolean {
+    return this.isParentGuardianPartyType && !this.isDebtor;
+  }
+
+  /**
    * Returns true if the contact section should be shown.
    */
   public get showContactDetails(): boolean {
-    return this.checkCompanyOrDebtor || this.isAddParentGuardianMode;
+    return this.checkCompanyOrDebtor || this.isReducedParentGuardianMode;
   }
 
   /**
@@ -453,7 +519,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
    * Resolves the defendant-details fragment to use when navigating back from the form.
    */
   public get routeFragment(): string {
-    if (this.isAddParentGuardianMode) {
+    if (this.isReducedParentGuardianMode) {
       return 'defendant';
     }
 
