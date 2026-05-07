@@ -624,4 +624,100 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.badgeRed).contains('No collection Order').should('be.visible');
     },
   );
+
+  it(
+    'AC1,2,3,4: API values output as positive - expects positive values returned in UI)',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC Updates'), '@JIRA-EPIC:PO-2750'] },
+    () => {
+      const headerMock = createParentGuardianHeaderMockWithName('Albert', 'Lake');
+      headerMock.payment_state_summary = {
+        imposed_amount: 1234.56,
+        arrears_amount: 200.0,
+        paid_amount: 100.0,
+        account_balance: 934.56,
+      };
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, headerMock, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.imposedAmountValue).should('contain.text', '£1234.56');
+      cy.get(DOM.arrearsAmountValue).should('contain.text', '£200.00');
+      cy.get(DOM.paidWrittenOffValue).should('contain.text', '£100.00');
+      cy.get(DOM.accountBalanceValue).should('contain.text', '£934.56');
+    },
+  );
+
+  it(
+    'AC1,2,3,4: API values output as negative - expects positive values returned in UI except acc balance)',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC Updates'), '@JIRA-EPIC:PO-2750'] },
+    () => {
+      const headerMock = createParentGuardianHeaderMockWithName('Albert', 'Lake');
+      headerMock.payment_state_summary = {
+        imposed_amount: -1234.56,
+        arrears_amount: -200.0,
+        paid_amount: -100.0,
+        account_balance: -934.56,
+      };
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, headerMock, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.imposedAmountValue).should('contain.text', '£1234.56');
+      cy.get(DOM.arrearsAmountValue).should('contain.text', '£200.00');
+      cy.get(DOM.paidWrittenOffValue).should('contain.text', '£100.00');
+      cy.get(DOM.accountBalanceValue).should('contain.text', '-£934.56');
+    },
+  );
+
+  it(
+    'AC1,2,3,4: API values output as zero - expects positive/zero values returned in UI)',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC Updates'), '@JIRA-EPIC:PO-2750'] },
+    () => {
+      const headerMock = createParentGuardianHeaderMockWithName('Albert', 'Lake');
+      headerMock.payment_state_summary = {
+        imposed_amount: 0.0,
+        arrears_amount: 0.0,
+        paid_amount: 0.0,
+        account_balance: 0.0,
+      };
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, headerMock, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.imposedAmountValue).should('contain.text', '£0.00');
+      cy.get(DOM.arrearsAmountValue).should('contain.text', '£0.00');
+      cy.get(DOM.paidWrittenOffValue).should('contain.text', '£0.00');
+      cy.get(DOM.accountBalanceValue).should('contain.text', '£0.00');
+    },
+  );
+
+  it(
+    'AC1,2,3,4: API values output mixed - expects positive values returned in UI except acc balance)',
+    { tags: [...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC Updates'), '@JIRA-EPIC:PO-2750'] },
+    () => {
+      const headerMock = createParentGuardianHeaderMockWithName('Albert', 'Lake');
+      headerMock.payment_state_summary = {
+        imposed_amount: 200.0,
+        arrears_amount: -100.0,
+        paid_amount: 0.0,
+        account_balance: -100.0,
+      };
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, headerMock, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.get(DOM.imposedAmountValue).should('contain.text', '£200.00');
+      cy.get(DOM.arrearsAmountValue).should('contain.text', '£100.00');
+      cy.get(DOM.paidWrittenOffValue).should('contain.text', '£0.00');
+      cy.get(DOM.accountBalanceValue).should('contain.text', '-£100.00');
+    },
+  );
 });
