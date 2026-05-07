@@ -24,6 +24,14 @@ export const defendantAccountPartyResolver: ResolveFn<
     return createDefendantDetailsRedirect(router);
   }
 
+  const isAddParentGuardianMode =
+    mode === FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD &&
+    partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
+
+  if (mode === FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD && !isAddParentGuardianMode) {
+    return createDefendantDetailsRedirect(router);
+  }
+
   /**
    * Fetches the defendant account party data using a chaining approach:
    * 1. First calls getDefendantAccountHeadingData to obtain defendant_party_id, parent_guardian_party_id and debtor_type
@@ -36,10 +44,6 @@ export const defendantAccountPartyResolver: ResolveFn<
    */
   return opalFinesService.getDefendantAccountHeadingData(Number(accountId)).pipe(
     switchMap((headingData) => {
-      const isAddParentGuardianMode =
-        mode === FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD &&
-        partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
-
       if (isAddParentGuardianMode) {
         const canAddParentGuardian =
           headingData.is_youth &&
@@ -57,7 +61,12 @@ export const defendantAccountPartyResolver: ResolveFn<
       }
 
       // Fetch defendant account party data using the determined party ID
-      return opalFinesService.getDefendantAccountParty(Number(accountId), partyId).pipe(
+      const partyRequest$ =
+        partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN
+          ? opalFinesService.getParentOrGuardianAccountParty(Number(accountId), partyId)
+          : opalFinesService.getDefendantAccountParty(Number(accountId), partyId);
+
+      return partyRequest$.pipe(
         map((data) => payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
         catchError(() => {
           return of(createDefendantDetailsRedirect(router));
