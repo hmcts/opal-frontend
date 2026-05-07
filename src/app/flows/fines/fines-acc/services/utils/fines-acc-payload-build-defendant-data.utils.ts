@@ -6,7 +6,6 @@ import { IOpalFinesDefendantAccountIndividualAlias } from '@services/fines/opal-
 import { IOpalFinesDefendantAccountIndividualDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-individual-details.interface';
 import { IOpalFinesDefendantAccountLanguagePreference } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-language-preference.interface';
 import { IOpalFinesDefendantAccountLanguagePreferences } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-language-preferences.interface';
-import { IOpalFinesDefendantAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-party-details.interface';
 import { IOpalFinesDefendantAccountOrganisationAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-organisation-alias.interface';
 import { IOpalFinesDefendantAccountOrganisationDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-organisation-details.interface';
 import { IOpalFinesDefendantAccountVehicleDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-vehicle-details.interface';
@@ -236,22 +235,16 @@ export const buildAccountPartyFromFormState = (
   partyId: string,
 ): IOpalFinesAccountPartyDetails => {
   const isOrganisation = partyType === 'company';
-  const partyDetails: IOpalFinesDefendantAccountPartyDetails = isOrganisation
-    ? {
-        party_id: partyId,
-        organisation_flag: true,
-        organisation_details: buildOrganisationDetails(formState),
-      }
-    : {
-        party_id: partyId,
-        organisation_flag: false,
-        individual_details: buildIndividualDetails(formState),
-      };
 
   return {
     defendant_account_party_type: partyType === 'parentGuardian' ? 'Parent/Guardian' : 'Defendant',
     is_debtor: isDebtor,
-    party_details: partyDetails,
+    party_details: {
+      party_id: partyId,
+      organisation_flag: isOrganisation,
+      organisation_details: isOrganisation ? buildOrganisationDetails(formState) : null,
+      individual_details: isOrganisation ? null : buildIndividualDetails(formState),
+    },
     address: buildAddressDetails(formState),
     contact_details: buildContactDetails(formState),
     vehicle_details: buildVehicleDetails(formState),
