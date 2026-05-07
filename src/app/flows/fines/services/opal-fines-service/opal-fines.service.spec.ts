@@ -1629,6 +1629,54 @@ describe('OpalFines', () => {
     });
   });
 
+  describe('postDefendantAccountParty', () => {
+    it('should send a POST request to add a defendant account party with version and business unit headers', () => {
+      const defendantAccountId = 123456;
+      const version = '1';
+      const businessUnitId = '61';
+      const payload = {
+        defendant_account_party: OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party,
+      };
+      const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
+
+      service.postDefendantAccountParty(defendantAccountId, payload, version, businessUnitId).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      const expectedUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties`;
+      const req = httpMock.expectOne(expectedUrl);
+
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+
+      req.flush(expectedResponse);
+    });
+
+    it('should send a POST request without optional headers when businessUnitId is not provided', () => {
+      const defendantAccountId = 123456;
+      const payload = {
+        defendant_account_party: OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party,
+      };
+      const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
+
+      service.postDefendantAccountParty(defendantAccountId, payload).subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+      const expectedUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties`;
+      const req = httpMock.expectOne(expectedUrl);
+
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(payload);
+      expect(req.request.headers.has('If-Match')).toBe(false);
+      expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+
+      req.flush(expectedResponse);
+    });
+  });
+
   it('should getMinorCreditorAccountHeader', () => {
     const accountId = 456;
     const expectedResponse = FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK;

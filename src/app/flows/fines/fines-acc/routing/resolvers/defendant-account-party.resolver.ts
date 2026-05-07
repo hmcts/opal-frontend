@@ -6,11 +6,15 @@ import { FinesAccPayloadService } from '../../services/fines-acc-payload.service
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../../../fines/fines-acc/services/constants/fines-acc-map-transform-items-config.constant';
 import { createDefendantDetailsRedirect } from './helpers/fines-acc-resolver-redirect';
+import { FINES_ACC_DEBTOR_TYPES } from '../../constants/fines-acc-debtor-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 
-export const defendantAccountPartyResolver: ResolveFn<IOpalFinesAccountDefendantAccountParty | RedirectCommand> = (
-  route: ActivatedRouteSnapshot,
-) => {
+export const defendantAccountPartyResolver: ResolveFn<
+  IOpalFinesAccountDefendantAccountParty | RedirectCommand | null
+> = (route: ActivatedRouteSnapshot) => {
   const partyType: string = route.paramMap.get('partyType')!;
+  const mode: string = route.paramMap.get('mode')!;
   const accountId = route.paramMap.get('accountId');
   const router = inject(Router);
   const opalFinesService = inject(OpalFines);
@@ -32,6 +36,19 @@ export const defendantAccountPartyResolver: ResolveFn<IOpalFinesAccountDefendant
    */
   return opalFinesService.getDefendantAccountHeadingData(Number(accountId)).pipe(
     switchMap((headingData) => {
+      const isAddParentGuardianMode =
+        mode === FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD &&
+        partyType === FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
+
+      if (isAddParentGuardianMode) {
+        const canAddParentGuardian =
+          headingData.is_youth &&
+          headingData.debtor_type === FINES_ACC_DEBTOR_TYPES.defendant &&
+          !headingData.parent_guardian_party_id;
+
+        return canAddParentGuardian ? of(null) : of(createDefendantDetailsRedirect(router));
+      }
+
       const partyId =
         partyType === 'parentGuardian' ? headingData.parent_guardian_party_id : headingData.defendant_account_party_id;
 

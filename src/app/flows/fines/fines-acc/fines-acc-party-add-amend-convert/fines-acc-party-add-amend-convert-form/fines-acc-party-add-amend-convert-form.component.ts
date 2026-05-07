@@ -58,6 +58,12 @@ import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add
 import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
@@ -91,6 +97,10 @@ const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 
     FinesAccPartyAddAmendConvertEd,
     FinesAccPartyAddAmendConvertLp,
     FinesAccPartyAddAmendConvertDobNi,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
   ],
   templateUrl: './fines-acc-party-add-amend-convert-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -406,6 +416,20 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
+   * Returns true when the shared form is being used to add a non-paying parent/guardian.
+   */
+  public get isAddParentGuardianMode(): boolean {
+    return this.mode === FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD && this.isParentGuardianPartyType;
+  }
+
+  /**
+   * Returns true if the contact section should be shown.
+   */
+  public get showContactDetails(): boolean {
+    return this.checkCompanyOrDebtor || this.isAddParentGuardianMode;
+  }
+
+  /**
    * Returns true if the party type is parent/guardian.
    */
   public get isParentGuardianPartyType(): boolean {
@@ -429,6 +453,10 @@ export class FinesAccPartyAddAmendConvertFormComponent
    * Resolves the defendant-details fragment to use when navigating back from the form.
    */
   public get routeFragment(): string {
+    if (this.isAddParentGuardianMode) {
+      return 'defendant';
+    }
+
     return this.partyType === this.partyTypes.PARENT_GUARDIAN ? 'parent-or-guardian' : 'defendant';
   }
 
