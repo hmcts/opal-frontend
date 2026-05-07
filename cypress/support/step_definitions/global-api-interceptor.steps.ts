@@ -67,6 +67,11 @@ When(
   },
 );
 
+When('I open the Fixed penalty section and the fixed penalty details request receives no response', () => {
+  log('step', 'Opening Fixed penalty section with no response from the details request');
+  flow().openFixedPenaltyDetailsWithNetworkFailure();
+});
+
 Then('the global error banner is displayed', () => {
   log('assert', 'Asserting global error banner is visible');
   actions().assertGlobalErrorBanner();
