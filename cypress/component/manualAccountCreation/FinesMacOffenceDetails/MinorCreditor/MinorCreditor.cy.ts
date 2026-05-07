@@ -205,15 +205,26 @@ describe('FinesMacMinorCreditor', () => {
   );
 
   it(
-    '(AC.2) should display format validation errors',
+    '(AC.2, 4, 8) should display format validation errors',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669'), '@JIRA-EPIC:PO-545'],
+      tags: [
+        ...buildTags(
+          '@JIRA-STORY:PO-412',
+          '@JIRA-STORY:PO-668',
+          '@JIRA-STORY:PO-669',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-EPIC:PO-545',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7426',
+      ],
     },
     () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
-      formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = '!@#';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = '©µ±ö€•';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = 'abc';
       formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = 'abc';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = '!@#';
@@ -360,9 +371,20 @@ describe('FinesMacMinorCreditor', () => {
   );
 
   it(
-    '(AC.11) should allow form submission with valid data for individual creditor',
+    '(AC.11, 4, 8) should allow form submission with valid data for individual creditor',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-412', '@JIRA-STORY:PO-668', '@JIRA-STORY:PO-669'), '@JIRA-EPIC:PO-545'],
+      tags: [
+        ...buildTags(
+          '@JIRA-STORY:PO-412',
+          '@JIRA-STORY:PO-668',
+          '@JIRA-STORY:PO-669',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-EPIC:PO-545',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7434',
+      ],
     },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
@@ -377,7 +399,7 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_address_line_3 = 'Testing';
       formData[0].formData.fm_offence_details_minor_creditor_post_code = 'TE12 3ST';
       formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
-      formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = "Aa0'!#$%&()*+,-.";
       formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = '123456';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = 'Testing';

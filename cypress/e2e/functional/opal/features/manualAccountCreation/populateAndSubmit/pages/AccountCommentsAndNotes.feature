@@ -44,12 +44,12 @@ Feature: Manual account creation - Account Comments and Notes
       | Plain comment      | Account, note-1. O'Neil ok |
 
   @JIRA-DEFECT:PO-3713
-  Scenario: Account comments and notes show updated allowed character error messages [@PO-3713]
+  Scenario: Account comments and notes show updated allowed character error messages [@PO-3713, @PO-3415]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and originator type "New"
-    When I provide account comments "Invalid @@" and notes "Invalid %%"
+    When I provide account comments "Invalid ©µ±ö€" and notes "Invalid ©µ±ö€"
     And I return to account details
-    Then the manual account comment validation error is "Add comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)"
-    And the manual account note validation error is "Add account note must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)"
+    Then the manual account comment validation error is "Add comment must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)"
+    And the manual account note validation error is "Add account note must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)"
 
   @JIRA-KEY:POT-5029
   Scenario: Unsaved account comments can be kept or discarded [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
