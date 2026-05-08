@@ -34,7 +34,6 @@ import { SessionConfiguration, SsoConfiguration } from '@hmcts/opal-frontend-com
 import { HealthCheck } from '@hmcts/opal-frontend-common-node/health';
 import { PropertiesVolume } from '@hmcts/opal-frontend-common-node/properties-volume';
 import { Routes } from '@hmcts/opal-frontend-common-node/routes';
-import { configureUserStateRoute } from '@hmcts/opal-frontend-common-node/user-state';
 
 const indexHtml = existsSync(join(distFolder, 'index.original.html'))
   ? join(distFolder, 'index.original.html')
@@ -93,15 +92,6 @@ function app(): Express {
     proxyConfiguration,
   } = getRoutesConfig();
 
-  if (!proxyConfiguration.opalUserServiceUrl) {
-    throw new Error('Missing opalUserServiceUrl for user state route setup');
-  }
-
-  configureUserStateRoute(server, {
-    userServiceBaseUrl: proxyConfiguration.opalUserServiceUrl,
-    userStateUrl: opalUserServiceConfiguration.userStateUrl,
-    userStateConfiguration,
-  });
   configureApiProxyRoutes(server, proxyConfiguration);
 
   server.get('/health', (_req: Request, res: Response) => {
@@ -116,6 +106,7 @@ function app(): Express {
     sessionConfiguration,
     ssoConfiguration,
     opalUserServiceConfig: opalUserServiceConfiguration,
+    userStateConfiguration,
     proxyConfiguration,
   });
 
