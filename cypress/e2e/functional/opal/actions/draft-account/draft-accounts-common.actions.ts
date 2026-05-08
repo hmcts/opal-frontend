@@ -84,19 +84,9 @@ export class DraftAccountsCommonActions {
     const tryPage = () => {
       cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
       cy.get('body').then(($body) => {
-        const links = $body.find(L.cells.defendant).filter((_, el) => matchesCandidate(Cypress.$(el).text()));
-
+        const links = $body.find(L.cells.defendantLink).filter((_, el) => matchesCandidate(Cypress.$(el).text()));
         if (links.length) {
-          const $match = Cypress.$(links.first());
-          const $row = $match.closest('tr');
-
-          const defendantLink = $match.find('a').first();
-          const rowLink = $row.find('a').first();
-
-          cy.wrap(defendantLink.length ? defendantLink : rowLink)
-            .scrollIntoView()
-            .click({ force: true });
-
+          cy.wrap(links.first()).scrollIntoView().click({ force: true });
           return;
         }
 
