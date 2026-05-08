@@ -220,6 +220,7 @@ export class GlobalApiInterceptorFlow {
     this.notes.enterAccountNote(noteText);
     this.notes.save();
     this.actions.waitForAddNoteNonRetriablePermissionError(statusCode);
+    cy.location('pathname', this.common.getTimeoutOptions()).should('eq', '/error/permission-denied');
     this.common.assertHeaderContains(expectedHeader);
   }
 
