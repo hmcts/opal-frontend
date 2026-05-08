@@ -360,19 +360,6 @@ export class GlobalApiInterceptorActions {
   }
 
   /**
-   * Clicks the Permission Denied page Go back link.
-   * @remarks Uses the visible GOV.UK link text from the Permission Denied page.
-   * @example
-   * actions.clickPermissionDeniedBackLink();
-   */
-  public clickPermissionDeniedBackLink(): void {
-    log('action', 'Clicking Permission Denied Go back link');
-    cy.contains('a.govuk-link', /^Go back$/, this.common.getTimeoutOptions())
-      .should('be.visible')
-      .click();
-  }
-
-  /**
    * Asserts the global error banner is visible with the standard message.
    * @remarks Uses the shared global alert selector and standard error message.
    * @example

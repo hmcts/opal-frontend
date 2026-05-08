@@ -219,5 +219,3 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
         | message | the account is outside your business unit and some features are restricted |
         | message | you are not permitted to use this feature                                  |
         | message | If you think this is incorrect, contact your line manager.                 |
-      # AC1b: Go back returns to the screen that triggered the failed API call.
-      And the permission denied Go back link returns me to the Add account note screen

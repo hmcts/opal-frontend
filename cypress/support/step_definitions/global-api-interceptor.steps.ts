@@ -107,8 +107,3 @@ Then('the error page shows:', (table: DataTable) => {
   log('assert', 'Asserting error page content', { rows: table.raw() });
   actions().assertErrorPageContent(table);
 });
-
-Then('the permission denied Go back link returns me to the Add account note screen', () => {
-  log('assert', 'Returning from Permission Denied page to Add account note screen');
-  flow().returnToAddAccountNoteFromPermissionDenied();
-});

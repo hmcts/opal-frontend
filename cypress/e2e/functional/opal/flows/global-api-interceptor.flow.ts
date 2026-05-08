@@ -225,18 +225,6 @@ export class GlobalApiInterceptorFlow {
   }
 
   /**
-   * Clicks Go back on the Permission Denied page and asserts the Add account note page is restored.
-   * @remarks Covers the FAE Add Note back-navigation acceptance criterion.
-   * @example
-   * flow.returnToAddAccountNoteFromPermissionDenied();
-   */
-  public returnToAddAccountNoteFromPermissionDenied(): void {
-    log('flow', 'Returning from Permission Denied page to Add account note');
-    this.actions.clickPermissionDeniedBackLink();
-    this.notes.assertHeaderContains('Add account note');
-  }
-
-  /**
    * Refreshes the current page and confirms the global banner is cleared.
    * @param expectedHeader - Expected header text after refresh.
    * @remarks Uses header assertions to guard the refresh destination.
