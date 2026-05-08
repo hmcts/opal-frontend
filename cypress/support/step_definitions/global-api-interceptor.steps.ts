@@ -67,6 +67,19 @@ When(
   },
 );
 
+When('I open the Fixed penalty section and the fixed penalty details request receives no response', () => {
+  log('step', 'Opening Fixed penalty section with no response from the details request');
+  flow().openFixedPenaltyDetailsWithNetworkFailure();
+});
+
+When(
+  'I save the defendant details and the Replace Defendant Account Party request fails with a non-retriable {int} error',
+  (statusCode: number) => {
+    log('step', 'Saving defendant details with defendant account party concurrency error', { statusCode });
+    flow().saveDefendantDetailsWithPartyConcurrencyError(statusCode);
+  },
+);
+
 Then('the global error banner is displayed', () => {
   log('assert', 'Asserting global error banner is visible');
   actions().assertGlobalErrorBanner();

@@ -45,6 +45,8 @@ export const MacPersonalDetailsLocators = {
   errorSummary: '.govuk-error-summary',
   errorSummaryTitle: '.govuk-error-summary__title',
   inlineError: '.govuk-error-message, .govuk-form-group--error .govuk-error-message',
+  firstNameError: '#fm_personal_details_forenames-error-message',
+  lastNameError: '#fm_personal_details_surname-error-message',
 } as const;
 
 export const getAliasFirstName = (index: number): string => `input[id="fm_personal_details_alias_forenames_${index}"]`;

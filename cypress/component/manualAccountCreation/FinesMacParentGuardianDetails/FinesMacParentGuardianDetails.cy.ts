@@ -157,7 +157,18 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
   it(
     '(AC.1) should have length validation on last name field',
-    { tags: [...buildTags('@JIRA-STORY:PO-569'), '@JIRA-EPIC:PO-344'] },
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-344',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-569',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7486',
+      ],
+    },
     () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'a'.repeat(31);
@@ -169,7 +180,18 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     '(AC.1) should not permit special characters on last name field',
-    { tags: [...buildTags('@JIRA-STORY:PO-569'), '@JIRA-EPIC:PO-344'] },
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-344',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-569',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7487',
+      ],
+    },
     () => {
       cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
@@ -418,7 +440,18 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it(
     'Should show error for too many characters for alias first and last name',
-    { tags: [...buildTags('@JIRA-STORY:PO-1679'), '@JIRA-EPIC:PO-344'] },
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-STORY:PO-1679',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+          '@JIRA-EPIC:PO-344',
+          '@JIRA-EPIC:PO-2219',
+        ),
+        '@JIRA-KEY:POT-7498',
+      ],
+    },
     () => {
       setupComponent(null, 'pgToPay');
 
@@ -468,35 +501,35 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it(
-    'Should show error for non-alphabetical characters for alias first and last name',
-    { tags: [...buildTags('@JIRA-STORY:PO-1679'), '@JIRA-EPIC:PO-344'] },
+    'Should show error for non-single-byte ASCII characters for alias first and last name',
+    { tags: [...buildTags('@JIRA-STORY:PO-1679', '@JIRA-EPIC:PO-344'), '@JIRA-KEY:POT-7499'] },
     () => {
       setupComponent(null, 'pgToPay');
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-        fm_parent_guardian_details_alias_forenames_0: 'Aliasfname1',
-        fm_parent_guardian_details_alias_surname_0: 'Aliaslname1',
+        fm_parent_guardian_details_alias_forenames_0: 'Aliasfname©µ±ö€•',
+        fm_parent_guardian_details_alias_surname_0: 'Aliaslname©µ±ö€•',
       });
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-        fm_parent_guardian_details_alias_forenames_1: 'Fnametwo.',
-        fm_parent_guardian_details_alias_surname_1: 'Lnametwo*',
+        fm_parent_guardian_details_alias_forenames_1: 'Fnametwo©µ±ö€•',
+        fm_parent_guardian_details_alias_surname_1: 'Lnametwo©µ±ö€•',
       });
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-        fm_parent_guardian_details_alias_forenames_2: 'Fname-three',
-        fm_parent_guardian_details_alias_surname_2: 'Lname_three',
+        fm_parent_guardian_details_alias_forenames_2: 'Fname-three©µ±ö€•',
+        fm_parent_guardian_details_alias_surname_2: 'Lname_three©µ±ö€•',
       });
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-        fm_parent_guardian_details_alias_forenames_3: 'Fname@four',
-        fm_parent_guardian_details_alias_surname_3: 'Lnamefour!',
+        fm_parent_guardian_details_alias_forenames_3: 'Fname@four©µ±ö€•',
+        fm_parent_guardian_details_alias_surname_3: 'Lnamefour©µ±ö€•',
       });
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
-        fm_parent_guardian_details_alias_forenames_4: 'Fname/five',
-        fm_parent_guardian_details_alias_surname_4: 'Lnamefive()',
+        fm_parent_guardian_details_alias_forenames_4: 'Fname/five©µ±ö€•',
+        fm_parent_guardian_details_alias_surname_4: 'Lnamefive©µ±ö€•',
       });
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();

@@ -27,6 +27,33 @@ export const ALIAS_PERSONAL_DETAILS = {
   missingAliasLastNameFive: 'Enter alias 5 last name',
 };
 
+export const ALIAS_ALLOWED_CHARACTER_VALIDATION = {
+  firstNameAllowedCharacters:
+    "Defendant's first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)",
+  lastNameAllowedCharacters:
+    "Defendant's last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)",
+  missingAliasFirstNameOne:
+    'Alias 1 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasFirstNameTwo:
+    'Alias 2 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasFirstNameThree:
+    'Alias 3 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasFirstNameFour:
+    'Alias 4 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasFirstNameFive:
+    'Alias 5 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasLastNameOne:
+    'Alias 1 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasLastNameTwo:
+    'Alias 2 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasLastNameThree:
+    'Alias 3 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasLastNameFour:
+    'Alias 4 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  missingAliasLastNameFive:
+    'Alias 5 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+};
+
 export const LENGTH_VALIDATION = {
   firstNameTooLong: "Defendant's first name(s) must be 20 characters or fewer",
   lastNameTooLong: "Defendant's last name must be 30 characters or fewer",
