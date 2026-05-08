@@ -360,6 +360,9 @@ Feature: Navigate and edit sections from task list
       | Account type  | Fine               |
       | Business unit | Business Unit A    |
 
+    And I open the draft account for defendant "Smith{uniq}, James"
+    Then I should see the header containing text "Smith{uniq}, James"
+
   @JIRA-EPIC:PO-855
   @JIRA-STORY:PO-1804
   Scenario: Fixed penalty individual accounts are accessible from In Review drafts
