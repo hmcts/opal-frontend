@@ -13304,7 +13304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:3.0.5, http-proxy-middleware@npm:^3.0.0":
+"http-proxy-middleware@npm:3.0.5":
   version: 3.0.5
   resolution: "http-proxy-middleware@npm:3.0.5"
   dependencies:
