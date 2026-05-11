@@ -129,9 +129,17 @@ export class AppComponent implements OnInit, OnDestroy {
   public showExpiredWarning = false;
   public readonly sessionService = inject(SessionService);
   public readonly globalStore = inject(GlobalStore);
-  public readonly navigationItems = computed(() =>
-    getAccessiblePrimaryNavigationItems(NAVIGATION_BAR_CONFIGURATION, this.globalStore.userState()),
-  );
+  public readonly navigationItems = computed(() => {
+    const accessibleNavigationItems = getAccessiblePrimaryNavigationItems(
+      NAVIGATION_BAR_CONFIGURATION,
+      this.globalStore.userState(),
+    );
+    const isRelease1aEnabled = this.globalStore.featureFlags()['release-1a'];
+
+    return isRelease1aEnabled
+      ? accessibleNavigationItems
+      : accessibleNavigationItems.filter((item) => item.key !== 'accounts');
+  });
   public readonly primaryNavigationHidden = toSignal(
     this.primaryNavigationRouteEvents$.pipe(map((event) => this.getPrimaryNavigationHiddenFromRouterEvent(event))),
     {

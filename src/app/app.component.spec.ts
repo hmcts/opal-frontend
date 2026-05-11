@@ -460,14 +460,26 @@ describe('AppComponent - browser', () => {
     expect(getPrimaryNavigationTexts(fixture)).not.toContain('Accounts');
   });
 
-  it('should show Accounts in primary navigation when the user has an accounts permission in any business unit', () => {
+  it('should show Accounts in primary navigation when the user has an accounts permission in any business unit and release-1a is enabled', () => {
     globalStore.setAuthenticated(true);
     globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
+    globalStore.setFeatureFlags({ 'release-1a': true });
 
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
     expect(getPrimaryNavigationTexts(fixture)).toContain('Accounts');
+  });
+
+  it('should not show Accounts in primary navigation when the user has an accounts permission in any business unit and release-1a is disabled', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
+    globalStore.setFeatureFlags({ 'release-1a': false });
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Accounts');
   });
 
   it('should show the primary navigation on browse routes', async () => {
