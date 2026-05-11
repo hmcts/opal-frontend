@@ -79,7 +79,6 @@
   },
   "user-state": {
     "cacheKeyPrefix": "USER_STATE_",
-    "redisClientKey": "redisClient",
     "routePath": "/api/user-state",
     "tokenClaim": "sub"
   }
