@@ -9,15 +9,7 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-acc-party-add-amend-convert-field-errors.interface';
 import { IFinesAccPartyAddAmendConvertForm } from '../interfaces/fines-acc-party-add-amend-convert-form.interface';
@@ -222,7 +214,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
       'facc_party_add_amend_convert_national_insurance_number',
       new FormControl(null, [nationalInsuranceNumberValidator()]),
     );
-    formGroup.addControl('facc_party_add_amend_convert_individual_aliases', new FormArray([]));
+    formGroup.addControl('facc_party_add_amend_convert_individual_aliases', this.createFormAlias([]));
 
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_company_name',
@@ -290,7 +282,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
         ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
     );
-    formGroup.addControl('facc_party_add_amend_convert_organisation_aliases', new FormArray([]));
+    formGroup.addControl('facc_party_add_amend_convert_organisation_aliases', this.createFormAlias([]));
   }
 
   /**
@@ -320,19 +312,10 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
-   * Clears validators from a form control that is not displayed in the reduced parent/guardian journey.
-   */
-  private clearHiddenControlValidators(control: AbstractControl | null): void {
-    if (!control) {
-      return;
-    }
-
-    control.clearValidators();
-    control.updateValueAndValidity({ emitEvent: false });
-  }
-
-  /**
    * Clears validators from hidden alias rows while keeping their current values on the form.
+   *
+   * Uses the base form update helper for each nested alias control. The alias controls
+   * are FormArray children, so they need to be addressed by their array path.
    */
   private clearHiddenAliasValidators(formArrayName: string): void {
     const formArray = this.form.get(formArrayName);
@@ -341,15 +324,17 @@ export class FinesAccPartyAddAmendConvertFormComponent
       return;
     }
 
-    formArray.controls.forEach((aliasGroup) => {
+    formArray.controls.forEach((aliasGroup, index) => {
       if (aliasGroup instanceof FormGroup) {
-        Object.values(aliasGroup.controls).forEach((control) => this.clearHiddenControlValidators(control));
+        Object.keys(aliasGroup.controls).forEach((controlName) => {
+          this.updateControl(`${formArrayName}.${index}.${controlName}`, []);
+        });
       } else {
-        this.clearHiddenControlValidators(aliasGroup);
+        this.updateControl(`${formArrayName}.${index}`, []);
       }
     });
 
-    this.clearHiddenControlValidators(formArray);
+    this.updateControl(formArrayName, []);
   }
 
   /**
@@ -361,7 +346,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
     }
 
     FINES_ACC_PARTY_ADD_AMEND_CONVERT_REDUCED_PARENT_GUARDIAN_HIDDEN_CONTROLS.forEach((controlName) => {
-      this.clearHiddenControlValidators(this.form.get(controlName));
+      this.updateControl(controlName, []);
     });
 
     this.clearHiddenAliasValidators('facc_party_add_amend_convert_individual_aliases');
