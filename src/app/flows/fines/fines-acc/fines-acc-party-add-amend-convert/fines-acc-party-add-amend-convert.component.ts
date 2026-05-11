@@ -124,20 +124,6 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   }
 
   /**
-   * Determines whether add mode is missing the base version needed for optimistic locking.
-   */
-  private get isAddModeMissingBaseVersion(): boolean {
-    return this.isAddMode && !this.baseVersion;
-  }
-
-  /**
-   * Determines whether amend or convert mode is missing the party identifier to update.
-   */
-  private get isNonAddModeMissingPartyId(): boolean {
-    return !this.isAddMode && !this.partyId;
-  }
-
-  /**
    * Builds and sends the request for adding a parent or guardian party.
    * @param formData - The form data submitted from the child component
    * @returns An observable containing the added defendant account party response
@@ -180,12 +166,6 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
    * @param formData - The form data submitted from the child component
    */
   public handleFormSubmit(formData: IFinesAccPartyAddAmendConvertForm): void {
-    // If the submit-specific values are missing, redirect back to defendant details
-    if (this.isAddModeMissingBaseVersion || this.isNonAddModeMissingPartyId) {
-      this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, undefined, this.fragment);
-      return;
-    }
-
     let request$: Observable<IOpalFinesAccountDefendantAccountParty>;
     if (this.isAddMode) {
       request$ = this.addDefendantAccountParty(formData);
