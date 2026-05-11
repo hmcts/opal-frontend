@@ -192,3 +192,30 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       And I go to the Defendant details section and the header is "Defendant details"
       And I edit the Defendant details without making changes
       Then I should see the First name field still contains "Casey"
+
+
+  Rule: Account note entrypoint
+
+    Background:
+      Given a published adult or youth defendant account exists:
+        | first name                | Priya                |
+        | last name                 | PermissionNote{uniq} |
+        | prosecutor case reference | PCRPERM{uniqUpper}   |
+        | date of birth             | 2001-05-15           |
+      When I search for the account by last name "PermissionNote{uniq}" and open the latest result
+      Then I should see the account summary header contains "Mr Priya PERMISSIONNOTE{uniqUpper}"
+
+    @JIRA-EPIC:PO-2239
+    @JIRA-STORY:PO-2227
+    Scenario: Permission Denied page is displayed when the Add Note API returns a non-retriable permission error
+      # AC1: CTA-triggered Add Note request fails with a non-retriable HTTP 403 permission response.
+      When I open the Add account note screen and verify the header is Add account note
+      And I save account note "Permission denied test note" and the Add Note request fails with a non-retriable 403 error
+      # AC1a: Permission Denied page displays the expected design content.
+      Then the error page shows:
+        | field   | value                                                                      |
+        | header  | You do not have permission for this                                        |
+        | message | This may be because:                                                       |
+        | message | the account is outside your business unit and some features are restricted |
+        | message | you are not permitted to use this feature                                  |
+        | message | If you think this is incorrect, contact your line manager.                 |
