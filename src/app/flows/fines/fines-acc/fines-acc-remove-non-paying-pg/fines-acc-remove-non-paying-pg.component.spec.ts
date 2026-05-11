@@ -8,6 +8,7 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_SUCCESS_MESSAGE } from './constants/fines-acc-remove-non-paying-pg-success-message.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 
 describe('FinesAccRemoveNonPayingPgComponent', () => {
   let component: FinesAccRemoveNonPayingPgComponent;
@@ -79,7 +80,7 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
       [`../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`],
       {
         relativeTo: mockRoute,
-        fragment: 'parent-or-guardian',
+        fragment: FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian'],
       },
     );
   });
@@ -104,7 +105,7 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
       [`../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`],
       {
         relativeTo: mockRoute,
-        fragment: 'defendant',
+        fragment: FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant,
       },
     );
   });
@@ -132,7 +133,7 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
       [`../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`],
       {
         relativeTo: mockRoute,
-        fragment: 'parent-or-guardian',
+        fragment: FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian'],
       },
     );
   });

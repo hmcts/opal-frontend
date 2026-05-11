@@ -29,7 +29,7 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
     vi.spyOn<any, any>(component.removeParentOrGuardianDetails, 'emit');
     component.handleRemoveParentOrGuardianDetails(event);
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(component.removeParentOrGuardianDetails.emit).toHaveBeenCalled();
+    expect(component.removeParentOrGuardianDetails.emit).toHaveBeenCalledWith(event);
   });
 
   it('should handle change parent or guardian details click', () => {

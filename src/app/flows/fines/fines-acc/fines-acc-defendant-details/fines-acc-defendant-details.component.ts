@@ -410,8 +410,12 @@ export class FinesAccDefendantDetailsComponent
 
   /**
    * Navigates to the non-paying parent/guardian removal confirmation page.
+   *
+   * @param event - The click event that triggered the navigation.
    */
-  public navigateToRemoveNonPayingParentGuardianPage(): void {
+  public navigateToRemoveNonPayingParentGuardianPage(event?: Event): void {
+    event?.preventDefault();
+
     if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.remove}/non-paying/parent-guardian`], {
         relativeTo: this.activatedRoute,

@@ -4,6 +4,8 @@ import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
+import { type TFinesAccDefendantDetailsTabKey } from '../fines-acc-defendant-details/types/fines-acc-defendant-details-tab-key.type';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_SUCCESS_MESSAGE } from './constants/fines-acc-remove-non-paying-pg-success-message.constant';
@@ -28,7 +30,7 @@ export class FinesAccRemoveNonPayingPgComponent implements OnDestroy {
   /**
    * Navigates to the defendant details page with the supplied tab fragment selected.
    */
-  private navigateToDefendantDetailsPage(fragment: 'defendant' | 'parent-or-guardian'): void {
+  private navigateToDefendantDetailsPage(fragment: TFinesAccDefendantDetailsTabKey): void {
     this.router.navigate([`../../../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`], {
       relativeTo: this.route,
       fragment,
@@ -39,7 +41,7 @@ export class FinesAccRemoveNonPayingPgComponent implements OnDestroy {
    * Navigates back to the Parent or guardian tab without removing the parent/guardian.
    */
   public navigateToParentGuardianTab(): void {
-    this.navigateToDefendantDetailsPage('parent-or-guardian');
+    this.navigateToDefendantDetailsPage(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian']);
   }
 
   /**
@@ -73,7 +75,7 @@ export class FinesAccRemoveNonPayingPgComponent implements OnDestroy {
       .subscribe(() => {
         this.opalFinesService.clearAccountDetailsCache();
         this.finesAccStore.setSuccessMessage(FINES_ACC_REMOVE_NON_PAYING_PG_SUCCESS_MESSAGE);
-        this.navigateToDefendantDetailsPage('defendant');
+        this.navigateToDefendantDetailsPage(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
       });
   }
 

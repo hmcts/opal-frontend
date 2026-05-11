@@ -460,9 +460,11 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to remove non-paying parent guardian page', () => {
+    const event = { preventDefault: vi.fn() } as unknown as Event;
     routerSpy.navigate.mockClear();
-    component.navigateToRemoveNonPayingParentGuardianPage();
+    component.navigateToRemoveNonPayingParentGuardianPage(event);
 
+    expect(event.preventDefault).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.remove}/non-paying/parent-guardian`],
       {

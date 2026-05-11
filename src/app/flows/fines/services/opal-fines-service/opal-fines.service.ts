@@ -693,7 +693,7 @@ export class OpalFines {
     defendant_party_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
     if (!this.cache.defendantAccountPartyCache$) {
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${defendant_party_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendant_party_id}`;
       this.cache.defendantAccountPartyCache$ = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
@@ -724,7 +724,7 @@ export class OpalFines {
     party_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
     if (!this.cache.defendantAccountParentOrGuardianAccountPartyCache$) {
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${party_account_id}`;
       this.cache.defendantAccountParentOrGuardianAccountPartyCache$ = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
@@ -1003,7 +1003,7 @@ export class OpalFines {
     version?: string,
     businessUnitId?: string,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`;
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendantAccountPartyId}`;
 
     const headers: Record<string, string> = {};
     if (version) {
@@ -1031,7 +1031,7 @@ export class OpalFines {
     version?: string,
     businessUnitId?: string,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties`;
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}`;
 
     const headers: Record<string, string> = {};
     if (version) {
@@ -1061,7 +1061,7 @@ export class OpalFines {
     version?: string,
     businessUnitId?: string,
   ): Observable<void> {
-    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`;
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendantAccountPartyId}`;
 
     const headers: Record<string, string> = {};
     if (version) {
