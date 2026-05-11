@@ -34,10 +34,17 @@ export class FinesAccPartyDetails {
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
   /**
+   * Determines whether the party is responsible for paying the account.
+   */
+  private get isDebtor(): boolean {
+    return this.party.is_debtor;
+  }
+
+  /**
    * Determines whether to use the reduced parent/guardian non-debtor display.
    */
   public get isParentGuardianNonDebtor(): boolean {
-    return this.isParentGuardianAccount && !this.party.is_debtor;
+    return this.isParentGuardianAccount && !this.isDebtor;
   }
 
   /**
@@ -51,28 +58,28 @@ export class FinesAccPartyDetails {
    * Determines whether vehicle details should be shown for an individual-style party.
    */
   public get showIndividualVehicleDetails(): boolean {
-    return this.party.is_debtor;
+    return this.isDebtor;
   }
 
   /**
    * Determines whether contact details should be shown.
    */
   public get showContactDetails(): boolean {
-    return this.party.is_debtor || this.isParentGuardianNonDebtor;
+    return this.isDebtor || this.isParentGuardianNonDebtor;
   }
 
   /**
    * Determines whether language preferences should be shown.
    */
   public get showLanguagePreferences(): boolean {
-    return this.party.is_debtor && this.hasWelshLanguagePreference();
+    return this.isDebtor && this.hasWelshLanguagePreference();
   }
 
   /**
    * Determines whether employer details should be shown.
    */
   public get showEmployerDetails(): boolean {
-    return !this.party.party_details.organisation_flag && this.party.is_debtor && !!this.party.employer_details;
+    return !this.party.party_details.organisation_flag && this.isDebtor && !!this.party.employer_details;
   }
 
   /**
@@ -80,9 +87,7 @@ export class FinesAccPartyDetails {
    */
   public get showCompanyDetails(): boolean {
     return (
-      this.party.party_details.organisation_flag &&
-      this.party.is_debtor &&
-      !!this.party.party_details.organisation_details
+      this.party.party_details.organisation_flag && this.isDebtor && !!this.party.party_details.organisation_details
     );
   }
 
