@@ -19,6 +19,8 @@ import { ManualCreateAccountActions } from '../actions/manual-account-creation/c
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { PrimaryNavigationActions } from '../actions/primary-navigation.actions';
 import { AccountDetailsNavActions } from '../actions/account-details/details.nav.actions';
+import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
+import { AccountDetailsNotesActions } from '../actions/account-details/details.notes.actions';
 
 const log = createScopedLogger('GlobalApiInterceptorFlow');
 
@@ -38,6 +40,8 @@ export class GlobalApiInterceptorFlow {
   private readonly accountSearchCommon = new AccountSearchCommonActions();
   private readonly accountSearchCompanies = new AccountSearchCompanyActions();
   private readonly detailsNav = new AccountDetailsNavActions();
+  private readonly editDefendantDetails = new EditDefendantDetailsActions();
+  private readonly notes = new AccountDetailsNotesActions();
 
   /**
    * Opens Manual Account Creation and triggers a CEP-style business units error.
@@ -181,6 +185,46 @@ export class GlobalApiInterceptorFlow {
   }
 
   /**
+   * Saves Defendant details and triggers a non-retriable concurrency error from the party update endpoint.
+   * @param statusCode - HTTP status to stub for the Replace Defendant Account Party request.
+   * @remarks Guards the FAE Replace Defendant Account Party endpoint.
+   * @example
+   * flow.saveDefendantDetailsWithPartyConcurrencyError(409);
+   */
+  public saveDefendantDetailsWithPartyConcurrencyError(statusCode: number): void {
+    const expectedHeader = this.resolveDefendantAccountPartyHeader(statusCode);
+    log('flow', 'Saving defendant details with defendant account party concurrency error', {
+      statusCode,
+      expectedHeader,
+    });
+    this.actions.stubDefendantAccountPartyConcurrencyError(statusCode);
+    this.editDefendantDetails.saveChanges();
+    this.actions.waitForDefendantAccountPartyConcurrencyError(statusCode);
+    cy.location('pathname', this.common.getTimeoutOptions()).should('eq', '/error/concurrency-failure');
+    this.common.assertHeaderContains(expectedHeader);
+  }
+
+  /**
+   * Saves an account note and triggers the Add Note POST non-retriable permission error.
+   * @param noteText - Text to enter into the Add account note form.
+   * @param statusCode - HTTP status to stub for the Add Note request.
+   * @remarks Guards the Permission Denied page header after the common interceptor handles the error.
+   * @example
+   * flow.saveAccountNoteWithNonRetriablePermissionError('Permission denied test note', 403);
+   */
+  public saveAccountNoteWithNonRetriablePermissionError(noteText: string, statusCode: number): void {
+    const expectedHeader = this.resolveAddNoteNonRetriableHeader(statusCode);
+    log('flow', 'Saving account note with non-retriable permission error', { statusCode });
+    this.notes.assertHeaderContains('Add account note');
+    this.actions.stubAddNoteNonRetriablePermissionError(statusCode);
+    this.notes.enterAccountNote(noteText);
+    this.notes.save();
+    this.actions.waitForAddNoteNonRetriablePermissionError(statusCode);
+    cy.location('pathname', this.common.getTimeoutOptions()).should('eq', '/error/permission-denied');
+    this.common.assertHeaderContains(expectedHeader);
+  }
+
+  /**
    * Refreshes the current page and confirms the global banner is cleared.
    * @param expectedHeader - Expected header text after refresh.
    * @remarks Uses header assertions to guard the refresh destination.
@@ -228,5 +272,35 @@ export class GlobalApiInterceptorFlow {
       return ACCOUNT_SEARCH_NON_RETRIABLE_HEADER;
     }
     throw new Error(`Unsupported account search error status: ${statusCode}`);
+  }
+
+  /**
+   * Resolves the expected header for Replace Defendant Account Party non-retriable errors.
+   * @param statusCode - HTTP status used to route to the correct error page.
+   * @returns Expected error page header for the given status.
+   * @remarks Throws for unsupported status codes to avoid false positives.
+   * @example
+   * const header = this.resolveDefendantAccountPartyHeader(409);
+   */
+  private resolveDefendantAccountPartyHeader(statusCode: number): string {
+    if (statusCode === 409) {
+      return 'Sorry, there is a problem';
+    }
+    throw new Error(`Unsupported defendant account party error status: ${statusCode}`);
+  }
+
+  /**
+   * Resolves the expected header for Add Note non-retriable errors.
+   * @param statusCode - HTTP status used to route to the correct error page.
+   * @returns Expected error page header for the given status.
+   * @remarks Throws for unsupported status codes to avoid false positives.
+   * @example
+   * const header = this.resolveAddNoteNonRetriableHeader(403);
+   */
+  private resolveAddNoteNonRetriableHeader(statusCode: number): string {
+    if (statusCode === 403) {
+      return 'You do not have permission for this';
+    }
+    throw new Error(`Unsupported add note error status: ${statusCode}`);
   }
 }

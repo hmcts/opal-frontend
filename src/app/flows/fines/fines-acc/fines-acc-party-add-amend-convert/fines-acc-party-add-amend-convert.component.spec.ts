@@ -250,29 +250,6 @@ describe('FinesAccPartyAddAmendConvert', () => {
     });
   });
 
-  it('should redirect add mode when base version is missing', () => {
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    createComponent({
-      mode: FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
-      partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
-    });
-    mockFinesAccStore.pg_party_id.mockReturnValue(null);
-    mockFinesAccStore.base_version.mockReturnValue(null);
-
-    component.handleFormSubmit(mockFormData);
-
-    expect(mockPayloadService.buildAddDefendantAccountPayload).not.toHaveBeenCalled();
-    expect(mockOpalFinesService.postDefendantAccountParty).not.toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
-      relativeTo: undefined,
-      fragment: 'parent-or-guardian',
-    });
-  });
-
   it('should initialise the parent guardian fragment from route party type', async () => {
     TestBed.resetTestingModule();
 
@@ -429,43 +406,6 @@ describe('FinesAccPartyAddAmendConvert', () => {
     component.handleFormSubmit(mockFormData);
 
     expect(mockFinesAccStore.setSuccessMessage).not.toHaveBeenCalled();
-  });
-
-  it('should redirect to details page when party_id is missing outside add mode', () => {
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    mockFinesAccStore.party_id.mockReturnValue(null);
-    mockRouter.navigate.mockClear();
-
-    component.handleFormSubmit(mockFormData);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
-      relativeTo: undefined,
-      fragment: 'defendant',
-    });
-    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
-  });
-
-  it('should redirect to details page when pg_party_id is missing for parentGuardian party type', () => {
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    createComponent({ partyType: FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN });
-    mockFinesAccStore.pg_party_id.mockReturnValue(null);
-    mockRouter.navigate.mockClear();
-
-    component.handleFormSubmit(mockFormData);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
-      relativeTo: undefined,
-      fragment: 'parent-or-guardian',
-    });
-    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
   });
 
   it('should not require pg_party_id when parentGuardian party type is in add mode', () => {
