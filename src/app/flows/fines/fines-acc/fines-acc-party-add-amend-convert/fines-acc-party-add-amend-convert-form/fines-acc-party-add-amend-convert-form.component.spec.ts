@@ -9,6 +9,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../mocks/fines-acc-party-add-amend-convert-form.mock';
 import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '../mocks/fines-acc-party-add-amend-convert-form-with-aliases.mock';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
@@ -257,17 +258,17 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
 
-    expect(component.routeFragment).toBe('defendant');
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
 
     component.partyType = 'company';
-    expect(component.routeFragment).toBe('defendant');
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
   });
 
   it('should resolve parent or guardian fragment for parent guardian party type', () => {
     component.partyType = 'parentGuardian';
     fixture.detectChanges();
 
-    expect(component.routeFragment).toBe('parent-or-guardian');
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS['parent-or-guardian']);
   });
 
   it('should resolve defendant fragment for add parent guardian mode', () => {
@@ -275,7 +276,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.mode = 'add';
     fixture.detectChanges();
 
-    expect(component.routeFragment).toBe('defendant');
+    expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
   });
 
   it('should show contact details for add parent guardian mode', () => {
