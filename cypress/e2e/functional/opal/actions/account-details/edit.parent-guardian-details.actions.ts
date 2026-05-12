@@ -153,4 +153,28 @@ export class EditParentGuardianDetailsActions {
     log('action', 'Saving Parent/Guardian details');
     cy.get(L.actions.saveButton, { timeout: 10_000 }).should('be.visible').click();
   }
+
+  /**
+   * Clicks the Cancel link on the Parent/Guardian form.
+   */
+  public clickCancelLink(): void {
+    log('action', 'Clicking Parent/Guardian cancel link');
+    cy.get(L.actions.cancelLink, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
+   * Asserts the information banner text shown in youth add mode.
+   */
+  public assertInformationBannerText(expected: string): void {
+    log('assert', 'Verifying Parent/Guardian information banner text', { expected });
+    cy.get(L.informationBannerText, { timeout: 10_000 }).should('contain.text', expected);
+  }
+
+  /**
+   * Asserts the edit/add error summary contains the expected message.
+   */
+  public assertErrorSummaryContains(expected: string): void {
+    log('assert', 'Verifying Parent/Guardian error summary contains text', { expected });
+    cy.get(L.errorSummary, { timeout: 10_000 }).should('be.visible').and('contain.text', expected);
+  }
 }

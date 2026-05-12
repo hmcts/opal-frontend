@@ -239,6 +239,65 @@ Feature: Account Enquiries – View Account Details
       And I should see the account header contains "Miss Updated TESTNONPAYEE{uniqUpper}"
       And I verify no amendments were created via API
 
+  Rule: Youth-only add parent or guardian baseline
+    Background:
+      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+        | Account_status                    | Submitted          |
+        | account.defendant.forenames       | Jamie              |
+        | account.defendant.surname         | AddPgYouth{uniq}   |
+        | account.account_type              | Fine               |
+        | account.prosecutor_case_reference | PCR-AUTO-017       |
+        | account.collection_order_made     | false              |
+        | account.collection_order_made_today | false            |
+        | account.payment_card_request      | false              |
+        | account.defendant.dob             | 2010-05-15         |
+      When I search for the account by last name "AddPgYouth{uniq}" and open the latest result
+      Then I should see the page header contains "ADDPGYOUTH{uniqUpper}"
+      When I go to the Defendant details section and the header is "Defendant details"
+      Then I should see the add parent or guardian details action
+
+    @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875
+    Scenario: Cancelling add parent or guardian details without changes returns to the Defendant tab
+      When I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
+      When I cancel adding parent or guardian details without making changes
+      Then I should return to the account details page Defendant tab
+      And I should see the add parent or guardian details action
+
+    @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875
+    Scenario: Add parent or guardian warning retains changes when I stay on the form
+      When I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
+      When I enter "Jamie" into the parent or guardian first name field
+      And I attempt to cancel adding parent or guardian details and choose Cancel on the confirmation dialog
+      Then I should remain on the add parent or guardian details page
+      And I should see the parent or guardian first name field contains "Jamie"
+
+    @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875
+    Scenario: Add parent or guardian warning discards changes when I leave the form
+      When I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
+      When I enter "Jamie" into the parent or guardian first name field
+      And I attempt to cancel adding parent or guardian details and choose OK on the confirmation dialog
+      Then I should return to the account details page Defendant tab
+      And I should see the add parent or guardian details action
+      When I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
+      And I should see the parent or guardian first name field contains ""
+
+    @JIRA-STORY:PO-1877 @JIRA-EPIC:PO-1875
+    Scenario: Add parent or guardian validation errors remain visible when I stay on the form
+      When I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
+      When I enter "Jamie" into the parent or guardian first name field
+      And I attempt to save the parent or guardian add details
+      Then I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
+      And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
+      When I attempt to cancel adding parent or guardian details and choose Cancel on the confirmation dialog
+      Then I should remain on the add parent or guardian details page
+      And I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
+      And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
+
   Rule: Parent or guardian account baseline
     Background:
       # AC1 – Account setup
