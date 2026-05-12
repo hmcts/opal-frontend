@@ -24,6 +24,7 @@ import { finesSaMinorCreditorAccountsResolver } from '../fines-sa/routing/resolv
 import { dashboardLandingGuard } from './guards/dashboard-landing/dashboard-landing.guard';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
+import { release1aFeatureFlagGuard } from './guards/release-1a-feature-flag/release-1a-feature-flag.guard';
 
 export const finesRouting: Routes = [
   {
@@ -90,7 +91,8 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.mac.root,
         loadComponent: () => import('../fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
         children: macRouting,
-        canActivate: [authGuard],
+        canActivate: [authGuard, release1aFeatureFlagGuard],
+        canActivateChild: [release1aFeatureFlagGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
@@ -100,7 +102,8 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.draft.root,
         loadComponent: () => import('../fines-draft/fines-draft.component').then((c) => c.FinesDraftComponent),
         children: draftRouting,
-        canActivate: [authGuard, finesSectionPermissionsGuard],
+        canActivate: [authGuard, release1aFeatureFlagGuard, finesSectionPermissionsGuard],
+        canActivateChild: [release1aFeatureFlagGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
         },
