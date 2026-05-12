@@ -143,9 +143,9 @@ describe('FinesDraftTableWrapperComponent', () => {
 
     link.dispatchEvent(event);
 
-    expect(handlerSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'], event);
+    expect(handlerSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Account id'], event);
     expect(event.defaultPrevented).toBe(true);
-    expect(emitSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id']);
+    expect(emitSpy).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Account id']);
   });
 
   it('should prevent default and emit accountClicked when onAccountClick is called with an event', () => {
