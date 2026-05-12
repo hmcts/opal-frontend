@@ -23,17 +23,17 @@ export const MAX_LENGTH_VALIDATION = {
 
 export const ALPHABETICAL_TEXT_PATTERN_VALIDATION = {
   alphabeticalTextPattern:
-    'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas',
   alphabeticalTextPatternAlias1:
-    'Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas',
   alphabeticalTextPatternAlias2:
-    'Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas',
   alphabeticalTextPatternAlias3:
-    'Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas',
   alphabeticalTextPatternAlias4:
-    'Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas',
   alphabeticalTextPatternAlias5:
-    'Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas',
 };
 
 export const SPECIAL_CHARACTERS_PATTERN_VALIDATION = {

@@ -27,7 +27,7 @@ Feature: Account Enquiries – Request Payment Card
       When I go to the Payment terms section
 
 @JIRA-EPIC:PO-977
-    @JIRA-STORY:PO-1803 @JIRA-KEY:POT-5220
+    @JIRA-STORY:PO-1803
     Scenario: Confirming a payment card request shows success and updates the last requested date
       #AC1bii/AC1biii - Successfully requesting a payment card shows a success message and updates the last requested date
       When I start a payment card request

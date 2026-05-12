@@ -66,20 +66,16 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
   };
 
-  it(
-    'should render the component for AY',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7400'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
+  it('should render the component for AY', { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
 
-      // Verify the component is rendered
-      cy.get(L.app).should('exist');
-    },
-  );
+    // Verify the component is rendered
+    cy.get(L.app).should('exist');
+  });
 
   it(
     'should not show the error summary on initial load for AY',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7401'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -90,7 +86,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.1) should be created as per the design artefact (FinesMacEmployerDetailsComponent)',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7402'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -122,7 +118,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
   it(
     '(AC.1) should display error messages for incorrect format and character limit',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7403'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -150,13 +146,24 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should display error messages for incorrect format and special characters',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7404'] },
+    '(AC.1, 6, 8) should display error messages for incorrect format and special characters',
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-272',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-280',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7404',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       const incorrectData = {
-        fm_employer_details_employer_company_name: 'John Maddy & co., Limited company',
+        fm_employer_details_employer_company_name: '©µ±ö€•',
         fm_employer_details_employer_reference: 'XNJ#5567',
         fm_employer_details_employer_email_address: 'test-test-com',
         fm_employer_details_employer_telephone_number: '0123 456 789#',
@@ -180,7 +187,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.1) should allow spaces in the telephone number fields',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7405'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0123 456 7890';
@@ -194,7 +201,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.1) should not allow asterisks in the address line fields',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7406'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addr1*';
@@ -214,7 +221,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
   it(
     '(AC.2) should error when mandatory fields contain no values',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7407'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
@@ -228,7 +235,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
   it(
     '(AC.3) should error when mandatory fields are empty and optional fields are not',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7408'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = 'test@test.com';
@@ -249,7 +256,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
   it(
     '(AC.4) should error when email address fails validation',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7409'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       const incorrectEmails: string[] = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(incorrectEmails).each((email: string) => {
@@ -265,7 +272,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.5) should error when employee telephone number fails validation',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7410'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       const incorrectTelephoneNumbers: string[] = ['notNums', '0123456789', '012345678911'];
       cy.wrap(incorrectTelephoneNumbers).each((telephone: string) => {
@@ -281,7 +288,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.6) should allow for form submission with corrected data',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7411'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-280'), '@JIRA-EPIC:PO-272'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -323,14 +330,25 @@ describe('FinesMacEmployerDetailsComponent', () => {
   );
 
   it(
-    '(AC.7) should allow for form submission with valid data',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-280'), '@JIRA-KEY:POT-7412'] },
+    '(AC.7, 6) should allow for form submission with valid data',
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-272',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-280',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7412',
+      ],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       finesMacState.employerDetails.formData = {
-        fm_employer_details_employer_company_name: 'Test Employer',
+        fm_employer_details_employer_company_name: " Aa0'!#$%&()*+,-./<>",
         fm_employer_details_employer_reference: '1234567890',
         fm_employer_details_employer_email_address: 'test@test.com',
         fm_employer_details_employer_telephone_number: '07700900982',
@@ -350,7 +368,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.1) should load button for next page for AY Defendant',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-434'), '@JIRA-KEY:POT-7413'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-434'), '@JIRA-EPIC:PO-272'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -361,7 +379,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.1) should load button for next page for AYPG Defendant',
-    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-435'), '@JIRA-KEY:POT-7414'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-435'), '@JIRA-EPIC:PO-344'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');
@@ -372,7 +390,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.1) Employer reference and postcode should capitalise - AYPG',
-    { tags: [...buildTags('@JIRA-EPIC:PO-344', '@JIRA-STORY:PO-1449'), '@JIRA-KEY:POT-7415'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344'] },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');
@@ -395,7 +413,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it(
     '(AC.1) should convert Employer reference and Employer postcode to uppercase on user input',
-    { tags: [...buildTags('@JIRA-EPIC:PO-272', '@JIRA-STORY:PO-1448'), '@JIRA-KEY:POT-7416'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1448'), '@JIRA-EPIC:PO-272'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 

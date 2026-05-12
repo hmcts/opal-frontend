@@ -144,7 +144,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     '(AC.4) should render summary tables under review account for AY (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7599', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
@@ -268,7 +268,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     '(AC.5) should render all elements on the screen for AYPG (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7600', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -419,7 +419,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     '(AC.6) should render all elements on the screen for company defendant type (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7601', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -501,7 +501,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     '(AC.7) should show dashed line if Data is empty for non required details for all defendant types (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7602', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
@@ -538,7 +538,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
   it(
     'AC.2 The Review Account screen will be created as per the design artefact (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7603', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
@@ -551,7 +551,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it(
     'AC.8, Decision table will be shown as per the design artefact (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7604', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
@@ -563,7 +563,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
   it(
     'AC.8a user does not select any radio button and selects the Continue button (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7605', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.continue).should('exist').click();
@@ -573,7 +573,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
   it(
     'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button (ReviewAccountRejectedApproveComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-KEY:POT-7606', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
@@ -595,7 +595,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   //PO-969
   it(
     'AC.1b update draft account with patch method',
-    { tags: [...buildTags('@JIRA-STORY:PO-969'), '@JIRA-KEY:POT-7607', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-969'), '@JIRA-EPIC:PO-2220'] },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
@@ -624,7 +624,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   //PO-968
   it(
     'AC.1b approve draft account with patch method',
-    { tags: [...buildTags('@JIRA-STORY:PO-968'), '@JIRA-KEY:POT-7608', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-968'), '@JIRA-EPIC:PO-2220'] },
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);

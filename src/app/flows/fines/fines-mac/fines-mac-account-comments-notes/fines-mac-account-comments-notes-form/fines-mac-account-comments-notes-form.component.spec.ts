@@ -9,6 +9,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../constants/fines-mac-account-comments-notes-field-errors.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
@@ -118,5 +119,45 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     finesMacStore.setFinesMacStore(defaultCase);
     component['checkMandatorySections']();
     expect(component.mandatorySectionsCompleted).toBe(false);
+  });
+
+  it('should accept commas in the add comment field', () => {
+    const commentsControl = component.form.controls['fm_account_comments_notes_comments'];
+
+    commentsControl.setValue('Warning, account reviewed.');
+
+    expect(commentsControl.errors).toBeNull();
+    expect(commentsControl.valid).toBe(true);
+  });
+
+  it('should accept commas in the add account notes field', () => {
+    const notesControl = component.form.controls['fm_account_comments_notes_notes'];
+
+    notesControl.setValue('Customer called, requested update, case reviewed.');
+
+    expect(notesControl.errors).toBeNull();
+    expect(notesControl.valid).toBe(true);
+  });
+
+  it('should prevent submission and show an error message for non-ASCII characters in the comment field', () => {
+    const event = {} as SubmitEvent;
+    const commentsControl = component.form.controls['fm_account_comments_notes_comments'];
+    const expectedErrorMessage =
+      FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_comments['singleAsciiChatacters'].message;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+    commentsControl.setValue('Invalidé');
+
+    expect(commentsControl.hasError('singleAsciiChatacters')).toBe(true);
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).not.toHaveBeenCalled();
+    expect(component.formControlErrorMessages['fm_account_comments_notes_comments']).toBe(expectedErrorMessage);
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_account_comments_notes_comments',
+      message: expectedErrorMessage,
+    });
   });
 });

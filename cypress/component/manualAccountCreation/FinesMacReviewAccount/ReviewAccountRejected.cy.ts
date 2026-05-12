@@ -108,7 +108,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
   it(
     '(AC.1,2) should send a PUT request containing correct derived values when a rejected account is resubmitted',
-    { tags: [...buildTags('@JIRA-STORY:PO-964'), '@JIRA-KEY:POT-7609', '@JIRA-EPIC:PO-2220'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-964'), '@JIRA-EPIC:PO-2220'] },
     () => {
       cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');
 
@@ -148,7 +148,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
   it(
     'should send PUT request with correct Fixed Penalty account data and timeline when rejected account is resubmitted',
-    { tags: [...buildTags('@JIRA-STORY:PO-1809'), '@JIRA-KEY:POT-7610', '@JIRA-EPIC:PO-855'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-1809'), '@JIRA-EPIC:PO-855'] },
     () => {
       cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');
 

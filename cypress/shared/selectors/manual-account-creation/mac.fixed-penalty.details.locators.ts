@@ -55,8 +55,10 @@ export const MacFixedPenaltyDetailsLocators = {
   commentInput: '#fm_fp_account_comments_notes_comments',
   noteInput: '#fm_fp_account_comments_notes_notes',
   commentsInput: 'textarea[id="fm_fp_account_comments_notes_comments"]',
+  commentsErrorMessage: '#fm_fp_account_comments_notes_comments-error-message',
   characterCountHint: 'div.govuk-character-count__message.govuk-character-count__status',
   accountNoteInput: 'textarea[id="fm_fp_account_comments_notes_notes"]',
+  accountNoteErrorMessage: '#fm_fp_account_comments_notes_notes-error-message',
 
   documentLanguageSelect: 'input[name="fm_fp_language_preferences_document_language"][value="EN"]',
   hearingLanguageSelect: 'input[name="fm_fp_language_preferences_hearing_language"][value="EN"]',

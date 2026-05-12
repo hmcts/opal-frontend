@@ -57,6 +57,7 @@ import { IOpalFinesResultsParams } from './interfaces/opal-fines-results-params.
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
+import { IOpalFinesUpdateMinorCreditorAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -975,7 +976,6 @@ export class OpalFines {
     businessUnitId?: string,
   ): Observable<IOpalFinesUpdateDefendantAccountResponse> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`;
-
     const headers: Record<string, string> = {};
     if (version) {
       headers['If-Match'] = version;
@@ -1095,7 +1095,31 @@ export class OpalFines {
           shareReplay(1),
         );
     }
-
     return this.cache.minorCreditorAccountAtAGlanceCache$;
+  }
+
+  /**
+   * Updates/Patches new data to a minor creditor account.
+   *
+   * @param accountId - The unique identifier of the minor creditor account to update.
+   * @param payload - The payload containing the updated account information.
+   * @returns An Observable that emits the updated minor creditor account.
+   */
+  public updateMinorCreditorAccount(
+    accountId: number,
+    payload: IOpalFinesUpdateMinorCreditorAccountPayload,
+    version: string,
+    businessUnitId?: string,
+  ): Observable<IOpalFinesUpdateMinorCreditorAccountPayload> {
+    const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}`;
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.patch<IOpalFinesUpdateMinorCreditorAccountPayload>(url, payload, { headers });
   }
 }
