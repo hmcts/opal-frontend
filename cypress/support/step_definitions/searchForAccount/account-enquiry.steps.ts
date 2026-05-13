@@ -109,6 +109,14 @@ When('I open the latest matching result from the Companies search results', () =
 });
 
 /**
+ * @step Navigates directly to the most recently created published account details route.
+ */
+When('I navigate directly to the last created published account details', () => {
+  log('step', 'Navigating directly to the last created published account details');
+  flow().visitLastCreatedPublishedAccountDetails();
+});
+
+/**
  * @step Verifies that any page/account/summary header contains the given string.
  *
  * @remarks
@@ -634,6 +642,22 @@ Then('I should return to the Payment terms tab', () => {
 Then('I should return to the Enforcement tab', () => {
   log('assert', 'Enforcement tab is active');
   flow().assertEnforcementTabIsActive();
+});
+
+/**
+ * @step Navigates to the Impositions tab.
+ */
+When('I go to the Impositions tab', () => {
+  log('step', 'Navigate to Impositions tab');
+  navActions().goToImpositionsTab();
+});
+
+/**
+ * @step Asserts the Impositions tab is active.
+ */
+Then('I should return to the Impositions tab', () => {
+  log('assert', 'Impositions tab is active');
+  navActions().assertImpositionsTabIsActive();
 });
 
 /**
