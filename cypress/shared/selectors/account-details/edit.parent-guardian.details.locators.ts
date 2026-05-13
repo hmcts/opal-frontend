@@ -44,6 +44,10 @@ export const parentGuardianDetailsLocators = {
   headerCaption: 'app-fines-acc-debtor-add-amend-form h1.govuk-heading-l .govuk-caption-l',
   /** Section title text node that should read "Parent or guardian details". */
   headerTitle: 'app-fines-acc-debtor-add-amend-form h1.govuk-heading-l',
+  /** Information banner text shown in youth add mode. */
+  informationBannerText: 'app-fines-acc-debtor-add-amend-form opal-lib-moj-alert-content-text',
+  /** Error summary shown when validation fails. */
+  errorSummary: 'app-fines-acc-debtor-add-amend-form .govuk-error-summary',
 
   // ──────────────────────────────
   // Primary actions (bottom of form)

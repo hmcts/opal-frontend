@@ -62,15 +62,22 @@ export const ERROR_MESSAGES = {
   MAX_LENGTH_EMPLOYER_POSTCODE: 'Postcode must be 8 characters or fewer',
 
   // Data type errors - Alphabetical
-  DATA_TYPE_FORENAMES: "Defendant's first name(s) must only contain letters",
-  DATA_TYPE_SURNAME: "Defendant's last name must only contain letters",
-  DATA_TYPE_ALIAS_FORENAMES: 'Alias 1 first name(s) must only contain letters',
-  DATA_TYPE_ALIAS_SURNAME: 'Alias 1 last name must only contain letters',
+  DATA_TYPE_FORENAMES:
+    "Defendant's first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)",
+  DATA_TYPE_SURNAME:
+    "Defendant's last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)",
+  DATA_TYPE_ALIAS_FORENAMES:
+    'Alias 1 first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  DATA_TYPE_ALIAS_SURNAME:
+    'Alias 1 last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 
   // Data type errors - Alphanumeric
-  DATA_TYPE_ADDRESS_LINE_1: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-  DATA_TYPE_ADDRESS_LINE_2: 'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-  DATA_TYPE_ADDRESS_LINE_3: 'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  DATA_TYPE_ADDRESS_LINE_1:
+    'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  DATA_TYPE_ADDRESS_LINE_2:
+    'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  DATA_TYPE_ADDRESS_LINE_3:
+    'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_POSTCODE: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   DATA_TYPE_VEHICLE_MAKE:
     'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
@@ -99,11 +106,11 @@ export const ERROR_MESSAGES = {
   MAX_LENGTH_COMPANY_ALIAS: 'Alias 1 company name must be 20 characters or fewer',
   MAX_LENGTH_COMPANY_ALIAS_2: 'Alias 2 company name must be 20 characters or fewer',
   DATA_TYPE_COMPANY_NAME:
-    'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_COMPANY_ALIAS_1:
-    'Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   DATA_TYPE_COMPANY_ALIAS_2:
-    'Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 };
 
 // Parent/Guardian specific error messages
@@ -115,8 +122,10 @@ export const PARENT_GUARDIAN_ERROR_MESSAGES = {
   MAX_LENGTH_FORENAMES: 'Parent or guardian first name(s) must be 20 characters or fewer',
   MAX_LENGTH_SURNAME: 'Parent or guardian last name must be 30 characters or fewer',
 
-  DATA_TYPE_FORENAMES: 'Parent or guardian first name(s) must only contain letters',
-  DATA_TYPE_SURNAME: 'Parent or guardian last name must only contain letters',
+  DATA_TYPE_FORENAMES:
+    'Parent or guardian first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+  DATA_TYPE_SURNAME:
+    'Parent or guardian last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
 };
 
 // Pre-defined error message arrays for common test scenarios
