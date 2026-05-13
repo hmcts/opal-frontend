@@ -504,8 +504,19 @@ describe('FinesMacCompanyDetailsComponent', () => {
   );
 
   it(
-    '(AC.1) should validate type check to ensure name fields are only alphabetical letters A-Z',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
+    '(AC.1, 5, 8) should validate type check to ensure name fields not allow non-single-byte ASCII characters',
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-345',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-365',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7336',
+      ],
+    },
     () => {
       setupComponent(null, 'company');
 
@@ -515,10 +526,10 @@ describe('FinesMacCompanyDetailsComponent', () => {
         cy.get(L.addAliasButton).first().click();
       }
 
-      finesMacState.companyDetails.formData.fm_company_details_company_name = '123% Fake Street';
+      finesMacState.companyDetails.formData.fm_company_details_company_name = '©µ±ö€•';
       for (let i = 0; i < 5; i++) {
         finesMacState.companyDetails.formData.fm_company_details_aliases.push({
-          [`fm_company_details_alias_company_name_${i}`]: '123% Fake Street',
+          [`fm_company_details_alias_company_name_${i}`]: '1©µ±ö€•',
         });
       }
 
@@ -526,6 +537,43 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       for (const [, value] of Object.entries(ALPHABETICAL_TEXT_PATTERN_VALIDATION)) {
         cy.get(L.errorSummary).should('contain', value);
+      }
+    },
+  );
+  it(
+    '(AC.1, 5) should validate type check to ensure name fields only allows single-byte ASCII characters',
+    {
+      tags: [
+        ...buildTags(
+          '@JIRA-EPIC:PO-345',
+          '@JIRA-EPIC:PO-2219',
+          '@JIRA-STORY:PO-365',
+          '@JIRA-STORY:PO-3415',
+          '@JIRA-LABEL:populate-and-submit',
+        ),
+        '@JIRA-KEY:POT-7337',
+      ],
+    },
+    () => {
+      setupComponent(null, 'company');
+
+      cy.get(L.addAliasesCheckbox).check();
+
+      for (let i = 0; i < 4; i++) {
+        cy.get(L.addAliasButton).first().click();
+      }
+
+      finesMacState.companyDetails.formData.fm_company_details_company_name = " Aa0'!#$%&()*+,-./<>";
+      for (let i = 0; i < 5; i++) {
+        finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+          [`fm_company_details_alias_company_name_${i}`]: " Aa0'!#$%&()*+,-./<>",
+        });
+      }
+
+      cy.get(L.submitButton).first().click();
+
+      for (const [, value] of Object.entries(ALPHABETICAL_TEXT_PATTERN_VALIDATION)) {
+        cy.get(L.errorSummary).should('not.contain', value);
       }
     },
   );

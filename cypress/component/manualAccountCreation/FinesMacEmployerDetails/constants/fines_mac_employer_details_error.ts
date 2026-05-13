@@ -1,6 +1,6 @@
 export const FORMAT_VALIDATION = {
   employer_name_pattern:
-    'Employer name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    'Employer name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   employer_reference_pattern:
     'Employer reference must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
   employer_email_pattern: 'Enter employer email address in the correct format, like name@example.com',

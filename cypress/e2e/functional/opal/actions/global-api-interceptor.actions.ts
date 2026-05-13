@@ -251,6 +251,115 @@ export class GlobalApiInterceptorActions {
   }
 
   /**
+   * Stubs the FAE fixed-penalty details request as a network failure (no response).
+   * @remarks Uses the endpoint proposed for PO-2225 so the common interceptor handles the failure path.
+   * @example
+   * actions.stubDefendantAccountFixedPenaltyNetworkFailure();
+   */
+  public stubDefendantAccountFixedPenaltyNetworkFailure(): void {
+    log('intercept', 'Stubbing defendant account fixed penalty network failure');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '**/opal-fines-service/defendant-accounts/*/fixed-penalty',
+      },
+      { forceNetworkError: true },
+    ).as('getDefendantAccountFixedPenaltyNetworkError');
+  }
+
+  /**
+   * Waits for the FAE fixed-penalty details network failure request.
+   * @remarks Confirms the request was made and that Cypress received no HTTP response.
+   * @example
+   * actions.waitForDefendantAccountFixedPenaltyNetworkFailure();
+   */
+  public waitForDefendantAccountFixedPenaltyNetworkFailure(): void {
+    log('wait', 'Waiting for defendant account fixed penalty network failure');
+    cy.wait('@getDefendantAccountFixedPenaltyNetworkError').then((interception) => {
+      expect(interception.request.method).to.equal('GET');
+      expect(interception.response, 'Fixed penalty network failure response').not.to.exist;
+    });
+  }
+
+  /**
+   * Stubs the Replace Defendant Account Party request with a non-retriable concurrency response.
+   * @param statusCode - HTTP status to return for the party update request.
+   * @remarks The FAE defendant details save CTA triggers this PUT endpoint.
+   * @example
+   * actions.stubDefendantAccountPartyConcurrencyError(409);
+   */
+  public stubDefendantAccountPartyConcurrencyError(statusCode: number): void {
+    log('intercept', 'Stubbing defendant account party concurrency error', { statusCode });
+    cy.intercept('PUT', '**/opal-fines-service/defendant-accounts/*/defendant-account-parties/*', {
+      statusCode,
+      body: {
+        retriable: false,
+        title: NON_RETRIABLE_ERROR_TITLE,
+        detail: NON_RETRIABLE_ERROR_DETAIL,
+        operation_id: NON_RETRIABLE_OPERATION_ID,
+      },
+    }).as('defendantAccountPartyConcurrencyError');
+  }
+
+  /**
+   * Waits for the Replace Defendant Account Party concurrency response and validates it.
+   * @param statusCode - Expected HTTP status returned by the stub.
+   * @remarks Confirms the error is non-retriable so the common interceptor routes to the concurrency page.
+   * @example
+   * actions.waitForDefendantAccountPartyConcurrencyError(409);
+   */
+  public waitForDefendantAccountPartyConcurrencyError(statusCode: number): void {
+    log('wait', 'Waiting for defendant account party concurrency error', { statusCode });
+    cy.wait('@defendantAccountPartyConcurrencyError').then((interception) => {
+      const response = interception.response;
+      expect(interception.request.method).to.equal('PUT');
+      expect(response, 'Defendant account party concurrency response').to.exist;
+      expect(response?.statusCode).to.equal(statusCode);
+      expect(response?.body?.retriable).to.be.false;
+    });
+  }
+
+  /**
+   * Stubs the FAE Add Note request with a non-retriable permission error.
+   * @param statusCode - HTTP status to return for the Add Note request.
+   * @remarks Uses the Add Note endpoint so the common interceptor handles the permission path.
+   * @example
+   * actions.stubAddNoteNonRetriablePermissionError(403);
+   */
+  public stubAddNoteNonRetriablePermissionError(statusCode: number): void {
+    log('intercept', 'Stubbing add note non-retriable permission error', { statusCode });
+    cy.intercept('POST', '**/opal-fines-service/notes/add', {
+      statusCode,
+      body: {
+        retriable: false,
+        title: NON_RETRIABLE_ERROR_TITLE,
+        detail: NON_RETRIABLE_ERROR_DETAIL,
+        operation_id: NON_RETRIABLE_OPERATION_ID,
+      },
+    }).as('addNoteNonRetriablePermissionError');
+  }
+
+  /**
+   * Waits for the FAE Add Note permission error response and validates it.
+   * @param statusCode - Expected HTTP status returned by the stub.
+   * @remarks Confirms the POST request and non-retriable error metadata.
+   * @example
+   * actions.waitForAddNoteNonRetriablePermissionError(403);
+   */
+  public waitForAddNoteNonRetriablePermissionError(statusCode: number): void {
+    log('wait', 'Waiting for add note non-retriable permission error', { statusCode });
+    cy.wait('@addNoteNonRetriablePermissionError').then((interception) => {
+      const response = interception.response;
+      expect(interception.request.method).to.equal('POST');
+      expect(response, 'Add Note non-retriable permission response').to.exist;
+      expect(response?.statusCode).to.equal(statusCode);
+      expect(response?.body?.retriable).to.be.false;
+      expect(response?.body?.title).to.equal(NON_RETRIABLE_ERROR_TITLE);
+      expect(response?.body?.operation_id).to.equal(NON_RETRIABLE_OPERATION_ID);
+    });
+  }
+
+  /**
    * Asserts the global error banner is visible with the standard message.
    * @remarks Uses the shared global alert selector and standard error message.
    * @example

@@ -66,6 +66,26 @@ export class ManualAccountCommentsNotesActions {
   }
 
   /**
+   * Asserts the account comment validation error is shown in the summary and inline field error.
+   * @param expected Expected error message text.
+   */
+  assertCommentValidationError(expected: string): void {
+    log('assert', 'Asserting account comment validation error', { expected });
+    cy.get(L.errorSummary, this.common.getTimeoutOptions()).should('be.visible').contains(expected);
+    cy.get(L.commentsErrorMessage, this.common.getTimeoutOptions()).should('be.visible').contains(expected);
+  }
+
+  /**
+   * Asserts the account notes validation error is shown in the summary and inline field error.
+   * @param expected Expected error message text.
+   */
+  assertNoteValidationError(expected: string): void {
+    log('assert', 'Asserting account notes validation error', { expected });
+    cy.get(L.errorSummary, this.common.getTimeoutOptions()).should('be.visible').contains(expected);
+    cy.get(L.notesErrorMessage, this.common.getTimeoutOptions()).should('be.visible').contains(expected);
+  }
+
+  /**
    * Clicks the Review and submit CTA.
    */
   clickReviewAndSubmit(): void {

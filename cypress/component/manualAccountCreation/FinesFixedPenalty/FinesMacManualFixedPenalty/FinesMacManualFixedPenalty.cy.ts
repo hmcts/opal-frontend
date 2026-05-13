@@ -14,6 +14,10 @@ import { calculateWeeksInFuture } from '../../../../support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
+const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
+  'Add comment must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
+const ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR =
+  'Add account note must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)';
 const DRIVING_LICENCE_NUMBER_FORMAT_ERROR = 'Enter Driving licence number in the correct format';
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
@@ -328,14 +332,24 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-    '(AC5) Validation will exist for the First names field - alphanumeric check',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
+    '(AC5) Validation will exist for the First names field - does not allow non-single-byte ASCII characters',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
+        '@JIRA-KEY:POT-7202',
+        '@JIRA-EPIC:PO-855',
+        '@JIRA-EPIC:PO-2219',
+      ],
+    },
     () => {
       // User enters non-alphabetical characters
-      fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = 'John123@#$';
+      fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = '©µ±ö€•';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's first name(s) must only contain letters");
+      cy.get(DOM_ELEMENTS.errorSummaryList).should(
+        'contain',
+        "Defendant's first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas",
+      );
     },
   );
 
@@ -365,14 +379,24 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-    '(AC6) Validation will exist for the Last name field - alphanumeric check',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
+    '(AC6) Validation will exist for the Last name field - does not allow non-single-byte ASCII characters',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
+        '@JIRA-KEY:POT-7205',
+        '@JIRA-EPIC:PO-855',
+        '@JIRA-EPIC:PO-2219',
+      ],
+    },
     () => {
       // User enters non-alphabetical characters
-      fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = 'Smith123@#$';
+      fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = '©µ±ö€•';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's last name must only contain letters");
+      cy.get(DOM_ELEMENTS.errorSummaryList).should(
+        'contain',
+        "Defendant's last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas",
+      );
     },
   );
 
@@ -1095,16 +1119,20 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-    '(AC22) Validation will exist for the Add comment field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
+    '(AC22) Validation will exist for the Add comment field - non-single-byte ASCII characters',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
+        '@JIRA-KEY:POT-7259',
+        '@JIRA-EPIC:PO-855',
+        '@JIRA-EPIC:PO-2219',
+      ],
+    },
     () => {
-      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment $%^&*';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment ©µ±ö€•';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
     },
   );
 
@@ -1121,17 +1149,36 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-    '(AC23) Validation will exist for the Add account note field - special characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855'] },
+    '(AC23) Validation will exist for the Add account note field - non-single-byte ASCII characters',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-857', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
+        '@JIRA-KEY:POT-7261',
+        '@JIRA-EPIC:PO-855',
+        '@JIRA-EPIC:PO-2219',
+      ],
+    },
     () => {
       // User enters non-alphanumeric characters
-      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note $%^&*';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note ©µ±ö€•';
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Add account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
-      );
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+    },
+  );
+
+  it(
+    'Validation will exist for Add comment and Add account note fields - special characters',
+    { tags: [...buildTags('@JIRA-STORY:PO-3713'), '@JIRA-EPIC:PO-855'] },
+    () => {
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment ©µ±ö€•';
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note ©µ±ö€•';
+      setupComponent();
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.commentsErrorMessage).should('contain', ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
+      cy.get(DOM_ELEMENTS.accountNoteErrorMessage).should('contain', ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
     },
   );
 
@@ -1224,18 +1271,25 @@ describe('FinesMacManualFixedPenalty', () => {
   );
 
   it(
-    '(AC1b, AC1c) Validation will exist for the Company Name field - non-alphanumeric character check',
-    { tags: [...buildTags('@JIRA-STORY:PO-860'), '@JIRA-EPIC:PO-855'] },
+    '(AC1b, AC1c) Validation will exist for the Company Name field - non-single-byte ASCII characters',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-860', '@JIRA-STORY:PO-3415', '@JIRA-LABEL:populate-and-submit'),
+        '@JIRA-KEY:POT-7265',
+        '@JIRA-EPIC:PO-855',
+        '@JIRA-EPIC:PO-2219',
+      ],
+    },
     () => {
       fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
       setupComponent(null);
 
       // User enters non-alphanumeric characters
-      fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = 'Company!123';
+      fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = 'Company©µ±ö€•';
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
-        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas',
       );
     },
   );
