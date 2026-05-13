@@ -8,6 +8,7 @@ import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/d
 import { DASHBOARD_PAGE_DEFAULT_TAB } from './constants/dashboard-config-default-tab.constant';
 import { DASHBOARD_CONFIG_DEFAULT_DASHBOARD } from './constants/dashboard-config-default-dashboard.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { isRelease1aFeatureEnabled } from '@app/flows/fines/utils/fines-section-permissions.utils';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,7 +33,7 @@ export class DashboardComponent {
    */
   public readonly resolvedConfig = computed<IDashboardPageConfiguration>(() => {
     const dashboardType = this.dashboardType();
-    const isRelease1aEnabled = this.globalStore.featureFlags()['release-1a'];
+    const isRelease1aEnabled = isRelease1aFeatureEnabled(this.globalStore.featureFlags());
 
     const filterDraftAccounts = (config: IDashboardPageConfiguration): IDashboardPageConfiguration => ({
       ...config,

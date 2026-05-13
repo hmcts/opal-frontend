@@ -130,7 +130,11 @@ export class AppComponent implements OnInit, OnDestroy {
   public readonly sessionService = inject(SessionService);
   public readonly globalStore = inject(GlobalStore);
   public readonly navigationItems = computed(() =>
-    getAccessiblePrimaryNavigationItems(NAVIGATION_BAR_CONFIGURATION, this.globalStore.userState()),
+    getAccessiblePrimaryNavigationItems(
+      NAVIGATION_BAR_CONFIGURATION,
+      this.globalStore.userState(),
+      this.globalStore.featureFlags(),
+    ),
   );
   public readonly primaryNavigationHidden = toSignal(
     this.primaryNavigationRouteEvents$.pipe(map((event) => this.getPrimaryNavigationHiddenFromRouterEvent(event))),

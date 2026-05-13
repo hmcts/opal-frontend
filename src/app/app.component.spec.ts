@@ -155,6 +155,7 @@ describe('AppComponent - browser', () => {
   beforeEach(() => {
     globalStore.setTokenExpiry(mockTokenExpiry);
     globalStore.setUserState(OPAL_USER_STATE_MOCK);
+    globalStore.setFeatureFlags({ 'release-1a': true });
   });
 
   it('should create the app', () => {
@@ -463,6 +464,28 @@ describe('AppComponent - browser', () => {
   it('should show Accounts in primary navigation when the user has an accounts permission in any business unit', () => {
     globalStore.setAuthenticated(true);
     globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).toContain('Accounts');
+  });
+
+  it('should hide Accounts in primary navigation when release-1a is disabled and the user only has draft accounts permission', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({ 'release-1a': false });
+    globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[1]]));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Accounts');
+  });
+
+  it('should show Accounts in primary navigation when release-1a is disabled and the user has consolidation permission', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setFeatureFlags({ 'release-1a': false });
+    globalStore.setUserState(createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]));
 
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
