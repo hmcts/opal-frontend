@@ -106,9 +106,11 @@ export class AccountDetailsDefendantActions {
    * Asserts that the add parent/guardian action is visible in the Defendant tab.
    */
   assertAddParentGuardianActionVisible(): void {
-    cy.get(L.actions.addParentGuardianActionLink, this.common.getTimeoutOptions())
-      .should('be.visible')
-      .and('contain.text', 'Add parent or guardian details');
+    cy.contains(
+      L.actions.addParentGuardianActionLink,
+      L.actions.addParentGuardianActionLabel,
+      this.common.getTimeoutOptions(),
+    ).should('be.visible');
   }
 
   /**
@@ -138,7 +140,13 @@ export class AccountDetailsDefendantActions {
    * Clicks the add parent/guardian action from the Defendant tab.
    */
   startAddParentGuardianDetails(): void {
-    cy.get(L.actions.addParentGuardianActionLink, this.common.getTimeoutOptions()).should('be.visible').click();
+    cy.contains(
+      L.actions.addParentGuardianActionLink,
+      L.actions.addParentGuardianActionLabel,
+      this.common.getTimeoutOptions(),
+    )
+      .should('be.visible')
+      .click();
   }
 
   /**
