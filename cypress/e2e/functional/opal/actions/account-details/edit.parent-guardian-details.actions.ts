@@ -164,6 +164,8 @@ export class EditParentGuardianDetailsActions {
 
   /**
    * Asserts the information banner text shown in youth add mode.
+   *
+   * @param expected - Expected text within the information banner.
    */
   public assertInformationBannerText(expected: string): void {
     log('assert', 'Verifying Parent/Guardian information banner text', { expected });
@@ -172,6 +174,8 @@ export class EditParentGuardianDetailsActions {
 
   /**
    * Asserts the edit/add error summary contains the expected message.
+   *
+   * @param expected - Expected text within the error summary.
    */
   public assertErrorSummaryContains(expected: string): void {
     log('assert', 'Verifying Parent/Guardian error summary contains text', { expected });

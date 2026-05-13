@@ -402,11 +402,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain.text',
-        'Enter primary email address in the correct format like, name@example.com',
+        'Enter primary email address in the correct format, like name@example.com',
       );
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain.text',
-        'Enter secondary email address in the correct format like, name@example.com',
+        'Enter secondary email address in the correct format, like name@example.com',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
     },
@@ -430,18 +430,24 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter a home telephone number, like 01632 960 001');
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain.text',
-        'Enter a work telephone number, like 01632 960 001 or 07700 900 982',
+        'Enter a valid home telephone number, like 01632 960 001',
       );
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter a mobile telephone number, like 07700 900 982');
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Enter a valid work telephone number, like 01632 960 001 or 07700 900 982',
+      );
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Enter a valid mobile telephone number, like 07700 900 982',
+      );
       cy.get('@routerNavigate').should('not.have.been.called');
     },
   );
 
   it(
-    'AC7a, AC7b. Parent/Guardian add mode should show the alphabetical and alphanumerical data type validation errors',
+    'AC7a. Parent/Guardian add mode should show the updated data type validation errors',
     { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
     () => {
       setupComponent(
@@ -450,12 +456,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Y',
         FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
         buildYouthParentGuardianAddFormMock((form) => {
-          form.formData.facc_party_add_amend_convert_forenames = 'Jamie1';
-          form.formData.facc_party_add_amend_convert_surname = 'Guardian1';
-          form.formData.facc_party_add_amend_convert_address_line_1 = '***';
-          form.formData.facc_party_add_amend_convert_address_line_2 = '***';
-          form.formData.facc_party_add_amend_convert_address_line_3 = '***';
-          form.formData.facc_party_add_amend_convert_post_code = '***';
+          form.formData.facc_party_add_amend_convert_forenames = 'José';
+          form.formData.facc_party_add_amend_convert_surname = 'O’Connor';
+          form.formData.facc_party_add_amend_convert_address_line_1 = '123 Café Street';
+          form.formData.facc_party_add_amend_convert_address_line_2 = 'Appartement Étage 2';
+          form.formData.facc_party_add_amend_convert_address_line_3 = 'Bâtiment C';
         }),
       );
 
@@ -463,27 +468,23 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain.text',
-        'Parent or Guardian first name(s) must only include letters a to z, hyphens, spaces and apostrophes',
+        'Parent or guardian first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain.text',
-        'Parent or Guardian last name must only include letters a to z, hyphens, spaces and apostrophes',
+        'Parent or guardian last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain.text',
-        'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain.text',
-        'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain.text',
-        'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      );
-      cy.get(DOM_ELEMENTS.errorSummary).should(
-        'contain.text',
-        'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
     },
@@ -930,19 +931,19 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       const dataTypeValidationMock = structuredClone(minimalMock);
 
       // Set all fields with invalid characters using API structure
-      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
-      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'José';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'O’Connor';
       dataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
         {
           alias_id: '1',
           sequence_number: 1,
-          forenames: 'Johnny$',
-          surname: 'Smith#Brown',
+          forenames: 'Chloë',
+          surname: 'Núñez',
         },
       ];
-      dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
-      dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
-      dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Café Street';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Appartement Étage 2';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Bâtiment C';
       dataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
       dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'Toyota Corolla {}[]';
       dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123|\\';
