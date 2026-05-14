@@ -103,6 +103,17 @@ export class AccountDetailsDefendantActions {
   }
 
   /**
+   * Asserts that the add parent/guardian action is visible in the Defendant tab.
+   */
+  assertAddParentGuardianActionVisible(): void {
+    cy.contains(
+      L.actions.addParentGuardianActionLink,
+      L.actions.addParentGuardianActionLabel,
+      this.common.getTimeoutOptions(),
+    ).should('be.visible');
+  }
+
+  /**
    * Asserts that the visible convert action does not contain the company label.
    */
   assertConvertToCompanyActionTextNotPresent(): void {
@@ -123,6 +134,19 @@ export class AccountDetailsDefendantActions {
    */
   startConvertToIndividualAccount(): void {
     cy.get(L.actions.convertActionLink, this.common.getTimeoutOptions()).should('be.visible').click();
+  }
+
+  /**
+   * Clicks the add parent/guardian action from the Defendant tab.
+   */
+  startAddParentGuardianDetails(): void {
+    cy.contains(
+      L.actions.addParentGuardianActionLink,
+      L.actions.addParentGuardianActionLabel,
+      this.common.getTimeoutOptions(),
+    )
+      .should('be.visible')
+      .click();
   }
 
   /**
