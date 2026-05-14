@@ -448,6 +448,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
       expect(result.defendant_account_party_type).toBe('Parent/Guardian');
       expect(result.is_debtor).toBe(false);
       expect(result.party_details.organisation_flag).toBe(false);
+      expect(result.party_details.organisation_details).toBeNull();
       expect(result.party_details.individual_details?.title).toBe('Mrs');
       expect(result.party_details.individual_details?.forenames).toBe('Jane');
       expect(result.party_details.individual_details?.surname).toBe('Doe');
