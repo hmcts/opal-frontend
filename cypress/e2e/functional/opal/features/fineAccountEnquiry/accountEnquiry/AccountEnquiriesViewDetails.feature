@@ -292,6 +292,33 @@ Feature: Account Enquiries – View Account Details
       And I should see the parent or guardian add error summary contains "Enter parent or guardian last name"
       And I should see the parent or guardian add error summary contains "Enter address line 1, typically the building and street"
 
+    @JIRA-STORY:PO-1878 @JIRA-EPIC:PO-1875
+    Scenario: Cancelling and then confirming removal of a non-paying parent or guardian returns to the correct tabs
+      When I start adding parent or guardian details
+      Then I should be on the add parent or guardian details page
+      When I enter "Pat" into the parent or guardian first name field
+      And I enter "GUARDIANREMOVE{uniqUpper}" into the parent or guardian last name field
+      And I enter "1 Removal Street" into the parent or guardian address line 1 field
+      And I save the parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      And I should see the remove parent or guardian details action
+      # AC1a, AC1b – Remove confirmation screen shows the expected title and account identifier
+      When I start removing parent or guardian details
+      Then I should be on the remove parent or guardian details page for "ADDPGYOUTH{uniqUpper}"
+      # AC3, AC3a – No - cancel returns to the Parent or guardian tab without removing the parent/guardian
+      When I cancel removing parent or guardian details
+      Then I should return to the account details page Parent or guardian tab
+      And I should see the parent or guardian name contains "Pat GUARDIANREMOVE{uniqUpper}"
+      And I should see the remove parent or guardian details action
+      # AC2, AC2a, AC2b, AC2c – Yes - remove deletes the party, returns to Defendant, and shows success
+      When I start removing parent or guardian details
+      Then I should be on the remove parent or guardian details page for "ADDPGYOUTH{uniqUpper}"
+      When I confirm removing parent or guardian details
+      Then I should return to the account details page Defendant tab
+      And I should see the add parent or guardian details action
+      And I should see the account details success message "Parent or guardian details removed"
+      And I verify the parent or guardian has been removed via API
+
   Rule: Parent or guardian account baseline
     Background:
       # AC1 – Account setup

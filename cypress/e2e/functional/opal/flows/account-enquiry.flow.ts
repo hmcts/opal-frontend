@@ -20,6 +20,7 @@ import { EditCompanyDetailsActions } from '../actions/account-details/edit.compa
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
 import { AccountConvertActions } from '../actions/account-details/convert.account.actions';
 import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
+import { RemoveParentGuardianActions } from '../actions/account-details/remove.parent-guardian.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
@@ -79,6 +80,7 @@ export class AccountEnquiryFlow {
   private readonly paymentTerms = new AccountDetailsPaymentTermsActions();
   private readonly accountConvert = new AccountConvertActions();
   private readonly enforcement = new AccountDetailsEnforcementActions();
+  private readonly removeParentGuardian = new RemoveParentGuardianActions();
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -305,6 +307,16 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the remove parent or guardian confirmation page from the Parent or guardian tab.
+   */
+  public openRemoveParentGuardianDetails(): void {
+    logAE('method', 'openRemoveParentGuardianDetails()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertSectionHeader('Parent or guardian details');
+    this.parentGuardianDetails.startRemoveParentGuardianDetails();
+  }
+
+  /**
    * Asserts the convert-to-company confirmation page.
    *
    * @param expectedCaptionName - Expected defendant name shown in the caption.
@@ -492,6 +504,25 @@ export class AccountEnquiryFlow {
     this.editParentGuardianActions.assertInformationBannerText(
       'These details are for information only. The youth defendant still pays.',
     );
+  }
+
+  /**
+   * Asserts the Parent or guardian tab shows the remove action.
+   */
+  public assertRemoveParentGuardianActionVisible(): void {
+    logAE('method', 'assertRemoveParentGuardianActionVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertRemoveParentGuardianActionVisible();
+  }
+
+  /**
+   * Asserts the remove parent or guardian confirmation page is visible.
+   *
+   * @param expectedIdentifierText - Expected account identifier text fragment.
+   */
+  public assertOnRemoveParentGuardianPage(expectedIdentifierText: string): void {
+    logAE('method', 'assertOnRemoveParentGuardianPage()', { expectedIdentifierText });
+    this.removeParentGuardian.assertOnRemoveParentGuardianConfirmation(expectedIdentifierText);
   }
 
   /**
@@ -1036,6 +1067,28 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Enters a last name on the add parent or guardian form.
+   *
+   * @param value - Last name value.
+   */
+  public enterAddParentGuardianLastName(value: string): void {
+    logAE('method', 'enterAddParentGuardianLastName()', { value });
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.editLastName(value);
+  }
+
+  /**
+   * Enters address line 1 on the add parent or guardian form.
+   *
+   * @param value - Address line 1 value.
+   */
+  public enterAddParentGuardianAddressLine1(value: string): void {
+    logAE('method', 'enterAddParentGuardianAddressLine1()', { value });
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.editAddressLine1(value);
+  }
+
+  /**
    * Starts editing company details and changes the company name field.
    *
    * @param value - New company name value.
@@ -1209,6 +1262,53 @@ export class AccountEnquiryFlow {
     logAE('method', 'assertAddParentGuardianErrorSummaryContains()', { expected });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
     this.editParentGuardianActions.assertErrorSummaryContains(expected);
+  }
+
+  /**
+   * Cancels the remove parent or guardian confirmation page.
+   */
+  public cancelRemoveParentGuardianDetails(): void {
+    logAE('method', 'cancelRemoveParentGuardianDetails()');
+    this.removeParentGuardian.cancelRemoval();
+    this.detailsNav.assertParentGuardianTabIsActive();
+    this.parentGuardianDetails.assertSectionHeader('Parent or guardian details');
+  }
+
+  /**
+   * Confirms removal of the non-paying parent or guardian.
+   */
+  public confirmRemoveParentGuardianDetails(): void {
+    logAE('method', 'confirmRemoveParentGuardianDetails()');
+    this.removeParentGuardian.confirmRemoval();
+    this.detailsNav.assertDefendantTabIsActive();
+    this.defendantDetails.assertSectionHeader('Defendant');
+  }
+
+  /**
+   * Asserts the account details success banner text.
+   *
+   * @param expected - Expected success message.
+   */
+  public assertAccountDetailsSuccessBanner(expected: string): void {
+    logAE('method', 'assertAccountDetailsSuccessBanner()', { expected });
+    this.detailsNav.assertSuccessBannerText(expected);
+  }
+
+  /**
+   * Verifies the non-paying parent or guardian has been removed from the account via API.
+   */
+  public verifyParentGuardianRemovedViaApi(): void {
+    logAE('method', 'verifyParentGuardianRemovedViaApi()');
+
+    this.extractDefendantAccountIdFromUrl()
+      .then((defendantAccountId) => this.fetchHeaderSummary(defendantAccountId))
+      .then((headerBody) => {
+        expect(headerBody['parent_guardian_party_id'], 'parent_guardian_party_id should be cleared').to.be.oneOf([
+          null,
+          undefined,
+        ]);
+        expect(headerBody['debtor_type'], 'debtor_type should revert to Defendant').to.eq('Defendant');
+      });
   }
 
   /**

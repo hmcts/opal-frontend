@@ -105,6 +105,31 @@ export class EditParentGuardianDetailsActions {
   }
 
   /**
+   * Edits the address line 1 input within the Parent/Guardian add/edit form.
+   *
+   * @param value - Address line 1 to enter.
+   * @param opts Optional configuration.
+   * @param opts.timeout Max time to wait for the form/field visibility (default 10_000 ms).
+   */
+  public editAddressLine1(value: string, opts?: { timeout?: number }): void {
+    const timeout = opts?.timeout ?? 10_000;
+
+    log('method', 'Editing Address line 1 (Parent/Guardian form)');
+    cy.get(L.form, { timeout }).should('be.visible');
+
+    log('action', `Typing Address line 1: "${value}"`);
+    cy.get(L.fields.address.line1, { timeout })
+      .should('be.visible')
+      .and('be.enabled')
+      .scrollIntoView()
+      .clear({ force: true })
+      .type(value, { delay: 0, force: true })
+      .should('have.value', value);
+
+    log('done', `Entered Address line 1 -> "${value}"`);
+  }
+
+  /**
    * Verifies the "First names" value in the Parent/Guardian **edit form**.
    *
    * Waits for the form and input to be visible, then asserts the input's value
