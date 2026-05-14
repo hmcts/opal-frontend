@@ -10,15 +10,19 @@ import {
 
 import {
   interceptAddNotes,
+  interceptAtAGlance,
   interceptDefendantHeader,
   interceptPGDetails,
 } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK } from './mocks/parentGuardianDebtor.mock';
 import { DOM_ELEMENTS as DOM } from '../../../shared/selectors/account-enquiry/account.enquiry.parent-guardian-details.locators';
+import { DOM_ELEMENTS as TABS } from '../../../shared/selectors/account-enquiry/account.enquiry.version-control.locators';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
+import { DEFENDANT_HEADER_YOUTH_MOCK } from './mocks/defendant_details_mock';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 type ParentGuardianDetailsMock = typeof OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK;
@@ -52,6 +56,96 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       },
     });
   };
+
+  const setupParentGuardianShell = ({
+    headerMock,
+    pgDetailsMock,
+    fragments = 'at-a-glance',
+  }: {
+    headerMock: ReturnType<typeof createDefendantHeaderMockWithName>;
+    pgDetailsMock?: ParentGuardianDetailsMock;
+    fragments?:
+      | 'parent-or-guardian'
+      | 'at-a-glance'
+      | 'defendant'
+      | 'payment-terms'
+      | 'enforcement'
+      | 'impositions'
+      | 'history-and-notes'
+      | 'fixed-penalty';
+  }) => {
+    const accountId = headerMock.defendant_account_party_id;
+
+    interceptAddNotes();
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, headerMock, '1');
+    interceptAtAGlance(Number(accountId), OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    if (headerMock.parent_guardian_party_id && pgDetailsMock) {
+      interceptPGDetails(accountId, headerMock.parent_guardian_party_id, pgDetailsMock, '1');
+    }
+
+    setupAccountEnquiryComponent({ ...componentProperties, accountId, fragments });
+  };
+
+  it(
+    'AC1a: should display the Parent or guardian tab for an adult or youth account with parent or guardian to pay',
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.parent_guardian_party_id = '1770000001';
+      headerMock.debtor_type = 'Parent/Guardian';
+
+      const pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+      pgDetailsMock.defendant_account_party.party_details.party_id = headerMock.parent_guardian_party_id;
+      pgDetailsMock.defendant_account_party.is_debtor = true;
+
+      setupParentGuardianShell({ headerMock, pgDetailsMock });
+
+      cy.get(TABS.parentGuardianTab).should('be.visible');
+    },
+  );
+
+  it(
+    'AC1b, AC2a, AC2b: should display the Parent or guardian tab and the remove action for a youth-only account with a non-paying parent or guardian',
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
+      headerMock.parent_guardian_party_id = '1770000001';
+      headerMock.debtor_type = 'Defendant';
+
+      const pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+      pgDetailsMock.defendant_account_party.party_details.party_id = headerMock.parent_guardian_party_id;
+      pgDetailsMock.defendant_account_party.is_debtor = false;
+
+      setupParentGuardianShell({ headerMock, pgDetailsMock, fragments: 'parent-or-guardian' });
+
+      cy.get(TABS.parentGuardianTab).should('be.visible');
+      cy.get(DOM.removeParentGuardianLink)
+        .should('be.visible')
+        .and('contain.text', 'Remove Parent or guardian details');
+    },
+  );
+
+  it(
+    'AC3: should not display the remove action for an adult or youth account with parent or guardian to pay',
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.parent_guardian_party_id = '1770000001';
+      headerMock.debtor_type = 'Parent/Guardian';
+
+      const pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
+      pgDetailsMock.defendant_account_party.party_details.party_id = headerMock.parent_guardian_party_id;
+      pgDetailsMock.defendant_account_party.is_debtor = true;
+
+      setupParentGuardianShell({ headerMock, pgDetailsMock, fragments: 'parent-or-guardian' });
+
+      cy.get(TABS.parentGuardianTab).should('be.visible');
+      cy.get(DOM.removeParentGuardianLink).should('not.exist');
+    },
+  );
 
   it(
     'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',
@@ -142,8 +236,8 @@ describe('Account Enquiry Parent or Guardian Component', () => {
   );
 
   it(
-    'AC1c: should display only Parent or Guardian details sub-section when debtor flag is false',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
+    'AC1, AC2a, AC2b: should display the reduced non-paying Parent or Guardian screen when debtor flag is false',
+    { tags: [...buildTags('@JIRA-STORY:PO-1876'), '@JIRA-EPIC:PO-1875'] },
     () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       pgDetailsMock.defendant_account_party.is_debtor = false;
@@ -152,21 +246,21 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
       cy.get('h2').contains('Parent or guardian details').should('be.visible');
 
-      // AC1b: Verify that when debtor flag is false, only parent/guardian details sub-sections are displayed
-      // Check for Personal Details section
+      // PO-1876 reduced non-paying parent/guardian display:
+      // show name, address and contact details only
       cy.get(DOM.parentOrGuardianDetailsName).should('be.visible');
-      cy.get(DOM.parentOrGuardianDetailsAliases).should('be.visible');
-      cy.get(DOM.parentOrGuardianDetailsDob).should('be.visible');
-      cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey).should('be.visible');
+      cy.get(DOM.parentOrGuardianDetailsAliases).should('not.exist');
+      cy.get(DOM.parentOrGuardianDetailsDob).should('not.exist');
+      cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey).should('not.exist');
       cy.get(DOM.parentOrGuardianDetailsAddressKey).should('be.visible');
       cy.get(DOM.parentOrGuardianDetailsVehicleMake).should('not.exist');
       cy.get(DOM.parentOrGuardianDetailsVehicleReg).should('not.exist');
-      cy.get(DOM.contactSummaryCardTitle).should('not.exist');
-      cy.get(DOM.contactDetailsPrimaryEmailKey).should('not.exist');
-      cy.get(DOM.contactDetailsSecondaryEmailKey).should('not.exist');
-      cy.get(DOM.contactDetailsMobilePhoneKey).should('not.exist');
-      cy.get(DOM.contactDetailsHomePhoneKey).should('not.exist');
-      cy.get(DOM.contactDetailsWorkPhoneKey).should('not.exist');
+      cy.get(DOM.contactSummaryCardTitle).should('be.visible');
+      cy.get(DOM.contactDetailsPrimaryEmailKey).should('be.visible');
+      cy.get(DOM.contactDetailsSecondaryEmailKey).should('be.visible');
+      cy.get(DOM.contactDetailsMobilePhoneKey).should('be.visible');
+      cy.get(DOM.contactDetailsHomePhoneKey).should('be.visible');
+      cy.get(DOM.contactDetailsWorkPhoneKey).should('be.visible');
       cy.get(DOM.employerDetailsNameKey).should('not.exist');
       cy.get(DOM.employerDetailsReferenceKey).should('not.exist');
       cy.get(DOM.employerDetailsEmailKey).should('not.exist');
