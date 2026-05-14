@@ -352,7 +352,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should fetch the impositions tab data when fragment is changed to impositions', () => {
     component['refreshFragment$'].next('impositions');
-    expect(mockOpalFinesService.getDefendantAccountImpositionsTabData).toHaveBeenCalled();
+    expect(mockOpalFinesService.getDefendantAccountImpositionsTabData).toHaveBeenCalledWith(
+      MOCK_FINES_ACCOUNT_STATE.account_id,
+    );
   });
 
   it('should refresh the data for the header and current tab when refreshPage is called', () => {

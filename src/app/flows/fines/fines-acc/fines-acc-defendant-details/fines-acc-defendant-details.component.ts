@@ -253,7 +253,9 @@ export class FinesAccDefendantDetailsComponent
           );
           break;
         case 'impositions':
-          this.tabImpositions$ = this.fetchTabDataTyped(this.opalFinesService.getDefendantAccountImpositionsTabData());
+          this.tabImpositions$ = this.fetchTabDataTyped(
+            this.opalFinesService.getDefendantAccountImpositionsTabData(account_id),
+          );
           break;
         case 'history-and-notes':
           this.tabHistoryAndNotes$ = this.fetchTabDataTyped(

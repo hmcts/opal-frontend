@@ -27,7 +27,6 @@ import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-off
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from './interfaces/opal-fines-account-defendant-at-a-glance.interface';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import { IOpalFinesUpdateDefendantAccountPayload } from './interfaces/opal-fines-update-defendant-account.interface';
 import { IOpalFinesUpdateDefendantAccountResponse } from './interfaces/opal-fines-update-defendant-account-response.interface';
@@ -803,15 +802,29 @@ export class OpalFines {
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
-   * @param business_unit_id - The ID of the business unit.
-   * @param business_unit_user_id - The ID of the business unit user.
-   * @returns An Observable that emits the account details at a glance for the specified tab.
+   * @returns An Observable that emits the account impositions for the specified tab.
    */
-  public getDefendantAccountImpositionsTabData(): Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> {
-    return (
-      this.cache.defendantAccountImpositionsCache$ ??
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK)
-    );
+  public getDefendantAccountImpositionsTabData(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> {
+    if (!this.cache.defendantAccountImpositionsCache$) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/impositions`;
+      this.cache.defendantAccountImpositionsCache$ = this.http
+        .get<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantDetailsImpositionsTabRefData;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+
+    return this.cache.defendantAccountImpositionsCache$;
   }
 
   /**
