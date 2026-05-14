@@ -1,5 +1,5 @@
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+import { DEFENDANT_HEADER_MOCK, DEFENDANT_HEADER_YOUTH_MOCK } from './mocks/defendant_details_mock';
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from '../../../shared/selectors/account-enquiry/account.enquiry.header.locators';
 import { DEFENDANT_DETAILS } from '../../../shared/selectors/account-enquiry/account.enquiry.defendant-details.locators';
 
@@ -424,10 +424,37 @@ describe('Account Enquiry Defendant Details Tab', () => {
 
       mountDefendantTab({
         defendantDetailsMock,
+        hasAccountMaintenencePermission: true,
         canAddParentOrGuardianDetails: true,
       });
 
       cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('be.visible');
+    },
+  );
+
+  it(
+    'AC1. Youth-only accounts navigate to the add parent or guardian details screen',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      const headerMock = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
+      const defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      const accountId = headerMock.defendant_account_party_id;
+
+      headerMock.parent_guardian_party_id = null;
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      setLanguagePref(language_preferences!.document_language_preference);
+      setLanguagePref(language_preferences!.hearing_language_preference);
+
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, accountId);
+      interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+
+      cy.contains(DEFENDANT_DETAILS.linkText, 'Add parent or guardian details').should('be.visible').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/parentGuardian/add']);
     },
   );
 
