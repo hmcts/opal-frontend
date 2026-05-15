@@ -54,6 +54,19 @@ export class PrimaryNavigationActions {
   }
 
   /**
+   * Asserts that the requested primary navigation item is not rendered.
+   * @param itemLabel - Visible label of the navigation item expected to be hidden.
+   */
+  public assertItemHidden(itemLabel: string): void {
+    if (!PRIMARY_NAV_ITEMS.some((item) => item.label === itemLabel)) {
+      throw new Error(`Unsupported primary navigation item: ${itemLabel}`);
+    }
+
+    log('assert', 'Checking primary navigation item is hidden', { itemLabel });
+    cy.get('body', this.common.getTimeoutOptions()).find(L.itemByText(itemLabel)).should('not.exist');
+  }
+
+  /**
    * Asserts that the top-level Fines navigation items appear in the expected order.
    */
   public assertMenuItemsInOrder(): void {
