@@ -4,6 +4,6 @@ import { IOpalFinesDefendantAccountOrganisationDetails } from './opal-fines-defe
 export interface IOpalFinesDefendantAccountPartyDetails {
   party_id: string;
   organisation_flag: boolean;
-  organisation_details: IOpalFinesDefendantAccountOrganisationDetails | null;
-  individual_details: IOpalFinesDefendantAccountIndividualDetails | null;
+  organisation_details?: IOpalFinesDefendantAccountOrganisationDetails | null;
+  individual_details?: IOpalFinesDefendantAccountIndividualDetails | null;
 }

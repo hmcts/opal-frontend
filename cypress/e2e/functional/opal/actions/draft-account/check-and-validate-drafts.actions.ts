@@ -13,11 +13,22 @@ export type CheckAndValidateTab = 'To review' | 'Rejected' | 'Deleted' | 'Failed
 
 const log = createScopedLogger('CheckAndValidateDraftsActions');
 const CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_LINK = '#finesCavCheckerLink';
+const CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_PATH = '/fines/draft/check-and-validate/tabs#to-review';
 
 /**
  * Actions for the **Check and Validate Draft Accounts** page (checker view).
  */
 export class CheckAndValidateDraftsActions extends DraftAccountsCommonActions {
+  /**
+   * Visits the Check and Validate Draft Accounts route directly.
+   */
+  visitPageDirectly(): void {
+    log('navigate', 'Visiting Check and Validate Draft Accounts directly', {
+      path: CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_PATH,
+    });
+    cy.visit(CHECK_AND_VALIDATE_DRAFT_ACCOUNTS_PATH);
+  }
+
   /**
    * Opens the Check and Validate Draft Accounts page from the Accounts landing page.
    */

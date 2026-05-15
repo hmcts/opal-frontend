@@ -21,6 +21,7 @@ import { EditParentGuardianDetailsActions } from '../actions/account-details/edi
 import { AccountConvertActions } from '../actions/account-details/convert.account.actions';
 import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
+import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -107,6 +108,21 @@ export class AccountEnquiryFlow {
       .get('@etagUpdate', { timeout: 0 })
       .then((etag: any) => (etag ? (etag.accountNumber ?? null) : null))
       .then((n: string | null) => (n && String(n).trim() ? String(n).trim() : null));
+  }
+
+  /**
+   * Resolves the current published account id from `@etagUpdate`.
+   *
+   * @returns Chainable resolving to the numeric account id.
+   */
+  private resolveAccountIdFromAlias(): Cypress.Chainable<number> {
+    return cy.get<EtagUpdate>('@etagUpdate').then((etag) => {
+      const accountId = Number(etag?.accountId);
+      if (!Number.isFinite(accountId)) {
+        throw new Error('Expected @etagUpdate to contain a numeric accountId for direct account navigation.');
+      }
+      return accountId;
+    });
   }
 
   /**
@@ -225,6 +241,18 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Visits the last created published defendant account details route directly.
+   */
+  public visitLastCreatedPublishedAccountDetails(): void {
+    logAE('method', 'visitLastCreatedPublishedAccountDetails()');
+    this.resolveAccountIdFromAlias().then((accountId) => {
+      const path = `/fines/account/defendant/${accountId}/details`;
+      logAE('navigate', 'Visiting published account details directly', { accountId, path });
+      cy.visit(path);
+    });
+  }
+
+  /**
    * Navigates to the Defendant tab and asserts a specific section header.
    *
    * @param headerText - Expected section header text.
@@ -250,6 +278,14 @@ export class AccountEnquiryFlow {
   public assertConvertToIndividualActionVisible(): void {
     logAE('method', 'assertConvertToIndividualActionVisible()');
     this.defendantDetails.assertConvertToIndividualActionVisible();
+  }
+
+  /**
+   * Asserts the Defendant tab shows the add parent or guardian action.
+   */
+  public assertAddParentGuardianActionVisible(): void {
+    logAE('method', 'assertAddParentGuardianActionVisible()');
+    this.defendantDetails.assertAddParentGuardianActionVisible();
   }
 
   /**
@@ -284,6 +320,16 @@ export class AccountEnquiryFlow {
     logAE('method', 'openConvertToIndividualConfirmation()');
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.startConvertToIndividualAccount();
+  }
+
+  /**
+   * Opens the add parent or guardian form from the Defendant tab.
+   */
+  public openAddParentGuardianDetails(): void {
+    logAE('method', 'openAddParentGuardianDetails()');
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.assertSectionHeader('Defendant');
+    this.defendantDetails.startAddParentGuardianDetails();
   }
 
   /**
@@ -463,6 +509,17 @@ export class AccountEnquiryFlow {
     logAE('navigate', 'Navigating to Parent/Guardian tab and asserting section header', { headerText });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertSectionHeader(headerText);
+  }
+
+  /**
+   * Asserts the add parent or guardian route is active and the information banner is shown.
+   */
+  public assertOnAddParentGuardianDetailsPage(): void {
+    logAE('method', 'assertOnAddParentGuardianDetailsPage()');
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.assertInformationBannerText(
+      'These details are for information only. The youth defendant still pays.',
+    );
   }
 
   /**
@@ -996,6 +1053,17 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Enters a first name on the add parent or guardian form.
+   *
+   * @param value - New first name value.
+   */
+  public enterAddParentGuardianFirstName(value: string): void {
+    logAE('method', 'enterAddParentGuardianFirstName()', { value });
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.editFirstNames(value);
+  }
+
+  /**
    * Starts editing company details and changes the company name field.
    *
    * @param value - New company name value.
@@ -1105,6 +1173,70 @@ export class AccountEnquiryFlow {
     logAE('method', 'cancelEditAndLeave()');
     logAE('cancel', 'Cancelling edit and returning to details page');
     this.common.cancelEditing(true);
+  }
+
+  /**
+   * Cancels the add parent or guardian form without changes and asserts no warning is shown.
+   */
+  public cancelAddParentGuardianWithoutChanges(): void {
+    logAE('method', 'cancelAddParentGuardianWithoutChanges()');
+
+    cy.window().then((win) => {
+      cy.stub(win, 'confirm').as('parentGuardianAddConfirm');
+    });
+
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.clickCancelLink();
+    cy.get('@parentGuardianAddConfirm').should('not.have.been.called');
+  }
+
+  /**
+   * Cancels the add parent or guardian form and chooses to stay on the page.
+   */
+  public cancelAddParentGuardianAndStay(): void {
+    logAE('method', 'cancelAddParentGuardianAndStay()');
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.common.cancelEditing(false);
+  }
+
+  /**
+   * Cancels the add parent or guardian form and confirms leaving the page.
+   */
+  public cancelAddParentGuardianAndLeave(): void {
+    logAE('method', 'cancelAddParentGuardianAndLeave()');
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.common.cancelEditing(true);
+  }
+
+  /**
+   * Attempts to save add parent or guardian details.
+   */
+  public attemptSaveAddParentGuardianDetails(): void {
+    logAE('method', 'attemptSaveAddParentGuardianDetails()');
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.saveChanges();
+  }
+
+  /**
+   * Asserts the first name on the add parent or guardian form.
+   *
+   * @param expected - Expected input value.
+   */
+  public assertAddParentGuardianFirstName(expected: string): void {
+    logAE('method', 'assertAddParentGuardianFirstName()', { expected });
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.verifyFirstName(expected);
+  }
+
+  /**
+   * Asserts the add parent or guardian error summary contains the expected message.
+   *
+   * @param expected - Expected error text.
+   */
+  public assertAddParentGuardianErrorSummaryContains(expected: string): void {
+    logAE('method', 'assertAddParentGuardianErrorSummaryContains()', { expected });
+    this.editParentGuardianActions.assertHeader({ route: 'add' });
+    this.editParentGuardianActions.assertErrorSummaryContains(expected);
   }
 
   /**
