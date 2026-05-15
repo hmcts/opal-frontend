@@ -1,7 +1,7 @@
 /**
- * @file dashboard.steps.ts
+ * @file accounts-dashboard.steps.ts
  * @description
- * Step definitions for authenticated home-area navigation within the Opal application.
+ * Step definitions for accounts navigation within the Opal application.
  * Covers high-level actions such as opening the Manual Account Creation page
  * or navigating to other dashboard-linked areas.
  *
@@ -22,11 +22,12 @@
  * @see {@link ConsolidationActions}
  */
 
-import { When } from '@badeball/cypress-cucumber-preprocessor';
+import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import { ManualCreateAccountActions } from '../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { AccountSearchIndividualsActions } from '../../e2e/functional/opal/actions/search/search.individuals.actions';
 import { ConsolidationActions } from '../../e2e/functional/opal/actions/consolidation/consolidation.actions';
 import { PrimaryNavigationActions } from '../../e2e/functional/opal/actions/primary-navigation.actions';
+import { log } from '../utils/log.helper';
 
 const createAccount = () => new ManualCreateAccountActions();
 const searchIndividuals = () => new AccountSearchIndividualsActions();
@@ -58,12 +59,7 @@ When('I open Manual Account Creation', () => {
  *
  * @details
  * - Asserts the Search landing page is already displayed.
- * - Useful for scenarios that need to confirm they are on Account Search.
- *
- * @example
- * ```gherkin
- * When I open Search for an Account
- * ```
+ * - Preserves the older dashboard step wording used by some scenarios and editor tooling.
  */
 When('I open Search for an Account', () => {
   searchIndividuals().assertOnSearchLandingPage();
@@ -86,4 +82,14 @@ When('I open Consolidate accounts', () => {
   primaryNavigation().chooseItem('Accounts');
   primaryNavigation().assertLandingPage('Accounts', '/fines/dashboard/accounts');
   consolidation().openFromAccountsPage();
+});
+
+Then('I should not see the Consolidate accounts link on the Accounts dashboard', () => {
+  log('assert', 'Checking Consolidate accounts is hidden on the Accounts dashboard');
+  consolidation().assertLinkHiddenOnAccountsPage();
+});
+
+When('I navigate directly to the Consolidate accounts page', () => {
+  log('step', 'Navigating directly to the Consolidate accounts page');
+  consolidation().visitPageDirectly();
 });
