@@ -643,7 +643,7 @@ The following tags can be used in your test scenarios to control ticket creation
 | Tag Prefix         | Example Value           | Description                                                        |
 | ------------------ | ----------------------- | ------------------------------------------------------------------ |
 | `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.               |
-| `@JIRA-KEY:POT-*`  | `@JIRA-KEY:POT-1234`    | Associates one executable test with one Zephyr POT test case key.  |
+| `@JIRA-KEY:PO-*`   | `@JIRA-KEY:POT-1234`    | Associates one executable test with one Zephyr POT test case key.  |
 | `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
 | `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
 | `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |
