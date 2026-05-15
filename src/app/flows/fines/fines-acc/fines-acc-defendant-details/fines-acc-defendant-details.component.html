@@ -95,7 +95,7 @@
       subNavItemFragment="defendant"
       [subNavItemText]="tabs['defendant']"
     ></li>
-    @if (accountData.debtor_type === 'Parent/Guardian') {
+    @if (hasParentOrGuardianDetails) {
       <li
         opal-lib-moj-sub-navigation-item
         subNavItemId="parent-or-guardian-tab"
@@ -160,11 +160,12 @@
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
+        [canAddParentOrGuardianDetails]="canAddParentOrGuardianDetails"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
         (convertAccount)="navigateToConvertAccountPage($event)"
-        (addParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
+        (addParentOrGuardianDetails)="navigateToAddPartyDetailsPage($event)"
       ></app-fines-acc-defendant-details-defendant-tab>
     }
   }

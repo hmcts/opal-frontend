@@ -186,6 +186,36 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component.canAddParentOrGuardianDetails).toBe(false);
   });
 
+  it('should show parent or guardian details when the parent guardian is the debtor', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      debtor_type: component.debtorTypes.parentGuardian,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.hasParentOrGuardianDetails).toBe(true);
+  });
+
+  it('should show parent or guardian details when a parent guardian party exists', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: '123',
+    };
+
+    expect(component.hasParentOrGuardianDetails).toBe(true);
+  });
+
+  it('should not show parent or guardian details when no parent guardian exists', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    expect(component.hasParentOrGuardianDetails).toBe(false);
+  });
+
   it('should handle tab switch', () => {
     component.handleTabSwitch('details');
     expect(component.activeTab).toBe('details');
@@ -394,6 +424,39 @@ describe('FinesAccDefendantDetailsComponent', () => {
         relativeTo: component['activatedRoute'],
       },
     );
+  });
+
+  it('should navigate to add parent or guardian details page when add is allowed', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: null,
+    };
+
+    component.navigateToAddPartyDetailsPage(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../party/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/add`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should navigate to access-denied when add parent or guardian details is not allowed', () => {
+    component.accountData = {
+      ...structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+      is_youth: true,
+      debtor_type: component.debtorTypes.defendant,
+      parent_guardian_party_id: '123',
+    };
+
+    component.navigateToAddPartyDetailsPage(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
   });
 
   it('should navigate to the company convert page when convert is triggered', () => {

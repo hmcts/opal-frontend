@@ -744,6 +744,41 @@ describe('FinesAccPayloadService', () => {
       expect(result.contact_details).toBeDefined();
       expect(result.language_preferences).toBeDefined();
     });
+
+    it('should build the wrapped add defendant account payload with only individual party details', () => {
+      const formState = {
+        ...MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+        facc_party_add_amend_convert_forenames: 'Jane',
+        facc_party_add_amend_convert_surname: 'Doe',
+        facc_party_add_amend_convert_address_line_1: '123 Main St',
+      };
+
+      const result = service.buildAddDefendantAccountPayload(formState, 'parentGuardian', false, '');
+      const { defendant_account_party: defendantAccountParty } = result;
+
+      expect(defendantAccountParty.defendant_account_party_type).toBe('Parent/Guardian');
+      expect(defendantAccountParty.is_debtor).toBe(false);
+      expect(defendantAccountParty.party_details.organisation_flag).toBe(false);
+      expect(defendantAccountParty.party_details.individual_details?.forenames).toBe('Jane');
+      expect(defendantAccountParty.party_details).not.toHaveProperty('organisation_details');
+    });
+
+    it('should build the wrapped add defendant account payload with only organisation party details', () => {
+      const formState = {
+        ...MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+        facc_party_add_amend_convert_organisation_name: 'Test Company Ltd',
+        facc_party_add_amend_convert_address_line_1: '123 Main St',
+      };
+
+      const result = service.buildAddDefendantAccountPayload(formState, 'company', true, '');
+      const { defendant_account_party: defendantAccountParty } = result;
+
+      expect(defendantAccountParty.defendant_account_party_type).toBe('Defendant');
+      expect(defendantAccountParty.is_debtor).toBe(true);
+      expect(defendantAccountParty.party_details.organisation_flag).toBe(true);
+      expect(defendantAccountParty.party_details.organisation_details?.organisation_name).toBe('Test Company Ltd');
+      expect(defendantAccountParty.party_details).not.toHaveProperty('individual_details');
+    });
   });
 
   describe('buildEnforcementCourtFormPayload', () => {

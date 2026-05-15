@@ -139,6 +139,7 @@ export const DOM_ELEMENTS = {
   // Form actions
   submitButton: 'button[type="submit"]',
   cancelButton: '.govuk-button--secondary',
+  cancelLink: 'opal-lib-govuk-cancel-link a',
   saveButton: '.save-button',
 
   // Error elements
@@ -146,6 +147,8 @@ export const DOM_ELEMENTS = {
   errorSummaryTitle: '.govuk-error-summary__title',
   errorSummaryList: '.govuk-error-summary__list',
   fieldError: '.govuk-error-message',
+  informationBanner: 'opal-lib-moj-alert[type="information"]',
+  informationBannerText: 'opal-lib-moj-alert-content-text',
 
   // Loading and state elements
   loadingSpinner: '.loading-spinner',

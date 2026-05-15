@@ -6,13 +6,7 @@
       </div>
       @if (hasAccountMaintenencePermission) {
         <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
-          <a
-            tabindex="0"
-            [class]="style.changeLink"
-            (click)="handleChangeParentOrGuardianDetails()"
-            (keyup.enter)="handleChangeParentOrGuardianDetails()"
-            >Change</a
-          >
+          <a href="" [class]="style.changeLink" (click)="handleChangeParentOrGuardianDetails($event)">Change</a>
         </div>
       }
     </div>
@@ -25,15 +19,12 @@
       summaryListId="parentOrGuardianDetails"
     ></app-fines-acc-party-details>
   </div>
-  @if (party.is_debtor) {
+  @if (removeParentOrGuardianAction) {
     <div class="govuk-grid-column-one-third">
       <hr [class]="style.hr" />
       <h2 [class]="style.heading">Actions</h2>
       <p>
-        <a
-          tabindex="0"
-          (click)="handleRemoveParentOrGuardianDetails()"
-          (keyup.enter)="handleRemoveParentOrGuardianDetails()"
+        <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleRemoveParentOrGuardianDetails($event)"
           >Remove Parent or guardian details</a
         >
       </p>
