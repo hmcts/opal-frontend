@@ -1144,6 +1144,20 @@ describe('OpalFines', () => {
     httpMock.expectNone(apiUrl);
   });
 
+  it('should return mock defendant account impositions data for a not implemented API in dev mode', () => {
+    const account_id = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/impositions`;
+
+    service.getDefendantAccountImpositionsTabData(account_id).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(null, { status: 501, statusText: 'Not Implemented' });
+  });
+
   it('should getDefendantAccountPaymentTermsTabData', () => {
     const account_id: number = 77;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/payment-terms/latest`;
