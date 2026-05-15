@@ -108,7 +108,7 @@
     "@ministryofjustice/frontend": "^9.0.0",
     "@ngrx/signals": "^21.0.0",
     "accessible-autocomplete": "^3.0.0",
-    "applicationinsights": "~3.14.0",
+    "applicationinsights": "~3.15.0",
     "axios": "^1.6.2",
     "body-parser": "^2.0.0",
     "config": "^4.0.0",
