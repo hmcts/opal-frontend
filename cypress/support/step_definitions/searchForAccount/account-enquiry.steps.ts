@@ -797,6 +797,24 @@ When('I enter {string} into the parent or guardian first name field', (value: st
   flow().enterAddParentGuardianFirstName(valueWithUniq);
 });
 
+When('I enter {string} into the amend parent or guardian first name field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter amend parent or guardian first name', { value: valueWithUniq });
+  flow().enterAmendParentGuardianFirstName(valueWithUniq);
+});
+
+When('I enter {string} into the parent or guardian last name field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter parent or guardian last name', { value: valueWithUniq });
+  flow().enterParentGuardianLastName(valueWithUniq);
+});
+
+When('I enter {string} into the parent or guardian address line 1 field', (value: string) => {
+  const valueWithUniq = applyUniqPlaceholder(value);
+  log('step', 'Enter parent or guardian address line 1', { value: valueWithUniq });
+  flow().enterParentGuardianAddressLine1(valueWithUniq);
+});
+
 /**
  * @step Edits the Company details, changing the Company name to a given value.
  *
@@ -883,6 +901,26 @@ When('I attempt to cancel adding parent or guardian details and choose OK on the
   flow().cancelAddParentGuardianAndLeave();
 });
 
+When('I start changing the non-paying parent or guardian details', () => {
+  log('step', 'Start changing non-paying parent or guardian details');
+  flow().openNonPayingParentGuardianChangeForm();
+});
+
+When('I cancel changing parent or guardian details without making changes', () => {
+  log('step', 'Cancel amend parent or guardian details without making changes');
+  flow().cancelAmendParentGuardianWithoutChanges();
+});
+
+When('I attempt to cancel changing parent or guardian details and choose Cancel on the confirmation dialog', () => {
+  log('step', 'Cancel amend parent or guardian details and stay on page');
+  flow().cancelAmendParentGuardianAndStay();
+});
+
+When('I attempt to cancel changing parent or guardian details and choose OK on the confirmation dialog', () => {
+  log('step', 'Cancel amend parent or guardian details and leave page');
+  flow().cancelAmendParentGuardianAndLeave();
+});
+
 /**
  * @step Ensures we remain on the edit page after cancelling (no navigation occurred).
  */
@@ -894,6 +932,16 @@ Then('I should remain on the defendant edit page', () => {
 Then('I should remain on the add parent or guardian details page', () => {
   log('assert', 'Remain on add parent or guardian details page');
   flow().assertOnAddParentGuardianDetailsPage();
+});
+
+Then('I should be on the amend parent or guardian details page', () => {
+  log('assert', 'Amend parent or guardian details page is visible');
+  flow().assertOnAmendParentGuardianDetailsPage();
+});
+
+Then('I should remain on the amend parent or guardian details page', () => {
+  log('assert', 'Remain on amend parent or guardian details page');
+  flow().assertOnAmendParentGuardianDetailsPage();
 });
 
 /**
@@ -962,14 +1010,21 @@ Then('I should see the defendant name contains {string}', (expected: string) => 
  * @param expected - Text expected within the parent/guardian name.
  */
 Then('I should see the parent or guardian name contains {string}', (expected: string) => {
-  log('assert', 'Parent or guardian name contains', { expected });
-  flow().assertParentGuardianNameContains(expected);
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Parent or guardian name contains', { expected: expectedWithUniq });
+  flow().assertParentGuardianNameContains(expectedWithUniq);
 });
 
 Then('I should see the parent or guardian first name field contains {string}', (expected: string) => {
   const expectedWithUniq = applyUniqPlaceholder(expected);
   log('assert', 'Parent or guardian first name field contains', { expected: expectedWithUniq });
   flow().assertAddParentGuardianFirstName(expectedWithUniq);
+});
+
+Then('I should see the amend parent or guardian first name field contains {string}', (expected: string) => {
+  const expectedWithUniq = applyUniqPlaceholder(expected);
+  log('assert', 'Amend parent or guardian first name field contains', { expected: expectedWithUniq });
+  flow().assertAmendParentGuardianFirstName(expectedWithUniq);
 });
 
 /**
@@ -1077,6 +1132,16 @@ When('I attempt to save the parent or guardian add details', () => {
 Then('I should see the parent or guardian add error summary contains {string}', (expected: string) => {
   log('assert', 'Parent or guardian add error summary contains', { expected });
   flow().assertAddParentGuardianErrorSummaryContains(expected);
+});
+
+When('I attempt to save the parent or guardian amend details', () => {
+  log('step', 'Attempt to save amend parent or guardian details');
+  flow().attemptSaveAmendParentGuardianDetails();
+});
+
+Then('I should see the parent or guardian amend error summary contains {string}', (expected: string) => {
+  log('assert', 'Parent or guardian amend error summary contains', { expected });
+  flow().assertAmendParentGuardianErrorSummaryContains(expected);
 });
 
 /**
