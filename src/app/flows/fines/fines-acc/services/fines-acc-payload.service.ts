@@ -12,6 +12,7 @@ import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fi
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
 import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-transform-items-config.constant';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesAccountDefendantAccountPartyPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party-payload.interface';
 import { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
 import { IFinesAccPartyAddAmendConvertState } from '../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
@@ -338,6 +339,39 @@ export class FinesAccPayloadService {
       buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     );
+  }
+
+  /**
+   * Builds the request body for adding a defendant account party.
+   *
+   * The POST endpoint expects the account party fields under a root
+   * defendant_account_party property, while the amend/convert PUT endpoint
+   * expects the party object directly.
+   *
+   * @param formState - The form state containing party add/amend/convert data
+   * @param partyType - The party type (company, individual, parentGuardian)
+   * @param isDebtor - Whether this is a debtor party
+   * @param partyId - The unique party identifier
+   * @returns The transformed POST payload object for adding party details
+   */
+  public buildAddDefendantAccountPayload(
+    formState: IFinesAccPartyAddAmendConvertState,
+    partyType: string,
+    isDebtor: boolean,
+    partyId: string,
+  ): IOpalFinesAccountDefendantAccountPartyPayload {
+    const defendantAccountParty = this.buildAccountPartyPayload(formState, partyType, isDebtor, partyId);
+    const { individual_details, organisation_details, ...partyDetails } = defendantAccountParty.party_details;
+
+    return {
+      defendant_account_party: {
+        ...defendantAccountParty,
+        party_details: {
+          ...partyDetails,
+          ...(partyDetails.organisation_flag ? { organisation_details } : { individual_details }),
+        },
+      },
+    };
   }
 
   /**
