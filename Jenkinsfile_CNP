@@ -508,7 +508,7 @@ void checkFocusedTests() {
 
 // Fail the build if newly added component/E2E tests are missing Jira story or epic tags.
 void checkNewTestJiraMetadata() {
-    yarnBuilder.yarn('check:new-tests:jira-metadata')
+    new uk.gov.hmcts.contino.YarnBuilder(this).yarn('check:new-tests:jira-metadata')
 }
 
 properties([
