@@ -116,7 +116,16 @@
               </td>
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-creditor-' + rowIndex">
                 @if (imposition.Creditor; as creditorDisplay) {
-                  {{ creditorDisplay }}
+                  @if (isMinorCreditor(imposition)) {
+                    <a
+                      class="govuk-link govuk-link--no-visited-state"
+                      [routerLink]="getMinorCreditorDetailsRouterLink(imposition)"
+                    >
+                      {{ creditorDisplay }}
+                    </a>
+                  } @else {
+                    {{ creditorDisplay }}
+                  }
                 } @else {
                   <ng-container *ngTemplateOutlet="notProvided"></ng-container>
                 }

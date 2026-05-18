@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesAccDefendantDetailsImpositionsTabComponent } from './fines-acc-defendant-details-impositions-tab.component';
@@ -7,6 +8,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesAccDefendantDetailsImpositionsTabComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
   });
 
@@ -75,6 +77,23 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(component.sortedColumnTitleSignal()).toBe('Balance');
     expect(component.sortedColumnDirectionSignal()).toBe('ascending');
     expect(firstCreditorCell.textContent).toContain('Minor Creditor Test Ltd');
+  });
+
+  it('should render minor creditor names as links to minor creditor details', () => {
+    const { fixture } = setupComponent();
+    const minorCreditorLink = fixture.nativeElement.querySelector('#imposition-creditor-1 a') as HTMLAnchorElement;
+
+    expect(minorCreditorLink).toBeTruthy();
+    expect(minorCreditorLink.textContent).toContain('Minor Creditor Test Ltd');
+    expect(minorCreditorLink.getAttribute('href')).toBe('/fines/account/minor-creditor/660000000001/details');
+  });
+
+  it('should render major creditor names as plain text until major creditor details exists', () => {
+    const { fixture } = setupComponent();
+    const majorCreditorCell = fixture.nativeElement.querySelector('#imposition-creditor-0') as HTMLTableCellElement;
+
+    expect(majorCreditorCell.querySelector('a')).toBeNull();
+    expect(majorCreditorCell.textContent).toContain('Central Funds');
   });
 
   it('should paginate imposition rows at 25 results per page', () => {

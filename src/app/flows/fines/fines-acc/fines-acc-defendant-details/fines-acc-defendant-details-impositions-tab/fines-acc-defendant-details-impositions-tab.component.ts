@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, Input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import { IAbstractTableData } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
 import { SortableValuesType } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/types';
@@ -18,8 +19,11 @@ import {
   IOpalFinesAccountDefendantDetailsImposition,
   IOpalFinesAccountDefendantDetailsImpositionsTabRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
+import { FINES_ACC_ROUTING_PATHS } from '../../routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from '../../routing/constants/fines-acc-minor-creditor-routing-paths.constant';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 
 interface IImpositionTableRow extends IAbstractTableData<SortableValuesType> {
@@ -33,6 +37,8 @@ interface IImpositionTableRow extends IAbstractTableData<SortableValuesType> {
   Offence: string | null;
   'Imposed by': string | null;
   'Imposition ID': string;
+  'Creditor account id': number | null;
+  'Creditor account type': string | null;
 }
 
 @Component({
@@ -49,6 +55,7 @@ interface IImpositionTableRow extends IAbstractTableData<SortableValuesType> {
     MojSortableTableStatusComponent,
     MonetaryPipe,
     NgTemplateOutlet,
+    RouterLink,
   ],
   templateUrl: './fines-acc-defendant-details-impositions-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -83,6 +90,8 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
       Offence: imposition.offence_title,
       'Imposed by': this.getImposedByDisplay(imposition),
       'Imposition ID': imposition.imposition_id,
+      'Creditor account id': imposition.creditor_account_id,
+      'Creditor account type': imposition.creditor_account_type,
     };
   }
 
@@ -124,6 +133,45 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
    */
   public getCreditorDisplay(imposition: IOpalFinesAccountDefendantDetailsImposition): string | null {
     return imposition.creditor_name ?? imposition.creditor_account_id?.toString() ?? null;
+  }
+
+  /**
+   * Determines whether the creditor should route to the minor creditor details page.
+   *
+   * @param imposition - The imposition row to check.
+   * @returns Whether the imposition has a linked minor creditor account.
+   */
+  public isMinorCreditor(imposition: IImpositionTableRow): boolean {
+    const creditorAccountType = imposition['Creditor account type']?.toLowerCase();
+
+    if (imposition['Creditor account id'] === null) {
+      return false;
+    }
+
+    return creditorAccountType === 'minor';
+  }
+
+  /**
+   * Builds the route commands for the minor creditor details page.
+   *
+   * @param imposition - The imposition row to build a link for.
+   * @returns Router link commands for the minor creditor details route.
+   */
+  public getMinorCreditorDetailsRouterLink(imposition: IImpositionTableRow): (string | number)[] {
+    const creditorAccountId = imposition['Creditor account id'];
+
+    if (creditorAccountId === null) {
+      return [];
+    }
+
+    return [
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root,
+      creditorAccountId,
+      FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
+    ];
   }
 
   /**
