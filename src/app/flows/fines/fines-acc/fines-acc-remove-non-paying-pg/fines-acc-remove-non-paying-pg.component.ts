@@ -59,9 +59,7 @@ export class FinesAccRemoveNonPayingPgComponent implements OnDestroy {
     }
 
     const payload = {
-      party_details: {
-        party_id: parentGuardianPartyId,
-      },
+      defendant_account_party_id: parentGuardianPartyId,
     };
 
     this.opalFinesService

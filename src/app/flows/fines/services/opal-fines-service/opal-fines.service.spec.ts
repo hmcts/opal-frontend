@@ -1684,9 +1684,7 @@ describe('OpalFines', () => {
       const version = '8';
       const businessUnitId = '61';
       const payload = {
-        party_details: {
-          party_id: defendantAccountPartyId,
-        },
+        defendant_account_party_id: defendantAccountPartyId,
       };
 
       service
@@ -1708,9 +1706,7 @@ describe('OpalFines', () => {
       const defendantAccountId = 123456;
       const defendantAccountPartyId = 'PARTY-123';
       const payload = {
-        party_details: {
-          party_id: defendantAccountPartyId,
-        },
+        defendant_account_party_id: defendantAccountPartyId,
       };
 
       service.deleteDefendantAccountParty(defendantAccountId, defendantAccountPartyId, payload).subscribe();

@@ -92,9 +92,7 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
       123,
       'PG-123',
       {
-        party_details: {
-          party_id: 'PG-123',
-        },
+        defendant_account_party_id: 'PG-123',
       },
       '8',
       '61',

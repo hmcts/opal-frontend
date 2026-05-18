@@ -1,5 +1,3 @@
 export interface IOpalFinesDeleteDefendantAccountPartyPayload {
-  party_details: {
-    party_id: string;
-  };
+  defendant_account_party_id: string;
 }
