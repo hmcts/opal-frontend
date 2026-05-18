@@ -68,10 +68,7 @@ describe(
         ],
       });
 
-    it(
-      'AC4e hides Reports from the primary navigation when the user has no report permissions in any business unit',
-      { tags: [] },
-      () => {
+    it('AC4e hides Reports from the primary navigation when the user has no report permissions in any business unit', { tags: ['@JIRA-TEST-KEY:PO-5249'] }, () => {
         setupComponent(USER_STATE_MOCK_NO_PERMISSION);
 
         cy.get(L.container).should('be.visible');
@@ -83,13 +80,9 @@ describe(
             expect(labels).to.deep.equal(L.expectedItemsWithoutReports);
           });
         cy.get(L.itemByText(L.labels.reports)).should('not.exist');
-      },
-    );
+      });
 
-    it(
-      'shows Reports in the primary navigation when the user has a report permission in any business unit',
-      { tags: [] },
-      () => {
+    it('shows Reports in the primary navigation when the user has a report permission in any business unit', { tags: ['@JIRA-TEST-KEY:PO-5250'] }, () => {
         setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION));
 
         cy.get(L.container).should('be.visible');
@@ -100,7 +93,6 @@ describe(
 
             expect(labels).to.deep.equal(L.expectedItemsWithReports);
           });
-      },
-    );
+      });
   },
 );

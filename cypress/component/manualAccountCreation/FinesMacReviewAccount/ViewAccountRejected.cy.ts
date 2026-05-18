@@ -87,10 +87,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     interceptOffences();
   });
 
-  it(
-    'AC.2,4 - should render correctly - AY (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC.2,4 - should render correctly - AY (FinesMacReviewAccountComponent - View Rejected Account)', { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5202'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
 
@@ -115,13 +112,9 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC.3 - should render Review History section correctly (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC.3 - should render Review History section correctly (FinesMacReviewAccountComponent - View Rejected Account)', { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5204'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
 
@@ -170,13 +163,9 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
       cy.get(DOM_ELEMENTS.timelineDate).eq(2).should('contain.text', '01 January 2025');
       cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Submitted');
       cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
-    },
-  );
+    });
 
-  it(
-    'AC.2,5 - should render correctly - AYPG (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC.2,5 - should render correctly - AYPG (FinesMacReviewAccountComponent - View Rejected Account)', { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5205'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
       fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -202,13 +191,9 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC.2,6 - should render correctly - COMP (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC.2,6 - should render correctly - COMP (FinesMacReviewAccountComponent - View Rejected Account)', { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5206'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
       fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -234,13 +219,9 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Rejected Account)', { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5207'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -251,12 +232,8 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    },
-  );
-  it(
-    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+    });
+  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Rejected Account)', { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5208'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -268,12 +245,8 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    },
-  );
-  it(
-    'AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+    });
+  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Rejected Account)', { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5209'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -285,13 +258,9 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Rejected Account)',
-    { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Rejected Account)', { tags: [...buildTags('@JIRA-STORY:PO-601'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5210'] }, () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Rejected';
       fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
@@ -346,6 +315,5 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
 
       cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
-    },
-  );
+    });
 });

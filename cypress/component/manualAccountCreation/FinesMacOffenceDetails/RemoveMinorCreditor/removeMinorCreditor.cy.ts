@@ -62,21 +62,14 @@ describe('FinesMacRemoveMinorCreditor', () => {
       componentProperties: {},
     });
   };
-  it(
-    '(AC.1) should render the component',
-    {
-      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545'],
-    },
-    () => {
+  it('(AC.1) should render the component', {
+      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5046'],
+    }, () => {
       setupComponent();
-    },
-  );
-  it(
-    'AC.1) should render all elements on the page',
-    {
-      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545'],
-    },
-    () => {
+    });
+  it('AC.1) should render all elements on the page', {
+      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5047'],
+    }, () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.app).should('exist');
       cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -97,15 +90,11 @@ describe('FinesMacRemoveMinorCreditor', () => {
 
       cy.get(DOM_ELEMENTS.removeCreditorButton).should('exist');
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC.2) should load all keys and elements with correct text',
-    {
-      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545'],
-    },
-    () => {
+  it('AC.2) should load all keys and elements with correct text', {
+      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5048'],
+    }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this minor creditor?');
@@ -118,15 +107,11 @@ describe('FinesMacRemoveMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.paymentReferenceKey).should('contain', 'Payment reference');
 
       cy.get(DOM_ELEMENTS.removeCreditorButton).should('contain', 'Yes - remove minor creditor');
-    },
-  );
+    });
 
-  it(
-    'AC.2) should load all fields with the correct values',
-    {
-      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545'],
-    },
-    () => {
+  it('AC.2) should load all fields with the correct values', {
+      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5049'],
+    }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
@@ -140,15 +125,11 @@ describe('FinesMacRemoveMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.sortCode).should('contain', '12-34-56');
       cy.get(DOM_ELEMENTS.accountNumber).should('contain', '12345678');
       cy.get(DOM_ELEMENTS.paymentReference).should('contain', 'Testing');
-    },
-  );
+    });
 
-  it(
-    'AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty',
-    {
-      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545'],
-    },
-    () => {
+  it('AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty', {
+      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5050'],
+    }, () => {
       setupComponent();
 
       formData[0].formData = {
@@ -172,6 +153,5 @@ describe('FinesMacRemoveMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
       cy.get(DOM_ELEMENTS.address).should('contain', 'Not provided');
       cy.get(DOM_ELEMENTS.paymentMethod).should('contain', 'Not provided');
-    },
-  );
+    });
 });

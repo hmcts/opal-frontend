@@ -65,21 +65,14 @@ describe('FinesMacCompanyDetailsComponent', () => {
     });
   };
 
-  it(
-    'should render the component (FinesMacCompanyDetailsComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('should render the component (FinesMacCompanyDetailsComponent)', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4889'] }, () => {
       setupComponent(null, 'company');
 
       // Verify the component is rendered
       cy.get(L.componentRoot).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.8) should error when submitted without mandatory fields but has included optional input - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.8) should error when submitted without mandatory fields but has included optional input - Return to account details + Add contact details', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4890'] }, () => {
       setupComponent(null, 'company');
 
       finesMacState.companyDetails.formData.fm_company_details_address_line_2 = 'Addr2';
@@ -91,13 +84,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.addContactDetailsButton).click();
       cy.get(L.errorSummary).should('contain', REQUIRED_VALIDATION.requiredName);
       cy.get(L.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAddressLine1);
-    },
-  );
+    });
 
-  it(
-    '(AC.1) should be created as per the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.1) should be created as per the design artefact', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4891'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.pageHeader).should('contain', 'Company details');
@@ -122,13 +111,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.addContactDetailsButton).should('exist');
       cy.get(L.cancelLink).should('exist');
       cy.get(L.cancelLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.2) should register all fields for aliases correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.2) should register all fields for aliases correctly', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4892'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -137,13 +122,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.aliasCompanyName1Input).should('exist');
 
       cy.get(L.addAliasButton).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.3) should allow users to add another aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.3) should allow users to add another aliases', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4893'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -164,13 +145,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(L.aliasCompanyName3Label).should('not.exist');
       cy.get(L.aliasCompanyName3Input).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.4) should allow users to add up to 5 aliases',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.4) should allow users to add up to 5 aliases', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4894'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -250,13 +227,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.aliasCompanyName5Input).should('exist');
 
       cy.get(L.addAliasButton).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.5) should allow users to remove an alias when an additional alias has been added for the first time',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.5) should allow users to remove an alias when an additional alias has been added for the first time', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4895'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -276,13 +249,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(L.aliasCompanyName2Label).should('not.exist');
       cy.get(L.aliasCompanyName2Input).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.6) should allow users to remove an alias when multiple additional aliases have been added',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.6) should allow users to remove an alias when multiple additional aliases have been added', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4896'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -344,13 +313,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(L.aliasCompanyName2Label).should('not.exist');
       cy.get(L.aliasCompanyName2Input).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.7) should not retain alias information when checkbox is unticked',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.7) should not retain alias information when checkbox is unticked', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4897'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -370,13 +335,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.addAliasesCheckbox).check();
       cy.get(L.aliasCompanyName1Input).should('have.value', '');
       cy.get(L.aliasCompanyName2Input).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.12) should allow form to be submitted with valid data',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.12) should allow form to be submitted with valid data', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4898'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
 
@@ -387,13 +348,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.submitButton).first().click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
-    },
-  );
+    });
 
-  it(
-    '(AC.9) should errors when form is submitted with empty aliases fields - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.9) should errors when form is submitted with empty aliases fields - Return to account details + Add contact details', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4899'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -403,13 +360,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(L.addContactDetailsButton).click();
       cy.get(L.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias1);
-    },
-  );
+    });
 
-  it(
-    '(AC.10) should error when submitted with many empty aliases fields - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.10) should error when submitted with many empty aliases fields - Return to account details + Add contact details', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4900'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -441,13 +394,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.errorSummary).should('not.contain', REQUIRED_VALIDATION.requiredAlias3);
       cy.get(L.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias4);
       cy.get(L.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias5);
-    },
-  );
+    });
 
-  it(
-    '(AC.1) should show maxlength errors when form fields exceed character limits',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.1) should show maxlength errors when form fields exceed character limits', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4901'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -482,13 +431,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
       for (const [, value] of Object.entries(MAX_LENGTH_VALIDATION)) {
         cy.get(L.errorSummary).should('contain', value);
       }
-    },
-  );
+    });
 
-  it(
-    '(AC.1) should show errors when address line fields contain asterisks (*)',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.1) should show errors when address line fields contain asterisks (*)', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4902'] }, () => {
       setupComponent(null, 'company');
 
       finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street*';
@@ -500,24 +445,18 @@ describe('FinesMacCompanyDetailsComponent', () => {
       for (const [, value] of Object.entries(SPECIAL_CHARACTERS_PATTERN_VALIDATION)) {
         cy.get(L.errorSummary).should('contain', value);
       }
-    },
-  );
+    });
 
-  it(
-    '(AC.1, 5, 8) should validate type check to ensure name fields not allow non-single-byte ASCII characters',
-    {
-      tags: [
-        ...buildTags(
+  it('(AC.1, 5, 8) should validate type check to ensure name fields not allow non-single-byte ASCII characters', {
+      tags: [...buildTags(
           '@JIRA-EPIC:PO-345',
           '@JIRA-EPIC:PO-2219',
           '@JIRA-STORY:PO-365',
           '@JIRA-STORY:PO-3415',
           '@JIRA-LABEL:populate-and-submit',
         ),
-        '@JIRA-KEY:POT-7336',
-      ],
-    },
-    () => {
+        '@JIRA-KEY:POT-7336',, '@JIRA-TEST-KEY:PO-4903'],
+    }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -538,23 +477,17 @@ describe('FinesMacCompanyDetailsComponent', () => {
       for (const [, value] of Object.entries(ALPHABETICAL_TEXT_PATTERN_VALIDATION)) {
         cy.get(L.errorSummary).should('contain', value);
       }
-    },
-  );
-  it(
-    '(AC.1, 5) should validate type check to ensure name fields only allows single-byte ASCII characters',
-    {
-      tags: [
-        ...buildTags(
+    });
+  it('(AC.1, 5) should validate type check to ensure name fields only allows single-byte ASCII characters', {
+      tags: [...buildTags(
           '@JIRA-EPIC:PO-345',
           '@JIRA-EPIC:PO-2219',
           '@JIRA-STORY:PO-365',
           '@JIRA-STORY:PO-3415',
           '@JIRA-LABEL:populate-and-submit',
         ),
-        '@JIRA-KEY:POT-7337',
-      ],
-    },
-    () => {
+        '@JIRA-KEY:POT-7337',, '@JIRA-TEST-KEY:PO-4904'],
+    }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.addAliasesCheckbox).check();
@@ -575,12 +508,8 @@ describe('FinesMacCompanyDetailsComponent', () => {
       for (const [, value] of Object.entries(ALPHABETICAL_TEXT_PATTERN_VALIDATION)) {
         cy.get(L.errorSummary).should('not.contain', value);
       }
-    },
-  );
-  it(
-    '(AC.11) should allow form to be submitted when validation errors are corrected - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+    });
+  it('(AC.11) should allow form to be submitted when validation errors are corrected - Return to account details + Add contact details', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4905'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'company');
 
@@ -600,13 +529,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
         cy.get(L.errorSummary).should('not.exist');
         cy.wrap(formSubmitSpy).should('have.been.called');
       });
-    },
-  );
+    });
 
-  it(
-    '(AC.12) should allow form to be submitted with valid data with aliases - Return to account details + Add contact details',
-    { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.12) should allow form to be submitted with valid data with aliases - Return to account details + Add contact details', { tags: [...buildTags('@JIRA-STORY:PO-365'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4906'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'company');
 
@@ -631,12 +556,8 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(L.errorSummary).should('not.exist');
 
       cy.wrap(formSubmitSpy).should('have.been.called');
-    },
-  );
-  it(
-    '(AC.1) should convert specified company details fields to uppercase on user input',
-    { tags: [...buildTags('@JIRA-STORY:PO-1450'), '@JIRA-EPIC:PO-345'] },
-    () => {
+    });
+  it('(AC.1) should convert specified company details fields to uppercase on user input', { tags: [...buildTags('@JIRA-STORY:PO-1450'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4907'] }, () => {
       setupComponent(null, 'company');
 
       cy.get(L.companyNameInput).type('example company', { delay: 0 }).should('have.value', 'EXAMPLE COMPANY');
@@ -652,6 +573,5 @@ describe('FinesMacCompanyDetailsComponent', () => {
           .type(`alias company ${i + 1}`, { delay: 0 })
           .should('have.value', `ALIAS COMPANY ${i + 1}`);
       }
-    },
-  );
+    });
 });

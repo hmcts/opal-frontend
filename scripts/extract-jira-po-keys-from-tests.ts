@@ -11,7 +11,7 @@ This will create a file named matches.csv in the current directory with the extr
 
 // === CONFIG ===
 const filePatterns = ['**/*.cy.ts', '**/*.feature']; // change this
-const regex = /@JIRA-KEY:POT-[0-9]{4}/g;
+const regex = /@JIRA-KEY:PO-[0-9]{4}/g;
 
 // ==============
 

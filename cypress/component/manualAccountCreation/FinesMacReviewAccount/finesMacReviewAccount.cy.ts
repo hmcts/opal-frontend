@@ -155,20 +155,13 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   });
 
-  it(
-    'should render component (FinesMacReviewAccountComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('should render component (FinesMacReviewAccountComponent)', { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5211'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.app).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.1c) should show Police and court details card for Conditional Caution',
-    { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC.1c) should show Police and court details card for Conditional Caution', { tags: [...buildTags('@JIRA-STORY:PO-2790'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5212'] }, () => {
       finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
 
       setupComponent();
@@ -177,18 +170,12 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
       cy.contains('.govuk-summary-card__title', 'Police and court details').should('exist');
       cy.get(DOM_ELEMENTS.originatorName).should('contain', 'Sending police force');
-    },
-  );
+    });
 
-  it(
-    '(AC.1a)should render court details and offence details for all defendant types',
-    {
-      tags: [
-        ...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-662', '@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'),
-        '@JIRA-EPIC:PO-2219',
-      ],
-    },
-    () => {
+  it('(AC.1a)should render court details and offence details for all defendant types', {
+      tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-662', '@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'),
+        '@JIRA-EPIC:PO-2219',, '@JIRA-TEST-KEY:PO-5213'],
+    }, () => {
       setupComponent();
       cy.wait('@getOffenceByCjsCode');
 
@@ -260,13 +247,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.requestPaymentCard).should('contain', 'Request payment card').should('contain', 'Yes');
       cy.get(DOM_ELEMENTS.hasDaysInDefault).should('contain', 'There are days in default').should('contain', 'No');
       cy.get(DOM_ELEMENTS.enforcementActions).should('contain', 'Enforcement action').should('contain', 'No');
-    },
-  );
+    });
 
-  it(
-    '(AC.1a,AC.2,AC.5)should render all elements on the screen for AY check account',
-    { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.1a,AC.2,AC.5)should render all elements on the screen for AY check account', { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-5214'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -317,13 +300,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
       cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.4a) should check each summary list has change button next to them for AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.4a) should check each summary list has change button next to them for AY', { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-5215'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Personal details').should('contain', 'Change');
@@ -332,13 +311,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2,AC.4) should have all correct text on all elements for AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.1,AC.2,AC.4) should have all correct text on all elements for AY', { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-5216'] }, () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
@@ -409,13 +384,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
       cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Submit for review');
       cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
-    },
-  );
+    });
 
-  it(
-    '(AC.3,AC.7) should show dashed line if Data is empty for non required details',
-    { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.3,AC.7) should show dashed line if Data is empty for non required details', { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-5217'] }, () => {
       setupComponent();
 
       finesMacState.contactDetails.formData = {
@@ -465,25 +436,17 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-    },
-  );
+    });
 
-  it(
-    '(AC.3,AC.7) should show dash lines for non required fields in the details',
-    { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.3,AC.7) should show dash lines for non required fields in the details', { tags: [...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-5218'] }, () => {
       setupComponent();
 
       finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = '';
 
       cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2,AC.5)should render all elements on the screen for AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344'] },
-    () => {
+  it('(AC.1,AC.2,AC.5)should render all elements on the screen for AYPG', { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5219'] }, () => {
       setupComponent();
 
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -542,13 +505,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.PGaddress).should('exist');
       cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('exist');
       cy.get(DOM_ELEMENTS.PGregistrationNumber).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.3,AC.5) should load all data into elements for AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344'] },
-    () => {
+  it('(AC.3,AC.5) should load all data into elements for AYPG', { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5220'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
@@ -639,13 +598,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
       cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Submit for review');
       cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
-    },
-  );
+    });
 
-  it(
-    '(AC.4a)should check each summary list has change button next to them for AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344'] },
-    () => {
+  it('(AC.4a)should check each summary list has change button next to them for AYPG', { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5221'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
@@ -656,12 +611,8 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Parent or guardian details').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-    },
-  );
-  it(
-    '(AC.3)should show dashed line if Data is empty for non required details AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-662'), '@JIRA-EPIC:PO-344'] },
-    () => {
+    });
+  it('(AC.3)should show dashed line if Data is empty for non required details AYPG', { tags: [...buildTags('@JIRA-STORY:PO-662'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5222'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
@@ -711,26 +662,18 @@ describe('FinesMacReviewAccountComponent', () => {
         .should('contain', '—');
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-    },
-  );
+    });
 
-  it(
-    '(AC.3,AC.7) should show dash lines for non required fields in the details AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344'] },
-    () => {
+  it('(AC.3,AC.7) should show dash lines for non required fields in the details AYPG', { tags: [...buildTags('@JIRA-STORY:PO-662', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-5223'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = '';
 
       cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2,AC.5,AC.6)should render all elements for company defendant type',
-    { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.1,AC.2,AC.5,AC.6)should render all elements for company defendant type', { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-5224'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -765,13 +708,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
       cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2,AC.6)should load all data into elements for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.1,AC.2,AC.6)should load all data into elements for company', { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-5225'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -818,13 +757,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
       cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Submit for review');
       cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
-    },
-  );
+    });
 
-  it(
-    '(AC.4a)should check each summary list has change button next to them for Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345'] },
-    () => {
+  it('(AC.4a)should check each summary list has change button next to them for Company', { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-5226'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -833,12 +768,8 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-    },
-  );
-  it(
-    '(AC.3,AC.7) should show dashed line if Data is empty for non required details Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345'] },
-    () => {
+    });
+  it('(AC.3,AC.7) should show dashed line if Data is empty for non required details Company', { tags: [...buildTags('@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-5227'] }, () => {
       setupComponent();
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -863,12 +794,8 @@ describe('FinesMacReviewAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-    },
-  );
-  it(
-    '(AC.2,AC,3a,AC.3bi) should show in review for accounts in review',
-    { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+    });
+  it('(AC.2,AC,3a,AC.3bi) should show in review for accounts in review', { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5228'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
 
       cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
@@ -879,23 +806,15 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.timeLineTitle).contains('Submitted').should('exist');
       cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
       cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
-    },
-  );
+    });
 
-  it(
-    'should not load review component if account is not in review and should load normal Check account details heading',
-    { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('should not load review component if account is not in review and should load normal Check account details heading', { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5229'] }, () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.reviewComponent).should('not.exist');
       cy.get(DOM_ELEMENTS.heading).contains('Check account details').should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.3bii,AC.3biii,AC.3c)should show history of timeline data',
-    { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.3bii,AC.3biii,AC.3c)should show history of timeline data', { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5230'] }, () => {
       finesAccountPayload.timeline_data.push({
         username: 'Timmy Test',
         status: 'Rejected',
@@ -923,13 +842,9 @@ describe('FinesMacReviewAccountComponent', () => {
         cy.get(DOM_ELEMENTS.timelineAuthor).contains(entry.author).should('exist');
         cy.get(DOM_ELEMENTS.timelineDate).contains(entry.date).should('exist');
       });
-    },
-  );
+    });
 
-  it(
-    '(AC.4) should render summary tables under review account for AY',
-    { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.4) should render summary tables under review account for AY', { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5231'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -1041,13 +956,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', 'test notes');
 
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.5) should render all elements on the screen for AYPG',
-    { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.5) should render all elements on the screen for AYPG', { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5232'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
       cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -1188,13 +1099,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', 'test notes');
 
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.6) should render all elements on the screen for company defendant type',
-    { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.6) should render all elements on the screen for company defendant type', { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5233'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -1266,13 +1173,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', 'test notes');
 
       cy.get(DOM_ELEMENTS.changeLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.7) should show dashed line if Data is empty for non required details for all defendant types',
-    { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.7) should show dashed line if Data is empty for non required details for all defendant types', { tags: [...buildTags('@JIRA-STORY:PO-610', '@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5234'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
       const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
       finesMacState.contactDetails.formData = {
@@ -1304,47 +1207,31 @@ describe('FinesMacReviewAccountComponent', () => {
           cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
         });
       });
-    },
-  );
-  it(
-    'AC.2 The Review Account screen will be created as per the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+    });
+  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5235'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
       cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
 
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
       cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'In review');
-    },
-  );
+    });
 
-  it(
-    'AC.8, Decision table will be shown as per the design artefact',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC.8, Decision table will be shown as per the design artefact', { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5236'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
       cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
       cy.get(DOM_ELEMENTS.rejectionText).should('exist');
       cy.get(DOM_ELEMENTS.continue).should('exist');
       cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-    },
-  );
-  it(
-    'AC.8a user does not select any radio button and selects the Continue button',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+    });
+  it('AC.8a user does not select any radio button and selects the Continue button', { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5237'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.continue).should('exist').click();
       cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
       cy.get('p').should('contain', 'Select whether approved or rejected');
-    },
-  );
-  it(
-    'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button',
-    { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+    });
+  it('AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button', { tags: [...buildTags('@JIRA-STORY:PO-594'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5238'] }, () => {
       setupComponent(finesAccountPayload, finesAccountPayload, false, true);
       cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
       cy.get(DOM_ELEMENTS.continue).should('exist').click();
@@ -1359,12 +1246,8 @@ describe('FinesMacReviewAccountComponent', () => {
         'contain',
         'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       );
-    },
-  );
-  it(
-    'COLLO should not be sent in draft account payload when payment terms are not applicable',
-    { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219'] },
-    () => {
+    });
+  it('COLLO should not be sent in draft account payload when payment terms are not applicable', { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-5239'] }, () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       Object.assign(finesMacState.paymentTerms.formData, {
@@ -1383,12 +1266,8 @@ describe('FinesMacReviewAccountComponent', () => {
         .then((body) => {
           expect(body.account.payment_terms).to.have.property('enforcements', null);
         });
-    },
-  );
-  it(
-    'COLLO should be sent in draft account payload when collection order is made previously',
-    { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219'] },
-    () => {
+    });
+  it('COLLO should be sent in draft account payload when collection order is made previously', { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-5240'] }, () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       Object.assign(finesMacState.paymentTerms.formData, {
@@ -1416,12 +1295,8 @@ describe('FinesMacReviewAccountComponent', () => {
               },
             ]);
         });
-    },
-  );
-  it(
-    'COLLO should be sent in draft account payload when collection order is made today',
-    { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219'] },
-    () => {
+    });
+  it('COLLO should be sent in draft account payload when collection order is made today', { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-5241'] }, () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       Object.assign(finesMacState.paymentTerms.formData, {
@@ -1449,12 +1324,8 @@ describe('FinesMacReviewAccountComponent', () => {
               },
             ]);
         });
-    },
-  );
-  it(
-    'enforcements should be correct when COLLO and NOENF are selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219'] },
-    () => {
+    });
+  it('enforcements should be correct when COLLO and NOENF are selected', { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-5242'] }, () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       Object.assign(finesMacState.paymentTerms.formData, {
@@ -1495,12 +1366,8 @@ describe('FinesMacReviewAccountComponent', () => {
               },
             ]);
         });
-    },
-  );
-  it(
-    'enforcements should be correct when COLLO and PRIS are selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219'] },
-    () => {
+    });
+  it('enforcements should be correct when COLLO and PRIS are selected', { tags: [...buildTags('@JIRA-STORY:PO-2093'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-5243'] }, () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       Object.assign(finesMacState.paymentTerms.formData, {
@@ -1546,13 +1413,9 @@ describe('FinesMacReviewAccountComponent', () => {
               },
             ]);
         });
-    },
-  );
+    });
 
-  it(
-    'imposing_court_id is sent as null for every offence (API contract)',
-    { tags: [...buildTags('@JIRA-STORY:PO-2240'), '@JIRA-EPIC:PO-2219'] },
-    () => {
+  it('imposing_court_id is sent as null for every offence (API contract)', { tags: [...buildTags('@JIRA-STORY:PO-2240'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-5244'] }, () => {
       setupComponent(finesDraftState, null, false, false);
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
@@ -1569,13 +1432,9 @@ describe('FinesMacReviewAccountComponent', () => {
             expect(offence, `offence[${idx}]`).to.have.property('imposing_court_id', null);
           });
         });
-    },
-  );
+    });
 
-  it(
-    'minor creditor bank account number is correct and is against the correct imposition',
-    { tags: [...buildTags('@JIRA-STORY:PO-1988', '@JIRA-STORY:PO-2092'), '@JIRA-EPIC:PO-2219'] },
-    () => {
+  it('minor creditor bank account number is correct and is against the correct imposition', { tags: [...buildTags('@JIRA-STORY:PO-1988', '@JIRA-STORY:PO-2092'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-5245'] }, () => {
       //PO-1988 Verify bank account type is sent as '1' for minor creditor when bank account details are provided
       //PO-2092 Verify minor creditor details are sent against the correct imposition
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -1622,13 +1481,9 @@ describe('FinesMacReviewAccountComponent', () => {
           expect(body.account.offences[0].impositions[1]).to.have.property('minor_creditor');
           expect(body.account.offences[0].impositions[1].minor_creditor).to.have.property('bank_account_type', '1');
         });
-    },
-  );
+    });
 
-  it(
-    'should send originator_type as NEW in draft account payload for new journey',
-    { tags: [...buildTags('@JIRA-STORY:PO-2793'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('should send originator_type as NEW in draft account payload for new journey', { tags: [...buildTags('@JIRA-STORY:PO-2793'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5246'] }, () => {
       finesMacState.originatorType = {
         nestedFlow: false,
         formData: { fm_originator_type_originator_type: 'NEW' },
@@ -1642,13 +1497,9 @@ describe('FinesMacReviewAccountComponent', () => {
         .then((body) => {
           expect(body.account).to.have.property('originator_type', 'NEW');
         });
-    },
-  );
+    });
 
-  it(
-    'should send originator_type as TFO in draft account payload for transfer in journey',
-    { tags: [...buildTags('@JIRA-STORY:PO-2793'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('should send originator_type as TFO in draft account payload for transfer in journey', { tags: [...buildTags('@JIRA-STORY:PO-2793'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5247'] }, () => {
       finesMacState.originatorType = {
         nestedFlow: false,
         formData: { fm_originator_type_originator_type: 'TFO' },
@@ -1662,6 +1513,5 @@ describe('FinesMacReviewAccountComponent', () => {
         .then((body) => {
           expect(body.account).to.have.property('originator_type', 'TFO');
         });
-    },
-  );
+    });
 });

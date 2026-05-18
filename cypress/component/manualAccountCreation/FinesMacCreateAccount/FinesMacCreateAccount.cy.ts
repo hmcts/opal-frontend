@@ -50,20 +50,13 @@ describe('FinesMacCreateAccountComponent', () => {
       submitHandlerName: 'handleAccountDetailsSubmit',
     });
 
-  it(
-    'should render the component (FinesMacCreateAccountComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('should render the component (FinesMacCreateAccountComponent)', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4941'] }, () => {
       setupComponent(null);
 
       cy.get(L.app).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.1)should render all elements on the page correctly and have correct text',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.1)should render all elements on the page correctly and have correct text', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4942'] }, () => {
       setupComponent(null);
 
       cy.get(L.heading).should('exist');
@@ -90,13 +83,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.fixedPenaltyLabel).should('contain', FINES_ACCOUNT_TYPES['Fixed Penalty']);
       cy.get(L.conditionalCautionLabel).should('contain', FINES_ACCOUNT_TYPES['Conditional Caution']);
       cy.get(L.ConditionalCautionHint).should('contain', 'Adult or youth only');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2)should render all elements for fine account type correctly and have correct text',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.1,AC.2)should render all elements for fine account type correctly and have correct text', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4943'] }, () => {
       setupComponent(null);
 
       cy.get(L.fineInput).click();
@@ -114,13 +103,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.adultOrYouthLabel).should('contain', 'Adult or youth only');
       cy.get(L.parentOrGuardianToPayLabel).should('contain', 'Adult or youth with parent or guardian to pay');
       cy.get(L.companyLabel).should('contain', 'Company');
-    },
-  );
+    });
 
-  it(
-    '(AC.1,AC.2) should render all elements for fixed penalty account type correctly and have correct text',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.1,AC.2) should render all elements for fixed penalty account type correctly and have correct text', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4944'] }, () => {
       setupComponent(null);
 
       cy.get(L.fixedPenaltyInput).click();
@@ -130,25 +115,17 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.FPAdultOrYouthLabel).should('exist');
       cy.get(L.FPCompany).should('exist');
       cy.get(L.FPCompanyLabel).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.4a) should have validation if empty business unit but valid account type',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.4a) should have validation if empty business unit but valid account type', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4945'] }, () => {
       setupComponent(null);
 
       cy.get(L.fineInput).click();
       cy.get(L.continueButton).click();
       cy.get(L.errorSummary).should('contain', ERROR_MESSAGES.businessUnit);
-    },
-  );
+    });
 
-  it(
-    '(AC.4b) should have validation in place if empty account type but valid business unit',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.4b) should have validation in place if empty account type but valid business unit', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4946'] }, () => {
       setupComponent(null);
 
       cy.get(L.businessUnitInput).type('Lo');
@@ -156,39 +133,27 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.continueButton).click();
 
       cy.get(L.errorSummary).should('contain', ERROR_MESSAGES.accountType);
-    },
-  );
+    });
 
-  it(
-    '(AC.4d) should have validation if both business unit and account type are empty',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.4d) should have validation if both business unit and account type are empty', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4947'] }, () => {
       setupComponent(null);
 
       cy.get(L.continueButton).click();
       cy.get(L.errorSummary)
         .should('contain', ERROR_MESSAGES.businessUnit)
         .should('contain', ERROR_MESSAGES.accountType);
-    },
-  );
+    });
 
-  it(
-    '(AC.2b) should check only 1 account type can be selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.2b) should check only 1 account type can be selected', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4948'] }, () => {
       setupComponent(null);
 
       cy.get(L.fineInput).click();
       cy.get(L.fixedPenaltyInput).click();
       cy.get(L.fineInput).should('not.be.checked');
       cy.get(L.fixedPenaltyInput).should('be.checked');
-    },
-  );
+    });
 
-  it(
-    '(AC5) should pass validation if both business unit and account type are filled in',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC5) should pass validation if both business unit and account type are filled in', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4949'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy);
 
@@ -200,13 +165,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.errorSummary).should('not.exist');
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    });
 
-  it(
-    '(AC.4c)should check through each account type to ensure that error is given when a defendant type is not selected except conditional caution',
-    { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.4c)should check through each account type to ensure that error is given when a defendant type is not selected except conditional caution', { tags: [...buildTags('@JIRA-STORY:PO-523'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4950'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy);
@@ -225,12 +186,8 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.continueButton).click();
       cy.get(L.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
-  it(
-    'Should be accessible with forward keyboard navigation',
-    { tags: [...buildTags('@JIRA-STORY:PO-2715'), '@JIRA-EPIC:PO-2807'] },
-    () => {
+    });
+  it('Should be accessible with forward keyboard navigation', { tags: [...buildTags('@JIRA-STORY:PO-2715'), '@JIRA-EPIC:PO-2807', '@JIRA-TEST-KEY:PO-4951'] }, () => {
       setupComponent(null);
 
       // Ensure the page is loaded
@@ -278,14 +235,10 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.press(Cypress.Keyboard.Keys.TAB);
       cy.get(L.continueButton).should('have.focus');
       // Cypress cannot yet handle SHIFT+TAB keypresses for reverse tabbing
-    },
-  );
+    });
 
   // Section of tests below cover 'Transfer in' account creation page
-  it(
-    '(AC2,2a,2b)should render all elements on the page correctly and have correct text',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC2,2a,2b)should render all elements on the page correctly and have correct text', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4952'] }, () => {
       setupComponent(null, undefined, (accountMock) => {
         accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
       });
@@ -310,13 +263,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.sectionLegend).should('contain', 'Account type');
       cy.get(L.fineLabel).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(L.fixedPenaltyLabel).should('contain', FINES_ACCOUNT_TYPES['Fixed Penalty']);
-    },
-  );
+    });
 
-  it(
-    '(AC.2c)should render all elements for fine account type correctly and have correct text',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC.2c)should render all elements for fine account type correctly and have correct text', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4953'] }, () => {
       setupComponent(null, undefined, (accountMock) => {
         accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
       });
@@ -336,13 +285,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.adultOrYouthLabel).should('contain', 'Adult or youth only');
       cy.get(L.parentOrGuardianToPayLabel).should('contain', 'Adult or youth with parent or guardian to pay');
       cy.get(L.companyLabel).should('contain', 'Company');
-    },
-  );
+    });
 
-  it(
-    '(AC2c) should render all elements for fixed penalty account type correctly and have correct text',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC2c) should render all elements for fixed penalty account type correctly and have correct text', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4954'] }, () => {
       setupComponent(null, undefined, (accountMock) => {
         accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
       });
@@ -354,13 +299,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.FPAdultOrYouthLabel).should('exist');
       cy.get(L.FPCompany).should('exist');
       cy.get(L.FPCompanyLabel).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.3) should have validation if empty business unit but valid account type',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC.3) should have validation if empty business unit but valid account type', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4955'] }, () => {
       setupComponent(null, undefined, (accountMock) => {
         accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
       });
@@ -368,13 +309,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.fineInput).click();
       cy.get(L.continueButton).click();
       cy.get(L.errorSummary).should('contain', ERROR_MESSAGES.businessUnit);
-    },
-  );
+    });
 
-  it(
-    '(AC.3) should have validation in place if empty account type but valid business unit',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC.3) should have validation in place if empty account type but valid business unit', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4956'] }, () => {
       setupComponent(null, undefined, (accountMock) => {
         accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
       });
@@ -384,26 +321,18 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.continueButton).click();
 
       cy.get(L.errorSummary).should('contain', ERROR_MESSAGES.accountType);
-    },
-  );
+    });
 
-  it(
-    '(AC.3) should have validation if both business unit and account type are empty',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC.3) should have validation if both business unit and account type are empty', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4957'] }, () => {
       setupComponent(null);
 
       cy.get(L.continueButton).click();
       cy.get(L.errorSummary)
         .should('contain', ERROR_MESSAGES.businessUnit)
         .should('contain', ERROR_MESSAGES.accountType);
-    },
-  );
+    });
 
-  it(
-    '(AC.3) should check only 1 account type can be selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC.3) should check only 1 account type can be selected', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4958'] }, () => {
       setupComponent(null, undefined, (accountMock) => {
         accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
       });
@@ -412,13 +341,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.fixedPenaltyInput).click();
       cy.get(L.fineInput).should('not.be.checked');
       cy.get(L.fixedPenaltyInput).should('be.checked');
-    },
-  );
+    });
 
-  it(
-    '(AC3) should pass validation if both business unit and account type are filled in',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC3) should pass validation if both business unit and account type are filled in', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4959'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, undefined, (accountMock) => {
         accountMock.originatorType.formData.fm_originator_type_originator_type = 'TFO';
@@ -432,13 +357,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.errorSummary).should('not.exist');
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    });
 
-  it(
-    '(AC5a) should navigate to account details for a valid Fine transfer in account',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC5a) should navigate to account details for a valid Fine transfer in account', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4960'] }, () => {
       setupComponent(
         null,
         (component) => {
@@ -456,13 +377,9 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(L.continueButton).click();
 
       cy.get('@routerNavigate').should('have.been.calledOnceWith', FINES_MAC_ROUTING_PATHS.children.accountDetails);
-    },
-  );
+    });
 
-  it(
-    '(AC5b) should navigate to fixed penalty details for a valid Fixed Penalty transfer in account',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC5b) should navigate to fixed penalty details for a valid Fixed Penalty transfer in account', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4961'] }, () => {
       setupComponent(
         null,
         (component) => {
@@ -483,13 +400,9 @@ describe('FinesMacCreateAccountComponent', () => {
         'have.been.calledOnceWith',
         FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails,
       );
-    },
-  );
+    });
 
-  it(
-    '(AC4) should auto select a single business unit',
-    { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750'] },
-    () => {
+  it('(AC4) should auto select a single business unit', { tags: [...buildTags('@JIRA-STORY:PO-2766'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4962'] }, () => {
       setupComponent(
         null,
         undefined,
@@ -504,6 +417,5 @@ describe('FinesMacCreateAccountComponent', () => {
 
       cy.get(L.businessUnitDefault).should('have.text', `The account will be created in Historical Debt`);
       cy.get(L.businessUnitInput).should('not.exist');
-    },
-  );
+    });
 });

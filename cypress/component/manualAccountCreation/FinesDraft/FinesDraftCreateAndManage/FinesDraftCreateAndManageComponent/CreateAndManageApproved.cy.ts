@@ -46,10 +46,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
     });
   };
 
-  it(
-    '(AC.2,AC.3,AC.4)should show summary table with correct data for approved accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.2,AC.3,AC.4)should show summary table with correct data for approved accounts', { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4724'] }, () => {
       const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -89,13 +86,9 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
         });
-    },
-  );
+    });
 
-  it(
-    '(AC.4b)should have pagination enabled for over 25 draft accounts for approved accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.4b)should have pagination enabled for over 25 draft accounts for approved accounts', { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4725'] }, () => {
       const approvedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -120,13 +113,9 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    },
-  );
+    });
 
-  it(
-    '(AC.1)should show empty value statement for Approved status when no accounts have been Approved',
-    { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.1)should show empty value statement for Approved status when no accounts have been Approved', { tags: [...buildTags('@JIRA-STORY:PO-607'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4726'] }, () => {
       const approvedMockData = { count: 0, summaries: [] };
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -138,6 +127,5 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
       cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
-    },
-  );
+    });
 });

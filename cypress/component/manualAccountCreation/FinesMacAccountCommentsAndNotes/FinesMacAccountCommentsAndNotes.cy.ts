@@ -64,20 +64,13 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     });
   };
 
-  it(
-    'should render the component (FinesMacAccountCommentsAndNotesComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('should render the component (FinesMacAccountCommentsAndNotesComponent)', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4848'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
       cy.get(L.componentRoot).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.1) should load all elements on the screen correctly',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.1) should load all elements on the screen correctly', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4849'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
       cy.get(L.pageHeader).should('contain', 'Account comments and notes');
@@ -90,13 +83,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
       cy.get(L.returnToAccountDetailsButton).should('contain', 'Return to account details');
       cy.get(L.cancelLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.2) should have character limits for account comments',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.2) should have character limits for account comments', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4850'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
       cy.get(L.commentInput).should('have.attr', 'maxlength', '30');
@@ -111,13 +100,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.commentInput).clear().type('a'.repeat(29), { delay: 0 });
       cy.get(L.commentInput).should('have.value', 'a'.repeat(29));
       cy.get(L.commentCharHint).should('contain', 'You have 1 character remaining');
-    },
-  );
+    });
 
-  it(
-    '(AC.3) should have character limits for account notes',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.3) should have character limits for account notes', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4851'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
       cy.get(L.noteInput).should('have.attr', 'maxlength', '1000');
@@ -132,13 +117,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.noteInput).clear().type('a'.repeat(999), { delay: 0 });
       cy.get(L.noteInput).should('have.value', 'a'.repeat(999));
       cy.get(L.noteCharHint).should('contain', 'You have 1 character remaining');
-    },
-  );
+    });
 
-  it(
-    '(AC.1) should allow users to fill in data and submit with no errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.1) should allow users to fill in data and submit with no errors', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4852'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
@@ -147,13 +128,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
       cy.get('.errorSummary').should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    });
 
-  it(
-    '(AC.1) should allow users to submit without entering data',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.1) should allow users to submit without entering data', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4853'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
@@ -162,13 +139,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
       cy.get('.errorSummary').should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    });
 
-  it(
-    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+  it('(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Adult or youth only', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4854'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK);
 
       cy.get(L.returnToAccountDetailsButton).should('exist');
@@ -177,12 +150,8 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.returnToAccountDetailsButton).should('exist');
       cy.get(L.reviewAndSubmitButton).should('exist');
       cy.get(L.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-499'), '@JIRA-EPIC:PO-344'] },
-    () => {
+    });
+  it('(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Parent or guardian', { tags: [...buildTags('@JIRA-STORY:PO-499'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4855'] }, () => {
       setupComponent(null, 'pgToPay', FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK);
 
       cy.get(L.returnToAccountDetailsButton).should('exist');
@@ -191,12 +160,8 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.returnToAccountDetailsButton).should('exist');
       cy.get(L.reviewAndSubmitButton).should('exist');
       cy.get(L.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-500'), '@JIRA-EPIC:PO-345'] },
-    () => {
+    });
+  it('(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Company', { tags: [...buildTags('@JIRA-STORY:PO-500'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4856'] }, () => {
       setupComponent(null, 'company', FINES_COMMENT_AND_NOTES_COMP_MANDATORY_COMPLETED_MOCK);
 
       cy.get(L.returnToAccountDetailsButton).should('exist');
@@ -205,12 +170,8 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.returnToAccountDetailsButton).should('exist');
       cy.get(L.reviewAndSubmitButton).should('exist');
       cy.get(L.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Adult or youth only',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+    });
+  it('(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Adult or youth only', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4857'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_AY_MANDATORY_MISSING_MOCK);
 
       cy.get(L.returnToAccountDetailsButton).should('exist');
@@ -219,12 +180,8 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.returnToAccountDetailsButton).should('exist');
       cy.get(L.reviewAndSubmitButton).should('not.exist');
       cy.get(L.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Parent or guardian',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+    });
+  it('(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Parent or guardian', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4858'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_PG_MANDATORY_MISSING_MOCK);
 
       cy.get(L.returnToAccountDetailsButton).should('exist');
@@ -233,12 +190,8 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.returnToAccountDetailsButton).should('exist');
       cy.get(L.reviewAndSubmitButton).should('not.exist');
       cy.get(L.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Company',
-    { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272'] },
-    () => {
+    });
+  it('(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Company', { tags: [...buildTags('@JIRA-STORY:PO-469'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4859'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_COMP_MANDATORY_MISSING_MOCK);
 
       cy.get(L.returnToAccountDetailsButton).should('exist');
@@ -247,37 +200,25 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.returnToAccountDetailsButton).should('exist');
       cy.get(L.reviewAndSubmitButton).should('not.exist');
       cy.get(L.cancelLink).should('exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.1) should update character count hint for account comments',
-    { tags: [...buildTags('@JIRA-STORY:PO-773'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('(AC.1) should update character count hint for account comments', { tags: [...buildTags('@JIRA-STORY:PO-773'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4860'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
       cy.get(L.commentInput).clear().type('a'.repeat(1), { delay: 0 });
       cy.get(L.commentCharHint).should('contain', 'You have 29 characters remaining');
 
       cy.get(L.commentInput).clear().type('a'.repeat(10), { delay: 0 });
       cy.get(L.commentCharHint).should('contain', 'You have 20 characters remaining');
-    },
-  );
-  it(
-    '(AC.1) should update character count hint for account notes',
-    { tags: [...buildTags('@JIRA-STORY:PO-773'), '@JIRA-EPIC:PO-545'] },
-    () => {
+    });
+  it('(AC.1) should update character count hint for account notes', { tags: [...buildTags('@JIRA-STORY:PO-773'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4861'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
       cy.get(L.noteInput).clear().type('a'.repeat(1), { delay: 0 });
       cy.get(L.noteCharHint).should('contain', 'You have 999 characters remaining');
 
       cy.get(L.noteInput).clear().type('a'.repeat(100), { delay: 0 });
       cy.get(L.noteCharHint).should('contain', 'You have 900 characters remaining');
-    },
-  );
-  it(
-    'should accept valid characters for account comments and notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
-    () => {
+    });
+  it('should accept valid characters for account comments and notes', { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4862'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
@@ -289,12 +230,8 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
       cy.get(L.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
-  it(
-    'should accept commas and full stops in account comments when account notes are blank',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
-    () => {
+    });
+  it('should accept commas and full stops in account comments when account notes are blank', { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4863'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
@@ -304,13 +241,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
       cy.get(L.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    });
 
-  it(
-    'should accept commas and full stops in account notes when account comments are blank',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
-    () => {
+  it('should accept commas and full stops in account notes when account comments are blank', { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4864'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
@@ -320,13 +253,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
       cy.get(L.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    },
-  );
+    });
 
-  it(
-    'should show updated errors for invalid characters in account comments and notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
-    () => {
+  it('should show updated errors for invalid characters in account comments and notes', { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4865'] }, () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
       cy.get(L.commentInput).clear().type(INVALID_COMMENTS_AND_NOTES_CHARACTERS, { delay: 0 });
@@ -338,13 +267,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.errorSummary).contains(ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
       cy.get(L.commentsErrorMessage).should('exist').contains(ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
       cy.get(L.notesErrorMessage).should('exist').contains(ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
-    },
-  );
+    });
 
-  it(
-    'should show the updated error only for an invalid account comment',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
-    () => {
+  it('should show the updated error only for an invalid account comment', { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4866'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
@@ -358,13 +283,9 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.commentsErrorMessage).should('exist').contains(ADD_COMMENT_ALLOWED_CHARACTERS_ERROR);
       cy.get(L.notesErrorMessage).should('not.exist');
       cy.wrap(formSubmitSpy).should('not.have.been.called');
-    },
-  );
+    });
 
-  it(
-    'should show the updated error only for invalid account notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation'] },
-    () => {
+  it('should show the updated error only for invalid account notes', { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4867'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
@@ -378,6 +299,5 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
       cy.get(L.commentsErrorMessage).should('not.exist');
       cy.get(L.notesErrorMessage).should('exist').contains(ADD_ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
       cy.wrap(formSubmitSpy).should('not.have.been.called');
-    },
-  );
+    });
 });

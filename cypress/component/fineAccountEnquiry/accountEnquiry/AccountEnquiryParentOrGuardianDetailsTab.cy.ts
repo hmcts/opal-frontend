@@ -53,10 +53,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     });
   };
 
-  it(
-    'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab', { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4227'] }, () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       // AC1b: Set debtor flag to true to test that all sub-sections are displayed
       pgDetailsMock.defendant_account_party.is_debtor = true;
@@ -90,13 +87,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       //AC1bi: Verify Language Preference sub-section displays correct data fields if the account associated with welsh speaking and debtor flag true
       cy.get(DOM.DocumentLanguageKey).should('be.visible');
       cy.get(DOM.courtHearingLanguageKey).should('be.visible');
-    },
-  );
+    });
 
-  it(
-    'AC1bi: should not display Language preferences sub-section when account is not associated with Welsh speaking BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1bi: should not display Language preferences sub-section when account is not associated with Welsh speaking BU', { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4228'] }, () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       // Set debtor flag to true to test that all sub-sections are displayed (except language preferences for non-Welsh BU)
       pgDetailsMock.defendant_account_party.is_debtor = true;
@@ -138,13 +131,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get(DOM.languagePreferencePreferred).should('not.exist');
       cy.get(DOM.DocumentLanguageKey).should('not.exist');
       cy.get(DOM.courtHearingLanguageKey).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC1c: should display only Parent or Guardian details sub-section when debtor flag is false',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1c: should display only Parent or Guardian details sub-section when debtor flag is false', { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4229'] }, () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       pgDetailsMock.defendant_account_party.is_debtor = false;
 
@@ -173,13 +162,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get(DOM.employerDetailsPhoneKey).should('not.exist');
       cy.get(DOM.employerDetailsAddressKey).should('not.exist');
       cy.get(DOM.languagePreferencePreferred).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC1d, AC1ci, AC1cii, AC1ciii: should display data fields with correct format and all fields read-only',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1d, AC1ci, AC1cii, AC1ciii: should display data fields with correct format and all fields read-only', { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4230'] }, () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       // AC1b: Set debtor flag to true to test that all sub-sections are displayed
       pgDetailsMock.defendant_account_party.is_debtor = true;
@@ -266,13 +251,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.contains('button', /^Edit$/i).should('not.exist');
       cy.contains('button', /^Save$/i).should('not.exist');
       cy.contains('button', /^Update$/i).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC1civ: should display em-dash (—) for fields that have not been provided',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1civ: should display em-dash (—) for fields that have not been provided', { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4231'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
@@ -349,13 +330,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
         .siblings()
         .should('contain.text', 'OT0000002D')
         .should('not.contain.text', '—');
-    },
-  );
+    });
 
-  it(
-    'AC2: should display Change button and navigate to change screen when user has Account Maintenance permission in current BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC2: should display Change button and navigate to change screen when user has Account Maintenance permission in current BU', { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4232'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
@@ -393,13 +370,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get(DOM.changeLink).contains('Change').click();
 
       cy.get('@routerNavigate').should('have.been.calledWith', ['../party/parentGuardian/amend']);
-    },
-  );
+    });
 
-  it(
-    'AC2a: should display Change button but navigate to access denied when user lacks permission in current BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC2a: should display Change button but navigate to access denied when user lacks permission in current BU', { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4233'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
@@ -436,13 +409,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // Click Change button and verify it navigates to access denied
       cy.get(DOM.changeLink).contains('Change').click();
       cy.get('@routerNavigate').should('have.been.calledWith', ['/access-denied']);
-    },
-  );
+    });
 
-  it(
-    'AC2b: should not display Change button when user has no Account Maintenance permission in any BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC2b: should not display Change button when user has no Account Maintenance permission in any BU', { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4234'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
@@ -496,6 +465,5 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       //Verify other content is still displayed normally
       cy.get(DOM.parentOrGuardianDetailsName).should('be.visible');
       cy.get(DOM.contactSummaryCardTitle).should('be.visible');
-    },
-  );
+    });
 });

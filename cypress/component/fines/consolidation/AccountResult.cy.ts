@@ -169,10 +169,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
       defendantAccountResults = structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK);
     });
 
-    it(
-      'AC1, AC1a, AC1b. should render the individual account results tab with populated mock data',
-      { tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation'] },
-      () => {
+    it('AC1, AC1a, AC1b. should render the individual account results tab with populated mock data', { tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4650'] }, () => {
         setupComponent();
 
         // AC1, AC1a, AC1b. Results tab renders with the selected business unit and defendant type.
@@ -192,15 +189,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultRowWithAccount('ACC001'))
           .find(AccountResultsLocators.resultNameCell)
           .should('contain', 'SMITH, John James');
-      },
-    );
+      });
 
-    it(
-      'AC2, AC2a, AC5a, AC5b, AC5c, AC5d, AC5e, AC5f, AC5g, AC5h, AC5i. should display the individual results columns in the AC order and format populated data',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC2, AC2a, AC5a, AC5b, AC5c, AC5d, AC5e, AC5f, AC5g, AC5h, AC5i. should display the individual results columns in the AC order and format populated data', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4651'],
+      }, () => {
         defendantAccountResults[0].has_paying_parent_guardian = true; // Set to true to confirm Y is displayed in the relevant cell
         defendantAccountResults[0].checks = { errors: [], warnings: [] }; //checks should be empty for check boxes to appear
         setupComponent();
@@ -234,15 +227,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertRowCellText('ACC001', AccountResultsLocators.resultNationalInsuranceNumberCell, 'QQ 12 34 56 C');
         // AC5i. Ref displays the prosecutor case reference when present.
         assertRowCellText('ACC001', AccountResultsLocators.resultRefCell, 'REF-1');
-      },
-    );
+      });
 
-    it(
-      'AC2b, AC2c, AC5b, AC5d, AC5fi, AC5g. should display an em dash for optional or unavailable account data',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC2b, AC2c, AC5b, AC5d, AC5fi, AC5g. should display an em dash for optional or unavailable account data', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4652'],
+      }, () => {
         defendantAccountResults.push(createFalseyResult());
 
         setupComponent();
@@ -265,15 +254,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertRowCellText('ACC002', AccountResultsLocators.resultPayingParentGuardianCell, '-');
         assertRowCellText('ACC002', AccountResultsLocators.resultNationalInsuranceNumberCell, EM_DASH);
         assertRowCellText('ACC002', AccountResultsLocators.resultRefCell, EM_DASH);
-      },
-    );
+      });
 
-    it(
-      'AC2d, AC2e. should display a maximum of 100 accounts on a single scrollable page with no pagination',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC2d, AC2e. should display a maximum of 100 accounts on a single scrollable page with no pagination', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4653'],
+      }, () => {
         defendantAccountResults = createMaxResultsMock();
 
         setupComponent();
@@ -286,15 +271,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         // AC2d. A maximum of 100 accounts are displayed per search.
         cy.get(AccountResultsLocators.resultAccountLink).should('have.length', 100);
         cy.get(AccountResultsLocators.resultAccountLinkByNumber('ACC100')).should('be.visible');
-      },
-    );
+      });
 
-    it(
-      'AC3. should display individual results in Name, Date of birth, then Account number ascending order',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC3. should display individual results in Name, Date of birth, then Account number ascending order', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4654'],
+      }, () => {
         defendantAccountResults = [
           buildIndividualResult({
             defendant_account_id: 14,
@@ -335,15 +316,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
           { account: 'ACC002', name: 'RESULTLINK, Consolidation', dateOfBirth: '15 May 2001' },
           { account: 'ACC004', name: 'RESULTLINK, Consolidation', dateOfBirth: '15 May 2002' },
         ]);
-      },
-    );
+      });
 
-    it(
-      'AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the individual over-100 results state with the try adding more information link',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the individual over-100 results state with the try adding more information link', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4655'],
+      }, () => {
         defendantAccountResults = createTooManyResultsMock();
 
         setupComponent();
@@ -351,15 +328,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertResultsTabSummary();
 
         assertTooManyResultsState();
-      },
-    );
+      });
 
-    it(
-      'AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the individual no-results state with the check your search link',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the individual no-results state with the check your search link', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4656'],
+      }, () => {
         defendantAccountResults = [];
 
         setupComponent();
@@ -367,15 +340,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertResultsTabSummary();
 
         assertNoMatchingResultsState();
-      },
-    );
+      });
 
-    it(
-      'AC7. should display warning and error checks beneath the relevant account row',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC7. should display warning and error checks beneath the relevant account row', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4657'],
+      }, () => {
         setupComponent();
 
         assertResultsSummary();
@@ -385,15 +354,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
           .find(AccountResultsLocators.resultChecksCellByAccountId(11))
           .should('be.visible')
           .and('contain', 'Account has days in default');
-      },
-    );
+      });
 
-    it(
-      'AC7a, AC7b. should show only errors when both errors and warnings exist, listing multiple errors as bullets',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC7a, AC7b. should show only errors when both errors and warnings exist, listing multiple errors as bullets', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4658'],
+      }, () => {
         defendantAccountResults = [createMultipleErrorsAndWarningsResult()];
 
         setupComponent();
@@ -411,15 +376,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultChecksCellByAccountId(15))
           .find(AccountResultsLocators.resultChecksBulletItems)
           .should('have.length', 2);
-      },
-    );
+      });
 
-    it(
-      'AC7c. should display all warnings when multiple warnings apply and no errors exist',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC7c. should display all warnings when multiple warnings apply and no errors exist', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2415', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4659'],
+      }, () => {
         defendantAccountResults = [createMultipleWarningsResult()];
 
         setupComponent();
@@ -434,8 +395,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultChecksCellByAccountId(16))
           .find(AccountResultsLocators.resultChecksBulletItems)
           .should('have.length', 2);
-      },
-    );
+      });
   });
 
   describe('Company tests', () => {
@@ -443,12 +403,9 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
       defendantAccountResults = structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_COMPANY_FORMATTING_MOCK);
     });
 
-    it(
-      'AC1, AC1a, AC1b. should render the company account results tab with populated mock data',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC1, AC1a, AC1b. should render the company account results tab with populated mock data', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4660'],
+      }, () => {
         setupComponent({ defendantType: 'company' });
 
         cy.get(AccountSearchLocators.heading).should('contain', 'Consolidate accounts');
@@ -466,15 +423,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultRowWithAccount('COMP001'))
           .find(AccountResultsLocators.resultNameCell)
           .should('contain', 'Acme Corporation');
-      },
-    );
+      });
 
-    it(
-      'AC2, AC2a, AC5a, AC5b, AC5d, AC5e, AC5f, AC5i. should display the company results columns in the AC order and format populated data',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC2, AC2a, AC5a, AC5b, AC5d, AC5e, AC5f, AC5i. should display the company results columns in the AC order and format populated data', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4661'],
+      }, () => {
         setupComponent({ defendantType: 'company' });
 
         assertResultsSummary('Company');
@@ -502,15 +455,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultRowWithAccount('COMP001'))
           .find(AccountResultsLocators.resultNationalInsuranceNumberCell)
           .should('not.exist');
-      },
-    );
+      });
 
-    it(
-      'AC2b, AC2c, AC5b, AC5d, AC5fi. should display an em dash for unavailable company account data',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC2b, AC2c, AC5b, AC5d, AC5fi. should display an em dash for unavailable company account data', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4662'],
+      }, () => {
         defendantAccountResults.push(createCompanyFalseyResult());
 
         setupComponent({ defendantType: 'company' });
@@ -527,15 +476,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         assertRowCellText('COMP002', AccountResultsLocators.resultEnforcementCell, EM_DASH);
         assertRowCellText('COMP002', AccountResultsLocators.resultBalanceCell, EM_DASH);
         assertRowCellText('COMP002', AccountResultsLocators.resultRefCell, EM_DASH);
-      },
-    );
+      });
 
-    it(
-      'AC2d, AC2e. should display a maximum of 100 company accounts on a single scrollable page with no pagination',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC2d, AC2e. should display a maximum of 100 company accounts on a single scrollable page with no pagination', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4663'],
+      }, () => {
         defendantAccountResults = createCompanyMaxResultsMock();
 
         setupComponent({ defendantType: 'company' });
@@ -545,15 +490,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultsPagination).should('not.exist');
         cy.get(AccountResultsLocators.resultAccountLink).should('have.length', 100);
         cy.get(AccountResultsLocators.resultAccountLinkByNumber('COMP100')).should('be.visible');
-      },
-    );
+      });
 
-    it(
-      'AC3. should display company results in Name, then Account number ascending order',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC3. should display company results in Name, then Account number ascending order', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4664'],
+      }, () => {
         defendantAccountResults = [
           buildCompanyResult({
             defendant_account_id: 24,
@@ -586,15 +527,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
           { account: 'COMP002', name: 'Beta Holdings' },
           { account: 'COMP004', name: 'Gamma Holdings' },
         ]);
-      },
-    );
+      });
 
-    it(
-      'AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the company over-100 results state with the try adding more information link',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC1a, AC1b, AC3, AC3a, AC3b, AC3c. should display the company over-100 results state with the try adding more information link', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4665'],
+      }, () => {
         defendantAccountResults = createCompanyTooManyResultsMock();
 
         setupComponent({ defendantType: 'company' });
@@ -602,15 +539,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         // AC1a, AC1b. The Business unit row displays the Business Unit used in the search The Defendant type row displays the defendant type used in the search.
         assertResultsTabSummary('Company');
         assertTooManyResultsState('Company');
-      },
-    );
+      });
 
-    it(
-      'AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the company no-results state with the check your search link',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC1a, AC1b, AC2, AC2a, AC2b, AC2c. should display the company no-results state with the check your search link', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2420', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4666'],
+      }, () => {
         defendantAccountResults = [];
 
         setupComponent({ defendantType: 'company' });
@@ -618,15 +551,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         // AC1a, AC1b. The Business unit row displays the Business Unit used in the search The Defendant type row displays the defendant type used in the search.
         assertResultsTabSummary('Company');
         assertNoMatchingResultsState('Company');
-      },
-    );
+      });
 
-    it(
-      'AC7. should display warning and error checks beneath the relevant company account row',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC7. should display warning and error checks beneath the relevant company account row', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4667'],
+      }, () => {
         defendantAccountResults[0].checks = {
           errors: [{ reference: 'CON.ER.4', message: 'Account has days in default' }],
           warnings: [],
@@ -640,15 +569,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
           .find(AccountResultsLocators.resultChecksCellByAccountId(21))
           .should('be.visible')
           .and('contain', 'Account has days in default');
-      },
-    );
+      });
 
-    it(
-      'AC7a, AC7b. should show only errors for company results when both errors and warnings exist, listing multiple errors as bullets',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC7a, AC7b. should show only errors for company results when both errors and warnings exist, listing multiple errors as bullets', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4668'],
+      }, () => {
         defendantAccountResults = [createCompanyMultipleErrorsAndWarningsResult()];
 
         setupComponent({ defendantType: 'company' });
@@ -664,15 +589,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultChecksCellByAccountId(25))
           .find(AccountResultsLocators.resultChecksBulletItems)
           .should('have.length', 2);
-      },
-    );
+      });
 
-    it(
-      'AC7c. should display all warnings for company results when multiple warnings apply and no errors exist',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC7c. should display all warnings for company results when multiple warnings apply and no errors exist', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2421', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4669'],
+      }, () => {
         defendantAccountResults = [createCompanyMultipleWarningsResult()];
 
         setupComponent({ defendantType: 'company' });
@@ -686,8 +607,7 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.resultChecksCellByAccountId(26))
           .find(AccountResultsLocators.resultChecksBulletItems)
           .should('have.length', 2);
-      },
-    );
+      });
   });
 
   describe('Results tab functionality tests', () => {
@@ -695,12 +615,9 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
       defendantAccountResults = structuredClone(FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_FORMATTING_MOCK);
     });
 
-    it(
-      'AC3, AC3a, AC3b. should show row checkboxes for selectable accounts, hide them for errors, and keep warning rows enabled',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC3, AC3a, AC3b. should show row checkboxes for selectable accounts, hide them for errors, and keep warning rows enabled', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4670'],
+      }, () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };
         defendantAccountResults.push(createMultipleErrorsAndWarningsResult(), createMultipleWarningsResult());
 
@@ -726,15 +643,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
 
         // AC3b. Accounts that contain warnings keep their checkbox enabled.
         cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(16)).should('exist').and('be.enabled');
-      },
-    );
+      });
 
-    it(
-      'AC4, AC4a, AC4b, AC4c, AC5a, AC5b, AC5c. should bulk select and deselect all enabled accounts while excluding accounts with errors',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC4, AC4a, AC4b, AC4c, AC5a, AC5b, AC5c. should bulk select and deselect all enabled accounts while excluding accounts with errors', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4671'],
+      }, () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };
         defendantAccountResults.push(createMultipleErrorsAndWarningsResult(), createMultipleWarningsResult());
 
@@ -769,15 +682,11 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.selectedAccountsHint).should('contain', '0 of 3 accounts selected');
         cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(11)).should('not.be.checked');
         cy.get(AccountResultsLocators.resultRowCheckboxByAccountId(16)).should('not.be.checked');
-      },
-    );
+      });
 
-    it(
-      'AC6, AC6a, AC6b. should display Add to list above the counter and show a validation error when no accounts are selected',
-      {
-        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation'],
-      },
-      () => {
+    it('AC6, AC6a, AC6b. should display Add to list above the counter and show a validation error when no accounts are selected', {
+        tags: ['@JIRA-EPIC:PO-2294', '@JIRA-STORY:PO-2416', '@JIRA-LABEL:consolidation', '@JIRA-TEST-KEY:PO-4672'],
+      }, () => {
         defendantAccountResults[0].checks = { errors: [], warnings: [] };
 
         setupComponent();
@@ -803,7 +712,6 @@ describe('FinesConConsolidateAccComponent - Account Results', () => {
         cy.get(AccountResultsLocators.addToListErrorMessage)
           .should('be.visible')
           .and('contain', 'Select 1 or more accounts to consolidate.');
-      },
-    );
+      });
   });
 });

@@ -88,10 +88,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.get(getAliasSurnameInput(index)).should('exist');
   };
 
-  it(
-    'AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4572'] }, () => {
       setupComponent('INDIVIDUAL', fullMock);
 
       // Verify page heading and caption
@@ -267,13 +264,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // Form Actions
       cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
       cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1a. Should show alias checkbox unticked when no aliases exist in data',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1a. Should show alias checkbox unticked when no aliases exist in data', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4573'] }, () => {
       setupComponent('INDIVIDUAL', minimalMock);
 
       // Add aliases checkbox should be unticked when no aliases in mock data
@@ -282,13 +275,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // Alias section should not be visible when checkbox is unchecked
       cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC1a. Language preferences should appear for Welsh speaking business units',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1a. Language preferences should appear for Welsh speaking business units', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4574'] }, () => {
       setupComponent('INDIVIDUAL', fullMock, 'Y');
 
       // Language Preferences Section should exist for Welsh speaking BUs
@@ -298,13 +287,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.documentLanguageLegend).should('contain', 'Documents');
       cy.get(DOM_ELEMENTS.hearingLanguageFieldset).should('exist');
       cy.get(DOM_ELEMENTS.hearingLanguageLegend).should('contain', 'Court hearings');
-    },
-  );
+    });
 
-  it(
-    'AC2. Alias add/remove and clear behaviour',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC2. Alias add/remove and clear behaviour', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4575'] }, () => {
       setupComponent('INDIVIDUAL', minimalMock);
 
       // Pre-condition: checkbox unchecked & section hidden
@@ -367,13 +352,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.aliasSection).should('exist');
       cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
       cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
-    },
-  );
+    });
 
-  it(
-    'AC5. Required field validation (core)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5. Required field validation (core)', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4576'] }, () => {
       const emptyCoreMock = structuredClone(minimalMock);
       // Clear required fields to trigger validation
       emptyCoreMock.defendant_account_party.party_details.individual_details!.title = null;
@@ -402,13 +383,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // Employer required errors should NOT appear because no employer fields were interacted with (conditional requirement)
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_EMPLOYER_NAME);
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_EMPLOYER_REFERENCE_OR_NI);
-    },
-  );
+    });
 
-  it(
-    'AC5. Required field validation (employer name)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5. Required field validation (employer name)', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4577'] }, () => {
       minimalMock.defendant_account_party.employer_details!.employer_name = 'Test Company';
       setupComponent('INDIVIDUAL', minimalMock);
 
@@ -419,13 +396,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       EMPLOYER_REQUIRED_MESSAGES.forEach((msg) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
       });
-    },
-  );
+    });
 
-  it(
-    'AC5. Required field validation (employer address)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5. Required field validation (employer address)', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4578'] }, () => {
       minimalMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = 'Address';
       setupComponent('INDIVIDUAL', minimalMock);
 
@@ -441,13 +414,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       employerRequiredMessages.forEach((msg) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
       });
-    },
-  );
+    });
 
-  it(
-    'AC5. Required field validation (employer reference number)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5. Required field validation (employer reference number)', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4579'] }, () => {
       minimalMock.defendant_account_party.employer_details!.employer_reference = 'Ref123';
       setupComponent('INDIVIDUAL', minimalMock);
 
@@ -463,13 +432,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       employerRequiredMessages.forEach((msg) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
       });
-    },
-  );
+    });
 
-  it(
-    'AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5)',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5)', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4580'] }, () => {
       setupComponent('INDIVIDUAL', minimalMock);
       cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('exist');
@@ -528,136 +493,92 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
           ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber),
         );
       }
-    },
-  );
+    });
 
-  it(
-    'AC6a. DOB with non-numerical characters shows format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC6a. DOB with non-numerical characters shows format error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4581'] }, () => {
       minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = 'AA/BB/CCCC';
       setupComponent('INDIVIDUAL', minimalMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_INVALID);
-    },
-  );
+    });
 
-  it(
-    'AC6b. DOB in the future shows past-date error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC6b. DOB in the future shows past-date error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4582'] }, () => {
       minimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
       setupComponent('INDIVIDUAL', minimalMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_FUTURE);
-    },
-  );
+    });
 
-  it(
-    'AC6c. NI number invalid format shows NI format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC6c. NI number invalid format shows NI format error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4583'] }, () => {
       minimalMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12345';
       setupComponent('INDIVIDUAL', minimalMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_NI_NUMBER);
-    },
-  );
+    });
 
   // AC7: Email format validation
-  it(
-    'AC7a. Primary email invalid format shows primary email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC7a. Primary email invalid format shows primary email format error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4584'] }, () => {
       minimalMock.defendant_account_party.contact_details!.primary_email_address = 'invalid_email'; // missing @ and domain
       setupComponent('INDIVIDUAL', minimalMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_PRIMARY);
-    },
-  );
+    });
 
-  it(
-    'AC7b. Secondary email invalid format shows secondary email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC7b. Secondary email invalid format shows secondary email format error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4585'] }, () => {
       minimalMock.defendant_account_party.contact_details!.secondary_email_address = 'bad.second'; // missing @
       setupComponent('INDIVIDUAL', minimalMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_SECONDARY);
-    },
-  );
+    });
 
-  it(
-    'AC7c. Employer email invalid format shows employer email format error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC7c. Employer email invalid format shows employer email format error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4586'] }, () => {
       minimalMock.defendant_account_party.employer_details!.employer_email_address = 'employer#mail'; // invalid char & structure
       setupComponent('INDIVIDUAL', minimalMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_EMAIL_EMPLOYER);
-    },
-  );
+    });
 
-  it(
-    'AC8a. Home telephone invalid format shows home telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC8a. Home telephone invalid format shows home telephone error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4587'] }, () => {
       minimalMock.defendant_account_party.contact_details!.home_telephone_number = '01632A960001'; // alpha char
       setupComponent('INDIVIDUAL', minimalMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_HOME);
-    },
-  );
+    });
 
-  it(
-    'AC8b. Work telephone invalid format shows work telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC8b. Work telephone invalid format shows work telephone error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4588'] }, () => {
       minimalMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001X'; // invalid char X
       setupComponent('INDIVIDUAL', minimalMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_WORK);
-    },
-  );
+    });
 
-  it(
-    'AC8c. Mobile telephone invalid length/format shows mobile telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC8c. Mobile telephone invalid length/format shows mobile telephone error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4589'] }, () => {
       minimalMock.defendant_account_party.contact_details!.mobile_telephone_number = '0770090098'; // 10 digits (should be 11)
       setupComponent('INDIVIDUAL', minimalMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_MOBILE);
-    },
-  );
+    });
 
-  it(
-    'AC8d. Employer telephone invalid format shows employer telephone error',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC8d. Employer telephone invalid format shows employer telephone error', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4590'] }, () => {
       minimalMock.defendant_account_party.employer_details!.employer_telephone_number = '01263 76612X'; // invalid char X
       setupComponent('INDIVIDUAL', minimalMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_EMPLOYER);
-    },
-  );
+    });
 
-  it(
-    'AC9. Max length validation retains user on form and shows per-field errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC9. Max length validation retains user on form and shows per-field errors', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4591'] }, () => {
       const maxLengthMock = structuredClone(minimalMock);
       const primaryEmail = `${'a'.repeat(65)}@example.com`;
       const secondaryEmail = `${'b'.repeat(65)}@example.com`;
@@ -703,13 +624,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       INDIVIDUAL_MAX_LENGTH_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    },
-  );
+    });
 
-  it(
-    'AC10. Data type validation for alphabetical and alphanumeric fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC10. Data type validation for alphabetical and alphanumeric fields', { tags: [...buildTags('@JIRA-STORY:PO-1110'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4592'] }, () => {
       const dataTypeValidationMock = structuredClone(minimalMock);
 
       // Set up data with invalid characters for validation testing
@@ -754,13 +671,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       INDIVIDUAL_ALL_DATA_TYPE_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    },
-  );
+    });
 
-  it(
-    'AC1. Amend Company Details screen opens successfully',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1. Amend Company Details screen opens successfully', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4593'] }, () => {
       setupComponent('COMPANY', companyfullMock);
 
       // Verify the page loads successfully
@@ -862,13 +775,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.employerFieldset).should('not.exist');
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
-    },
-  );
+    });
 
-  it(
-    'AC1b. Company Details screen shows language preferences for Welsh speaking business units',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1b. Company Details screen shows language preferences for Welsh speaking business units', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4594'] }, () => {
       setupComponent('COMPANY', companyfullMock, 'Y');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
@@ -896,13 +805,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // Verify the "English" radio button is selected by default
       cy.get(DOM_ELEMENTS.documentLanguageRadioEN).should('be.checked');
       cy.get(DOM_ELEMENTS.hearingLanguageRadioEN).should('be.checked');
-    },
-  );
+    });
 
-  it(
-    'AC1d. Optional fields display as blank when no data is entered for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1d. Optional fields display as blank when no data is entered for company', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4595'] }, () => {
       const companyMinimalMock = structuredClone(companyfullMock);
 
       // Clear optional fields to test blank state
@@ -941,13 +846,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // Verify optional vehicle fields are blank
       cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', '');
       cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', '');
-    },
-  );
+    });
 
-  it(
-    'AC2. Company alias add/remove and clear behaviour',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC2. Company alias add/remove and clear behaviour', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4596'] }, () => {
       // Start with company mock without aliases
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [];
@@ -1036,13 +937,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.aliasSection).should('not.contain', 'Alias 2');
       cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', '');
       cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC3. Required field validation for company mandatory fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC3. Required field validation for company mandatory fields', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4597'] }, () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.party_details.organisation_details!.organisation_name = '';
       testMock.defendant_account_party.address!.address_line_1 = '';
@@ -1103,13 +1000,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // Verify all errors are gone
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC4. Email format validation for company forms',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC4. Email format validation for company forms', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4598'] }, () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.primary_email_address = 'invalid-email-no-at';
       testMock.defendant_account_party.contact_details!.secondary_email_address = 'missing-domain@';
@@ -1132,49 +1025,33 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // Verify all errors are gone
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC5a. Home telephone invalid format shows home telephone error for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5a. Home telephone invalid format shows home telephone error for company', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4599'] }, () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.home_telephone_number = '01632A960001'; // alpha char
       setupComponent('COMPANY', testMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_HOME);
-    },
-  );
+    });
 
-  it(
-    'AC5b. Work telephone invalid format shows work telephone error for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5b. Work telephone invalid format shows work telephone error for company', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4600'] }, () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001X'; // invalid char X
       setupComponent('COMPANY', testMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_WORK);
-    },
-  );
+    });
 
-  it(
-    'AC5c. Mobile telephone invalid length/format shows mobile telephone error for company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5c. Mobile telephone invalid length/format shows mobile telephone error for company', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4601'] }, () => {
       const testMock = structuredClone(companyfullMock);
       testMock.defendant_account_party.contact_details!.mobile_telephone_number = '0770090098'; // 10 digits (should be 11)
       setupComponent('COMPANY', testMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_PHONE_MOBILE);
-    },
-  );
+    });
 
-  it(
-    'AC6. Max length validation for company forms retains user on form and shows per-field errors',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC6. Max length validation for company forms retains user on form and shows per-field errors', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4602'] }, () => {
       const maxLengthCompanyMock = structuredClone(companyfullMock);
 
       // Set all fields to exceed max length using API structure
@@ -1212,13 +1089,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       COMPANY_MAX_LENGTH_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    },
-  );
+    });
 
-  it(
-    'AC7. Data type validation for alphabetical and alphanumeric fields in company forms',
-    { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC7. Data type validation for alphabetical and alphanumeric fields in company forms', { tags: [...buildTags('@JIRA-STORY:PO-1111'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4603'] }, () => {
       const dataTypeCompanyMock = structuredClone(companyfullMock);
 
       // Set all fields with invalid characters using API structure
@@ -1255,13 +1128,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       COMPANY_ALL_DATA_TYPE_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    },
-  );
+    });
 
-  it(
-    'AC1. The "Defendant Details (Change)" screen will be built for a non-paying adult or youth with all fields populated',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1. The "Defendant Details (Change)" screen will be built for a non-paying adult or youth with all fields populated', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4604'] }, () => {
       // Create a non-paying adult/youth defendant mock
       const nonPayingAdultYouthMock = structuredClone(fullMock);
       nonPayingAdultYouthMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
@@ -1364,13 +1233,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       // Form Actions
       cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
       cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-    },
-  );
+    });
 
-  it(
-    'AC1a. Should show alias checkbox unticked when no aliases exist in data for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC1a. Should show alias checkbox unticked when no aliases exist in data for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4605'] }, () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1383,13 +1248,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // Alias section should not be visible when checkbox is unchecked
       cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC2. Alias add/remove and clear behaviour for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC2. Alias add/remove and clear behaviour for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4606'] }, () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1465,13 +1326,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.aliasSection).should('exist');
       cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
       cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
-    },
-  );
+    });
 
-  it(
-    'AC5. Required field validation (core) for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5. Required field validation (core) for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4607'] }, () => {
       const nonPayingEmptyCoreMock = structuredClone(minimalMock);
       nonPayingEmptyCoreMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingEmptyCoreMock.defendant_account_party.is_debtor = false;
@@ -1500,13 +1357,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       INDIVIDUAL_REQUIRED_MESSAGES.forEach((msg) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
       });
-    },
-  );
+    });
 
-  it(
-    'AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5) for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5) for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4608'] }, () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1569,13 +1422,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
           ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber),
         );
       }
-    },
-  );
+    });
 
-  it(
-    'AC6a. DOB with non-numerical characters shows format error for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC6a. DOB with non-numerical characters shows format error for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4609'] }, () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1586,13 +1435,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_INVALID);
-    },
-  );
+    });
 
-  it(
-    'AC6b. DOB in the future shows past-date error for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC6b. DOB in the future shows past-date error for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4610'] }, () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1603,13 +1448,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_FUTURE);
-    },
-  );
+    });
 
-  it(
-    'AC6c. NI number invalid format shows NI format error for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC6c. NI number invalid format shows NI format error for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4611'] }, () => {
       const nonPayingMinimalMock = structuredClone(minimalMock);
       nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMinimalMock.defendant_account_party.is_debtor = false;
@@ -1621,13 +1462,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_NI_NUMBER);
-    },
-  );
+    });
 
-  it(
-    'AC7. Max length validation retains user on form and shows per-field errors for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC7. Max length validation retains user on form and shows per-field errors for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4612'] }, () => {
       const nonPayingMaxLengthMock = structuredClone(minimalMock);
       nonPayingMaxLengthMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingMaxLengthMock.defendant_account_party.is_debtor = false;
@@ -1660,13 +1497,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       NON_PAYING_MAX_LENGTH_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    },
-  );
+    });
 
-  it(
-    'AC9. Data type validation for alphabetical and alphanumeric fields for non-paying defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976'] },
-    () => {
+  it('AC9. Data type validation for alphabetical and alphanumeric fields for non-paying defendant', { tags: [...buildTags('@JIRA-STORY:PO-2315'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4613'] }, () => {
       const nonPayingDataTypeValidationMock = structuredClone(minimalMock);
       nonPayingDataTypeValidationMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
       nonPayingDataTypeValidationMock.defendant_account_party.is_debtor = false;
@@ -1698,6 +1531,5 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       NON_PAYING_ALL_DATA_TYPE_ERRORS.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    },
-  );
+    });
 });

@@ -46,10 +46,7 @@ describe(
     tags: ['@JIRA-EPIC:PO-1674', '@JIRA-LABEL:Add_and_Remove_Defendant_Enforcement_Actions'],
   },
   () => {
-    it(
-      'AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
-      () => {
+    it('AC1,1a, AC2,2a,2b. Individual: navigates to the select enforcement action screen and displays the form incl details', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4439'] }, () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
         headerMock.account_status_reference.account_status_code = 'L';
@@ -72,8 +69,7 @@ describe(
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('exist');
 
         cy.get(ENF_ACTION_SELECT.accountInfo).should('contain.text', '177A - Mr Robert THOMSON');
-      },
-    );
+      });
 
     // it(
     //   'AC1,1a. Individual: Negative testing, account status code is Consolidated so hits error page.',
@@ -105,7 +101,7 @@ describe(
 
     it(
       'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4440'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -158,7 +154,7 @@ describe(
 
     it(
       'AC3,a,b,d, Individual: Account meets conditions to cause info banner update',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4441'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -205,7 +201,7 @@ describe(
 
     it(
       'AC4,a,ai,aii, AC5,a, Individual: Enforcement actions dropdown confirmation',
-      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] },
+      { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4442'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
         headerMock.debtor_type = 'Defendant';
@@ -282,7 +278,7 @@ describe(
     //   cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../enforcement/action/<real-route-here>']);
     // });
 
-    it('AC6,a Individual: Cancel path no warning', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] }, () => {
+    it('AC6,a Individual: Cancel path no warning', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4443'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Defendant';
       headerMock.account_status_reference.account_status_code = 'L';
@@ -308,7 +304,7 @@ describe(
       cy.get(ENF.tabName).should('contain.text', 'Enforcement');
     });
 
-    it('AC6,b Individual: Cancel path/warning', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824'] }, () => {
+    it('AC6,b Individual: Cancel path/warning', { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4444'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'Defendant';
       headerMock.account_status_reference.account_status_code = 'L';
@@ -349,7 +345,7 @@ describe(
 
     it(
       'AC2b, 3c. Company: navigates to the select enforcement action screen and displays the form incl details',
-      { tags: ['@JIRA-STORY:PO-1834'] },
+      { tags: ['@JIRA-STORY:PO-1834', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4445'] },
       () => {
         let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
         headerMock.debtor_type = 'Defendant';

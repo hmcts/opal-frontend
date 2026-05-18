@@ -46,10 +46,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
     });
   };
 
-  it(
-    '(AC.1) should not have table when user does not have accounts submitted',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.1) should not have table when user does not have accounts submitted', { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4727'] }, () => {
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
 
@@ -59,13 +56,9 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
       cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.2)Deleted accounts should not appear if deleted 8 or more days ago',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.2)Deleted accounts should not appear if deleted 8 or more days ago', { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4728'] }, () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
       interceptGetDeletedAccounts(200, deletedAccountsMockData);
@@ -106,12 +99,8 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
             }
           });
       });
-    },
-  );
-  it(
-    '(AC.3)should show summary table with correct data for deleted accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+    });
+  it('(AC.3)should show summary table with correct data for deleted accounts', { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4729'] }, () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
       interceptGetDeletedAccounts(200, deletedAccountsMockData);
@@ -159,12 +148,8 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
         });
-    },
-  );
-  it(
-    '(AC.4b)should have pagination enabled for over 25 draft accounts for deleted accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+    });
+  it('(AC.4b)should have pagination enabled for over 25 draft accounts for deleted accounts', { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4730'] }, () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetDeletedAccounts(200, deletedAccountsMockData);
@@ -189,13 +174,9 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    },
-  );
+    });
 
-  it(
-    '(AC.4a) should have default sort order for created accounts set to ascending for Deleted',
-    { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.4a) should have default sort order for created accounts set to ascending for Deleted', { tags: [...buildTags('@JIRA-STORY:PO-609'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4731'] }, () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
       interceptGetDeletedAccounts(200, deletedAccountsMockData);
@@ -234,6 +215,5 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
           cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
           cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
         });
-    },
-  );
+    });
 });

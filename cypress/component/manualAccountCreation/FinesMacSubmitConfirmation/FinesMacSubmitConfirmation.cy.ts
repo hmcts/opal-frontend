@@ -34,16 +34,12 @@ describe('FinesMacSubmitConfirmation', () => {
     });
   };
 
-  it(
-    '(AC.1,AC.2)should render the component and have all elements',
-    { tags: [...buildTags('@JIRA-STORY:PO-660'), '@JIRA-EPIC:PO-973'] },
-    () => {
+  it('(AC.1,AC.2)should render the component and have all elements', { tags: [...buildTags('@JIRA-STORY:PO-660'), '@JIRA-EPIC:PO-973', '@JIRA-TEST-KEY:PO-5248'] }, () => {
       setupComponent();
 
       cy.get('opal-lib-govuk-panel').should('contain', "You've submitted this account for review");
       cy.get('h2').should('contain', 'Next steps');
       cy.get('a').should('contain', 'Create a new account');
       cy.get('a').should('contain', 'See all accounts in review');
-    },
-  );
+    });
 });

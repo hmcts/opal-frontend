@@ -36,10 +36,7 @@ describe('Account Enquiry Fixed Penalty', () => {
     });
   };
 
-  it(
-    'AC1a: Adult/Youth only - Fixed Penalty details tab, vehicle fixed penalty, all fields shown',
-    { tags: [...buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818'), '@JIRA-EPIC:PO-1676'] },
-    () => {
+  it('AC1a: Adult/Youth only - Fixed Penalty details tab, vehicle fixed penalty, all fields shown', { tags: [...buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818'), '@JIRA-EPIC:PO-1676', '@JIRA-TEST-KEY:PO-4198'] }, () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       headerMock.account_type = 'Fixed Penalty';
@@ -73,13 +70,9 @@ describe('Account Enquiry Fixed Penalty', () => {
       cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('exist').and('contain.text', '01 May 2023');
       cy.get(FIXED_PENALTY_TAB.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
       cy.get(FIXED_PENALTY_TAB.labelPlaceOfOffence).should('exist').and('contain.text', 'Main Street, Metropolis');
-    },
-  );
+    });
 
-  it(
-    'AC1b: Adult/Youth only - Fixed Penalty details tab, non-vehicle fixed penalty, partial view',
-    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-EPIC:PO-1676'] },
-    () => {
+  it('AC1b: Adult/Youth only - Fixed Penalty details tab, non-vehicle fixed penalty, partial view', { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-EPIC:PO-1676', '@JIRA-TEST-KEY:PO-4199'] }, () => {
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
 
       mountFixedPenaltyTab(fixedPenaltyDetailsMock);
@@ -93,13 +86,9 @@ describe('Account Enquiry Fixed Penalty', () => {
       cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('not.exist');
       cy.get(FIXED_PENALTY_TAB.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
       cy.get(FIXED_PENALTY_TAB.labelPlaceOfOffence).should('exist').and('contain.text', 'Main Street, Metropolis');
-    },
-  );
+    });
 
-  it(
-    'AC1c: Adult/Youth only - Fixed Penalty details tab, show em-dash for missing fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-EPIC:PO-1676'] },
-    () => {
+  it('AC1c: Adult/Youth only - Fixed Penalty details tab, show em-dash for missing fields', { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-EPIC:PO-1676', '@JIRA-TEST-KEY:PO-4200'] }, () => {
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
       fixedPenaltyDetailsMock.vehicle_fixed_penalty_flag = true;
 
@@ -117,13 +106,9 @@ describe('Account Enquiry Fixed Penalty', () => {
       cy.get(FIXED_PENALTY_TAB.labelDrivingLicence).should('exist').and('contain.text', '—');
       cy.get(FIXED_PENALTY_TAB.labelNoticeNumber).should('exist').and('contain.text', '—');
       cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('exist').and('contain.text', '—');
-    },
-  );
+    });
 
-  it(
-    'AC2: Company - Fixed Penalty details tab, vehicle fixed penalty, all fields shown',
-    { tags: [...buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818'), '@JIRA-EPIC:PO-1676'] },
-    () => {
+  it('AC2: Company - Fixed Penalty details tab, vehicle fixed penalty, all fields shown', { tags: [...buildTags('@JIRA-STORY:PO-994', '@JIRA-STORY:PO-1818'), '@JIRA-EPIC:PO-1676', '@JIRA-TEST-KEY:PO-4201'] }, () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       headerMock.account_type = 'Fixed Penalty';
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
@@ -156,13 +141,9 @@ describe('Account Enquiry Fixed Penalty', () => {
       cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('exist').and('contain.text', '01 May 2023');
       cy.get(FIXED_PENALTY_TAB.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
       cy.get(FIXED_PENALTY_TAB.labelPlaceOfOffence).should('exist').and('contain.text', 'Main Street, Metropolis');
-    },
-  );
+    });
 
-  it(
-    'AC2: Company - Fixed Penalty details tab, non-vehicle fixed penalty, partial view',
-    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-EPIC:PO-1676'] },
-    () => {
+  it('AC2: Company - Fixed Penalty details tab, non-vehicle fixed penalty, partial view', { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-EPIC:PO-1676', '@JIRA-TEST-KEY:PO-4202'] }, () => {
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
 
       mountFixedPenaltyTab(fixedPenaltyDetailsMock);
@@ -176,13 +157,9 @@ describe('Account Enquiry Fixed Penalty', () => {
       cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('not.exist');
       cy.get(FIXED_PENALTY_TAB.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
       cy.get(FIXED_PENALTY_TAB.labelPlaceOfOffence).should('exist').and('contain.text', 'Main Street, Metropolis');
-    },
-  );
+    });
 
-  it(
-    'AC2: Company - Fixed Penalty details tab, show em-dash for missing fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-EPIC:PO-1676'] },
-    () => {
+  it('AC2: Company - Fixed Penalty details tab, show em-dash for missing fields', { tags: [...buildTags('@JIRA-STORY:PO-994'), '@JIRA-EPIC:PO-1676', '@JIRA-TEST-KEY:PO-4203'] }, () => {
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
       fixedPenaltyDetailsMock.vehicle_fixed_penalty_flag = true;
 
@@ -200,6 +177,5 @@ describe('Account Enquiry Fixed Penalty', () => {
       cy.get(FIXED_PENALTY_TAB.labelDrivingLicence).should('exist').and('contain.text', '—');
       cy.get(FIXED_PENALTY_TAB.labelNoticeNumber).should('exist').and('contain.text', '—');
       cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('exist').and('contain.text', '—');
-    },
-  );
+    });
 });

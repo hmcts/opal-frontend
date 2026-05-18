@@ -51,10 +51,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
     });
   };
 
-  it(
-    '(AC.2) should display rejected tab correctly when there are zero draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.2) should display rejected tab correctly when there are zero draft records', { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4715'] }, () => {
       const emptyMockData = { count: 0, summaries: [] };
 
       interceptCAVGetRejectedAccounts(200, emptyMockData);
@@ -69,13 +66,9 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
       cy.get('p').should('exist').and('contain', 'There are no rejected accounts');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    '(AC.3) should display Rejected tab correctly when there are draft records',
-    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.3) should display Rejected tab correctly when there are draft records', { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4716'] }, () => {
       const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, rejectedMockData);
       interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
@@ -102,13 +95,9 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         const expectedHeading = TABLE_HEADINGS[index];
         cy.wrap(heading).should('contain', expectedHeading);
       });
-    },
-  );
+    });
 
-  it(
-    '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateRejectedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateRejectedComponent)', { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4717'] }, () => {
       const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, rejectedMockData);
       interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
@@ -164,13 +153,9 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
         });
-    },
-  );
+    });
 
-  it(
-    '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateRejectedComponent)',
-    { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateRejectedComponent)', { tags: [...buildTags('@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4718'] }, () => {
       const rejectedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, rejectedMockData);
       interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
@@ -198,6 +183,5 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    },
-  );
+    });
 });

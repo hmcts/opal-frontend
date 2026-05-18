@@ -27,10 +27,7 @@ describe('Search Account Component - Company', () => {
       },
     });
 
-  it(
-    'AC1a-b. should render the search for an account screen and companies tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC1a-b. should render the search for an account screen and companies tab', { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4467'] }, () => {
       setupComponent();
 
       cy.get(NavLocators.companiesTab).click();
@@ -57,13 +54,9 @@ describe('Search Account Component - Company', () => {
       cy.get(CommonLocators.referenceOrCaseNumberInput).should('exist');
       cy.get(CommonLocators.activeAccountsOnlyCheckbox).should('be.checked');
       cy.get(CommonLocators.searchButton).should('exist').and('contain', 'Search');
-    },
-  );
+    });
 
-  it(
-    'AC3a. should show error for non-alphabetical company name',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC3a. should show error for non-alphabetical company name', { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4468'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
           'Company123!';
@@ -79,13 +72,9 @@ describe('Search Account Component - Company', () => {
         'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       );
       cy.get(CompanyLocators.companyNameInput).clear();
-    },
-  );
+    });
 
-  it(
-    'AC3b. should show error for non-alphabetical address line 1',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC3b. should show error for non-alphabetical address line 1', { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4469'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
           'Address123?';
@@ -98,13 +87,9 @@ describe('Search Account Component - Company', () => {
         'Address line 1 must only contain letters or numbers',
       );
       cy.get(CompanyLocators.addressLine1Input).clear();
-    },
-  );
+    });
 
-  it(
-    'AC3c. should show error for non-alphabetical post code',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC3c. should show error for non-alphabetical post code', { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4470'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODE?';
       });
@@ -115,13 +100,9 @@ describe('Search Account Component - Company', () => {
       cy.get(CompanyLocators.postCodeError).should('contain', 'Post code must only contain letters or numbers');
 
       cy.get(CompanyLocators.postCodeInput).clear();
-    },
-  );
+    });
 
-  it(
-    'AC4a. should validate company name maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC4a. should validate company name maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4471'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
           'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
@@ -131,13 +112,9 @@ describe('Search Account Component - Company', () => {
       cy.get(CommonLocators.errorSummary).should('contain', 'Company name must be 50 characters or fewer');
       cy.get(CompanyLocators.companyNameError).should('contain', 'Company name must be 50 characters or fewer');
       cy.get(CompanyLocators.companyNameInput).clear();
-    },
-  );
+    });
 
-  it(
-    'AC4b. should validate address line 1 maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC4b. should validate address line 1 maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4472'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
           'Address1234Address1234Address12345';
@@ -147,13 +124,9 @@ describe('Search Account Component - Company', () => {
       cy.get(CommonLocators.errorSummary).should('contain', 'Address line 1 must be 30 characters or fewer');
       cy.get(CompanyLocators.addressLine1Error).should('contain', 'Address line 1 must be 30 characters or fewer');
       cy.get(CompanyLocators.addressLine1Input).clear();
-    },
-  );
+    });
 
-  it(
-    'AC4c. should validate post code maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC4c. should validate post code maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4473'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODES';
       });
@@ -162,13 +135,9 @@ describe('Search Account Component - Company', () => {
       cy.get(CommonLocators.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
       cy.get(CompanyLocators.postCodeError).should('contain', 'Post code must be 8 characters or fewer');
       cy.get(CompanyLocators.postCodeInput).clear();
-    },
-  );
+    });
 
-  it(
-    'AC5a. should validate post code maximum field length',
-    { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC5a. should validate post code maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-712'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4474'] }, () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODES';
       });
@@ -177,13 +146,9 @@ describe('Search Account Component - Company', () => {
       cy.get(CommonLocators.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
       cy.get(CompanyLocators.postCodeError).should('contain', 'Post code must be 8 characters or fewer');
       cy.get(CompanyLocators.postCodeInput).clear();
-    },
-  );
+    });
 
-  it(
-    'AC2a. Should validate company name field when "Alias" checkbox is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC2a. Should validate company name field when "Alias" checkbox is selected', { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4475'] }, () => {
       setupComponent();
 
       cy.get(NavLocators.companiesTab).click();
@@ -191,13 +156,9 @@ describe('Search Account Component - Company', () => {
       cy.get(CommonLocators.searchButton).click();
 
       cy.get(CompanyLocators.companyNameError).should('exist').and('contain', 'Enter company name');
-    },
-  );
+    });
 
-  it(
-    'AC2b. Should validate company name field when "Search exact match" for company name is selected',
-    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704'] },
-    () => {
+  it('AC2b. Should validate company name field when "Search exact match" for company name is selected', { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4476'] }, () => {
       setupComponent();
 
       cy.get(NavLocators.companiesTab).click();
@@ -205,6 +166,5 @@ describe('Search Account Component - Company', () => {
       cy.get(CommonLocators.searchButton).click();
 
       cy.get(CompanyLocators.companyNameError).should('exist').and('contain', 'Enter company name');
-    },
-  );
+    });
 });

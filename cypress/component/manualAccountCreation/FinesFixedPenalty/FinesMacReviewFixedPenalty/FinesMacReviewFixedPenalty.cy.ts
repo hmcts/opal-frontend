@@ -142,10 +142,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
     });
   };
 
-  it(
-    '(AC2, AC2a, AC5a) should display tables in correct order and correct content for adult/youth',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855'] },
-    () => {
+  it('(AC2, AC2a, AC5a) should display tables in correct order and correct content for adult/youth', { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4830'] }, () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
       cy.wait('@getOffenceByCjsCode');
 
@@ -204,13 +201,9 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Section 6 - Account comments and notes
       cy.get(DOM_ELEMENTS.comments).should('contain', 'test comments');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'test notes');
-    },
-  );
+    });
 
-  it(
-    '(AC2bi, AC5a) should display an em-dash for unpopulated fields (adult/youth only)',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855'] },
-    () => {
+  it('(AC2bi, AC5a) should display an em-dash for unpopulated fields (adult/youth only)', { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4831'] }, () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
       // Clear out fixed penalty field which are optional
@@ -250,13 +243,9 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           .find(`${DOM_ELEMENTS.notProvided} p`)
           .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
       });
-    },
-  );
+    });
 
-  it(
-    '(AC2, AC2a, AC5a) should display Welsh language preferences Business Unit supports Welsh (AdultOrYouthOnly)',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855'] },
-    () => {
+  it('(AC2, AC2a, AC5a) should display Welsh language preferences Business Unit supports Welsh (AdultOrYouthOnly)', { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4832'] }, () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
       // Create a mock with Welsh language support
@@ -267,13 +256,9 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Verify language preferences section shows Welsh options
       cy.get(DOM_ELEMENTS.documentLanguage).should('contain', 'Welsh and English');
       cy.get(DOM_ELEMENTS.hearingLanguage).should('contain', 'Welsh and English');
-    },
-  );
+    });
 
-  it(
-    '(AC2, AC2a, AC5b) should display Welsh language preferences when Business Unit supports Welsh (Company)',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855'] },
-    () => {
+  it('(AC2, AC2a, AC5b) should display Welsh language preferences when Business Unit supports Welsh (Company)', { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4833'] }, () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
       // Create a mock with Welsh language support
@@ -284,13 +269,9 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Verify language preferences section shows Welsh options
       cy.get(DOM_ELEMENTS.documentLanguage).should('contain', 'Welsh and English');
       cy.get(DOM_ELEMENTS.hearingLanguage).should('contain', 'Welsh and English');
-    },
-  );
+    });
 
-  it(
-    '(AC2, AC2a, AC5b) should display tables in correct order and correct content for company defendant',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855'] },
-    () => {
+  it('(AC2, AC2a, AC5b) should display tables in correct order and correct content for company defendant', { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4834'] }, () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
       // Check the page heading
@@ -327,13 +308,9 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       // Section 4 - Account comments and notes
       cy.get(DOM_ELEMENTS.comments).should('contain', 'Corporate fixed penalty notice');
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Contact company secretary for all correspondence');
-    },
-  );
+    });
 
-  it(
-    '(AC2bi, AC5b) should display an em-dash for unpopulated fields in company defendant view',
-    { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855'] },
-    () => {
+  it('(AC2bi, AC5b) should display an em-dash for unpopulated fields in company defendant view', { tags: [...buildTags('@JIRA-STORY:PO-861'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4835'] }, () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
       // Clear out fixed penalty fields which are optional for company
@@ -369,24 +346,16 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           .find(`${DOM_ELEMENTS.notProvided} p`)
           .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
       });
-    },
-  );
+    });
 
-  it(
-    '(AC.1) Submit for Review button should be present at bottom of form - adultOrYouthOnly',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855'] },
-    () => {
+  it('(AC.1) Submit for Review button should be present at bottom of form - adultOrYouthOnly', { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4836'] }, () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
       // Check the Submit for Review button is present beneath the account comments and notes section
       cy.get(DOM_ELEMENTS.commentsNotesCard).parent().next().find('button').should('contain', 'Submit for review');
       cy.get(DOM_ELEMENTS.submitButton).should('exist').and('contain', 'Submit for review').and('be.visible');
-    },
-  );
-  it(
-    '(AC.1a) should navigate to submit confirmation page on submit - adultOrYouthOnly',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855'] },
-    () => {
+    });
+  it('(AC.1a) should navigate to submit confirmation page on submit - adultOrYouthOnly', { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4837'] }, () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
@@ -396,12 +365,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
       // Verify navigation to submit confirmation page
       cy.get('@routerNavigate').should('have.been.calledWith', ['submit-confirmation']);
-    },
-  );
-  it(
-    '(AC.1b) should have the correct payload based on the defendant type - adultOrYouthOnly',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855'] },
-    () => {
+    });
+  it('(AC.1b) should have the correct payload based on the defendant type - adultOrYouthOnly', { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4838'] }, () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
       setupComponent(FINES_DRAFT_STATE, 'individual');
@@ -444,23 +409,15 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         expect(request.request.body.timeline_data[0].status_date).to.equal(getToday());
         expect(request.request.body.timeline_data[0].reason_text).to.equal(null);
       });
-    },
-  );
-  it(
-    '(AC.1) Submit for Review button should be present at bottom of form - company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855'] },
-    () => {
+    });
+  it('(AC.1) Submit for Review button should be present at bottom of form - company', { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4839'] }, () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
 
       // Check the Submit for Review button is present beneath the account comments and notes section
       cy.get(DOM_ELEMENTS.commentsNotesCard).parent().next().find('button').should('contain', 'Submit for review');
       cy.get(DOM_ELEMENTS.submitButton).should('exist').and('contain', 'Submit for review').and('be.visible');
-    },
-  );
-  it(
-    '(AC.1a) should navigate to submit confirmation page on submit - company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855'] },
-    () => {
+    });
+  it('(AC.1a) should navigate to submit confirmation page on submit - company', { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4840'] }, () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
       setupComponent(FINES_DRAFT_STATE, 'company');
@@ -470,12 +427,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
       // Verify navigation to submit confirmation page
       cy.get('@routerNavigate').should('have.been.calledWith', ['submit-confirmation']);
-    },
-  );
-  it(
-    '(AC.1b) should have the correct payload based on the defendant type - company',
-    { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855'] },
-    () => {
+    });
+  it('(AC.1b) should have the correct payload based on the defendant type - company', { tags: [...buildTags('@JIRA-STORY:PO-1796'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4841'] }, () => {
       cy.intercept('POST', '/opal-fines-service/draft-accounts', { statusCode: 200 }).as('postDraftAccount');
 
       setupComponent(FINES_DRAFT_STATE, 'company');
@@ -523,6 +476,5 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         expect(request.request.body.timeline_data[0].status_date).to.equal(getToday());
         expect(request.request.body.timeline_data[0].reason_text).to.equal(null);
       });
-    },
-  );
+    });
 });

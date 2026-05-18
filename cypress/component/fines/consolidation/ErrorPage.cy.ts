@@ -43,10 +43,7 @@ describe('FinesConSearchErrorComponent', () => {
       });
   };
 
-  it(
-    'AC2a. displays the individual search error heading and message text',
-    { tags: [...buildTags(...ERROR_PAGE_TAGS), '@JIRA-EPIC:PO-2294'] },
-    () => {
+  it('AC2a. displays the individual search error heading and message text', { tags: [...buildTags(...ERROR_PAGE_TAGS), '@JIRA-EPIC:PO-2294', '@JIRA-TEST-KEY:PO-4699'] }, () => {
       setupComponent('individual');
 
       assertHeadingAndIntro();
@@ -54,13 +51,9 @@ describe('FinesConSearchErrorComponent', () => {
         const items = [...$items].map((item) => item.textContent?.replace(/\s+/g, ' ').trim());
         expect(items).to.deep.equal(['account number, or', 'National Insurance number, or', 'advanced search']);
       });
-    },
-  );
+    });
 
-  it(
-    'AC2b. displays the company search error heading and message text',
-    { tags: [...buildTags(...ERROR_PAGE_TAGS), '@JIRA-EPIC:PO-2294'] },
-    () => {
+  it('AC2b. displays the company search error heading and message text', { tags: [...buildTags(...ERROR_PAGE_TAGS), '@JIRA-EPIC:PO-2294', '@JIRA-TEST-KEY:PO-4700'] }, () => {
       setupComponent('company');
 
       assertHeadingAndIntro();
@@ -68,6 +61,5 @@ describe('FinesConSearchErrorComponent', () => {
         const items = [...$items].map((item) => item.textContent?.replace(/\s+/g, ' ').trim());
         expect(items).to.deep.equal(['account number, or', 'advanced search']);
       });
-    },
-  );
+    });
 });

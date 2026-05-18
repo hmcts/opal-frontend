@@ -46,10 +46,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
     });
   };
 
-  it(
-    '(AC.1) render all the fields In review account',
-    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.1) render all the fields In review account', { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4736'] }, () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -72,13 +69,9 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
             .should('not.have.attr', 'aria-current', 'page');
         }
       }
-    },
-  );
+    });
 
-  it(
-    'AC.2 When user has not associated accounts, that are in review',
-    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC.2 When user has not associated accounts, that are in review', { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4737'] }, () => {
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
 
@@ -88,13 +81,9 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
       cy.get('p').should('exist').and('contain', 'You have no accounts in review');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
-    },
-  );
+    });
 
-  it(
-    'AC.3 verify the table of headers in review tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('AC.3 verify the table of headers in review tab', { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4738'] }, () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -130,13 +119,9 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
         });
-    },
-  );
+    });
 
-  it(
-    '(AC.4a) The table should have the correct default ordering',
-    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.4a) The table should have the correct default ordering', { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4739'] }, () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -175,13 +160,9 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
           cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
           cy.get(DOM_ELEMENTS.created).contains('4 days ago');
         });
-    },
-  );
+    });
 
-  it(
-    '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
-    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220'] },
-    () => {
+  it('(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts', { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4740'] }, () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -205,6 +186,5 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    },
-  );
+    });
 });

@@ -58,10 +58,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     });
   };
 
-  it(
-    'AC.1a, AC.1b should render all elements on the page',
-    { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('AC.1a, AC.1b should render all elements on the page', { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5065'] }, () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.app).should('exist');
@@ -77,14 +74,10 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
       cy.get(DOM_ELEMENTS.inactiveLabel).should('exist');
       cy.get(DOM_ELEMENTS.inactiveInput).should('exist');
       cy.contains('button', 'Search').should('exist');
-    },
-  );
+    });
 
   // This test verifying the maximum length of the fields
-  it(
-    'AC.2a, AC.2b, AC.2c Checking the validation failures when exceeding the maximum characters',
-    { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('AC.2a, AC.2b, AC.2c Checking the validation failures when exceeding the maximum characters', { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5066'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       //This creates the component with invalid offence code pre-loaded in the form
@@ -99,13 +92,9 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
         .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.offenceCodeMaxLength)
         .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.shortTitleMaxLength)
         .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.actAndSectionMaxLength);
-    },
-  );
+    });
   //The below code will check each string in the invalidInputs array and check if the error message is displayed
-  it(
-    'AC.2d, AC.2e, AC.2f Checking the validation failures when a special character into the fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545'] },
-    () => {
+  it('AC.2d, AC.2e, AC.2f Checking the validation failures when a special character into the fields', { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5067'] }, () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       const invalidInputs = ['*', '$', '@'];
@@ -123,6 +112,5 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
             .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.actAndSectionSpecialCharPattern);
         });
       });
-    },
-  );
+    });
 });

@@ -4,7 +4,7 @@ Feature: Reports landing page navigation
   Background:
     Given I am logged in on the Fines Search landing page with email "opal-test@dev.platform.hmcts.net"
 
-  @JIRA-STORY:PO-2613 @JIRA-EPIC:PO-2627
+  @JIRA-STORY:PO-2613 @JIRA-EPIC:PO-2627 @JIRA-TEST-KEY:PO-5405
   Scenario: Reports landing page accessibility
     When I select the Fines primary navigation item "Reports"
     Then I am taken to the "Reports" Fines landing page
