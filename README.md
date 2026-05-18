@@ -690,6 +690,9 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `opal-cypress-find-tests-missing-epic`: Report executable Cypress tests that have no Jira epic metadata.
 - `opal-cypress-resolve-placeholder-jira-epics`: Resolve placeholder epic values from `cypress/jira-epic-placeholders.json`. Add `--write` to update matching placeholders in test files.
 - `opal-cypress-find-tests-with-multiple-epics`: Report executable Cypress tests that have more than one Jira epic reference.
+- `yarn check:new-tests:jira-metadata`: Compare changed `.cy.ts` and `.feature` files against the merge base and fail when a genuinely new executable test is missing either `@JIRA-STORY:<key>` or `@JIRA-EPIC:<key>`.
+- `yarn check:new-tests:jira-metadata --base-ref=<ref> --head-ref=<ref>`: Override the comparison range when running the new-test metadata check locally.
+- The new-test metadata check also runs in the CI pipeline, so new executable Cypress component and E2E tests must include both `@JIRA-STORY` and `@JIRA-EPIC` tags before they can be merged.
 
 ### Supported Tags
 
@@ -698,7 +701,7 @@ The following tags can be used in your test scenarios to control ticket creation
 | Tag Prefix         | Example Value           | Description                                                        |
 | ------------------ | ----------------------- | ------------------------------------------------------------------ |
 | `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.               |
-| `@JIRA-KEY:PO-*`   | `@JIRA-KEY:POT-1234`    | Associates one executable test with one Zephyr POT test case key.  |
+| `@JIRA-KEY:PO-*`   | `@JIRA-KEY:PO-1234`     | Associates one executable test with one Zephyr PO test case key.   |
 | `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
 | `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
 | `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |
