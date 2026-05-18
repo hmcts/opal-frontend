@@ -276,7 +276,14 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   );
   it(
     'should accept valid characters for account comments and notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4862'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-4862',
+      ],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -293,7 +300,14 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   );
   it(
     'should accept commas and full stops in account comments when account notes are blank',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4863'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-4863',
+      ],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -309,7 +323,14 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     'should accept commas and full stops in account notes when account comments are blank',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4864'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-4864',
+      ],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -325,7 +346,14 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     'should show updated errors for invalid characters in account comments and notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4865'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-4865',
+      ],
+    },
     () => {
       setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
@@ -343,7 +371,14 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     'should show the updated error only for an invalid account comment',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4866'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-4866',
+      ],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
@@ -363,7 +398,14 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
   it(
     'should show the updated error only for invalid account notes',
-    { tags: [...buildTags('@JIRA-DEFECT:PO-3713'), '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4867'] },
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-3713'),
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-4867',
+      ],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 

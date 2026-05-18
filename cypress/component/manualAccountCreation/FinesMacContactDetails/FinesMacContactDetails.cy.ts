@@ -37,7 +37,7 @@ describe('FinesMacContactDetailsComponent', () => {
     });
   it(
     'should render the component (FinesMacContactDetailsComponent)',
-    { tags: [...buildTags(), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4908'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4908'] },
     () => {
       setupComponent(null);
 

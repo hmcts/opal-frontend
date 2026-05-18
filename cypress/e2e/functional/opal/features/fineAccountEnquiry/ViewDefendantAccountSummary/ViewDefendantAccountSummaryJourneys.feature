@@ -31,7 +31,7 @@ Feature: View Defendant Account Summary - End-to-end journeys
       | Case number  | PCRR1BSUM{uniqUpper} |
 
 
-  @skip @R1B @JIRA-STORY:PO-779 @JIRA-STORY:PO-866
+  @skip @R1B @JIRA-STORY:PO-779 @JIRA-STORY:PO-866 @JIRA-EPIC:PO-812
   Scenario: View a parent or guardian account summary with Welsh language preferences
     Given I am logged in with email "opal-test-6@dev.platform.hmcts.net"
     And a published Welsh-speaking parent or guardian account exists:

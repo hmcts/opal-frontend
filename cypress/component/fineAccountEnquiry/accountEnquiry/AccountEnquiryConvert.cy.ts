@@ -371,7 +371,7 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
 
   it(
     'redirects back to defendant details when the target conversion is unsupported',
-    { tags: ['', '@JIRA-TEST-KEY:PO-4172'] },
+    { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4172'] },
     () => {
       setupConvertRoute({
         targetPath: '/fines/account/defendant/77/convert/unsupported-target',

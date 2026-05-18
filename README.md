@@ -690,9 +690,8 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `opal-cypress-find-tests-missing-epic`: Report executable Cypress tests that have no Jira epic metadata.
 - `opal-cypress-resolve-placeholder-jira-epics`: Resolve placeholder epic values from `cypress/jira-epic-placeholders.json`. Add `--write` to update matching placeholders in test files.
 - `opal-cypress-find-tests-with-multiple-epics`: Report executable Cypress tests that have more than one Jira epic reference.
-- `yarn check:new-tests:jira-metadata`: Compare changed `.cy.ts` and `.feature` files against the merge base and fail when a genuinely new executable test is missing either `@JIRA-STORY:<key>` or `@JIRA-EPIC:<key>`.
-- `yarn check:new-tests:jira-metadata --base-ref=<ref> --head-ref=<ref>`: Override the comparison range when running the new-test metadata check locally.
-- The new-test metadata check also runs in the CI pipeline, so new executable Cypress component and E2E tests must include both `@JIRA-STORY` and `@JIRA-EPIC` tags before they can be merged.
+- `yarn check:new-tests:jira-metadata`: Scan all covered component specs and functional E2E feature files and validate Jira metadata on every executable test. The command name is retained for CI compatibility.
+- The Jira metadata check also runs in the CI pipeline. Component tests must include `@JIRA-EPIC` and either `@JIRA-STORY` or `@JIRA-DEFECT`. Functional E2E tests must include `@JIRA-EPIC`. Smoke tests are not checked here, and `dummyTest.feature` remains exempt.
 
 ### Supported Tags
 

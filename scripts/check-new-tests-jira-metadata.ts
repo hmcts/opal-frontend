@@ -1,21 +1,16 @@
 #!/usr/bin/env node
 
 /**
- * Validates that newly introduced Cypress tests include the required Jira metadata tags.
+ * Validates Jira metadata on executable tests covered by this policy.
  *
- * This script compares the current HEAD against a merge base, scans changed test files under
- * cypress/component and cypress/e2e, parses those files into normalised test units, and then
- * identifies which tests are genuinely new relative to the base version of each file.
+ * Rules enforced:
+ * - Component specs must have @JIRA-EPIC:<id> and either @JIRA-STORY:<id> or
+ *   @JIRA-DEFECT:<id>
+ * - Functional E2E feature tests must have @JIRA-EPIC:<id>
  *
- * Component spec files are parsed from the TypeScript AST so titles and tags can be resolved
- * through identifiers, object literals, arrays, spreads, and simple string expressions. Gherkin
- * feature files are parsed line-by-line so feature, rule, scenario, and Examples tags can be
- * attributed to the correct emitted test cases.
- *
- * The check fails when any new test is missing either @JIRA-STORY:<id> or @JIRA-EPIC:<id>,
- * making it suitable for CI enforcement in pull requests.
+ * Smoke tests are intentionally out of scope for this check, and explicit exemptions can be
+ * listed below for known placeholder or legacy specs.
  */
-import * as childProcess from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as ts from 'typescript';
@@ -29,6 +24,7 @@ type TestKind = 'component' | 'e2e';
  * Normalised representation of a single parsed test case.
  */
 type TestUnit = {
+  defects: string[];
   epics: string[];
   filePath: string;
   id: string;
@@ -39,19 +35,24 @@ type TestUnit = {
 };
 
 /**
- * Pair of paths used to compare the file at the merge base and at HEAD.
- */
-type ChangedTestFile = {
-  basePath: string | null;
-  headPath: string;
-};
-
-/**
  * Parsed test that is missing one or more required Jira tags.
  */
 type ValidationFailure = TestUnit & {
   missing: string[];
 };
+
+/**
+ * Test roots and tag prefixes enforced by this script.
+ */
+const componentRoot = 'cypress/component';
+const functionalE2eRoot = 'cypress/e2e/functional/opal/features';
+const epicExemptFeatureFiles = new Set([
+  'cypress/e2e/functional/opal/features/reciprocalMaintenance/dummyTest.feature',
+]);
+const jiraDefectPrefix = '@JIRA-DEFECT:';
+const jiraEpicPrefix = '@JIRA-EPIC:';
+const jiraStoryPrefix = '@JIRA-STORY:';
+const scenarioKeywords = ['Scenario Outline:', 'Scenario:', 'Example:'] as const;
 
 /**
  * TypeScript source file shape including parse diagnostics from createSourceFile.
@@ -61,165 +62,20 @@ type SourceFileWithParseDiagnostics = ts.SourceFile & {
 };
 
 /**
- * Test roots and tag prefixes enforced by this script.
+ * Simplified description of a function that can participate in tag resolution.
  */
-const componentRoot = 'cypress/component';
-const e2eRoot = 'cypress/e2e';
-const jiraEpicPrefix = '@JIRA-EPIC:';
-const jiraStoryPrefix = '@JIRA-STORY:';
-const scenarioKeywords = ['Scenario Outline:', 'Scenario:', 'Example:'] as const;
+type FunctionDefinition = {
+  bodyExpression: ts.Expression | null;
+  parameters: { isRest: boolean; name: string }[];
+};
 
 /**
- * Reads a CLI argument passed in --name=value form.
+ * TypeScript declarations and callable helpers used while resolving tag expressions.
  */
-function getArgValue(name: string): string | undefined {
-  const prefix = `${name}=`;
-  const arg = process.argv.slice(2).find((value) => value.startsWith(prefix));
-
-  return arg ? arg.slice(prefix.length) : undefined;
-}
-
-/**
- * Runs git synchronously and returns trimmed stdout, optionally tolerating failures.
- */
-function runGit(args: string[], allowFailure = false): string {
-  const result = childProcess.spawnSync('git', args, {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-  });
-
-  if (result.status !== 0) {
-    if (allowFailure) {
-      return '';
-    }
-
-    const stderr = result.stderr?.trim();
-    const stdout = result.stdout?.trim();
-    const message = stderr || stdout || `git ${args.join(' ')} failed with code ${result.status}`;
-    throw new Error(message);
-  }
-
-  return result.stdout.trim();
-}
-
-/**
- * Checks whether a git ref resolves locally.
- */
-function gitRefExists(ref: string): boolean {
-  return (
-    childProcess.spawnSync('git', ['rev-parse', '--verify', '--quiet', ref], {
-      cwd: process.cwd(),
-      encoding: 'utf8',
-    }).status === 0
-  );
-}
-
-/**
- * Chooses the default comparison base, preferring the PR target when available.
- */
-function resolveDefaultBaseRef(): string {
-  const changeTarget = process.env['CHANGE_TARGET']?.trim();
-  const legacyChangeTarget = process.env['ghprbTargetBranch']?.trim();
-  const targetBranch = changeTarget || legacyChangeTarget;
-  const candidates = targetBranch
-    ? [
-        `origin/${targetBranch}`,
-        `refs/remotes/origin/${targetBranch}`,
-        targetBranch,
-        `refs/heads/${targetBranch}`,
-        'origin/master',
-        'refs/remotes/origin/master',
-        'master',
-        'refs/heads/master',
-      ]
-    : ['origin/master', 'refs/remotes/origin/master', 'master', 'refs/heads/master'];
-
-  for (const candidate of candidates) {
-    if (candidate && gitRefExists(candidate)) {
-      return candidate;
-    }
-  }
-
-  // Jenkins PR jobs often check out a synthetic merge commit without fetching the target branch ref.
-  // In that case, the first parent is the target branch tip and still gives the correct PR diff.
-  if (gitRefExists('HEAD^1') && gitRefExists('HEAD^2')) {
-    return 'HEAD^1';
-  }
-
-  throw new Error(
-    'Unable to resolve a base ref. Pass --base-ref=<ref> explicitly or ensure the target branch ref, master, or a PR merge parent exists locally.',
-  );
-}
-
-/**
- * Resolves the merge base used to compare new tests against the target branch.
- */
-function getMergeBase(baseRef: string, headRef: string): string {
-  return runGit(['merge-base', baseRef, headRef]);
-}
-
-/**
- * Collects changed Cypress and feature files, including renames and untracked additions.
- */
-function getChangedTestFiles(mergeBase: string): ChangedTestFile[] {
-  const nameStatusOutput = runGit(
-    ['diff', '--name-status', '--find-renames', '--diff-filter=AMR', mergeBase, '--', componentRoot, e2eRoot],
-    true,
-  );
-  const changedFiles = new Map<string, ChangedTestFile>();
-
-  for (const line of nameStatusOutput.split('\n').filter(Boolean)) {
-    const parts = line.split('\t');
-    const status = parts[0];
-
-    if (status.startsWith('R')) {
-      const basePath = parts[1];
-      const headPath = parts[2];
-
-      if (basePath && headPath && isSupportedTestFile(headPath)) {
-        changedFiles.set(headPath, { basePath, headPath });
-      }
-
-      continue;
-    }
-
-    const headPath = parts[1];
-
-    if (headPath && isSupportedTestFile(headPath)) {
-      changedFiles.set(headPath, { basePath: status === 'A' ? null : headPath, headPath });
-    }
-  }
-
-  const untrackedOutput = runGit(['ls-files', '--others', '--exclude-standard', '--', componentRoot, e2eRoot], true);
-
-  for (const headPath of untrackedOutput.split('\n').filter(Boolean)) {
-    if (isSupportedTestFile(headPath)) {
-      changedFiles.set(headPath, { basePath: null, headPath });
-    }
-  }
-
-  return [...changedFiles.values()].filter(({ headPath }) => fs.existsSync(path.resolve(process.cwd(), headPath)));
-}
-
-/**
- * Limits validation to component spec files and Gherkin feature files.
- */
-function isSupportedTestFile(filePath: string): boolean {
-  return filePath.endsWith('.cy.ts') || filePath.endsWith('.feature');
-}
-
-/**
- * Reads a file from the merge-base tree, returning null when there is no base version.
- */
-function readBaseFileContent(mergeBase: string, basePath: string | null): string | null {
-  if (!basePath) {
-    return null;
-  }
-
-  const content = runGit(['show', `${mergeBase}:${basePath}`], true);
-
-  return content === '' ? null : content;
-}
+type ResolverContext = {
+  declarations: Map<string, ts.Expression>;
+  functions: Map<string, FunctionDefinition>;
+};
 
 /**
  * Dispatches parsing to the appropriate test-file parser.
@@ -249,48 +105,36 @@ function parseComponentTests(filePath: string, content: string): TestUnit[] {
     throw new Error(`Failed to parse ${filePath}: ${message}`);
   }
 
-  const declarations = new Map<string, ts.Expression>();
-
-  /**
-   * Indexes simple variable declarations so later resolution can follow identifiers.
-   */
-  function collectDeclarations(node: ts.Node): void {
-    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer) {
-      declarations.set(node.name.text, node.initializer);
-    }
-
-    ts.forEachChild(node, collectDeclarations);
-  }
-
-  collectDeclarations(sourceFile);
-
+  const resolverContext = createResolverContext(sourceFile);
   const tests: TestUnit[] = [];
 
   /**
    * Traverses nested suites to build fully-qualified test titles and metadata.
    */
-  function visit(node: ts.Node, suiteTitles: string[]): void {
+  function visit(node: ts.Node, suiteTitles: string[], inheritedTags: string[]): void {
     if (ts.isCallExpression(node)) {
-      const suiteTitle = extractSuiteTitle(node, declarations, sourceFile);
+      const suiteTitle = extractSuiteTitle(node, resolverContext, sourceFile);
 
       if (suiteTitle) {
+        const suiteTags = extractComponentTags(node, resolverContext, sourceFile);
         const callback = getLastFunctionArgument(node);
 
         if (callback?.body) {
-          visit(callback.body, [...suiteTitles, suiteTitle]);
+          visit(callback.body, [...suiteTitles, suiteTitle], dedupe([...inheritedTags, ...suiteTags]));
         }
 
         return;
       }
 
-      const testTitle = extractTestTitle(node, declarations, sourceFile);
+      const testTitle = extractTestTitle(node, resolverContext, sourceFile);
 
       if (testTitle) {
-        const tags = extractComponentTags(node, declarations, sourceFile);
+        const tags = dedupe([...inheritedTags, ...extractComponentTags(node, resolverContext, sourceFile)]);
         const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
         const title = [...suiteTitles, testTitle].join(' > ');
 
         tests.push({
+          defects: tags.filter((tag) => tag.startsWith(jiraDefectPrefix)),
           epics: tags.filter((tag) => tag.startsWith(jiraEpicPrefix)),
           filePath,
           id: title,
@@ -304,10 +148,10 @@ function parseComponentTests(filePath: string, content: string): TestUnit[] {
       }
     }
 
-    ts.forEachChild(node, (child) => visit(child, suiteTitles));
+    ts.forEachChild(node, (child) => visit(child, suiteTitles, inheritedTags));
   }
 
-  visit(sourceFile, []);
+  visit(sourceFile, [], []);
 
   return tests;
 }
@@ -317,7 +161,7 @@ function parseComponentTests(filePath: string, content: string): TestUnit[] {
  */
 function extractSuiteTitle(
   node: ts.CallExpression,
-  declarations: Map<string, ts.Expression>,
+  resolverContext: ResolverContext,
   sourceFile: ts.SourceFile,
 ): string | null {
   if (!isCallNamed(node.expression, ['describe', 'context'])) {
@@ -326,7 +170,7 @@ function extractSuiteTitle(
 
   const titleArg = node.arguments[0];
 
-  return titleArg ? resolveStringLike(titleArg, declarations, sourceFile) : null;
+  return titleArg ? resolveStringLike(titleArg, resolverContext, sourceFile) : null;
 }
 
 /**
@@ -334,7 +178,7 @@ function extractSuiteTitle(
  */
 function extractTestTitle(
   node: ts.CallExpression,
-  declarations: Map<string, ts.Expression>,
+  resolverContext: ResolverContext,
   sourceFile: ts.SourceFile,
 ): string | null {
   if (!isCallNamed(node.expression, ['it', 'specify', 'test'])) {
@@ -343,7 +187,7 @@ function extractTestTitle(
 
   const titleArg = node.arguments[0];
 
-  return titleArg ? resolveStringLike(titleArg, declarations, sourceFile) : null;
+  return titleArg ? resolveStringLike(titleArg, resolverContext, sourceFile) : null;
 }
 
 /**
@@ -381,7 +225,7 @@ function getLastFunctionArgument(node: ts.CallExpression): ts.FunctionLikeDeclar
  */
 function extractComponentTags(
   node: ts.CallExpression,
-  declarations: Map<string, ts.Expression>,
+  resolverContext: ResolverContext,
   sourceFile: ts.SourceFile,
 ): string[] {
   const optionsArg = node.arguments.find((argument) => {
@@ -390,7 +234,7 @@ function extractComponentTags(
     }
 
     if (ts.isIdentifier(argument)) {
-      const initializer = declarations.get(argument.text);
+      const initializer = resolverContext.declarations.get(argument.text);
 
       return initializer ? ts.isObjectLiteralExpression(stripExpressionWrappers(initializer)) : false;
     }
@@ -402,7 +246,7 @@ function extractComponentTags(
     return [];
   }
 
-  const optionsObject = resolveObjectLiteral(optionsArg, declarations);
+  const optionsObject = resolveObjectLiteral(optionsArg, resolverContext.declarations);
 
   if (!optionsObject) {
     return [];
@@ -416,7 +260,7 @@ function extractComponentTags(
     const propertyName = getPropertyName(property.name);
 
     if (propertyName === 'tags') {
-      return dedupe(resolveTagList(property.initializer, declarations, sourceFile, new Set()));
+      return dedupe(resolveTagList(property.initializer, resolverContext, sourceFile, new Set(), new Map(), new Set()));
     }
   }
 
@@ -464,14 +308,88 @@ function stripExpressionWrappers(expression: ts.Expression): ts.Expression {
 }
 
 /**
+ * Indexes simple variable declarations and helper functions for later tag resolution.
+ */
+function createResolverContext(sourceFile: ts.SourceFile): ResolverContext {
+  const declarations = new Map<string, ts.Expression>();
+  const functions = new Map<string, FunctionDefinition>();
+
+  /**
+   * Collects declarations and helper functions in a single pass over the file.
+   */
+  function collect(node: ts.Node): void {
+    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer) {
+      declarations.set(node.name.text, node.initializer);
+
+      if (ts.isArrowFunction(node.initializer) || ts.isFunctionExpression(node.initializer)) {
+        functions.set(node.name.text, createFunctionDefinition(node.initializer));
+      }
+    }
+
+    if (ts.isFunctionDeclaration(node) && node.name) {
+      functions.set(node.name.text, createFunctionDefinition(node));
+    }
+
+    ts.forEachChild(node, collect);
+  }
+
+  collect(sourceFile);
+
+  return { declarations, functions };
+}
+
+/**
+ * Converts a function-like declaration into a simplified structure for expression evaluation.
+ */
+function createFunctionDefinition(functionLike: ts.FunctionLikeDeclarationBase): FunctionDefinition {
+  return {
+    bodyExpression: getReturnedExpression(functionLike),
+    parameters: functionLike.parameters.flatMap((parameter) => {
+      if (!ts.isIdentifier(parameter.name)) {
+        return [];
+      }
+
+      return [{ isRest: Boolean(parameter.dotDotDotToken), name: parameter.name.text }];
+    }),
+  };
+}
+
+/**
+ * Retrieves the expression returned by a function, or the expression body for concise arrows.
+ */
+function getReturnedExpression(functionLike: ts.FunctionLikeDeclarationBase): ts.Expression | null {
+  if (!functionLike.body) {
+    return null;
+  }
+
+  if (ts.isExpression(functionLike.body)) {
+    return functionLike.body;
+  }
+
+  for (const statement of functionLike.body.statements) {
+    if (ts.isReturnStatement(statement) && statement.expression) {
+      return statement.expression;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Expands a tag expression into a flat list of string tags.
  */
 function resolveTagList(
   expression: ts.Expression,
-  declarations: Map<string, ts.Expression>,
+  resolverContext: ResolverContext,
   sourceFile: ts.SourceFile,
   seen: Set<string>,
+  parameterBindings: Map<string, ts.Expression | ts.Expression[]>,
+  activeFunctions: Set<string>,
 ): string[] {
+  if (ts.isSpreadElement(expression)) {
+    return resolveTagList(expression.expression, resolverContext, sourceFile, seen, parameterBindings, activeFunctions);
+  }
+
   const stripped = stripExpressionWrappers(expression);
 
   if (ts.isStringLiteral(stripped) || ts.isNoSubstitutionTemplateLiteral(stripped)) {
@@ -481,19 +399,36 @@ function resolveTagList(
   if (ts.isArrayLiteralExpression(stripped)) {
     return stripped.elements.flatMap((element) => {
       if (ts.isSpreadElement(element)) {
-        return resolveTagList(element.expression, declarations, sourceFile, seen);
+        return resolveTagList(
+          element.expression,
+          resolverContext,
+          sourceFile,
+          seen,
+          parameterBindings,
+          activeFunctions,
+        );
       }
 
-      return resolveTagList(element, declarations, sourceFile, seen);
+      return resolveTagList(element, resolverContext, sourceFile, seen, parameterBindings, activeFunctions);
     });
   }
 
   if (ts.isIdentifier(stripped)) {
+    const boundValue = parameterBindings.get(stripped.text);
+
+    if (boundValue) {
+      return Array.isArray(boundValue)
+        ? boundValue.flatMap((value) =>
+            resolveTagList(value, resolverContext, sourceFile, seen, parameterBindings, activeFunctions),
+          )
+        : resolveTagList(boundValue, resolverContext, sourceFile, seen, parameterBindings, activeFunctions);
+    }
+
     if (seen.has(stripped.text)) {
       return [];
     }
 
-    const initializer = declarations.get(stripped.text);
+    const initializer = resolverContext.declarations.get(stripped.text);
 
     if (!initializer) {
       return [];
@@ -502,23 +437,38 @@ function resolveTagList(
     const nextSeen = new Set(seen);
     nextSeen.add(stripped.text);
 
-    return resolveTagList(initializer, declarations, sourceFile, nextSeen);
+    return resolveTagList(initializer, resolverContext, sourceFile, nextSeen, parameterBindings, activeFunctions);
   }
 
   if (ts.isCallExpression(stripped)) {
-    return stripped.arguments.flatMap((argument) => resolveTagList(argument, declarations, sourceFile, seen));
+    const resolvedCallTags = resolveTagListFromCall(
+      stripped,
+      resolverContext,
+      sourceFile,
+      seen,
+      parameterBindings,
+      activeFunctions,
+    );
+
+    if (resolvedCallTags) {
+      return resolvedCallTags;
+    }
+
+    return stripped.arguments.flatMap((argument) =>
+      resolveTagList(argument, resolverContext, sourceFile, seen, parameterBindings, activeFunctions),
+    );
   }
 
   if (ts.isBinaryExpression(stripped) && stripped.operatorToken.kind === ts.SyntaxKind.PlusToken) {
-    const resolved = resolveStringLike(stripped, declarations, sourceFile);
+    const resolved = resolveStringLike(stripped, resolverContext, sourceFile, parameterBindings);
 
     return resolved ? [resolved] : [];
   }
 
   if (ts.isConditionalExpression(stripped)) {
     return [
-      ...resolveTagList(stripped.whenTrue, declarations, sourceFile, seen),
-      ...resolveTagList(stripped.whenFalse, declarations, sourceFile, seen),
+      ...resolveTagList(stripped.whenTrue, resolverContext, sourceFile, seen, parameterBindings, activeFunctions),
+      ...resolveTagList(stripped.whenFalse, resolverContext, sourceFile, seen, parameterBindings, activeFunctions),
     ];
   }
 
@@ -526,12 +476,81 @@ function resolveTagList(
 }
 
 /**
+ * Resolves tags returned by supported helper functions such as buildTags(...).
+ */
+function resolveTagListFromCall(
+  callExpression: ts.CallExpression,
+  resolverContext: ResolverContext,
+  sourceFile: ts.SourceFile,
+  seen: Set<string>,
+  parameterBindings: Map<string, ts.Expression | ts.Expression[]>,
+  activeFunctions: Set<string>,
+): string[] | null {
+  const functionName = getCalledFunctionName(callExpression.expression);
+
+  if (!functionName) {
+    return null;
+  }
+
+  const functionDefinition = resolverContext.functions.get(functionName);
+
+  if (!functionDefinition?.bodyExpression || activeFunctions.has(functionName)) {
+    return null;
+  }
+
+  const nextBindings = new Map(parameterBindings);
+
+  for (let index = 0; index < functionDefinition.parameters.length; index += 1) {
+    const parameter = functionDefinition.parameters[index];
+
+    if (parameter.isRest) {
+      nextBindings.set(parameter.name, callExpression.arguments.slice(index));
+      continue;
+    }
+
+    const argument = callExpression.arguments[index];
+
+    if (argument) {
+      nextBindings.set(parameter.name, argument);
+    }
+  }
+
+  const nextActiveFunctions = new Set(activeFunctions);
+  nextActiveFunctions.add(functionName);
+
+  return resolveTagList(
+    functionDefinition.bodyExpression,
+    resolverContext,
+    sourceFile,
+    seen,
+    nextBindings,
+    nextActiveFunctions,
+  );
+}
+
+/**
+ * Returns the best available simple name for a called helper function.
+ */
+function getCalledFunctionName(expression: ts.LeftHandSideExpression): string | null {
+  if (ts.isIdentifier(expression)) {
+    return expression.text;
+  }
+
+  if (ts.isPropertyAccessExpression(expression)) {
+    return expression.name.text;
+  }
+
+  return null;
+}
+
+/**
  * Resolves the best available string value for literals, identifiers, and concatenations.
  */
 function resolveStringLike(
   expression: ts.Expression,
-  declarations: Map<string, ts.Expression>,
+  resolverContext: ResolverContext,
   sourceFile: ts.SourceFile,
+  parameterBindings = new Map<string, ts.Expression | ts.Expression[]>(),
   seen = new Set<string>(),
 ): string | null {
   const stripped = stripExpressionWrappers(expression);
@@ -544,7 +563,7 @@ function resolveStringLike(
     const pieces = [stripped.head.text];
 
     for (const span of stripped.templateSpans) {
-      const resolved = resolveStringLike(span.expression, declarations, sourceFile, seen);
+      const resolved = resolveStringLike(span.expression, resolverContext, sourceFile, parameterBindings, seen);
 
       if (resolved === null) {
         return stripped.getText(sourceFile);
@@ -557,11 +576,23 @@ function resolveStringLike(
   }
 
   if (ts.isIdentifier(stripped)) {
+    const boundValue = parameterBindings.get(stripped.text);
+
+    if (boundValue) {
+      if (Array.isArray(boundValue)) {
+        return boundValue.length === 1
+          ? resolveStringLike(boundValue[0], resolverContext, sourceFile, parameterBindings, seen)
+          : stripped.getText(sourceFile);
+      }
+
+      return resolveStringLike(boundValue, resolverContext, sourceFile, parameterBindings, seen);
+    }
+
     if (seen.has(stripped.text)) {
       return null;
     }
 
-    const initializer = declarations.get(stripped.text);
+    const initializer = resolverContext.declarations.get(stripped.text);
 
     if (!initializer) {
       return stripped.getText(sourceFile);
@@ -570,12 +601,12 @@ function resolveStringLike(
     const nextSeen = new Set(seen);
     nextSeen.add(stripped.text);
 
-    return resolveStringLike(initializer, declarations, sourceFile, nextSeen);
+    return resolveStringLike(initializer, resolverContext, sourceFile, parameterBindings, nextSeen);
   }
 
   if (ts.isBinaryExpression(stripped) && stripped.operatorToken.kind === ts.SyntaxKind.PlusToken) {
-    const left = resolveStringLike(stripped.left, declarations, sourceFile, seen);
-    const right = resolveStringLike(stripped.right, declarations, sourceFile, seen);
+    const left = resolveStringLike(stripped.left, resolverContext, sourceFile, parameterBindings, seen);
+    const right = resolveStringLike(stripped.right, resolverContext, sourceFile, parameterBindings, seen);
 
     return left !== null && right !== null ? `${left}${right}` : stripped.getText(sourceFile);
   }
@@ -623,7 +654,7 @@ function parseFeatureTests(filePath: string, content: string): TestUnit[] {
       return;
     }
 
-    if (!currentScenario.usesExamplesAsTests || !currentScenario.hasExamples) {
+    if (!currentScenario.hasExamples) {
       tests.push(
         buildFeatureTestUnit(filePath, currentScenario.title, currentScenario.line, currentScenario.tags, null),
       );
@@ -721,6 +752,7 @@ function buildFeatureTestUnit(
   const title = `${scenarioTitle}${suffix}`;
 
   return {
+    defects: tags.filter((tag) => tag.startsWith(jiraDefectPrefix)),
     epics: tags.filter((tag) => tag.startsWith(jiraEpicPrefix)),
     filePath,
     id: title,
@@ -743,29 +775,59 @@ function extractKeywordValue(line: string, keyword: string): string | undefined 
 }
 
 /**
- * Compares parsed head and base tests to identify newly added test units only.
+ * Restricts validation to component specs and functional E2E feature files covered by this policy.
  */
-function findNewTests(headUnits: TestUnit[], baseUnits: TestUnit[]): TestUnit[] {
-  const baseCounts = new Map<string, number>();
-
-  for (const unit of baseUnits) {
-    baseCounts.set(unit.id, (baseCounts.get(unit.id) ?? 0) + 1);
+function isSupportedTestFile(filePath: string): boolean {
+  if (filePath.endsWith('.cy.ts')) {
+    return filePath.startsWith(`${componentRoot}/`);
   }
 
-  const newUnits: TestUnit[] = [];
+  if (filePath.endsWith('.feature')) {
+    return filePath.startsWith(`${functionalE2eRoot}/`) && !epicExemptFeatureFiles.has(filePath);
+  }
 
-  for (const unit of headUnits) {
-    const currentCount = baseCounts.get(unit.id) ?? 0;
+  return false;
+}
 
-    if (currentCount > 0) {
-      baseCounts.set(unit.id, currentCount - 1);
-      continue;
+/**
+ * Recursively lists all supported component and functional E2E test files under a root directory.
+ */
+function listSupportedTestFiles(rootDirectory: string): string[] {
+  const absoluteRoot = path.resolve(process.cwd(), rootDirectory);
+
+  if (!fs.existsSync(absoluteRoot)) {
+    return [];
+  }
+
+  const files: string[] = [];
+
+  /**
+   * Walks the file tree and records supported test files using repo-relative paths.
+   */
+  function walk(directory: string): void {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const absolutePath = path.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(absolutePath);
+        continue;
+      }
+
+      if (!entry.isFile()) {
+        continue;
+      }
+
+      const relativePath = path.relative(process.cwd(), absolutePath).split(path.sep).join('/');
+
+      if (isSupportedTestFile(relativePath)) {
+        files.push(relativePath);
+      }
     }
-
-    newUnits.push(unit);
   }
 
-  return newUnits;
+  walk(absoluteRoot);
+
+  return files.sort((left, right) => left.localeCompare(right));
 }
 
 /**
@@ -776,33 +838,27 @@ function dedupe(values: string[]): string[] {
 }
 
 /**
- * Parses changed files and records any new tests missing required Jira metadata.
+ * Parses all covered files and records any tests missing the required Jira metadata for their type.
  */
-function validateNewTests(
-  changedFiles: ChangedTestFile[],
-  mergeBase: string,
-): {
+function validateAllTests(testFiles: string[]): {
   failures: ValidationFailure[];
-  newTests: TestUnit[];
+  tests: TestUnit[];
 } {
   const failures: ValidationFailure[] = [];
-  const newTests: TestUnit[] = [];
+  const tests: TestUnit[] = [];
 
-  for (const { basePath, headPath } of changedFiles) {
-    const absoluteHeadPath = path.resolve(process.cwd(), headPath);
-    const headContent = fs.readFileSync(absoluteHeadPath, 'utf8');
-    const baseContent = readBaseFileContent(mergeBase, basePath);
-    const headUnits = parseTestUnits(headPath, headContent);
-    const baseUnits = baseContent ? parseTestUnits(basePath ?? headPath, baseContent) : [];
-    const addedUnits = findNewTests(headUnits, baseUnits);
+  for (const testFile of testFiles) {
+    const absoluteFilePath = path.resolve(process.cwd(), testFile);
+    const content = fs.readFileSync(absoluteFilePath, 'utf8');
+    const units = parseTestUnits(testFile, content);
 
-    newTests.push(...addedUnits);
+    tests.push(...units);
 
-    for (const unit of addedUnits) {
+    for (const unit of units) {
       const missing: string[] = [];
 
-      if (unit.stories.length === 0) {
-        missing.push('@JIRA-STORY');
+      if (unit.kind === 'component' && unit.stories.length === 0 && unit.defects.length === 0) {
+        missing.push('@JIRA-STORY or @JIRA-DEFECT');
       }
 
       if (unit.epics.length === 0) {
@@ -815,28 +871,30 @@ function validateNewTests(
     }
   }
 
-  return { failures, newTests };
+  return { failures, tests };
 }
 
 /**
- * Prints the passing summary when all new tests contain both required tags.
+ * Prints the passing summary when all covered tests satisfy the current metadata policy.
  */
-function printSuccess(baseRef: string, mergeBase: string, newTests: TestUnit[]): void {
-  if (newTests.length === 0) {
-    console.log(`No new component or E2E tests found relative to ${baseRef} (${mergeBase.slice(0, 7)}).`);
+function printSuccess(tests: TestUnit[]): void {
+  if (tests.length === 0) {
+    console.log('No covered component or functional E2E tests were found.');
     return;
   }
 
-  console.log(`Checked ${newTests.length} new component/E2E tests relative to ${baseRef} (${mergeBase.slice(0, 7)}).`);
-  console.log('All new tests include both @JIRA-STORY and @JIRA-EPIC.');
+  console.log(`Checked ${tests.length} covered component/functional E2E tests.`);
+  console.log(
+    'Component tests include @JIRA-EPIC and either @JIRA-STORY or @JIRA-DEFECT. Functional E2E tests include @JIRA-EPIC.',
+  );
 }
 
 /**
  * Prints each metadata failure in a stable file-and-line order.
  */
-function printFailures(baseRef: string, mergeBase: string, failures: ValidationFailure[], newTests: TestUnit[]): void {
+function printFailures(failures: ValidationFailure[], tests: TestUnit[]): void {
   console.error(
-    `FAIL: ${failures.length} of ${newTests.length} new component/E2E tests are missing Jira metadata relative to ${baseRef} (${mergeBase.slice(0, 7)}).`,
+    `FAIL: ${failures.length} of ${tests.length} covered component/functional E2E tests are missing required Jira metadata.`,
   );
 
   for (const failure of failures.sort((left, right) => {
@@ -853,22 +911,28 @@ function printFailures(baseRef: string, mergeBase: string, failures: ValidationF
 }
 
 /**
- * Orchestrates diff discovery, parsing, validation, and final reporting.
+ * Lists every covered component and functional E2E test file that must satisfy this policy.
+ */
+function getCoveredTestFiles(): string[] {
+  return dedupe([...listSupportedTestFiles(componentRoot), ...listSupportedTestFiles(functionalE2eRoot)]).sort(
+    (left, right) => left.localeCompare(right),
+  );
+}
+
+/**
+ * Orchestrates discovery, parsing, validation, and final reporting.
  */
 function main(): void {
-  const baseRef = getArgValue('--base-ref') ?? resolveDefaultBaseRef();
-  const headRef = getArgValue('--head-ref') ?? 'HEAD';
-  const mergeBase = getMergeBase(baseRef, headRef);
-  const changedFiles = getChangedTestFiles(mergeBase);
-  const { failures, newTests } = validateNewTests(changedFiles, mergeBase);
+  const coveredTestFiles = getCoveredTestFiles();
+  const { failures, tests } = validateAllTests(coveredTestFiles);
 
   if (failures.length > 0) {
-    printFailures(baseRef, mergeBase, failures, newTests);
+    printFailures(failures, tests);
     process.exitCode = 1;
     return;
   }
 
-  printSuccess(baseRef, mergeBase, newTests);
+  printSuccess(tests);
 }
 
 main();
