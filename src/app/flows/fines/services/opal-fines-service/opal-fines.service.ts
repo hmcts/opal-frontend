@@ -32,6 +32,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } fr
 import { IOpalFinesUpdateDefendantAccountPayload } from './interfaces/opal-fines-update-defendant-account.interface';
 import { IOpalFinesUpdateDefendantAccountResponse } from './interfaces/opal-fines-update-defendant-account-response.interface';
 import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesAccountDefendantAccountPartyPayload } from './interfaces/opal-fines-account-defendant-account-party-payload.interface';
 import { IOpalFinesAccountPartyDetails } from './interfaces/opal-fines-account-party-details.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
@@ -1033,6 +1034,34 @@ export class OpalFines {
     }
 
     return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
+  }
+
+  /**
+   * Adds defendant account party details.
+   *
+   * @param defendantAccountId - The unique identifier of the defendant account.
+   * @param payload - The payload containing the new party details.
+   * @param version - The version for optimistic concurrency control (If-Match header).
+   * @param businessUnitId - The business unit identifier.
+   * @returns An Observable that emits the added defendant account party response.
+   */
+  public postDefendantAccountParty(
+    defendantAccountId: number,
+    payload: IOpalFinesAccountDefendantAccountPartyPayload,
+    version?: string,
+    businessUnitId?: string,
+  ): Observable<IOpalFinesAccountDefendantAccountParty> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties`;
+
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.post<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
   }
 
   /**

@@ -365,6 +365,15 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
+   * Determines whether the Parent or guardian tab should be shown.
+   */
+  public get hasParentOrGuardianDetails(): boolean {
+    return (
+      this.accountData.debtor_type === this.debtorTypes.parentGuardian || !!this.accountData.parent_guardian_party_id
+    );
+  }
+
+  /**
    * Navigates to the shared party details journey for the selected party type.
    *
    * This is used by the Defendant details actions and currently routes to the
@@ -377,6 +386,23 @@ export class FinesAccDefendantDetailsComponent
   public navigateToAmendPartyDetailsPage(partyType: string): void {
     if (this.hasAccountMaintenancePermissionInBusinessUnit()) {
       this['router'].navigate([`../party/${partyType}/amend`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
+  }
+
+  /**
+   * Navigates to the shared party details journey in add mode.
+   *
+   * @param partyType - The party type to open in the party details flow.
+   */
+  public navigateToAddPartyDetailsPage(partyType: string): void {
+    if (this.hasAccountMaintenancePermissionInBusinessUnit() && this.canAddParentOrGuardianDetails) {
+      this['router'].navigate([`../party/${partyType}/add`], {
         relativeTo: this.activatedRoute,
       });
     } else {

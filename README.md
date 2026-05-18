@@ -292,6 +292,29 @@ TAGS=@UAT-Technical yarn test:functional:tags
 
 Run `yarn test:component` to execute the Cypress component suite.
 
+#### Release-scoped runners
+
+The default functional runner excludes `@FeatureFlag`, `@UAT-Technical`, and `@skip`, so the normal pipeline does not pick up the feature-flag technical scenarios by default.
+
+Use these functional scripts when you need a release-aligned run locally or in a dedicated CI stage:
+
+- `yarn test:functional:r1a_off`: technical `release-1a` disabled scenarios only
+- `yarn test:functional:r1a`: current `R1A` positive coverage only
+- `yarn test:functional:r1b_off`: technical `release-1b` disabled scenarios only
+- `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
+- `yarn test:functional:r1c_write_off_off`: technical `release-1c-write-off` disabled scenarios only
+- `yarn test:functional:r1c_enforcement_operational_reporting_off`: technical `release-1c-enforcement-operational-reporting` disabled scenarios only
+- `yarn test:functional:feature_flags`: all tagged feature-flag technical scenarios
+
+Use these component scripts to avoid running later-release component coverage when you only want the currently-enabled release package:
+
+- `yarn test:component:r1a`: `R1A` manual account creation and draft-account components only
+- `yarn test:component:r1ab`: `R1A` + `R1B` component coverage only
+- `yarn test:component:r1c_write_off`: `R1C` write-off / consolidation components only
+- `yarn test:component:r1c_enforcement_operational_reporting`: `R1C` reports components only
+
+The component release runners use `--spec` selection rather than extra tags. `test:component:r1a` intentionally excludes `manualAccountCreation/FinesFixedPenalty` to mirror the current functional `R1A` split.
+
 All three top-level runners accept:
 
 - `--browser=<chrome|edge|firefox>` for an explicit browser
@@ -305,6 +328,8 @@ Examples:
 yarn test:component --browser=chrome --parallel
 yarn test:smoke --mode=legacy --serial
 yarn test:functional --browser=firefox --mode=opal --parallel
+yarn test:functional:r1ab --browser=chrome
+yarn test:component:r1a --browser=edge
 
 ```
 
@@ -321,7 +346,37 @@ yarn test:functional:uat_legacy
 
 ### Dev-JCDE (CI / PR builds)
 
-For PR builds, the `enable_legacy_mode` label switches the dev environment to legacy mode and points the legacy gateway at JCDE. When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, to scope the suite. The pipeline always appends `not @skip`.
+If you do not add a selector label, the CNP pipeline uses its normal default functional selection:
+
+- functional tags: `not @FeatureFlag and not @UAT-Technical and not @skip`
+- functional specs: all functional features, unless one or more `test_*` routing labels are present
+
+PR labels supported by the CNP pipeline:
+
+- `run_release:r1a`: run the current `R1A` positive suite only
+- `run_release:r1ab`: run the current `R1A` + `R1B` positive suite only
+- `run_release:r1a_off`: run the `release-1a` disabled technical scenarios only
+- `run_release:r1b_off`: run the `release-1b` disabled technical scenarios only
+- `run_release:r1c_write_off_off`: run the `release-1c-write-off` disabled technical scenarios only
+- `run_release:r1c_enforcement_operational_reporting_off`: run the `release-1c-enforcement-operational-reporting` disabled technical scenarios only
+- `run_tag:<expression>`: run a tagged functional subset; the pipeline always appends `not @skip`
+- `enable_legacy_mode`: switch the dev environment to legacy mode and point the legacy gateway at JCDE
+- `test_authorisation`: route the default CNP functional selection to the `authorisation` functional area
+- `test_enq`: route the default CNP functional selection to the `accountEnquiry` / `fineAccountEnquiry` functional area
+- `test_remo`: route the default CNP functional selection to the `reciprocalMaintenance` functional area
+- `test_mac`: route the default CNP functional selection to the `manualAccountCreation` functional area
+- `skip_opal_component`: skip the opal component stage in CNP
+
+For release-scoped PR runs, use one of the `run_release:*` labels listed above instead of
+`run_tag:<expression>`.
+
+`run_release` skips smoke tests automatically. It also scopes component execution to the matching current-release package where supported, so an `r1a` run does not execute `R1B` or `R1C` component coverage. Off-state release selectors run the functional feature-flag coverage only. Do not combine `run_release` with `run_tag` or `enable_legacy_mode`.
+
+When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, to scope the suite. The pipeline always appends `not @skip`.
+
+The `test_*` routing labels only affect the normal CNP path. If `run_release:<suite>` is present, the release suite decides both the tags and the spec selection.
+
+The nightly pipeline exposes the same selector through the `RELEASE_SUITE` parameter. `RELEASE_SUITE` is also intentionally separate from `ZephyrExecution`: run the release-scoped suite first, then use the Zephyr scripts afterwards if you need that reporting flow.
 
 ### Debugging
 
