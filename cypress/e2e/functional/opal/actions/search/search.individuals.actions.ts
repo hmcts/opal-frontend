@@ -14,6 +14,7 @@ import { PrimaryNavigationActions } from '../primary-navigation.actions';
 
 const log = createScopedLogger('AccountSearchIndividualsActions');
 const AUTHENTICATED_HOME_USERNAME = '.govuk-grid-column-two-thirds ul li span';
+const ACCOUNT_SEARCH_PATH = '/fines/dashboard/search';
 
 /** Actions for the Individuals tab within Account Search. */
 export class AccountSearchIndividualsActions {
@@ -46,6 +47,14 @@ export class AccountSearchIndividualsActions {
     log('navigate', 'Navigating to Search for an Account from Accounts');
     this.primaryNavigation.chooseItem('Search');
     this.assertOnSearchLandingPage();
+  }
+
+  /**
+   * Visits the Account Search route directly.
+   */
+  public visitPageDirectly(): void {
+    log('navigate', 'Visiting Account Search directly', { path: ACCOUNT_SEARCH_PATH });
+    cy.visit(ACCOUNT_SEARCH_PATH);
   }
 
   // ──────────────────────────────
