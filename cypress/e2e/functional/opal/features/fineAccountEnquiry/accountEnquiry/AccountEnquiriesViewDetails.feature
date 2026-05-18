@@ -338,7 +338,6 @@ Feature: Account Enquiries – View Account Details
       And I should see the parent or guardian name contains "Updated LNAME"
       And I verify no amendments were created via API for parent or guardian details
 
-    @only
   Rule: Youth-only amend parent or guardian baseline
     Background:
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
