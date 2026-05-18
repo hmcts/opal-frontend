@@ -146,6 +146,15 @@ export class AccountDetailsNavActions {
   }
 
   /**
+   * Navigates to the "Impositions" tab within the Account Details shell.
+   */
+  goToImpositionsTab(): void {
+    log('navigate', 'Navigating to "Impositions" tab');
+
+    cy.get(N.subNav.impositionsTab, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
    * Asserts that the "Parent or guardian" tab is currently active.
    *
    * @description
@@ -258,6 +267,18 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Enforcement');
+  }
+
+  /**
+   * Asserts that the "Impositions" tab is currently active.
+   */
+  assertImpositionsTabIsActive(): void {
+    log('assert', 'Asserting "Impositions" tab is active');
+
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Impositions');
   }
 
   /**

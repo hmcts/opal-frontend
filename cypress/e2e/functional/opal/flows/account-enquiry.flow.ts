@@ -22,6 +22,7 @@ import { AccountConvertActions } from '../actions/account-details/convert.accoun
 import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
 import { RemoveParentGuardianActions } from '../actions/account-details/remove.parent-guardian.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
+import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -109,6 +110,21 @@ export class AccountEnquiryFlow {
       .get('@etagUpdate', { timeout: 0 })
       .then((etag: any) => (etag ? (etag.accountNumber ?? null) : null))
       .then((n: string | null) => (n && String(n).trim() ? String(n).trim() : null));
+  }
+
+  /**
+   * Resolves the current published account id from `@etagUpdate`.
+   *
+   * @returns Chainable resolving to the numeric account id.
+   */
+  private resolveAccountIdFromAlias(): Cypress.Chainable<number> {
+    return cy.get<EtagUpdate>('@etagUpdate').then((etag) => {
+      const accountId = Number(etag?.accountId);
+      if (!Number.isFinite(accountId)) {
+        throw new Error('Expected @etagUpdate to contain a numeric accountId for direct account navigation.');
+      }
+      return accountId;
+    });
   }
 
   /**
@@ -224,6 +240,18 @@ export class AccountEnquiryFlow {
     this.results.selectCompaniesTab();
     this.results.assertCompaniesTabSelected();
     this.results.openLatestPublished();
+  }
+
+  /**
+   * Visits the last created published defendant account details route directly.
+   */
+  public visitLastCreatedPublishedAccountDetails(): void {
+    logAE('method', 'visitLastCreatedPublishedAccountDetails()');
+    this.resolveAccountIdFromAlias().then((accountId) => {
+      const path = `/fines/account/defendant/${accountId}/details`;
+      logAE('navigate', 'Visiting published account details directly', { accountId, path });
+      cy.visit(path);
+    });
   }
 
   /**
