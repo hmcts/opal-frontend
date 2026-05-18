@@ -20,6 +20,7 @@ import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/f
 import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines-acc-party-add-amend-convert/mocks/fines-acc-party-add-amend-convert-form-empty.mock';
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../fines-acc-minor-creditor-details/mocks/fines-acc-minor-creditor-details-header.mock';
 import { IOpalFinesAccountMinorCreditorDetailsHeader } from '../fines-acc-minor-creditor-details/interfaces/fines-acc-minor-creditor-details-header.interface';
+import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPayloadService', () => {
@@ -743,6 +744,41 @@ describe('FinesAccPayloadService', () => {
       expect(result.contact_details).toBeDefined();
       expect(result.language_preferences).toBeDefined();
     });
+
+    it('should build the wrapped add defendant account payload with only individual party details', () => {
+      const formState = {
+        ...MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+        facc_party_add_amend_convert_forenames: 'Jane',
+        facc_party_add_amend_convert_surname: 'Doe',
+        facc_party_add_amend_convert_address_line_1: '123 Main St',
+      };
+
+      const result = service.buildAddDefendantAccountPayload(formState, 'parentGuardian', false, '');
+      const { defendant_account_party: defendantAccountParty } = result;
+
+      expect(defendantAccountParty.defendant_account_party_type).toBe('Parent/Guardian');
+      expect(defendantAccountParty.is_debtor).toBe(false);
+      expect(defendantAccountParty.party_details.organisation_flag).toBe(false);
+      expect(defendantAccountParty.party_details.individual_details?.forenames).toBe('Jane');
+      expect(defendantAccountParty.party_details).not.toHaveProperty('organisation_details');
+    });
+
+    it('should build the wrapped add defendant account payload with only organisation party details', () => {
+      const formState = {
+        ...MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+        facc_party_add_amend_convert_organisation_name: 'Test Company Ltd',
+        facc_party_add_amend_convert_address_line_1: '123 Main St',
+      };
+
+      const result = service.buildAddDefendantAccountPayload(formState, 'company', true, '');
+      const { defendant_account_party: defendantAccountParty } = result;
+
+      expect(defendantAccountParty.defendant_account_party_type).toBe('Defendant');
+      expect(defendantAccountParty.is_debtor).toBe(true);
+      expect(defendantAccountParty.party_details.organisation_flag).toBe(true);
+      expect(defendantAccountParty.party_details.organisation_details?.organisation_name).toBe('Test Company Ltd');
+      expect(defendantAccountParty.party_details).not.toHaveProperty('individual_details');
+    });
   });
 
   describe('buildEnforcementCourtFormPayload', () => {
@@ -844,6 +880,35 @@ describe('FinesAccPayloadService', () => {
           payment_terms: expect.any(Object),
         }),
       );
+    });
+  });
+
+  describe('buildMinorCreditorAccountUpdatePayload', () => {
+    it('should build update payload from at-a-glance data with payment flags mapped correctly', () => {
+      const atAGlanceData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK);
+
+      const result = service.buildMinorCreditorAccountUpdatePayload(atAGlanceData);
+
+      expect(result).toEqual({
+        creditor_account_id: atAGlanceData.creditor_account_id,
+        party_details: atAGlanceData.party,
+        address: atAGlanceData.address,
+        payment: {
+          pay_by_bacs: atAGlanceData.payment.is_bacs,
+          hold_payment: atAGlanceData.payment.hold_payment,
+        },
+      });
+    });
+
+    it('should map payment booleans when is_bacs and hold_payment are false', () => {
+      const atAGlanceData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK);
+      atAGlanceData.payment.is_bacs = false;
+      atAGlanceData.payment.hold_payment = false;
+
+      const result = service.buildMinorCreditorAccountUpdatePayload(atAGlanceData);
+
+      expect(result.payment.pay_by_bacs).toBe(false);
+      expect(result.payment.hold_payment).toBe(false);
     });
   });
 });

@@ -23,11 +23,11 @@
       summaryListId="defendantDetails"
     ></app-fines-acc-party-details>
   </div>
-  @if (canAddParentOrGuardianDetails || convertAction) {
+  @if (addParentOrGuardianAction || convertAction) {
     <div id="defendant-convert-actions" class="govuk-grid-column-one-third">
       <hr [class]="style.hr" />
       <h2 [class]="style.heading">Actions</h2>
-      @if (canAddParentOrGuardianDetails) {
+      @if (addParentOrGuardianAction) {
         <p>
           <a href="" class="govuk-link govuk-link--no-visited-state" (click)="handleAddParentOrGuardianDetails($event)"
             >Add parent or guardian details</a

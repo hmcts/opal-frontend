@@ -7,7 +7,6 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
     And I clear all approved accounts
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-4954
   Scenario: Check Add Account Note Accessibility with Axe-Core for Individual Account
 
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
@@ -34,7 +33,6 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
     Then I check the page for accessibility
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-4955
   Scenario: Check Add Account Note Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                   |

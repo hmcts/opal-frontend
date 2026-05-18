@@ -12,6 +12,7 @@ import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fi
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
 import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-transform-items-config.constant';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesAccountDefendantAccountPartyPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party-payload.interface';
 import { IOpalFinesAccountPartyDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-party-details.interface';
 import { IFinesAccPartyAddAmendConvertState } from '../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
@@ -31,6 +32,8 @@ import { IOpalFinesUpdateDefendantAccountCollectionOrder } from '@services/fines
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/interfaces/fines-acc-enf-collo-change-form-state.interface';
 import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
+import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
+import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
 
 @Injectable({
@@ -336,5 +339,57 @@ export class FinesAccPayloadService {
       buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     );
+  }
+
+  /**
+   * Builds the request body for adding a defendant account party.
+   *
+   * The POST endpoint expects the account party fields under a root
+   * defendant_account_party property, while the amend/convert PUT endpoint
+   * expects the party object directly.
+   *
+   * @param formState - The form state containing party add/amend/convert data
+   * @param partyType - The party type (company, individual, parentGuardian)
+   * @param isDebtor - Whether this is a debtor party
+   * @param partyId - The unique party identifier
+   * @returns The transformed POST payload object for adding party details
+   */
+  public buildAddDefendantAccountPayload(
+    formState: IFinesAccPartyAddAmendConvertState,
+    partyType: string,
+    isDebtor: boolean,
+    partyId: string,
+  ): IOpalFinesAccountDefendantAccountPartyPayload {
+    const defendantAccountParty = this.buildAccountPartyPayload(formState, partyType, isDebtor, partyId);
+    const { individual_details, organisation_details, ...partyDetails } = defendantAccountParty.party_details;
+
+    return {
+      defendant_account_party: {
+        ...defendantAccountParty,
+        party_details: {
+          ...partyDetails,
+          ...(partyDetails.organisation_flag ? { organisation_details } : { individual_details }),
+        },
+      },
+    };
+  }
+
+  /**
+   * Builds the base payload for updating a minor creditor account.
+   * @param data - The minor creditor account at a glance data
+   * @returns The payload object conforming to the IOpalFinesUpdateMinorCreditorAccountPayload interface
+   */
+  public buildMinorCreditorAccountUpdatePayload(
+    data: IOpalFinesAccountMinorCreditorAtAGlance,
+  ): IOpalFinesUpdateMinorCreditorAccountPayload {
+    return {
+      creditor_account_id: data.creditor_account_id,
+      party_details: data.party,
+      address: data.address,
+      payment: {
+        pay_by_bacs: data.payment.is_bacs,
+        hold_payment: data.payment.hold_payment,
+      },
+    };
   }
 }

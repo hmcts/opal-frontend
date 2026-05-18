@@ -16,10 +16,21 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   // Buttons
   addNoteButton: 'button#defendant-addAccountNote',
   minorCreditorAddNoteButton: 'button#minor-creditor-addAccountNote',
+  addPaymentHoldButton: 'button#addPaymentHold',
+  removePaymentHoldButton: 'button#removePaymentHold',
 
   // Info sections
   summaryMetricBar: 'opal-lib-custom-summary-metric-bar',
   summaryMetricBarItem: 'opal-lib-custom-summary-metric-bar-item',
+  summaryMetricBarValue: 'p[opal-lib-custom-summary-metric-bar-item-value]',
+  imposedAmountValue:
+    'opal-lib-custom-summary-metric-bar-item:nth-child(1) p[opal-lib-custom-summary-metric-bar-item-value]',
+  arrearsAmountValue:
+    'opal-lib-custom-summary-metric-bar-item:nth-child(2) p[opal-lib-custom-summary-metric-bar-item-value]',
+  paidWrittenOffValue:
+    'opal-lib-custom-summary-metric-bar-item:nth-child(3) p[opal-lib-custom-summary-metric-bar-item-value]',
+  accountBalanceValue:
+    'opal-lib-custom-summary-metric-bar-item:nth-child(4) p[opal-lib-custom-summary-metric-bar-item-value]',
   accountInfo: 'opal-lib-custom-account-information',
   sectionHeading: 'h2',
   fieldHeading: 'h3',
@@ -48,6 +59,11 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   labelBacsDetails: 'BACS details',
   labelAddPaymentHold: 'Add payment hold',
   labelRemovePaymentHold: 'Remove payment hold',
+  labelAddPaymentHoldConfirmation: 'Do you want to add a payment hold?',
+  labelRemovePaymentHoldConfirmation: 'Do you want to remove the payment hold?',
+  labelYesAddHold: 'Yes - add hold',
+  labelYesRemoveHold: 'Yes - remove hold',
+  labelNoCancel: 'No - cancel',
   labelProvided: 'Provided',
   labelNotProvided: 'Not provided',
 
@@ -63,6 +79,7 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   enforcementStatusTag: ':nth-child(1) > opal-lib-govuk-tag > #enforcement_status',
 
   // Links
+  cancelLink: 'a.govuk-link',
   linkText: 'a[class="govuk-link govuk-link--no-visited-state"]',
   badgeBlue: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--blue"]',
   badgeRed: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--red"]',

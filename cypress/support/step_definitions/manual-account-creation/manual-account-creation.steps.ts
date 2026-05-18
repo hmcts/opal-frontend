@@ -71,11 +71,20 @@ const withUniq = (value: string) => applyUniqPlaceholder(value ?? '');
 
 installDraftAccountCleanup();
 /**
+ * @step Confirms the user is on the Search Landing Page.
+ * @description Asserts the Search Landing Page is visible to ensure navigation is in a known state.
+ */
+Then('I should be on the Search Page', () => {
+  log('assert', 'Asserting Search Landing Page is visible');
+  home().assertOnSearchLandingPage();
+});
+
+/**
  * @step Confirms the user is on the dashboard.
- * @description Asserts the dashboard is visible to ensure navigation is in a known state.
+ * @description Historical alias for the default Search landing page used across the functional suite.
  */
 Then('I should be on the dashboard', () => {
-  log('assert', 'Asserting dashboard is visible');
+  log('assert', 'Asserting dashboard/Search landing page is visible');
   home().assertOnSearchLandingPage();
 });
 /**
@@ -424,6 +433,26 @@ Then('the manual account note field shows {string}', (expected: string) => {
   const normalized = withUniq(expected);
   log('assert', 'Verifying account note value', { expected: normalized });
   comments().assertNoteValue(normalized);
+});
+/**
+ * @step Asserts the Account comments field validation error.
+ * @description Verifies the expected message appears in the error summary and inline comment error.
+ * @param expected - Expected error text.
+ * @example Then the manual account comment validation error is "Add comment must only include..."
+ */
+Then('the manual account comment validation error is {string}', (expected: string) => {
+  log('assert', 'Verifying account comment validation error', { expected });
+  comments().assertCommentValidationError(expected);
+});
+/**
+ * @step Asserts the Account notes field validation error.
+ * @description Verifies the expected message appears in the error summary and inline note error.
+ * @param expected - Expected error text.
+ * @example Then the manual account note validation error is "Add account note must only include..."
+ */
+Then('the manual account note validation error is {string}', (expected: string) => {
+  log('assert', 'Verifying account note validation error', { expected });
+  comments().assertNoteValidationError(expected);
 });
 /**
  * @step Cancels out of account comments with a specific choice (stay/leave).

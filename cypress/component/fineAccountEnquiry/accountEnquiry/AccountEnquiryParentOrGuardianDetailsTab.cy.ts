@@ -55,7 +55,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6812', '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
     () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       // AC1b: Set debtor flag to true to test that all sub-sections are displayed
@@ -95,7 +95,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1bi: should not display Language preferences sub-section when account is not associated with Welsh speaking BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6813', '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
     () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       // Set debtor flag to true to test that all sub-sections are displayed (except language preferences for non-Welsh BU)
@@ -143,7 +143,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1c: should display only Parent or Guardian details sub-section when debtor flag is false',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6814', '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
     () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       pgDetailsMock.defendant_account_party.is_debtor = false;
@@ -178,7 +178,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1d, AC1ci, AC1cii, AC1ciii: should display data fields with correct format and all fields read-only',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6815', '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
     () => {
       let pgDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK);
       // AC1b: Set debtor flag to true to test that all sub-sections are displayed
@@ -271,7 +271,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC1civ: should display em-dash (—) for fields that have not been provided',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6816', '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -354,7 +354,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2: should display Change button and navigate to change screen when user has Account Maintenance permission in current BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6817', '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -398,7 +398,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2a: should display Change button but navigate to access denied when user lacks permission in current BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6818', '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
@@ -441,7 +441,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
 
   it(
     'AC2b: should not display Change button when user has no Account Maintenance permission in any BU',
-    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-KEY:POT-6819', '@JIRA-EPIC:PO-976'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-788'), '@JIRA-EPIC:PO-976'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';

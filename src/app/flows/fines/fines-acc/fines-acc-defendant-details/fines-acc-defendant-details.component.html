@@ -55,19 +55,19 @@
     <opal-lib-custom-summary-metric-bar-item>
       <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
       <p opal-lib-custom-summary-metric-bar-item-value>
-        {{ accountData.payment_state_summary.imposed_amount | monetary }}
+        {{ accountData.payment_state_summary.imposed_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.payment_state_summary.arrears_amount | monetary }}
+        {{ accountData.payment_state_summary.arrears_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ accountData.payment_state_summary.paid_amount | monetary }}
+        {{ accountData.payment_state_summary.paid_amount | monetary: 'remove-minus-symbol' }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
@@ -95,7 +95,7 @@
       subNavItemFragment="defendant"
       [subNavItemText]="tabs['defendant']"
     ></li>
-    @if (accountData.debtor_type === 'Parent/Guardian') {
+    @if (hasParentOrGuardianDetails) {
       <li
         opal-lib-moj-sub-navigation-item
         subNavItemId="parent-or-guardian-tab"
@@ -160,11 +160,12 @@
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission(finesPermissions['account-maintenance'])"
+        [canAddParentOrGuardianDetails]="canAddParentOrGuardianDetails"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
         (convertAccount)="navigateToConvertAccountPage($event)"
-        (addParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
+        (addParentOrGuardianDetails)="navigateToAddPartyDetailsPage($event)"
       ></app-fines-acc-defendant-details-defendant-tab>
     }
   }

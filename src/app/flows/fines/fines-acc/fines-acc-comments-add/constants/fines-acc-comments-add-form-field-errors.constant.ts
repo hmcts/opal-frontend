@@ -6,8 +6,8 @@ export const FINES_ACC_ADD_COMMENTS_FIELD_ERRORS: IFinesAccAddCommentsFieldError
       message: `Account note must be 30 characters or fewer`,
       priority: 1,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Account comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
+      message: `Account comment must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 2,
     },
   },
@@ -16,8 +16,8 @@ export const FINES_ACC_ADD_COMMENTS_FIELD_ERRORS: IFinesAccAddCommentsFieldError
       message: `Free text 1 must be 76 characters or fewer`,
       priority: 1,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Free text 1 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
+      message: `Free text 1 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 2,
     },
   },
@@ -26,8 +26,8 @@ export const FINES_ACC_ADD_COMMENTS_FIELD_ERRORS: IFinesAccAddCommentsFieldError
       message: `Free text 2 must be 76 characters or fewer`,
       priority: 1,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Free text 2 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
+      message: `Free text 2 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 2,
     },
   },
@@ -36,8 +36,8 @@ export const FINES_ACC_ADD_COMMENTS_FIELD_ERRORS: IFinesAccAddCommentsFieldError
       message: `Free text 3 must be 76 characters or fewer`,
       priority: 1,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
+      message: `Free text 3 must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 2,
     },
   },

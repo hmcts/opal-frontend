@@ -9,6 +9,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 ## Contents
 
 - [Getting Started](#getting-started)
+- [Shared Codex Skills](#shared-codex-skills)
 - [Local Development Strategy](#local-development-strategy)
 - [Production Server](#5-production-server)
 - [Running Unit Tests](#running-unit-tests)
@@ -39,6 +40,17 @@ Install dependencies by executing the following command:
 yarn
 
 ```
+
+### Shared Codex Skills
+
+Shared Codex skills for Opal frontend work live in the sibling `opal-dev-agent-skills` repository. After cloning or updating this repository, run:
+
+```bash
+cd ../opal-dev-agent-skills
+./scripts/frontend/sync-codex-skills.sh
+```
+
+This pulls the latest shared skills and installs Codex-only symlinks for the shared `frontend` and `general` skill folders into `.codex/skills/` for both `opal-frontend` and `opal-rm-frontend`, including `opal-frontend-vitest-guard` for Angular/Vitest unit-test work. The `.codex/skills/` directory is gitignored so developers can also keep local-only skills without pushing them to GitHub.
 
 ### Local Development Strategy
 
@@ -280,6 +292,29 @@ TAGS=@UAT-Technical yarn test:functional:tags
 
 Run `yarn test:component` to execute the Cypress component suite.
 
+#### Release-scoped runners
+
+The default functional runner excludes `@FeatureFlag`, `@UAT-Technical`, and `@skip`, so the normal pipeline does not pick up the feature-flag technical scenarios by default.
+
+Use these functional scripts when you need a release-aligned run locally or in a dedicated CI stage:
+
+- `yarn test:functional:r1a_off`: technical `release-1a` disabled scenarios only
+- `yarn test:functional:r1a`: current `R1A` positive coverage only
+- `yarn test:functional:r1b_off`: technical `release-1b` disabled scenarios only
+- `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
+- `yarn test:functional:r1c_write_off_off`: technical `release-1c-write-off` disabled scenarios only
+- `yarn test:functional:r1c_enforcement_operational_reporting_off`: technical `release-1c-enforcement-operational-reporting` disabled scenarios only
+- `yarn test:functional:feature_flags`: all tagged feature-flag technical scenarios
+
+Use these component scripts to avoid running later-release component coverage when you only want the currently-enabled release package:
+
+- `yarn test:component:r1a`: `R1A` manual account creation and draft-account components only
+- `yarn test:component:r1ab`: `R1A` + `R1B` component coverage only
+- `yarn test:component:r1c_write_off`: `R1C` write-off / consolidation components only
+- `yarn test:component:r1c_enforcement_operational_reporting`: `R1C` reports components only
+
+The component release runners use `--spec` selection rather than extra tags. `test:component:r1a` intentionally excludes `manualAccountCreation/FinesFixedPenalty` to mirror the current functional `R1A` split.
+
 All three top-level runners accept:
 
 - `--browser=<chrome|edge|firefox>` for an explicit browser
@@ -293,6 +328,8 @@ Examples:
 yarn test:component --browser=chrome --parallel
 yarn test:smoke --mode=legacy --serial
 yarn test:functional --browser=firefox --mode=opal --parallel
+yarn test:functional:r1ab --browser=chrome
+yarn test:component:r1a --browser=edge
 
 ```
 
@@ -309,7 +346,37 @@ yarn test:functional:uat_legacy
 
 ### Dev-JCDE (CI / PR builds)
 
-For PR builds, the `enable_legacy_mode` label switches the dev environment to legacy mode and points the legacy gateway at JCDE. When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, to scope the suite. The pipeline always appends `not @skip`.
+If you do not add a selector label, the CNP pipeline uses its normal default functional selection:
+
+- functional tags: `not @FeatureFlag and not @UAT-Technical and not @skip`
+- functional specs: all functional features, unless one or more `test_*` routing labels are present
+
+PR labels supported by the CNP pipeline:
+
+- `run_release:r1a`: run the current `R1A` positive suite only
+- `run_release:r1ab`: run the current `R1A` + `R1B` positive suite only
+- `run_release:r1a_off`: run the `release-1a` disabled technical scenarios only
+- `run_release:r1b_off`: run the `release-1b` disabled technical scenarios only
+- `run_release:r1c_write_off_off`: run the `release-1c-write-off` disabled technical scenarios only
+- `run_release:r1c_enforcement_operational_reporting_off`: run the `release-1c-enforcement-operational-reporting` disabled technical scenarios only
+- `run_tag:<expression>`: run a tagged functional subset; the pipeline always appends `not @skip`
+- `enable_legacy_mode`: switch the dev environment to legacy mode and point the legacy gateway at JCDE
+- `test_authorisation`: route the default CNP functional selection to the `authorisation` functional area
+- `test_enq`: route the default CNP functional selection to the `accountEnquiry` / `fineAccountEnquiry` functional area
+- `test_remo`: route the default CNP functional selection to the `reciprocalMaintenance` functional area
+- `test_mac`: route the default CNP functional selection to the `manualAccountCreation` functional area
+- `skip_opal_component`: skip the opal component stage in CNP
+
+For release-scoped PR runs, use one of the `run_release:*` labels listed above instead of
+`run_tag:<expression>`.
+
+`run_release` skips smoke tests automatically. It also scopes component execution to the matching current-release package where supported, so an `r1a` run does not execute `R1B` or `R1C` component coverage. Off-state release selectors run the functional feature-flag coverage only. Do not combine `run_release` with `run_tag` or `enable_legacy_mode`.
+
+When legacy mode is enabled in CI, you must also provide a `run_tag:<expression>` label, for example `run_tag:@UAT-Technical`, to scope the suite. The pipeline always appends `not @skip`.
+
+The `test_*` routing labels only affect the normal CNP path. If `run_release:<suite>` is present, the release suite decides both the tags and the spec selection.
+
+The nightly pipeline exposes the same selector through the `RELEASE_SUITE` parameter. `RELEASE_SUITE` is also intentionally separate from `ZephyrExecution`: run the release-scoped suite first, then use the Zephyr scripts afterwards if you need that reporting flow.
 
 ### Debugging
 
@@ -400,20 +467,21 @@ Notes:
 We are using [axe-core](https://github.com/dequelabs/axe-core) and [cypress-axe](https://github.com/component-driven/cypress-axe) to check the accessibility.
 Run the production server and once running you can run the smoke or functional test commands.
 
-> See [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-common-ui-lib) and [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend-common-node-lib) for usage and build instructions.
+> See [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-common-ui-lib), [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend-common-node-lib), and [opal-frontend-common-cypress-lib](https://github.com/hmcts/opal-frontend-common-cypress-lib) for usage and build instructions.
 
 ## Switching Between Local and Published Common Libraries
 
-This project supports switching between local and published versions of the `opal-frontend-common` and `opal-frontend-common-node` libraries using the following scripts:
+This project supports switching between local and published versions of the `opal-frontend-common`, `opal-frontend-common-node`, and `opal-frontend-common-cypress` libraries using the following scripts:
 
 ### Switching to Local Versions
 
-First, ensure you've run `yarn pack:local` in both library repos and exported the repository root paths (where the `.tgz` files are created):
+First, ensure you've run `yarn pack:local` in the library repos you want to use locally and exported the repository root paths (where the `.tgz` files are created):
 
 ```bash
 # In your shell config file (.zshrc, .bash_profile, etc.)
 export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB FOLDER]"
 export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB FOLDER]"
+export COMMON_CYPRESS_LIB_PATH="[INSERT PATH TO COMMON CYPRESS LIB FOLDER]"
 ```
 
 Then, run the following scripts:
@@ -421,6 +489,7 @@ Then, run the following scripts:
 ```bash
 yarn import:local:common-ui-lib
 yarn import:local:common-node-lib
+yarn import:local:common-cypress-lib
 ```
 
 These commands will remove the published versions and install local `.tgz` packages from each configured path.
@@ -431,6 +500,7 @@ If you have installed local `.tgz` packages and want to return to npm-published 
 
 ```bash
 yarn add @hmcts/opal-frontend-common@<VERSION> @hmcts/opal-frontend-common-node@<VERSION>
+yarn add --dev @hmcts/opal-frontend-common-cypress@<VERSION>
 yarn install
 ```
 
@@ -439,6 +509,7 @@ You can also use:
 ```bash
 yarn import:published:common-ui-lib
 yarn import:published:common-node-lib
+yarn import:published:common-cypress-lib
 ```
 
 These scripts read the target version from package.json.
@@ -616,8 +687,9 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 
 ## Test Metadata Maintenance
 
-- `node scripts/find-tests-missing-epic.js`: Report executable Cypress tests that have no `@JIRA-EPIC:*` tag. Add `--write` to insert the placeholder `@JIRA-EPIC:PO-0000` where the script can do so safely.
-- `yarn resolve:placeholder:epics`: Report executable Cypress tests that still use the placeholder `@JIRA-EPIC:PO-0000`. Add `--write` with `JIRA_AUTH_TOKEN` set to replace only placeholder epic tags whose test has exactly one `@JIRA-STORY:*` tag and whose Jira story resolves to an epic. Tests with multiple story tags are skipped.
+- `opal-cypress-find-tests-missing-epic`: Report executable Cypress tests that have no Jira epic metadata.
+- `opal-cypress-resolve-placeholder-jira-epics`: Resolve placeholder epic values from `cypress/jira-epic-placeholders.json`. Add `--write` to update matching placeholders in test files.
+- `opal-cypress-find-tests-with-multiple-epics`: Report executable Cypress tests that have more than one Jira epic reference.
 
 ### Supported Tags
 
@@ -626,6 +698,7 @@ The following tags can be used in your test scenarios to control ticket creation
 | Tag Prefix         | Example Value           | Description                                                        |
 | ------------------ | ----------------------- | ------------------------------------------------------------------ |
 | `@JIRA-KEY:`       | `@JIRA-KEY:PROJ-123`    | Associates the test with an existing Jira issue key.               |
+| `@JIRA-KEY:POT-*`  | `@JIRA-KEY:POT-1234`    | Associates one executable test with one Zephyr POT test case key.  |
 | `@JIRA-COMPONENT:` | `@JIRA-COMPONENT:API`   | Adds the specified Jira component to the ticket.                   |
 | `@JIRA-LABEL:`     | `@JIRA-LABEL:smoke`     | Adds the specified label to the Jira ticket.                       |
 | `@JIRA-EPIC:`      | `@JIRA-EPIC:PROJ-456`   | Links the ticket to the specified Jira Epic.                       |
@@ -636,3 +709,4 @@ The following tags can be used in your test scenarios to control ticket creation
 | `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                  |
 
 - Tags are case-sensitive and must be used exactly as shown.
+- `yarn check:cypress:test-metadata` uses `@hmcts/opal-frontend-common-cypress` to report executable Cypress tests with missing epic metadata, multiple epic references, or unresolved placeholder epic values.

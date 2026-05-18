@@ -7,7 +7,6 @@ Feature: Search and Matches Accessibility
     And I am on the Account Search page - Individuals form displayed by default
 
   @JIRA-EPIC:PO-2472
-  @JIRA-KEY:POT-5055
   Scenario: Check Search and Matches Accessibility with Axe-Core
     ## Check Accessibility on Individuals Tab
     When I search using the following inputs:

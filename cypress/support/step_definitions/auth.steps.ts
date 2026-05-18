@@ -7,34 +7,48 @@
  * where login is a prerequisite for other actions.
  *
  * @remarks
- * - The steps use `loginAndLandOnDashboard()` from the `auth.flow` module.
+ * - The steps use `loginAndLandOnSearch()` from the `auth.flow` module.
  * - Logging uses the shared `log()` helper for consistent output.
  * - Supports parameterized logins for different users or roles.
  *
  * @example
  *   Given I am logged in with email "qa.user@example.com"
  *
- * @see {@link loginAndLandOnDashboard}
+ * @see {@link loginAndLandOnSearch}
  */
 
 import { Given, Then } from '@badeball/cypress-cucumber-preprocessor';
-import { loginAndLandOnDashboard } from '../..//e2e/functional/opal/flows/auth.flow';
+import { loginAndAuthenticate, loginAndLandOnSearch } from '../..//e2e/functional/opal/flows/auth.flow';
 import { assertSignOutLinkVisible } from '../..//e2e/functional/opal/actions/login.actions';
 import { log } from '../utils/log.helper';
 
 /**
- * @step Logs in using the provided email address and confirms the user lands on the dashboard.
+ * @step Logs in using the provided email address and confirms the user lands on Search.
  *
  * @param email - The email address of the user to log in as.
  *
  * @details
- * - Delegates to the reusable `loginAndLandOnDashboard()` flow for actual login steps.
+ * - Delegates to the reusable `loginAndLandOnSearch()` flow for actual login steps.
  * - Adds structured Cypress logging for traceability in test reports.
  * - Intended to be reusable across all authenticated scenarios.
  */
 Given('I am logged in with email {string}', (email: string) => {
   log('step', 'Logging in via auth flow', { email });
-  loginAndLandOnDashboard(email);
+  loginAndLandOnSearch(email);
+});
+
+/**
+ * @step Logs in using the provided email address without asserting a specific landing page.
+ *
+ * @param email - The email address of the user to authenticate as.
+ *
+ * @details
+ * - Delegates to `loginAndAuthenticate()` so feature-flag scenarios can assert their own
+ *   landing behaviour when the default Search page may be disabled.
+ */
+Given('I am authenticated with email {string}', (email: string) => {
+  log('step', 'Authenticating without asserting a specific landing page', { email });
+  loginAndAuthenticate(email);
 });
 
 /**
