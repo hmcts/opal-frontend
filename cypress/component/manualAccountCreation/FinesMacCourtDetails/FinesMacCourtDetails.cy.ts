@@ -45,23 +45,40 @@ describe('FinesMacCourtDetailsComponent', () => {
       submitHandlerName: 'handleCourtDetailsSubmit',
     });
   };
-  it('should render the component correctly for AY', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4924'] }, () => {
+  it(
+    'should render the component correctly for AY',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4924'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
       cy.get(L.componentRoot).should('exist');
       cy.get(L.nestedFlowButton).should('contain', 'Add personal details');
-    });
-  it('should render the component correctly for AYPG', { tags: [...buildTags('@JIRA-STORY:PO-527', '@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4925'] }, () => {
+    },
+  );
+  it(
+    'should render the component correctly for AYPG',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-527', '@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4925'],
+    },
+    () => {
       setupComponent(null, 'pgToPay');
       cy.get(L.componentRoot).should('exist');
       cy.get(L.nestedFlowButton).should('contain', 'Add parent or guardian details');
-    });
-  it('should render the component correctly for COMP', { tags: [...buildTags('@JIRA-STORY:PO-529'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4926'] }, () => {
+    },
+  );
+  it(
+    'should render the component correctly for COMP',
+    { tags: [...buildTags('@JIRA-STORY:PO-529'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4926'] },
+    () => {
       setupComponent(null, 'company');
       cy.get(L.componentRoot).should('exist');
       cy.get(L.nestedFlowButton).should('contain', 'Add company details');
-    });
+    },
+  );
 
-  it('(AC.1, AC.4) should be created as per the design artifacts', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4927'] }, () => {
+  it(
+    '(AC.1, AC.4) should be created as per the design artifacts',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4927'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
@@ -80,8 +97,12 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.enforcementCourtLabel).should('contain', 'Enforcement court');
       cy.get(L.enforcementCourtHint).should('contain', 'Search using enforcement court or code');
       cy.get(L.enforcementCourtInput).should('exist');
-    });
-  it('(AC.2) should dynamically filter LJA field', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4928'] }, () => {
+    },
+  );
+  it(
+    '(AC.2) should dynamically filter LJA field',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4928'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       //Verify working input fields
@@ -95,8 +116,12 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
       cy.get(L.ljaListbox).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
       cy.get(L.ljaListbox).find('li').should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
-    });
-  it('(AC.3) should dynamically filter Enforcement court field', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4929'] }, () => {
+    },
+  );
+  it(
+    '(AC.3) should dynamically filter Enforcement court field',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4929'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
       //Verify working input fields
       cy.get(L.enforcementCourtInput).focus().type('Port', { delay: 0 });
@@ -108,9 +133,13 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (101)');
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (998)');
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
-    });
+    },
+  );
 
-  it('(AC.5) should validate mandatory fields', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4930'] }, () => {
+  it(
+    '(AC.5) should validate mandatory fields',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4930'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       //Submit without input
@@ -148,9 +177,13 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
       cy.get(L.pcrErrorMessage).should('contain', MISSING_ERRORS.missingPCR);
       cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
-    });
+    },
+  );
 
-  it('(AC.6) should validate mandatory fields even when data exists in another', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4931'] }, () => {
+  it(
+    '(AC.6) should validate mandatory fields even when data exists in another',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4931'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly', undefined, (finesMacState) => {
         finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = '1234';
       });
@@ -190,9 +223,13 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.ljaErrorMessage).should('contain', MISSING_ERRORS.missingLJA);
       cy.get(L.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
       cy.get(L.pcrErrorMessage).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC.7) should validate PRC field length', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4932'] }, () => {
+  it(
+    '(AC.7) should validate PRC field length',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4932'] },
+    () => {
       setupComponent(null, undefined, OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK, (finesMacState) => {
         finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
       });
@@ -202,9 +239,13 @@ describe('FinesMacCourtDetailsComponent', () => {
 
       //Verify error message
       cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.tooLongPCR);
-    });
+    },
+  );
 
-  it('(AC.7) should validate PCR field allowed characters', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4933'] }, () => {
+  it(
+    '(AC.7) should validate PCR field allowed characters',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4933'] },
+    () => {
       const invalidInputs = ['1234!', '1@', 'test@', 'test1234@', 'abc#', '123$', 'abc%', '123^', 'abc&', '123*'];
       cy.wrap(invalidInputs).each((input: string) => {
         cy.then(() => {
@@ -215,9 +256,13 @@ describe('FinesMacCourtDetailsComponent', () => {
           cy.get(L.pcrErrorMessage).should('contain', INVALID_ERRORS.invalidPCR);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.8) should clear errors when validation is passed', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4934'] }, () => {
+  it(
+    '(AC.8) should clear errors when validation is passed',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4934'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
@@ -246,9 +291,13 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.ljaErrorMessage).should('not.exist');
       cy.get(L.pcrErrorMessage).should('not.exist');
       cy.get(L.enforcementCourtErrorMessage).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC.9) should clear errors when validation is passed', { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4935'] }, () => {
+  it(
+    '(AC.9) should clear errors when validation is passed',
+    { tags: [...buildTags('@JIRA-STORY:PO-389'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4935'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
@@ -278,17 +327,25 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.ljaErrorMessage).should('not.exist');
       cy.get(L.enforcementCourtErrorMessage).should('not.exist');
       cy.get(L.pcrErrorMessage).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC.1) should convert PCR input to uppercase', { tags: [...buildTags('@JIRA-STORY:PO-1450'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4936'] }, () => {
+  it(
+    '(AC.1) should convert PCR input to uppercase',
+    { tags: [...buildTags('@JIRA-STORY:PO-1450'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4936'] },
+    () => {
       setupComponent(null, 'company');
 
       cy.get(L.pcrInput).focus().type('abcd1234a', { delay: 0 });
 
       cy.get(L.pcrInput).should('have.value', 'ABCD1234A');
-    });
+    },
+  );
 
-  it('Prosecutor Case Reference should capitalise - AYPG', { tags: [...buildTags('@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4937'] }, () => {
+  it(
+    'Prosecutor Case Reference should capitalise - AYPG',
+    { tags: [...buildTags('@JIRA-STORY:PO-1449'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4937'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
       setupComponent(formSubmitSpy, 'pgToPay');
 
@@ -302,17 +359,25 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.pcrInput).should('have.value', 'TESTPCR');
 
       cy.get(L.returnToAccountDetailsButton).click();
-    });
+    },
+  );
 
-  it('(AC.1) should convert PCR input to uppercase (Adult or youth only)', { tags: [...buildTags('@JIRA-STORY:PO-1448'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4938'] }, () => {
+  it(
+    '(AC.1) should convert PCR input to uppercase (Adult or youth only)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1448'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4938'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       cy.get(L.pcrInput).focus().type('abcd1234', { delay: 0 });
 
       cy.get(L.pcrInput).should('have.value', 'ABCD1234');
-    });
+    },
+  );
 
-  it('Should show all values in LJA and Enforcement Court auto-complete dropdown when selected', { tags: [...buildTags('@JIRA-STORY:PO-1990'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4939'] }, () => {
+  it(
+    'Should show all values in LJA and Enforcement Court auto-complete dropdown when selected',
+    { tags: [...buildTags('@JIRA-STORY:PO-1990'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4939'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       //Verify autocomplete fields display all values when selected
@@ -330,9 +395,13 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'Historic Debt Database (998)');
       cy.get(L.enforcementCourtListbox).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
       cy.get(L.enforcementCourtListbox).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
-    });
+    },
+  );
 
-  it('(AC3, AC4) should only show PSA/CRWCRT local justice areas for filtered journeys (Fine/Confiscation)', { tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4940'] }, () => {
+  it(
+    '(AC3, AC4) should only show PSA/CRWCRT local justice areas for filtered journeys (Fine/Confiscation)',
+    { tags: [...buildTags('@JIRA-STORY:PO-2761'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-4940'] },
+    () => {
       const filteredLocalJusticeAreas: IOpalFinesLocalJusticeAreaRefData = {
         count: 2,
         refData: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.slice(1, 3),
@@ -345,5 +414,6 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(L.ljaListbox).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
       cy.get(L.ljaListbox).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
       cy.get(L.ljaListbox).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
-    });
+    },
+  );
 });

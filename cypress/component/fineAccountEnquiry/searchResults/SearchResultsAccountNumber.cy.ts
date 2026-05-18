@@ -93,14 +93,21 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(tabSelector).should('have.class', 'govuk-tabs__list-item govuk-tabs__list-item--selected');
   };
 
-  it('(AC1d) Search results component is created correctly', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4536'] }, () => {
+  it(
+    '(AC1d) Search results component is created correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4536'] },
+    () => {
       setupComponent('WITH_DATA');
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
       cy.get(ResultsPageLocators.backLinkHost).should('exist');
-    });
+    },
+  );
 
-  it('(AC3a) Displays error message when no search matches are found', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4537'] }, () => {
+  it(
+    '(AC3a) Displays error message when no search matches are found',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4537'] },
+    () => {
       setupComponent('EMPTY_RESULTS');
 
       // AC3a: Verify the error screen is displayed when no search matches are found
@@ -111,11 +118,15 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(ResultsMessageLocators.link).should('contain', 'Check your search');
       // AC3b: Verify 'Check your search' link is clickable and functional
       cy.get(ResultsMessageLocators.link).click();
-    });
+    },
+  );
 
   //Note: AC3b The 'Check your search' link will navigate a user back to the Search for an Account screen - Full Test to be implemented when API complete
 
-  it('(AC4a) Displays "There are more than 100 results" message when more than 100 matches found', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4538'] }, () => {
+  it(
+    '(AC4a) Displays "There are more than 100 results" message when more than 100 matches found',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4538'] },
+    () => {
       setupComponent('LARGE_RESULTS');
 
       // AC4a: Verify the "too many results" error screen is displayed
@@ -127,9 +138,13 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(ResultsMessageLocators.link).should('be.visible').should('contain', 'Try adding more information');
       cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
       cy.get(ResultsMessageLocators.link).click();
-    });
+    },
+  );
 
-  it('(AC5 ,5b,5f) Displays tabs when matches across multiple debtor/creditor types and Individual tab is in focus by default', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4539'] }, () => {
+  it(
+    '(AC5 ,5b,5f) Displays tabs when matches across multiple debtor/creditor types and Individual tab is in focus by default',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4539'] },
+    () => {
       setupComponent('WITH_DATA', 'individuals');
 
       // AC5b-Verify Individuals tab is in focus by default
@@ -170,9 +185,13 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(ResultsCellLocators.balance).eq(1).should('contain', '£524.00');
       cy.get(ResultsCellLocators.aliases).eq(1).should('not.contain', 'SMITH');
       cy.get(ResultsCellLocators.parentGuard).eq(1).should('not.contain', 'DOE, Jane');
-    });
+    },
+  );
 
-  it('(AC5c) Companies tab displays company defendant account summary data', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4540'] }, () => {
+  it(
+    '(AC5c) Companies tab displays company defendant account summary data',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4540'] },
+    () => {
       setupComponent('WITH_DATA', 'companies');
 
       switchToTab('companies', ResultsTabLocators.companiesTab);
@@ -192,8 +211,12 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(ResultsCellLocators.name).first().should('contain', 'ACME LTD');
       cy.get(ResultsCellLocators.addr1).first().should('contain', '10 Downing Street');
       cy.get(ResultsCellLocators.balance).first().should('contain', '£1,000.00');
-    });
-  it('(AC5d) Minor Creditors tab displays creditor account summary data', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4541'] }, () => {
+    },
+  );
+  it(
+    '(AC5d) Minor Creditors tab displays creditor account summary data',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4541'] },
+    () => {
       setupComponent('WITH_DATA', 'individuals');
       // Switch to minor creditors tab using helper function
       switchToTab('minorCreditors', ResultsTabLocators.minorCreditorsTab);
@@ -226,9 +249,13 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).should('contain', 'THOMPSON, Emma Claire');
       cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).find('a').should('exist');
       cy.get(ResultsCellLocators.minorCreditorBalance).eq(1).should('contain', '£345.00');
-    });
+    },
+  );
 
-  it('(AC5e) Tabs only displayed when results exist for corresponding type', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4542'] }, () => {
+  it(
+    '(AC5e) Tabs only displayed when results exist for corresponding type',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4542'] },
+    () => {
       // Test scenario with only individuals and companies (no minor creditors)
       setupComponent('PARTIAL_RESULTS');
 
@@ -236,30 +263,43 @@ describe('FinesSaResultsComponent - All Account Types', () => {
       cy.get(ResultsTabLocators.individualsTab).should('be.visible');
       cy.get(ResultsTabLocators.companiesTab).should('be.visible');
       cy.get(ResultsTabLocators.minorCreditorsTab).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC5fi) Companies tab in focus when no individuals found', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4543'] }, () => {
+  it(
+    '(AC5fi) Companies tab in focus when no individuals found',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4543'] },
+    () => {
       setupComponent('COMPANY_RESULTS_ONLY', 'companies');
 
       // Verify companies tab is selected when individuals tab doesn't exist
       cy.get(ResultsTabLocators.individualsTab).should('not.exist');
       verifyTabIsActive(ResultsTabLocators.companiesTab);
       cy.get(ResultsLocators.table.root).should('exist');
-    });
+    },
+  );
 
-  it('(AC5fii) No tabs displayed for single creditor type results', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4544'] }, () => {
+  it(
+    '(AC5fii) No tabs displayed for single creditor type results',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4544'] },
+    () => {
       setupComponent('INDIVIDUALS_ONLY_RESULTS', 'individuals');
 
       cy.get(ResultsTabLocators.individualsTab).should('be.visible');
       cy.get(ResultsTabLocators.companiesTab).should('not.exist');
       cy.get(ResultsTabLocators.minorCreditorsTab).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC5fii) No tabs displayed for single debtor type results', { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4545'] }, () => {
+  it(
+    '(AC5fii) No tabs displayed for single debtor type results',
+    { tags: [...buildTags('@JIRA-STORY:PO-706'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4545'] },
+    () => {
       setupComponent('MINOR_CREDITOR_ONLY_RESULTS', 'minorCreditors');
 
       cy.get(ResultsTabLocators.individualsTab).should('not.exist');
       cy.get(ResultsTabLocators.companiesTab).should('not.exist');
       cy.get(ResultsTabLocators.minorCreditorsTab).should('be.visible');
-    });
+    },
+  );
 });

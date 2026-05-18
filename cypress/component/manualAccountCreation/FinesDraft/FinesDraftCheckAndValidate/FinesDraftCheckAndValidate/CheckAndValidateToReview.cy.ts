@@ -51,7 +51,12 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     });
   };
 
-  it('(AC.1) Review account is created as per design artefact (FinesDraftCheckAndValidateToReviewComponent)', { tags: [...buildTags('@JIRA-STORY:PO-593', '@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4719'] }, () => {
+  it(
+    '(AC.1) Review account is created as per design artefact (FinesDraftCheckAndValidateToReviewComponent)',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-593', '@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4719'],
+    },
+    () => {
       const emptyMockData = { count: 0, summaries: [] };
 
       interceptCAVGetRejectedAccounts(200, emptyMockData);
@@ -99,9 +104,13 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
           cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
         }
       }
-    });
+    },
+  );
 
-  it('(AC.2) should display To review tab correctly when there are zero draft records', { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4720'] }, () => {
+  it(
+    '(AC.2) should display To review tab correctly when there are zero draft records',
+    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4720'] },
+    () => {
       const emptyMockData = { count: 0, summaries: [] };
 
       interceptCAVGetRejectedAccounts(200, emptyMockData);
@@ -116,9 +125,13 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'To review');
       cy.get('p').should('exist').and('contain', 'There are no accounts to review');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC.3) should display To review tab correctly when there are draft records', { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4721'] }, () => {
+  it(
+    '(AC.3) should display To review tab correctly when there are draft records',
+    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4721'] },
+    () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptCAVGetToReviewAccounts(200, toReviewMockData);
@@ -145,9 +158,13 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
         const expectedHeading = TABLE_HEADINGS[index];
         cy.wrap(heading).should('contain', expectedHeading);
       });
-    });
+    },
+  );
 
-  it('(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateToReviewComponent)', { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4722'] }, () => {
+  it(
+    '(AC.4a) should have default sort order for created accounts set to ascending (FinesDraftCheckAndValidateToReviewComponent)',
+    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4722'] },
+    () => {
       const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptCAVGetToReviewAccounts(200, toReviewMockData);
@@ -203,9 +220,13 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES['Fixed Penalty']);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
         });
-    });
+    },
+  );
 
-  it('(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateToReviewComponent)', { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4723'] }, () => {
+  it(
+    '(AC.4b) should have pagination for over 25 accounts (FinesDraftCheckAndValidateToReviewComponent)',
+    { tags: [...buildTags('@JIRA-STORY:PO-593'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4723'] },
+    () => {
       const toReviewMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
       interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
       interceptCAVGetToReviewAccounts(200, toReviewMockData);
@@ -233,5 +254,6 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    });
+    },
+  );
 });

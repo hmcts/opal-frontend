@@ -61,13 +61,24 @@ describe('FinesAccNoteAddFormComponent', () => {
     });
   };
 
-  it('should render the component', { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4165'] }, () => {
+  it(
+    'should render the component',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4165'],
+    },
+    () => {
       setupComponent();
 
       cy.get(L.componentRoot).should('exist');
-    });
+    },
+  );
 
-  it('(AC.2) should load all elements on the screen correctly', { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4166'] }, () => {
+  it(
+    '(AC.2) should load all elements on the screen correctly',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4166'],
+    },
+    () => {
       setupComponent();
 
       cy.get(L.header).should('contain', 'Add account note');
@@ -77,9 +88,15 @@ describe('FinesAccNoteAddFormComponent', () => {
       cy.get(L.fields.noteTextArea).should('be.enabled');
       cy.get(L.actions.saveNoteButton).should('contain', 'Save note');
       cy.get(L.actions.cancelLink).should('exist');
-    });
+    },
+  );
 
-  it('(AC2a,2b) should have character limits for account notes', { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4167'] }, () => {
+  it(
+    '(AC2a,2b) should have character limits for account notes',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4167'],
+    },
+    () => {
       setupComponent();
 
       cy.get(L.fields.noteTextArea).should('have.attr', 'maxlength', '1000');
@@ -90,36 +107,60 @@ describe('FinesAccNoteAddFormComponent', () => {
       cy.get(L.fields.noteTextArea).clear().type('a'.repeat(10), { delay: 0 });
       cy.get(L.fields.noteTextArea).should('have.value', 'a'.repeat(10));
       cy.get(L.fields.noteCharCountMessage).should('contain', 'You have 990 characters remaining');
-    });
+    },
+  );
 
   //Note: For AC3a, AC3ai, AC3aii the maximum character limit is 1000. So, entering 1000 characters should show 0 characters remaining.more than 1000 characters doesn't allow to type.
 
-  it('(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit', { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4168'] }, () => {
+  it(
+    '(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4168'],
+    },
+    () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('a'.repeat(1001), { delay: 0 });
       cy.get(L.fields.noteTextArea).should('have.value', 'a'.repeat(1000));
       cy.get(L.fields.noteCharCountMessage).should('contain', 'You have 0 characters remaining');
       cy.get(L.actions.saveNoteButton).click();
-    });
+    },
+  );
 
-  it('(AC.3b, 3bi, 3bii) click submit button after entering non-alphanumeric characters shows an error', { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4169'] }, () => {
+  it(
+    '(AC.3b, 3bi, 3bii) click submit button after entering non-alphanumeric characters shows an error',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4169'],
+    },
+    () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('Test @#$%^&*()');
       cy.get(L.actions.saveNoteButton).click();
       // page header error summary
       cy.get(L.fields.noteErrorMessage).should('contain', ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
       cy.get(L.errorSummaryBody).find('a').should('contain', ACCOUNT_NOTE_ALLOWED_CHARACTERS_ERROR);
-    });
+    },
+  );
 
-  it('(AC.3c, 3ci, 3cii)click submit without entering data shows an error', { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4170'] }, () => {
+  it(
+    '(AC.3c, 3ci, 3cii)click submit without entering data shows an error',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4170'],
+    },
+    () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear();
       cy.get(L.actions.saveNoteButton).click();
       cy.get(L.fields.noteErrorMessage).should('contain', 'Add account note or click cancel to return');
       cy.get(L.errorSummaryBody).find('a').should('contain', 'Add account note or click cancel to return');
-    });
+    },
+  );
 
-  it('(AC.4c, 4ci, 4cii)click submit button after entering valid data', { tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4171'] }, () => {
+  it(
+    '(AC.4c, 4ci, 4cii)click submit button after entering valid data',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-771', '@JIRA-STORY:PO-807', '@JIRA-STORY:PO-809'), '@JIRA-TEST-KEY:PO-4171'],
+    },
+    () => {
       setupComponent();
       cy.get(L.fields.noteTextArea).clear().type('a'.repeat(10), { delay: 0 });
       cy.intercept('POST', '**/opal-fines-service/notes/add', { statusCode: 200 }).as('addNote');
@@ -133,5 +174,6 @@ describe('FinesAccNoteAddFormComponent', () => {
         );
         expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'defendant_accounts');
       });
-    });
+    },
+  );
 });

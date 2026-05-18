@@ -91,7 +91,12 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     interceptOffences();
   });
 
-  it('(AC.2,AC.2d) The Reason for Deletion screen will be created as per the design artefact', { tags: [...buildTags('@JIRA-STORY:PO-603', '@JIRA-STORY:PO-2767'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5185'] }, () => {
+  it(
+    '(AC.2,AC.2d) The Reason for Deletion screen will be created as per the design artefact',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-603', '@JIRA-STORY:PO-2767'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5185'],
+    },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
       setupComponent(fetchMap);
@@ -102,9 +107,13 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
       cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'Deleted');
       cy.get(DOM_ELEMENTS.sectionHeading).should('exist').and('contain', 'Review history');
       cy.get(DOM_ELEMENTS.originatorTypeData).should('exist');
-    });
+    },
+  );
 
-  it('AC.3 - should render Delete History section correctly', { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5186'] }, () => {
+  it(
+    'AC.3 - should render Delete History section correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5186'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
 
@@ -153,9 +162,13 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
       cy.get(DOM_ELEMENTS.timelineDate).eq(2).should('contain.text', '01 January 2025');
       cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Submitted');
       cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
-    });
+    },
+  );
 
-  it('AC.2,4 should render summary tables under review account for AY', { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5187'] }, () => {
+  it(
+    'AC.2,4 should render summary tables under review account for AY',
+    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5187'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
 
@@ -180,9 +193,13 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC2,.5) should render all elements on the screen for AYPG', { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5188'] }, () => {
+  it(
+    '(AC2,.5) should render all elements on the screen for AYPG',
+    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5188'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
       fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
@@ -208,9 +225,13 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC.6) should render all elements on the screen for company defendant type (FinesMacReviewAccountComponent - View Deleted Account)', { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5189'] }, () => {
+  it(
+    '(AC.6) should render all elements on the screen for company defendant type (FinesMacReviewAccountComponent - View Deleted Account)',
+    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5189'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
       fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -236,8 +257,12 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    });
-  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5190'] }, () => {
+    },
+  );
+  it(
+    'AC4ai - should show language preferences if business unit is welsh speaking - AY',
+    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5190'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -248,8 +273,12 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    });
-  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG', { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5191'] }, () => {
+    },
+  );
+  it(
+    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
+    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5191'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -261,8 +290,12 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    });
-  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP', { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5192'] }, () => {
+    },
+  );
+  it(
+    'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
+    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5192'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -274,9 +307,13 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    });
+    },
+  );
 
-  it('AC.7 - should show em-dash for empty values', { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5193'] }, () => {
+  it(
+    'AC.7 - should show em-dash for empty values',
+    { tags: [...buildTags('@JIRA-STORY:PO-603'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5193'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Deleted';
       fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
@@ -331,5 +368,6 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
 
       cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
-    });
+    },
+  );
 });

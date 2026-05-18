@@ -90,7 +90,10 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     interceptOffences();
   });
 
-  it('AC.2,4 - should render correctly - AY', { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5194'] }, () => {
+  it(
+    'AC.2,4 - should render correctly - AY',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5194'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type =
@@ -121,9 +124,13 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    });
+    },
+  );
 
-  it('AC.3 - should render Review History section correctly', { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5195'] }, () => {
+  it(
+    'AC.3 - should render Review History section correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5195'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacDraft.timeline_data.push({
@@ -163,9 +170,13 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
       cy.get(DOM_ELEMENTS.timelineDate).should('contain.text', '01 January 2025');
       cy.get(DOM_ELEMENTS.timeLineTitle).should('contain.text', 'Rejected');
       cy.get(DOM_ELEMENTS.timelineDescription).should('contain.text', '');
-    });
+    },
+  );
 
-  it('AC.2,5 - should render correctly - AYPG', { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5196'] }, () => {
+  it(
+    'AC.2,5 - should render correctly - AYPG',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5196'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypesKeys.pgToPay;
@@ -195,9 +206,13 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    });
+    },
+  );
 
-  it('AC.2,6 - should render correctly - COMP', { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5197'] }, () => {
+  it(
+    'AC.2,6 - should render correctly - COMP',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5197'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypesKeys.company;
@@ -227,9 +242,13 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
-    });
+    },
+  );
 
-  it('AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Failed Account)', { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5198'] }, () => {
+  it(
+    'AC4ai - should show language preferences if business unit is welsh speaking - AY (FinesMacReviewAccountComponent - View Failed Account)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5198'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -240,8 +259,12 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    });
-  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Failed Account)', { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5199'] }, () => {
+    },
+  );
+  it(
+    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG (FinesMacReviewAccountComponent - View Failed Account)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5199'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -253,8 +276,12 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    });
-  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Failed Account)', { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5200'] }, () => {
+    },
+  );
+  it(
+    'AC6ai - should show language preferences if business unit is welsh speaking - COMP (FinesMacReviewAccountComponent - View Failed Account)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5200'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -266,9 +293,13 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
 
       cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
       cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    });
+    },
+  );
 
-  it('AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Failed Account)', { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5201'] }, () => {
+  it(
+    'AC.7 - should show em-dash for empty values (FinesMacReviewAccountComponent - View Failed Account)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1073'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-5201'] },
+    () => {
       let fetchMap = structuredClone(reviewAccountFetchMap);
       fetchMap.finesMacDraft.account_status = 'Publishing Failed';
       fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
@@ -323,5 +354,6 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
 
       cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
-    });
+    },
+  );
 });

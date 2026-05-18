@@ -28,7 +28,10 @@ describe('Fixed Penalty - Review Account Details', () => {
     interceptRefDataForReviewAccount(77);
     interceptOffences();
   });
-  it('(AC.1)should display submitted account details correctly for company in Review', { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4844'] }, () => {
+  it(
+    '(AC.1)should display submitted account details correctly for company in Review',
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4844'] },
+    () => {
       const draftAccountId = '1002';
       const props: IFinesComponentProperties = {
         draftAccountId: draftAccountId,
@@ -88,9 +91,13 @@ describe('Fixed Penalty - Review Account Details', () => {
       // Section 5 - Account comments and notes
       cy.get(DOM_ELEMENTS.accountComment).should('contain', 'Scenario 10 account comment');
       cy.get(DOM_ELEMENTS.accountNote).should('contain', 'Scenario 10 account note');
-    });
+    },
+  );
 
-  it('(AC.1) should display submitted defendant account details correctly for individual defendant in Review', { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4845'] }, () => {
+  it(
+    '(AC.1) should display submitted defendant account details correctly for individual defendant in Review',
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4845'] },
+    () => {
       const draftAccountId = '1003';
       const props: IFinesComponentProperties = {
         draftAccountId: draftAccountId,
@@ -149,9 +156,13 @@ describe('Fixed Penalty - Review Account Details', () => {
       // Section 5 - Account comments and notes
       cy.get(DOM_ELEMENTS.accountComment).should('contain', 'Defendant scenario account comment');
       cy.get(DOM_ELEMENTS.accountNote).should('contain', 'Defendant scenario account note');
-    });
+    },
+  );
 
-  it('(AC.1) should display "To review" defendant account details correctly', { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4846'] }, () => {
+  it(
+    '(AC.1) should display "To review" defendant account details correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4846'] },
+    () => {
       const draftAccountId = '1004';
       const props: IFinesComponentProperties = {
         draftAccountId: draftAccountId,
@@ -232,9 +243,13 @@ describe('Fixed Penalty - Review Account Details', () => {
       // Section 5 - Account comments and notes
       cy.get(DOM_ELEMENTS.accountComment).should('contain', 'To review scenario account comment');
       cy.get(DOM_ELEMENTS.accountNote).should('contain', 'To review scenario account note');
-    });
+    },
+  );
 
-  it('(AC.1) should display "To review" company account details correctly', { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4847'] }, () => {
+  it(
+    '(AC.1) should display "To review" company account details correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-1804'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4847'] },
+    () => {
       const draftAccountId = '1005';
       const props: IFinesComponentProperties = {
         draftAccountId: draftAccountId,
@@ -321,5 +336,6 @@ describe('Fixed Penalty - Review Account Details', () => {
       // Section 5 - Account comments and notes
       cy.get(DOM_ELEMENTS.accountComment).should('contain', 'Company to review scenario account comment');
       cy.get(DOM_ELEMENTS.accountNote).should('contain', 'Company to review scenario account note');
-    });
+    },
+  );
 });

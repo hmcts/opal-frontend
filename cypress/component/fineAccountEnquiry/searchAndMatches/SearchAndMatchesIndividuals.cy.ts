@@ -36,7 +36,10 @@ describe('Search Account Component - Individuals', () => {
       },
     });
 
-  it('AC1a-d. should render the search for an account screen', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4477'] }, () => {
+  it(
+    'AC1a-d. should render the search for an account screen',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4477'] },
+    () => {
       setupComponent();
 
       cy.get(IndividualsLocators.root).should('exist');
@@ -72,9 +75,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.postcodeInput).should('exist');
       cy.get(CommonLocators.activeAccountsOnlyCheckbox).should('be.checked');
       cy.get(CommonLocators.searchButton).should('exist').and('contain', 'Search');
-    });
+    },
+  );
 
-  it('AC3a. should validate input fields and show errors', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4478'] }, () => {
+  it(
+    'AC3a. should validate input fields and show errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4478'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_number = '123$%^78';
       });
@@ -92,9 +99,13 @@ describe('Search Account Component - Individuals', () => {
         .and('contain', 'Account number must only contain letters or numbers');
 
       cy.get(CommonLocators.accountNumberInput).clear();
-    });
+    },
+  );
 
-  it('AC3b. should show error for incorrectly formatted account number', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4479'] }, () => {
+  it(
+    'AC3b. should show error for incorrectly formatted account number',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4479'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_number = '1234567';
       });
@@ -110,8 +121,12 @@ describe('Search Account Component - Individuals', () => {
         .and('contain', 'Enter account number in the correct format such as 12345678 or 12345678A');
 
       cy.get(CommonLocators.accountNumberInput).clear();
-    });
-  it('AC3c. should show error for non-alphabetical reference or case number', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4480'] }, () => {
+    },
+  );
+  it(
+    'AC3c. should show error for non-alphabetical reference or case number',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4480'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_reference_case_number = 'REF@#$456';
       });
@@ -127,8 +142,12 @@ describe('Search Account Component - Individuals', () => {
         .and('contain', 'Reference or case number must only contain letters or numbers');
 
       cy.get(CommonLocators.referenceOrCaseNumberInput).clear();
-    });
-  it('AC3d. should show error for non-alphabetical last name', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4481'] }, () => {
+    },
+  );
+  it(
+    'AC3d. should show error for non-alphabetical last name',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4481'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
           'Smith123';
@@ -141,8 +160,12 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Last name must only contain letters');
 
       cy.get(IndividualsLocators.lastNameInput).clear();
-    });
-  it('AC3e. should show error for non-alphabetical first names', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4482'] }, () => {
+    },
+  );
+  it(
+    'AC3e. should show error for non-alphabetical first names',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4482'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
           'John123';
@@ -157,8 +180,12 @@ describe('Search Account Component - Individuals', () => {
         .and('contain', 'First names must only contain letters');
 
       cy.get(IndividualsLocators.firstNameInput).clear();
-    });
-  it('AC3f. should show error for invalid date of birth format', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4483'] }, () => {
+    },
+  );
+  it(
+    'AC3f. should show error for invalid date of birth format',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4483'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
           '15/AB/2020';
@@ -171,8 +198,12 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
 
       cy.get(IndividualsLocators.dobInput).clear();
-    });
-  it('AC3g. should show error for future date of birth', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4484'] }, () => {
+    },
+  );
+  it(
+    'AC3g. should show error for future date of birth',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4484'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
           '15/05/2030';
@@ -185,8 +216,12 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.dobError).should('exist').and('contain', 'Date of birth must be in the past');
 
       cy.get(IndividualsLocators.dobInput).clear();
-    });
-  it('AC3h. should show error for incorrectly formatted date of birth', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4485'] }, () => {
+    },
+  );
+  it(
+    'AC3h. should show error for incorrectly formatted date of birth',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4485'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
           '5/1/1980';
@@ -199,9 +234,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
 
       cy.get(IndividualsLocators.dobInput).clear();
-    });
+    },
+  );
 
-  it('date picker should show the date in correct format DD/MM/YYYY', { tags: [...buildTags('@JIRA-STORY:PO-1998'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4486'] }, () => {
+  it(
+    'date picker should show the date in correct format DD/MM/YYYY',
+    { tags: [...buildTags('@JIRA-STORY:PO-1998'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4486'] },
+    () => {
       setupComponent();
       const expectedDate = getFirstDayOfPreviousMonth();
 
@@ -220,9 +259,13 @@ describe('Search Account Component - Individuals', () => {
         });
       cy.get(IndividualsLocators.dobInput).should('have.value', expectedDate);
       cy.get(CommonLocators.searchButton).click();
-    });
+    },
+  );
 
-  it('AC3i. should show error for invalid NI number', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4487'] }, () => {
+  it(
+    'AC3i. should show error for invalid NI number',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4487'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
           'AB123$%^C';
@@ -239,8 +282,12 @@ describe('Search Account Component - Individuals', () => {
         .and('contain', 'National Insurance number must only contain letters or numbers');
 
       cy.get(IndividualsLocators.niNumberInput).clear();
-    });
-  it('AC3j. should show error for invalid address line 1', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4488'] }, () => {
+    },
+  );
+  it(
+    'AC3j. should show error for invalid address line 1',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4488'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
           '123 Test St. ®©™';
@@ -257,8 +304,12 @@ describe('Search Account Component - Individuals', () => {
         .and('contain', 'Address line 1 must only contain letters or numbers');
 
       cy.get(IndividualsLocators.addressLine1Input).clear();
-    });
-  it('AC3k. should show error for invalid postcode', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4489'] }, () => {
+    },
+  );
+  it(
+    'AC3k. should show error for invalid postcode',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4489'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
           'SW1A @#!';
@@ -275,9 +326,13 @@ describe('Search Account Component - Individuals', () => {
         .and('contain', 'Postcode must only contain letters or numbers');
 
       cy.get(IndividualsLocators.postcodeInput).clear();
-    });
+    },
+  );
 
-  it('AC4a. should validate account number maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4490'] }, () => {
+  it(
+    'AC4a. should validate account number maximum field length',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4490'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_number = '1234567890'; // 10 characters (exceeds 9)
       });
@@ -289,9 +344,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(CommonLocators.accountNumberError)
         .should('exist')
         .and('contain', 'Account number must be 9 characters or fewer');
-    });
+    },
+  );
 
-  it('AC4b. should validate reference or case number maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4491'] }, () => {
+  it(
+    'AC4b. should validate reference or case number maximum field length',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4491'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_reference_case_number =
           'This reference number is way too long and exceeds thirty characters';
@@ -307,9 +366,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(CommonLocators.referenceOrCaseNumberError)
         .should('exist')
         .and('contain', 'Reference or case number must be 30 characters or fewer');
-    });
+    },
+  );
 
-  it('AC4c. should validate last name maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4492'] }, () => {
+  it(
+    'AC4c. should validate last name maximum field length',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4492'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
           'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
@@ -322,9 +385,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.lastNameError)
         .should('exist')
         .and('contain', 'Last name must be 30 characters or fewer');
-    });
+    },
+  );
 
-  it('AC4d. should validate first names maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4493'] }, () => {
+  it(
+    'AC4d. should validate first names maximum field length',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4493'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
           'ThisFirstNameIsTooLongAndExceedsTwentyChars';
@@ -337,9 +404,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.firstNamesError)
         .should('exist')
         .and('contain', 'First names must be 20 characters or fewer');
-    });
+    },
+  );
 
-  it('AC4e. should validate National Insurance number maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4494'] }, () => {
+  it(
+    'AC4e. should validate National Insurance number maximum field length',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4494'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
           'AB123456CD';
@@ -352,9 +423,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.niNumberError)
         .should('exist')
         .and('contain', 'National Insurance number must be 9 characters or fewer');
-    });
+    },
+  );
 
-  it('AC4f. should validate Address Line 1 maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4495'] }, () => {
+  it(
+    'AC4f. should validate Address Line 1 maximum field length',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4495'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
           'This address line is too long and exceeds thirty characters';
@@ -370,9 +445,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.addressLine1Error)
         .should('exist')
         .and('contain', 'Address line 1 must be 30 characters or fewer');
-    });
+    },
+  );
 
-  it('AC4g. should validate Postcode maximum field length', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4496'] }, () => {
+  it(
+    'AC4g. should validate Postcode maximum field length',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4496'] },
+    () => {
       setupComponent((searchState) => {
         searchState.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
           'AB12 3CDEF'; // 9 characters (exceeds 8)
@@ -385,9 +464,13 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.postcodeError)
         .should('exist')
         .and('contain', 'Postcode must be 8 characters or fewer');
-    });
+    },
+  );
 
-  it('AC5a should validate first name field dependency', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4497'] }, () => {
+  it(
+    'AC5a should validate first name field dependency',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4497'] },
+    () => {
       setupComponent();
 
       cy.get(IndividualsLocators.firstNameInput).type('John', { delay: 0 });
@@ -396,9 +479,13 @@ describe('Search Account Component - Individuals', () => {
 
       cy.get(CommonLocators.errorSummary).should('exist');
       cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Enter last name');
-    });
+    },
+  );
 
-  it('AC5b. should validate dob field dependency', { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4498'] }, () => {
+  it(
+    'AC5b. should validate dob field dependency',
+    { tags: [...buildTags('@JIRA-STORY:PO-705'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4498'] },
+    () => {
       setupComponent();
       cy.window().then((win) => {
         cy.stub(win.console, 'info').as('consoleLog');
@@ -412,31 +499,44 @@ describe('Search Account Component - Individuals', () => {
       cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Enter last name');
 
       cy.get('@consoleLog').should('have.not.been.calledOnce');
-    });
+    },
+  );
 
-  it('AC1a. Should validate last name field when alias checkbox selected', { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4499'] }, () => {
+  it(
+    'AC1a. Should validate last name field when alias checkbox selected',
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4499'] },
+    () => {
       setupComponent();
 
       cy.get(IndividualsLocators.includeAliasesCheckbox).check().should('be.checked');
       cy.get(CommonLocators.searchButton).click();
 
       cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Enter last name');
-    });
+    },
+  );
 
-  it('AC1b. Should validate last name field when "Search exact match" for last name is selected', { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4500'] }, () => {
+  it(
+    'AC1b. Should validate last name field when "Search exact match" for last name is selected',
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4500'] },
+    () => {
       setupComponent();
 
       cy.get(IndividualsLocators.lastNameExactMatchCheckbox).check().should('be.checked');
       cy.get(CommonLocators.searchButton).click();
 
       cy.get(IndividualsLocators.lastNameError).should('exist').and('contain', 'Enter last name');
-    });
-  it('AC1c. Should validate first name field when "Search exact match" for first name is selected', { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4501'] }, () => {
+    },
+  );
+  it(
+    'AC1c. Should validate first name field when "Search exact match" for first name is selected',
+    { tags: [...buildTags('@JIRA-STORY:PO-1969'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4501'] },
+    () => {
       setupComponent();
 
       cy.get(IndividualsLocators.firstNamesExactMatchCheckbox).check().should('be.checked');
       cy.get(CommonLocators.searchButton).click();
 
       cy.get(IndividualsLocators.firstNamesError).should('exist').and('contain', 'Enter first name');
-    });
+    },
+  );
 });

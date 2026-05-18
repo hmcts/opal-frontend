@@ -45,7 +45,10 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
     });
   };
 
-  it('AC.1 should display number of rejected accounts in a icon on values of 1-99', { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4741'] }, () => {
+  it(
+    'AC.1 should display number of rejected accounts in a icon on values of 1-99',
+    { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4741'] },
+    () => {
       const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
       interceptGetRejectedAccounts(200, rejectedMockData);
@@ -55,8 +58,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
       cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '2');
-    });
-  it('AC.1b) Should not display notifications or rejected account tab when rejected account equals 0', { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4742'] }, () => {
+    },
+  );
+  it(
+    'AC.1b) Should not display notifications or rejected account tab when rejected account equals 0',
+    { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4742'] },
+    () => {
       const rejectedMockData = { count: 0, summaries: [] };
 
       interceptGetRejectedAccounts(200, rejectedMockData);
@@ -66,8 +73,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
       cy.get(DOM_ELEMENTS.rejectedIcon).should('not.exist');
-    });
-  it('(AC.1) should display rejected icon count up to 99 then after display 99+', { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4743'] }, () => {
+    },
+  );
+  it(
+    '(AC.1) should display rejected icon count up to 99 then after display 99+',
+    { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4743'] },
+    () => {
       const rejectedMockData = { count: 100, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
       interceptGetRejectedAccounts(200, rejectedMockData);
@@ -77,9 +88,13 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
       cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '99+');
-    });
+    },
+  );
 
-  it('(AC.2) should show empty value statement for Rejected status when no accounts have been rejected', { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4744'] }, () => {
+  it(
+    '(AC.2) should show empty value statement for Rejected status when no accounts have been rejected',
+    { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4744'] },
+    () => {
       const rejectedMockData = { count: 0, summaries: [] };
 
       interceptGetRejectedAccounts(200, rejectedMockData);
@@ -96,8 +111,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
         .and('contain', 'To resubmit accounts for other team members, you can view all rejected accounts');
       cy.get('p').find('a').should('have.text', 'view all rejected accounts');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
-    });
-  it('(AC.3) should show list of accounts for Rejected status when accounts have been submitted/resubmitted', { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4745'] }, () => {
+    },
+  );
+  it(
+    '(AC.3) should show list of accounts for Rejected status when accounts have been submitted/resubmitted',
+    { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4745'] },
+    () => {
       const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
       interceptGetRejectedAccounts(200, rejectedMockData);
@@ -116,8 +135,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
       cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
       cy.get(DOM_ELEMENTS.tableHeadings).contains('Account type').should('exist');
       cy.get(DOM_ELEMENTS.tableHeadings).contains('Business unit').should('exist');
-    });
-  it('AC.4 verify the table of headers in review tab', { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4746'] }, () => {
+    },
+  );
+  it(
+    'AC.4 verify the table of headers in review tab',
+    { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4746'] },
+    () => {
       const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
       interceptGetRejectedAccounts(200, rejectedMockData);
@@ -153,9 +176,13 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
           cy.get(DOM_ELEMENTS.accountType).contains(FINES_ACCOUNT_TYPES.Fine);
           cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
         });
-    });
+    },
+  );
 
-  it('(AC.5a) The table should have the correct default ordering', { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4747'] }, () => {
+  it(
+    '(AC.5a) The table should have the correct default ordering',
+    { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4747'] },
+    () => {
       const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
       interceptGetRejectedAccounts(200, rejectedMockData);
@@ -179,8 +206,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
           cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
           cy.get(DOM_ELEMENTS.created).contains('Today');
         });
-    });
-  it('(AC.5b)should have pagination enabled for over 25 draft accounts for In Review accounts', { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4748'] }, () => {
+    },
+  );
+  it(
+    '(AC.5b)should have pagination enabled for over 25 draft accounts for In Review accounts',
+    { tags: [...buildTags('@JIRA-STORY:PO-605'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4748'] },
+    () => {
       const rejectedMockData = { count: 2, summaries: OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries };
 
       interceptGetRejectedAccounts(200, rejectedMockData);
@@ -205,5 +236,6 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-    });
+    },
+  );
 });

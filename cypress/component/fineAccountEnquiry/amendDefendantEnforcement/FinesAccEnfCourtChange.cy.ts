@@ -244,7 +244,10 @@ function assertErrors() {
 }
 
 describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS }, () => {
-  it('AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Individual: navigates to the change enforcement court screen and displays the form', { tags: ['@JIRA-TEST-KEY:PO-4407'] }, () => {
+  it(
+    'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Individual: navigates to the change enforcement court screen and displays the form',
+    { tags: ['@JIRA-TEST-KEY:PO-4407'] },
+    () => {
       // AC1, AC1a, AC2a, AC2b, AC2c, AC2ci
       const { courtsMock, expectedCaption } = commonSetup();
 
@@ -256,18 +259,26 @@ describe('Change Enforcement Court - Individual', { tags: ADULT_OR_YOUTH_TAGS },
       assertContent();
       assertForm(courtsMock);
       assertLayout();
-    });
+    },
+  );
 
-  it('AC3a. Individual: shows validation errors when no enforcement court is selected', { tags: ['@JIRA-TEST-KEY:PO-4408'] }, () => {
-    mountChangeEnforcementCourtForm(buildIndividualHeaderMock());
-    submitForm();
+  it(
+    'AC3a. Individual: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-TEST-KEY:PO-4408'] },
+    () => {
+      mountChangeEnforcementCourtForm(buildIndividualHeaderMock());
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });
 
 describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_TAGS }, () => {
-  it('AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Parent/Guardian: navigates to the change enforcement court screen and displays the form', { tags: ['@JIRA-TEST-KEY:PO-4409'] }, () => {
+  it(
+    'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Parent/Guardian: navigates to the change enforcement court screen and displays the form',
+    { tags: ['@JIRA-TEST-KEY:PO-4409'] },
+    () => {
       const { courtsMock, expectedCaption } = mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
       assertTitle();
       assertCaption(expectedCaption);
@@ -275,18 +286,26 @@ describe('Change Enforcement Court - Parent/Guardian', { tags: PARENT_GUARDIAN_T
       cy.get(ENF_COURT_CHANGE.form).should('exist');
       assertForm(courtsMock);
       assertLayout();
-    });
+    },
+  );
 
-  it('AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected', { tags: ['@JIRA-TEST-KEY:PO-4410'] }, () => {
-    mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
-    submitForm();
+  it(
+    'AC3a. Parent/Guardian: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-TEST-KEY:PO-4410'] },
+    () => {
+      mountChangeEnforcementCourtForm(buildParentGuardianHeaderMock());
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });
 
 describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
-  it('AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Company: navigates to the change enforcement court screen and displays the form', { tags: ['@JIRA-TEST-KEY:PO-4411'] }, () => {
+  it(
+    'AC1, AC1a, AC2a, AC2b, AC2c, AC2ci. Company: navigates to the change enforcement court screen and displays the form',
+    { tags: ['@JIRA-TEST-KEY:PO-4411'] },
+    () => {
       const { courtsMock, expectedCaption } = mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
       assertTitle();
       assertCaption(expectedCaption);
@@ -294,12 +313,17 @@ describe('Change Enforcement Court - Company', { tags: COMPANY_TAGS }, () => {
       cy.get(ENF_COURT_CHANGE.form).should('exist');
       assertForm(courtsMock);
       assertLayout();
-    });
+    },
+  );
 
-  it('AC3a. Company: shows validation errors when no enforcement court is selected', { tags: ['@JIRA-TEST-KEY:PO-4412'] }, () => {
-    mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
-    submitForm();
+  it(
+    'AC3a. Company: shows validation errors when no enforcement court is selected',
+    { tags: ['@JIRA-TEST-KEY:PO-4412'] },
+    () => {
+      mountChangeEnforcementCourtForm(buildCompanyHeaderMock());
+      submitForm();
 
-    assertErrors();
-  });
+      assertErrors();
+    },
+  );
 });

@@ -74,14 +74,21 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     });
   };
 
-  it('Search results component is created correctly for minor creditors', { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4558'] }, () => {
+  it(
+    'Search results component is created correctly for minor creditors',
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4558'] },
+    () => {
       setupComponent();
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
       cy.get(ResultsPageLocators.backLinkHost).should('exist');
-    });
+    },
+  );
 
-  it('(AC2) Displays error message when no minor creditor search matches are found', { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4559'] }, () => {
+  it(
+    '(AC2) Displays error message when no minor creditor search matches are found',
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4559'] },
+    () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsMessageLocators.heading).should('be.visible');
@@ -94,9 +101,13 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       // Test that the link is clickable (Full Test to be implemented when API complete)
       cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
       cy.get(ResultsMessageLocators.link).click();
-    });
+    },
+  );
 
-  it('(AC3) Handles more than 100 minor creditor search matches correctly', { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4560'] }, () => {
+  it(
+    '(AC3) Handles more than 100 minor creditor search matches correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4560'] },
+    () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
@@ -115,9 +126,13 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       // Test that the link is clickable (Full Test to be implemented when API complete)
       cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
       cy.get(ResultsMessageLocators.link).click();
-    });
+    },
+  );
 
-  it('(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting', { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4561'] }, () => {
+  it(
+    '(AC4) Displays Search Results - Individual Minor Creditors with correct table structure and data formatting',
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4561'] },
+    () => {
       setupComponent(INDIVIDUAL_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
@@ -160,9 +175,13 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).should('contain', 'WILSON, James Robert');
       cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).find('a').should('exist');
       cy.get(ResultsCellLocators.minorCreditorBalance).eq(1).should('contain', '£567.00');
-    });
+    },
+  );
 
-  it('(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting', { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4562'] }, () => {
+  it(
+    '(AC4) Displays Search Results - Company Minor Creditors with correct table structure and data formatting',
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4562'] },
+    () => {
       setupComponent(COMPANY_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
@@ -203,9 +222,13 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).should('contain', 'Tech Solutions Inc');
       cy.get(ResultsCellLocators.minorCreditorDefendant).eq(1).find('a').should('exist');
       cy.get(ResultsCellLocators.minorCreditorBalance).eq(1).should('contain', '£1,250.00');
-    });
+    },
+  );
 
-  it('(AC4d) Displays pagination with 25 results per page for maximum of 100 results', { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4563'] }, () => {
+  it(
+    '(AC4d) Displays pagination with 25 results per page for maximum of 100 results',
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4563'] },
+    () => {
       // Using LARGE_SEARCH_RESULTS_MOCK but limiting to 100 results for pagination testing
       const paginationMock = {
         count: 100,
@@ -248,9 +271,13 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(ResultsPaginationLocators.nextButton).should('exist');
       cy.get(ResultsPaginationLocators.nextButton).click();
       cy.get(ResultsPaginationLocators.currentPage).should('contain', '4');
-    });
+    },
+  );
 
-  it('(AC4f) Should sort by each column - ascending then descending (FinesSaResultsComponent - Minor Creditors)', { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4564'] }, () => {
+  it(
+    '(AC4f) Should sort by each column - ascending then descending (FinesSaResultsComponent - Minor Creditors)',
+    { tags: [...buildTags('@JIRA-STORY:PO-708'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4564'] },
+    () => {
       setupComponent(SORTING_MINOR_CREDITORS_MOCK);
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
@@ -330,5 +357,6 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(ResultsHeaderLocators.defendant).find('button').click();
       cy.get(ResultsCellLocators.minorCreditorDefendant).first().should('contain', 'WILLIAMS, Sarah');
       cy.get(ResultsCellLocators.minorCreditorDefendant).eq(4).should('contain', 'ANDERSON, Lisa');
-    });
+    },
+  );
 });

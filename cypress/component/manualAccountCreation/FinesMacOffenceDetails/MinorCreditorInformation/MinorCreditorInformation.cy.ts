@@ -49,15 +49,32 @@ describe('FinesMacMinorCreditorInformation', () => {
       },
     });
   };
-  it('(AC.1) should load the component', {
-      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5038'],
-    }, () => {
+  it(
+    '(AC.1) should load the component',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5038',
+      ],
+    },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.app).should('exist');
-    });
+    },
+  );
 
-  it('(AC.1) should render all elements on the page', { tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5039'] }, () => {
+  it(
+    '(AC.1) should render all elements on the page',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5039',
+      ],
+    },
+    () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.name).should('exist');
       cy.get(DOM_ELEMENTS.address).should('exist');
@@ -73,11 +90,19 @@ describe('FinesMacMinorCreditorInformation', () => {
       cy.get(DOM_ELEMENTS.sortCodeKey).should('exist');
       cy.get(DOM_ELEMENTS.accountNumberKey).should('exist');
       cy.get(DOM_ELEMENTS.paymentReferenceKey).should('exist');
-    });
+    },
+  );
 
-  it('(AC.2) should load all keys and elements with correct text', {
-      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5040'],
-    }, () => {
+  it(
+    '(AC.2) should load all keys and elements with correct text',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5040',
+      ],
+    },
+    () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.addressKey).should('contain', 'Address');
@@ -86,10 +111,18 @@ describe('FinesMacMinorCreditorInformation', () => {
       cy.get(DOM_ELEMENTS.sortCodeKey).should('contain', 'Sort code');
       cy.get(DOM_ELEMENTS.accountNumberKey).should('contain', 'Account number');
       cy.get(DOM_ELEMENTS.paymentReferenceKey).should('contain', 'Payment reference');
-    });
-  it('(AC.2)should load all fields with the correct values', {
-      tags: [...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5041'],
-    }, () => {
+    },
+  );
+  it(
+    '(AC.2)should load all fields with the correct values',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-670', '@JIRA-STORY:PO-671', '@JIRA-STORY:PO-414'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5041',
+      ],
+    },
+    () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
       cy.get(DOM_ELEMENTS.address).within(() => {
@@ -102,5 +135,6 @@ describe('FinesMacMinorCreditorInformation', () => {
       cy.get(DOM_ELEMENTS.sortCode).should('contain', '12-34-56');
       cy.get(DOM_ELEMENTS.accountNumber).should('contain', '12345678');
       cy.get(DOM_ELEMENTS.paymentReference).should('contain', 'Testing');
-    });
+    },
+  );
 });

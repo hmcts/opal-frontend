@@ -15,7 +15,10 @@ describe('Manual account creation - Originator Type', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
   });
 
-  it('Validate Originator Type page renders as designed', { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5075'] }, () => {
+  it(
+    'Validate Originator Type page renders as designed',
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5075'] },
+    () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
         fragments: undefined,
@@ -42,9 +45,13 @@ describe('Manual account creation - Originator Type', () => {
 
       cy.get(DOM.continueButton).click({ force: true });
       cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
-    });
+    },
+  );
 
-  it('AC2: routes to Create account view when "New account" is selected and Continue is clicked', { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5076'] }, () => {
+  it(
+    'AC2: routes to Create account view when "New account" is selected and Continue is clicked',
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5076'] },
+    () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
         fragments: undefined,
@@ -58,9 +65,13 @@ describe('Manual account creation - Originator Type', () => {
       cy.get(DOM.continueButton).click({ force: true });
 
       cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
-    });
+    },
+  );
 
-  it('AC2: routes to Create account view when "Transfer in from England or Wales" is selected and Continue is clicked', { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5077'] }, () => {
+  it(
+    'AC2: routes to Create account view when "Transfer in from England or Wales" is selected and Continue is clicked',
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5077'] },
+    () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
         fragments: undefined,
@@ -74,9 +85,13 @@ describe('Manual account creation - Originator Type', () => {
       cy.get(DOM.continueButton).click({ force: true });
 
       cy.get('@routerNavigate').should('have.been.calledWith', ['create-account']);
-    });
+    },
+  );
 
-  it('AC4: clicking Continue without making a selection shows error "Select an option" and does not navigate', { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5078'] }, () => {
+  it(
+    'AC4: clicking Continue without making a selection shows error "Select an option" and does not navigate',
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5078'] },
+    () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
         fragments: undefined,
@@ -90,9 +105,13 @@ describe('Manual account creation - Originator Type', () => {
       cy.contains('Select an option').should('be.visible');
 
       cy.get('@routerNavigate').should('not.have.been.calledWith', ['create-account']);
-    });
+    },
+  );
 
-  it('AC5: clicking Cancel without entering anything returns to the Inputter Dashboard', { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5079'] }, () => {
+  it(
+    'AC5: clicking Cancel without entering anything returns to the Inputter Dashboard',
+    { tags: [...buildTags('@JIRA-STORY:PO-2763'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5079'] },
+    () => {
       const props: IFinesComponentProperties = {
         draftAccountId: '100',
         fragments: undefined,
@@ -105,5 +124,6 @@ describe('Manual account creation - Originator Type', () => {
       cy.get(DOM.cancelLink).click({ force: true });
 
       cy.get('@routerNavigate').should('have.been.called');
-    });
+    },
+  );
 });

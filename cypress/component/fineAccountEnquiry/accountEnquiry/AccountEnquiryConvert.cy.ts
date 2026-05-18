@@ -86,31 +86,42 @@ const setupConvertRoute = ({
 
 describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@JIRA-LABEL:account-enquiry'] }, () => {
   describe('Convert To Company', { tags: [''] }, () => {
-    it('Convert link should not be visible for parent or guardian accounts', { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4173'] }, () => {
-      let partyMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
-      partyMock.defendant_account_party.is_debtor = false; // Set to non-debtor to simulate parent/guardian scenario
-      setupConvertRoute({
-        targetPath: '/fines/account/defendant/77/details#defendant',
-        headerMock: structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK),
-        partyMock: partyMock,
-      });
+    it(
+      'Convert link should not be visible for parent or guardian accounts',
+      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4173'] },
+      () => {
+        let partyMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
+        partyMock.defendant_account_party.is_debtor = false; // Set to non-debtor to simulate parent/guardian scenario
+        setupConvertRoute({
+          targetPath: '/fines/account/defendant/77/details#defendant',
+          headerMock: structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK),
+          partyMock: partyMock,
+        });
 
-      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-      cy.get(AccountDefendantDetailsLocators.actions.convertActionLink).should('not.exist');
-    });
-    it('Convert link should be visible for adult or youth accounts', { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4174'] }, () => {
-      setupConvertRoute({
-        targetPath: '/fines/account/defendant/77/details#defendant',
-        headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
-        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
-      });
+        cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+        cy.get(AccountDefendantDetailsLocators.actions.convertActionLink).should('not.exist');
+      },
+    );
+    it(
+      'Convert link should be visible for adult or youth accounts',
+      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4174'] },
+      () => {
+        setupConvertRoute({
+          targetPath: '/fines/account/defendant/77/details#defendant',
+          headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
+          partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
+        });
 
-      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-      cy.get(AccountDefendantDetailsLocators.actions.convertActionLink)
-        .should('exist')
-        .and('contain.text', 'Convert to a company account');
-    });
-    it('redirects back to defendant details when a parent or guardian account tries to convert to company', { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4175'] }, () => {
+        cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+        cy.get(AccountDefendantDetailsLocators.actions.convertActionLink)
+          .should('exist')
+          .and('contain.text', 'Convert to a company account');
+      },
+    );
+    it(
+      'redirects back to defendant details when a parent or guardian account tries to convert to company',
+      { tags: ['@JIRA-STORY:PO-1942', '@JIRA-TEST-KEY:PO-4175'] },
+      () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/company',
           headerMock: structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK),
@@ -118,8 +129,12 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
         });
 
         cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-      });
-    it('renders the confirmation screen for an individual defendant and continues to the convert form', { tags: ['@JIRA-STORY:PO-1943', '@JIRA-TEST-KEY:PO-4176'] }, () => {
+      },
+    );
+    it(
+      'renders the confirmation screen for an individual defendant and continues to the convert form',
+      { tags: ['@JIRA-STORY:PO-1943', '@JIRA-TEST-KEY:PO-4176'] },
+      () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/company',
           headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
@@ -143,9 +158,13 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
         cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/party/company/convert');
         cy.get(DOM_ELEMENTS.pageTitle).should('contain.text', 'Company details');
         cy.get(DOM_ELEMENTS.organisationNameInput).should('exist');
-      });
+      },
+    );
 
-    it('submits the company convert form with the expected API payload structure', { tags: ['@JIRA-STORY:PO-1953', '@JIRA-TEST-KEY:PO-4177'] }, () => {
+    it(
+      'submits the company convert form with the expected API payload structure',
+      { tags: ['@JIRA-STORY:PO-1953', '@JIRA-TEST-KEY:PO-4177'] },
+      () => {
         interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
 
         setupConvertRoute({
@@ -195,22 +214,30 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
         });
 
         cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-      });
+      },
+    );
   });
 
   describe('Convert To Individual', { tags: [''] }, () => {
-    it('convert link should be visible for company accounts', { tags: ['@JIRA-STORY:PO-1955', '@JIRA-TEST-KEY:PO-4178'] }, () => {
-      setupConvertRoute({
-        targetPath: '/fines/account/defendant/77/details#defendant',
-        headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
-        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK),
-      });
-      cy.get(AccountDefendantDetailsLocators.actions.convertActionLink)
-        .should('exist')
-        .and('contain.text', 'Convert to an individual account');
-    });
+    it(
+      'convert link should be visible for company accounts',
+      { tags: ['@JIRA-STORY:PO-1955', '@JIRA-TEST-KEY:PO-4178'] },
+      () => {
+        setupConvertRoute({
+          targetPath: '/fines/account/defendant/77/details#defendant',
+          headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
+          partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK),
+        });
+        cy.get(AccountDefendantDetailsLocators.actions.convertActionLink)
+          .should('exist')
+          .and('contain.text', 'Convert to an individual account');
+      },
+    );
 
-    it('renders the confirmation screen for a company account and supports cancel', { tags: ['@JIRA-STORY:PO-1956', '@JIRA-TEST-KEY:PO-4179'] }, () => {
+    it(
+      'renders the confirmation screen for a company account and supports cancel',
+      { tags: ['@JIRA-STORY:PO-1956', '@JIRA-TEST-KEY:PO-4179'] },
+      () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/individual',
           headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
@@ -232,9 +259,13 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
         cy.get(AccountConvertLocators.page.cancelLink).click();
 
         cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-      });
+      },
+    );
 
-    it('renders the convert form with company data mapped into shared fields', { tags: ['@JIRA-STORY:PO-1956', '@JIRA-TEST-KEY:PO-4180'] }, () => {
+    it(
+      'renders the convert form with company data mapped into shared fields',
+      { tags: ['@JIRA-STORY:PO-1956', '@JIRA-TEST-KEY:PO-4180'] },
+      () => {
         setupConvertRoute({
           targetPath: '/fines/account/defendant/77/convert/individual',
           headerMock: structuredClone(DEFENDANT_HEADER_ORG_MOCK),
@@ -252,9 +283,13 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
         cy.get(DOM_ELEMENTS.email1Input).should('have.value', 'contact@abccorporation.co.uk');
         cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '02071234567');
         cy.get(DOM_ELEMENTS.organisationNameInput).should('not.exist');
-      });
+      },
+    );
 
-    it('submits the individual convert form with the expected API payload structure', { tags: ['@JIRA-STORY:PO-1957', '@JIRA-TEST-KEY:PO-4181'] }, () => {
+    it(
+      'submits the individual convert form with the expected API payload structure',
+      { tags: ['@JIRA-STORY:PO-1957', '@JIRA-TEST-KEY:PO-4181'] },
+      () => {
         interceptPutDefendantAccountParty(77, VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
 
         setupConvertRoute({
@@ -330,16 +365,21 @@ describe('Account Enquiry - Convert Account', { tags: ['@JIRA-EPIC:PO-1970', '@J
         });
 
         cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+      },
+    );
+  });
+
+  it(
+    'redirects back to defendant details when the target conversion is unsupported',
+    { tags: ['', '@JIRA-TEST-KEY:PO-4172'] },
+    () => {
+      setupConvertRoute({
+        targetPath: '/fines/account/defendant/77/convert/unsupported-target',
+        headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
+        partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
       });
-  });
 
-  it('redirects back to defendant details when the target conversion is unsupported', { tags: ['', '@JIRA-TEST-KEY:PO-4172'] }, () => {
-    setupConvertRoute({
-      targetPath: '/fines/account/defendant/77/convert/unsupported-target',
-      headerMock: structuredClone(DEFENDANT_HEADER_MOCK),
-      partyMock: structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK),
-    });
-
-    cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
-  });
+      cy.get('@router').its('url').should('equal', '/fines/account/defendant/77/details#defendant');
+    },
+  );
 });

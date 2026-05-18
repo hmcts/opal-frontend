@@ -49,14 +49,21 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     });
   };
 
-  it('should render the component (FinesMacLanguagePreferenceComponent)', { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4986'] }, () => {
+  it(
+    'should render the component (FinesMacLanguagePreferenceComponent)',
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4986'] },
+    () => {
       setupComponent(null);
 
       // Verify the component is rendered
       cy.get(L.app).should('exist');
-    });
+    },
+  );
 
-  it('(AC.1,AC.2)should load all elements on the screen correctly', { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4987'] }, () => {
+  it(
+    '(AC.1,AC.2)should load all elements on the screen correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4987'] },
+    () => {
       setupComponent(null);
 
       cy.get(L.pageTitle).should('contain', 'Language preferences');
@@ -78,9 +85,13 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
       cy.get(L.submitButton).should('contain', 'Save changes');
       cy.get(L.cancelLink).should('exist');
-    });
+    },
+  );
 
-  it('(AC.3)should allow form to be submitted with no input', { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4988'] }, () => {
+  it(
+    '(AC.3)should allow form to be submitted with no input',
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4988'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy);
@@ -88,9 +99,13 @@ describe('FinesMacLanguagePreferenceComponent', () => {
       cy.get(L.submitButton).first().click();
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
+    },
+  );
 
-  it('(AC.3)should allow selections on language preferences', { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4989'] }, () => {
+  it(
+    '(AC.3)should allow selections on language preferences',
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4989'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy);
@@ -101,9 +116,13 @@ describe('FinesMacLanguagePreferenceComponent', () => {
       cy.get(L.submitButton).first().click();
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
+    },
+  );
 
-  it('(AC.3)should allow selections on language preferences Opposite options', { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4990'] }, () => {
+  it(
+    '(AC.3)should allow selections on language preferences Opposite options',
+    { tags: [...buildTags('@JIRA-STORY:PO-464'), '@JIRA-EPIC:PO-2219', '@JIRA-TEST-KEY:PO-4990'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy);
@@ -114,5 +133,6 @@ describe('FinesMacLanguagePreferenceComponent', () => {
       cy.get(L.submitButton).first().click();
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
-    });
+    },
+  );
 });

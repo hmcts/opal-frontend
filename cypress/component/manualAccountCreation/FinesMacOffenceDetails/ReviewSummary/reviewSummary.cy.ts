@@ -61,14 +61,25 @@ describe('ReviewSummaryComponent', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1)should render component', {
-      tags: [...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5059'],
-    }, () => {
+  it(
+    '(AC.1)should render component',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-417', '@JIRA-STORY:PO-676', '@JIRA-STORY:PO-679'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5059',
+      ],
+    },
+    () => {
       setupComponent();
-    });
+    },
+  );
 
-  it('(AC.1,AC.3)should load all elements on the screen', {
-      tags: [...buildTags(
+  it(
+    '(AC.1,AC.3)should load all elements on the screen',
+    {
+      tags: [
+        ...buildTags(
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
@@ -76,8 +87,12 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-EPIC:PO-545',, '@JIRA-TEST-KEY:PO-5060'],
-    }, () => {
+        '@JIRA-EPIC:PO-545',
+        ,
+        '@JIRA-TEST-KEY:PO-5060',
+      ],
+    },
+    () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.headingLarge).should('exist');
@@ -100,10 +115,14 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.addOffenceButton).should('exist');
       cy.get(DOM_ELEMENTS.returnToCreateAccountButton).should('exist');
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    });
+    },
+  );
 
-  it('(AC.4,AC.5,AC.6) should display the correct data in the elements', {
-      tags: [...buildTags(
+  it(
+    '(AC.4,AC.5,AC.6) should display the correct data in the elements',
+    {
+      tags: [
+        ...buildTags(
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
@@ -111,8 +130,12 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-EPIC:PO-545',, '@JIRA-TEST-KEY:PO-5061'],
-    }, () => {
+        '@JIRA-EPIC:PO-545',
+        ,
+        '@JIRA-TEST-KEY:PO-5061',
+      ],
+    },
+    () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.headingLarge).should('contain', 'Offences and impositions');
       cy.get(DOM_ELEMENTS.dateOfSentence).should('contain', 'Date of sentence').should('contain', '01 October 2021');
@@ -154,10 +177,14 @@ describe('ReviewSummaryComponent', () => {
         .should('contain', 'Balance remaining');
 
       cy.get(DOM_ELEMENTS.returnToCreateAccountButton).should('contain', 'Return to account details');
-    });
+    },
+  );
 
-  it('should have updated values for different set of impositions and reflect correct totals and balances', {
-      tags: [...buildTags(
+  it(
+    'should have updated values for different set of impositions and reflect correct totals and balances',
+    {
+      tags: [
+        ...buildTags(
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
@@ -165,8 +192,12 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-EPIC:PO-545',, '@JIRA-TEST-KEY:PO-5062'],
-    }, () => {
+        '@JIRA-EPIC:PO-545',
+        ,
+        '@JIRA-TEST-KEY:PO-5062',
+      ],
+    },
+    () => {
       setupComponent();
 
       finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
@@ -223,10 +254,14 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance)
         .should('contain', '£700.00')
         .should('contain', 'Balance remaining');
-    });
+    },
+  );
 
-  it('(AC.9)should allow for multiple impositions for the same offence and reflect correct totals and balances', {
-      tags: [...buildTags(
+  it(
+    '(AC.9)should allow for multiple impositions for the same offence and reflect correct totals and balances',
+    {
+      tags: [
+        ...buildTags(
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
@@ -234,8 +269,12 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-EPIC:PO-545',, '@JIRA-TEST-KEY:PO-5063'],
-    }, () => {
+        '@JIRA-EPIC:PO-545',
+        ,
+        '@JIRA-TEST-KEY:PO-5063',
+      ],
+    },
+    () => {
       setupComponent();
 
       finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
@@ -324,10 +363,14 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance)
         .should('contain', '£3400.00')
         .should('contain', 'Balance remaining');
-    });
+    },
+  );
 
-  it('(AC.7a,AC.4b,AC.4c)should be able to hide and show impositions', {
-      tags: [...buildTags(
+  it(
+    '(AC.7a,AC.4b,AC.4c)should be able to hide and show impositions',
+    {
+      tags: [
+        ...buildTags(
           '@JIRA-STORY:PO-417',
           '@JIRA-STORY:PO-676',
           '@JIRA-STORY:PO-679',
@@ -335,8 +378,12 @@ describe('ReviewSummaryComponent', () => {
           '@JIRA-STORY:PO-663',
           '@JIRA-STORY:PO-560',
         ),
-        '@JIRA-EPIC:PO-545',, '@JIRA-TEST-KEY:PO-5064'],
-    }, () => {
+        '@JIRA-EPIC:PO-545',
+        ,
+        '@JIRA-TEST-KEY:PO-5064',
+      ],
+    },
+    () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.hideLink, { timeout: 10000 }).should('contain', 'Hide');
@@ -354,5 +401,6 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountImposed).should('not.exist');
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('not.exist');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('not.exist');
-    });
+    },
+  );
 });

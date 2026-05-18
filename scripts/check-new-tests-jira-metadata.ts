@@ -106,10 +106,12 @@ function runGit(args: string[], allowFailure = false): string {
  * Checks whether a git ref resolves locally.
  */
 function gitRefExists(ref: string): boolean {
-  return childProcess.spawnSync('git', ['rev-parse', '--verify', '--quiet', ref], {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-  }).status === 0;
+  return (
+    childProcess.spawnSync('git', ['rev-parse', '--verify', '--quiet', ref], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+    }).status === 0
+  );
 }
 
 /**
@@ -130,12 +132,7 @@ function resolveDefaultBaseRef(): string {
         'master',
         'refs/heads/master',
       ]
-    : [
-        'origin/master',
-        'refs/remotes/origin/master',
-        'master',
-        'refs/heads/master',
-      ];
+    : ['origin/master', 'refs/remotes/origin/master', 'master', 'refs/heads/master'];
 
   for (const candidate of candidates) {
     if (candidate && gitRefExists(candidate)) {
@@ -193,10 +190,7 @@ function getChangedTestFiles(mergeBase: string): ChangedTestFile[] {
     }
   }
 
-  const untrackedOutput = runGit(
-    ['ls-files', '--others', '--exclude-standard', '--', componentRoot, e2eRoot],
-    true,
-  );
+  const untrackedOutput = runGit(['ls-files', '--others', '--exclude-standard', '--', componentRoot, e2eRoot], true);
 
   for (const headPath of untrackedOutput.split('\n').filter(Boolean)) {
     if (isSupportedTestFile(headPath)) {
@@ -630,7 +624,9 @@ function parseFeatureTests(filePath: string, content: string): TestUnit[] {
     }
 
     if (!currentScenario.usesExamplesAsTests || !currentScenario.hasExamples) {
-      tests.push(buildFeatureTestUnit(filePath, currentScenario.title, currentScenario.line, currentScenario.tags, null));
+      tests.push(
+        buildFeatureTestUnit(filePath, currentScenario.title, currentScenario.line, currentScenario.tags, null),
+      );
     }
 
     currentScenario = null;
@@ -782,7 +778,10 @@ function dedupe(values: string[]): string[] {
 /**
  * Parses changed files and records any new tests missing required Jira metadata.
  */
-function validateNewTests(changedFiles: ChangedTestFile[], mergeBase: string): {
+function validateNewTests(
+  changedFiles: ChangedTestFile[],
+  mergeBase: string,
+): {
   failures: ValidationFailure[];
   newTests: TestUnit[];
 } {
@@ -828,9 +827,7 @@ function printSuccess(baseRef: string, mergeBase: string, newTests: TestUnit[]):
     return;
   }
 
-  console.log(
-    `Checked ${newTests.length} new component/E2E tests relative to ${baseRef} (${mergeBase.slice(0, 7)}).`,
-  );
+  console.log(`Checked ${newTests.length} new component/E2E tests relative to ${baseRef} (${mergeBase.slice(0, 7)}).`);
   console.log('All new tests include both @JIRA-STORY and @JIRA-EPIC.');
 }
 

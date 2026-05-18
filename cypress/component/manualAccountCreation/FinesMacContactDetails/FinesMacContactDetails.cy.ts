@@ -35,14 +35,21 @@ describe('FinesMacContactDetailsComponent', () => {
       initialState: buildFinesMacContactDetailsState(defendantType, configure),
       submitHandlerName: 'handleContactDetailsSubmit',
     });
-  it('should render the component (FinesMacContactDetailsComponent)', { tags: [...buildTags(), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4908'] }, () => {
+  it(
+    'should render the component (FinesMacContactDetailsComponent)',
+    { tags: [...buildTags(), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4908'] },
+    () => {
       setupComponent(null);
 
       // Verify the component is rendered
       cy.get(L.primaryEmailInput).should('exist');
-    });
+    },
+  );
 
-  it('(AC.1) should load all elements on the screen correctly (FinesMacContactDetailsComponent)', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4909'] }, () => {
+  it(
+    '(AC.1) should load all elements on the screen correctly (FinesMacContactDetailsComponent)',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4909'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       cy.get(L.pageHeader).should('contain', 'Defendant contact details');
@@ -62,15 +69,23 @@ describe('FinesMacContactDetailsComponent', () => {
 
       cy.get(L.returnToAccountDetailsButton).should('contain', 'Return to account details');
       cy.get(L.cancelLink).should('contain', 'Cancel');
-    });
+    },
+  );
 
-  it('(AC.1) should load button for next page for adultOrYouthOnly Defendant', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4910'] }, () => {
+  it(
+    '(AC.1) should load button for next page for adultOrYouthOnly Defendant',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4910'] },
+    () => {
       setupComponent(null, 'adultOrYouthOnly');
 
       cy.get(L.addEmployerDetailsButton).should('contain', 'Add employer details');
-    });
+    },
+  );
 
-  it('(AC.2) should not have any mandatory inputs - Return to account details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4911'] }, () => {
+  it(
+    '(AC.2) should not have any mandatory inputs - Return to account details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4911'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -78,9 +93,13 @@ describe('FinesMacContactDetailsComponent', () => {
       cy.get(L.returnToAccountDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
-    });
+    },
+  );
 
-  it('(AC.2) should not have any mandatory inputs - Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4912'] }, () => {
+  it(
+    '(AC.2) should not have any mandatory inputs - Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4912'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly');
@@ -88,21 +107,33 @@ describe('FinesMacContactDetailsComponent', () => {
       cy.get(L.addEmployerDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
-    });
+    },
+  );
 
-  it('(AC.3) should load button for next page for AYPG Defendant', { tags: [...buildTags('@JIRA-STORY:PO-370'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4913'] }, () => {
+  it(
+    '(AC.3) should load button for next page for AYPG Defendant',
+    { tags: [...buildTags('@JIRA-STORY:PO-370'), '@JIRA-EPIC:PO-344', '@JIRA-TEST-KEY:PO-4913'] },
+    () => {
       setupComponent(null, 'pgToPay');
 
       cy.get(L.addEmployerDetailsButton).should('contain', 'Add employer details');
-    });
+    },
+  );
 
-  it('(AC.3) should load button for next page for Company Defendant', { tags: [...buildTags('@JIRA-STORY:PO-371'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4914'] }, () => {
+  it(
+    '(AC.3) should load button for next page for Company Defendant',
+    { tags: [...buildTags('@JIRA-STORY:PO-371'), '@JIRA-EPIC:PO-345', '@JIRA-TEST-KEY:PO-4914'] },
+    () => {
       setupComponent(null, 'company');
 
       cy.get(L.addOffenceDetailsButton).should('contain', 'Add offence details');
-    });
+    },
+  );
 
-  it('(AC.4) should accept valid email addresses - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4915'] }, () => {
+  it(
+    '(AC.4) should accept valid email addresses - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4915'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
@@ -122,9 +153,13 @@ describe('FinesMacContactDetailsComponent', () => {
       cy.get(L.addEmployerDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
-    });
+    },
+  );
 
-  it('(AC.5) should accept valid telephone numbers - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4916'] }, () => {
+  it(
+    '(AC.5) should accept valid telephone numbers - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4916'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
@@ -144,9 +179,13 @@ describe('FinesMacContactDetailsComponent', () => {
       cy.get(L.addEmployerDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
-    });
+    },
+  );
 
-  it('(AC.6) should accept valid contact details - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4917'] }, () => {
+  it(
+    '(AC.6) should accept valid contact details - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4917'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
@@ -166,9 +205,13 @@ describe('FinesMacContactDetailsComponent', () => {
       cy.get(L.addEmployerDetailsButton).click();
 
       cy.wrap(formSubmitSpy).should('have.been.called');
-    });
+    },
+  );
 
-  it('(AC.7) should error when primary email address validation is not met - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4918'] }, () => {
+  it(
+    '(AC.7) should error when primary email address validation is not met - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4918'] },
+    () => {
       const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(invalidEmails).each((email: string) => {
         cy.then(() => {
@@ -181,9 +224,13 @@ describe('FinesMacContactDetailsComponent', () => {
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.7) should error when secondary email address validation is not met - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4919'] }, () => {
+  it(
+    '(AC.7) should error when secondary email address validation is not met - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4919'] },
+    () => {
       const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
       cy.wrap(invalidEmails).each((email: string) => {
         cy.then(() => {
@@ -196,9 +243,13 @@ describe('FinesMacContactDetailsComponent', () => {
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.8) should error when home telephone number validation is not met - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4920'] }, () => {
+  it(
+    '(AC.8) should error when home telephone number validation is not met - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4920'] },
+    () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
         cy.then(() => {
@@ -211,9 +262,13 @@ describe('FinesMacContactDetailsComponent', () => {
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.8) should error when business telephone number validation is not met - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4921'] }, () => {
+  it(
+    '(AC.8) should error when business telephone number validation is not met - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4921'] },
+    () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
         cy.then(() => {
@@ -226,9 +281,13 @@ describe('FinesMacContactDetailsComponent', () => {
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.8) should error when mobile telephone number validation is not met - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4922'] }, () => {
+  it(
+    '(AC.8) should error when mobile telephone number validation is not met - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4922'] },
+    () => {
       const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
       cy.wrap(invalidPhoneNumbers).each((number: string) => {
         cy.then(() => {
@@ -241,9 +300,13 @@ describe('FinesMacContactDetailsComponent', () => {
           cy.get(L.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
         });
       });
-    });
+    },
+  );
 
-  it('(AC.9) should allow submission when validation errors are corrected - Return to account details + Add employer details', { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4923'] }, () => {
+  it(
+    '(AC.9) should allow submission when validation errors are corrected - Return to account details + Add employer details',
+    { tags: [...buildTags('@JIRA-STORY:PO-419'), '@JIRA-EPIC:PO-272', '@JIRA-TEST-KEY:PO-4923'] },
+    () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       setupComponent(formSubmitSpy, 'adultOrYouthOnly', (finesMacState) => {
@@ -275,5 +338,6 @@ describe('FinesMacContactDetailsComponent', () => {
         cy.get(L.addEmployerDetailsButton).click();
         cy.wrap(formSubmitSpy).should('have.been.called');
       });
-    });
+    },
+  );
 });

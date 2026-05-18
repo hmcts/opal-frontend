@@ -59,7 +59,10 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
     interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
   };
 
-  it('(AC.1,AC.1a) should display a primary Create account button in the Create accounts header for inputters', { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4732'] }, () => {
+  it(
+    '(AC.1,AC.1a) should display a primary Create account button in the Create accounts header for inputters',
+    { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4732'] },
+    () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
 
@@ -68,9 +71,13 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
         .should('be.visible')
         .and('contain.text', 'Create account')
         .and('have.class', 'govuk-button');
-    });
+    },
+  );
 
-  it('(AC.1b) clicking Create account should navigate to originator type', { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4733'] }, () => {
+  it(
+    '(AC.1b) clicking Create account should navigate to originator type',
+    { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4733'] },
+    () => {
       stubAllTabResponses();
       cy.then(() => {
         mount(FinesDraftCreateAndManageTabsComponent, {
@@ -105,16 +112,24 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
         FINES_MAC_ROUTING_PATHS.root,
         FINES_MAC_ROUTING_PATHS.children.originatorType,
       ]);
-    });
+    },
+  );
 
-  it('(AC.1c) should hide Create account button for users without create/manage permission', { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4734'] }, () => {
+  it(
+    '(AC.1c) should hide Create account button for users without create/manage permission',
+    { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4734'] },
+    () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_MOCK);
 
       cy.get(DOM_ELEMENTS.createAccountButton).should('not.exist');
-    });
+    },
+  );
 
-  it('(AC.1) should display Create account button across all active tabs', { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4735'] }, () => {
+  it(
+    '(AC.1) should display Create account button across all active tabs',
+    { tags: [...buildTags('@JIRA-STORY:PO-2762'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-4735'] },
+    () => {
       stubAllTabResponses();
       setupComponent(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
 
@@ -128,5 +143,6 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
         cy.get(DOM_ELEMENTS.navigationLinks).contains(tab).click();
         cy.get(DOM_ELEMENTS.createAccountButton).should('be.visible').and('contain.text', 'Create account');
       });
-    });
+    },
+  );
 });

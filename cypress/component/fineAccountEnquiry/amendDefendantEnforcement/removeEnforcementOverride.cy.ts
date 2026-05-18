@@ -198,26 +198,37 @@ describe(
   'Remove Enforcement Override - Individual',
   { tags: ['@JIRA-STORY:PO-1851', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1. Selecting Remove from the Enforcement tab navigates to the remove screen', { tags: ['@JIRA-TEST-KEY:PO-4461'] }, () => {
-      const { accountId } = registerRemoveEnforcementOverrideIntercepts(buildIndividualHeaderMock());
+    it(
+      'AC1. Selecting Remove from the Enforcement tab navigates to the remove screen',
+      { tags: ['@JIRA-TEST-KEY:PO-4461'] },
+      () => {
+        const { accountId } = registerRemoveEnforcementOverrideIntercepts(buildIndividualHeaderMock());
 
-      setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+        setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-      cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions (ABDC)');
-      cy.get(ENF.removeEnforcementOverrideLink).should('exist').and('contain.text', 'Remove').click();
+        cy.get(ENF.enforcementOverrideValue).should('contain.text', 'Application made for Benefit Deductions (ABDC)');
+        cy.get(ENF.removeEnforcementOverrideLink).should('exist').and('contain.text', 'Remove').click();
 
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', [REMOVE_ENFORCEMENT_OVERRIDE_ROUTE]);
-      assertRemoveScreenShell();
-    });
+        cy.get('@routerNavigate').should('have.been.calledWithMatch', [REMOVE_ENFORCEMENT_OVERRIDE_ROUTE]);
+        assertRemoveScreenShell();
+      },
+    );
 
-    it('AC1a, AC1b, AC1c. Should render the remove screen with the individual account identifier and override value', { tags: ['@JIRA-TEST-KEY:PO-4462'] }, () => {
+    it(
+      'AC1a, AC1b, AC1c. Should render the remove screen with the individual account identifier and override value',
+      { tags: ['@JIRA-TEST-KEY:PO-4462'] },
+      () => {
         individualSetup();
 
         assertRemoveScreenShell();
         cy.get(ENF.headingWithCaption).should('contain.text', '177A - Mr Robert THOMSON');
-      });
+      },
+    );
 
-    it('AC2, AC2a, AC2b, AC2c. Yes - remove should clear the override, return to Enforcement and show a success banner', { tags: ['@JIRA-TEST-KEY:PO-4463'] }, () => {
+    it(
+      'AC2, AC2a, AC2b, AC2c. Yes - remove should clear the override, return to Enforcement and show a success banner',
+      { tags: ['@JIRA-TEST-KEY:PO-4463'] },
+      () => {
         const { accountId } = individualSetup();
         const updatedEnforcementMock = buildRemovedEnforcementOverrideMock();
 
@@ -237,9 +248,13 @@ describe(
         cy.get(VERSION_CONTROL.bannerText).should('contain.text', 'Enforcement override removed');
         cy.get(ENF.addEnforcementOverrideLink).should('exist');
         cy.get(ENF.enforcementOverride).should('not.exist');
-      });
+      },
+    );
 
-    it('AC3, AC3a. No - cancel should return to the Enforcement tab without removing the override', { tags: ['@JIRA-TEST-KEY:PO-4464'] }, () => {
+    it(
+      'AC3, AC3a. No - cancel should return to the Enforcement tab without removing the override',
+      { tags: ['@JIRA-TEST-KEY:PO-4464'] },
+      () => {
         const { navigateSpy } = mountRemoveEnforcementOverride('177A - Mr Robert THOMSON');
 
         cy.contains(REMOVE_ENF_OVERRIDE.cancelLink, /^No - cancel$/i).click();
@@ -247,7 +262,8 @@ describe(
         cy.then(() => {
           expect(navigateSpy).to.have.been.calledOnce;
         });
-      });
+      },
+    );
   },
 );
 
@@ -255,12 +271,16 @@ describe(
   'Remove Enforcement Override - Company',
   { tags: ['@JIRA-STORY:PO-1865', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1b. Should render the remove screen with the company account identifier', { tags: ['@JIRA-TEST-KEY:PO-4465'] }, () => {
-      companySetup();
+    it(
+      'AC1b. Should render the remove screen with the company account identifier',
+      { tags: ['@JIRA-TEST-KEY:PO-4465'] },
+      () => {
+        companySetup();
 
-      assertRemoveScreenShell();
-      cy.get(ENF.headingWithCaption).should('contain.text', '177A - Test Org Ltd');
-    });
+        assertRemoveScreenShell();
+        cy.get(ENF.headingWithCaption).should('contain.text', '177A - Test Org Ltd');
+      },
+    );
   },
 );
 
@@ -268,11 +288,15 @@ describe(
   'Remove Enforcement Override - Parent/Guardian',
   { tags: ['@JIRA-STORY:PO-1864', '@JIRA-EPIC:PO-1675', '@JIRA-LABEL:account-enquiry'] },
   () => {
-    it('AC1b. Should render the remove screen with the parent or guardian account identifier', { tags: ['@JIRA-TEST-KEY:PO-4466'] }, () => {
-      parentGuardianSetup();
+    it(
+      'AC1b. Should render the remove screen with the parent or guardian account identifier',
+      { tags: ['@JIRA-TEST-KEY:PO-4466'] },
+      () => {
+        parentGuardianSetup();
 
-      assertRemoveScreenShell();
-      cy.get(ENF.headingWithCaption).should('contain.text', '177A - Mr Robert THOMSON');
-    });
+        assertRemoveScreenShell();
+        cy.get(ENF.headingWithCaption).should('contain.text', '177A - Mr Robert THOMSON');
+      },
+    );
   },
 );

@@ -157,7 +157,10 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
       });
   };
 
-  it('AC1a AC1b AC1d AC2a AC2b AC2c AC2d shows the Your reports panel and Operational reports links in the correct order', { tags: ['@JIRA-TEST-KEY:PO-5251'] }, () => {
+  it(
+    'AC1a AC1b AC1d AC2a AC2b AC2c AC2d shows the Your reports panel and Operational reports links in the correct order',
+    { tags: ['@JIRA-TEST-KEY:PO-5251'] },
+    () => {
       commonSetup();
 
       cy.contains(L.pageHeader, 'Reports').should('be.visible');
@@ -174,35 +177,48 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
 
         expect(linkTexts).to.deep.equal(['Operational reports (by enforcement)', 'Operational reports (by payments)']);
       });
-    });
+    },
+  );
 
-  it('AC1c routes View all your reports to the Your reports summary list screen', { tags: ['@JIRA-TEST-KEY:PO-5252'] }, () => {
-    commonSetup();
+  it(
+    'AC1c routes View all your reports to the Your reports summary list screen',
+    { tags: ['@JIRA-TEST-KEY:PO-5252'] },
+    () => {
+      commonSetup();
 
-    cy.get(L.yourReportsLink).click();
+      cy.get(L.yourReportsLink).click();
 
-    assertNavigationTarget(reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports));
-  });
+      assertNavigationTarget(reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports));
+    },
+  );
 
-  it('AC3a routes Operational reports by enforcement to the correct summary list screen', { tags: ['@JIRA-TEST-KEY:PO-5253'] }, () => {
-    commonSetup();
+  it(
+    'AC3a routes Operational reports by enforcement to the correct summary list screen',
+    { tags: ['@JIRA-TEST-KEY:PO-5253'] },
+    () => {
+      commonSetup();
 
-    cy.get(L.operationalReportsByEnforcementLink).click();
+      cy.get(L.operationalReportsByEnforcementLink).click();
 
-    assertNavigationTarget(
-      reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
-    );
-  });
+      assertNavigationTarget(
+        reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByEnforcement),
+      );
+    },
+  );
 
-  it('AC3b routes Operational reports by payments to the correct summary list screen', { tags: ['@JIRA-TEST-KEY:PO-5254'] }, () => {
-    commonSetup();
+  it(
+    'AC3b routes Operational reports by payments to the correct summary list screen',
+    { tags: ['@JIRA-TEST-KEY:PO-5254'] },
+    () => {
+      commonSetup();
 
-    cy.get(L.operationalReportsByPaymentsLink).click();
+      cy.get(L.operationalReportsByPaymentsLink).click();
 
-    assertNavigationTarget(
-      reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
-    );
-  });
+      assertNavigationTarget(
+        reportsSummaryListPath(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments),
+      );
+    },
+  );
 
   it('AC1c renders the Your reports summary list heading', { tags: ['@JIRA-TEST-KEY:PO-5255'] }, () => {
     yourReportsSummaryListSetup();
@@ -210,19 +226,30 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
     cy.contains(L.pageHeader, 'Your reports').should('be.visible');
   });
 
-  it('AC3a renders the Operational reports by enforcement summary list heading', { tags: ['@JIRA-TEST-KEY:PO-5256'] }, () => {
-    operationalReportsByEnforcementSummaryListSetup();
+  it(
+    'AC3a renders the Operational reports by enforcement summary list heading',
+    { tags: ['@JIRA-TEST-KEY:PO-5256'] },
+    () => {
+      operationalReportsByEnforcementSummaryListSetup();
 
-    cy.contains(L.pageHeader, 'Operational reports (by enforcement)').should('be.visible');
-  });
+      cy.contains(L.pageHeader, 'Operational reports (by enforcement)').should('be.visible');
+    },
+  );
 
-  it('AC3b renders the Operational reports by payments summary list heading', { tags: ['@JIRA-TEST-KEY:PO-5257'] }, () => {
-    operationalReportsByPaymentsSummaryListSetup();
+  it(
+    'AC3b renders the Operational reports by payments summary list heading',
+    { tags: ['@JIRA-TEST-KEY:PO-5257'] },
+    () => {
+      operationalReportsByPaymentsSummaryListSetup();
 
-    cy.contains(L.pageHeader, 'Operational reports (by payments)').should('be.visible');
-  });
+      cy.contains(L.pageHeader, 'Operational reports (by payments)').should('be.visible');
+    },
+  );
 
-  it('AC4d hides the Operational reports group when the user has no operational report permissions', { tags: ['@JIRA-TEST-KEY:PO-5258'] }, () => {
+  it(
+    'AC4d hides the Operational reports group when the user has no operational report permissions',
+    { tags: ['@JIRA-TEST-KEY:PO-5258'] },
+    () => {
       noOperationalPermissionsSetup();
 
       cy.contains(L.pageHeader, 'Reports').should('be.visible');
@@ -230,9 +257,13 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
       cy.contains(L.sectionHeading, 'Operational reports').should('not.exist');
       cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
       cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
-    });
+    },
+  );
 
-  it('AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible', { tags: ['@JIRA-TEST-KEY:PO-5259'] }, () => {
+  it(
+    'AC4a AC4c shows only the enforcement link and keeps the Operational reports heading visible',
+    { tags: ['@JIRA-TEST-KEY:PO-5259'] },
+    () => {
       enforcementPermissionSetup();
 
       cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
@@ -240,15 +271,20 @@ describe('Reports dashboard navigation', { tags: [REPORTS_STORY_TAG, REPORTS_EPI
         .should('be.visible')
         .and('contain.text', 'Operational reports (by enforcement)');
       cy.get(L.operationalReportsByPaymentsLink).should('not.exist');
-    });
+    },
+  );
 
-  it('AC4b AC4c shows only the payments link and keeps the Operational reports heading visible', { tags: ['@JIRA-TEST-KEY:PO-5260'] }, () => {
-    paymentsPermissionSetup();
+  it(
+    'AC4b AC4c shows only the payments link and keeps the Operational reports heading visible',
+    { tags: ['@JIRA-TEST-KEY:PO-5260'] },
+    () => {
+      paymentsPermissionSetup();
 
-    cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
-    cy.get(L.operationalReportsByPaymentsLink)
-      .should('be.visible')
-      .and('contain.text', 'Operational reports (by payments)');
-    cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
-  });
+      cy.contains(L.sectionHeading, 'Operational reports').should('be.visible');
+      cy.get(L.operationalReportsByPaymentsLink)
+        .should('be.visible')
+        .and('contain.text', 'Operational reports (by payments)');
+      cy.get(L.operationalReportsByEnforcementLink).should('not.exist');
+    },
+  );
 });

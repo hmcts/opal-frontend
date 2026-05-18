@@ -85,15 +85,30 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1) should render component', {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5051'],
-    }, () => {
+  it(
+    '(AC.1) should render component',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5051',
+      ],
+    },
+    () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.app).should('exist');
-    });
-  it('(AC.1) should load all elements on the page', {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5052'],
-    }, () => {
+    },
+  );
+  it(
+    '(AC.1) should load all elements on the page',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5052',
+      ],
+    },
+    () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -111,11 +126,19 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
       cy.get(DOM_ELEMENTS.removeImpositionButton).should('exist');
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    });
+    },
+  );
 
-  it('(AC.2, AC.3) should have appropriate text for each element', {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5053'],
-    }, () => {
+  it(
+    '(AC.2, AC.3) should have appropriate text for each element',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5053',
+      ],
+    },
+    () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.heading).should(
@@ -143,10 +166,15 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
 
       cy.get(DOM_ELEMENTS.removeImpositionButton).should('contain', 'Yes - remove offence and all impositions');
       cy.get(DOM_ELEMENTS.cancelLink).should('contain', 'No - cancel');
-    });
+    },
+  );
 
-  it('should have only one h1 element', { tags: [...buildTags('@JIRA-STORY:PO-2717'), '@JIRA-EPIC:PO-2807', '@JIRA-TEST-KEY:PO-5054'] }, () => {
-    setupComponent();
-    cy.get('h1').should('have.length', 1);
-  });
+  it(
+    'should have only one h1 element',
+    { tags: [...buildTags('@JIRA-STORY:PO-2717'), '@JIRA-EPIC:PO-2807', '@JIRA-TEST-KEY:PO-5054'] },
+    () => {
+      setupComponent();
+      cy.get('h1').should('have.length', 1);
+    },
+  );
 });

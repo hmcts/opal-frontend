@@ -57,7 +57,10 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       // Add more routes here as needed
     ],
   };
-  it('AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for parent/guardian', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4040'] }, () => {
+  it(
+    'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for parent/guardian',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4040'] },
+    () => {
       const header = structuredClone(DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK);
       header.party_details.organisation_flag = false;
 
@@ -107,9 +110,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         .next('p')
         .should('be.visible')
         .should('contain.text', ' OT 00 00 01 D ');
-    });
+    },
+  );
 
-  it('AC2a: Displays read-only Language Preferences section below National Insurance Number', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4041'] }, () => {
+  it(
+    'AC2a: Displays read-only Language Preferences section below National Insurance Number',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4041'] },
+    () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK, '1');
@@ -126,9 +133,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
           cy.get('select').should('not.exist');
           cy.get('textarea').should('not.exist');
         });
-    });
+    },
+  );
 
-  it('AC2b: displays Document language and Court hearing language values in Language Preferences section (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4042'] }, () => {
+  it(
+    'AC2b: displays Document language and Court hearing language values in Language Preferences section (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4042'] },
+    () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
@@ -153,8 +164,12 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
             .contains('Welsh and English')
             .should('be.visible'); //This selects the same "Welsh and English" as above
         });
-    });
-  it('AC2bi: Label Welsh and Language is displayed in blue (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4043'] }, () => {
+    },
+  );
+  it(
+    'AC2bi: Label Welsh and Language is displayed in blue (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4043'] },
+    () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
@@ -165,9 +180,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         .should('be.visible')
         .and('contain.text', 'Welsh and English')
         .and('have.class', 'govuk-tag');
-    });
+    },
+  );
 
-  it('AC2bia: Label Welsh and Language is not displayed (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4044'] }, () => {
+  it(
+    'AC2bia: Label Welsh and Language is not displayed (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4044'] },
+    () => {
       let PGAtAGlance = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       const { language_preferences } = PGAtAGlance;
       setLanguagePref(language_preferences!.document_language_preference);
@@ -181,9 +200,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.contains('h2', /language preference(s)?/i).should('not.exist');
       cy.contains(/document language/i).should('not.exist');
       cy.contains(/court hearing language/i).should('not.exist');
-    });
+    },
+  );
 
-  it('AC2c: Labels not displayed (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4045'] }, () => {
+  it(
+    'AC2c: Labels not displayed (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4045'] },
+    () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
@@ -198,9 +221,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.contains('p', 'Welsh and English').should('not.exist');
 
       cy.get(DOM.enforcementStatusTag).should('not.exist');
-    });
+    },
+  );
 
-  it('AC3: displays Aliases section when defendant has one or more aliases (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4046'] }, () => {
+  it(
+    'AC3: displays Aliases section when defendant has one or more aliases (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4046'] },
+    () => {
       const mockDataWithAlias = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       const aliasOne = {
         alias_id: '12345',
@@ -233,9 +260,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
           expect(aliases).to.contain('Megan WILLIAMS');
           expect(aliases.indexOf('Ewan SMITH')).to.be.lessThan(aliases.indexOf('Megan WILLIAMS')); // order check
         });
-    });
+    },
+  );
 
-  it('AC3b: does not display Aliases section when defendant has no aliases (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4047'] }, () => {
+  it(
+    'AC3b: does not display Aliases section when defendant has no aliases (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4047'] },
+    () => {
       const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       headerNoAliases.party_details.individual_details!.individual_aliases = null;
 
@@ -245,9 +276,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
       cy.get('h3').should('not.contain', 'Aliases');
-    });
+    },
+  );
 
-  it('AC4,AC4a: displays Comments section with no Account Comment or Free Text Notes (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4048'] }, () => {
+  it(
+    'AC4,AC4a: displays Comments section with no Account Comment or Free Text Notes (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4048'] },
+    () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
         account_comment: null,
@@ -265,9 +300,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get('h3').contains('Comment').should('not.exist');
       cy.get('h3').contains('Free text notes').should('not.exist');
       cy.get(DOM.linkText).should('exist').should('have.text', 'Add comments');
-    });
+    },
+  );
 
-  it('AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4049'] }, () => {
+  it(
+    'AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4049'] },
+    () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
         account_comment: 'Test account comment',
@@ -284,9 +323,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
       cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', '—');
-    });
+    },
+  );
 
-  it('AC4c, AC9: displays Comments section with Free Text Notes but no Account Comment, showing em-dash for empty fields', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4050'] }, () => {
+  it(
+    'AC4c, AC9: displays Comments section with Free Text Notes but no Account Comment, showing em-dash for empty fields',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4050'] },
+    () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
         account_comment: null,
@@ -304,9 +347,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get('h3').contains('Comment').and('be.visible').next('p').should('contain.text', '-');
 
       cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', ' First note. ');
-    });
+    },
+  );
 
-  it('AC4d: displays Comments section with both Account Comment and Free Text Notes (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4051'] }, () => {
+  it(
+    'AC4d: displays Comments section with both Account Comment and Free Text Notes (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4051'] },
+    () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
         account_comment: 'Test account comment',
@@ -323,9 +370,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
       cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', ' First note. ');
-    });
+    },
+  );
 
-  it('AC5: Shows Add comments link and navigates to Comments screen when user has Account Maintenance permission in associated  BU (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4052'] }, () => {
+  it(
+    'AC5: Shows Add comments link and navigates to Comments screen when user has Account Maintenance permission in associated  BU (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4052'] },
+    () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
         account_comment: null,
@@ -346,9 +397,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       // Verify navigation to note/add page - check if router was called with the expected route
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../comments/add']);
-    });
+    },
+  );
 
-  it('AC5: Shows Change link and navigates to Comments screen when user has Account Maintenance permission in associated BU (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4053'] }, () => {
+  it(
+    'AC5: Shows Change link and navigates to Comments screen when user has Account Maintenance permission in associated BU (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4053'] },
+    () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
         account_comment: 'Test account comment',
@@ -367,9 +422,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       // Verify navigation to note/add page - check if router was called with the expected route
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../comments/add']);
-    });
+    },
+  );
 
-  it('AC5a: Add Comment link exists when user has permission in at least one BU but not the BU associated to the account (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4054'] }, () => {
+  it(
+    'AC5a: Add Comment link exists when user has permission in at least one BU but not the BU associated to the account (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4054'] },
+    () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
         account_comment: null,
@@ -390,9 +449,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       // Verify navigation to access-denied page
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
-    });
+    },
+  );
 
-  it('AC5a: Change link exists when user has permission in at least one BU but not the BU associated to the account (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4055'] }, () => {
+  it(
+    'AC5a: Change link exists when user has permission in at least one BU but not the BU associated to the account (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4055'] },
+    () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK, '1');
@@ -403,17 +466,25 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       // Verify navigation to access-denied page
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
-    });
+    },
+  );
 
-  it('AC5b: Change link and add comment do not exist when user has no permission in any BU (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4056'] }, () => {
+  it(
+    'AC5b: Change link and add comment do not exist when user has no permission in any BU (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4056'] },
+    () => {
       mountAtAGlanceTab({ tabData: structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK) });
 
       // Verify that neither Add comments nor Change links exist
       cy.get(DOM.linkText).should('not.exist');
       cy.get(DOM.addNoteButton).should('not.exist');
-    });
+    },
+  );
 
-  it('AC6a: displays Payment Terms section for "Pay by date" scenario (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4057'] }, () => {
+  it(
+    'AC6a: displays Payment Terms section for "Pay by date" scenario (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4057'] },
+    () => {
       const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataPayByDate.payment_terms = {
         payment_terms_type: {
@@ -435,9 +506,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get('h3').contains('Frequency').should('not.exist');
       cy.get('h3').contains('Instalments').should('not.exist');
       cy.get('h3').contains('Start Date').should('not.exist');
-    });
+    },
+  );
 
-  it('AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4058'] }, () => {
+  it(
+    'AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4058'] },
+    () => {
       mountAtAGlanceTab({ tabData: structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK) });
 
       cy.get('h3')
@@ -451,9 +526,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       // Verify that "By date" field is not displayed
       cy.get('h3').contains('By date').should('not.exist');
-    });
+    },
+  );
 
-  it('AC6c: displays Payment Terms section for "Instalments only" scenario (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4059'] }, () => {
+  it(
+    'AC6c: displays Payment Terms section for "Instalments only" scenario (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4059'] },
+    () => {
       const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataPayByDate.payment_terms = {
         payment_terms_type: {
@@ -474,9 +553,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
       cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
       cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
-    });
+    },
+  );
 
-  it('AC7a, AC7b, AC7c, AC7d: displays Last Enforcement Action field only when value is present (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4060'] }, () => {
+  it(
+    'AC7a, AC7b, AC7c, AC7d: displays Last Enforcement Action field only when value is present (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4060'] },
+    () => {
       const mockDataNoEnforcementAction = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoEnforcementAction.enforcement_status = {
         last_enforcement_action: {
@@ -509,9 +592,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         .next('p')
         .should('have.text', ' Override Approved EOR-001 ');
       cy.get('h3').contains('Date of last movement').and('be.visible').next('p').should('have.text', ' 01 May 2024 ');
-    });
+    },
+  );
 
-  it('AC8a: displays blue "collection order" label when defendant is adult and CO flag is true (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4061'] }, () => {
+  it(
+    'AC8a: displays blue "collection order" label when defendant is adult and CO flag is true (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4061'] },
+    () => {
       const mockDataAdultWithCO = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataAdultWithCO.is_youth = false;
       mockDataAdultWithCO.enforcement_status.collection_order_made = true;
@@ -520,9 +607,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       mountAtAGlanceTab({ tabData: mockDataAdultWithCO });
 
       cy.get(DOM.badgeBlue).contains('Collection Order').should('be.visible');
-    });
+    },
+  );
 
-  it('AC8b: displays red "no collection order" label when defendant is adult and CO flag is false (Account Enquiries At Glance Parent Guardian)', { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4062'] }, () => {
+  it(
+    'AC8b: displays red "no collection order" label when defendant is adult and CO flag is false (Account Enquiries At Glance Parent Guardian)',
+    { tags: [...buildTags('@JIRA-STORY:PO-779'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4062'] },
+    () => {
       const mockDataAdultNoCO = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataAdultNoCO.is_youth = false;
       mockDataAdultNoCO.enforcement_status.collection_order_made = false;
@@ -531,9 +622,19 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       mountAtAGlanceTab({ tabData: mockDataAdultNoCO });
 
       cy.get(DOM.badgeRed).contains('No collection Order').should('be.visible');
-    });
+    },
+  );
 
-  it('AC1,2,3,4: API values output as positive - expects positive values returned in UI)', { tags: [...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5261'] }, () => {
+  it(
+    'AC1,2,3,4: API values output as positive - expects positive values returned in UI)',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'),
+        '@JIRA-EPIC:PO-2750',
+        '@JIRA-TEST-KEY:PO-5261',
+      ],
+    },
+    () => {
       const headerMock = createParentGuardianHeaderMockWithName('Albert', 'Lake');
       headerMock.payment_state_summary = {
         imposed_amount: 1234.56,
@@ -551,9 +652,19 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.arrearsAmountValue).should('contain.text', '£200.00');
       cy.get(DOM.paidWrittenOffValue).should('contain.text', '£100.00');
       cy.get(DOM.accountBalanceValue).should('contain.text', '£934.56');
-    });
+    },
+  );
 
-  it('AC1,2,3,4: API values output as negative - expects positive values returned in UI except acc balance)', { tags: [...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5262'] }, () => {
+  it(
+    'AC1,2,3,4: API values output as negative - expects positive values returned in UI except acc balance)',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'),
+        '@JIRA-EPIC:PO-2750',
+        '@JIRA-TEST-KEY:PO-5262',
+      ],
+    },
+    () => {
       const headerMock = createParentGuardianHeaderMockWithName('Albert', 'Lake');
       headerMock.payment_state_summary = {
         imposed_amount: -1234.56,
@@ -571,9 +682,19 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.arrearsAmountValue).should('contain.text', '£200.00');
       cy.get(DOM.paidWrittenOffValue).should('contain.text', '£100.00');
       cy.get(DOM.accountBalanceValue).should('contain.text', '-£934.56');
-    });
+    },
+  );
 
-  it('AC1,2,3,4: API values output as zero - expects positive/zero values returned in UI)', { tags: [...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5263'] }, () => {
+  it(
+    'AC1,2,3,4: API values output as zero - expects positive/zero values returned in UI)',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'),
+        '@JIRA-EPIC:PO-2750',
+        '@JIRA-TEST-KEY:PO-5263',
+      ],
+    },
+    () => {
       const headerMock = createParentGuardianHeaderMockWithName('Albert', 'Lake');
       headerMock.payment_state_summary = {
         imposed_amount: 0.0,
@@ -591,9 +712,19 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.arrearsAmountValue).should('contain.text', '£0.00');
       cy.get(DOM.paidWrittenOffValue).should('contain.text', '£0.00');
       cy.get(DOM.accountBalanceValue).should('contain.text', '£0.00');
-    });
+    },
+  );
 
-  it('AC1,2,3,4: API values output mixed - expects positive values returned in UI except acc balance)', { tags: [...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'), '@JIRA-EPIC:PO-2750', '@JIRA-TEST-KEY:PO-5264'] }, () => {
+  it(
+    'AC1,2,3,4: API values output mixed - expects positive values returned in UI except acc balance)',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-2942', '@JIRA-LABEL:MAC-Updates'),
+        '@JIRA-EPIC:PO-2750',
+        '@JIRA-TEST-KEY:PO-5264',
+      ],
+    },
+    () => {
       const headerMock = createParentGuardianHeaderMockWithName('Albert', 'Lake');
       headerMock.payment_state_summary = {
         imposed_amount: 200.0,
@@ -611,5 +742,6 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.arrearsAmountValue).should('contain.text', '£100.00');
       cy.get(DOM.paidWrittenOffValue).should('contain.text', '£0.00');
       cy.get(DOM.accountBalanceValue).should('contain.text', '-£100.00');
-    });
+    },
+  );
 });

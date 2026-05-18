@@ -61,17 +61,32 @@ describe('ReviewOffenceComponent', () => {
       },
     });
   };
-  it('should render component', {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5055'],
-    }, () => {
+  it(
+    'should render component',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5055',
+      ],
+    },
+    () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.app).should('exist');
-    });
+    },
+  );
 
-  it('should load all elements on the screen correctly', {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5056'],
-    }, () => {
+  it(
+    'should load all elements on the screen correctly',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5056',
+      ],
+    },
+    () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
@@ -85,11 +100,19 @@ describe('ReviewOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
-    });
+    },
+  );
 
-  it('should have correct values in the elements', {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5057'],
-    }, () => {
+  it(
+    'should have correct values in the elements',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5057',
+      ],
+    },
+    () => {
       setupComponent();
 
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
@@ -108,11 +131,19 @@ describe('ReviewOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£200.00');
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
-    });
+    },
+  );
 
-  it('should update value according to imposition type', {
-      tags: [...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5058'],
-    }, () => {
+  it(
+    'should update value according to imposition type',
+    {
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-416', '@JIRA-STORY:PO-682', '@JIRA-STORY:PO-680'),
+        '@JIRA-EPIC:PO-545',
+        '@JIRA-TEST-KEY:PO-5058',
+      ],
+    },
+    () => {
       setupComponent(1);
 
       cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
@@ -131,5 +162,6 @@ describe('ReviewOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£0.0');
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£0.0');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£0.0');
-    });
+    },
+  );
 });

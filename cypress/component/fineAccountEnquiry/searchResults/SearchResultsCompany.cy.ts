@@ -75,14 +75,21 @@ describe('FinesSaResultsComponent - Companies', () => {
     });
   };
 
-  it('Search company results component is created correctly', { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4546'] }, () => {
+  it(
+    'Search company results component is created correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4546'] },
+    () => {
       setupComponent();
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
       cy.get(ResultsPageLocators.backLinkHost).should('exist');
-    });
+    },
+  );
 
-  it('(AC2) Displays error message when no search matches are found', { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4547'] }, () => {
+  it(
+    '(AC2) Displays error message when no search matches are found',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4547'] },
+    () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsMessageLocators.heading).should('contain', 'There are no matching results');
@@ -92,9 +99,13 @@ describe('FinesSaResultsComponent - Companies', () => {
       cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
       cy.get(ResultsMessageLocators.link).should('be.visible').click();
       cy.get(ResultsMessageLocators.link).should('contain', 'Check your search');
-    });
+    },
+  );
 
-  it('(AC3) Handles more than 100 search matches correctly', { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4548'] }, () => {
+  it(
+    '(AC3) Handles more than 100 search matches correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4548'] },
+    () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsMessageLocators.heading).should('contain', 'There are more than 100 results');
@@ -106,9 +117,13 @@ describe('FinesSaResultsComponent - Companies', () => {
       // Test that the link is clickable (Full Test to be implemented when API complete)
       cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
       cy.get(ResultsMessageLocators.link).click();
-    });
+    },
+  );
 
-  it('(AC4a-c) Displays results correctly for 100 or fewer matches', { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4549'] }, () => {
+  it(
+    '(AC4a-c) Displays results correctly for 100 or fewer matches',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4549'] },
+    () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
       // Check table exists and headers match design
@@ -125,9 +140,13 @@ describe('FinesSaResultsComponent - Companies', () => {
       cy.get(ResultsCellLocators.name).first().should('contain', 'ACME LTD');
       cy.get(ResultsCellLocators.addr1).first().should('contain', '10 Downing Street');
       cy.get(ResultsCellLocators.balance).first().should('contain', '£1,000.00');
-    });
+    },
+  );
 
-  it('(AC4d) Displays pagination correctly for companies', { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4550'] }, () => {
+  it(
+    '(AC4d) Displays pagination correctly for companies',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4550'] },
+    () => {
       setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsPaginationLocators.root).should('exist');
@@ -136,9 +155,13 @@ describe('FinesSaResultsComponent - Companies', () => {
 
       cy.get(ResultsPaginationLocators.pageNumber(2)).click();
       cy.get(ResultsPaginationLocators.currentPage).should('contain', '2');
-    });
+    },
+  );
 
-  it('(AC4e) Default sorting of results is correct', { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4551'] }, () => {
+  it(
+    '(AC4e) Default sorting of results is correct',
+    { tags: [...buildTags('@JIRA-STORY:PO-707'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4551'] },
+    () => {
       setupComponent(SORTING_SEARCH_RESULTS_MOCK_COMPANIES);
 
       // Default sort = order in the mock
@@ -201,5 +224,6 @@ describe('FinesSaResultsComponent - Companies', () => {
       cy.get(ResultsHeaderButtonLocators.balance).click(); // Descending
       cy.get(ResultsCellLocators.balance).eq(0).should('contain', '£1,200.00');
       cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
-    });
+    },
+  );
 });

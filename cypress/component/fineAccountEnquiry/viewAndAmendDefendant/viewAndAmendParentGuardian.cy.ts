@@ -108,7 +108,10 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     return form;
   };
 
-  it('AC1a. The "Parent Guardian Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4614'] }, () => {
+  it(
+    'AC1a. The "Parent Guardian Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4614'] },
+    () => {
       setupComponent('parentGuardian', fullMock);
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
@@ -255,17 +258,25 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
       cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-    });
+    },
+  );
 
-  it('AC1a. Parent/Guardian - Should show alias checkbox unticked when no aliases exist in data', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4615'] }, () => {
+  it(
+    'AC1a. Parent/Guardian - Should show alias checkbox unticked when no aliases exist in data',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4615'] },
+    () => {
       setupComponent('parentGuardian', minimalMock);
 
       cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
       cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
-    });
+    },
+  );
 
-  it('AC1a. Parent/Guardian - Language preferences should appear for Welsh speaking business units', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4616'] }, () => {
+  it(
+    'AC1a. Parent/Guardian - Language preferences should appear for Welsh speaking business units',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4616'] },
+    () => {
       setupComponent('parentGuardian', fullMock, 'Y');
 
       cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('exist');
@@ -274,9 +285,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.documentLanguageLegend).should('contain', 'Documents');
       cy.get(DOM_ELEMENTS.hearingLanguageFieldset).should('exist');
       cy.get(DOM_ELEMENTS.hearingLanguageLegend).should('contain', 'Court hearings');
-    });
+    },
+  );
 
-  it('AC1a, AC1b. Parent/Guardian add mode should render the reduced youth-only screen with the information banner', { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4617'] }, () => {
+  it(
+    'AC1a, AC1b. Parent/Guardian add mode should render the reduced youth-only screen with the information banner',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4617'] },
+    () => {
       setupComponent('parentGuardian', minimalMock, 'Y', FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD);
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
@@ -313,9 +328,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.businessPhoneInput).should('exist').and('have.value', '');
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist').and('contain', 'Save changes');
-    });
+    },
+  );
 
-  it('AC3a, AC3b. Parent/Guardian add mode should post valid data and navigate to the Parent or guardian tab', { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4618'] }, () => {
+  it(
+    'AC3a, AC3b. Parent/Guardian add mode should post valid data and navigate to the Parent or guardian tab',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4618'] },
+    () => {
       interceptPostDefendantAccountParty(123, minimalMock);
       setupComponent(
         'parentGuardian',
@@ -343,9 +362,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], {
         fragment: 'parent-or-guardian',
       });
-    });
+    },
+  );
 
-  it('AC4b, AC4c, AC4d. Parent/Guardian add mode should show required validation errors for first names, last name and address line 1', { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4619'] }, () => {
+  it(
+    'AC4b, AC4c, AC4d. Parent/Guardian add mode should show required validation errors for first names, last name and address line 1',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4619'] },
+    () => {
       setupComponent('parentGuardian', minimalMock, 'Y', FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
@@ -357,9 +380,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Enter address line 1, typically the building and street',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
-    });
+    },
+  );
 
-  it('AC5a, AC5b. Parent/Guardian add mode should show the email format validation errors', { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4620'] }, () => {
+  it(
+    'AC5a, AC5b. Parent/Guardian add mode should show the email format validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4620'] },
+    () => {
       setupComponent(
         'parentGuardian',
         minimalMock,
@@ -382,9 +409,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Enter secondary email address in the correct format, like name@example.com',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
-    });
+    },
+  );
 
-  it('AC6a, AC6b, AC6c. Parent/Guardian add mode should show the telephone format validation errors', { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4621'] }, () => {
+  it(
+    'AC6a, AC6b, AC6c. Parent/Guardian add mode should show the telephone format validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4621'] },
+    () => {
       setupComponent(
         'parentGuardian',
         minimalMock,
@@ -412,9 +443,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Enter a valid mobile telephone number, like 07700 900 982',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
-    });
+    },
+  );
 
-  it('AC7a. Parent/Guardian add mode should show the updated data type validation errors', { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4622'] }, () => {
+  it(
+    'AC7a. Parent/Guardian add mode should show the updated data type validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875', '@JIRA-TEST-KEY:PO-4622'] },
+    () => {
       setupComponent(
         'parentGuardian',
         minimalMock,
@@ -452,9 +487,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       );
       cy.get('@routerNavigate').should('not.have.been.called');
-    });
+    },
+  );
 
-  it('AC2. Parent/Guardian - Alias add/remove and clear behaviour', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4623'] }, () => {
+  it(
+    'AC2. Parent/Guardian - Alias add/remove and clear behaviour',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4623'] },
+    () => {
       setupComponent('parentGuardian', minimalMock);
 
       // Pre-condition: checkbox unchecked & section hidden
@@ -526,9 +565,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.aliasSection).should('exist');
       cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', '');
       cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', '');
-    });
+    },
+  );
 
-  it('AC5. Parent/Guardian - Required field validation (core)', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4624'] }, () => {
+  it(
+    'AC5. Parent/Guardian - Required field validation (core)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4624'] },
+    () => {
       const emptyCoreMock = structuredClone(minimalMock);
       emptyCoreMock.defendant_account_party.party_details.individual_details!.title = '';
       emptyCoreMock.defendant_account_party.party_details.individual_details!.forenames = '';
@@ -557,9 +600,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         'not.contain.text',
         'Enter employee reference or National Insurance number',
       );
-    });
+    },
+  );
 
-  it('AC5. Parent/Guardian - Required field validation (employer name)', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4625'] }, () => {
+  it(
+    'AC5. Parent/Guardian - Required field validation (employer name)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4625'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_name = 'Quality Corp';
       setupComponent('parentGuardian', testMock);
@@ -573,9 +620,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       employerRequiredMessages.forEach((msg) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
       });
-    });
+    },
+  );
 
-  it('AC5. Parent/Guardian - Required field validation (employer address)', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4626'] }, () => {
+  it(
+    'AC5. Parent/Guardian - Required field validation (employer address)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4626'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = '123 Office Park';
       setupComponent('parentGuardian', testMock);
@@ -586,9 +637,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       employerRequiredMessages.forEach((msg) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
       });
-    });
+    },
+  );
 
-  it('AC5. Parent/Guardian - Required field validation (employer reference number)', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4627'] }, () => {
+  it(
+    'AC5. Parent/Guardian - Required field validation (employer reference number)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4627'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_reference = 'Empref123';
       setupComponent('parentGuardian', testMock);
@@ -602,9 +657,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       employerRequiredMessages.forEach((msg) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
       });
-    });
+    },
+  );
 
-  it('AC5h, AC5i, AC5j. Parent/Guardian - Required field validation for all alias rows (N=1 to 5)', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4628'] }, () => {
+  it(
+    'AC5h, AC5i, AC5j. Parent/Guardian - Required field validation for all alias rows (N=1 to 5)',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4628'] },
+    () => {
       setupComponent('parentGuardian', minimalMock);
       cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
       cy.get(DOM_ELEMENTS.aliasSection).should('exist');
@@ -657,9 +716,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
         cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', `Enter alias ${aliasNumber} last name`);
       }
-    });
+    },
+  );
 
-  it('AC6a. Parent/Guardian - DOB with non-numerical characters shows format error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4629'] }, () => {
+  it(
+    'AC6a. Parent/Guardian - DOB with non-numerical characters shows format error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4629'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '!5/02/1980';
       setupComponent('parentGuardian', testMock);
@@ -669,9 +732,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter date of birth in the format DD/MM/YYYY');
-    });
+    },
+  );
 
-  it('AC6b. Parent/Guardian - DOB in the future shows past-date error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4630'] }, () => {
+  it(
+    'AC6b. Parent/Guardian - DOB in the future shows past-date error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4630'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
       setupComponent('parentGuardian', testMock);
@@ -679,9 +746,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', 'Enter a valid date of birth in the past');
-    });
+    },
+  );
 
-  it('AC6c. Parent/Guardian - NI number invalid format shows NI format error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4631'] }, () => {
+  it(
+    'AC6c. Parent/Guardian - NI number invalid format shows NI format error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4631'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12AB3';
       setupComponent('parentGuardian', testMock);
@@ -691,9 +762,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter a National Insurance number in the format AANNNNNNA');
-    });
+    },
+  );
 
-  it('AC7a. Parent/Guardian - Primary email invalid format shows primary email format error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4632'] }, () => {
+  it(
+    'AC7a. Parent/Guardian - Primary email invalid format shows primary email format error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4632'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.primary_email_address = 'invalid_email';
       setupComponent('parentGuardian', testMock);
@@ -703,9 +778,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter primary email address in the correct format, like name@example.com');
-    });
+    },
+  );
 
-  it('AC7b. Parent/Guardian - Secondary email invalid format shows secondary email format error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4633'] }, () => {
+  it(
+    'AC7b. Parent/Guardian - Secondary email invalid format shows secondary email format error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4633'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.secondary_email_address = 'wrong.secondemail';
       setupComponent('parentGuardian', testMock);
@@ -715,9 +794,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter secondary email address in the correct format, like name@example.com');
-    });
+    },
+  );
 
-  it('AC7c. Parent/Guardian - Employer email invalid format shows employer email format error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4634'] }, () => {
+  it(
+    'AC7c. Parent/Guardian - Employer email invalid format shows employer email format error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4634'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_email_address = 'employer#email@gmail.com';
       setupComponent('parentGuardian', testMock);
@@ -727,9 +810,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter employer email address in the correct format, like name@example.com');
-    });
+    },
+  );
 
-  it('AC8a. Parent/Guardian - Home telephone invalid format shows home telephone error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4635'] }, () => {
+  it(
+    'AC8a. Parent/Guardian - Home telephone invalid format shows home telephone error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4635'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.home_telephone_number = '0207A214875';
       setupComponent('parentGuardian', testMock);
@@ -737,9 +824,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter a valid home telephone number, like 01632 960 001');
-    });
+    },
+  );
 
-  it('AC8b. Parent/Guardian - Work telephone invalid format shows work telephone error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4636'] }, () => {
+  it(
+    'AC8b. Parent/Guardian - Work telephone invalid format shows work telephone error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4636'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001A';
       setupComponent('parentGuardian', testMock);
@@ -747,9 +838,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter a valid work telephone number, like 01632 960 001 or 07700 900 982');
-    });
+    },
+  );
 
-  it('AC8c. Parent/Guardian - Mobile telephone invalid length/format shows mobile telephone error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4637'] }, () => {
+  it(
+    'AC8c. Parent/Guardian - Mobile telephone invalid length/format shows mobile telephone error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4637'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.contact_details!.mobile_telephone_number = '0207821734';
       setupComponent('parentGuardian', testMock);
@@ -757,9 +852,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
         .and('contain.text', 'Enter a valid mobile telephone number, like 07700 900 982');
-    });
+    },
+  );
 
-  it('AC8d. Parent/Guardian - Employer telephone invalid format shows employer telephone error', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4638'] }, () => {
+  it(
+    'AC8d. Parent/Guardian - Employer telephone invalid format shows employer telephone error',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4638'] },
+    () => {
       const testMock = structuredClone(minimalMock);
       testMock.defendant_account_party.employer_details!.employer_telephone_number = '0207A214875';
       setupComponent('parentGuardian', testMock);
@@ -770,9 +869,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
           'contain.text',
           'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
         );
-    });
+    },
+  );
 
-  it('AC9. Parent/Guardian - Max length validation retains user on form and shows per-field errors', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4639'] }, () => {
+  it(
+    'AC9. Parent/Guardian - Max length validation retains user on form and shows per-field errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4639'] },
+    () => {
       const maxLengthMock = structuredClone(minimalMock);
       const primaryEmail = `${'a'.repeat(65)}@example.com`;
       const secondaryEmail = `${'b'.repeat(65)}@example.com`;
@@ -818,9 +921,13 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       expectedErrors.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    });
+    },
+  );
 
-  it('AC10. Parent/Guardian - Data type validation for alphabetical and alphanumeric fields', { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4640'] }, () => {
+  it(
+    'AC10. Parent/Guardian - Data type validation for alphabetical and alphanumeric fields',
+    { tags: [...buildTags('@JIRA-STORY:PO-1112'), '@JIRA-EPIC:PO-976', '@JIRA-TEST-KEY:PO-4640'] },
+    () => {
       const dataTypeValidationMock = structuredClone(minimalMock);
 
       // Set all fields with invalid characters using API structure
@@ -864,5 +971,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       allExpectedErrors.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
-    });
+    },
+  );
 });

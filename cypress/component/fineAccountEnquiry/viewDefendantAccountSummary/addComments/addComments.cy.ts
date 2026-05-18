@@ -84,7 +84,10 @@ describe('FinesAccCommentsAddComponent', () => {
     });
   };
 
-  it('should display the comments form with all required fields', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4641'] }, () => {
+  it(
+    'should display the comments form with all required fields',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4641'] },
+    () => {
       setupComponent();
 
       cy.get(AccountCommentsAddLocators.form).should('exist');
@@ -100,9 +103,13 @@ describe('FinesAccCommentsAddComponent', () => {
 
       cy.get(CommentActions.saveButton).should('exist');
       cy.get(CommentActions.cancelLink).should('exist');
-    });
+    },
+  );
 
-  it('should enforce field length limits according to specifications (AC2a)', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4642'] }, () => {
+  it(
+    'should enforce field length limits according to specifications (AC2a)',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4642'] },
+    () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_MAX_LENGTH_MOCK);
 
       cy.get(CommentFields.comment).should('have.value', 'A'.repeat(30));
@@ -110,18 +117,26 @@ describe('FinesAccCommentsAddComponent', () => {
       cy.get(CommentFields.line1).should('have.value', 'B'.repeat(76));
       cy.get(CommentFields.line2).should('have.value', 'C'.repeat(76));
       cy.get(CommentFields.line3).should('have.value', 'D'.repeat(76));
-    });
+    },
+  );
 
-  it('should accept alphanumeric characters in all fields (AC2a)', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4643'] }, () => {
+  it(
+    'should accept alphanumeric characters in all fields (AC2a)',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4643'] },
+    () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK);
 
       cy.get(CommentFields.comment).should('have.value', 'Test123');
       cy.get(CommentFields.line1).should('have.value', 'ABC123');
       cy.get(CommentFields.line2).should('have.value', 'ABC123');
       cy.get(CommentFields.line3).should('have.value', 'ABC123');
-    });
+    },
+  );
 
-  it('should handle character count and allow clearing fields without errors (AC3, AC3a, AC2a)', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4644'] }, () => {
+  it(
+    'should handle character count and allow clearing fields without errors (AC3, AC3a, AC2a)',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4644'] },
+    () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
       // AC3: Test character count displays correctly at maximum limits (0 remaining)
@@ -160,9 +175,13 @@ describe('FinesAccCommentsAddComponent', () => {
       cy.get(CommentActions.saveButton).click();
 
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
-    });
+    },
+  );
 
-  it('should display error messages for non-alphanumeric characters (AC4a)', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4645'] }, () => {
+  it(
+    'should display error messages for non-alphanumeric characters (AC4a)',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4645'] },
+    () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_NON_ALPHANUMERIC_MOCK);
 
       cy.get(CommentFields.comment).should('have.value', '<Test>');
@@ -190,9 +209,13 @@ describe('FinesAccCommentsAddComponent', () => {
         .should('exist')
         .and('be.visible')
         .and('contain', FREE_TEXT_3_ALLOWED_CHARACTERS_ERROR);
-    });
+    },
+  );
 
-  it('should display error messages for exceeding character limits (AC4b)', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4646'] }, () => {
+  it(
+    'should display error messages for exceeding character limits (AC4b)',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4646'] },
+    () => {
       setupComponent(ADD_COMMENTS_FORM_STATE_EXCEEDS_LIMITS_MOCK);
 
       cy.get(CommentFields.comment).should('have.value', 'A'.repeat(31));
@@ -223,9 +246,13 @@ describe('FinesAccCommentsAddComponent', () => {
         .should('exist')
         .and('be.visible')
         .and('contain', 'Free text 3 must be 76 characters or fewer');
-    });
+    },
+  );
 
-  it('should clear error messages when Save comment button is clicked with valid data (AC5bi)', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4647'] }, () => {
+  it(
+    'should clear error messages when Save comment button is clicked with valid data (AC5bi)',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4647'] },
+    () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       // Start with mixed error state to demonstrate error clearing workflow
       setupComponent(ADD_COMMENTS_FORM_STATE_MIXED_ERROR_MOCK, mockFormSubmit);
@@ -256,9 +283,13 @@ describe('FinesAccCommentsAddComponent', () => {
       cy.get(CommentErrors.line1).should('not.exist');
       cy.get(CommentErrors.line2).should('not.exist');
       cy.get(CommentErrors.line3).should('not.exist');
-    });
+    },
+  );
 
-  it('should handle various form submission scenarios with valid data (AC5, AC2a, AC5d)', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4648'] }, () => {
+  it(
+    'should handle various form submission scenarios with valid data (AC5, AC2a, AC5d)',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4648'] },
+    () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       setupComponent(ADD_COMMENTS_FORM_STATE_MOCK, mockFormSubmit);
 
@@ -291,9 +322,13 @@ describe('FinesAccCommentsAddComponent', () => {
       cy.get(CommentActions.saveButton).should('not.be.disabled');
       cy.get(CommentActions.saveButton).click();
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
-    });
+    },
+  );
 
-  it('should allow saving when user has not made amendments (AC8)', { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4649'] }, () => {
+  it(
+    'should allow saving when user has not made amendments (AC8)',
+    { tags: [...buildTags('@JIRA-STORY:PO-777'), '@JIRA-EPIC:PO-812', '@JIRA-TEST-KEY:PO-4649'] },
+    () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       // Start with pre-filled data to simulate existing comments
       setupComponent(ADD_COMMENTS_FORM_STATE_ALPHANUMERIC_MOCK, mockFormSubmit);
@@ -308,5 +343,6 @@ describe('FinesAccCommentsAddComponent', () => {
 
       // Verify form submission was triggered even without changes (AC8a - API call will be made)
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
-    });
+    },
+  );
 });

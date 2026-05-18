@@ -75,14 +75,21 @@ describe('FinesSaResultsComponent - Individuals', () => {
     });
   };
 
-  it('Search results component is created correctly', { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4552'] }, () => {
+  it(
+    'Search results component is created correctly',
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4552'] },
+    () => {
       setupComponent();
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
       cy.get(ResultsPageLocators.backLinkHost).should('exist');
-    });
+    },
+  );
 
-  it('(AC2) Displays error message when no search matches are found (FinesSaResultsComponent - Individuals)', { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4553'] }, () => {
+  it(
+    '(AC2) Displays error message when no search matches are found (FinesSaResultsComponent - Individuals)',
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4553'] },
+    () => {
       setupComponent(EMPTY_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsMessageLocators.heading).should('be.visible');
@@ -94,9 +101,13 @@ describe('FinesSaResultsComponent - Individuals', () => {
       // Test that the link is clickable (Full Test to be implemented when API complete)
       cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
       cy.get(ResultsMessageLocators.link).click();
-    });
+    },
+  );
 
-  it('(AC3) Handles more than 100 search matches correctly (FinesSaResultsComponent - Individuals)', { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4554'] }, () => {
+  it(
+    '(AC3) Handles more than 100 search matches correctly (FinesSaResultsComponent - Individuals)',
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4554'] },
+    () => {
       setupComponent(LARGE_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
@@ -115,9 +126,13 @@ describe('FinesSaResultsComponent - Individuals', () => {
       // Test that the link is clickable (Full Test to be implemented when API complete)
       cy.get(ResultsMessageLocators.link).should('have.class', 'govuk-link');
       cy.get(ResultsMessageLocators.link).click();
-    });
+    },
+  );
 
-  it('(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results', { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4555'] }, () => {
+  it(
+    '(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results',
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4555'] },
+    () => {
       setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
@@ -174,9 +189,13 @@ describe('FinesSaResultsComponent - Individuals', () => {
       cy.get(ResultsCellLocators.aliases).eq(1).should('not.contain', 'SMITH');
 
       cy.get(ResultsCellLocators.parentGuard).eq(1).should('not.contain', 'DOE, Jane');
-    });
+    },
+  );
 
-  it('(AC4d) Displays pagination with 25 results per page and 4 pages for 100 results', { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4556'] }, () => {
+  it(
+    '(AC4d) Displays pagination with 25 results per page and 4 pages for 100 results',
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4556'] },
+    () => {
       setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
       cy.get(ResultsPageLocators.heading).should('contain', 'Search results');
@@ -241,9 +260,13 @@ describe('FinesSaResultsComponent - Individuals', () => {
       cy.get(ResultsPaginationLocators.nextButton).should('exist');
       cy.get(ResultsPaginationLocators.nextButton).click();
       cy.get(ResultsPaginationLocators.currentPage).should('contain', '4');
-    });
+    },
+  );
 
-  it('(AC4f) Should sort by each column - ascending then descending', { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4557'] }, () => {
+  it(
+    '(AC4f) Should sort by each column - ascending then descending',
+    { tags: [...buildTags('@JIRA-STORY:PO-717'), '@JIRA-EPIC:PO-704', '@JIRA-TEST-KEY:PO-4557'] },
+    () => {
       setupComponent(SORTING_SEARCH_RESULTS_MOCK);
 
       //Account column sorting
@@ -435,5 +458,6 @@ describe('FinesSaResultsComponent - Individuals', () => {
       cy.get(ResultsCellLocators.balance).eq(2).should('contain', '£714.00');
       cy.get(ResultsCellLocators.balance).eq(3).should('contain', '£675.00');
       cy.get(ResultsCellLocators.balance).eq(4).should('contain', '£524.00');
-    });
+    },
+  );
 });

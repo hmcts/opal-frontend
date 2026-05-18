@@ -302,30 +302,54 @@ describe(
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth',
   { tags: ADULT_OR_YOUTH_TAGS },
   () => {
-    it('AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Adult or youth: navigates to and displays the change collection order screen', { tags: ['@JIRA-TEST-KEY:PO-4389'] }, () => {
+    it(
+      'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Adult or youth: navigates to and displays the change collection order screen',
+      { tags: ['@JIRA-TEST-KEY:PO-4389'] },
+      () => {
         assertCollectionOrderChangeScreen(commonSetup, '177A - Mr Robert THOMSON');
-      });
+      },
+    );
 
-    it('AC3, AC3a. Adult or youth: displays an error when Change is selected without choosing a collection order option', { tags: ['@JIRA-TEST-KEY:PO-4390'] }, () => {
+    it(
+      'AC3, AC3a. Adult or youth: displays an error when Change is selected without choosing a collection order option',
+      { tags: ['@JIRA-TEST-KEY:PO-4390'] },
+      () => {
         mountCollectionOrderChangeForm('177A - Mr Robert THOMSON');
         assertCollectionOrderChangeRequiredError();
-      });
+      },
+    );
 
-    it('AC4a. Adult or youth: selecting a different value returns the user to the Enforcement tab', { tags: ['@JIRA-TEST-KEY:PO-4391'] }, () => {
+    it(
+      'AC4a. Adult or youth: selecting a different value returns the user to the Enforcement tab',
+      { tags: ['@JIRA-TEST-KEY:PO-4391'] },
+      () => {
         assertCollectionOrderChangedNavigatesToEnforcementTab(commonSetup);
-      });
+      },
+    );
 
-    it('AC5a. Adult or youth: cancel without changes returns to the Enforcement tab without confirmation', { tags: ['@JIRA-TEST-KEY:PO-4392'] }, () => {
+    it(
+      'AC5a. Adult or youth: cancel without changes returns to the Enforcement tab without confirmation',
+      { tags: ['@JIRA-TEST-KEY:PO-4392'] },
+      () => {
         assertCancelWithoutChanges(commonSetup);
-      });
+      },
+    );
 
-    it('AC5b. Adult or youth: cancel after selecting a value shows confirmation before returning to the Enforcement tab', { tags: ['@JIRA-TEST-KEY:PO-4393'] }, () => {
+    it(
+      'AC5b. Adult or youth: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
+      { tags: ['@JIRA-TEST-KEY:PO-4393'] },
+      () => {
         assertCancelAfterSelectionShowsConfirmation(commonSetup);
-      });
+      },
+    );
 
-    it('AC5c. Adult or youth: dismissing the cancel confirmation keeps the user on the page', { tags: ['@JIRA-TEST-KEY:PO-4394'] }, () => {
-      assertDismissingCancelConfirmationKeepsUserOnPage(commonSetup);
-    });
+    it(
+      'AC5c. Adult or youth: dismissing the cancel confirmation keeps the user on the page',
+      { tags: ['@JIRA-TEST-KEY:PO-4394'] },
+      () => {
+        assertDismissingCancelConfirmationKeepsUserOnPage(commonSetup);
+      },
+    );
   },
 );
 
@@ -333,58 +357,106 @@ describe(
   'Account Enquiry Enforcement - Change Collection Order status - Adult or youth with parent or guardian to pay',
   { tags: PARENT_GUARDIAN_TAGS },
   () => {
-    it('AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Parent or guardian to pay: navigates to and displays the change collection order screen', { tags: ['@JIRA-TEST-KEY:PO-4395'] }, () => {
+    it(
+      'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Parent or guardian to pay: navigates to and displays the change collection order screen',
+      { tags: ['@JIRA-TEST-KEY:PO-4395'] },
+      () => {
         assertCollectionOrderChangeScreen(parentGuardianSetup, '177A - Mr Robert THOMSON');
-      });
+      },
+    );
 
-    it('AC3, AC3a. Parent or guardian to pay: displays an error when Change is selected without choosing a collection order option', { tags: ['@JIRA-TEST-KEY:PO-4396'] }, () => {
+    it(
+      'AC3, AC3a. Parent or guardian to pay: displays an error when Change is selected without choosing a collection order option',
+      { tags: ['@JIRA-TEST-KEY:PO-4396'] },
+      () => {
         mountCollectionOrderChangeForm('177A - Mr Robert THOMSON');
         assertCollectionOrderChangeRequiredError();
-      });
+      },
+    );
 
-    it('AC4a. Parent or guardian to pay: selecting a different value returns the user to the Enforcement tab', { tags: ['@JIRA-TEST-KEY:PO-4397'] }, () => {
+    it(
+      'AC4a. Parent or guardian to pay: selecting a different value returns the user to the Enforcement tab',
+      { tags: ['@JIRA-TEST-KEY:PO-4397'] },
+      () => {
         assertCollectionOrderChangedNavigatesToEnforcementTab(parentGuardianSetup);
-      });
+      },
+    );
 
-    it('AC5a. Parent or guardian to pay: cancel without changes returns to the Enforcement tab without confirmation', { tags: ['@JIRA-TEST-KEY:PO-4398'] }, () => {
+    it(
+      'AC5a. Parent or guardian to pay: cancel without changes returns to the Enforcement tab without confirmation',
+      { tags: ['@JIRA-TEST-KEY:PO-4398'] },
+      () => {
         assertCancelWithoutChanges(parentGuardianSetup);
-      });
+      },
+    );
 
-    it('AC5b. Parent or guardian to pay: cancel after selecting a value shows confirmation before returning to the Enforcement tab', { tags: ['@JIRA-TEST-KEY:PO-4399'] }, () => {
+    it(
+      'AC5b. Parent or guardian to pay: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
+      { tags: ['@JIRA-TEST-KEY:PO-4399'] },
+      () => {
         assertCancelAfterSelectionShowsConfirmation(parentGuardianSetup);
-      });
+      },
+    );
 
-    it('AC5c. Parent or guardian to pay: dismissing the cancel confirmation keeps the user on the page', { tags: ['@JIRA-TEST-KEY:PO-4400'] }, () => {
+    it(
+      'AC5c. Parent or guardian to pay: dismissing the cancel confirmation keeps the user on the page',
+      { tags: ['@JIRA-TEST-KEY:PO-4400'] },
+      () => {
         assertDismissingCancelConfirmationKeepsUserOnPage(parentGuardianSetup);
-      });
+      },
+    );
   },
 );
 
 describe('Account Enquiry Enforcement - Change Collection Order status - Company', { tags: COMPANY_TAGS }, () => {
-  it('AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Company: navigates to and displays the change collection order screen', { tags: ['@JIRA-TEST-KEY:PO-4401'] }, () => {
+  it(
+    'AC1, AC1a, AC2, AC2a, AC2b, AC2c, AC2d, AC2ci. Company: navigates to and displays the change collection order screen',
+    { tags: ['@JIRA-TEST-KEY:PO-4401'] },
+    () => {
       assertCollectionOrderChangeScreen(companySetup, '177A - Test Org Ltd');
-    });
+    },
+  );
 
-  it('AC3, AC3a. Company: displays an error when Change is selected without choosing a collection order option', { tags: ['@JIRA-TEST-KEY:PO-4402'] }, () => {
+  it(
+    'AC3, AC3a. Company: displays an error when Change is selected without choosing a collection order option',
+    { tags: ['@JIRA-TEST-KEY:PO-4402'] },
+    () => {
       mountCollectionOrderChangeForm('177A - Test Org Ltd');
       assertCollectionOrderChangeRequiredError();
-    });
+    },
+  );
 
-  it('AC4a. Company: selecting a different value returns the user to the Enforcement tab', { tags: ['@JIRA-TEST-KEY:PO-4403'] }, () => {
-    assertCollectionOrderChangedNavigatesToEnforcementTab(companySetup);
-  });
+  it(
+    'AC4a. Company: selecting a different value returns the user to the Enforcement tab',
+    { tags: ['@JIRA-TEST-KEY:PO-4403'] },
+    () => {
+      assertCollectionOrderChangedNavigatesToEnforcementTab(companySetup);
+    },
+  );
 
-  it('AC5a. Company: cancel without changes returns to the Enforcement tab without confirmation', { tags: ['@JIRA-TEST-KEY:PO-4404'] }, () => {
-    assertCancelWithoutChanges(companySetup);
-  });
+  it(
+    'AC5a. Company: cancel without changes returns to the Enforcement tab without confirmation',
+    { tags: ['@JIRA-TEST-KEY:PO-4404'] },
+    () => {
+      assertCancelWithoutChanges(companySetup);
+    },
+  );
 
-  it('AC5b. Company: cancel after selecting a value shows confirmation before returning to the Enforcement tab', { tags: ['@JIRA-TEST-KEY:PO-4405'] }, () => {
+  it(
+    'AC5b. Company: cancel after selecting a value shows confirmation before returning to the Enforcement tab',
+    { tags: ['@JIRA-TEST-KEY:PO-4405'] },
+    () => {
       assertCancelAfterSelectionShowsConfirmation(companySetup);
-    });
+    },
+  );
 
-  it('AC5c. Company: dismissing the cancel confirmation keeps the user on the page', { tags: ['@JIRA-TEST-KEY:PO-4406'] }, () => {
-    assertDismissingCancelConfirmationKeepsUserOnPage(companySetup);
-  });
+  it(
+    'AC5c. Company: dismissing the cancel confirmation keeps the user on the page',
+    { tags: ['@JIRA-TEST-KEY:PO-4406'] },
+    () => {
+      assertDismissingCancelConfirmationKeepsUserOnPage(companySetup);
+    },
+  );
 });
 
 function assertChangeSelectionReturnsToEnforcementTab(updatedCollectionOrderFlag: boolean) {

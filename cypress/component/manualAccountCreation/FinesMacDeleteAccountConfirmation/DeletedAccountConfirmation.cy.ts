@@ -137,7 +137,10 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
     });
   });
 
-  it('AC.1, AC.2 Reason for deletion screen created as per the design artefact', { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4963'] }, () => {
+  it(
+    'AC.1, AC.2 Reason for deletion screen created as per the design artefact',
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4963'] },
+    () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
@@ -146,8 +149,12 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
       cy.get(DOM_ELEMENTS.commentCharHint).should('exist').and('contain', 'You have 250 characters remaining');
       cy.get(DOM_ELEMENTS.commentInput).clear().type('a'.repeat(5), { delay: 0 });
       cy.get(DOM_ELEMENTS.commentCharHint).should('contain', 'You have 245 characters remaining');
-    });
-  it('AC.3ai,AC.3aii Yes - Delete button under the character count once a reason is entered', { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4964'] }, () => {
+    },
+  );
+  it(
+    'AC.3ai,AC.3aii Yes - Delete button under the character count once a reason is entered',
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4964'] },
+    () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
       cy.get(DOM_ELEMENTS.confirmDeleteButton).should('exist').click();
       cy.get('p').should('contain', 'Enter reason for deletion');
@@ -158,9 +165,13 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
       cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
 
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    });
+    },
+  );
 
-  it('AC.3bii a request to update draft account with patch method with status of deleted', { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4965'] }, () => {
+  it(
+    'AC.3bii a request to update draft account with patch method with status of deleted',
+    { tags: [...buildTags('@JIRA-STORY:PO-597'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4965'] },
+    () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
       payload.draft_account_id = 42;
@@ -187,9 +198,20 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
         expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
         expect(request.body.timeline_data[1]).to.have.property('reason_text', 'test reason');
       });
-    });
+    },
+  );
 
-  it('Valid character checks for delete account notes', { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-EPIC:PO-2220', '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4966'] }, () => {
+  it(
+    'Valid character checks for delete account notes',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-2801'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-TEST-KEY:PO-4966',
+      ],
+    },
+    () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', {
         statusCode: 200,
       }).as('patchDraftAccount');
@@ -200,8 +222,19 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
       cy.get(DOM_ELEMENTS.confirmDeleteButton).click();
 
       cy.wait('@patchDraftAccount').its('request.method').should('eq', 'PATCH');
-    });
-  it('Invalid character - confirm updated error for delete account note', { tags: [...buildTags('@JIRA-DEFECT:PO-2801'), '@JIRA-EPIC:PO-2220', '@JIRA-LABEL:manual-account-creation', '@JIRA-TEST-KEY:PO-4967'] }, () => {
+    },
+  );
+  it(
+    'Invalid character - confirm updated error for delete account note',
+    {
+      tags: [
+        ...buildTags('@JIRA-DEFECT:PO-2801'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-LABEL:manual-account-creation',
+        '@JIRA-TEST-KEY:PO-4967',
+      ],
+    },
+    () => {
       setupComponent(finesAccountPayload, finesAccountPayload, true);
 
       cy.get(DOM_ELEMENTS.commentInput).clear().type("AaBbCc123..--''  ,,@@%%", { delay: 0 });
@@ -212,5 +245,6 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
         .contains(
           'Reason must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces and apostrophes)',
         );
-    });
+    },
+  );
 });
