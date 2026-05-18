@@ -5,7 +5,15 @@ import java.time.DayOfWeek
 import java.time.ZonedDateTime
 
 @Field String legacyUrlDevChoice = 'DEV'
+@Field String stringTrue = String.valueOf(true)
 @Field String stringFalse = String.valueOf(false)
+@Field String defaultReleaseSuite = 'default'
+@Field String releaseSuiteR1a = 'r1a'
+@Field String releaseSuiteR1ab = 'r1ab'
+@Field String releaseSuiteR1aOff = 'r1a_off'
+@Field String releaseSuiteR1bOff = 'r1b_off'
+@Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
+@Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
 
 properties([
     // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -28,6 +36,19 @@ properties([
       name: 'TAGS',
       defaultValue: '',
       description: 'Optional Cypress tag expression for targeted nightly runs. When set, smoke tests are skipped.'
+    ),
+    choice(
+      name: 'RELEASE_SUITE',
+      choices: [
+        defaultReleaseSuite,
+        releaseSuiteR1a,
+        releaseSuiteR1ab,
+        releaseSuiteR1aOff,
+        releaseSuiteR1bOff,
+        releaseSuiteR1cWriteOffOff,
+        releaseSuiteR1cEnforcementOperationalReportingOff,
+      ],
+      description: 'Optional release-scoped selector for current-release and feature-flag pipeline runs.'
     ),
     choice(
       name: 'LEGACY_URL',
@@ -65,6 +86,27 @@ String failureResult = 'FAILURE'
 @Field String uatTechnicalTagFilter = '(@UAT-Technical) and not @skip'
 @Field int uatHealthCheckIntervalSeconds = 5
 @Field int uatHealthCheckTimeoutMinutes = 1
+@Field List<String> releaseSuiteChoices = [
+  defaultReleaseSuite,
+  releaseSuiteR1a,
+  releaseSuiteR1ab,
+  releaseSuiteR1aOff,
+  releaseSuiteR1bOff,
+  releaseSuiteR1cWriteOffOff,
+  releaseSuiteR1cEnforcementOperationalReportingOff,
+]
+@Field Map<String, String> releaseSuiteFunctionalScripts = [
+  (releaseSuiteR1a)                                 : 'test:functional:r1a',
+  (releaseSuiteR1ab)                                : 'test:functional:r1ab',
+  (releaseSuiteR1aOff)                              : 'test:functional:r1a_off',
+  (releaseSuiteR1bOff)                              : 'test:functional:r1b_off',
+  (releaseSuiteR1cWriteOffOff)                      : 'test:functional:r1c_write_off_off',
+  (releaseSuiteR1cEnforcementOperationalReportingOff): 'test:functional:r1c_enforcement_operational_reporting_off',
+]
+@Field Map<String, String> releaseSuiteComponentScripts = [
+  (releaseSuiteR1a) : 'test:component:r1a',
+  (releaseSuiteR1ab): 'test:component:r1ab',
+]
 
 // Build an Azure KeyVault secret entry.
 static Map<String, Object> secret(String secretName, String envVar) {
@@ -94,17 +136,46 @@ Map<String, List<Map<String, Object>>> nightlySecrets() {
   ]
 }
 
-// Configure shared tag-filter environment variables for nightly test runs.
+// Configure shared test-selection environment variables for nightly runs.
 void configureNightlyTags() {
   String tagExpression = (params.TAGS ?: env.TAGS ?: '').trim()
-  env.TAGS = tagExpression
-  env.CYPRESS_TAGS = tagExpression
-  env.SKIP_SMOKE = tagExpression ? 'true' : stringFalse
+  String releaseSuite = String(params.RELEASE_SUITE ?: env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
 
-  if (tagExpression) {
+  if (!releaseSuiteChoices.contains(releaseSuite)) {
+    error "Unsupported RELEASE_SUITE '${releaseSuite}'. Supported values: ${releaseSuiteChoices.join(', ')}"
+  }
+
+  if (tagExpression && releaseSuite != defaultReleaseSuite) {
+    error 'TAGS and RELEASE_SUITE cannot be combined in the nightly pipeline. Choose one selector.'
+  }
+
+  if (releaseSuite != defaultReleaseSuite && (params.Legacy || params.RunUatTech)) {
+    error 'RELEASE_SUITE cannot be combined with Legacy or RunUatTech in the nightly pipeline.'
+  }
+
+  if (releaseSuite != defaultReleaseSuite && params.ZephyrExecution) {
+    error 'RELEASE_SUITE cannot be combined with ZephyrExecution. ' +
+      'Run the release-scoped suite first, then use Zephyr separately if needed.'
+  }
+
+  env.RELEASE_SUITE = releaseSuite
+
+  if (releaseSuite != defaultReleaseSuite) {
+    env.TAGS = ''
+    env.CYPRESS_TAGS = ''
+    env.SKIP_SMOKE = stringTrue
+    echo "Running nightly with RELEASE_SUITE=${releaseSuite}"
+    echo 'Skipping smoke tests for release-scoped nightly run.'
+  } else if (tagExpression) {
+    env.TAGS = tagExpression
+    env.CYPRESS_TAGS = tagExpression
+    env.SKIP_SMOKE = stringTrue
     echo "Running nightly with TAGS=${tagExpression}"
     echo 'Skipping smoke tests for tagged nightly run.'
   } else {
+    env.TAGS = tagExpression
+    env.CYPRESS_TAGS = tagExpression
+    env.SKIP_SMOKE = stringFalse
     echo 'Running nightly without tag filtering.'
   }
 }
@@ -392,8 +463,23 @@ void runComponentStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Component Tests', failureResultValue, 'Component tests failed') {
+    String releaseSuite = String(env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+
+    // Components run for default, r1a, and r1ab.
+    // Flag-disabled suites (for example r1a_off) skip this stage unless releaseSuiteComponentScripts includes them.
+    if (releaseSuite != defaultReleaseSuite && !releaseSuiteComponentScripts.containsKey(releaseSuite)) {
+      echo "Skipping component tests for release-scoped nightly run: ${releaseSuite}"
+      return
+    }
+
+    // Default nightly runs keep the existing full component/Zephyr path.
+    // Release-scoped runs swap to the matching component subset script.
+    String componentCommand = releaseSuite == defaultReleaseSuite
+      ? (shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component')
+      : releaseSuiteComponentScripts.get(releaseSuite)
+
     try {
-      builder.yarn(shouldRunWithZephyr ? 'zephyr:test:component' : 'test:component')
+      builder.yarn(componentCommand)
     } finally {
       archiveArtifact("functional-output/component/${browserToRun}/**")
       publishHtmlReport(
@@ -467,7 +553,13 @@ void runSmokeStage(
 ) {
   if (enabled && (env.SKIP_SMOKE ?: stringFalse).toBoolean()) {
     stage(smokeStageName) {
-      echo "Skipping smoke tests because TAGS=${env.TAGS}"
+      String releaseSuite = String(env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+
+      if (releaseSuite != defaultReleaseSuite) {
+        echo "Skipping smoke tests because RELEASE_SUITE=${releaseSuite}"
+      } else {
+        echo "Skipping smoke tests because TAGS=${env.TAGS}"
+      }
     }
     return
   }
@@ -496,8 +588,13 @@ void runFunctionalStage(
   String browserToRun
 ) {
   runNightlyStage(enabled, 'Functional Tests', failureResultValue, 'Functional tests failed') {
+    String releaseSuite = String(env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+    String functionalCommand = releaseSuite == defaultReleaseSuite
+      ? (shouldRunWithZephyr ? 'zephyr:test:functional' : 'test:functional')
+      : releaseSuiteFunctionalScripts.get(releaseSuite)
+
     try {
-      builder.yarn(shouldRunWithZephyr ? 'zephyr:test:functional' : 'test:functional')
+      builder.yarn(functionalCommand)
     } finally {
       archiveArtifact(functionalProdArtifactsPath)
       archiveArtifact("functional-output/screenshots/${browserToRun}/**")
@@ -542,8 +639,14 @@ void runBrowserStage(
   Map<String, String> stageConfig
 ) {
   runNightlyStage(enabled, stageConfig.stageName, failureResultValue, failureMessage) {
+    String releaseSuite = String(env.RELEASE_SUITE ?: defaultReleaseSuite).trim().toLowerCase()
+    boolean hasReleaseSuiteSelection = releaseSuite != defaultReleaseSuite
+    String yarnCommand = hasReleaseSuiteSelection
+      ? "${releaseSuiteFunctionalScripts.get(releaseSuite)} --browser=${stageConfig.browserToRun}"
+      : stageConfig.yarnCommand
+
     try {
-      builder.yarn(stageConfig.yarnCommand)
+      builder.yarn(yarnCommand)
     } finally {
       archiveArtifact("functional-output/prod/${stageConfig.browserToRun}/**")
       archiveArtifact("functional-output/screenshots/${stageConfig.browserToRun}/**")
