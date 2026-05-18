@@ -117,9 +117,25 @@ function gitRefExists(ref: string): boolean {
  */
 function resolveDefaultBaseRef(): string {
   const changeTarget = process.env['CHANGE_TARGET']?.trim();
-  const candidates = changeTarget
-    ? [`origin/${changeTarget}`, changeTarget, 'origin/master', 'master']
-    : ['origin/master', 'master'];
+  const legacyChangeTarget = process.env['ghprbTargetBranch']?.trim();
+  const targetBranch = changeTarget || legacyChangeTarget;
+  const candidates = targetBranch
+    ? [
+        `origin/${targetBranch}`,
+        `refs/remotes/origin/${targetBranch}`,
+        targetBranch,
+        `refs/heads/${targetBranch}`,
+        'origin/master',
+        'refs/remotes/origin/master',
+        'master',
+        'refs/heads/master',
+      ]
+    : [
+        'origin/master',
+        'refs/remotes/origin/master',
+        'master',
+        'refs/heads/master',
+      ];
 
   for (const candidate of candidates) {
     if (candidate && gitRefExists(candidate)) {
@@ -127,8 +143,14 @@ function resolveDefaultBaseRef(): string {
     }
   }
 
+  // Jenkins PR jobs often check out a synthetic merge commit without fetching the target branch ref.
+  // In that case, the first parent is the target branch tip and still gives the correct PR diff.
+  if (gitRefExists('HEAD^1') && gitRefExists('HEAD^2')) {
+    return 'HEAD^1';
+  }
+
   throw new Error(
-    'Unable to resolve a base ref. Pass --base-ref=<ref> explicitly or ensure origin/master exists locally.',
+    'Unable to resolve a base ref. Pass --base-ref=<ref> explicitly or ensure the target branch ref, master, or a PR merge parent exists locally.',
   );
 }
 
