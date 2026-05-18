@@ -2,7 +2,7 @@
   <h2 [class]="style.heading">Impositions</h2>
   <hr [class]="style.hr" />
 
-  @if (impositionRows().length) {
+  @if (filteredTableDataSignal().length) {
     <opal-lib-custom-horizontal-scroll-pane>
       <opal-lib-moj-sortable-table>
         <ng-container head>
@@ -98,7 +98,7 @@
           </th>
         </ng-container>
         <ng-container row>
-          @for (imposition of impositionRows(); track imposition['Imposition ID']; let rowIndex = $index) {
+          @for (imposition of paginatedTableDataComputed(); track imposition['Imposition ID']; let rowIndex = $index) {
             <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="getRowClasses(imposition)">
               <td opal-lib-moj-sortable-table-row-data [id]="'imposition-date-added-' + rowIndex">
                 @if (imposition['Date added']; as postedDate) {
@@ -167,6 +167,15 @@
         </ng-container>
       </opal-lib-moj-sortable-table>
     </opal-lib-custom-horizontal-scroll-pane>
+    @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+      <opal-lib-moj-pagination
+        id="fines-acc-defendant-details-impositions-pagination"
+        [currentPage]="currentPageSignal()"
+        [limit]="itemsPerPageSignal()"
+        [total]="filteredTableDataSignal().length"
+        (changePage)="onPageChange($event)"
+      ></opal-lib-moj-pagination>
+    }
   } @else {
     <p class="govuk-body">There are no impositions for this account.</p>
   }

@@ -1,9 +1,10 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, Input } from '@angular/core';
-import { AbstractSortableTableComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table';
+import { ChangeDetectionStrategy, Component, computed, Input, signal } from '@angular/core';
+import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import { IAbstractTableData } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
 import { SortableValuesType } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/types';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
+import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 import {
   MojSortableTableComponent,
   MojSortableTableHeaderComponent,
@@ -40,6 +41,7 @@ interface IImpositionTableRow extends IAbstractTableData<SortableValuesType> {
     CustomHorizontalScrollPaneComponent,
     DateFormatPipe,
     FinesNotProvidedComponent,
+    MojPaginationComponent,
     MojSortableTableComponent,
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
@@ -51,7 +53,7 @@ interface IImpositionTableRow extends IAbstractTableData<SortableValuesType> {
   templateUrl: './fines-acc-defendant-details-impositions-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSortableTableComponent {
+export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSortableTablePaginationComponent {
   protected readonly DATE_INPUT_FORMAT = 'dd/MM/yyyy';
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
   protected readonly zeroBalanceRowClass = 'govuk-light-grey-background-colour';
@@ -63,7 +65,11 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
 
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
 
-  public readonly impositionRows = computed(() => this.sortedTableDataSignal() as IImpositionTableRow[]);
+  public override paginatedTableDataComputed = computed(() => {
+    const data = this.sortedTableDataSignal() as IImpositionTableRow[];
+    return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
+  });
+  public override itemsPerPageSignal = signal(25);
 
   private mapImpositionToTableRow(imposition: IOpalFinesAccountDefendantDetailsImposition): IImpositionTableRow {
     return {
