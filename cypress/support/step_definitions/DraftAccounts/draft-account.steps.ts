@@ -68,6 +68,7 @@ type DraftOverrideValue =
   | DraftOverrideValue[]
   | { [key: string]: DraftOverrideValue };
 type DraftOverrides = Record<string, DraftOverrideValue>;
+type DraftAccountEntryPoint = 'Create and Manage Draft Accounts' | 'Check and Validate Draft Accounts';
 const DEFAULT_DRAFT_STATUS = 'Publishing Pending';
 const DEFAULT_PUBLISHING_USER = 'opal-test-10@dev.platform.hmcts.net';
 const inputter = () => new CreateManageDraftsActions();
@@ -819,6 +820,34 @@ When('I open Create and Manage Draft Accounts', () => {
 });
 
 /**
+ * @step Navigate directly to the Accounts dashboard.
+ * @description Opens the Accounts dashboard route directly without going through primary navigation.
+ */
+When('I navigate directly to the Accounts dashboard', () => {
+  log('navigate', 'Navigating directly to the Accounts dashboard');
+  inputter().visitAccountsDashboardDirectly();
+});
+
+/**
+ * @step Navigate directly to an Accounts dashboard entry point.
+ * @description Opens the target draft-account route directly for feature-flag access checks.
+ * @param entryPoint - Supported draft-account entry point label.
+ */
+When('I navigate directly to the Accounts dashboard entry point {string}', (entryPoint: DraftAccountEntryPoint) => {
+  log('navigate', 'Navigating directly to Accounts dashboard entry point', { entryPoint });
+  switch (entryPoint) {
+    case 'Create and Manage Draft Accounts':
+      inputter().visitPageDirectly();
+      return;
+    case 'Check and Validate Draft Accounts':
+      checker().visitPageDirectly();
+      return;
+    default:
+      throw new Error(`Unsupported draft-account entry point: ${entryPoint}`);
+  }
+});
+
+/**
  * @step Click the Create account button on the Create and Manage Draft Accounts page.
  * @description Navigates from Create accounts to the Create new account or transfer in screen.
  */
@@ -901,6 +930,24 @@ Then('the checker status heading is {string}', (heading: string) => {
 When('I view the {string} tab on the Create and Manage Draft Accounts page', (tab: CreateManageTab) => {
   log('navigate', 'Switching Create and Manage tab', { tab });
   inputter().switchTab(tab);
+});
+
+/**
+ * @step Assert the approved draft account number is rendered as a hyperlink.
+ * @param accountNumber - Account number expected in the Approved tab.
+ */
+Then('the approved draft account number {string} is shown as a hyperlink', (accountNumber: string) => {
+  log('assert', 'Asserting approved draft account number is a hyperlink', { accountNumber });
+  inputter().assertApprovedAccountNumberIsLink(accountNumber);
+});
+
+/**
+ * @step Assert the approved draft account number is rendered as plain text.
+ * @param accountNumber - Account number expected in the Approved tab.
+ */
+Then('the approved draft account number {string} is shown as plain text', (accountNumber: string) => {
+  log('assert', 'Asserting approved draft account number is plain text', { accountNumber });
+  inputter().assertApprovedAccountNumberIsPlainText(accountNumber);
 });
 
 /**

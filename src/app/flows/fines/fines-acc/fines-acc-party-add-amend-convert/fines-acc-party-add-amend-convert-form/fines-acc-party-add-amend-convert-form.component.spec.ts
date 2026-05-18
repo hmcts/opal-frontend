@@ -270,6 +270,24 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.routeFragment).toBe('parent-or-guardian');
   });
 
+  it('should resolve defendant fragment for add parent guardian mode', () => {
+    component.partyType = 'parentGuardian';
+    component.mode = 'add';
+    fixture.detectChanges();
+
+    expect(component.routeFragment).toBe('defendant');
+  });
+
+  it('should show contact details for add parent guardian mode', () => {
+    component.partyType = 'parentGuardian';
+    component.mode = 'add';
+    component.isDebtor = false;
+    fixture.detectChanges();
+
+    expect(component.isAddParentGuardianMode).toBe(true);
+    expect(component.showContactDetails).toBe(true);
+  });
+
   it('should calculate age when valid date of birth is provided', () => {
     mockDateService.getAgeObject.mockReturnValue({ value: 30, group: 'Adult' });
     component.partyType = 'individual';

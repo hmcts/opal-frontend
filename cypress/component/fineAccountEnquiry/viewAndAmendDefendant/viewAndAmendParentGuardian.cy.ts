@@ -1,9 +1,14 @@
 import { mount } from 'cypress/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { provideHttpClient } from '@angular/common/http';
 import { FinesAccPartyAddAmendConvert } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component';
+import { FinesAccPartyAddAmendConvertFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert-form/fines-acc-party-add-amend-convert-form.component';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
+import { IFinesAccPartyAddAmendConvertForm } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-form.interface';
+import { interceptPostDefendantAccountParty } from '../accountEnquiry/intercept/defendantAccountIntercepts';
 import {
   DOM_ELEMENTS,
   getAliasForenamesInput,
@@ -16,6 +21,7 @@ import {
 } from '../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK } from './mocks/view-and-amend-defendant-individual-full.mock';
 import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK } from './mocks/view-and-amend-defendant-individual-minimal.mock';
+import { VIEW_AND_AMEND_PARENT_GUARDIAN_ADD_FORM_MOCK } from './mocks/view-and-amend-parent-guardian-add-form.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 import { IOpalFinesAccountDefendantAccountParty } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 
@@ -31,14 +37,18 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     fullMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
     minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK);
   });
+
   const setupComponent = (
     partyType: string,
     formData: IOpalFinesAccountDefendantAccountParty,
     welshSpeaking: string = 'N',
+    mode: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND,
+    seededFormData?: IFinesAccPartyAddAmendConvertForm,
   ) => {
-    mount(FinesAccPartyAddAmendConvert, {
+    return mount(FinesAccPartyAddAmendConvert, {
       providers: [
         provideHttpClient(),
+        provideRouter([]),
         DateService,
         {
           provide: FinesAccountStore,
@@ -62,12 +72,40 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
               },
               params: {
                 partyType: partyType,
+                mode: mode,
               },
             },
           },
         },
       ],
+    }).then(({ fixture }) => {
+      const router = fixture.debugElement.injector.get(Router);
+      cy.stub(router, 'navigate')
+        .callsFake(() => Promise.resolve(true))
+        .as('routerNavigate');
+
+      if (seededFormData) {
+        fixture.detectChanges();
+
+        const formComponent = fixture.debugElement.query(By.directive(FinesAccPartyAddAmendConvertFormComponent))
+          ?.componentInstance as FinesAccPartyAddAmendConvertFormComponent;
+
+        expect(formComponent, 'Parent/Guardian form component should exist').to.exist;
+        expect(formComponent.form, 'Parent/Guardian form should be initialised').to.exist;
+
+        formComponent.form.patchValue(seededFormData.formData);
+        formComponent.form.updateValueAndValidity();
+        fixture.detectChanges();
+      }
     });
+  };
+
+  const buildYouthParentGuardianAddFormMock = (
+    configure?: (form: IFinesAccPartyAddAmendConvertForm) => void,
+  ): IFinesAccPartyAddAmendConvertForm => {
+    const form = structuredClone(VIEW_AND_AMEND_PARENT_GUARDIAN_ADD_FORM_MOCK);
+    configure?.(form);
+    return form;
   };
 
   it(
@@ -247,6 +285,208 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.documentLanguageLegend).should('contain', 'Documents');
       cy.get(DOM_ELEMENTS.hearingLanguageFieldset).should('exist');
       cy.get(DOM_ELEMENTS.hearingLanguageLegend).should('contain', 'Court hearings');
+    },
+  );
+
+  it(
+    'AC1a, AC1b. Parent/Guardian add mode should render the reduced youth-only screen with the information banner',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      setupComponent('parentGuardian', minimalMock, 'Y', FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD);
+
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
+      cy.get(DOM_ELEMENTS.informationBanner).should('exist');
+      cy.get(DOM_ELEMENTS.informationBannerText).should(
+        'contain',
+        'These details are for information only. The youth defendant still pays.',
+      );
+
+      cy.get(DOM_ELEMENTS.titleSelect).should('not.exist');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.exist');
+      cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
+      cy.get(DOM_ELEMENTS.dobInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.niNumberInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('not.exist');
+      cy.get(DOM_ELEMENTS.vehicleFieldset).should('not.exist');
+      cy.get(DOM_ELEMENTS.employerFieldset).should('not.exist');
+      cy.get(DOM_ELEMENTS.employerAddressFieldset).should('not.exist');
+
+      cy.get(DOM_ELEMENTS.forenamesInput).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.surnameInput).should('exist').and('have.value', '');
+
+      cy.get(DOM_ELEMENTS.addressFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.addressLine1Input).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.addressLine2Input).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.addressLine3Input).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('exist').and('have.value', '');
+
+      cy.get(DOM_ELEMENTS.contactFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.email1Input).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.email2Input).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.mobilePhoneInput).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.homePhoneInput).should('exist').and('have.value', '');
+      cy.get(DOM_ELEMENTS.businessPhoneInput).should('exist').and('have.value', '');
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').and('contain', 'Save changes');
+    },
+  );
+
+  it(
+    'AC3a, AC3b. Parent/Guardian add mode should post valid data and navigate to the Parent or guardian tab',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      interceptPostDefendantAccountParty(123, minimalMock);
+      setupComponent(
+        'parentGuardian',
+        minimalMock,
+        'Y',
+        FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+        buildYouthParentGuardianAddFormMock(),
+      );
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.wait('@postDefendantAccountParty').then(({ request }) => {
+        expect(request.headers['if-match']).to.equal('1');
+        expect(request.headers['business-unit-id']).to.equal('77');
+        expect(request.body.defendant_account_party).to.deep.include({
+          defendant_account_party_type: 'Parent/Guardian',
+          is_debtor: false,
+        });
+        expect(request.body.defendant_account_party.party_details).to.deep.include({
+          party_id: '',
+          organisation_flag: false,
+        });
+      });
+
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], {
+        fragment: 'parent-or-guardian',
+      });
+    },
+  );
+
+  it(
+    'AC4b, AC4c, AC4d. Parent/Guardian add mode should show required validation errors for first names, last name and address line 1',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      setupComponent('parentGuardian', minimalMock, 'Y', FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD);
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter parent or guardian first name(s)');
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter parent or guardian last name');
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Enter address line 1, typically the building and street',
+      );
+      cy.get('@routerNavigate').should('not.have.been.called');
+    },
+  );
+
+  it(
+    'AC5a, AC5b. Parent/Guardian add mode should show the email format validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      setupComponent(
+        'parentGuardian',
+        minimalMock,
+        'Y',
+        FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+        buildYouthParentGuardianAddFormMock((form) => {
+          form.formData.facc_party_add_amend_convert_contact_email_address_1 = 'primary.email';
+          form.formData.facc_party_add_amend_convert_contact_email_address_2 = 'secondary.email';
+        }),
+      );
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Enter primary email address in the correct format, like name@example.com',
+      );
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Enter secondary email address in the correct format, like name@example.com',
+      );
+      cy.get('@routerNavigate').should('not.have.been.called');
+    },
+  );
+
+  it(
+    'AC6a, AC6b, AC6c. Parent/Guardian add mode should show the telephone format validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      setupComponent(
+        'parentGuardian',
+        minimalMock,
+        'Y',
+        FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+        buildYouthParentGuardianAddFormMock((form) => {
+          form.formData.facc_party_add_amend_convert_contact_telephone_number_home = '0207A214875';
+          form.formData.facc_party_add_amend_convert_contact_telephone_number_business = '01632-960-001A';
+          form.formData.facc_party_add_amend_convert_contact_telephone_number_mobile = '0207821734';
+        }),
+      );
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Enter a valid home telephone number, like 01632 960 001',
+      );
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Enter a valid work telephone number, like 01632 960 001 or 07700 900 982',
+      );
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Enter a valid mobile telephone number, like 07700 900 982',
+      );
+      cy.get('@routerNavigate').should('not.have.been.called');
+    },
+  );
+
+  it(
+    'AC7a. Parent/Guardian add mode should show the updated data type validation errors',
+    { tags: [...buildTags('@JIRA-STORY:PO-1877'), '@JIRA-EPIC:PO-1875'] },
+    () => {
+      setupComponent(
+        'parentGuardian',
+        minimalMock,
+        'Y',
+        FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+        buildYouthParentGuardianAddFormMock((form) => {
+          form.formData.facc_party_add_amend_convert_forenames = 'José';
+          form.formData.facc_party_add_amend_convert_surname = 'O’Connor';
+          form.formData.facc_party_add_amend_convert_address_line_1 = '123 Café Street';
+          form.formData.facc_party_add_amend_convert_address_line_2 = 'Appartement Étage 2';
+          form.formData.facc_party_add_amend_convert_address_line_3 = 'Bâtiment C';
+        }),
+      );
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Parent or guardian first name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      );
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Parent or guardian last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      );
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      );
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      );
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain.text',
+        'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+      );
+      cy.get('@routerNavigate').should('not.have.been.called');
     },
   );
 
@@ -691,19 +931,19 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       const dataTypeValidationMock = structuredClone(minimalMock);
 
       // Set all fields with invalid characters using API structure
-      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
-      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'José';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'O’Connor';
       dataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
         {
           alias_id: '1',
           sequence_number: 1,
-          forenames: 'Johnny$',
-          surname: 'Smith#Brown',
+          forenames: 'Chloë',
+          surname: 'Núñez',
         },
       ];
-      dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
-      dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
-      dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Café Street';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Appartement Étage 2';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Bâtiment C';
       dataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
       dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'Toyota Corolla {}[]';
       dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123|\\';

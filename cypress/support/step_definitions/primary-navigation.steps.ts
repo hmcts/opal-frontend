@@ -51,6 +51,15 @@ Then('I do not see the Fines primary navigation', () => {
 });
 
 /**
+ * Asserts that a specific Fines primary navigation item is hidden.
+ * @param itemLabel - Visible label of the navigation item expected to be absent.
+ */
+Then('I should not see the Fines primary navigation item {string}', (itemLabel: string) => {
+  log('assert', 'Checking the Fines primary navigation item is hidden', { itemLabel });
+  primaryNavigation().assertItemHidden(itemLabel);
+});
+
+/**
  * Starts the Add account note journey from an account found in browse mode.
  * @param surname - Surname used to locate the published account.
  */
