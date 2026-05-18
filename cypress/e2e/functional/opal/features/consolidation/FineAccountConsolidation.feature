@@ -77,7 +77,7 @@ Feature: Fines Account Consolidation
     Then I am on the consolidation business unit and defendant type selection screen
 
 @JIRA-EPIC:PO-2294
-  @JIRA-STORY:PO-2413
+  @JIRA-STORY:PO-2413 @JIRA-STORY:PO-3757
   Scenario: Consolidation Successful account search for Individuals
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                           |
@@ -262,4 +262,3 @@ Feature: Fines Account Consolidation
     Then I am on the consolidation Results tab for Companies
     And the created consolidation result account number is displayed as a hyperlink
     And the consolidation results exclude accounts with a balance of "£0.00"
-
