@@ -84,8 +84,13 @@ function app(): Express {
   configureSecurityHeaders(server);
   new HealthCheck().enableFor(server, 'opal-frontend');
 
-  const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration, proxyConfiguration } =
-    getRoutesConfig();
+  const {
+    sessionExpiryConfiguration,
+    routesConfiguration,
+    opalUserServiceConfiguration,
+    userStateConfiguration,
+    proxyConfiguration,
+  } = getRoutesConfig();
 
   configureApiProxyRoutes(server, proxyConfiguration);
 
@@ -101,6 +106,7 @@ function app(): Express {
     sessionConfiguration,
     ssoConfiguration,
     opalUserServiceConfig: opalUserServiceConfiguration,
+    userStateConfiguration,
     proxyConfiguration,
   });
 
