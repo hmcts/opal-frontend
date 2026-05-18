@@ -506,6 +506,11 @@ void checkFocusedTests() {
   '''
 }
 
+// Fail the build if newly added component/E2E tests are missing Jira story or epic tags.
+void checkNewTestJiraMetadata() {
+    yarnBuilder.yarn('check:new-tests:jira-metadata')
+}
+
 properties([
   // Permit dependent jobs to copy artifacts from this build
   copyArtifactPermission('*')
@@ -629,6 +634,8 @@ withPipeline(type, product, component) {
                 echo 'Running focused test checks (no skip label present)'
                 checkFocusedTests()
             }
+            echo 'Running new test Jira metadata checks'
+            checkNewTestJiraMetadata()
         }
     }
 
