@@ -6,6 +6,9 @@ import { map, switchMap } from 'rxjs';
 import { FINES_ACC_ENF_ACTION_SELECT_ALL_PERMITTED_ACTIONS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-next-permitted-actions.constant';
 import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
 
+/**
+ * Resolves the status payload action ids, returning null when all enforcement actions are permitted.
+ */
 const getResolvedNextPermittedActionIds = (nextEnforcementActionData: string | null): string[] | null => {
   const actionIds = getNextPermittedActionIds(nextEnforcementActionData);
 
