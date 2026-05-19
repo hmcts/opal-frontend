@@ -54,4 +54,3 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
     And I enter "Valid test account note for company accessibility testing" into the notes field and save the note
     Then I should see the header containing text "AccNote comp{uniqUpper}"
     And I check the page for accessibility
-

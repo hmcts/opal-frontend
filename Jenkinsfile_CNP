@@ -507,7 +507,7 @@ void checkFocusedTests() {
 }
 
 // Fail the build if covered component tests are missing Jira epic/work-item tags or
-// covered functional E2E tests are missing epic tags.
+// covered functional E2E tests are missing Jira story/NFR/defect/epic tags.
 void checkNewTestJiraMetadata() {
     new uk.gov.hmcts.contino.YarnBuilder(this).yarn('check:new-tests:jira-metadata')
 }

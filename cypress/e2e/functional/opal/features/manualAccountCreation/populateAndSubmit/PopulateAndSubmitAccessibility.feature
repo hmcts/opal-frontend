@@ -20,13 +20,12 @@ Feature: Accessibility Tests for Populate and Submit Screens
     Then I check the page for accessibility
 
   #AC-7 Originator type page with warning banner passes accessibility checks
- @JIRA-STORY:PO-2763 @JIRA-EPIC:PO-2750 @JIRA-TEST-KEY:PO-5537
+ @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5537
   Scenario: Originator type page passes accessibility checks
     When I open Manual Account Creation
     Then I check the page for accessibility
 
-  @JIRA-EPIC:PO-2750
-  @JIRA-STORY:PO-2790 @JIRA-TEST-KEY:PO-5538
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5538
   Scenario: (AC.1a, AC.1b, AC.3) Conditional Caution account details - Axe Core (task list)
     When I start creating a new manual account for business unit "West London" with account type "Conditional Caution"
     Then I am taken to the manual account details page
@@ -134,8 +133,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
     Then I see the following text on the page "You've submitted this account for review"
     And I check the page for accessibility
 
-  @JIRA-EPIC:PO-2750
-  @JIRA-STORY:PO-2766 @JIRA-TEST-KEY:PO-5542
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5542
   Scenario: Transfer in page is accessible
     When I open Manual Account Creation
     Then I choose 'Transfer in' and continue to create account page

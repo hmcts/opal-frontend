@@ -28,4 +28,3 @@ Feature: Account Enquiries - Amend Payment Terms Accessibility
     And I go to the Payment terms tab
     And I open the amend payment terms form
     Then I check the page for accessibility
-

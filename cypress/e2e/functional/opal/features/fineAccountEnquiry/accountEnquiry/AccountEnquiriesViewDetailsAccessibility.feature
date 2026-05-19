@@ -7,7 +7,7 @@ Feature: Account Enquiries - View Account Details Accessibility
     And I clear all approved accounts
 
 
-  @JIRA-STORY:PO-1943 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5466
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5466
   Scenario: Check Account Details View Accessibility with Axe-Core for Individual Account
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                          | Submitted                            |
@@ -34,7 +34,7 @@ Feature: Account Enquiries - View Account Details Accessibility
     And I check the page for accessibility
 
 
-  @JIRA-STORY:PO-1956 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5467
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5467
   Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                      | Submitted                    |

@@ -21,4 +21,3 @@ Feature: Accessibility Tests for Fixed Penalty Screens
     Examples: Company
       | defendant_type |
       | Company        |
-

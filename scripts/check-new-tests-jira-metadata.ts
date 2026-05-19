@@ -6,7 +6,8 @@
  * Rules enforced:
  * - Component specs must have @JIRA-EPIC:<id> and either @JIRA-STORY:<id> or
  *   @JIRA-DEFECT:<id>
- * - Functional E2E feature tests must have @JIRA-EPIC:<id>
+ * - Functional E2E feature tests must have @JIRA-EPIC:<id> and at least one of
+ *   @JIRA-STORY:<id>, @JIRA-NFR:<id>, or @JIRA-DEFECT:<id>
  *
  * Smoke tests are intentionally out of scope for this check, and explicit exemptions can be
  * listed below for known placeholder or legacy specs.
@@ -30,6 +31,7 @@ type TestUnit = {
   id: string;
   kind: TestKind;
   line: number;
+  nfrs: string[];
   stories: string[];
   title: string;
 };
@@ -51,6 +53,7 @@ const epicExemptFeatureFiles = new Set([
 ]);
 const jiraDefectPrefix = '@JIRA-DEFECT:';
 const jiraEpicPrefix = '@JIRA-EPIC:';
+const jiraNfrPrefix = '@JIRA-NFR:';
 const jiraStoryPrefix = '@JIRA-STORY:';
 const scenarioKeywords = ['Scenario Outline:', 'Scenario:', 'Example:'] as const;
 
@@ -140,6 +143,7 @@ function parseComponentTests(filePath: string, content: string): TestUnit[] {
           id: title,
           kind: 'component',
           line: line + 1,
+          nfrs: tags.filter((tag) => tag.startsWith(jiraNfrPrefix)),
           stories: tags.filter((tag) => tag.startsWith(jiraStoryPrefix)),
           title,
         });
@@ -758,6 +762,7 @@ function buildFeatureTestUnit(
     id: title,
     kind: 'e2e',
     line,
+    nfrs: tags.filter((tag) => tag.startsWith(jiraNfrPrefix)),
     stories: tags.filter((tag) => tag.startsWith(jiraStoryPrefix)),
     title,
   };
@@ -861,6 +866,10 @@ function validateAllTests(testFiles: string[]): {
         missing.push('@JIRA-STORY or @JIRA-DEFECT');
       }
 
+      if (unit.kind === 'e2e' && unit.stories.length === 0 && unit.nfrs.length === 0 && unit.defects.length === 0) {
+        missing.push('@JIRA-STORY or @JIRA-NFR or @JIRA-DEFECT');
+      }
+
       if (unit.epics.length === 0) {
         missing.push('@JIRA-EPIC');
       }
@@ -885,7 +894,7 @@ function printSuccess(tests: TestUnit[]): void {
 
   console.log(`Checked ${tests.length} covered component/functional E2E tests.`);
   console.log(
-    'Component tests include @JIRA-EPIC and either @JIRA-STORY or @JIRA-DEFECT. Functional E2E tests include @JIRA-EPIC.',
+    'Component tests include @JIRA-EPIC and either @JIRA-STORY or @JIRA-DEFECT. Functional E2E tests include @JIRA-EPIC and at least one of @JIRA-STORY, @JIRA-NFR, or @JIRA-DEFECT.',
   );
 }
 

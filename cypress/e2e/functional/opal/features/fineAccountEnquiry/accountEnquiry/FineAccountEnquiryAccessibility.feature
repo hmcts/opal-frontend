@@ -5,7 +5,7 @@ Feature: Account Enquiries - Enforcement Accessibility
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
-  @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1849 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5459
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5459
   Scenario: Enforcement tab accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                     |
@@ -27,7 +27,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-1866 @JIRA-STORY:PO-1850 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5460
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5460
   Scenario: Add enforcement override page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                             |
@@ -48,7 +48,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement override form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1867 @JIRA-STORY:PO-1863 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5461
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5461
   Scenario: Company enforcement tab accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                 |
@@ -68,7 +68,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-1867 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5462
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5462
   Scenario: Company add enforcement override page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                         |
@@ -87,7 +87,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement override form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1849 @JIRA-STORY:PO-1862 @JIRA-EPIC:PO-1675 @JIRA-TEST-KEY:PO-5463
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5463
   Scenario: Parent or guardian enforcement tab accessibility
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |
@@ -110,7 +110,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the change enforcement court form
     And I check the page for accessibility
 
-  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1824 @JIRA-EPIC:PO-1674 @JIRA-TEST-KEY:PO-5464
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5464
   Scenario: Add enforcement action page accessibility
     Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                           |
@@ -131,7 +131,7 @@ Feature: Account Enquiries - Enforcement Accessibility
     And I open the add enforcement action form
     Then I check the page for accessibility
 
-  @JIRA-STORY:PO-1780 @JIRA-STORY:PO-1834 @JIRA-EPIC:PO-1674 @JIRA-TEST-KEY:PO-5465
+  @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5465
   Scenario: Company add enforcement action page accessibility
     Given I create a "company" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
       | Account_status                                  | Submitted                       |

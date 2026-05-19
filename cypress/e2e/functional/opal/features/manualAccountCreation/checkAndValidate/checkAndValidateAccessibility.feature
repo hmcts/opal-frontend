@@ -69,4 +69,3 @@ Feature: Accessibility Tests for Check and Validate Screens
     When I submit the manual account for review
     Then I see the following text on the page "You have submitted Accessibility TEST{uniq}'s account for review"
     And I check the page for accessibility
-

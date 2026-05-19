@@ -65,4 +65,3 @@ Feature: Defendant account enforcement - Collection order Accessibility
     And I open the Change Collection Order status form
     Then I should see the Change Collection Order status page
     And I check the page for accessibility
-

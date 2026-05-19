@@ -38,4 +38,3 @@ Feature: Search and Matches Accessibility
       | first names          | John  |
     Then I see the Search results page
     And I check the page for accessibility
-

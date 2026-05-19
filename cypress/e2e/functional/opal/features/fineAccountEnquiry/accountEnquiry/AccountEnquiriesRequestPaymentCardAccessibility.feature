@@ -25,4 +25,3 @@ Feature: Account Enquiries - Request Payment Card Accessibility
     And I start a payment card request
     Then I should see the request payment card confirmation screen
     And I check the page for accessibility
-
