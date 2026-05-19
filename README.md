@@ -701,7 +701,7 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `opal-cypress-find-tests-missing-epic`: Report executable Cypress tests that have no Jira epic metadata.
 - `opal-cypress-resolve-placeholder-jira-epics`: Resolve placeholder epic values from `cypress/jira-epic-placeholders.json`. Add `--write` to update matching placeholders in test files.
 - `opal-cypress-find-tests-with-multiple-epics`: Report executable Cypress tests that have more than one Jira epic reference.
-- `yarn check:new-tests:jira-metadata`: Scan all covered component specs and functional E2E feature files and validate Jira metadata on every executable test. The command name is retained for CI compatibility and now delegates to the shared Cypress package.
+- `yarn check:jira:test-metadata`: Scan all covered component specs and functional E2E feature files and validate Jira metadata on every executable test, including rejecting multiple `@JIRA-EPIC` values on a single test.
 - `yarn find:duplicate:scenarios`: Report duplicate scenario names across the functional OPAL feature suite.
 - `yarn find:unused:steps`: Report step definitions that are not referenced by the scanned feature files.
 - `yarn extract:jira:po-keys-from-tests`: Extract Jira test keys from Cypress specs and feature files into `matches.csv`.
@@ -725,4 +725,4 @@ The following tags can be used in your test scenarios to control ticket creation
 | `@JIRA-IGNORE:`    | `@JIRA-IGNORE`          | Prevents ticket creation or update for this test.                  |
 
 - Tags are case-sensitive and must be used exactly as shown.
-- `yarn check:cypress:test-metadata` uses `@hmcts/opal-frontend-common-cypress` to report executable Cypress tests with missing epic metadata, multiple epic references, or unresolved placeholder epic values.
+- `yarn check:jira:test-metadata` uses `@hmcts/opal-frontend-common-cypress` to enforce the covered-test Jira metadata policy, including the single-epic rule.
