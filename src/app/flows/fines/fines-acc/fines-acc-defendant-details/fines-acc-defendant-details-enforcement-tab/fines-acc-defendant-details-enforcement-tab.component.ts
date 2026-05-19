@@ -59,7 +59,7 @@ export class FinesAccDefendantDetailsEnforcementTab {
   private getAddEnforcementActionDeniedType(): TFinesAccEnfActionDeniedType | null {
     const invalidAccountStatuses = Object.keys(FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP);
     const lastEnforcementActionId = this.tabData.last_enforcement_action?.enforcement_action.result_id ?? null;
-    const nextPermittedActions = getNextPermittedActionIds(this.tabData.next_enforcement_action_data);
+    const nextPermittedActions = getNextPermittedActionIds(this.tabData.next_enforcement_action_data) ?? [];
 
     if (!this.hasEnterEnforcementPermission) {
       return FINES_ACC_ENF_ACTION_DENIED_TYPES.permission;

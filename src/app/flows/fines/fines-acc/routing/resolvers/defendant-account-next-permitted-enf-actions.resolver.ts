@@ -7,27 +7,20 @@ import { FINES_ACC_ENF_ACTION_SELECT_ALL_PERMITTED_ACTIONS } from '../../fines-a
 import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
 
 /**
- * Resolves the status payload action ids, returning null when all enforcement actions are permitted.
- */
-const getResolvedNextPermittedActionIds = (nextEnforcementActionData: string | null): string[] | null => {
-  const actionIds = getNextPermittedActionIds(nextEnforcementActionData);
-
-  if (actionIds.length === 1 && actionIds[0].toLowerCase() === FINES_ACC_ENF_ACTION_SELECT_ALL_PERMITTED_ACTIONS) {
-    return null;
-  }
-
-  return actionIds;
-};
-
-/**
  * Resolves the next permitted enforcement actions by mapping the enforcement status payload to result ids.
+ * Fetches all enforcement results when the status payload allows all permitted actions.
  */
 export const nextPermittedEnfActionsResolver: ResolveFn<IOpalFinesResultsRefData> = (route: ActivatedRouteSnapshot) => {
   const accountId = route.paramMap.get('accountId');
   const opalFinesService = inject(OpalFines);
 
   return opalFinesService.getDefendantAccountEnforcementStatus(Number(accountId)).pipe(
-    map((enforcementStatus) => getResolvedNextPermittedActionIds(enforcementStatus.next_enforcement_action_data)),
+    map((enforcementStatus) =>
+      getNextPermittedActionIds(
+        enforcementStatus.next_enforcement_action_data,
+        FINES_ACC_ENF_ACTION_SELECT_ALL_PERMITTED_ACTIONS,
+      ),
+    ),
     switchMap((nextPermittedActionIds) =>
       nextPermittedActionIds === null
         ? opalFinesService.getResults([], { enforcement: true, enforcement_override: false })
