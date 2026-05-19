@@ -7,7 +7,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-@if (isAddParentGuardianMode) {
+@if (isReducedParentGuardianMode) {
   <opal-lib-moj-alert type="information" ariaLabel="Parent or guardian details are for information only">
     <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>
     <opal-lib-moj-alert-content content>
@@ -30,7 +30,7 @@
     ></app-fines-acc-party-add-amend-convert-party-details>
 
     <!-- aliases -->
-    @if (!isAddParentGuardianMode) {
+    @if (!isReducedParentGuardianMode) {
       <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
         <div
           opal-lib-govuk-checkboxes-item
@@ -42,7 +42,7 @@
       </opal-lib-govuk-checkboxes>
     }
 
-    @if (!isAddParentGuardianMode && form.get('facc_party_add_amend_convert_add_alias')?.value === true) {
+    @if (!isReducedParentGuardianMode && form.get('facc_party_add_amend_convert_add_alias')?.value === true) {
       @if (isIndividualPartyType) {
         <div
           opal-lib-govuk-checkboxes-conditional
@@ -180,7 +180,7 @@
     }
 
     <!-- NI and DOB for individual/parent guardian -->
-    @if ((isIndividualPartyType || isParentGuardianPartyType) && !isAddParentGuardianMode) {
+    @if ((isIndividualPartyType || isParentGuardianPartyType) && !isReducedParentGuardianMode) {
       <app-fines-acc-party-add-amend-convert-dob-ni
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
@@ -210,7 +210,7 @@
     }
 
     <!-- Language preferences - Only show for debtor or company party types -->
-    @if (showLanguagePreferences() && checkCompanyOrDebtor && !isAddParentGuardianMode) {
+    @if (showLanguagePreferences() && checkCompanyOrDebtor && !isReducedParentGuardianMode) {
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-lp
         [form]="form"
@@ -220,7 +220,7 @@
     }
 
     <!-- Vehicle details - Only show for debtor or company party types -->
-    @if (checkCompanyOrDebtor && !isAddParentGuardianMode) {
+    @if (checkCompanyOrDebtor && !isReducedParentGuardianMode) {
       <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-vd
         [form]="form"
