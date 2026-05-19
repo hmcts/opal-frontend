@@ -519,6 +519,17 @@ This is useful when you're no longer working on the libraries directly or want t
 
 **Note:** Version upgrades should come via Renovate PRs. These commands do **not** upgrade to the latest; they reinstall the exact versions specified in `package.json`. For extra safety in CI, consider using `yarn install --immutable` to prevent lockfile drift.
 
+### How Shared Cypress Scripts Work
+
+The Cypress helper commands in `opal-frontend` now come from the shared package `@hmcts/opal-frontend-common-cypress`, not from source files stored in this repository.
+
+1. How `opal-frontend` scripts find the commands:
+   `opal-frontend/package.json` keeps the same script names, but the script bodies now call package binaries such as `opal-cypress-find-duplicate-scenarios` and `opal-cypress-find-unused-steps`. Those binary names are declared in `opal-frontend-common-cypress-lib/package.json` and are made available automatically by Yarn when `@hmcts/opal-frontend-common-cypress` is installed as a dev dependency.
+2. Why the commands still operate on `opal-frontend` files:
+   The shared binaries run from the consuming repository's working directory and use the paths passed in the script, for example `--root cypress/e2e/functional/opal/features`. So the code lives in the shared package, but the files being scanned or written are still the files in `opal-frontend`.
+3. How the sibling repo is involved during local development:
+   `opal-frontend` does not read sibling repositories directly during a normal script run. It only does so when you intentionally switch to a locally packed tarball by setting `COMMON_CYPRESS_LIB_PATH` and running `yarn import:local:common-cypress-lib`. After that install step, the same script names still work, but they execute the locally packed version of the shared package instead of the published npm version.
+
 ## OpenAPI reference models
 
 - Run `yarn generate:openapi` to download and merge the fines-service specs, then emit reference-only models to `src/app/generated/api-client` and `src/app/flows/fines/services/opal-fines-service/{interfaces/generated,types/generated}`.
@@ -690,7 +701,10 @@ Zephyr Automation is a tool for integrating test results and ticket management b
 - `opal-cypress-find-tests-missing-epic`: Report executable Cypress tests that have no Jira epic metadata.
 - `opal-cypress-resolve-placeholder-jira-epics`: Resolve placeholder epic values from `cypress/jira-epic-placeholders.json`. Add `--write` to update matching placeholders in test files.
 - `opal-cypress-find-tests-with-multiple-epics`: Report executable Cypress tests that have more than one Jira epic reference.
-- `yarn check:new-tests:jira-metadata`: Scan all covered component specs and functional E2E feature files and validate Jira metadata on every executable test. The command name is retained for CI compatibility.
+- `yarn check:new-tests:jira-metadata`: Scan all covered component specs and functional E2E feature files and validate Jira metadata on every executable test. The command name is retained for CI compatibility and now delegates to the shared Cypress package.
+- `yarn find:duplicate:scenarios`: Report duplicate scenario names across the functional OPAL feature suite.
+- `yarn find:unused:steps`: Report step definitions that are not referenced by the scanned feature files.
+- `yarn extract:jira:po-keys-from-tests`: Extract Jira test keys from Cypress specs and feature files into `matches.csv`.
 - The Jira metadata check also runs in the CI pipeline. Component tests must include `@JIRA-EPIC` and either `@JIRA-STORY` or `@JIRA-DEFECT`. Functional E2E tests must include `@JIRA-EPIC` and at least one of `@JIRA-STORY`, `@JIRA-NFR`, or `@JIRA-DEFECT`. Smoke tests are not checked here, and `dummyTest.feature` remains exempt.
 
 ### Supported Tags
