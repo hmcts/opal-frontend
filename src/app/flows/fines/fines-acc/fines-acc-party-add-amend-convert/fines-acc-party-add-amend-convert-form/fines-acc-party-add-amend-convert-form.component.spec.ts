@@ -265,27 +265,48 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
   it('should resolve parent or guardian fragment for parent guardian party type', () => {
     component.partyType = 'parentGuardian';
+    component.isDebtor = true;
     fixture.detectChanges();
 
     expect(component.routeFragment).toBe('parent-or-guardian');
   });
 
-  it('should resolve defendant fragment for add parent guardian mode', () => {
+  it('should resolve defendant fragment for reduced parent guardian mode', () => {
     component.partyType = 'parentGuardian';
-    component.mode = 'add';
+    component.isDebtor = false;
     fixture.detectChanges();
 
     expect(component.routeFragment).toBe('defendant');
   });
 
-  it('should show contact details for add parent guardian mode', () => {
+  it('should show contact details for reduced parent guardian mode', () => {
     component.partyType = 'parentGuardian';
-    component.mode = 'add';
     component.isDebtor = false;
     fixture.detectChanges();
 
-    expect(component.isAddParentGuardianMode).toBe(true);
+    expect(component.isReducedParentGuardianMode).toBe(true);
     expect(component.showContactDetails).toBe(true);
+  });
+
+  it('should not validate hidden DOB and NI fields for reduced parent guardian mode', () => {
+    component.partyType = 'parentGuardian';
+    component.isDebtor = false;
+    component.initialFormData = {
+      formData: {
+        ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM.formData,
+        facc_party_add_amend_convert_forenames: 'Jane',
+        facc_party_add_amend_convert_surname: 'Smith',
+        facc_party_add_amend_convert_address_line_1: '1 Test Street',
+        facc_party_add_amend_convert_dob: 'not-a-date',
+        facc_party_add_amend_convert_national_insurance_number: 'invalid',
+      },
+      nestedFlow: false,
+    };
+    fixture.detectChanges();
+
+    expect(component.form.get('facc_party_add_amend_convert_dob')?.valid).toBe(true);
+    expect(component.form.get('facc_party_add_amend_convert_national_insurance_number')?.valid).toBe(true);
+    expect(component.form.valid).toBe(true);
   });
 
   it('should calculate age when valid date of birth is provided', () => {

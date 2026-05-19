@@ -32,6 +32,8 @@ export class AccountDetailsParentGuardianActions {
     // Click the "Change" link in the Parent or guardian tab header
     cy.get(L.parentOrGuardianTabHeader.changeLink, { timeout })
       .should('be.visible')
+      .and('contain.text', L.parentOrGuardianTabHeader.changeLinkLabel)
+      .should('be.visible')
       .scrollIntoView()
       .click({ force: true });
 
