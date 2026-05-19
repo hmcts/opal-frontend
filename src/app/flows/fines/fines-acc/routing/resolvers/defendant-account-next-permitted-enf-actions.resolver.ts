@@ -4,13 +4,10 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { map, switchMap } from 'rxjs';
 import { FINES_ACC_ENF_ACTION_SELECT_ALL_PERMITTED_ACTIONS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-next-permitted-actions.constant';
+import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
 
-const getNextPermittedActionIds = (nextEnforcementActionData: string | null): string[] | null => {
-  const actionIds =
-    nextEnforcementActionData
-      ?.split(',')
-      .map((actionId) => actionId.trim())
-      .filter(Boolean) ?? [];
+const getResolvedNextPermittedActionIds = (nextEnforcementActionData: string | null): string[] | null => {
+  const actionIds = getNextPermittedActionIds(nextEnforcementActionData);
 
   if (actionIds.length === 1 && actionIds[0].toLowerCase() === FINES_ACC_ENF_ACTION_SELECT_ALL_PERMITTED_ACTIONS) {
     return null;
@@ -27,7 +24,7 @@ export const nextPermittedEnfActionsResolver: ResolveFn<IOpalFinesResultsRefData
   const opalFinesService = inject(OpalFines);
 
   return opalFinesService.getDefendantAccountEnforcementStatus(Number(accountId)).pipe(
-    map((enforcementStatus) => getNextPermittedActionIds(enforcementStatus.next_enforcement_action_data)),
+    map((enforcementStatus) => getResolvedNextPermittedActionIds(enforcementStatus.next_enforcement_action_data)),
     switchMap((nextPermittedActionIds) =>
       nextPermittedActionIds === null
         ? opalFinesService.getResults([], { enforcement: true, enforcement_override: false })

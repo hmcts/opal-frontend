@@ -21,6 +21,7 @@ import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../../fines-acc-enf-action-de
 import { TFinesAccEnfActionDeniedType } from '../../fines-acc-enf-action-denied/types/fines-acc-enf-action-denied-type.type';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
+import { getNextPermittedActionIds } from '../../fines-acc-enf-action-select/utils/fines-acc-enf-action-next-permitted-actions.utils';
 @Component({
   selector: 'app-fines-acc-defendant-details-enforcement-tab',
   imports: [
@@ -53,24 +54,12 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
   /**
-   * Normalises next permitted action ids from the enforcement status payload.
-   */
-  private getNextPermittedActions(): string[] {
-    return (
-      this.tabData.next_enforcement_action_data
-        ?.split(',')
-        .map((actionId) => actionId.trim())
-        .filter(Boolean) ?? []
-    );
-  }
-
-  /**
    * Computes the denied reason for adding an enforcement action.
    */
   private getAddEnforcementActionDeniedType(): TFinesAccEnfActionDeniedType | null {
     const invalidAccountStatuses = Object.keys(FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP);
     const lastEnforcementActionId = this.tabData.last_enforcement_action?.enforcement_action.result_id ?? null;
-    const nextPermittedActions = this.getNextPermittedActions();
+    const nextPermittedActions = getNextPermittedActionIds(this.tabData.next_enforcement_action_data);
 
     if (!this.hasEnterEnforcementPermission) {
       return FINES_ACC_ENF_ACTION_DENIED_TYPES.permission;
