@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import {
@@ -15,6 +15,7 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
 import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
+import { FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-account-status-map.constant';
 @Component({
   selector: 'app-fines-acc-defendant-details-enforcement-tab',
   imports: [
@@ -38,7 +39,8 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() isCompanyAccount: boolean = false;
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
-  @Output() addEnforcementAction = new EventEmitter<void>();
+  @Input({ required: true }) accountStatusCode!: string;
+  @Output() addEnforcementAction = new EventEmitter<string | null>();
   @Output() addEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementOverride = new EventEmitter<void>();
   @Output() removeEnforcementOverride = new EventEmitter<void>();
@@ -46,11 +48,50 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Output() changeCollectionOrder = new EventEmitter<boolean>();
 
   /**
-   * Emits an event to add an enforcement action.
+   * Normalises next permitted action ids from the enforcement status payload.
+   */
+  private getNextPermittedActions(): string[] {
+    return (
+      this.tabData.next_enforcement_action_data
+        ?.split(',')
+        .map((actionId) => actionId.trim())
+        .filter(Boolean) ?? []
+    );
+  }
+
+  /**
+   * Computes the denied reason for adding an enforcement action.
+   */
+  private getAddEnforcementActionDeniedType(): string | null {
+    const invalidAccountStatuses = Object.keys(FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP);
+    const lastEnforcementActionId = this.tabData.last_enforcement_action?.enforcement_action.result_id ?? null;
+    const nextPermittedActions = this.getNextPermittedActions();
+
+    if (!this.hasEnterEnforcementPermission) {
+      return 'permission';
+    }
+
+    if (invalidAccountStatuses.includes(this.accountStatusCode)) {
+      return 'account-status';
+    }
+
+    if (lastEnforcementActionId === 'NOENF') {
+      return 'enforcement-hold';
+    }
+
+    if (this.tabData.last_enforcement_action && nextPermittedActions.length === 0) {
+      return 'no-next-actions';
+    }
+
+    return null;
+  }
+
+  /**
+   * Emits the denied type for add enforcement action so the parent can route.
    */
   public handleAddEnforcementAction(event: Event): void {
     event.preventDefault();
-    this.addEnforcementAction.emit();
+    this.addEnforcementAction.emit(this.getAddEnforcementActionDeniedType());
   }
 
   /**

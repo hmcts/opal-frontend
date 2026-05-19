@@ -205,9 +205,10 @@
       <app-fines-acc-defendant-details-enforcement-tab
         [tabData]="tabData"
         [isCompanyAccount]="accountData.party_details.organisation_flag"
+        [accountStatusCode]="accountData.account_status_reference.account_status_code"
         [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
         [hasEnterEnforcementPermission]="hasPermission(finesPermissions['enter-enforcement'])"
-        (addEnforcementAction)="navigateToAddEnforcementActionPage()"
+        (addEnforcementAction)="navigateToAddEnforcementActionPage($event)"
         (addEnforcementOverride)="navigateToAddEnforcementOverridePage()"
         (changeEnforcementOverride)="navigateToChangeEnforcementOverridePage()"
         (removeEnforcementOverride)="navigateToRemoveEnforcementOverridePage()"

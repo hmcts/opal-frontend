@@ -15,6 +15,7 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     fixture = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
     component = fixture.componentInstance;
     component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    component.accountStatusCode = 'L';
     fixture.detectChanges();
   });
 
@@ -72,51 +73,108 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     });
   });
 
-  it('should handleAddEnforcementOverride when add enforcement override button is clicked', () => {
-    const eventEmitterSpy = vi.spyOn(component.addEnforcementOverride, 'emit');
+  it('should emit add enforcement override when add enforcement override is clicked', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementOverride, 'emit');
     const event = { preventDefault: vi.fn() } as unknown as Event;
     component.hasAccountMaintenancePermission = true;
-    component.tabData.enforcement_override = null; // Ensure there is no existing enforcement override result
+    component.tabData.enforcement_override = null;
+
     component.handleAddEnforcementOverride(event);
-    expect(event.preventDefault).toHaveBeenCalled();
-    expect(eventEmitterSpy).toHaveBeenCalled();
-  });
-
-  it('should emit addEnforcementAction when handleAddEnforcementAction is called', () => {
-    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
-    const event = { preventDefault: vi.fn() } as unknown as Event;
-
-    component.handleAddEnforcementAction(event);
 
     expect(event.preventDefault).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should emit changeEnforcementOverride when user has permission and an override result exists', () => {
-    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
+  it('should emit null denied type when add enforcement action is permitted', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+    component.hasEnterEnforcementPermission = true;
 
-    component.hasAccountMaintenancePermission = true;
+    component.handleAddEnforcementAction(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith(null);
+  });
+
+  it('should emit denied permission when enter enforcement permission is missing', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+
+    component.handleAddEnforcementAction(event);
+
+    expect(emitSpy).toHaveBeenCalledWith('permission');
+  });
+
+  it('should emit denied account-status when blocked by account status', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+    component.hasEnterEnforcementPermission = true;
+    component.accountStatusCode = 'CS';
+
+    component.handleAddEnforcementAction(event);
+
+    expect(emitSpy).toHaveBeenCalledWith('account-status');
+  });
+
+  it('should emit denied enforcement-hold when last enforcement is NOENF', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+    component.hasEnterEnforcementPermission = true;
+    component.tabData.last_enforcement_action = {
+      ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK.last_enforcement_action)!,
+      enforcement_action: {
+        result_id: 'NOENF',
+        result_title: 'No enforcement',
+      },
+    };
+
+    component.handleAddEnforcementAction(event);
+
+    expect(emitSpy).toHaveBeenCalledWith('enforcement-hold');
+  });
+
+  it('should emit denied no-next-actions when no next permitted actions exist', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+    component.hasEnterEnforcementPermission = true;
+    component.tabData.next_enforcement_action_data = null;
+
+    component.handleAddEnforcementAction(event);
+
+    expect(emitSpy).toHaveBeenCalledWith('no-next-actions');
+  });
+
+  it('should permit add enforcement action when there is no last enforcement action', () => {
+    const emitSpy = vi.spyOn(component.addEnforcementAction, 'emit');
+    const event = { preventDefault: vi.fn() } as unknown as Event;
+    component.hasEnterEnforcementPermission = true;
+    component.tabData.last_enforcement_action = null;
+    component.tabData.next_enforcement_action_data = null;
+
+    component.handleAddEnforcementAction(event);
+
+    expect(emitSpy).toHaveBeenCalledWith(null);
+  });
+
+  it('should emit change enforcement override when requested', () => {
+    const emitSpy = vi.spyOn(component.changeEnforcementOverride, 'emit');
     component.handleChangeEnforcementOverride();
 
     expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should emit when handleChangeEnforcementCourt is called', () => {
-    const eventEmitterSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
-    component.hasAccountMaintenancePermission = true;
-
+    const emitSpy = vi.spyOn(component.changeEnforcementCourt, 'emit');
     component.handleChangeEnforcementCourt();
 
-    expect(eventEmitterSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should emit when handleRemoveEnforcementOverride is called', () => {
-    const eventEmitterSpy = vi.spyOn(component.removeEnforcementOverride, 'emit');
-    component.hasAccountMaintenancePermission = true;
-
+    const emitSpy = vi.spyOn(component.removeEnforcementOverride, 'emit');
     component.handleRemoveEnforcementOverride();
 
-    expect(eventEmitterSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should not render actions when permissions are missing', () => {
@@ -135,19 +193,17 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     expect(actionLinks).toHaveLength(0);
   });
 
-  it('should emit changeCollectionOrder when handleChangeCollectionOrder is called', () => {
-    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
-    component.hasAccountMaintenancePermission = true;
-
+  it('should emit collection order flag when handleChangeCollectionOrder is called', () => {
+    const emitSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
     component.handleChangeCollectionOrder();
 
-    expect(eventEmitterSpy).toHaveBeenCalledWith(
+    expect(emitSpy).toHaveBeenCalledWith(
       component.tabData.enforcement_overview.collection_order?.collection_order_flag ?? false,
     );
   });
 
   it('should emit false when collection order is missing', () => {
-    const eventEmitterSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
+    const emitSpy = vi.spyOn(component.changeCollectionOrder, 'emit');
     component.tabData = {
       ...component.tabData,
       enforcement_overview: {
@@ -158,6 +214,6 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
 
     component.handleChangeCollectionOrder();
 
-    expect(eventEmitterSpy).toHaveBeenCalledWith(false);
+    expect(emitSpy).toHaveBeenCalledWith(false);
   });
 });

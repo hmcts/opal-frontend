@@ -1,0 +1,31 @@
+<opal-lib-govuk-heading-with-caption
+  captionText="{{ accountStore.getAccountState().account_number }} - {{ accountStore.getAccountState().party_name }}"
+  headingText="{{ heading }}"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
+/>
+
+@switch (deniedType) {
+  @case ('permission') {
+    <p class="govuk-body govuk-!-margin-bottom-6">{{ messages.permission }}</p>
+  }
+  @case ('no-next-actions') {
+    <p class="govuk-body govuk-!-margin-bottom-0">{{ messages.noNextPermittedActionsPrefix }}</p>
+    <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">
+      <strong>{{ lastEnforcementAction }}</strong>
+    </p>
+  }
+  @case ('enforcement-hold') {
+    <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">{{ messages.enforcementHold }}</p>
+  }
+  @case ('account-status') {
+    <p class="govuk-body govuk-!-margin-bottom-0">{{ messages.accountStatusPrefix }}</p>
+    <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">
+      <strong>{{ accountStatus }}</strong>
+    </p>
+  }
+}
+
+<opal-lib-govuk-cancel-link
+  cancelLinkText="Go back"
+  (linkClickEvent)="navigateBackToAccountSummary()"
+></opal-lib-govuk-cancel-link>

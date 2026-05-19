@@ -461,7 +461,7 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
-   * Navigates to the add enforcement override page or access denied page based on user permissions.
+   * Navigates to the add enforcement override page.
    */
   public navigateToAddEnforcementOverridePage(): void {
     this['router'].navigate(
@@ -475,21 +475,21 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
-   * Navigates to the select enforcement action page.
+   * Navigates to the select enforcement action page or the relevant denied page.
    */
-  public navigateToAddEnforcementActionPage(): void {
-    this['router'].navigate(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`,
-      ],
-      {
-        relativeTo: this.activatedRoute,
-      },
-    );
+  public navigateToAddEnforcementActionPage(deniedType: string | null): void {
+    const route =
+      deniedType === null
+        ? `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`
+        : `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${deniedType}`;
+
+    this['router'].navigate([`../${route}`], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
   /**
-   * Navigates to the change enforcement override page or access denied page based on user permissions.
+   * Navigates to the change enforcement override page.
    */
   public navigateToChangeEnforcementOverridePage(): void {
     this['router'].navigate(
@@ -503,7 +503,7 @@ export class FinesAccDefendantDetailsComponent
   }
 
   /**
-   * Navigates to the remove enforcement override page or access denied page based on user permissions.
+   * Navigates to the remove enforcement override page.
    */
   public navigateToRemoveEnforcementOverridePage(): void {
     this['router'].navigate(
