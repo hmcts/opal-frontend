@@ -703,7 +703,6 @@ describe('FinesMacPaymentTermsComponent', () => {
       tags: [
         ...buildTags('@JIRA-STORY:PO-587', '@JIRA-STORY:PO-429', '@JIRA-STORY:PO-592', '@JIRA-STORY:PO-2983'),
         '@JIRA-EPIC:PO-545',
-        ,
         '@JIRA-TEST-KEY:PO-5132',
       ],
     },

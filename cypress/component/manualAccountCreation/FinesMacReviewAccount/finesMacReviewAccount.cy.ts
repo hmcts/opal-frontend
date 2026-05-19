@@ -186,7 +186,6 @@ describe('FinesMacReviewAccountComponent', () => {
       tags: [
         ...buildTags('@JIRA-STORY:PO-560', '@JIRA-STORY:PO-662', '@JIRA-STORY:PO-663', '@JIRA-STORY:PO-657'),
         '@JIRA-EPIC:PO-2219',
-        ,
         '@JIRA-TEST-KEY:PO-5213',
       ],
     },

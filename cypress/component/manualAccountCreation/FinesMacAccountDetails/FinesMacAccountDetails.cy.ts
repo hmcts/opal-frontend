@@ -155,7 +155,6 @@ describe('FinesMacAccountDetailsComponent', () => {
       tags: [
         ...buildTags('@JIRA-STORY:PO-366', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524', '@JIRA-STORY:PO-2767'),
         '@JIRA-EPIC:PO-272',
-        ,
         '@JIRA-TEST-KEY:PO-4872',
       ],
     },
@@ -234,7 +233,6 @@ describe('FinesMacAccountDetailsComponent', () => {
       tags: [
         ...buildTags('@JIRA-STORY:PO-362', '@JIRA-STORY:PO-468', '@JIRA-STORY:PO-524', '@JIRA-STORY:PO-640'),
         '@JIRA-EPIC:PO-345',
-        ,
         '@JIRA-TEST-KEY:PO-4874',
       ],
     },
