@@ -552,7 +552,7 @@ export class AccountEnquiryFlow {
     logAE('method', 'assertOnRemoveParentGuardianPage()', { expectedIdentifierText });
     this.removeParentGuardian.assertOnRemoveParentGuardianConfirmation(expectedIdentifierText);
   }
-   /**
+  /**
    * Asserts the amend parent or guardian route is active and the information banner is shown.
    */
   public assertOnAmendParentGuardianDetailsPage(): void {
@@ -1123,7 +1123,7 @@ export class AccountEnquiryFlow {
     logAE('method', 'enterAddParentGuardianLastName()', { value });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
   }
-  
+
   /**
    * Enters a first name on the amend parent or guardian form.
    *
@@ -1154,7 +1154,7 @@ export class AccountEnquiryFlow {
     logAE('method', 'enterAddParentGuardianAddressLine1()', { value });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
   }
-  
+
   /**
    * Enters address line 1 on the parent or guardian form.
    *
@@ -1429,7 +1429,7 @@ export class AccountEnquiryFlow {
         expect(headerBody['debtor_type'], 'debtor_type should revert to Defendant').to.eq('Defendant');
       });
   }
-  
+
   /**
    * Asserts the first name on the amend parent or guardian form.
    *

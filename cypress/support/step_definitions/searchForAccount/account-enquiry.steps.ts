@@ -949,7 +949,8 @@ When('I cancel removing parent or guardian details', () => {
 When('I confirm removing parent or guardian details', () => {
   log('step', 'Confirm removing parent or guardian details');
   flow().confirmRemoveParentGuardianDetails();
-  
+});
+
 When('I start changing the non-paying parent or guardian details', () => {
   log('step', 'Start changing non-paying parent or guardian details');
   flow().openNonPayingParentGuardianChangeForm();
