@@ -21,6 +21,14 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalFinesService: any;
 
+  const createComponent = () => {
+    const componentFixture = TestBed.createComponent(FinesAccRemoveNonPayingPgComponent);
+    const componentInstance = componentFixture.componentInstance;
+    componentFixture.detectChanges();
+
+    return { componentFixture, componentInstance };
+  };
+
   beforeEach(async () => {
     mockRoute = {
       snapshot: {
@@ -59,9 +67,9 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesAccRemoveNonPayingPgComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    const createdComponent = createComponent();
+    fixture = createdComponent.componentFixture;
+    component = createdComponent.componentInstance;
   });
 
   it('should create', () => {
@@ -71,6 +79,33 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
   it('should initialise the page title and account identifier', () => {
     expect(component.pageTitle).toBe('Are you sure you want to remove the parent or guardian details?');
     expect(component.accountIdentifier).toBe('1234567890 – Mr John SMITH');
+  });
+
+  it('should use fallback page title when route title is missing', () => {
+    mockRoute.snapshot.data = {};
+
+    const { componentInstance } = createComponent();
+
+    expect(componentInstance.pageTitle).toBe('Are you sure you want to remove the parent or guardian details?');
+  });
+
+  it('should use route title when route title is provided', () => {
+    mockRoute.snapshot.data = {
+      title: 'Remove parent or guardian details',
+    };
+
+    const { componentInstance } = createComponent();
+
+    expect(componentInstance.pageTitle).toBe('Remove parent or guardian details');
+  });
+
+  it('should build account identifier with an empty party name when party name is null', () => {
+    mockFinesAccStore.getAccountNumber = signal('1234567890');
+    mockFinesAccStore.party_name = signal(null);
+
+    const { componentInstance } = createComponent();
+
+    expect(componentInstance.accountIdentifier).toBe('1234567890 – ');
   });
 
   it('should navigate back to the parent or guardian tab on cancel', () => {
