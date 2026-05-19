@@ -5,19 +5,19 @@
 />
 
 @switch (deniedType) {
-  @case ('permission') {
+  @case (deniedTypes.permission) {
     <p class="govuk-body govuk-!-margin-bottom-6">{{ messages.permission }}</p>
   }
-  @case ('no-next-actions') {
+  @case (deniedTypes.noNextActions) {
     <p class="govuk-body govuk-!-margin-bottom-0">{{ messages.noNextPermittedActionsPrefix }}</p>
     <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">
       <strong>{{ lastEnforcementAction }}</strong>
     </p>
   }
-  @case ('enforcement-hold') {
+  @case (deniedTypes.enforcementHold) {
     <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">{{ messages.enforcementHold }}</p>
   }
-  @case ('account-status') {
+  @case (deniedTypes.accountStatus) {
     <p class="govuk-body govuk-!-margin-bottom-0">{{ messages.accountStatusPrefix }}</p>
     <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">
       <strong>{{ accountStatus }}</strong>

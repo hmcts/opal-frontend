@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import {
@@ -16,9 +17,14 @@ import { DatePipe, TitleCasePipe } from '@angular/common';
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
 import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
 import { FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-account-status-map.constant';
+import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
+import { TFinesAccEnfActionDeniedType } from '../../fines-acc-enf-action-denied/types/fines-acc-enf-action-denied-type.type';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_ROUTING_PATHS } from '../../fines-acc-enf-action-select/constants/fines-acc-enf-action-select-routing-paths.constant';
 @Component({
   selector: 'app-fines-acc-defendant-details-enforcement-tab',
   imports: [
+    RouterLink,
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
@@ -40,7 +46,6 @@ export class FinesAccDefendantDetailsEnforcementTab {
   @Input() hasAccountMaintenancePermission: boolean = false;
   @Input() hasEnterEnforcementPermission: boolean = false;
   @Input({ required: true }) accountStatusCode!: string;
-  @Output() addEnforcementAction = new EventEmitter<string | null>();
   @Output() addEnforcementOverride = new EventEmitter<void>();
   @Output() changeEnforcementOverride = new EventEmitter<void>();
   @Output() removeEnforcementOverride = new EventEmitter<void>();
@@ -62,36 +67,40 @@ export class FinesAccDefendantDetailsEnforcementTab {
   /**
    * Computes the denied reason for adding an enforcement action.
    */
-  private getAddEnforcementActionDeniedType(): string | null {
+  private getAddEnforcementActionDeniedType(): TFinesAccEnfActionDeniedType | null {
     const invalidAccountStatuses = Object.keys(FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP);
     const lastEnforcementActionId = this.tabData.last_enforcement_action?.enforcement_action.result_id ?? null;
     const nextPermittedActions = this.getNextPermittedActions();
 
     if (!this.hasEnterEnforcementPermission) {
-      return 'permission';
+      return FINES_ACC_ENF_ACTION_DENIED_TYPES.permission;
     }
 
     if (invalidAccountStatuses.includes(this.accountStatusCode)) {
-      return 'account-status';
+      return FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus;
     }
 
     if (lastEnforcementActionId === 'NOENF') {
-      return 'enforcement-hold';
+      return FINES_ACC_ENF_ACTION_DENIED_TYPES.enforcementHold;
     }
 
     if (this.tabData.last_enforcement_action && nextPermittedActions.length === 0) {
-      return 'no-next-actions';
+      return FINES_ACC_ENF_ACTION_DENIED_TYPES.noNextActions;
     }
 
     return null;
   }
 
   /**
-   * Emits the denied type for add enforcement action so the parent can route.
+   * Gets the add enforcement action route for the current account state.
    */
-  public handleAddEnforcementAction(event: Event): void {
-    event.preventDefault();
-    this.addEnforcementAction.emit(this.getAddEnforcementActionDeniedType());
+  public get addEnforcementActionRoute(): string {
+    const deniedType = this.getAddEnforcementActionDeniedType();
+    const actionRoot = `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}`;
+
+    return deniedType === null
+      ? `../${actionRoot}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.select}`
+      : `../${actionRoot}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${deniedType}`;
   }
 
   /**

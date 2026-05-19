@@ -8,6 +8,7 @@ import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-
 import { FINES_ACC_ENF_ACTION_DENIED_ACCOUNT_STATUS_MAP } from './constants/fines-acc-enf-action-denied-account-status-map.constant';
 import { FINES_ACC_ENF_ACTION_DENIED_MESSAGES } from './constants/fines-acc-enf-action-denied-messages.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from './constants/fines-acc-enf-action-denied-types.constant';
 
 @Component({
   selector: 'app-fines-acc-enf-action-denied',
@@ -21,6 +22,7 @@ export class FinesAccEnfActionDeniedComponent {
 
   public readonly accountStore = inject(FinesAccountStore);
   public readonly deniedType = this.route.snapshot.paramMap.get('type');
+  public readonly deniedTypes = FINES_ACC_ENF_ACTION_DENIED_TYPES;
   public readonly heading = FINES_ACC_ENF_ACTION_DENIED_MESSAGES.heading;
   public readonly messages = FINES_ACC_ENF_ACTION_DENIED_MESSAGES;
   public readonly defendantAccountHeadingData: IOpalFinesAccountDefendantDetailsHeader =

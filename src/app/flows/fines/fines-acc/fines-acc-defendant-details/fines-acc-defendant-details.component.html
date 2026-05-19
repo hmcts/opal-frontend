@@ -208,7 +208,6 @@
         [accountStatusCode]="accountData.account_status_reference.account_status_code"
         [hasAccountMaintenancePermission]="hasPermission(finesPermissions['account-maintenance'])"
         [hasEnterEnforcementPermission]="hasPermission(finesPermissions['enter-enforcement'])"
-        (addEnforcementAction)="navigateToAddEnforcementActionPage($event)"
         (addEnforcementOverride)="navigateToAddEnforcementOverridePage()"
         (changeEnforcementOverride)="navigateToChangeEnforcementOverridePage()"
         (removeEnforcementOverride)="navigateToRemoveEnforcementOverridePage()"

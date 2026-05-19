@@ -7,6 +7,7 @@ import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { FinesAccEnfActionDeniedComponent } from './fines-acc-enf-action-denied.component';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from './constants/fines-acc-enf-action-denied-types.constant';
 
 describe('FinesAccEnfActionDeniedComponent', () => {
   let component: FinesAccEnfActionDeniedComponent;
@@ -22,7 +23,7 @@ describe('FinesAccEnfActionDeniedComponent', () => {
 
   const mockActivatedRoute = {
     snapshot: {
-      paramMap: new Map([['type', 'permission']]),
+      paramMap: new Map<string, string>([['type', FINES_ACC_ENF_ACTION_DENIED_TYPES.permission]]),
       data: {
         defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
         enforcementStatus: structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
@@ -41,7 +42,9 @@ describe('FinesAccEnfActionDeniedComponent', () => {
   };
 
   beforeEach(async () => {
-    mockActivatedRoute.snapshot.paramMap = new Map([['type', 'permission']]);
+    mockActivatedRoute.snapshot.paramMap = new Map<string, string>([
+      ['type', FINES_ACC_ENF_ACTION_DENIED_TYPES.permission],
+    ]);
     mockActivatedRoute.snapshot.data = {
       defendantAccountHeadingData: structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
       enforcementStatus: structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
@@ -83,7 +86,9 @@ describe('FinesAccEnfActionDeniedComponent', () => {
   });
 
   it('should render the enforcement hold message', () => {
-    mockActivatedRoute.snapshot.paramMap = new Map([['type', 'enforcement-hold']]);
+    mockActivatedRoute.snapshot.paramMap = new Map<string, string>([
+      ['type', FINES_ACC_ENF_ACTION_DENIED_TYPES.enforcementHold],
+    ]);
     fixture = TestBed.createComponent(FinesAccEnfActionDeniedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -92,7 +97,9 @@ describe('FinesAccEnfActionDeniedComponent', () => {
   });
 
   it('should use the last enforcement action from enforcement status for the no-next-actions message', () => {
-    mockActivatedRoute.snapshot.paramMap = new Map([['type', 'no-next-actions']]);
+    mockActivatedRoute.snapshot.paramMap = new Map<string, string>([
+      ['type', FINES_ACC_ENF_ACTION_DENIED_TYPES.noNextActions],
+    ]);
     fixture = TestBed.createComponent(FinesAccEnfActionDeniedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -103,7 +110,9 @@ describe('FinesAccEnfActionDeniedComponent', () => {
   });
 
   it('should set last enforcement action to null when enforcement status has no last action', () => {
-    mockActivatedRoute.snapshot.paramMap = new Map([['type', 'no-next-actions']]);
+    mockActivatedRoute.snapshot.paramMap = new Map<string, string>([
+      ['type', FINES_ACC_ENF_ACTION_DENIED_TYPES.noNextActions],
+    ]);
     mockActivatedRoute.snapshot.data.enforcementStatus = {
       ...structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
       last_enforcement_action: null,
