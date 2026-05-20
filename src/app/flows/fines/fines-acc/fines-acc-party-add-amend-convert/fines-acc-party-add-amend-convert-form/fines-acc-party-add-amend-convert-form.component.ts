@@ -513,7 +513,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
    * Resolves the defendant-details fragment to use when navigating back from the form.
    */
   public get routeFragment(): TFinesAccDefendantDetailsTabKey {
-    if (this.isAddParentGuardianMode) {
+    if (this.isAddParentGuardianMode || this.isReducedParentGuardianMode) {
       return FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant;
     }
 

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
@@ -12,7 +12,6 @@ import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../fines-acc-defendant-de
 
 describe('FinesAccRemoveNonPayingPgComponent', () => {
   let component: FinesAccRemoveNonPayingPgComponent;
-  let fixture: ComponentFixture<FinesAccRemoveNonPayingPgComponent>;
   let mockRoute: ActivatedRoute;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockRouter: any;
@@ -57,8 +56,13 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
       deleteDefendantAccountParty: vi.fn().mockReturnValue(of(null)),
     };
 
+    TestBed.overrideComponent(FinesAccRemoveNonPayingPgComponent, {
+      set: {
+        template: '',
+      },
+    });
+
     await TestBed.configureTestingModule({
-      imports: [FinesAccRemoveNonPayingPgComponent],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: Router, useValue: mockRouter },
@@ -68,7 +72,6 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
     }).compileComponents();
 
     const createdComponent = createComponent();
-    fixture = createdComponent.componentFixture;
     component = createdComponent.componentInstance;
   });
 
