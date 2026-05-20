@@ -103,26 +103,64 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   );
   //The below code will check each string in the invalidInputs array and check if the error message is displayed
   it(
-    'AC.2d, AC.2e, AC.2f Checking the validation failures when a special character into the fields',
-    { tags: [...buildTags('@JIRA-STORY:PO-667'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5067'] },
+    'AC.2d Checking the validation failure when a special character is entered into the offence code field',
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545', '@JIRA-TEST-KEY:PO-5067'],
+    },
     () => {
       const formSubmitSpy = Cypress.sinon.spy();
 
       const invalidInputs = ['*', '$', '@'];
       cy.wrap(invalidInputs).each((input: string) => {
         cy.then(() => {
-          offenceSearchFormData.formData.fm_offence_details_search_offences_code = input;
-          offenceSearchFormData.formData.fm_offence_details_search_offences_short_title = input;
-          offenceSearchFormData.formData.fm_offence_details_search_offences_act_section = input;
+          offenceSearchFormDataTemplate.formData.fm_offence_details_search_offences_code = input;
           setupComponent(formSubmitSpy);
           cy.contains('button', 'Search').click();
 
           cy.get(DOM_ELEMENTS.errorSummary)
             .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.offenceCodeSpecialCharPattern)
-            .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.shortTitleSpecialCharPattern)
-            .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.actAndSectionSpecialCharPattern);
+            .should('not.contain', SEARCH_OFFENCES_FORMAT_CHECK.shortTitleSpecialCharPattern)
+            .should('not.contain', SEARCH_OFFENCES_FORMAT_CHECK.actAndSectionSpecialCharPattern);
         });
       });
+    },
+  );
+
+  it(
+    'AC.2e, AC.2f Short title and Act and section allow single-byte ASCII characters',
+    { tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      const singleByteAsciiInput = " Aa0'!#$%&()*+,-./<>";
+
+      offenceSearchFormDataTemplate.formData.fm_offence_details_search_offences_short_title = singleByteAsciiInput;
+      offenceSearchFormDataTemplate.formData.fm_offence_details_search_offences_act_section = singleByteAsciiInput;
+      setupComponent(formSubmitSpy);
+
+      cy.contains('button', 'Search').click();
+
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+      cy.wrap(formSubmitSpy).should('have.been.called');
+    },
+  );
+
+  it(
+    'AC.2e, AC.2f Short title and Act and section do not allow non-single-byte ASCII characters',
+    { tags: [...buildTags('@JIRA-STORY:PO-667', '@JIRA-STORY:PO-3967'), '@JIRA-EPIC:PO-545'] },
+    () => {
+      const formSubmitSpy = Cypress.sinon.spy();
+      const nonSingleByteAsciiInput = '©µ±ö€•';
+
+      offenceSearchFormDataTemplate.formData.fm_offence_details_search_offences_short_title = nonSingleByteAsciiInput;
+      offenceSearchFormDataTemplate.formData.fm_offence_details_search_offences_act_section = nonSingleByteAsciiInput;
+      setupComponent(formSubmitSpy);
+
+      cy.contains('button', 'Search').click();
+
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.shortTitleSpecialCharPattern)
+        .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.actAndSectionSpecialCharPattern);
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
     },
   );
 });
