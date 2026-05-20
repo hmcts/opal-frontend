@@ -47,13 +47,13 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(textContent).toContain('30 Jan 2025');
     expect(textContent).toContain('Speeding - exceed 30mph on restricted road');
     expect(textContent).toContain('West London Magistrates Court');
-    expect(textContent).toContain('11111111-1111-1111-1111-111111111111');
+    expect(textContent).toContain('111111111111');
   });
 
-  it('should render date strings with the shared date format pipe', () => {
+  it('should render API date strings with the shared date format pipe', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    tabData.impositions[0].posted_date = '05/12/2025';
-    tabData.impositions[0].imposed_date = '04/12/2025';
+    tabData.impositions[0].date_added = '2025-12-05';
+    tabData.impositions[0].date_imposed = '2025-12-04';
 
     const { fixture } = setupComponent(tabData);
 
@@ -144,8 +144,7 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     const { component } = setupComponent();
     const balance = component.getBalance({
       ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK.impositions[0],
-      imposed_amount: 10.1,
-      paid_amount: 0.2,
+      balance: 9.899999999,
     });
 
     expect(balance).toBe(9.9);

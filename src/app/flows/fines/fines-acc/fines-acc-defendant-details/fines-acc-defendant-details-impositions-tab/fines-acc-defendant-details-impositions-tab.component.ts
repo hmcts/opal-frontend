@@ -36,8 +36,8 @@ interface IImpositionTableRow extends IAbstractTableData<SortableValuesType> {
   'Date imposed': string | null;
   Offence: string | null;
   'Imposed by': string | null;
-  'Imposition ID': string;
-  'Creditor account id': number | null;
+  'Imposition ID': number;
+  'Creditor account id': number;
   'Creditor account type': string | null;
 }
 
@@ -61,7 +61,7 @@ interface IImpositionTableRow extends IAbstractTableData<SortableValuesType> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSortableTablePaginationComponent {
-  protected readonly DATE_INPUT_FORMAT = 'dd/MM/yyyy';
+  protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
   protected readonly zeroBalanceRowClass = 'govuk-light-grey-background-colour';
 
@@ -80,18 +80,18 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
 
   private mapImpositionToTableRow(imposition: IOpalFinesAccountDefendantDetailsImposition): IImpositionTableRow {
     return {
-      'Date added': imposition.posted_date,
-      Imposition: imposition.result_id,
+      'Date added': imposition.date_added,
+      Imposition: imposition.imposition.result_id,
       Creditor: this.getCreditorDisplay(imposition),
       Imposed: imposition.imposed_amount,
       'Paid/Written off': imposition.paid_amount,
       Balance: this.getBalance(imposition),
-      'Date imposed': imposition.imposed_date,
-      Offence: imposition.offence_title,
+      'Date imposed': imposition.date_imposed,
+      Offence: imposition.offence.title,
       'Imposed by': this.getImposedByDisplay(imposition),
       'Imposition ID': imposition.imposition_id,
-      'Creditor account id': imposition.creditor_account_id,
-      'Creditor account type': imposition.creditor_account_type,
+      'Creditor account id': imposition.creditor.creditor_account_id,
+      'Creditor account type': imposition.creditor.account_type,
     };
   }
 
@@ -102,7 +102,7 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
    * @returns The balance rounded to two decimal places.
    */
   public getBalance(imposition: IOpalFinesAccountDefendantDetailsImposition): number {
-    return Number((imposition.imposed_amount - imposition.paid_amount).toFixed(2));
+    return Number(imposition.balance.toFixed(2));
   }
 
   /**
@@ -132,7 +132,7 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
    * @returns The creditor name or account ID, when present.
    */
   public getCreditorDisplay(imposition: IOpalFinesAccountDefendantDetailsImposition): string | null {
-    return imposition.creditor_name ?? imposition.creditor_account_id?.toString() ?? null;
+    return imposition.creditor.name ?? imposition.creditor.display_name ?? imposition.creditor.creditor_account_id.toString();
   }
 
   /**
@@ -144,11 +144,7 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
   public isMinorCreditor(imposition: IImpositionTableRow): boolean {
     const creditorAccountType = imposition['Creditor account type']?.toLowerCase();
 
-    if (imposition['Creditor account id'] === null) {
-      return false;
-    }
-
-    return creditorAccountType === 'minor';
+    return creditorAccountType === 'mn' || creditorAccountType === 'minor';
   }
 
   /**
@@ -159,10 +155,6 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
    */
   public getMinorCreditorDetailsRouterLink(imposition: IImpositionTableRow): (string | number)[] {
     const creditorAccountId = imposition['Creditor account id'];
-
-    if (creditorAccountId === null) {
-      return [];
-    }
 
     return [
       '/',
@@ -175,16 +167,12 @@ export class FinesAccDefendantDetailsImpositionsTabComponent extends AbstractSor
   }
 
   /**
-   * Returns the court name only when the imposition has an imposing court ID.
+   * Returns the sentencing court name when the API has supplied an imposed by value.
    *
    * @param imposition - The imposition row to read court details from.
-   * @returns The imposing court name, when present.
+   * @returns The sentencing court name, when present.
    */
   public getImposedByDisplay(imposition: IOpalFinesAccountDefendantDetailsImposition): string | null {
-    if (imposition.imposing_court_id === null) {
-      return null;
-    }
-
-    return imposition.imposing_court_name;
+    return imposition.imposed_by?.court_name ?? null;
   }
 }
